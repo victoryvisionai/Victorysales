@@ -1,0 +1,128 @@
+<!-- Settings Page -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Victory Vision - Settings</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f0f2f5; }
+    .page-container { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; background: #212e53; color: #fff; padding: 20px; }
+    .sidebar .logo { text-align: center; margin-bottom: 1em; }
+    .sidebar .logo img { max-width: 150px; }
+    .sidebar nav ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar nav ul li { margin: 10px 0; }
+    .sidebar nav ul li a { color: #fff; text-decoration: none; }
+    .sidebar nav ul li a:hover { text-decoration: underline; }
+    .main-content { flex: 1; padding: 20px; background: #fff; }
+    .main-content h1 { margin-top: 0; margin-bottom: 1em; }
+    .settings-tabs { margin-bottom: 20px; }
+    .settings-tabs button { background: #e0e0e0; border: none; padding: 10px 15px; margin-right: 5px; cursor: pointer; }
+    .settings-tabs button.active { background: #212e53; color: #fff; }
+    .settings-section { margin-bottom: 40px; }
+    .settings-section h2 { margin-top: 0; font-size: 1.2em; margin-bottom: 10px; }
+    .settings-section form label { display: block; margin-bottom: 0.5em; }
+    .settings-section form input[type="text"], 
+    .settings-section form input[type="password"] { width: 100%; max-width: 400px; padding: 8px; margin-bottom: 0.5em; }
+    .settings-section form input[type="checkbox"] { margin-right: 5px; }
+    .settings-section form button { padding: 8px 16px; background: #212e53; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    .settings-section form button:hover { opacity: 0.9; }
+    .settings-section button.connect-btn { padding: 8px 16px; margin-top: 5px; background: #212e53; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    .settings-section button.connect-btn:hover { opacity: 0.9; }
+    .billing-info form label { display: block; margin-bottom: 0.5em; }
+    .billing-info form input { width: 100%; max-width: 300px; padding: 8px; margin-bottom: 0.5em; }
+    @media (max-width: 768px) {
+      .page-container { flex-direction: column; }
+      .sidebar { width: 100%; text-align: center; }
+      .sidebar nav ul li { display: inline-block; margin: 10px; }
+      .main-content { width: 100%; }
+      .settings-tabs { overflow-x: auto; white-space: nowrap; padding-bottom: 10px; }
+      .settings-tabs button { margin-bottom: 5px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Victory Vision logo and sidebar navigation -->
+  <div class="page-container">
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="logo.png" alt="Victory Vision Logo">
+      </div>
+      <nav>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="images.html">Images</a></li>
+          <li><a href="video.html">Video</a></li>
+          <li><a href="social.html">Social</a></li>
+          <li><a href="analytics.html">Analytics</a></li>
+          <li><a href="settings.html">Settings</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <h1>Settings</h1>
+      <div class="settings-tabs">
+        <button class="active">LinkedIn</button>
+        <button>Instagram</button>
+        <button>Stripe</button>
+        <button>KPI</button>
+        <button>Google Ads</button>
+        <button>Billing</button>
+      </div>
+      <div class="settings-section" id="linkedin-settings">
+        <h2>LinkedIn Integration</h2>
+        <p>Connect your LinkedIn account to enable content posting to LinkedIn.</p>
+        <button class="connect-btn">Connect LinkedIn</button>
+        <!-- Or provide token input as alternative -->
+      </div>
+      <div class="settings-section" id="instagram-settings">
+        <h2>Instagram Integration</h2>
+        <p>Connect your Instagram account to enable content posting to Instagram.</p>
+        <button class="connect-btn">Connect Instagram</button>
+      </div>
+      <div class="settings-section" id="stripe-settings">
+        <h2>Stripe Integration</h2>
+        <p>Connect your Stripe account for billing and payments.</p>
+        <button class="connect-btn">Connect Stripe</button>
+      </div>
+      <div class="settings-section" id="kpi-settings">
+        <h2>KPI Controls</h2>
+        <p>Select which key performance indicators to track:</p>
+        <form>
+          <label><input type="checkbox" name="kpi-conversions"> Track Conversions</label>
+          <label><input type="checkbox" name="kpi-ctr"> Track Click-Through Rate (CTR)</label>
+          <label><input type="checkbox" name="kpi-views"> Track Views</label>
+          <label><input type="checkbox" name="kpi-impressions"> Track Impressions</label>
+          <button type="button">Save KPI Settings</button>
+        </form>
+      </div>
+      <div class="settings-section" id="googleads-settings">
+        <h2>Google Ads Settings</h2>
+        <p>Configure Google Ads integration settings.</p>
+        <label>Ad Account ID:
+          <input type="text" placeholder="Account ID">
+        </label><br>
+        <button class="connect-btn">Connect Google Ads</button>
+      </div>
+      <div class="settings-section billing-info" id="billing-settings">
+        <h2>Billing Info & Plan Management</h2>
+        <p>Current Plan: <strong>Free</strong></p>
+        <button>Upgrade Plan</button>
+        <h3>Payment Method</h3>
+        <form>
+          <label>Card Number:
+            <input type="text" placeholder="XXXX XXXX XXXX XXXX">
+          </label>
+          <label>Expiry Date:
+            <input type="text" placeholder="MM/YY">
+          </label>
+          <label>CVC:
+            <input type="text" placeholder="CVC">
+          </label>
+          <button type="button">Update Payment Info</button>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
