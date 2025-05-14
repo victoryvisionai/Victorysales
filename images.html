@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,6 +63,8 @@
         descDiv.innerHTML = '';
         let imageBase64 = null;
 
+        showLoader(); // 🔄 Show shimmer loader
+
         if (fileInput) {
             const reader = new FileReader();
             reader.onload = async () => {
@@ -82,7 +83,7 @@
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 prompt: prompt,
-                customer_id: "client-xyz", // replace with your client logic
+                customer_id: "client-xyz",
                 image: image
             })
         });
@@ -114,10 +115,12 @@
                 btn.style.margin = '4px';
                 tagsDiv.appendChild(btn);
             });
+            animateTags(); // ✨ Animate tags
         }
 
         if (data.description) {
-            document.getElementById("refinement-desc").innerText = "AI Analysis: " + data.description;
+            const descEl = document.getElementById("refinement-desc");
+            typeWriterEffect(descEl, "AI Analysis: " + data.description, 20); // ✨ Typewriter
         }
     }
 </script>
