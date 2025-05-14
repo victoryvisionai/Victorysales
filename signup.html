@@ -57,11 +57,7 @@
 
         .logo {
             margin-bottom: 20px;
-        }
-
-        .logo img {
             max-width: 250px;
-            height: auto;
         }
 
         .divider {
@@ -106,11 +102,11 @@
 </div>
 
 <script>
-    // Correct way to initialize Supabase client
+    // Supabase configuration
     const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
     
-    // Create a Supabase client correctly
+    // Create a Supabase client
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
     
     // Display error message
@@ -145,7 +141,7 @@
                 email, 
                 password,
                 options: {
-                    emailRedirectTo: 'https://victoryvisionai.github.io/Victorysales/login.html'
+                    emailRedirectTo: 'https://victoryvision.app/login'
                 }
             });
 
@@ -174,7 +170,7 @@
             const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: 'https://victoryvisionai.github.io/Victorysales/dashboard.html'
+                    redirectTo: 'https://victoryvision.app/dashboard'
                 }
             });
 
