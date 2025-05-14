@@ -36,6 +36,16 @@ if (userGrowthCtx) {
         options: { responsive: true, maintainAspectRatio: false }
     });
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('userGrowthChart');
+    if (ctx) {
+        new Chart(ctx, {
+            // Chart options and data here
+        });
+    }
+
+    // Additional charts logic here, following the same structure
+});
 
 document.addEventListener('DOMContentLoaded', checkAuth);
 
