@@ -1,35 +1,30 @@
-const supabaseUrl = 'your-supabase-url';
-const supabaseKey = 'your-public-anonymous-key';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+document.addEventListener('DOMContentLoaded', async () => {
 
-// Authentication Check
-async function checkAuth() {
-    try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error || !user) {
+    // Supabase Auth Check (keep exactly as shown)
+    const supabaseUrl = 'your-supabase-url';
+    const supabaseKey = 'your-public-anonymous-key';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function checkAuth() {
+        try {
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error || !user) {
+                if (!window.location.pathname.includes('login.html')) {
+                    window.location.href = 'login.html';
+                }
+            }
+        } catch (err) {
+            console.error('Supabase auth error:', err);
             if (!window.location.pathname.includes('login.html')) {
                 window.location.href = 'login.html';
             }
         }
-    } catch (err) {
-        console.error('Supabase auth error:', err);
-        if (!window.location.pathname.includes('login.html')) {
-            window.location.href = 'login.html';
-        }
     }
-}
+    await checkAuth();
 
-// DOMContentLoaded - All DOM manipulations and initializations
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Step 1: Check Authentication
-    checkAuth();
-
-    // Step 2: Render Navbar
+    // Navbar HTML Injection (keep exactly as shown)
     const navbar = document.querySelector('.navbar');
-    if (!navbar) {
-        console.error('Navbar element (.navbar) not found.');
-    } else {
+    if (navbar) {
         navbar.innerHTML = `
             <div class="logo">
                 <img src="logo.jpg" alt="Victory Vision Logo">
@@ -48,9 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 </ul>
             </nav>
         `;
+    } else {
+        console.error('Navbar element (.navbar) not found.');
     }
 
-    // Step 3: Chart.js Initialization
+    // Chart initialization if needed (optional, keep exactly as shown)
     const userGrowthCtx = document.getElementById('userGrowthChart');
     if (userGrowthCtx) {
         new Chart(userGrowthCtx, {
@@ -69,6 +66,4 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { responsive: true, maintainAspectRatio: false }
         });
     }
-
-    // Additional charts can be initialized here similarly
 });
