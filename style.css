@@ -25,13 +25,13 @@ a:hover, button:hover {
     color: #0A3161;
 }
 
-/* Navbar Styles */
+/* Navbar Styles - Corrected and Optimized */
 .navbar {
-    background-color:#0A3161; /* Brand Navy */
+    background-color: #0A3161; /* Brand Navy */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
+    padding: 10px 20px;
     border-bottom: 2px solid #0A3161;
 }
 
@@ -39,20 +39,27 @@ a:hover, button:hover {
     height: 40px;
 }
 
+.navbar nav {
+    display: flex;
+}
+
 .navbar nav ul {
     list-style: none;
     display: flex;
-    gap: 20px;
+    margin: 0;
+    padding: 0;
 }
 
-/* Navbar link styles */
+.navbar nav ul li {
+    margin-left: 20px;
+}
+
 .navbar nav ul li a {
     color: #FFFFFF; /* White text */
     font-weight: 700;
     text-decoration: none;
 }
 
-/* Navbar link hover styles */
 .navbar nav ul li a:hover {
     color: #BB133E; /* Red on hover */
 }
@@ -118,8 +125,18 @@ th, td {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .navbar nav ul {
         flex-direction: column;
+        margin-top: 10px;
         gap: 10px;
+    }
+
+    .navbar nav ul li {
+        margin-left: 0;
     }
 }
