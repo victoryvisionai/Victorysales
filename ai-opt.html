@@ -1,29 +1,51 @@
-<div class="ai-opt-page">
-  <h3>Optimization Goal</h3>
-  <form id="optimizationForm">
-    <label for="goalDesc">Describe your goal:</label>
-    <textarea id="goalDesc" placeholder="E.g., Increase monthly revenue by 20%"></textarea>
-    <label for="goalDate">Target date:</label>
-    <input type="date" id="goalDate">
-    <button type="submit" id="generatePlanBtn">Generate Optimization Plan</button>
-  </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victory Vision AI - Optimization</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body>
 
-  <div id="suggestionsOutput" class="suggestions">
-    <!-- Example suggestion groups -->
-    <div class="suggestion-group">
-      <h4>Ads</h4>
-      <ul>
-        <li>Raise budget on Campaign X by 15% to drive more clicks (based on its high ROI).</li>
-        <li>Pause Campaign Y with low conversion and reallocate budget to better performers.</li>
-      </ul>
+<header class="navbar"></header>
+
+<div class="content">
+    <div class="card">
+        <h2>AI Optimization Settings</h2>
+
+        <div class="settings-group">
+            <h3>Set SMART Goals</h3>
+            <textarea placeholder="Describe your specific, measurable, achievable, relevant, time-bound goals..."></textarea>
+            <button>Save Goals</button>
+        </div>
+
+        <div class="settings-group">
+            <h3>AI Recommendations Based on KPIs & Analytics</h3>
+            <ul>
+                <li>Increase Google Ads budget by 20% to achieve 30% revenue growth by Q4.</li>
+                <li>Post frequency on LinkedIn recommended: 3 times per week to increase engagement.</li>
+                <li>Image ads outperforming video ads by 15%; consider reallocating resources accordingly.</li>
+            </ul>
+        </div>
+
+        <div class="settings-group">
+            <h3>AI Content Generation and Posting Configuration</h3>
+            <label><input type="checkbox"> Auto-generate Images</label><br>
+            <label><input type="checkbox"> Auto-generate Videos</label><br>
+            <label><input type="checkbox"> Auto-post to Social Media</label><br>
+            <label><input type="checkbox"> Auto-post in Ads</label><br>
+            <label><input type="checkbox"> Manual Review via Email before Posting</label><br>
+
+            <h4>Parameters</h4>
+            <label>Monthly Spend Limit ($): <input type="number" placeholder="e.g., 5000"></label><br>
+            <label>Posting Frequency (per week): <input type="number" placeholder="e.g., 3"></label><br>
+            <button>Save AI Configuration</button>
+        </div>
+
     </div>
-    <div class="suggestion-group">
-      <h4>Landing Pages</h4>
-      <ul>
-        <li>A/B test a simpler signup form on the main landing page to boost conversion rate.</li>
-        <li>Add a testimonial section with neon-accented quotes to build trust and increase engagement.</li>
-      </ul>
-    </div>
-    <!-- etc. -->
-  </div>
 </div>
+
+</body>
+</html>
