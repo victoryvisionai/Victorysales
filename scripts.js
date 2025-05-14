@@ -1,33 +1,11 @@
-// scripts.js
-const supabaseUrl = 'your-supabase-url';
-const supabaseKey = 'your-public-anonymous-key';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-// Check authentication immediately with error handling
-async function checkAuth() {
-    try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if (error || !user) {
-            if (!window.location.pathname.includes('login.html')) {
-                window.location.href = 'login.html';
-            }
-        }
-    } catch (err) {
-        console.error('Supabase auth error:', err);
-        if (!window.location.pathname.includes('login.html')) {
-            window.location.href = 'login.html';
-        }
-    }
-}
-
-// DOM Loaded Event
-window.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
-
-    // Safe navbar injection with existence check
+document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
-    if (navbar) {
-        navbar.innerHTML = `
+    if (!navbar) {
+        console.error('Navbar element (.navbar) not found.');
+        return;
+    }
+
+    navbar.innerHTML = `
         <div class="logo">
             <img src="logo.jpg" alt="Victory Vision Logo">
         </div>
@@ -43,45 +21,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 <li><a href="messages.html">Messages</a></li>
                 <li><a href="settings.html">⚙️ Settings</a></li>
             </ul>
-        </nav>`;
-    } else {
-        console.error("Navbar element '.navbar' not found!");
-    }
-
-    // Chart.js User Growth Chart
-    const userGrowthCtx = document.getElementById('userGrowthChart');
-    if (userGrowthCtx) {
-        new Chart(userGrowthCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Active Users',
-                    data: [100, 150, 200, 300, 400, 500, 600, 650, 700, 750, 775, 800],
-                    borderColor: '#00e5ff',
-                    backgroundColor: 'rgba(0, 229, 255, 0.1)',
-                    borderWidth: 2,
-                    tension: 0.4
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-    }
-
-    // Chart.js Revenue Growth Chart
-    const revenueGrowthCtx = document.getElementById('revenueGrowthChart');
-    if (revenueGrowthCtx) {
-        new Chart(revenueGrowthCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Revenue ($)',
-                    data: [50000, 75000, 100000, 150000, 200000, 250000, 300000, 325000, 350000, 375000, 390000, 400000],
-                    backgroundColor: '#00e5ff'
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-    }
+        </nav>
+    `;
 });
