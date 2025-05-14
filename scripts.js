@@ -1,12 +1,27 @@
+// scripts.js
+const supabaseUrl = 'your-supabase-url';
+const supabaseKey = 'your-public-anonymous-key';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// Check authentication immediately
+async function checkAuth() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user && !window.location.pathname.includes('login.html')) {
+        window.location.href = 'login.html';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Insert header dynamically
+    checkAuth();
+
+    // Existing dynamic header code
     const headerHTML = `
     <div class="logo">
         <img src="logo.jpg" alt="Victory Vision Logo">
     </div>
     <nav>
         <ul>
-            <li><a href="ai-opt.html">🤖</a></li>
+            <li><a href="ai-opt.html">🤖 AI</a></li>
             <li><a href="images.html">Images</a></li>
             <li><a href="videos.html">Videos</a></li>
             <li><a href="pages.html">Pages</a></li>
@@ -14,13 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <li><a href="leads.html">Leads</a></li>
             <li><a href="social.html">Social</a></li>
             <li><a href="messages.html">Messages</a></li>
-            <li><a href="settings.html">⚙️</a></li>
+            <li><a href="settings.html">⚙️ Settings</a></li>
         </ul>
     </nav>`;
 
     document.querySelector('.navbar').innerHTML = headerHTML;
 
-    // Initialize User Growth Chart
+    // Existing Chart.js logic (unchanged)
     const userGrowthCtx = document.getElementById('userGrowthChart');
     if (userGrowthCtx) {
         new Chart(userGrowthCtx, {
@@ -40,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize Revenue Growth Chart
     const revenueGrowthCtx = document.getElementById('revenueGrowthChart');
     if (revenueGrowthCtx) {
         new Chart(revenueGrowthCtx, {
