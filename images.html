@@ -63,7 +63,7 @@
         descDiv.innerHTML = '';
         let imageBase64 = null;
 
-        showLoader(); // 🔄 Show shimmer loader
+        showLoader();
 
         if (fileInput) {
             const reader = new FileReader();
@@ -93,13 +93,41 @@
         gallery.innerHTML = '';
 
         if (data.images) {
-            data.images.forEach(url => {
+            data.images.forEach((url, index) => {
+                const container = document.createElement("div");
+                container.style.margin = "10px";
+
                 const img = document.createElement("img");
                 img.src = url;
-                img.classList.add("glow");
-                img.style.margin = "10px";
                 img.style.width = "200px";
-                gallery.appendChild(img);
+                img.classList.add("animated-glow");
+
+                const input = document.createElement("input");
+                input.placeholder = "Enter collection name";
+                input.style.marginTop = "5px";
+                input.id = "collection_" + index;
+
+                const saveBtn = document.createElement("button");
+                saveBtn.innerText = "💾 Save";
+                saveBtn.onclick = () => saveToCollection(url, input.value);
+
+                const dlBtn = document.createElement("button");
+                dlBtn.innerText = "📥 Download";
+                dlBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "ai-image.jpg";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+
+                container.appendChild(img);
+                container.appendChild(document.createElement("br"));
+                container.appendChild(input);
+                container.appendChild(saveBtn);
+                container.appendChild(dlBtn);
+                gallery.appendChild(container);
             });
         }
 
@@ -115,13 +143,30 @@
                 btn.style.margin = '4px';
                 tagsDiv.appendChild(btn);
             });
-            animateTags(); // ✨ Animate tags
+            animateTags();
         }
 
         if (data.description) {
             const descEl = document.getElementById("refinement-desc");
-            typeWriterEffect(descEl, "AI Analysis: " + data.description, 20); // ✨ Typewriter
+            typeWriterEffect(descEl, "AI Analysis: " + data.description, 20);
         }
+    }
+
+    async function saveToCollection(imageUrl, collectionName) {
+        if (!collectionName) {
+            alert("Please enter a collection name.");
+            return;
+        }
+        await fetch("https://victoryvision.app.n8n.cloud/webhook/save-to-collection", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                image_url: imageUrl,
+                collection_name: collectionName,
+                customer_id: "client-xyz"
+            })
+        });
+        alert("Saved to collection: " + collectionName);
     }
 </script>
 </body>
