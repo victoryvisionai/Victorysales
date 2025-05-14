@@ -1,43 +1,19 @@
-/* Victory Vision Brand Style CSS */
 
-/* Typography */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Nexa:wght@400;700&display=swap');
-
+/* EXISTING STYLES - Ensure not overwritten */
 body {
-    font-family: 'Montserrat', sans-serif;
-    color: #4D4D4D;
-    background-color: #FFFFFF;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Nexa', sans-serif;
-    color: #0A3161;
-}
-
-a, button {
-    color: #BB133E;
-    transition: color 0.3s ease;
-}
-
-a:hover, button:hover {
-    color: #0A3161;
-}
-
-body {
-    font-family: 'Montserrat', sans-serif;
-    margin: 0;
-    padding: 0;
+    background-color: #f9f9f9;
 }
 
 .navbar {
     background-color: #0A3161;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    color: white;
     padding: 10px 20px;
-    border-bottom: 2px solid #BB133E;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .navbar .logo img {
@@ -45,87 +21,76 @@ body {
 }
 
 .navbar nav ul {
-    display: flex;
-    gap: 15px;
+    list-style: none;
     margin: 0;
     padding: 0;
-    list-style: none;
+    display: flex;
+    gap: 15px;
 }
 
 .navbar nav ul li a {
-    color: #FFFFFF;
+    color: white;
     text-decoration: none;
     font-weight: bold;
 }
 
-.navbar nav ul li a:hover {
-    color: #BB133E;
-}
-
-
-/* Card Styles */
-.card {
-    background-color: #FFFFFF;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.content {
     padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #B3B3B3;
 }
 
-.card h2, .card h3 {
-    margin-top: 0;
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
 
-/* Button Styles */
-button, .btn {
-    background-color: #0A3161;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 700;
-}
-
-button:hover, .btn:hover {
-    background-color: #BB133E;
-}
-
-/* Input and Textarea Styles */
-input[type="text"], input[type="email"], input[type="password"], textarea {
-    background-color: #FFFFFF;
-    color: #4D4D4D;
-    border: 1px solid #B3B3B3;
+textarea {
+    width: 100%;
     padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #0A3161;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
     border-radius: 5px;
-    width: 100%;
-    margin-bottom: 15px;
-    font-family: 'Montserrat', sans-serif;
 }
 
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-th, td {
-    padding: 15px;
-    border-bottom: 1px solid #B3B3B3;
-    text-align: left;
+/* ✨ NEW STYLES ADDED FOR MAGIC */
+
+.glow, .animated-glow {
+    transition: box-shadow 0.3s ease;
 }
 
-/* Icons and Misc */
-.icon {
-    height: 24px;
-    width: 24px;
+.animated-glow:hover {
+    box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff88;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .navbar nav ul {
-        flex-direction: column;
-        gap: 10px;
-    }
+.loader {
+    font-size: 1.2em;
+    padding: 30px;
+    color: #00e5ff;
+    text-align: center;
+    animation: pulse 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+#suggested-tags button {
+    transition: all 0.3s ease;
+    opacity: 0;
 }
