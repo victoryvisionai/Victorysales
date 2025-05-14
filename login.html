@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Victory Vision - Login</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -57,16 +57,60 @@
 
         .logo {
             margin-bottom: 20px;
+            width: 150px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .logo img {
-            max-width: 250px;
+            max-width: 100%;
             height: auto;
+            width: 150px;
         }
 
         .divider {
             margin: 15px 0;
             color: #B3B3B3;
+        }
+
+        .link-signup {
+            color: #0A3161;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .link-signup:hover {
+            color: #BB133E;
+        }
+        
+        .link-reset {
+            color: #0A3161;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9em;
+            display: block;
+            margin-top: 10px;
+        }
+        
+        .link-reset:hover {
+            color: #BB133E;
+        }
+        
+        .error-message {
+            color: #BB133E;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #28a745;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        #reset-password-form {
+            display: none;
         }
     </style>
 </head>
@@ -76,48 +120,283 @@
     <img src="logo.jpg" alt="Victory Vision Logo">
 </div>
 
-<div class="login-container">
+<div class="login-container" id="login-form">
     <h2>Login</h2>
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
-    <button onclick="emailLogin()">Login</button>
+    <button id="login-button" onclick="emailLogin()">Login</button>
+    <div id="error-message" class="error-message"></div>
+    <div id="success-message" class="success-message"></div>
 
     <div class="divider">or</div>
 
-    <button onclick="signInWithGoogle()">Sign in with Google</button>
+    <button id="google-button" onclick="loginWithGoogle()">Login with Google</button>
+
+    <p><span class="link-reset" onclick="showResetPasswordForm()">Forgot Password?</span></p>
+    <p>Don't have an account? <span class="link-signup" onclick="window.location.href='signup.html'">Sign Up</span></p>
+</div>
+
+<div class="login-container" id="reset-password-form">
+    <h2>Reset Password</h2>
+    <p>Enter your email address and we'll send you a link to reset your password.</p>
+    <input type="email" id="reset-email" placeholder="Email">
+    <button id="reset-button" onclick="resetPassword()">Send Reset Link</button>
+    <div id="reset-error-message" class="error-message"></div>
+    <div id="reset-success-message" class="success-message"></div>
+    <p><span class="link-signup" onclick="showLoginForm()">Back to Login</span></p>
 </div>
 
 <script>
-    const supabase = supabase.createClient(
-        'https://nyyvsdkumxvuwimmucdb.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU'
-    );
+    // Supabase configuration
+    const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+    
+    // Create a Supabase client
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Check for existing session on page load
+    document.addEventListener('DOMContentLoaded', async function() {
+        try {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+            
+            // If user is already logged in, redirect to dashboard
+            if (session) {
+                redirectToDashboard();
+            }
+            
+            // Check for password reset confirmation
+            const hash = window.location.hash;
+            if (hash && hash.includes('type=recovery')) {
+                // Show password reset success
+                document.getElementById('success-message').textContent = 'You can now reset your password.';
+                document.getElementById('success-message').style.display = 'block';
+            }
+            
+            // Check if there was a redirect from email verification
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('verified') === 'true') {
+                document.getElementById('success-message').textContent = 'Email verified successfully! You can now log in.';
+                document.getElementById('success-message').style.display = 'block';
+            }
+        } catch (e) {
+            console.error('Error checking authentication:', e);
+        }
+    });
+    
+    // Show/hide form functions
+    function showResetPasswordForm() {
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('reset-password-form').style.display = 'block';
+    }
+    
+    function showLoginForm() {
+        document.getElementById('reset-password-form').style.display = 'none';
+        document.getElementById('login-form').style.display = 'block';
+    }
+    
+    // Display error message
+    function showError(message) {
+        const errorElement = document.getElementById('error-message');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    // Display reset error message
+    function showResetError(message) {
+        const errorElement = document.getElementById('reset-error-message');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    // Display reset success message
+    function showResetSuccess(message) {
+        const successElement = document.getElementById('reset-success-message');
+        successElement.textContent = message;
+        successElement.style.display = 'block';
+    }
+    
+    // Clear error message
+    function clearError() {
+        const errorElement = document.getElementById('error-message');
+        errorElement.style.display = 'none';
+        const successElement = document.getElementById('success-message');
+        successElement.style.display = 'none';
+    }
+    
+    // Clear reset form messages
+    function clearResetMessages() {
+        const errorElement = document.getElementById('reset-error-message');
+        errorElement.style.display = 'none';
+        const successElement = document.getElementById('reset-success-message');
+        successElement.style.display = 'none';
+    }
+    
+    // Redirect to dashboard
+    function redirectToDashboard() {
+        window.location.href = 'dashboard.html';
+    }
 
+    // Email and password login
     async function emailLogin() {
+        clearError();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-        if (error) {
-            alert('Login error: ' + error.message);
-        } else {
-            window.location.href = 'dashboard.html';
+        
+        if (!email || !password) {
+            showError('Please enter both email and password');
+            return;
         }
-    }
+        
+        try {
+            const button = document.getElementById('login-button');
+            button.disabled = true;
+            button.textContent = 'Logging in...';
+            
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
 
-    async function signInWithGoogle() {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: window.location.origin + '/dashboard.html'
+            if (error) {
+                showError('Login error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Login';
+            } else {
+                // Successfully logged in, now fetch user profile
+                await fetchUserProfile(data.user.id);
+                
+                // Redirect to dashboard
+                redirectToDashboard();
             }
-        });
-
-        if (error) {
-            alert('Google login error: ' + error.message);
+        } catch (e) {
+            showError('An unexpected error occurred: ' + e.message);
+            document.getElementById('login-button').disabled = false;
+            document.getElementById('login-button').textContent = 'Login';
         }
     }
+
+    // Google OAuth login
+    async function loginWithGoogle() {
+        clearError();
+        try {
+            const button = document.getElementById('google-button');
+            button.disabled = true;
+            button.textContent = 'Connecting to Google...';
+            
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: 'https://victoryvision.app/dashboard'
+                }
+            });
+
+            if (error) {
+                showError('Google login error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Login with Google';
+            }
+            // No need for success handling as OAuth will redirect
+        } catch (e) {
+            showError('An unexpected error occurred: ' + e.message);
+            document.getElementById('google-button').disabled = false;
+            document.getElementById('google-button').textContent = 'Login with Google';
+        }
+    }
+    
+    // Password reset request
+    async function resetPassword() {
+        clearResetMessages();
+        const email = document.getElementById('reset-email').value;
+        
+        if (!email) {
+            showResetError('Please enter your email address');
+            return;
+        }
+        
+        try {
+            const button = document.getElementById('reset-button');
+            button.disabled = true;
+            button.textContent = 'Sending...';
+            
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                redirectTo: 'https://victoryvision.app/reset-password'
+            });
+
+            if (error) {
+                showResetError('Error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Send Reset Link';
+            } else {
+                showResetSuccess('Password reset link sent to your email!');
+                button.textContent = 'Send Reset Link';
+                button.disabled = false;
+            }
+        } catch (e) {
+            showResetError('An unexpected error occurred: ' + e.message);
+            document.getElementById('reset-button').disabled = false;
+            document.getElementById('reset-button').textContent = 'Send Reset Link';
+        }
+    }
+    
+    // Fetch user profile for RLS setup
+    async function fetchUserProfile(userId) {
+        try {
+            // Get user profile from profiles table (assumes you have this set up)
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .eq('id', userId)
+                .single();
+                
+            if (error && error.code !== 'PGRST116') {
+                console.error('Error fetching user profile:', error);
+                // If it's not a "not found" error, return
+                return;
+            }
+            
+            // If profile doesn't exist, create it
+            if (!data || error) {
+                const { data: userData } = await supabaseClient.auth.getUser();
+                
+                if (userData && userData.user) {
+                    const { error: insertError } = await supabaseClient
+                        .from('profiles')
+                        .insert([
+                            { 
+                                id: userId,
+                                email: userData.user.email,
+                                created_at: new Date().toISOString()
+                            }
+                        ]);
+                        
+                    if (insertError) {
+                        console.error('Error creating user profile:', insertError);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error in profile management:', e);
+        }
+    }
+    
+    // Add event listeners for Enter key
+    document.getElementById('email').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('password').focus();
+        }
+    });
+    
+    document.getElementById('password').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            emailLogin();
+        }
+    });
+    
+    document.getElementById('reset-email').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            resetPassword();
+        }
+    });
 </script>
 
 </body>
