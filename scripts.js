@@ -3,39 +3,52 @@ const supabaseUrl = 'your-supabase-url';
 const supabaseKey = 'your-public-anonymous-key';
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-// Check authentication immediately
+// Check authentication immediately with error handling
 async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user && !window.location.pathname.includes('login.html')) {
-        window.location.href = 'login.html';
+    try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) {
+            if (!window.location.pathname.includes('login.html')) {
+                window.location.href = 'login.html';
+            }
+        }
+    } catch (err) {
+        console.error('Supabase auth error:', err);
+        if (!window.location.pathname.includes('login.html')) {
+            window.location.href = 'login.html';
+        }
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// DOM Loaded Event
+window.addEventListener('DOMContentLoaded', () => {
     checkAuth();
 
-    // Existing dynamic header code
-    const headerHTML = `
-    <div class="logo">
-        <img src="logo.jpg" alt="Victory Vision Logo">
-    </div>
-    <nav>
-        <ul>
-            <li><a href="ai-opt.html">🤖 AI</a></li>
-            <li><a href="images.html">Images</a></li>
-            <li><a href="videos.html">Videos</a></li>
-            <li><a href="pages.html">Pages</a></li>
-            <li><a href="ads.html">Ads</a></li>
-            <li><a href="leads.html">Leads</a></li>
-            <li><a href="social.html">Social</a></li>
-            <li><a href="messages.html">Messages</a></li>
-            <li><a href="settings.html">⚙️ Settings</a></li>
-        </ul>
-    </nav>`;
+    // Safe navbar injection with existence check
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+        navbar.innerHTML = `
+        <div class="logo">
+            <img src="logo.jpg" alt="Victory Vision Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="ai-opt.html">🤖 AI</a></li>
+                <li><a href="images.html">Images</a></li>
+                <li><a href="videos.html">Videos</a></li>
+                <li><a href="pages.html">Pages</a></li>
+                <li><a href="ads.html">Ads</a></li>
+                <li><a href="leads.html">Leads</a></li>
+                <li><a href="social.html">Social</a></li>
+                <li><a href="messages.html">Messages</a></li>
+                <li><a href="settings.html">⚙️ Settings</a></li>
+            </ul>
+        </nav>`;
+    } else {
+        console.error("Navbar element '.navbar' not found!");
+    }
 
-    document.querySelector('.navbar').innerHTML = headerHTML;
-
-    // Existing Chart.js logic (unchanged)
+    // Chart.js User Growth Chart
     const userGrowthCtx = document.getElementById('userGrowthChart');
     if (userGrowthCtx) {
         new Chart(userGrowthCtx, {
@@ -55,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Chart.js Revenue Growth Chart
     const revenueGrowthCtx = document.getElementById('revenueGrowthChart');
     if (revenueGrowthCtx) {
         new Chart(revenueGrowthCtx, {
@@ -71,4 +85,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
