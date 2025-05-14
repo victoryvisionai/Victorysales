@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victory Vision - Sign Up</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #FFFFFF;
+            margin: 0;
+            color: #4D4D4D;
+        }
+
+        .signup-container {
+            background-color: #FFFFFF;
+            border: 1px solid #B3B3B3;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #B3B3B3;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #0A3161;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #BB133E;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 250px;
+            height: auto;
+        }
+
+        .divider {
+            margin: 15px 0;
+            color: #B3B3B3;
+        }
+
+        .link-login {
+            color: #0A3161;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .link-login:hover {
+            color: #BB133E;
+        }
+    </style>
+</head>
+<body>
+
+<div class="logo">
+    <img src="logo.jpg" alt="Victory Vision Logo">
+</div>
+
+<div class="signup-container">
+    <h2>Sign Up</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="emailSignup()">Sign Up</button>
+
+    <div class="divider">or</div>
+
+    <button onclick="signUpWithGoogle()">Sign up with Google</button>
+
+    <p>Already have an account? <span class="link-login" onclick="window.location.href='login.html'">Login</span></p>
+</div>
+
+<script>
+    const supabaseUrl = 'your-supabase-url';
+    const supabaseKey = 'your-public-anonymous-key';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function emailSignup() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const { data, error } = await supabase.auth.signUp({ email, password });
+
+        if (error) {
+            alert('Signup error: ' + error.message);
+        } else {
+            alert('Signup successful! Please check your email to verify your account.');
+            window.location.href = 'login.html';
+        }
+    }
+
+    async function signUpWithGoogle() {
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
+        if (error) {
+            alert('Google signup error: ' + error.message);
+        }
+        // Redirect is handled by Supabase automatically
+    }
+</script>
+
+</body>
+</html>
