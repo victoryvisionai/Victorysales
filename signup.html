@@ -115,18 +115,19 @@
             alert('Signup successful! Please check your email to verify your account.');
             window.location.href = 'login.html';
         }
+    }
 
     async function signUpWithGoogle() {
-    const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-            redirectTo: 'https://victoryvisionai.github.io/Victorysales/dashboard.html'
-        }
-    });
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: 'https://victoryvisionai.github.io/Victorysales/dashboard.html'
+            }
+        });
 
-    if (error) {
-        alert('Google signup error: ' + error.message);
-    }
+        if (error) {
+            alert('Google signup error: ' + error.message);
+        }
     }
 </script>
 
