@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victory Vision AI - Login</title>
+    <title>Login - Victory Vision AI</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script defer src="scripts.js"></script>
 </head>
 <body>
-
-<div class="login-container">
+<div class="content">
     <div class="card">
-        <h2>Login to Victory Vision AI</h2>
+        <h2>Login</h2>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
         <button onclick="signIn()">Login</button>
@@ -20,35 +20,18 @@
 </div>
 
 <script>
-    // Initialize Supabase
-    const supabaseUrl = 'https://your-supabase-url.supabase.co';
-    const supabaseKey = 'your-public-anonymous-key';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+async function signIn() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-    async function signIn() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-        const { user, session, error } = await supabase.auth.signIn({ email, password });
-
-        if (error) {
-            document.getElementById('login-message').textContent = 'Error: ' + error.message;
-        } else {
-            document.getElementById('login-message').textContent = 'Login successful! Redirecting...';
-            window.location.href = 'dashboard.html';
-        }
+    if (error) {
+        document.getElementById('login-message').textContent = 'Error: ' + error.message;
+    } else {
+        window.location.href = 'dashboard.html';
     }
-
-    // Check authentication on protected pages
-    async function checkAuth() {
-        const user = supabase.auth.user();
-        if (!user) {
-            window.location.href = 'login.html';
-        }
-    }
-
-    // Example usage on protected pages
-    // checkAuth();
+}
 </script>
 
 </body>
