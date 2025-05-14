@@ -1,41 +1,55 @@
-<div class="ads-page">
-  <div class="ads-summary">
-    <!-- summary cards -->
-    <div class="card ad-metric"><h4>Total Spend</h4><p>$594 <span class="delta up">+30%</span></p></div>
-    <div class="card ad-metric"><h4>Impressions</h4><p>9,026 <span class="delta up">+43%</span></p></div>
-    <div class="card ad-metric"><h4>Clicks</h4><p>169 <span class="delta down">-63%</span></p></div>
-    <!-- ...other cards... -->
-  </div>
-  <div class="ads-charts">
-    <div class="card chart-card" id="spendChartCard">
-      <h4>Daily Spend (last 30 days)</h4>
-      <canvas id="spendChart"></canvas>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victory Vision AI - Ads</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body>
+
+<header class="navbar"></header>
+
+<div class="content">
+    <div class="card">
+        <h2>Create AI-Optimized Google Ads</h2>
+        <textarea placeholder="Describe the ad..."></textarea>
+        <input type="text" placeholder="Target URL">
+        <button>Generate Ad</button>
     </div>
-    <div class="card chart-card" id="ctrChartCard">
-      <h4>CTR Trend</h4>
-      <canvas id="ctrChart"></canvas>
+
+    <div class="card">
+        <h3>Recent Ads Performance</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ad Title</th>
+                    <th>Clicks</th>
+                    <th>Impressions</th>
+                    <th>CTR (%)</th>
+                    <th>Conversion Rate (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Victory Vision Promo</td>
+                    <td>1,200</td>
+                    <td>20,000</td>
+                    <td>6%</td>
+                    <td>2%</td>
+                </tr>
+                <tr>
+                    <td>AI Marketing Tool Ad</td>
+                    <td>950</td>
+                    <td>15,500</td>
+                    <td>6.1%</td>
+                    <td>2.5%</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="card chart-card donut-card">
-      <h4>Spend by Campaign</h4>
-      <canvas id="campaignDonut"></canvas>
-    </div>
-  </div>
-  <div class="ads-tables">
-    <div class="table-container">
-      <h4>Top 5 Campaigns</h4>
-      <table class="data-table">
-        <thead>
-          <tr><th>Campaign</th><th>Impr.</th><th>Clicks</th><th>Cost</th><th>Conv.</th><th>CPA</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Black Friday</td><td>68,000</td><td>4,200</td><td>$500</td><td>420</td><td>$1.19</td></tr>
-          <!-- ...other rows... -->
-        </tbody>
-      </table>
-    </div>
-    <div class="table-container">
-      <h4>Top 5 Keywords</h4>
-      <!-- similar table structure -->
-    </div>
-  </div>
 </div>
+
+</body>
+</html>
