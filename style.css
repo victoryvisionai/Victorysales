@@ -1,47 +1,74 @@
-/* Minimal Navbar CSS for guaranteed display */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
+const supabaseUrl = 'your-supabase-url';
+const supabaseKey = 'your-public-anonymous-key';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// Authentication Check
+async function checkAuth() {
+    try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error || !user) {
+            if (!window.location.pathname.includes('login.html')) {
+                window.location.href = 'login.html';
+            }
+        }
+    } catch (err) {
+        console.error('Supabase auth error:', err);
+        if (!window.location.pathname.includes('login.html')) {
+            window.location.href = 'login.html';
+        }
+    }
 }
 
-.navbar {
-    background-color: #0A3161;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-}
+// DOMContentLoaded - All DOM manipulations and initializations
 
-.logo img {
-    height: 40px;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // Step 1: Check Authentication
+    checkAuth();
 
-.navbar nav ul {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 15px;
-}
+    // Step 2: Render Navbar
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) {
+        console.error('Navbar element (.navbar) not found.');
+    } else {
+        navbar.innerHTML = `
+            <div class="logo">
+                <img src="logo.jpg" alt="Victory Vision Logo">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="ai-opt.html">🤖 AI</a></li>
+                    <li><a href="images.html">Images</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                    <li><a href="pages.html">Pages</a></li>
+                    <li><a href="ads.html">Ads</a></li>
+                    <li><a href="leads.html">Leads</a></li>
+                    <li><a href="social.html">Social</a></li>
+                    <li><a href="messages.html">Messages</a></li>
+                    <li><a href="settings.html">⚙️ Settings</a></li>
+                </ul>
+            </nav>
+        `;
+    }
 
-.navbar nav ul li a {
-    color: #FFFFFF;
-    font-weight: bold;
-    text-decoration: none;
-}
+    // Step 3: Chart.js Initialization
+    const userGrowthCtx = document.getElementById('userGrowthChart');
+    if (userGrowthCtx) {
+        new Chart(userGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Active Users',
+                    data: [100, 150, 200, 300, 400, 500, 600, 650, 700, 750, 775, 800],
+                    borderColor: '#00e5ff',
+                    backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
 
-.navbar nav ul li a:hover {
-    color: #BB133E;
-}
-
-footer {
-    background-color: #0A3161;
-    color: #FFFFFF;
-    padding: 15px;
-    text-align: center;
-}
-
-.content {
-    padding: 20px;
-}
+    // Additional charts can be initialized here similarly
+});
