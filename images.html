@@ -1,81 +1,93 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Generate and view AI-created images at Victory Vision AI">
-    <meta name="author" content="Victory Vision">
-    <title>Victory Vision AI - Images</title>
+    <title>Victory Vision AI - Image Generator</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="scripts.js"></script>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
+    <header class="navbar">
+        <div class="logo">
+            <img src="logo.jpg" alt="Victory Vision Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="ai-opt.html">🤖</a></li>
+                <li><a href="images.html">Images</a></li>
+                <li><a href="videos.html">Videos</a></li>
+                <li><a href="pages.html">Pages</a></li>
+                <li><a href="ads.html">Ads</a></li>
+                <li><a href="leads.html">Leads</a></li>
+                <li><a href="social.html">Social</a></li>
+                <li><a href="messages.html">Messages</a></li>
+                <li><a href="settings.html">⚙️</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<!-- ESSENTIAL NAVBAR PLACEHOLDER ADDED HERE -->
-<header class="navbar">
-    <div class="logo">
-        <img src="logo.jpg" alt="Victory Vision Logo">
-    </div>
-    <nav>
-        <ul>
-            <li><a href="ai-opt.html">🤖</a></li>
-            <li><a href="images.html">Images</a></li>
-            <li><a href="videos.html">Videos</a></li>
-            <li><a href="pages.html">Pages</a></li>
-            <li><a href="ads.html">Ads</a></li>
-            <li><a href="leads.html">Leads</a></li>
-            <li><a href="social.html">Social</a></li>
-            <li><a href="messages.html">Messages</a></li>
-            <li><a href="settings.html">⚙️</a></li>
-        </ul>
-    </nav>
-</header>
+    <div class="content">
+        <div class="card">
+            <h2>Generate AI Images</h2>
+            <textarea id="imagePrompt" placeholder="Describe the image..."></textarea>
+            <div id="suggested-tags" style="margin: 10px 0;"></div>
+            <input type="file" id="imageUpload" accept="image/*">
+            <button onclick="generateImage()">Generate Image</button>
+        </div>
 
-
-<div class="content">
-
-    <div class="card">
-        <h2>Generate AI Images</h2>
-        <textarea id="imagePrompt" placeholder="Describe the image..."></textarea>
-        <input type="file" id="imageUpload" accept="image/*">
-        <button onclick="generateImage()">Generate Image</button>
-    </div>
-
-    <div class="card">
-        <h3>Recently Generated Images</h3>
-        <div class="image-gallery">
-            <img src="placeholder-image1.jpg" alt="Generated Image 1" class="glow">
-            <img src="placeholder-image2.jpg" alt="Generated Image 2" class="glow">
-            <img src="placeholder-image3.jpg" alt="Generated Image 3" class="glow">
+        <div class="card">
+            <h3>Generated Images</h3>
+            <div class="image-gallery" id="imageResults"></div>
         </div>
     </div>
 
-</div>
+    <footer style="background-color:#0A3161;color:#FFFFFF;text-align:center;padding:15px;margin-top:30px;">
+        <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+        <nav>
+            <a href="privacy.html" style="color:#FFFFFF;margin-right:15px;">Privacy Policy</a>
+            <a href="terms.html" style="color:#FFFFFF;">Terms of Service</a>
+        </nav>
+    </footer>
 
-<footer style="background-color:#0A3161;color:#FFFFFF;text-align:center;padding:15px;margin-top:30px;">
-    <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
-    <nav>
-        <a href="privacy.html" style="color:#FFFFFF;margin-right:15px;">Privacy Policy</a>
-        <a href="terms.html" style="color:#FFFFFF;">Terms of Service</a>
-    </nav>
-</footer>
+    <script>
+        async function generateImage() {
+            const promptInput = document.getElementById('imagePrompt');
+            const prompt = promptInput.value;
+            const response = await fetch('https://your-n8n-instance/webhook/image-generator', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt })
+            });
 
-<script>
-    async function generateImage() {
-        const prompt = document.getElementById('imagePrompt').value;
-        const fileInput = document.getElementById('imageUpload').files[0];
-        if (!prompt && !fileInput) {
-            alert('Please enter a prompt or upload an image.');
-            return;
+            const data = await response.json();
+
+            if (data.suggestions) {
+                const tagContainer = document.getElementById('suggested-tags');
+                tagContainer.innerHTML = '<strong>Suggestions:</strong><br>';
+                data.suggestions.forEach(tag => {
+                    const button = document.createElement('button');
+                    button.innerText = tag;
+                    button.style.margin = '4px';
+                    button.onclick = () => {
+                        promptInput.value += " " + tag;
+                    };
+                    tagContainer.appendChild(button);
+                });
+            }
+
+            const gallery = document.getElementById('imageResults');
+            gallery.innerHTML = '';
+            data.images.forEach(img => {
+                const image = document.createElement('img');
+                image.src = img;
+                image.style.width = '200px';
+                image.style.margin = '8px';
+                gallery.appendChild(image);
+            });
         }
-
-        // Placeholder functionality: You should implement your API call here.
-        alert('Image generation triggered!');
-    }
-</script>
-
+    </script>
 </body>
 </html>
+
