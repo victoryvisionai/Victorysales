@@ -3,33 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Generate and view AI-created images at Victory Vision AI">
+    <meta name="author" content="Victory Vision">
     <title>Victory Vision AI - Images</title>
     <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script defer src="scripts.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="scripts.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
 
 <header class="navbar"></header>
 
 <div class="content">
+
     <div class="card">
         <h2>Generate AI Images</h2>
-        <textarea placeholder="Describe the image..."></textarea>
-        <input type="file" accept="image/*">
-        <button>Generate Image</button>
+        <textarea id="imagePrompt" placeholder="Describe the image..."></textarea>
+        <input type="file" id="imageUpload" accept="image/*">
+        <button onclick="generateImage()">Generate Image</button>
     </div>
 
     <div class="card">
         <h3>Recently Generated Images</h3>
         <div class="image-gallery">
-            <img src="placeholder-image1.jpg" alt="Generated Image 1" class="glow" width="100%">
-            <img src="placeholder-image2.jpg" alt="Generated Image 2" class="glow" width="100%">
-            <img src="placeholder-image3.jpg" alt="Generated Image 3" class="glow" width="100%">
+            <img src="placeholder-image1.jpg" alt="Generated Image 1" class="glow">
+            <img src="placeholder-image2.jpg" alt="Generated Image 2" class="glow">
+            <img src="placeholder-image3.jpg" alt="Generated Image 3" class="glow">
         </div>
     </div>
+
 </div>
+
+<footer style="background-color:#0A3161;color:#FFFFFF;text-align:center;padding:15px;margin-top:30px;">
+    <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+    <nav>
+        <a href="privacy.html" style="color:#FFFFFF;margin-right:15px;">Privacy Policy</a>
+        <a href="terms.html" style="color:#FFFFFF;">Terms of Service</a>
+    </nav>
+</footer>
+
+<script>
+    async function generateImage() {
+        const prompt = document.getElementById('imagePrompt').value;
+        const fileInput = document.getElementById('imageUpload').files[0];
+        if (!prompt && !fileInput) {
+            alert('Please enter a prompt or upload an image.');
+            return;
+        }
+
+        // Placeholder functionality: You should implement your API call here.
+        alert('Image generation triggered!');
+    }
+</script>
 
 </body>
 </html>
