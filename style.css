@@ -1,150 +1,64 @@
-/* General Styles */
-body {
-    background-color: #000;
-    color: #ffffff;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victory Vision AI - Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="scripts.js"></script>
+</head>
+<body>
 
-a, button {
-    color: #00e5ff;
-    transition: 0.3s ease;
-}
+<header class="navbar"></header>
 
-a:hover, button:hover {
-    color: #fff;
-    text-shadow: 0 0 10px #00e5ff;
-}
+<div class="content">
+    <div class="card">
+        <h2>Settings</h2>
 
-/* Navbar Styles */
-.navbar {
-    background-color: #050505;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #00e5ff;
-}
+        <div class="settings-group">
+            <h3>LinkedIn Integration</h3>
+            <button>Connect LinkedIn</button>
+        </div>
 
-.navbar .logo img {
-    height: 40px;
-}
+        <div class="settings-group">
+            <h3>Instagram Integration</h3>
+            <button>Connect Instagram</button>
+        </div>
 
-.navbar nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
+        <div class="settings-group">
+            <h3>Stripe Integration</h3>
+            <button>Connect Stripe</button>
+        </div>
 
-.navbar nav ul li a {
-    text-decoration: none;
-}
+        <div class="settings-group">
+            <h3>KPI Controls</h3>
+            <label><input type="checkbox"> Track Conversions</label><br>
+            <label><input type="checkbox"> Track Click-Through Rate (CTR)</label><br>
+            <label><input type="checkbox"> Track Views</label><br>
+            <label><input type="checkbox"> Track Impressions</label><br>
+            <button>Save KPI Settings</button>
+        </div>
 
-/* Sidebar Styles */
-.sidebar {
-    background-color: #050505;
-    width: 220px;
-    padding: 20px;
-    border-right: 1px solid #00e5ff;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
+        <div class="settings-group">
+            <h3>Google Ads Settings</h3>
+            <input type="text" placeholder="Ad Account ID">
+            <button>Connect Google Ads</button>
+        </div>
 
-.sidebar a {
-    text-decoration: none;
-    display: block;
-    margin-bottom: 15px;
-}
+        <div class="settings-group">
+            <h3>Billing Info & Plan Management</h3>
+            <p><strong>Current Plan:</strong> Premium - $500/month</p>
+            <button>Update Plan</button>
 
-/* Main Content Area */
-.content {
-    margin-left: 240px;
-    padding: 20px;
-}
+            <h4>Payment Method</h4>
+            <input type="text" placeholder="Card Number">
+            <input type="text" placeholder="Expiry Date MM/YY">
+            <input type="text" placeholder="CVC">
+            <button>Update Payment Info</button>
+        </div>
 
-/* Card Styles */
-.card {
-    background-color: #111;
-    border-radius: 10px;
-    box-shadow: 0 0 15px #00e5ff;
-    padding: 20px;
-    margin-bottom: 20px;
-}
+    </div>
+</div>
 
-.card h2, .card h3 {
-    margin-top: 0;
-}
-
-/* Button Styles */
-button, .btn {
-    background-color: transparent;
-    border: 1px solid #00e5ff;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-button:hover, .btn:hover {
-    background-color: #00e5ff;
-    color: #000;
-}
-
-/* Input Styles */
-input[type="text"], input[type="email"], input[type="password"], textarea {
-    background-color: #222;
-    color: #fff;
-    border: 1px solid #00e5ff;
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 15px;
-    border-bottom: 1px solid #00e5ff;
-    text-align: left;
-}
-
-/* Chart Container */
-.chart-container {
-    width: 100%;
-    background-color: #101010;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px #00e5ff;
-}
-
-/* Tron-like Glowing Effect */
-.glow {
-    box-shadow: 0 0 20px #00e5ff;
-    border: 1px solid #00e5ff;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .sidebar {
-        display: none;
-    }
-
-    .content {
-        margin-left: 0;
-    }
-
-    .navbar nav ul {
-        flex-direction: column;
-        gap: 10px;
-    }
-}
-
-
+</body>
+</html>
