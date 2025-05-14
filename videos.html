@@ -1,21 +1,37 @@
-<div class="videos-page">
-  <div class="controls-panel">
-    <textarea id="videoPrompt" placeholder="Describe the video..."></textarea>
-    <input type="file" id="videoUpload" accept="video/*">
-    <button id="generateVideoBtn">Generate Video</button>
-  </div>
-  <div class="video-preview">
-    <video id="mainVideo" controls preload="metadata" width="100%"></video>
-    <div class="video-info">
-      <h3 id="videoTitle">Video Title</h3>
-      <p id="videoDetails">Duration: <span id="videoDuration">0:00</span></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victory Vision AI - Videos</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="scripts.js"></script>
+</head>
+<body>
+
+<header class="navbar"></header>
+
+<div class="content">
+    <div class="card">
+        <h2>Generate AI Videos</h2>
+        <textarea placeholder="Describe the video..."></textarea>
+        <input type="file" accept="video/*">
+        <button>Generate Video</button>
     </div>
-    <!-- Thumbnails list -->
-    <div class="video-thumbnails">
-      <!-- example thumbnail -->
-      <video src="thumb1.mp4" muted></video>
-      <video src="thumb2.mp4" muted></video>
+
+    <div class="card">
+        <h3>Recent Generated Videos</h3>
+        <div class="video-gallery">
+            <video controls class="glow" width="100%">
+                <source src="placeholder-video1.mp4" type="video/mp4">
+            </video>
+            <video controls class="glow" width="100%">
+                <source src="placeholder-video2.mp4" type="video/mp4">
+            </video>
+        </div>
     </div>
-  </div>
 </div>
 
+</body>
+</html>
