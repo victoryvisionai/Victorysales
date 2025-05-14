@@ -1,148 +1,47 @@
-/* Victory Vision Brand Style CSS - Updated to Style Guide */
-
-/* Typography */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Nexa:wght@400;700&display=swap');
-
+/* Minimal Navbar CSS for guaranteed display */
 body {
-    font-family: 'Montserrat', sans-serif;
-    color: #4D4D4D;
-    background-color: #FFFFFF;
     margin: 0;
     padding: 0;
+    font-family: 'Montserrat', sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Nexa', sans-serif;
-    color: #0A3161;
-}
-
-a, button {
-    color: #BB133E;
-    transition: color 0.3s ease;
-}
-
-a:hover, button:hover {
-    color: #0A3161;
-}
-
-/* Navbar Styles */
 .navbar {
-    background-color: #0A3161; /* Brand Navy */
+    background-color: #0A3161;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 10px 20px;
-    border-bottom: 2px solid #BB133E; /* Brand Red accent */
 }
 
-.navbar .logo img {
+.logo img {
     height: 40px;
 }
 
 .navbar nav ul {
-    list-style: none;
     display: flex;
-    gap: 20px;
+    list-style: none;
     margin: 0;
     padding: 0;
+    gap: 15px;
 }
 
 .navbar nav ul li a {
-    text-decoration: none;
     color: #FFFFFF;
-    font-weight: 700;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .navbar nav ul li a:hover {
-    color: #BB133E; /* Hover red accent */
+    color: #BB133E;
 }
 
-/* Card Styles */
-.card {
-    background-color: #FFFFFF;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #B3B3B3;
-}
-
-.card h2, .card h3 {
-    margin-top: 0;
-}
-
-/* Button Styles */
-button, .btn {
+footer {
     background-color: #0A3161;
     color: #FFFFFF;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 700;
-}
-
-button:hover, .btn:hover {
-    background-color: #BB133E;
-}
-
-/* Input and Textarea Styles */
-input[type="text"], input[type="email"], input[type="password"], textarea {
-    background-color: #FFFFFF;
-    color: #4D4D4D;
-    border: 1px solid #B3B3B3;
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-    margin-bottom: 15px;
-    font-family: 'Montserrat', sans-serif;
-}
-
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
     padding: 15px;
-    border-bottom: 1px solid #B3B3B3;
-    text-align: left;
+    text-align: center;
 }
 
-/* Icons and Misc */
-.icon {
-    height: 24px;
-    width: 24px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .navbar nav ul {
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 10px;
-    }
-}
-
-/* Image Gallery (for image pages) */
-.image-gallery img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-/* Glow Effect for Images */
-.glow {
-    transition: box-shadow 0.3s ease;
-}
-
-.glow:hover {
-    box-shadow: 0 0 10px rgba(0, 229, 255, 0.7);
+.content {
+    padding: 20px;
 }
