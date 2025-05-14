@@ -1,36 +1,96 @@
+<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Victory Vision AI</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script defer src="scripts.js"></script>
+    <title>Login - Victory Vision</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #FFFFFF;
+            color: #4D4D4D;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #FFFFFF;
+            border: 1px solid #B3B3B3;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #B3B3B3;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #0A3161;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #BB133E;
+        }
+    </style>
 </head>
 <body>
-<div class="content">
-    <div class="card">
-        <h2>Login</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="signIn()">Login</button>
-        <p id="login-message"></p>
-    </div>
+
+<div class="login-container">
+    <h2 style="text-align:center; color:#0A3161;">Login</h2>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="signIn()">Login</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
+const supabase = supabase.createClient('your-supabase-url', 'your-public-anonymous-key');
+
 async function signIn() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-        document.getElementById('login-message').textContent = 'Error: ' + error.message;
-    } else {
-        window.location.href = 'dashboard.html';
+        alert('Login error: ' + error.message);
+        return;
     }
+
+    const user = data.user;
+
+    if (!user.user_metadata.customer_id) {
+        const customer_id = Math.floor(100000 + Math.random() * 900000).toString();
+
+        const { error: dbError } = await supabase
+            .from('customers')
+            .insert([{ email: user.email, customer_id }]);
+
+        if (dbError) {
+            alert('DB error: ' + dbError.message);
+            return;
+        }
+
+        await supabase.auth.updateUser({ 
+            data: { customer_id }
+        });
+    }
+
+    window.location.href = 'dashboard.html';
 }
 </script>
 
