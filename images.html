@@ -1,64 +1,33 @@
-<!-- Images Page (AI Image Generation) -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Victory Vision - AI Images</title>
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #f0f2f5; }
-    .page-container { display: flex; min-height: 100vh; }
-    .sidebar { width: 220px; background: #212e53; color: #fff; padding: 20px; }
-    .sidebar .logo { text-align: center; margin-bottom: 1em; }
-    .sidebar .logo img { max-width: 150px; }
-    .sidebar nav ul { list-style: none; padding: 0; margin: 0; }
-    .sidebar nav ul li { margin: 10px 0; }
-    .sidebar nav ul li a { color: #fff; text-decoration: none; }
-    .sidebar nav ul li a:hover { text-decoration: underline; }
-    .main-content { flex: 1; padding: 20px; background: #fff; }
-    .main-content h1 { margin-top: 0; margin-bottom: 1em; }
-    .prompt-form { margin-bottom: 20px; }
-    .prompt-form input[type="text"] { width: 70%; padding: 8px; }
-    .prompt-form button { padding: 8px 16px; background: #212e53; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-    .prompt-form button:hover { opacity: 0.9; }
-    .image-output { width: 100%; min-height: 300px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; color: #777; }
-    .image-output img { max-width: 100%; }
-    @media (max-width: 768px) {
-      .page-container { flex-direction: column; }
-      .sidebar { width: 100%; text-align: center; }
-      .sidebar nav ul li { display: inline-block; margin: 10px; }
-      .main-content { width: 100%; }
-      .prompt-form input[type="text"] { width: 100%; margin-bottom: 10px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victory Vision AI - Images</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="scripts.js"></script>
 </head>
 <body>
-  <!-- Victory Vision logo and sidebar navigation -->
-  <div class="page-container">
-    <aside class="sidebar">
-      <div class="logo">
-        <img src="logo.png" alt="Victory Vision Logo">
-      </div>
-      <nav>
-        <ul>
-          <li><a href="dashboard.html">Dashboard</a></li>
-          <li><a href="images.html">Images</a></li>
-          <li><a href="video.html">Video</a></li>
-          <li><a href="social.html">Social</a></li>
-          <li><a href="analytics.html">Analytics</a></li>
-          <li><a href="settings.html">Settings</a></li>
-        </ul>
-      </nav>
-    </aside>
-    <main class="main-content">
-      <h1>AI Image Generation</h1>
-      <div class="prompt-form">
-        <input type="text" id="image-prompt" placeholder="Enter an image description...">
-        <button type="button">Generate Image</button>
-      </div>
-      <div class="image-output">
-        <p><em>Generated image will appear here</em></p>
-      </div>
-    </main>
-  </div>
+
+<header class="navbar"></header>
+
+<div class="content">
+    <div class="card">
+        <h2>Generate AI Images</h2>
+        <textarea placeholder="Describe the image..."></textarea>
+        <input type="file" accept="image/*">
+        <button>Generate Image</button>
+    </div>
+
+    <div class="card">
+        <h3>Recently Generated Images</h3>
+        <div class="image-gallery">
+            <img src="placeholder-image1.jpg" alt="Generated Image 1" class="glow" width="100%">
+            <img src="placeholder-image2.jpg" alt="Generated Image 2" class="glow" width="100%">
+            <img src="placeholder-image3.jpg" alt="Generated Image 3" class="glow" width="100%">
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
