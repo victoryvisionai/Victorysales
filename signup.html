@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Victory Vision - Sign Up</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -77,6 +77,12 @@
         .link-login:hover {
             color: #BB133E;
         }
+        
+        .error-message {
+            color: #BB133E;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -89,46 +95,113 @@
     <h2>Sign Up</h2>
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
-    <button onclick="emailSignup()">Sign Up</button>
+    <button id="signup-button" onclick="emailSignup()">Sign Up</button>
+    <div id="error-message" class="error-message"></div>
 
     <div class="divider">or</div>
 
-    <button onclick="signUpWithGoogle()">Sign up with Google</button>
+    <button id="google-button" onclick="signUpWithGoogle()">Sign up with Google</button>
 
     <p>Already have an account? <span class="link-login" onclick="window.location.href='login.html'">Login</span></p>
 </div>
 
 <script>
+    // Correct way to initialize Supabase client
     const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Create a Supabase client correctly
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Display error message
+    function showError(message) {
+        const errorElement = document.getElementById('error-message');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    // Clear error message
+    function clearError() {
+        const errorElement = document.getElementById('error-message');
+        errorElement.style.display = 'none';
+    }
 
     async function emailSignup() {
+        clearError();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        
+        if (!email || !password) {
+            showError('Please enter both email and password');
+            return;
+        }
+        
+        try {
+            const button = document.getElementById('signup-button');
+            button.disabled = true;
+            button.textContent = 'Signing up...';
+            
+            const { data, error } = await supabaseClient.auth.signUp({ 
+                email, 
+                password,
+                options: {
+                    emailRedirectTo: 'https://victoryvisionai.github.io/Victorysales/login.html'
+                }
+            });
 
-        const { data, error } = await supabase.auth.signUp({ email, password });
-
-        if (error) {
-            alert('Signup error: ' + error.message);
-        } else {
-            alert('Signup successful! Please check your email to verify your account.');
-            window.location.href = 'login.html';
+            if (error) {
+                showError('Signup error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Sign Up';
+            } else {
+                alert('Signup successful! Please check your email to verify your account.');
+                window.location.href = 'login.html';
+            }
+        } catch (e) {
+            showError('An unexpected error occurred: ' + e.message);
+            document.getElementById('signup-button').disabled = false;
+            document.getElementById('signup-button').textContent = 'Sign Up';
         }
     }
 
     async function signUpWithGoogle() {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: 'https://victoryvisionai.github.io/Victorysales/dashboard.html'
-            }
-        });
+        clearError();
+        try {
+            const button = document.getElementById('google-button');
+            button.disabled = true;
+            button.textContent = 'Connecting to Google...';
+            
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: 'https://victoryvisionai.github.io/Victorysales/dashboard.html'
+                }
+            });
 
-        if (error) {
-            alert('Google signup error: ' + error.message);
+            if (error) {
+                showError('Google signup error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Sign up with Google';
+            }
+        } catch (e) {
+            showError('An unexpected error occurred: ' + e.message);
+            document.getElementById('google-button').disabled = false;
+            document.getElementById('google-button').textContent = 'Sign up with Google';
         }
     }
+    
+    // Add event listeners for Enter key
+    document.getElementById('email').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            document.getElementById('password').focus();
+        }
+    });
+    
+    document.getElementById('password').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            emailSignup();
+        }
+    });
 </script>
 
 </body>
