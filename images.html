@@ -299,38 +299,51 @@
     }
   }
 
- async function addToCollection(collectionName, imageUrl) {
-    if (!collectionName || !imageUrl) return alert("Collection name and image are required.");
-    
-    showLoader();
-    updateStatus("Saving to collection...");
-
-    try {
-      // Updated URL to match what's shown in Image 2
-      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collection-create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          image_url: imageUrl,
-          collection_name: collectionName,
-          customer_id: "client-xyz"
-        })
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) throw new Error(data.message || "Failed to save to collection.");
-      
-      updateStatus("Image saved to collection successfully!");
-      alert("Saved to collection!");
-    } catch (err) {
-      console.error(err);
-      updateStatus("Error: " + err.message);
-      alert("Error saving image to collection. Please try again.");
-    } finally {
-      hideLoader();
-    }
+async function addToCollection(collectionName, imageUrl) {
+  if (!collectionName || !imageUrl) {
+    updateStatus("Collection name and image are required.");
+    return alert("Collection name and image are required.");
   }
+  
+  showLoader();
+  updateStatus("Saving to collection...");
+
+  try {
+    console.log("Sending request to add to collection:", {
+      collection_name: collectionName,
+      image_url: imageUrl,
+      customer_id: "client-xyz"
+    });
+    
+    const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collection-create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image_url: imageUrl,
+        collection_name: collectionName,
+        customer_id: "client-xyz"
+      })
+    });
+
+    // Log the raw response for debugging
+    const responseText = await response.text();
+    console.log("Raw server response:", responseText);
+    
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}: ${responseText}`);
+    }
+    
+    // Success! The server returned a 200-range status code
+    updateStatus("Image saved to collection successfully!");
+    alert("Saved to collection!");
+  } catch (err) {
+    console.error("Error details:", err);
+    updateStatus("Error: " + err.message);
+    alert("Error saving image to collection. Please try again.");
+  } finally {
+    hideLoader();
+  }
+}
 
   // Add a function to create new collection if it doesn't exist
   async function createNewCollection(collectionName) {
