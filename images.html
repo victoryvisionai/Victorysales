@@ -690,38 +690,65 @@
     }
   }
   
-  async function createNewCollection() {
-    const name = document.getElementById('newCollectionName').value.trim();
-    
-    if (!name) {
-      alert('Please enter a collection name');
-      return;
-    }
-    
-    try {
-      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/create", {
-        method: "POST",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          name: name,
-          customer_id: "client-xyz"
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        alert('Collection created successfully!');
-        document.getElementById('newCollectionName').value = '';
-        loadCollections();
-      } else {
-        alert(data.message || 'Failed to create collection');
-      }
-    } catch (error) {
-      console.error("Error creating collection:", error);
-      alert('Error creating collection');
-    }
+async function createNewCollection() {
+  const name = document.getElementById('newCollectionName').value.trim();
+  
+  if (!name) {
+    alert('Please enter a collection name');
+    return;
   }
+  
+  try {
+    console.log("Attempting to create collection: " + name);
+    
+    // Get auth headers (for Supabase RLS)
+    const headers = { "Content-Type": "application/json" };
+    const authToken = localStorage.getItem('supabase.auth.token');
+    if (authToken) {
+      console.log("Using auth token for collection creation");
+      headers.Authorization = `Bearer ${authToken}`;
+    } else {
+      console.log("No auth token found - proceeding without authentication");
+    }
+    
+    const requestBody = {
+      name: name,
+      customer_id: "client-xyz"
+    };
+    
+    console.log("Request data:", JSON.stringify(requestBody));
+    
+    const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collection-create", {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(requestBody)
+    });
+    
+    console.log("Response status:", response.status);
+    
+    // Handle non-OK responses
+    if (!response.ok) {
+      console.error("Error response:", response.status, response.statusText);
+      const errorText = await response.text();
+      console.error("Error details:", errorText);
+      throw new Error(`Server returned ${response.status}: ${errorText || response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log("Response data:", data);
+    
+    if (data.success) {
+      alert('Collection created successfully!');
+      document.getElementById('newCollectionName').value = '';
+      loadCollections();
+    } else {
+      alert(data.message || 'Failed to create collection');
+    }
+  } catch (error) {
+    console.error("Error creating collection:", error);
+    alert('Error creating collection: ' + error.message);
+  }
+}
   
   async function removeImageFromCollection(collectionId, imageId) {
     try {
