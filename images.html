@@ -337,6 +337,15 @@
   let currentImageUrl = null;
   let selectedReferenceImage = null;
   let collections = [];
+  // Helper function to get auth headers for Supabase RLS
+  function getAuthHeaders() {
+    const headers = { "Content-Type": "application/json" };
+    const authToken = localStorage.getItem('supabase.auth.token');
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
+    }
+    return headers;
+  }
   
   document.addEventListener('DOMContentLoaded', () => {
     // Tab functionality
@@ -420,7 +429,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/list", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           customer_id: "client-xyz"
         })
@@ -457,7 +466,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/images", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           collection_id: collectionId,
           customer_id: "client-xyz"
@@ -530,7 +539,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/list", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           customer_id: "client-xyz"
         })
@@ -617,7 +626,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/images", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           collection_id: collectionId,
           customer_id: "client-xyz"
@@ -692,7 +701,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           name: name,
           customer_id: "client-xyz"
@@ -718,7 +727,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/remove-image", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           collection_id: collectionId,
           image_id: imageId,
@@ -766,7 +775,7 @@
   
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/8c4b0570-4136-4202-afc7-3ba7988d9b19", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify(requestData)
       });
   
@@ -799,7 +808,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/list", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           customer_id: "client-xyz"
         })
@@ -922,7 +931,7 @@
     try {
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/add-image", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           collection_id: collectionId,
           image_url: imageUrl,
