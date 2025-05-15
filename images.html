@@ -338,6 +338,24 @@
   let selectedReferenceImage = null;
   let collections = [];
   // Helper function to get auth headers for Supabase RLS
+ // Helper function to get user and customer context
+function getUserContext() {
+  return {
+    userId: localStorage.getItem('supabase.auth.user_id') || "anonymous",
+    customerId: localStorage.getItem('customer_id') || "client-xyz",
+    authToken: localStorage.getItem('supabase.auth.token')
+  };
+}
+
+// Helper function to prepare request payloads
+function prepareRequestBody(additionalData = {}) {
+  const { userId, customerId } = getUserContext();
+  return {
+    ...additionalData,
+    customer_id: customerId,
+    auth_id: userId
+  };
+}
   function getAuthHeaders() {
     const headers = { "Content-Type": "application/json" };
     const authToken = localStorage.getItem('supabase.auth.token');
@@ -548,7 +566,11 @@
       const data = await response.json();
       
       if (data && data.collections) {
-        collections = data.collections;
+  collections = data.collections;
+  
+  if (collections.length === 0) {
+    container.innerHTML = '<p>No collections found. Create your first collection above.</p>';
+  } else {
         
         collections.forEach(collection => {
           const collectionDiv = document.createElement('div');
@@ -701,26 +723,12 @@ async function createNewCollection() {
   try {
     console.log("Attempting to create collection: " + name);
     
-    // Get auth headers (for Supabase RLS)
-    const headers = { "Content-Type": "application/json" };
-    const authToken = localStorage.getItem('supabase.auth.token');
-    if (authToken) {
-      console.log("Using auth token for collection creation");
-      headers.Authorization = `Bearer ${authToken}`;
-    } else {
-      console.log("No auth token found - proceeding without authentication");
-    }
-    
-    const requestBody = {
-      name: name,
-      customer_id: "client-xyz"
-    };
-    
+    const requestBody = prepareRequestBody({ name: name });
     console.log("Request data:", JSON.stringify(requestBody));
     
     const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collection-create", {
       method: "POST",
-      headers: headers,
+      headers: getAuthHeaders(),
       body: JSON.stringify(requestBody)
     });
     
