@@ -710,22 +710,7 @@ async function createNewCollection() {
     } else {
       console.log("No auth token found - proceeding without authentication");
     }
-    const userId = localStorage.getItem('supabase.auth.user_id') || "anonymous";
-
-const requestBody = {
-  name: name,
-  customer_id: "client-xyz",
-  auth_id: userId
-};
-
-console.log("Request data:", JSON.stringify(requestBody));
-
-// Then use this requestBody in your fetch call:
-const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collection-create", {
-  method: "POST",
-  headers: headers,
-  body: JSON.stringify(requestBody)
-});
+    
     const requestBody = {
       name: name,
       customer_id: "client-xyz"
