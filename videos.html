@@ -316,7 +316,9 @@
       });
 
       if (!response.ok) {
-        throw new Error("Failed to load collections");
+        const responseText = await response.text();
+        console.log("Raw server response:", responseText);
+        throw new Error(`Server responded with ${response.status}: ${responseText}`);
       }
 
       const data = await response.json();
@@ -377,6 +379,13 @@
         collectionName = selectedCollection;
       }
 
+      console.log("Sending request to generate video:", {
+        prompt: prompt,
+        image: imageBase64 ? "[BASE64_IMAGE_DATA]" : null,
+        collection_name: collectionName,
+        customer_id: "client-xyz"
+      });
+
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/generate-video", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -389,11 +398,18 @@
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Error from server: ${errorText}`);
+        const responseText = await response.text();
+        console.log("Raw server response:", responseText);
+        throw new Error(`Server responded with ${response.status}: ${responseText}`);
       }
       
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.log("Response wasn't JSON:", await response.text());
+        throw new Error("Invalid response format from server");
+      }
       
       if (!data.video_url) {
         throw new Error("No video was returned from the server");
