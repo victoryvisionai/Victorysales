@@ -1,5 +1,6 @@
+/* Victory Vision - Complete CSS with logo fixes */
 
-/* EXISTING STYLES - Ensure not overwritten */
+/* Base styling */
 body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
@@ -7,6 +8,7 @@ body {
     background-color: #f9f9f9;
 }
 
+/* Navigation and header with FIXED LOGO */
 .navbar {
     background-color: #0A3161;
     color: white;
@@ -16,8 +18,18 @@ body {
     justify-content: space-between;
 }
 
+/* LOGO FIX: Control dimensions and prevent oversizing */
+.navbar .logo {
+    display: flex;
+    align-items: center;
+    max-width: 150px;
+}
+
 .navbar .logo img {
     height: 40px;
+    width: auto; /* Maintain aspect ratio */
+    max-width: 100%; /* Prevent overflow */
+    object-fit: contain; /* Keep aspect ratio and fit within bounds */
 }
 
 .navbar nav ul {
@@ -34,6 +46,7 @@ body {
     font-weight: bold;
 }
 
+/* Content area */
 .content {
     padding: 20px;
 }
@@ -46,6 +59,7 @@ body {
     box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
 
+/* Form elements */
 textarea {
     width: 100%;
     padding: 10px;
@@ -62,21 +76,47 @@ button {
     border-radius: 5px;
 }
 
+button:hover {
+    background-color: #0c3a75;
+}
+
+/* Image gallery */
 .image-gallery {
     display: flex;
     flex-wrap: wrap;
+    gap: 20px;
 }
 
-/* ✨ NEW STYLES ADDED FOR MAGIC */
+/* Image container styles */
+.image-container {
+    margin: 10px;
+    transition: transform 0.3s ease;
+}
 
+.image-container img {
+    width: 200px;
+    border-radius: 5px;
+}
+
+.image-container input {
+    margin-top: 5px;
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* Visual effects */
 .glow, .animated-glow {
     transition: box-shadow 0.3s ease;
 }
 
 .animated-glow:hover {
     box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff88;
+    transform: translateY(-5px);
 }
 
+/* Loading animation */
 .loader {
     font-size: 1.2em;
     padding: 30px;
@@ -90,7 +130,107 @@ button {
     50% { opacity: 0.3; }
 }
 
+/* Spinner animation */
+.spinner {
+    border: 3px solid rgba(0, 229, 255, 0.3);
+    border-top: 3px solid #00e5ff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 15px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Tags suggestions */
+#suggested-tags {
+    margin: 15px 0;
+}
+
 #suggested-tags button {
+    margin: 5px;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 14px;
     transition: all 0.3s ease;
     opacity: 0;
+}
+
+#suggested-tags button:hover {
+    background-color: #00e5ff;
+    color: white;
+    border-color: #00e5ff;
+}
+
+/* Status and refinement messages */
+#status-message, #refinement-desc {
+    margin-top: 15px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Error message styling */
+.error-message {
+    background-color: #fff0f0;
+    border-left: 4px solid #ff3b30;
+    padding: 10px 15px;
+    margin: 10px 0;
+    color: #c00;
+}
+
+/* Footer styling */
+footer {
+    background-color: #0A3161;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+footer a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .navbar nav ul {
+        margin-top: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .image-gallery {
+        justify-content: center;
+    }
+}
+
+/* File upload styling */
+input[type="file"] {
+    margin-bottom: 15px;
+    display: block;
+}
+
+/* Layout utilities */
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-center {
+    text-align: center;
 }
