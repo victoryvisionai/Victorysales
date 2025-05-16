@@ -57,7 +57,14 @@
 
         .logo {
             margin-bottom: 20px;
-            max-width: 250px;
+            width: 150px;
+            text-align: center;
+        }
+
+        .logo img {
+            max-width: 100%;
+            height: auto;
+            width: 150px;
         }
 
         .divider {
@@ -70,10 +77,11 @@
             cursor: pointer;
             text-decoration: underline;
         }
+
         .link-login:hover {
             color: #BB133E;
         }
-        
+
         .error-message {
             color: #BB133E;
             margin-top: 10px;
@@ -91,125 +99,46 @@
     <h2>Sign Up</h2>
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
-    <button id="signup-button" onclick="emailSignup()">Sign Up</button>
-    <div id="error-message" class="error-message"></div>
+    <button onclick="emailSignup()">Sign Up</button>
 
     <div class="divider">or</div>
 
-    <button id="google-button" onclick="signUpWithGoogle()">Sign up with Google</button>
+    <button onclick="signUpWithGoogle()">Sign up with Google</button>
 
     <p>Already have an account? <span class="link-login" onclick="window.location.href='login.html'">Login</span></p>
+    <div id="error-message" class="error-message"></div>
 </div>
 
 <script>
-    // Supabase configuration
-    const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
-    
-    // Create a Supabase client
-    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-    
-    // Display error message
-    function showError(message) {
-        const errorElement = document.getElementById('error-message');
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
+const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function emailSignup() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const { error } = await supabaseClient.auth.signUp({ email, password });
+
+    if (error) {
+        showError(error.message);
+    } else {
+        alert('Signup successful! Please check your email to verify your account.');
+        window.location.href = 'login.html';
     }
-    
-    // Clear error message
-    function clearError() {
-        const errorElement = document.getElementById('error-message');
-        errorElement.style.display = 'none';
-    }
-
-    async function emailSignup() {
-        clearError();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        
-        if (!email || !password) {
-            showError('Please enter both email and password');
-            return;
-        }
-        
-        try {
-            const button = document.getElementById('signup-button');
-            button.disabled = true;
-            button.textContent = 'Signing up...';
-            
-            const { data, error } = await supabaseClient.auth.signUp({ 
-                email, 
-                password,
-                options: {
-                    emailRedirectTo: 'https://victoryvision.app/login'
-                }
-            });
-
-            if (error) {
-                showError('Signup error: ' + error.message);
-                button.disabled = false;
-                button.textContent = 'Sign Up';
-            } else {
-                alert('Signup successful! Please check your email to verify your account.');
-                window.location.href = 'login.html';
-            }
-        } catch (e) {
-            showError('An unexpected error occurred: ' + e.message);
-            document.getElementById('signup-button').disabled = false;
-            document.getElementById('signup-button').textContent = 'Sign Up';
-        }
-    }
-
-    async function signUpWithGoogle() {
-        clearError();
-        try {
-            const button = document.getElementById('google-button');
-            button.disabled = true;
-            button.textContent = 'Connecting to Google...';
-            
-            const { error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: 'https://victoryvision.app/dashboard'
-                }
-            });
-
-            if (error) {
-                showError('Google signup error: ' + error.message);
-                button.disabled = false;
-                button.textContent = 'Sign up with Google';
-            }
-        } catch (e) {
-            showError('An unexpected error occurred: ' + e.message);
-            document.getElementById('google-button').disabled = false;
-            document.getElementById('google-button').textContent = 'Sign up with Google';
-        }
-    }
-    
-    // Add event listeners for Enter key
-    document.getElementById('email').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            document.getElementById('password').focus();
-        }
-    });
-
-.logo {
-    margin-bottom: 20px;
-    width: 150px; /* Adjust this value as needed */
-    text-align: center;
 }
 
-.logo img {
-    max-width: 100%;
-    height: auto;
-    width: 150px; /* Adjust this value as needed */
-}
-    
-    document.getElementById('password').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            emailSignup();
-        }
+async function signUpWithGoogle() {
+    await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: 'https://victoryvision.app/dashboard' }
     });
+}
+
+function showError(message) {
+    const errorElement = document.getElementById('error-message');
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+}
 </script>
 
 </body>
