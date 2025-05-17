@@ -230,6 +230,17 @@
       color: #fff;
       text-align: center;
     }
+    /* Added styles for main video display */
+    .main-video-container {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .main-video {
+      max-width: 100%;
+      width: 640px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -422,10 +433,8 @@
       
       currentVideoUrl = data.video_url;
       
-      displayResults({
-        videos: [data],
-        prompt: prompt
-      });
+      // Display the video immediately in the center
+      displayVideo(data.video_url, prompt);
       
       updateStatus('Video generated successfully!');
     } catch (error) {
@@ -436,135 +445,177 @@
     }
   }
 
+  // New function to display a single video in the center
+  function displayVideo(videoUrl, prompt) {
+    const gallery = document.getElementById("videoResults");
+    gallery.innerHTML = '';
+    
+    // Create main video container
+    const mainVideoContainer = document.createElement("div");
+    mainVideoContainer.className = "main-video-container";
+    
+    // Create video element
+    const video = document.createElement("video");
+    video.className = "main-video";
+    video.controls = true;
+    video.autoplay = false;
+    
+    const source = document.createElement("source");
+    source.src = videoUrl;
+    source.type = "video/mp4";
+    
+    video.appendChild(source);
+    mainVideoContainer.appendChild(video);
+    
+    // Create title
+    const title = document.createElement("h4");
+    title.textContent = prompt || "AI-generated video";
+    title.style.marginTop = "10px";
+    
+    mainVideoContainer.appendChild(title);
+    
+    // Add download button
+    const downloadBtn = document.createElement("button");
+    downloadBtn.innerText = "📥 Download Video";
+    downloadBtn.onclick = () => {
+      const a = document.createElement('a');
+      a.href = videoUrl;
+      a.download = "ai-video.mp4";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+    
+    mainVideoContainer.appendChild(downloadBtn);
+    
+    // Add to gallery
+    gallery.appendChild(mainVideoContainer);
+  }
+
   function displayResults(data) {
     const gallery = document.getElementById("videoResults");
     gallery.innerHTML = '';
 
     if (data.videos && data.videos.length > 0) {
-      // Create carousel wrapper
-      const carouselWrapper = document.createElement("div");
-      carouselWrapper.id = "carouselVideoExample";
-      carouselWrapper.className = "carousel slide";
+      // Display the first video immediately in the center
+      displayVideo(data.videos[0].video_url, data.prompt);
       
-      // Create indicators
-      const indicators = document.createElement("div");
-      indicators.className = "carousel-indicators";
-      
-      // Create inner carousel
-      const inner = document.createElement("div");
-      inner.className = "carousel-inner";
-      
-      // Add videos to carousel
-      data.videos.forEach((videoData, index) => {
-        // Create indicator button
-        const indicator = document.createElement("button");
-        indicator.type = "button";
-        indicator.dataset.target = "#carouselVideoExample";
-        indicator.dataset.slideTo = index;
-        if (index === 0) {
-          indicator.className = "active";
-          indicator.setAttribute("aria-current", "true");
-        }
-        indicator.setAttribute("aria-label", `Slide ${index + 1}`);
-        indicators.appendChild(indicator);
+      // If there are multiple videos, you can still use the carousel
+      if (data.videos.length > 1) {
+        // Create carousel wrapper
+        const carouselWrapper = document.createElement("div");
+        carouselWrapper.id = "carouselVideoExample";
+        carouselWrapper.className = "carousel slide";
         
-        // Create carousel item
-        const item = document.createElement("div");
-        item.className = index === 0 ? "carousel-item active" : "carousel-item";
+        // Create indicators
+        const indicators = document.createElement("div");
+        indicators.className = "carousel-indicators";
         
-        // Create video element
-        const video = document.createElement("video");
-        video.className = "img-fluid gallery-video";
-        video.controls = true;
-        video.autoplay = false;
+        // Create inner carousel
+        const inner = document.createElement("div");
+        inner.className = "carousel-inner";
         
-        const source = document.createElement("source");
-        source.src = videoData.video_url;
-        source.type = "video/mp4";
+        // Add videos to carousel
+        data.videos.forEach((videoData, index) => {
+          // Create indicator button
+          const indicator = document.createElement("button");
+          indicator.type = "button";
+          indicator.dataset.target = "#carouselVideoExample";
+          indicator.dataset.slideTo = index;
+          if (index === 0) {
+            indicator.className = "active";
+            indicator.setAttribute("aria-current", "true");
+          }
+          indicator.setAttribute("aria-label", `Slide ${index + 1}`);
+          indicators.appendChild(indicator);
+          
+          // Create carousel item
+          const item = document.createElement("div");
+          item.className = index === 0 ? "carousel-item active" : "carousel-item";
+          
+          // Create video element
+          const video = document.createElement("video");
+          video.className = "img-fluid gallery-video";
+          video.controls = true;
+          video.autoplay = false;
+          
+          const source = document.createElement("source");
+          source.src = videoData.video_url;
+          source.type = "video/mp4";
+          
+          video.appendChild(source);
+          
+          // Create caption
+          const caption = document.createElement("div");
+          caption.className = "carousel-caption d-none d-md-block";
+          
+          const title = document.createElement("h5");
+          title.textContent = videoData.title || `Video ${index + 1}`;
+          
+          const description = document.createElement("p");
+          description.textContent = data.prompt || "AI-generated video";
+          
+          caption.appendChild(title);
+          caption.appendChild(description);
+          
+          item.appendChild(video);
+          item.appendChild(caption);
+          inner.appendChild(item);
+        });
         
-        video.appendChild(source);
+        // Create controls
+        const prevBtn = document.createElement("button");
+        prevBtn.className = "carousel-control-prev";
+        prevBtn.type = "button";
+        prevBtn.dataset.target = "#carouselVideoExample";
+        prevBtn.dataset.slide = "prev";
         
-        // Create caption
-        const caption = document.createElement("div");
-        caption.className = "carousel-caption d-none d-md-block";
+        const prevIcon = document.createElement("span");
+        prevIcon.className = "carousel-control-prev-icon";
+        prevIcon.setAttribute("aria-hidden", "true");
         
-        const title = document.createElement("h5");
-        title.textContent = videoData.title || `Video ${index + 1}`;
+        const prevText = document.createElement("span");
+        prevText.className = "visually-hidden";
+        prevText.textContent = "Previous";
         
-        const description = document.createElement("p");
-        description.textContent = data.prompt || "AI-generated video";
+        prevBtn.appendChild(prevIcon);
+        prevBtn.appendChild(prevText);
         
-        caption.appendChild(title);
-        caption.appendChild(description);
+        const nextBtn = document.createElement("button");
+        nextBtn.className = "carousel-control-next";
+        nextBtn.type = "button";
+        nextBtn.dataset.target = "#carouselVideoExample";
+        nextBtn.dataset.slide = "next";
         
-        item.appendChild(video);
-        item.appendChild(caption);
-        inner.appendChild(item);
+        const nextIcon = document.createElement("span");
+        nextIcon.className = "carousel-control-next-icon";
+        nextIcon.setAttribute("aria-hidden", "true");
         
-        // Also add download button below carousel
-        const controlRow = document.createElement("div");
-        controlRow.className = "control-row";
+        const nextText = document.createElement("span");
+        nextText.className = "visually-hidden";
+        nextText.textContent = "Next";
         
-        const dlBtn = document.createElement("button");
-        dlBtn.innerText = "📥 Download Video";
-        dlBtn.onclick = () => {
-          const a = document.createElement('a');
-          a.href = videoData.video_url;
-          a.download = "ai-video.mp4";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        };
+        nextBtn.appendChild(nextIcon);
+        nextBtn.appendChild(nextText);
         
-        controlRow.appendChild(dlBtn);
-        gallery.appendChild(controlRow);
-      });
-      
-      // Create controls
-      const prevBtn = document.createElement("button");
-      prevBtn.className = "carousel-control-prev";
-      prevBtn.type = "button";
-      prevBtn.dataset.target = "#carouselVideoExample";
-      prevBtn.dataset.slide = "prev";
-      
-      const prevIcon = document.createElement("span");
-      prevIcon.className = "carousel-control-prev-icon";
-      prevIcon.setAttribute("aria-hidden", "true");
-      
-      const prevText = document.createElement("span");
-      prevText.className = "visually-hidden";
-      prevText.textContent = "Previous";
-      
-      prevBtn.appendChild(prevIcon);
-      prevBtn.appendChild(prevText);
-      
-      const nextBtn = document.createElement("button");
-      nextBtn.className = "carousel-control-next";
-      nextBtn.type = "button";
-      nextBtn.dataset.target = "#carouselVideoExample";
-      nextBtn.dataset.slide = "next";
-      
-      const nextIcon = document.createElement("span");
-      nextIcon.className = "carousel-control-next-icon";
-      nextIcon.setAttribute("aria-hidden", "true");
-      
-      const nextText = document.createElement("span");
-      nextText.className = "visually-hidden";
-      nextText.textContent = "Next";
-      
-      nextBtn.appendChild(nextIcon);
-      nextBtn.appendChild(nextText);
-      
-      // Assemble carousel
-      carouselWrapper.appendChild(indicators);
-      carouselWrapper.appendChild(inner);
-      carouselWrapper.appendChild(prevBtn);
-      carouselWrapper.appendChild(nextBtn);
-      
-      gallery.prepend(carouselWrapper);
-      
-      // Initialize carousel controls
-      initializeCarousel();
+        // Assemble carousel
+        carouselWrapper.appendChild(indicators);
+        carouselWrapper.appendChild(inner);
+        carouselWrapper.appendChild(prevBtn);
+        carouselWrapper.appendChild(nextBtn);
+        
+        // Add carousel at the bottom for history
+        const historyTitle = document.createElement("h4");
+        historyTitle.textContent = "Previously Generated Videos";
+        historyTitle.style.marginTop = "30px";
+        historyTitle.style.textAlign = "center";
+        
+        gallery.appendChild(historyTitle);
+        gallery.appendChild(carouselWrapper);
+        
+        // Initialize carousel controls
+        initializeCarousel();
+      }
     } else {
       gallery.innerHTML = '<p>No videos were generated. Try a different prompt.</p>';
     }
