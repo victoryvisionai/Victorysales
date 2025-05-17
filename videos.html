@@ -300,6 +300,15 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generateBtn').addEventListener('click', generateVideo);
     loadCollections();
+    
+    // Check if URL has video parameter from webhook redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoUrl = urlParams.get('video_url');
+    if (videoUrl) {
+      const prompt = urlParams.get('prompt') || "Generated video";
+      displayVideo(videoUrl, prompt);
+      updateStatus('Video loaded from webhook response');
+    }
   });
 
   function showLoader() {
@@ -427,14 +436,26 @@
         throw new Error("Invalid response format from server");
       }
       
-      if (!data.video_url) {
-        throw new Error("No video was returned from the server");
+      // Handle different response formats from the webhook
+      let videoUrl;
+      if (data.video_url) {
+        // Original format
+        videoUrl = data.video_url;
+      } else if (data.output && data.output[0]) {
+        // n8n webhook format - matches your workflow output
+        videoUrl = data.output[0];
+      } else if (typeof data === 'string' && data.includes('.mp4')) {
+        // Simple URL string response
+        videoUrl = data;
+      } else {
+        console.log("Received data:", data);
+        throw new Error("No video URL found in server response");
       }
       
-      currentVideoUrl = data.video_url;
+      currentVideoUrl = videoUrl;
       
       // Display the video immediately in the center
-      displayVideo(data.video_url, prompt);
+      displayVideo(videoUrl, prompt);
       
       updateStatus('Video generated successfully!');
     } catch (error) {
