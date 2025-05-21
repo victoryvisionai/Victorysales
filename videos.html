@@ -434,16 +434,17 @@
       } catch (e) {
         console.log("Response wasn't JSON:", await response.text());
         throw new Error("Invalid response format from server");
-      }
-      
+      }     
       // Handle different response formats from the webhook
       let videoUrl;
       if (data.video_url) {
         // Original format
         videoUrl = data.video_url;
-      } else if (data.output.output && data.putput.output[0]) {
+      } else if (data.output && data.output[0]) {
         // n8n webhook format - matches your workflow output
-        videoUrl = data.output.output[0];
+        videoUrl = data.output[0];
+      } else if (Array.isArray(data)) {
+  videoUrl = data[0];
       } else if (typeof data === 'string' && data.includes('.mp4')) {
         // Simple URL string response
         videoUrl = data;
