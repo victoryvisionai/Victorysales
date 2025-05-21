@@ -421,7 +421,7 @@
           collection_name: collectionName
         })
       });
-
+console.log("Response received:", response.status);
       if (!response.ok) {
         const responseText = await response.text();
         console.log("Raw server response:", responseText);
@@ -434,8 +434,10 @@
       } catch (e) {
         console.log("Response wasn't JSON:", await response.text());
         throw new Error("Invalid response format from server");
-      }     
+      }  
+      console.log("Response data:", JSON.stringify(data, null, 2));
       // Handle different response formats from the webhook
+      console.log("Looking for video URL in:", data);
       let videoUrl;
       if (data.video_url) {
         // Original format
