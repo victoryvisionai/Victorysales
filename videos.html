@@ -499,6 +499,29 @@ console.log("Response received:", response.status);
   
   video.appendChild(source);
   mainVideoContainer.appendChild(video);
+   // Create title
+  const title = document.createElement("h4");
+  title.textContent = prompt || "AI-generated video";
+  title.style.marginTop = "10px";
+  
+  mainVideoContainer.appendChild(title);
+  
+  // Add download button
+  const downloadBtn = document.createElement("button");
+  downloadBtn.innerText = "📥 Download Video";
+  downloadBtn.onclick = () => {
+    const a = document.createElement('a');
+    a.href = videoUrl;
+    a.download = "ai-video.mp4";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  
+  mainVideoContainer.appendChild(downloadBtn);
+  
+  // Add to gallery
+  gallery.appendChild(mainVideoContainer);
    function displayVideo(videoUrl, prompt) {
   const gallery = document.getElementById("videoResults");
   gallery.innerHTML = '';
