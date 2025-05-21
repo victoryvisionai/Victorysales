@@ -49,9 +49,7 @@
   padding: 20px;
   margin-bottom: 20px;
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 40px;
+  flex-direction: column;
 }
 
 
@@ -105,12 +103,15 @@
       100% { transform: rotate(360deg); }
     }
     footer {
-      background: #0A3161;
-      color: #fff;
-      text-align: center;
-      padding: 15px;
-      margin-top: 20px;
-    }
+  background: #0A3161;
+  color: #fff;
+  text-align: center;
+  padding: 15px;
+  margin-top: 20px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
     footer a {
       color: #fff;
       margin-right: 15px;
@@ -276,7 +277,7 @@
 <div class="content">
   <div class="card">
     <h2>Create AI-Powered Video</h2>
-<div style="width:25%; text-align:left;">
+<div style="width:100%; text-align:left;">
   <select id="collectionSelect" class="collection-select">
     <option value="">Select an image collection or upload a new image</option>
   </select>
@@ -287,10 +288,11 @@
   <div id="status-message"></div>
 </div>
 
-  <div class="card" style="flex-grow:1; align-items:center; justify-content:center; flex-direction:column;">
+<div class="card" style="width:100%; margin-top:20px;">
   <h3 style="text-align:center;">Video Results</h3>
   <div id="videoResults" class="video-gallery" style="width:100%; display:flex; justify-content:center;"></div>
 </div>
+
 
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
