@@ -437,24 +437,28 @@ console.log("Response received:", response.status);
       }  
       console.log("Response data:", JSON.stringify(data, null, 2));
       // Handle different response formats from the webhook
-      console.log("Looking for video URL in:", data);
-      let videoUrl;
-      if (data.video_url) {
-        // Original format
-        videoUrl = data.video_url;
-      } else if (data.output && data.output[0]) {
-        // n8n webhook format - matches your workflow output
-        videoUrl = data.output[0];
-      } else if (Array.isArray(data)) {
-  videoUrl = data[0];
-      } else if (typeof data === 'string' && data.includes('.mp4')) {
-        // Simple URL string response
-        videoUrl = data;
-      } else {
-        console.log("Received data:", data);
-        throw new Error("No video URL found in server response");
-      }
-      
+   console.log("Looking for video URL in:", data);
+let videoUrl;
+if (data.video_url) {
+  // Original format
+  videoUrl = data.video_url;
+} else if (data.output && data.output[0]) {
+  // n8n webhook format - matches your workflow output
+  videoUrl = data.output[0];
+} else if (Array.isArray(data) && data[0]) {
+  // Array format - check if it contains videoURL property
+  if (data[0].videoURL) {
+    videoUrl = data[0].videoURL;
+  } else {
+    videoUrl = data[0];
+  }
+} else if (typeof data === 'string' && data.includes('.mp4')) {
+  // Simple URL string response
+  videoUrl = data;
+} else {
+  console.log("Received data:", data);
+  throw new Error("No video URL found in server response");
+}      
       currentVideoUrl = videoUrl;
       
       // Display the video immediately in the center
