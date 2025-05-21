@@ -42,16 +42,18 @@
     .content {
       padding: 20px;
     }
-    .card {
+  .card {
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 20px;
   margin-bottom: 20px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 40px;
 }
+
 
     #videoPrompt {
       width: 100%;
@@ -274,7 +276,7 @@
 <div class="content">
   <div class="card">
     <h2>Create AI-Powered Video</h2>
-<div style="width:25%;">
+<div style="width:25%; text-align:left;">
   <select id="collectionSelect" class="collection-select">
     <option value="">Select an image collection or upload a new image</option>
   </select>
@@ -285,10 +287,9 @@
   <div id="status-message"></div>
 </div>
 
-  <div class="card">
-    <h3>Video Results</h3>
-    <div id="videoResults" class="video-gallery"></div>
-  </div>
+  <div class="card" style="flex-grow:1; align-items:center; justify-content:center; flex-direction:column;">
+  <h3 style="text-align:center;">Video Results</h3>
+  <div id="videoResults" class="video-gallery" style="width:100%; display:flex; justify-content:center;"></div>
 </div>
 
 <footer>
