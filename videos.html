@@ -264,23 +264,23 @@
     </ul>
   </nav>
 </header>
-
 <div class="content">
-  <div class="card">
-    <h2>Create AI-Powered Video</h2>
-    <select id="collectionSelect" class="collection-select">
-      <option value="">Select an image collection or upload a new image</option>
-    </select>
-    <input type="file" id="imageUpload" accept="image/*">
-    <textarea id="videoPrompt" placeholder="Describe how this image should animate or what story it should tell..."></textarea>
-    <button id="generateBtn">Generate Video</button>
-    <div id="loader" class="loader"></div>
-    <div id="status-message"></div>
-  </div>
-
-  <div class="card">
-    <h3>Video Results</h3>
-    <div id="videoResults" class="video-gallery"></div>
+  <h2>Create AI-Powered Video</h2>
+  <div style="display: flex; gap: 20px;">
+    <div class="card" style="flex: 1;">
+      <select id="collectionSelect" class="collection-select">
+        <option value="">Select an image collection or upload a new image</option>
+      </select>
+      <input type="file" id="imageUpload" accept="image/*">
+      <textarea id="videoPrompt" placeholder="Describe how this image should animate or what story it should tell..."></textarea>
+      <button id="generateBtn">Generate Video</button>
+      <div id="loader" class="loader"></div>
+      <div id="status-message"></div>
+    </div>
+    <div class="card" style="flex: 1;">
+      <h3>Video Results</h3>
+      <div id="videoResults" class="video-gallery"></div>
+    </div>
   </div>
 </div>
 
