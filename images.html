@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Generate AI-powered websites from text prompts."/>
+  <meta name="description" content="Generate and refine AI-created images for advertising."/>
   <meta name="author" content="Victory Vision"/>
-  <title>Victory Vision AI - Smart Website Generator</title>
+  <title>Victory Vision AI - Smart Image Generator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -49,14 +49,13 @@
       padding: 20px;
       margin-bottom: 20px;
     }
-    #pagePrompt {
+    #imagePrompt {
       width: 100%;
-      height: 150px;
+      height: 100px;
       margin-bottom: 10px;
       padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      resize: vertical;
     }
     button {
       background: #0A3161;
@@ -68,7 +67,20 @@
       margin: 5px 5px 0 0;
     }
     button:hover {
-      background: #0A4171;
+      background: #0d3d7a;
+    }
+    .image-gallery {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+    }
+    .animated-glow {
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .animated-glow:hover {
+      box-shadow: 0 0 15px rgba(10, 49, 97, 0.5);
     }
     #status-message {
       color: #666;
@@ -101,27 +113,127 @@
       margin-right: 15px;
       text-decoration: none;
     }
-    .page-preview-container {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .page-preview {
-      width: 100%;
-      height: 600px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .preview-placeholder {
+    .control-row {
+      margin-top: 10px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      height: 600px;
-      background-color: #f8f9fa;
-      border: 2px dashed #dee2e6;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .control-row input {
+      padding: 6px;
+      margin-right: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .gallery-img {
+      width: 500px;
       border-radius: 8px;
-      color: #6c757d;
-      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .collections-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .collection-item {
+      width: 150px;
+      margin-bottom: 15px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .collection-item img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .collection-item img:hover {
+      border-color: #0A3161;
+      transform: scale(1.05);
+    }
+    .collection-item p {
+      margin-top: 5px;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 15px;
+    }
+    .tab {
+      padding: 10px 15px;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+      margin-right: 5px;
+      border-radius: 4px 4px 0 0;
+    }
+    .tab.active {
+      background: #0A3161;
+      color: white;
+      border-color: #0A3161;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .collection-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+    }
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 80%;
+      max-height: 80%;
+      overflow: auto;
+    }
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .collection-select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    .error-message {
+      color: #d9534f;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+    .success-message {
+      color: #5cb85c;
+      margin-top: 5px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -148,23 +260,78 @@
 </header>
 
 <div class="content">
-  <h2>Create AI-Powered Website</h2>
-  <div style="display: flex; gap: 20px;">
-    <div class="card" style="flex: 1;">
-      <h3>Website Description</h3>
-      <textarea id="pagePrompt" placeholder="Describe the website you want to create (e.g., 'Create a modern landing page for a coffee shop with a hero section, menu, and contact information')..."></textarea>
-      <button id="generateBtn">Generate Website</button>
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" data-tab="create">Create New Image</div>
+      <div class="tab" data-tab="collections">My Collections</div>
+    </div>
+    
+    <div class="tab-content active" id="create-tab">
+      <h2>Create or Refine Ad Image</h2>
+      <textarea id="imagePrompt" placeholder="Enter your prompt..."></textarea>
+      
+      <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <div style="flex: 1;">
+          <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        <div>
+          <button id="showCollectionsBtn">Import from Collections</button>
+        </div>
+      </div>
+      
+      <div id="selectedReferenceImage" style="margin-bottom: 10px; display: none;">
+        <h4>Reference Image:</h4>
+        <img id="referenceImagePreview" style="max-width: 200px; border-radius: 4px;" />
+        <button id="removeReferenceBtn" style="padding: 5px; font-size: 12px;">Remove</button>
+      </div>
+      
+      <button id="generateBtn">Generate / Analyze</button>
       <div id="loader" class="loader"></div>
       <div id="status-message"></div>
     </div>
-    <div class="card" style="flex: 1;">
-      <h3>Website Preview</h3>
-      <div id="pageResults" class="page-preview-container">
-        <div class="preview-placeholder">
-          Your generated website will appear here
-        </div>
+    
+    <div class="tab-content" id="collections-tab">
+      <h2>My Image Collections</h2>
+      <div style="margin-bottom: 15px;">
+        <input type="text" id="newCollectionName" placeholder="New collection name">
+        <button id="createCollectionBtn">Create Collection</button>
+        <div id="createCollectionStatus"></div>
+      </div>
+      
+      <div id="collectionsContainer">
+        <div class="loader" id="collectionsLoader"></div>
+        <div id="collectionsListContainer"></div>
       </div>
     </div>
+  </div>
+
+  <div class="card">
+    <h3>Image Results</h3>
+    <div id="imageResults" class="image-gallery"></div>
+  </div>
+</div>
+
+<!-- Modal for Collections -->
+<div id="collectionsModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeCollectionsModal">&times;</span>
+    <h3>Select an Image from Your Collections</h3>
+    
+    <select id="collectionSelect" class="collection-select">
+      <option value="">Select a collection</option>
+    </select>
+    
+    <div id="modalImagesContainer" class="collections-gallery"></div>
+  </div>
+</div>
+
+<!-- Modal for Collection Details -->
+<div id="collectionDetailModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeDetailModal">&times;</span>
+    <h3 id="detailCollectionName">Collection Name</h3>
+    
+    <div id="collectionDetailContainer" class="collections-gallery"></div>
   </div>
 </div>
 
@@ -178,100 +345,534 @@
 
 <script>
   const DEBUG = true;
-  let currentPageUrl = null;
-
+  let currentImageUrl = null;
+  let selectedReferenceImage = null;
+  let collections = [];
+  
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('generateBtn').addEventListener('click', generateWebsite);
+    // Tab functionality
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.getAttribute('data-tab');
+        
+        // Update active tab
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        // Show corresponding content
+        document.querySelectorAll('.tab-content').forEach(content => {
+          content.classList.remove('active');
+        });
+        document.getElementById(`${tabId}-tab`).classList.add('active');
+        
+        // If collections tab selected, load collections
+        if (tabId === 'collections') {
+          loadCollections();
+        }
+      });
+    });
     
-    // Check if URL has page parameter from webhook redirect
-    const urlParams = new URLSearchParams(window.location.search);
-    const pageUrl = urlParams.get('page_url');
-    if (pageUrl) {
-      const prompt = urlParams.get('prompt') || "Generated website";
-      displayWebsite(pageUrl, prompt);
-      updateStatus('Website loaded from webhook response');
-    }
+    // Button event listeners
+    document.getElementById('generateBtn').addEventListener('click', generateImage);
+    document.getElementById('showCollectionsBtn').addEventListener('click', showCollectionsModal);
+    document.getElementById('closeCollectionsModal').addEventListener('click', hideCollectionsModal);
+    document.getElementById('closeDetailModal').addEventListener('click', hideCollectionDetailModal);
+    document.getElementById('createCollectionBtn').addEventListener('click', createNewCollection);
+    document.getElementById('removeReferenceBtn').addEventListener('click', removeReferenceImage);
+    document.getElementById('collectionSelect').addEventListener('change', loadCollectionImages);
+    
+    // Initial collections load for dropdown
+    loadCollectionsForDropdown();
   });
-
+  
   function showLoader() {
     document.getElementById('loader').style.display = 'block';
-    updateStatus('Generating your website...');
+    updateStatus('Processing your request...');
   }
-
+  
   function hideLoader() {
     document.getElementById('loader').style.display = 'none';
   }
-
+  
   function updateStatus(message) {
     document.getElementById('status-message').textContent = message;
   }
-
-  async function generateWebsite() {
-    const prompt = document.getElementById('pagePrompt').value;
-    if (!prompt) {
-      return updateStatus("Please enter a description for your website");
-    }
-    
-    const resultsDiv = document.getElementById("pageResults");
-    resultsDiv.innerHTML = '<div class="preview-placeholder">Your generated website will appear here</div>';
-    showLoader();
-
+  
+  function readFileAsBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  
+  function showCollectionsModal() {
+    document.getElementById('collectionsModal').style.display = 'block';
+    loadCollectionsForDropdown();
+  }
+  
+  function hideCollectionsModal() {
+    document.getElementById('collectionsModal').style.display = 'none';
+  }
+  
+  function showCollectionDetailModal(collectionId, collectionName) {
+    document.getElementById('detailCollectionName').textContent = collectionName;
+    document.getElementById('collectionDetailModal').style.display = 'block';
+    loadCollectionDetail(collectionId);
+  }
+  
+  function hideCollectionDetailModal() {
+    document.getElementById('collectionDetailModal').style.display = 'none';
+  }
+  
+  async function loadCollectionsForDropdown() {
     try {
-      console.log("Sending request to generate website:", {
-        prompt: prompt,
-        customer_id: "client-xyz"
-      });
-
-      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/websiteAgent", {
+      // Get auth token for RLS if available
+      const authHeader = {};
+      const authToken = localStorage.getItem('supabase.auth.token');
+      if (authToken) {
+        authHeader.Authorization = `Bearer ${authToken}`;
+      }
+      
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/list", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json", 
+          ...authHeader
+        },
         body: JSON.stringify({
-          prompt: prompt,
           customer_id: "client-xyz"
         })
       });
-
-      console.log("Response received:", response.status);
       
-      if (!response.ok) {
-        const responseText = await response.text();
-        console.log("Raw server response:", responseText);
-        throw new Error(`Server responded with ${response.status}: ${responseText}`);
+      const data = await response.json();
+      
+      if (data && data.collections) {
+        const select = document.getElementById('collectionSelect');
+        select.innerHTML = '<option value="">Select a collection</option>';
+        
+        data.collections.forEach(collection => {
+          const option = document.createElement('option');
+          option.value = collection.id;
+          option.textContent = collection.name;
+          select.appendChild(option);
+        });
+      }
+    } catch (error) {
+      console.error("Error loading collections:", error);
+    }
+  }
+  
+  async function loadCollectionImages() {
+    const collectionId = document.getElementById('collectionSelect').value;
+    const container = document.getElementById('modalImagesContainer');
+    container.innerHTML = '<div class="loader" style="display: block;"></div>';
+    
+    if (!collectionId) {
+      container.innerHTML = '<p>Please select a collection</p>';
+      return;
+    }
+    
+    try {
+      // Get auth token for RLS if available
+      const authHeader = {};
+      const authToken = localStorage.getItem('supabase.auth.token');
+      if (authToken) {
+        authHeader.Authorization = `Bearer ${authToken}`;
       }
       
-      let data;
-      try {
-        data = await response.json();
-      } catch (e) {
-        console.log("Response wasn't JSON:", await response.text());
-        throw new Error("Invalid response format from server");
-      }
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/images", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          ...authHeader
+        },
+        body: JSON.stringify({
+          collection_id: collectionId,
+          customer_id: "client-xyz"
+        })
+      });
       
-      console.log("Response data:", JSON.stringify(data, null, 2));
+      const data = await response.json();
+      container.innerHTML = '';
       
-      // Handle different response formats from the webhook
-      console.log("Looking for website URL in:", data);
-      let websiteUrl;
-      
-      if (data.website_url) {
-        websiteUrl = data.website_url;
-      } else if (data.pageURL) {
-        websiteUrl = data.pageURL;
-      } else if (data.url) {
-        websiteUrl = data.url;
-      } else if (typeof data === 'string' && data.includes('http')) {
-        websiteUrl = data;
+      if (data && data.images && data.images.length > 0) {
+        data.images.forEach(image => {
+          const imageDiv = document.createElement('div');
+          imageDiv.className = 'collection-item';
+          
+          const img = document.createElement('img');
+          img.src = image.url;
+          img.alt = 'Collection image';
+          img.addEventListener('click', () => {
+            selectReferenceImage(image.url, image.prompt || '');
+          });
+          
+          imageDiv.appendChild(img);
+          
+          const prompt = document.createElement('p');
+          prompt.textContent = image.prompt || 'No prompt available';
+          imageDiv.appendChild(prompt);
+          
+          container.appendChild(imageDiv);
+        });
       } else {
-        console.log("Received data:", data);
-        throw new Error("No website URL found in server response");
+        container.innerHTML = '<p>No images found in this collection</p>';
+      }
+    } catch (error) {
+      console.error("Error loading collection images:", error);
+      container.innerHTML = '<p>Error loading images</p>';
+    }
+  }
+  
+  function selectReferenceImage(imageUrl, prompt) {
+    // Set the reference image
+    selectedReferenceImage = {
+      url: imageUrl,
+      prompt: prompt
+    };
+    
+    // Update UI
+    const preview = document.getElementById('referenceImagePreview');
+    preview.src = imageUrl;
+    document.getElementById('selectedReferenceImage').style.display = 'block';
+    
+    // Set prompt if available
+    if (prompt && document.getElementById('imagePrompt').value === '') {
+      document.getElementById('imagePrompt').value = prompt;
+    }
+    
+    // Hide modal
+    hideCollectionsModal();
+  }
+  
+  function removeReferenceImage() {
+    selectedReferenceImage = null;
+    document.getElementById('selectedReferenceImage').style.display = 'none';
+  }
+  
+  async function loadCollections() {
+    const container = document.getElementById('collectionsListContainer');
+    document.getElementById('collectionsLoader').style.display = 'block';
+    container.innerHTML = '';
+    
+    try {
+      // Get auth token for RLS if available
+      const authHeader = {};
+      const authToken = localStorage.getItem('supabase.auth.token');
+      if (authToken) {
+        authHeader.Authorization = `Bearer ${authToken}`;
       }
       
-      currentPageUrl = websiteUrl;
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/list", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          ...authHeader
+        },
+        body: JSON.stringify({
+          customer_id: "client-xyz"
+        })
+      });
       
-      // Display the website preview
-      displayWebsite(websiteUrl, prompt);
+      const data = await response.json();
       
-      updateStatus('Website generated successfully!');
+      if (data && data.collections) {
+        collections = data.collections;
+        
+        if (collections.length === 0) {
+          container.innerHTML = '<p>No collections found. Create your first collection above.</p>';
+        } else {
+          collections.forEach(collection => {
+            const collectionDiv = document.createElement('div');
+            collectionDiv.className = 'card';
+            collectionDiv.style.cursor = 'pointer';
+            
+            const collectionHeader = document.createElement('div');
+            collectionHeader.style.display = 'flex';
+            collectionHeader.style.justifyContent = 'space-between';
+            collectionHeader.style.alignItems = 'center';
+            
+            const name = document.createElement('h3');
+            name.textContent = collection.name;
+            collectionHeader.appendChild(name);
+            
+            const count = document.createElement('span');
+            count.textContent = `${collection.image_count || 0} images`;
+            count.style.color = '#666';
+            collectionHeader.appendChild(count);
+            
+            collectionDiv.appendChild(collectionHeader);
+            
+            // Preview images
+            const previewContainer = document.createElement('div');
+            previewContainer.className = 'collections-gallery';
+            previewContainer.style.justifyContent = 'flex-start';
+            
+            if (collection.preview_images && collection.preview_images.length > 0) {
+              collection.preview_images.forEach(image => {
+                const imgDiv = document.createElement('div');
+                imgDiv.className = 'collection-item';
+                imgDiv.style.margin = '5px';
+                
+                const img = document.createElement('img');
+                img.src = image;
+                img.alt = 'Preview';
+                img.style.width = '100px';
+                img.style.height = '100px';
+                
+                imgDiv.appendChild(img);
+                previewContainer.appendChild(imgDiv);
+              });
+            } else {
+              previewContainer.innerHTML = '<p>No images in this collection</p>';
+            }
+            
+            collectionDiv.appendChild(previewContainer);
+            
+            // View full collection button
+            const viewBtn = document.createElement('button');
+            viewBtn.textContent = 'View Collection';
+            viewBtn.style.marginTop = '10px';
+            viewBtn.addEventListener('click', () => {
+              showCollectionDetailModal(collection.id, collection.name);
+            });
+            
+            collectionDiv.appendChild(viewBtn);
+            container.appendChild(collectionDiv);
+          });
+        }
+      } else {
+        container.innerHTML = '<p>No collections found</p>';
+      }
+    } catch (error) {
+      console.error("Error loading collections:", error);
+      container.innerHTML = '<p>Error loading collections</p>';
+    } finally {
+      document.getElementById('collectionsLoader').style.display = 'none';
+    }
+  }
+  
+  async function loadCollectionDetail(collectionId) {
+    const container = document.getElementById('collectionDetailContainer');
+    container.innerHTML = '<div class="loader" style="display: block;"></div>';
+    
+    try {
+      // Get auth token for RLS if available
+      const authHeader = {};
+      const authToken = localStorage.getItem('supabase.auth.token');
+      if (authToken) {
+        authHeader.Authorization = `Bearer ${authToken}`;
+      }
+      
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/images", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          ...authHeader
+        },
+        body: JSON.stringify({
+          collection_id: collectionId,
+          customer_id: "client-xyz"
+        })
+      });
+      
+      const data = await response.json();
+      container.innerHTML = '';
+      
+      if (data && data.images && data.images.length > 0) {
+        data.images.forEach(image => {
+          const imageDiv = document.createElement('div');
+          imageDiv.className = 'collection-item';
+          imageDiv.style.width = '200px';
+          
+          const img = document.createElement('img');
+          img.src = image.url;
+          img.alt = 'Collection image';
+          img.style.width = '200px';
+          img.style.height = '200px';
+          
+          const prompt = document.createElement('p');
+          prompt.textContent = image.prompt || 'No prompt available';
+          
+          const useBtn = document.createElement('button');
+          useBtn.textContent = 'Use as Reference';
+          useBtn.style.fontSize = '12px';
+          useBtn.style.padding = '5px 10px';
+          useBtn.style.marginTop = '5px';
+          useBtn.addEventListener('click', () => {
+            selectReferenceImage(image.url, image.prompt || '');
+            hideCollectionDetailModal();
+          });
+          
+          const removeBtn = document.createElement('button');
+          removeBtn.textContent = 'Remove';
+          removeBtn.style.fontSize = '12px';
+          removeBtn.style.padding = '5px 10px';
+          removeBtn.style.marginTop = '5px';
+          removeBtn.style.backgroundColor = '#d9534f';
+          removeBtn.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to remove this image from the collection?')) {
+              await removeImageFromCollection(collectionId, image.id);
+              loadCollectionDetail(collectionId);
+            }
+          });
+          
+          imageDiv.appendChild(img);
+          imageDiv.appendChild(prompt);
+          imageDiv.appendChild(useBtn);
+          imageDiv.appendChild(removeBtn);
+          
+          container.appendChild(imageDiv);
+        });
+      } else {
+        container.innerHTML = '<p>No images found in this collection</p>';
+      }
+    } catch (error) {
+      console.error("Error loading collection detail:", error);
+      container.innerHTML = '<p>Error loading collection images</p>';
+    }
+  }
+  
+  async function createNewCollection() {
+    const name = document.getElementById('newCollectionName').value.trim();
+    const statusElement = document.getElementById('createCollectionStatus');
+    
+    if (!name) {
+      statusElement.className = 'error-message';
+      statusElement.textContent = 'Please enter a collection name';
+      return;
+    }
+    
+    try {
+      statusElement.className = '';
+      statusElement.textContent = 'Creating collection...';
+      
+      // Get auth token for RLS if available
+      const authHeader = {};
+      const authToken = localStorage.getItem('supabase.auth.token');
+      if (authToken) {
+        authHeader.Authorization = `Bearer ${authToken}`;
+      }
+      
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/create", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          ...authHeader
+        },
+        body: JSON.stringify({
+          name: name,
+          customer_id: "client-xyz"
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        statusElement.className = 'success-message';
+        statusElement.textContent = 'Collection created successfully!';
+        document.getElementById('newCollectionName').value = '';
+        
+        // Reload collections to show new collection
+        setTimeout(() => {
+          loadCollections();
+          loadCollectionsForDropdown();
+        }, 1000);
+      } else {
+        statusElement.className = 'error-message';
+        statusElement.textContent = data.message || 'Failed to create collection';
+      }
+    } catch (error) {
+      console.error("Error creating collection:", error);
+      statusElement.className = 'error-message';
+      statusElement.textContent = 'Error creating collection';
+    }
+  }
+  
+  async function removeImageFromCollection(collectionId, imageId) {
+    try {
+      // Get auth token for RLS if available
+      const authHeader = {};
+      const authToken = localStorage.getItem('supabase.auth.token');
+      if (authToken) {
+        authHeader.Authorization = `Bearer ${authToken}`;
+      }
+      
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/collections/remove-image", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          ...authHeader
+        },
+        body: JSON.stringify({
+          collection_id: collectionId,
+          image_id: imageId,
+          customer_id: "client-xyz"
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        return true;
+      } else {
+        alert(data.message || 'Failed to remove image');
+        return false;
+      }
+    } catch (error) {
+      console.error("Error removing image:", error);
+      alert('Error removing image from collection');
+      return false;
+    }
+  }
+  
+  async function generateImage() {
+    const prompt = document.getElementById('imagePrompt').value;
+    const fileInput = document.getElementById('imageUpload');
+    const resultsDiv = document.getElementById("imageResults");
+    resultsDiv.innerHTML = '';
+    showLoader();
+  
+    try {
+      // Prepare request data
+      const requestData = {
+        prompt: prompt,
+        customer_id: "client-xyz"
+      };
+  
+      // Handle uploaded file if present
+      if (fileInput && fileInput.files[0]) {
+        requestData.image = await readFileAsBase64(fileInput.files[0]);
+      }
+      // Handle reference image if selected
+      else if (selectedReferenceImage) {
+        requestData.reference_image_url = selectedReferenceImage.url;
+      }
+  
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/8c4b0570-4136-4202-afc7-3ba7988d9b19", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData)
+      });
+  
+      const contentType = response.headers.get("Content-Type");
+      let data;
+  
+      if (contentType && contentType.startsWith("image/")) {
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        currentImageUrl = objectUrl;
+        data = { images: [objectUrl] };
+      } else {
+        data = await response.json();
+        currentImageUrl = data?.images?.[0]?.image || data?.images?.[0];
+      }
+  
+      displayResults(data, prompt);
+      updateStatus('Images generated successfully!');
     } catch (error) {
       console.error(error);
       updateStatus("Error: " + error.message);
@@ -279,54 +880,12 @@
       hideLoader();
     }
   }
-
-  function displayWebsite(websiteUrl, prompt) {
-    const resultsDiv = document.getElementById("pageResults");
-    resultsDiv.innerHTML = '';
-    
-    // Create preview container
-    const previewContainer = document.createElement("div");
-    previewContainer.className = "page-preview-container";
-    
-    // Create iframe for website preview
-    const iframe = document.createElement("iframe");
-    iframe.className = "page-preview";
-    iframe.src = websiteUrl;
-    iframe.title = "Generated Website Preview";
-    iframe.frameBorder = "0";
-    
-    // Add error handling for iframe
-    iframe.onerror = function() {
-      console.error("Website preview error");
-      const fallbackLink = document.createElement("div");
-      fallbackLink.innerHTML = `
-        <div class="preview-placeholder">
-          <div>
-            <p>Preview not available</p>
-            <a href="${websiteUrl}" target="_blank" style="color: #0A3161; text-decoration: underline;">
-              Click here to open the website in a new tab
-            </a>
-          </div>
-        </div>
-      `;
-      previewContainer.appendChild(fallbackLink);
-    };
-    
-    previewContainer.appendChild(iframe);
-    
-    // Add direct link button
-    const linkButton = document.createElement("button");
-    linkButton.innerText = "🔗 Open in New Tab";
-    linkButton.style.marginTop = "10px";
-    linkButton.onclick = () => {
-      window.open(websiteUrl, '_blank');
-    };
-    
-    previewContainer.appendChild(linkButton);
-    
-    // Add to results
-    resultsDiv.appendChild(previewContainer);
-  }
-</script>
-</body>
-</html>
+  
+  async function loadCollectionDropdown() {
+    try {
+      if (collections.length === 0) {
+        // Get auth token for RLS if available
+        const authHeader = {};
+        const authToken = localStorage.getItem('supabase.auth.token');
+        if (authToken) {
+          authHeader.Authorization = `Bearer ${authToken}
