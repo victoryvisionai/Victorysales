@@ -1,52 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victory Vision AI - Landing Pages</title>
-    <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script defer src="scripts.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Generate AI-powered websites from text prompts."/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision AI - Smart Website Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .navbar {
+      background-color: #0A3161;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar nav ul li {
+      margin: 0 10px;
+    }
+    .navbar nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    .logo img {
+      height: 60px;
+      width: auto;
+      max-height: 100px;
+    }
+    .content {
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    #pagePrompt {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    button {
+      background: #0A3161;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px 5px 0 0;
+    }
+    button:hover {
+      background: #0A4171;
+    }
+    #status-message {
+      color: #666;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #0A3161;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 2s linear infinite;
+      display: none;
+      margin: 10px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    footer {
+      background: #0A3161;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    footer a {
+      color: #fff;
+      margin-right: 15px;
+      text-decoration: none;
+    }
+    .page-preview-container {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .page-preview {
+      width: 100%;
+      height: 600px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .preview-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 600px;
+      background-color: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      color: #6c757d;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-
 <header class="navbar">
-    <div class="logo">
-        <img src="logo.jpg" alt="Victory Vision Logo">
-    </div>
-    <nav>
-        <ul>
-             <li><a href="ai-opt">🤖⌂</a></li>
-            <li><a href="dashboard">KPI's</a></li> 
-            <li><a href="images">Images</a></li>
-            <li><a href="videos">Videos</a></li>
-            <li><a href="pages">Pages</a></li>
-            <li><a href="ads">Ads</a></li>
-            <li><a href="leads">Leads</a></li>
-            <li><a href="social">Social</a></li>
-            <li><a href="messages">Messages</a></li>
-            <li><a href="settings">⚙️</a></li>
-        </ul>
-    </nav>
+  <div class="logo">
+    <img src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="ai-opt">🤖</a></li>
+      <li><a href="dashboard">KPI's</a></li>
+      <li><a href="images">Images</a></li>
+      <li><a href="videos">Videos</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="ads">Ads</a></li>
+      <li><a href="leads">Leads</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="messages">Messages</a></li>
+      <li><a href="settings">⚙️</a></li>
+    </ul>
+  </nav>
 </header>
 
 <div class="content">
-    <div class="card">
-        <h2>Landing Page Builder</h2>
-        <textarea placeholder="Describe the landing page..."></textarea>
-        <input type="file" accept=".html,.zip">
-        <button>Generate Landing Page</button>
+  <h2>Create AI-Powered Website</h2>
+  <div style="display: flex; gap: 20px;">
+    <div class="card" style="flex: 1;">
+      <h3>Website Description</h3>
+      <textarea id="pagePrompt" placeholder="Describe the website you want to create (e.g., 'Create a modern landing page for a coffee shop with a hero section, menu, and contact information')..."></textarea>
+      <button id="generateBtn">Generate Website</button>
+      <div id="loader" class="loader"></div>
+      <div id="status-message"></div>
     </div>
-
-    <div class="card">
-        <h3>Recently Created Landing Pages</h3>
-        <div class="page-gallery">
-            <iframe src="placeholder-page1.html" class="glow" width="100%" height="300"></iframe>
-            <iframe src="placeholder-page2.html" class="glow" width="100%" height="300"></iframe>
+    <div class="card" style="flex: 1;">
+      <h3>Website Preview</h3>
+      <div id="pageResults" class="page-preview-container">
+        <div class="preview-placeholder">
+          Your generated website will appear here
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+  const DEBUG = true;
+  let currentPageUrl = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('generateBtn').addEventListener('click', generateWebsite);
+    
+    // Check if URL has page parameter from webhook redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageUrl = urlParams.get('page_url');
+    if (pageUrl) {
+      const prompt = urlParams.get('prompt') || "Generated website";
+      displayWebsite(pageUrl, prompt);
+      updateStatus('Website loaded from webhook response');
+    }
+  });
+
+  function showLoader() {
+    document.getElementById('loader').style.display = 'block';
+    updateStatus('Generating your website...');
+  }
+
+  function hideLoader() {
+    document.getElementById('loader').style.display = 'none';
+  }
+
+  function updateStatus(message) {
+    document.getElementById('status-message').textContent = message;
+  }
+
+  async function generateWebsite() {
+    const prompt = document.getElementById('pagePrompt').value;
+    if (!prompt) {
+      return updateStatus("Please enter a description for your website");
+    }
+    
+    const resultsDiv = document.getElementById("pageResults");
+    resultsDiv.innerHTML = '<div class="preview-placeholder">Your generated website will appear here</div>';
+    showLoader();
+
+    try {
+      console.log("Sending request to generate website:", {
+        prompt: prompt,
+        customer_id: "client-xyz"
+      });
+
+      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/websiteAgent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: prompt,
+          customer_id: "client-xyz"
+        })
+      });
+
+      console.log("Response received:", response.status);
+      
+      if (!response.ok) {
+        const responseText = await response.text();
+        console.log("Raw server response:", responseText);
+        throw new Error(`Server responded with ${response.status}: ${responseText}`);
+      }
+      
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.log("Response wasn't JSON:", await response.text());
+        throw new Error("Invalid response format from server");
+      }
+      
+      console.log("Response data:", JSON.stringify(data, null, 2));
+      
+      // Handle different response formats from the webhook
+      console.log("Looking for website URL in:", data);
+      let websiteUrl;
+      
+      if (data.website_url) {
+        websiteUrl = data.website_url;
+      } else if (data.pageURL) {
+        websiteUrl = data.pageURL;
+      } else if (data.url) {
+        websiteUrl = data.url;
+      } else if (typeof data === 'string' && data.includes('http')) {
+        websiteUrl = data;
+      } else {
+        console.log("Received data:", data);
+        throw new Error("No website URL found in server response");
+      }
+      
+      currentPageUrl = websiteUrl;
+      
+      // Display the website preview
+      displayWebsite(websiteUrl, prompt);
+      
+      updateStatus('Website generated successfully!');
+    } catch (error) {
+      console.error(error);
+      updateStatus("Error: " + error.message);
+    } finally {
+      hideLoader();
+    }
+  }
+
+  function displayWebsite(websiteUrl, prompt) {
+    const resultsDiv = document.getElementById("pageResults");
+    resultsDiv.innerHTML = '';
+    
+    // Create preview container
+    const previewContainer = document.createElement("div");
+    previewContainer.className = "page-preview-container";
+    
+    // Create iframe for website preview
+    const iframe = document.createElement("iframe");
+    iframe.className = "page-preview";
+    iframe.src = websiteUrl;
+    iframe.title = "Generated Website Preview";
+    iframe.frameBorder = "0";
+    
+    // Add error handling for iframe
+    iframe.onerror = function() {
+      console.error("Website preview error");
+      const fallbackLink = document.createElement("div");
+      fallbackLink.innerHTML = `
+        <div class="preview-placeholder">
+          <div>
+            <p>Preview not available</p>
+            <a href="${websiteUrl}" target="_blank" style="color: #0A3161; text-decoration: underline;">
+              Click here to open the website in a new tab
+            </a>
+          </div>
+        </div>
+      `;
+      previewContainer.appendChild(fallbackLink);
+    };
+    
+    previewContainer.appendChild(iframe);
+    
+    // Add direct link button
+    const linkButton = document.createElement("button");
+    linkButton.innerText = "🔗 Open in New Tab";
+    linkButton.style.marginTop = "10px";
+    linkButton.onclick = () => {
+      window.open(websiteUrl, '_blank');
+    };
+    
+    previewContainer.appendChild(linkButton);
+    
+    // Add to results
+    resultsDiv.appendChild(previewContainer);
+  }
+</script>
 </body>
 </html>
