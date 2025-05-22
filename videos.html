@@ -460,10 +460,6 @@ if (data.video_url) {
 } else if (data.output && data.output[0]) {
   // n8n webhook format - matches your workflow output
   videoUrl = data.output[0];
-} else if (data.videoURL) {
-  // Direct videoURL property
-  videoUrl = data.videoURL;
-  console.log("Found videoURL:", videoUrl);
 } else if (Array.isArray(data) && data[0]) {
   // Array format - check if it contains videoURL property
   if (data[0] && typeof data[0] === 'object' && data[0].videoURL) {
