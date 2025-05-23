@@ -183,7 +183,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('generateBtn').addEventListener('click', generateWebsite);
     
-    // Check if URL has page parameter from webhook redirect
     const urlParams = new URLSearchParams(window.location.search);
     const pageUrl = urlParams.get('page_url');
     if (pageUrl) {
@@ -207,7 +206,7 @@
   }
 
   async function generateWebsite() {
-    const prompt = document.getElementById('pagePrompt').value;
+    const prompt = document.getElementById('pagePrompt').value.trim();
     if (!prompt) {
       return updateStatus("Please enter a description for your website");
     }
@@ -217,41 +216,44 @@
     showLoader();
 
     try {
-      console.log("Sending request to generate website:", {
-        prompt: prompt,
-        customer_id: "client-xyz"
-      });
+      console.log("Sending request:", { prompt, customer_id: "client-xyz" });
 
       const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/websiteAgent", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: "cors",
+        headers: { 
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           prompt: prompt,
           customer_id: "client-xyz"
         })
       });
 
-      console.log("Response received:", response.status);
+      console.log("Response status:", response.status);
+      console.log("Response headers:", Object.fromEntries(response.headers.entries()));
       
       if (!response.ok) {
-        const responseText = await response.text();
-        console.log("Raw server response:", responseText);
-        throw new Error(`Server responded with ${response.status}: ${responseText}`);
+        const errorText = await response.text();
+        console.error("Server error response:", errorText);
+        throw new Error(`Server error ${response.status}: ${errorText}`);
       }
+      
+      const responseText = await response.text();
+      console.log("Raw response:", responseText);
       
       let data;
       try {
-        data = await response.json();
+        data = JSON.parse(responseText);
       } catch (e) {
-        console.log("Response wasn't JSON:", await response.text());
-        throw new Error("Invalid response format from server");
+        console.error("JSON parse error:", e);
+        throw new Error(`Invalid JSON response: ${responseText}`);
       }
       
-      console.log("Response data:", JSON.stringify(data, null, 2));
+      console.log("Parsed data:", data);
       
-      // Handle different response formats from the webhook
-      console.log("Looking for website URL in:", data);
-      let websiteUrl;
+      // Extract website URL from various possible response formats
+      let websiteUrl = null;
       
       if (data.website_url) {
         websiteUrl = data.website_url;
@@ -259,22 +261,24 @@
         websiteUrl = data.pageURL;
       } else if (data.url) {
         websiteUrl = data.url;
-      } else if (typeof data === 'string' && data.includes('http')) {
+      } else if (data.result && data.result.url) {
+        websiteUrl = data.result.url;
+      } else if (typeof data === 'string' && data.startsWith('http')) {
         websiteUrl = data;
-      } else {
-        console.log("Received data:", data);
-        throw new Error("No website URL found in server response");
+      }
+      
+      if (!websiteUrl) {
+        console.error("No URL found in response:", data);
+        throw new Error("No website URL returned from server");
       }
       
       currentPageUrl = websiteUrl;
-      
-      // Display the website preview
       displayWebsite(websiteUrl, prompt);
-      
       updateStatus('Website generated successfully!');
+      
     } catch (error) {
-      console.error(error);
-      updateStatus("Error: " + error.message);
+      console.error("Generation error:", error);
+      updateStatus(`Error: ${error.message}`);
     } finally {
       hideLoader();
     }
@@ -284,47 +288,37 @@
     const resultsDiv = document.getElementById("pageResults");
     resultsDiv.innerHTML = '';
     
-    // Create preview container
     const previewContainer = document.createElement("div");
     previewContainer.className = "page-preview-container";
     
-    // Create iframe for website preview
     const iframe = document.createElement("iframe");
     iframe.className = "page-preview";
     iframe.src = websiteUrl;
     iframe.title = "Generated Website Preview";
     iframe.frameBorder = "0";
     
-    // Add error handling for iframe
     iframe.onerror = function() {
-      console.error("Website preview error");
-      const fallbackLink = document.createElement("div");
-      fallbackLink.innerHTML = `
+      console.error("Iframe load error");
+      previewContainer.innerHTML = `
         <div class="preview-placeholder">
           <div>
-            <p>Preview not available</p>
-            <a href="${websiteUrl}" target="_blank" style="color: #0A3161; text-decoration: underline;">
-              Click here to open the website in a new tab
+            <p>Preview unavailable</p>
+            <a href="${websiteUrl}" target="_blank" style="color: #0A3161;">
+              Open website in new tab
             </a>
           </div>
         </div>
       `;
-      previewContainer.appendChild(fallbackLink);
     };
     
     previewContainer.appendChild(iframe);
     
-    // Add direct link button
     const linkButton = document.createElement("button");
     linkButton.innerText = "🔗 Open in New Tab";
     linkButton.style.marginTop = "10px";
-    linkButton.onclick = () => {
-      window.open(websiteUrl, '_blank');
-    };
+    linkButton.onclick = () => window.open(websiteUrl, '_blank');
     
     previewContainer.appendChild(linkButton);
-    
-    // Add to results
     resultsDiv.appendChild(previewContainer);
   }
 </script>
