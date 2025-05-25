@@ -275,25 +275,16 @@ displayWebsite(landingpageeUrl, prompt);
     const previewContainer = document.createElement("div");
     previewContainer.className = "page-preview-container";
   console.log("Setting iframe src to:", landingpageeUrl);  
-    const iframe = document.createElement("iframe");
-    iframe.className = "page-preview";
-    iframe.src = landingpageeUrl;
-    iframe.title = "Generated Website Preview";
-    iframe.frameBorder = "0";
-    
-    iframe.onerror = function() {
-      console.error("Iframe load error");
-      previewContainer.innerHTML = `
-        <div class="preview-placeholder">
-          <div>
-            <p>Preview unavailable</p>
-            <a href="${landingpageeUrl}" target="_blank" style="color: #0A3161;">
-              Open website in new tab
-            </a>
-          </div>
-        </div>
-      `;
-    };
+previewContainer.innerHTML = `
+  <div class="preview-placeholder">
+    <div>
+      <p>✅ Website Generated Successfully!</p>
+      <a href="${websiteUrl}" target="_blank" style="color: #0A3161; font-size: 18px; text-decoration: none; background: #f0f8ff; padding: 10px; border-radius: 4px; display: inline-block;">
+        🔗 Open Website: ${websiteUrl}
+      </a>
+    </div>
+  </div>
+`;
     
     previewContainer.appendChild(iframe);
     
