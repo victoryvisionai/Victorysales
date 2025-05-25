@@ -268,12 +268,14 @@ displayWebsite(landingpageUrl, prompt);
     previewContainer.className = "page-preview-container";
   console.log("Setting iframe src to:", landingpageUrl);  
 previewContainer.innerHTML = `
-  <div class="preview-placeholder">
-    <div>
-      <p>✅ Website Generated Successfully!</p>
-      <a href="${landingpageUrl}" target="_blank" style="color: #0A3161; font-size: 18px; text-decoration: none; background: #f0f8ff; padding: 10px; border-radius: 4px; display: inline-block;">
-        🔗 Open Website: ${landingpageUrl}
-      </a>
+  <div style="text-align: center;">
+    <p>✅ Website Generated Successfully!</p>
+    <div style="width: 100%; height: 300px; background: #f0f8ff; border: 2px solid #0A3161; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="window.open('${landingpageUrl}', '_blank')">
+      <div style="text-align: center;">
+        <div style="font-size: 48px;">🌐</div>
+        <p style="margin: 10px 0; font-weight: bold;">Click to View Website</p>
+        <p style="margin: 0; font-size: 14px; color: #255;">${landingpageUrl}</p>
+      </div>
     </div>
   </div>
 `;
