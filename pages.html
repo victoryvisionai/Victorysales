@@ -249,28 +249,16 @@
       
       console.log("Parsed data:", data);
       
-      // Extract website URL from various possible response formats
-      let websiteUrl = null;
-      
-      if (data.website_url) {
-        websiteUrl = data.website_url;
-      } else if (data.pageURL) {
-        websiteUrl = data.pageURL;
-      } else if (data.url) {
-        websiteUrl = data.url;
-      } else if (data.result && data.result.url) {
-        websiteUrl = data.result.url;
-      } else if (typeof data === 'string' && data.startsWith('http')) {
-        websiteUrl = data;
-      }
-      
-      if (!websiteUrl) {
-        console.error("No URL found in response:", data);
-        throw new Error("No website URL returned from server");
-      }
-      
-      currentPageUrl = websiteUrl;
-      displayWebsite(websiteUrl, prompt);
+     // Extract website URL from response
+let websiteUrl = data.landingpageURL;
+
+if (!websiteUrl) {
+ console.error("No URL found in response:", data);
+ throw new Error("No website URL returned from server");
+}
+
+currentPageUrl = websiteUrl;
+displayWebsite(websiteUrl, prompt);
       updateStatus('Website generated successfully!');
       
     } catch (error) {
