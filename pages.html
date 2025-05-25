@@ -246,9 +246,10 @@
         console.error("JSON parse error:", e);
         throw new Error(`Invalid JSON response: ${responseText}`);
       }
-      
-      console.log("Parsed data:", data);
-      
+  console.log("Parsed data:", data);
+console.log("landingpageURL value:", data.landingpageURL);
+console.log("typeof landingpageURL:", typeof data.landingpageURL);
+console.log("websiteUrl assigned:", websiteUrl);    
      // Extract website URL from response
 let websiteUrl = data.landingpageURL;
 
@@ -275,7 +276,7 @@ displayWebsite(websiteUrl, prompt);
     
     const previewContainer = document.createElement("div");
     previewContainer.className = "page-preview-container";
-    
+  console.log("Setting iframe src to:", websiteUrl);  
     const iframe = document.createElement("iframe");
     iframe.className = "page-preview";
     iframe.src = websiteUrl;
