@@ -167,7 +167,6 @@
     </div>
   </div>
 </div>
-
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -175,7 +174,6 @@
     <a href="terms.html">Terms of Service</a>
   </nav>
 </footer>
-
 <script>
   const DEBUG = true;
   let currentPageUrl = null;
@@ -191,7 +189,6 @@
       updateStatus('Website loaded from webhook response');
     }
   });
-
   function showLoader() {
     document.getElementById('loader').style.display = 'block';
     updateStatus('Generating your website...');
@@ -264,11 +261,9 @@ displayWebsite(landingpageUrl, prompt);
       hideLoader();
     }
   }
-
   function displayWebsite(landingpageUrl, prompt) {
     const resultsDiv = document.getElementById("pageResults");
     resultsDiv.innerHTML = '';
-    
     const previewContainer = document.createElement("div");
     previewContainer.className = "page-preview-container";
   console.log("Setting iframe src to:", landingpageUrl);  
@@ -282,12 +277,10 @@ previewContainer.innerHTML = `
     </div>
   </div>
 `;
-     previewContainer.appendChild(iframe);
     const linkButton = document.createElement("button");
     linkButton.innerText = "🔗 Open in New Tab";
     linkButton.style.marginTop = "10px";
     linkButton.onclick = () => window.open(landingpageUrl, '_blank');
-
     previewContainer.appendChild(linkButton);
     resultsDiv.appendChild(previewContainer);
   }
