@@ -249,17 +249,15 @@
   console.log("Parsed data:", data);
 console.log("landingpageURL value:", data.landingpageURL);
 console.log("typeof landingpageURL:", typeof data.landingpageURL);
-console.log("websiteUrl assigned:", websiteUrl);    
-     // Extract website URL from response
-let websiteUrl = data.landingpageURL;
+let landingpageeUrl = data.landingpageURL;
 
-if (!websiteUrl) {
+if (!landingpageeUrl) {
  console.error("No URL found in response:", data);
  throw new Error("No website URL returned from server");
 }
 
-currentPageUrl = websiteUrl;
-displayWebsite(websiteUrl, prompt);
+currentPageUrl = landingpageeUrl;
+displayWebsite(landingpageeUrl, prompt);
       updateStatus('Website generated successfully!');
       
     } catch (error) {
@@ -270,16 +268,16 @@ displayWebsite(websiteUrl, prompt);
     }
   }
 
-  function displayWebsite(websiteUrl, prompt) {
+  function displayWebsite(landingpageeUrl, prompt) {
     const resultsDiv = document.getElementById("pageResults");
     resultsDiv.innerHTML = '';
     
     const previewContainer = document.createElement("div");
     previewContainer.className = "page-preview-container";
-  console.log("Setting iframe src to:", websiteUrl);  
+  console.log("Setting iframe src to:", landingpageeUrl);  
     const iframe = document.createElement("iframe");
     iframe.className = "page-preview";
-    iframe.src = websiteUrl;
+    iframe.src = landingpageeUrl;
     iframe.title = "Generated Website Preview";
     iframe.frameBorder = "0";
     
@@ -289,7 +287,7 @@ displayWebsite(websiteUrl, prompt);
         <div class="preview-placeholder">
           <div>
             <p>Preview unavailable</p>
-            <a href="${websiteUrl}" target="_blank" style="color: #0A3161;">
+            <a href="${landingpageeUrl}" target="_blank" style="color: #0A3161;">
               Open website in new tab
             </a>
           </div>
@@ -302,7 +300,7 @@ displayWebsite(websiteUrl, prompt);
     const linkButton = document.createElement("button");
     linkButton.innerText = "🔗 Open in New Tab";
     linkButton.style.marginTop = "10px";
-    linkButton.onclick = () => window.open(websiteUrl, '_blank');
+    linkButton.onclick = () => window.open(landingpageeUrl, '_blank');
     
     previewContainer.appendChild(linkButton);
     resultsDiv.appendChild(previewContainer);
