@@ -226,16 +226,13 @@
           customer_id: "client-xyz"
         })
       });
-
       console.log("Response status:", response.status);
       console.log("Response headers:", Object.fromEntries(response.headers.entries()));
-      
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Server error response:", errorText);
         throw new Error(`Server error ${response.status}: ${errorText}`);
       }
-      
       const responseText = await response.text();
       console.log("Raw response:", responseText);
       
@@ -285,14 +282,12 @@ previewContainer.innerHTML = `
     </div>
   </div>
 `;
-    
-    previewContainer.appendChild(iframe);
-    
+     previewContainer.appendChild(iframe);
     const linkButton = document.createElement("button");
     linkButton.innerText = "🔗 Open in New Tab";
     linkButton.style.marginTop = "10px";
     linkButton.onclick = () => window.open(landingpageeUrl, '_blank');
-    
+
     previewContainer.appendChild(linkButton);
     resultsDiv.appendChild(previewContainer);
   }
