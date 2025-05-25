@@ -246,15 +246,15 @@
   console.log("Parsed data:", data);
 console.log("landingpageURL value:", data.landingpageURL);
 console.log("typeof landingpageURL:", typeof data.landingpageURL);
-let landingpageeUrl = data.landingpageURL;
+let landingpageUrl = data.landingpageURL;
 
-if (!landingpageeUrl) {
+if (!landingpageUrl) {
  console.error("No URL found in response:", data);
  throw new Error("No website URL returned from server");
 }
 
-currentPageUrl = landingpageeUrl;
-displayWebsite(landingpageeUrl, prompt);
+currentPageUrl = landingpageUrl;
+displayWebsite(landingpageUrl, prompt);
       updateStatus('Website generated successfully!');
       
     } catch (error) {
@@ -265,13 +265,13 @@ displayWebsite(landingpageeUrl, prompt);
     }
   }
 
-  function displayWebsite(landingpageeUrl, prompt) {
+  function displayWebsite(landingpageUrl, prompt) {
     const resultsDiv = document.getElementById("pageResults");
     resultsDiv.innerHTML = '';
     
     const previewContainer = document.createElement("div");
     previewContainer.className = "page-preview-container";
-  console.log("Setting iframe src to:", landingpageeUrl);  
+  console.log("Setting iframe src to:", landingpageUrl);  
 previewContainer.innerHTML = `
   <div class="preview-placeholder">
     <div>
@@ -286,7 +286,7 @@ previewContainer.innerHTML = `
     const linkButton = document.createElement("button");
     linkButton.innerText = "🔗 Open in New Tab";
     linkButton.style.marginTop = "10px";
-    linkButton.onclick = () => window.open(landingpageeUrl, '_blank');
+    linkButton.onclick = () => window.open(landingpageUrl, '_blank');
 
     previewContainer.appendChild(linkButton);
     resultsDiv.appendChild(previewContainer);
