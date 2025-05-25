@@ -270,13 +270,10 @@ displayWebsite(landingpageUrl, prompt);
 previewContainer.innerHTML = `
   <div style="text-align: center;">
     <p>✅ Website Generated Successfully!</p>
-    <div style="width: 100%; height: 300px; background: #f0f8ff; border: 2px solid #0A3161; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="window.open('${landingpageUrl}', '_blank')">
-      <div style="text-align: center;">
-        <div style="font-size: 48px;">🌐</div>
-        <p style="margin: 10px 0; font-weight: bold;">Click to View Website</p>
-        <p style="margin: 0; font-size: 14px; color: #255;">${landingpageUrl}</p>
-      </div>
-    </div>
+    <img src="https://image.thum.io/get/width/600/crop/768/${landingpageUrl}" 
+         style="width: 100%; max-width: 600px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;"
+         onclick="window.open('${landingpageUrl}', '_blank')"
+         alt="Website Preview"/>
   </div>
 `;
     const linkButton = document.createElement("button");
