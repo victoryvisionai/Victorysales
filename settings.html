@@ -1,67 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victory Vision AI - Settings</title>
-    <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script defer src="scripts.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Victory Vision AI Settings and Integrations"/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision AI - Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .navbar {
+      background-color: #0A3161;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar nav ul li {
+      margin: 0 10px;
+    }
+    .navbar nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    .logo img {
+      height: 60px;
+      width: auto;
+      max-height: 100px;
+    }
+    .content {
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .settings-group {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    .settings-group h3 {
+      margin-top: 0;
+      color: #0A3161;
+      border-bottom: 2px solid #0A3161;
+      padding-bottom: 10px;
+    }
+    input[type="text"], input[type="email"], input[type="password"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #0A3161;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 8px 8px 8px 0;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background: #083052;
+    }
+    button.secondary {
+      background: #6c757d;
+    }
+    button.secondary:hover {
+      background: #545b62;
+    }
+    button.success {
+      background: #28a745;
+    }
+    button.success:hover {
+      background: #218838;
+    }
+    button.danger {
+      background: #dc3545;
+    }
+    button.danger:hover {
+      background: #c82333;
+    }
+    .checkbox-group {
+      margin: 15px 0;
+    }
+    .checkbox-group label {
+      display: block;
+      margin: 8px 0;
+      cursor: pointer;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+    .status-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    .status-connected {
+      background-color: #28a745;
+    }
+    .status-disconnected {
+      background-color: #dc3545;
+    }
+    .plan-info {
+      background: #e8f4f8;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    .api-key-input {
+      font-family: monospace;
+      background: #f8f9fa;
+    }
+    footer {
+      background: #0A3161;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    footer a {
+      color: #fff;
+      margin-right: 15px;
+      text-decoration: none;
+    }
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #0A3161;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: none;
+      margin: 10px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+    }
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-
-<header class="navbar"></header>
+<header class="navbar">
+  <div class="logo">
+    <img src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="ai-opt">🤖</a></li>
+      <li><a href="dashboard">KPI's</a></li>
+      <li><a href="images">Images</a></li>
+      <li><a href="videos">Videos</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="ads">Ads</a></li>
+      <li><a href="leads">Leads</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="messages">Messages</a></li>
+      <li><a href="settings">⚙️</a></li>
+    </ul>
+  </nav>
+</header>
 
 <div class="content">
-    <div class="card">
-        <h2>Settings</h2>
-
-        <div class="settings-group">
-            <h3>LinkedIn Integration</h3>
-            <button>Connect LinkedIn</button>
-        </div>
-
-        <div class="settings-group">
-            <h3>Instagram Integration</h3>
-            <button>Connect Instagram</button>
-        </div>
-
-        <div class="settings-group">
-            <h3>Stripe Integration</h3>
-            <button>Connect Stripe</button>
-        </div>
-
-        <div class="settings-group">
-            <h3>KPI Controls</h3>
-            <label><input type="checkbox"> Track Conversions</label><br>
-            <label><input type="checkbox"> Track Click-Through Rate (CTR)</label><br>
-            <label><input type="checkbox"> Track Views</label><br>
-            <label><input type="checkbox"> Track Impressions</label><br>
-            <button>Save KPI Settings</button>
-        </div>
-
-        <div class="settings-group">
-            <h3>Google Ads Settings</h3>
-            <input type="text" placeholder="Ad Account ID">
-            <button>Connect Google Ads</button>
-        </div>
-
-        <div class="settings-group">
-            <h3>Billing Info & Plan Management</h3>
-            <p><strong>Current Plan:</strong> Premium - $500/month</p>
-            <button>Update Plan</button>
-
-            <h4>Payment Method</h4>
-            <input type="text" placeholder="Card Number">
-            <input type="text" placeholder="Expiry Date MM/YY">
-            <input type="text" placeholder="CVC">
-            <button>Update Payment Info</button>
-        </div>
-
+  <h2>Settings & Integrations</h2>
+  
+  <div class="card">
+    <div class="settings-group">
+      <h3>
+        <span class="status-indicator status-disconnected" id="stripe-status"></span>
+        Stripe Integration
+      </h3>
+      <p>Connect your Stripe account to enable payments on your landing pages and checkout experiences.</p>
+      
+      <div>
+        <label for="stripe-publishable-key">Stripe Publishable Key:</label>
+        <input type="text" id="stripe-publishable-key" class="api-key-input" placeholder="pk_test_..." />
+      </div>
+      
+      <div>
+        <label for="stripe-secret-key">Stripe Secret Key:</label>
+        <input type="password" id="stripe-secret-key" class="api-key-input" placeholder="sk_test_..." />
+      </div>
+      
+      <button id="connect-stripe" onclick="connectStripe()">Connect Stripe</button>
+      <button class="secondary" onclick="testStripeConnection()">Test Connection</button>
+      <a href="checkout.html" target="_blank">
+        <button class="success">Preview Checkout Page</button>
+      </a>
+      
+      <div id="stripe-loader" class="loader"></div>
+      <div id="stripe-success" class="success-message"></div>
+      <div id="stripe-error" class="error-message"></div>
     </div>
+
+    <div class="settings-group">
+      <h3>
+        <span class="status-indicator status-disconnected" id="linkedin-status"></span>
+        LinkedIn Integration
+      </h3>
+      <p>Connect LinkedIn for social media posting and lead generation.</p>
+      <button onclick="connectLinkedIn()">Connect LinkedIn</button>
+      <button class="danger" onclick="disconnectLinkedIn()" style="display: none;" id="disconnect-linkedin">Disconnect</button>
+    </div>
+
+    <div class="settings-group">
+      <h3>
+        <span class="status-indicator status-disconnected" id="instagram-status"></span>
+        Instagram Integration
+      </h3>
+      <p>Connect Instagram for automated posting and content management.</p>
+      <button onclick="connectInstagram()">Connect Instagram</button>
+      <button class="danger" onclick="disconnectInstagram()" style="display: none;" id="disconnect-instagram">Disconnect</button>
+    </div>
+
+    <div class="settings-group">
+      <h3>Google Ads Settings</h3>
+      <p>Configure your Google Ads integration for campaign management.</p>
+      <div>
+        <label for="google-ads-account">Ad Account ID:</label>
+        <input type="text" id="google-ads-account" placeholder="123-456-7890" />
+      </div>
+      <button onclick="connectGoogleAds()">Connect Google Ads</button>
+    </div>
+
+    <div class="settings-group">
+      <h3>KPI Tracking Controls</h3>
+      <p>Choose which metrics to track across your campaigns and pages.</p>
+      <div class="checkbox-group">
+        <label><input type="checkbox" id="track-conversions" checked> Track Conversions</label>
+        <label><input type="checkbox" id="track-ctr" checked> Track Click-Through Rate (CTR)</label>
+        <label><input type="checkbox" id="track-views" checked> Track Page Views</label>
+        <label><input type="checkbox" id="track-impressions" checked> Track Ad Impressions</label>
+        <label><input type="checkbox" id="track-leads"> Track Lead Generation</label>
+        <label><input type="checkbox" id="track-revenue"> Track Revenue & Sales</label>
+      </div>
+      <button onclick="saveKPISettings()">Save KPI Settings</button>
+    </div>
+
+    <div class="settings-group">
+      <h3>Billing Information & Plan Management</h3>
+      <div class="plan-info">
+        <p><strong>Current Plan:</strong> Premium - $500/month</p>
+        <p><strong>Next Billing Date:</strong> June 26, 2025</p>
+        <p><strong>Payment Status:</strong> <span style="color: #28a745;">Active</span></p>
+      </div>
+      
+      <button onclick="updatePlan()">Change Plan</button>
+      <button class="secondary" onclick="viewBillingHistory()">View Billing History</button>
+
+      <h4>Payment Method</h4>
+      <div>
+        <input type="text" id="card-number" placeholder="Card Number" maxlength="19" />
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="expiry-date" placeholder="MM/YY" maxlength="5" style="flex: 1;" />
+          <input type="text" id="cvc" placeholder="CVC" maxlength="4" style="flex: 1;" />
+        </div>
+        <input type="text" id="cardholder-name" placeholder="Cardholder Name" />
+      </div>
+      <button onclick="updatePaymentInfo()">Update Payment Info</button>
+    </div>
+
+    <div class="settings-group">
+      <h3>Account Settings</h3>
+      <div>
+        <label for="company-name">Company Name:</label>
+        <input type="text" id="company-name" placeholder="Your Company Name" />
+      </div>
+      <div>
+        <label for="contact-email">Contact Email:</label>
+        <input type="email" id="contact-email" placeholder="contact@yourcompany.com" />
+      </div>
+      <div>
+        <label for="webhook-url">Webhook URL (for integrations):</label>
+        <input type="text" id="webhook-url" placeholder="https://yoursite.com/webhook" />
+      </div>
+      <button onclick="saveAccountSettings()">Save Account Settings</button>
+    </div>
+  </div>
 </div>
 
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+  // Stripe Integration Functions
+  let stripeConnected = false;
+
+  async function connectStripe() {
+    const publishableKey = document.getElementById('stripe-publishable-key').value;
+    const secretKey = document.getElementById('stripe-secret-key').value;
+    
+    if (!publishableKey || !secretKey) {
+      showError('stripe', 'Please enter both Stripe keys');
+      return;
+    }
+
+    showLoader('stripe');
+    
+    try {
+      // Simulate API call to save Stripe keys
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Update UI
+      document.getElementById('stripe-status').className = 'status-indicator status-connected';
+      showSuccess('stripe', 'Stripe connected successfully! You can now accept payments.');
+      stripeConnected = true;
+      
+      // Store keys securely (in real app, this would be server-side)
+      localStorage.setItem('stripe_publishable_key', publishableKey);
+      
+    } catch (error) {
+      showError('stripe', 'Failed to connect Stripe. Please check your keys.');
+    } finally {
+      hideLoader('stripe');
+    }
+  }
+
+  async function testStripeConnection() {
+    if (!stripeConnected) {
+      showError('stripe', 'Please connect Stripe first');
+      return;
+    }
+    
+    showLoader('stripe');
+    
+    try {
+      // Simulate test transaction
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      showSuccess('stripe', 'Stripe connection test successful!');
+    } catch (error) {
+      showError('stripe', 'Connection test failed');
+    } finally {
+      hideLoader('stripe');
+    }
+  }
+
+  // Social Media Integration Functions
+  function connectLinkedIn() {
+    // Simulate OAuth flow
+    alert('Redirecting to LinkedIn for authorization...');
+    setTimeout(() => {
+      document.getElementById('linkedin-status').className = 'status-indicator status-connected';
+      document.getElementById('disconnect-linkedin').style.display = 'inline-block';
+    }, 2000);
+  }
+
+  function disconnectLinkedIn() {
+    document.getElementById('linkedin-status').className = 'status-indicator status-disconnected';
+    document.getElementById('disconnect-linkedin').style.display = 'none';
+  }
+
+  function connectInstagram() {
+    alert('Redirecting to Instagram for authorization...');
+    setTimeout(() => {
+      document.getElementById('instagram-status').className = 'status-indicator status-connected';
+      document.getElementById('disconnect-instagram').style.display = 'inline-block';
+    }, 2000);
+  }
+
+  function disconnectInstagram() {
+    document.getElementById('instagram-status').className = 'status-indicator status-disconnected';
+    document.getElementById('disconnect-instagram').style.display = 'none';
+  }
+
+  function connectGoogleAds() {
+    const accountId = document.getElementById('google-ads-account').value;
+    if (!accountId) {
+      alert('Please enter your Google Ads Account ID');
+      return;
+    }
+    alert('Connecting to Google Ads...');
+  }
+
+  // Settings Functions
+  function saveKPISettings() {
+    const settings = {
+      conversions: document.getElementById('track-conversions').checked,
+      ctr: document.getElementById('track-ctr').checked,
+      views: document.getElementById('track-views').checked,
+      impressions: document.getElementById('track-impressions').checked,
+      leads: document.getElementById('track-leads').checked,
+      revenue: document.getElementById('track-revenue').checked
+    };
+    
+    localStorage.setItem('kpi_settings', JSON.stringify(settings));
+    alert('KPI settings saved successfully!');
+  }
+
+  function updatePlan() {
+    alert('Redirecting to plan selection...');
+  }
+
+  function viewBillingHistory() {
+    alert('Opening billing history...');
+  }
+
+  function updatePaymentInfo() {
+    const cardNumber = document.getElementById('card-number').value;
+    const expiryDate = document.getElementById('expiry-date').value;
+    const cvc = document.getElementById('cvc').value;
+    const cardholderName = document.getElementById('cardholder-name').value;
+    
+    if (!cardNumber || !expiryDate || !cvc || !cardholderName) {
+      alert('Please fill in all payment information fields');
+      return;
+    }
+    
+    alert('Payment information updated successfully!');
+  }
+
+  function saveAccountSettings() {
+    const companyName = document.getElementById('company-name').value;
+    const contactEmail = document.getElementById('contact-email').value;
+    const webhookUrl = document.getElementById('webhook-url').value;
+    
+    const settings = {
+      companyName,
+      contactEmail,
+      webhookUrl
+    };
+    
+    localStorage.setItem('account_settings', JSON.stringify(settings));
+    alert('Account settings saved successfully!');
+  }
+
+  // Utility Functions
+  function showLoader(type) {
+    document.getElementById(`${type}-loader`).style.display = 'block';
+  }
+
+  function hideLoader(type) {
+    document.getElementById(`${type}-loader`).style.display = 'none';
+  }
+
+  function showSuccess(type, message) {
+    const element = document.getElementById(`${type}-success`);
+    element.textContent = message;
+    element.style.display = 'block';
+    setTimeout(() => {
+      element.style.display = 'none';
+    }, 5000);
+  }
+
+  function showError(type, message) {
+    const element = document.getElementById(`${type}-error`);
+    element.textContent = message;
+    element.style.display = 'block';
+    setTimeout(() => {
+      element.style.display = 'none';
+    }, 5000);
+  }
+
+  // Load saved settings on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Load KPI settings
+    const kpiSettings = localStorage.getItem('kpi_settings');
+    if (kpiSettings) {
+      const settings = JSON.parse(kpiSettings);
+      Object.keys(settings).forEach(key => {
+        const element = document.getElementById(`track-${key}`);
+        if (element) {
+          element.checked = settings[key];
+        }
+      });
+    }
+
+    // Load account settings
+    const accountSettings = localStorage.getItem('account_settings');
+    if (accountSettings) {
+      const settings = JSON.parse(accountSettings);
+      if (settings.companyName) document.getElementById('company-name').value = settings.companyName;
+      if (settings.contactEmail) document.getElementById('contact-email').value = settings.contactEmail;
+      if (settings.webhookUrl) document.getElementById('webhook-url').value = settings.webhookUrl;
+    }
+
+    // Check if Stripe is already connected
+    if (localStorage.getItem('stripe_publishable_key')) {
+      document.getElementById('stripe-status').className = 'status-indicator status-connected';
+      stripeConnected = true;
+    }
+  });
+
+  // Format card number input
+  document.getElementById('card-number').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+    e.target.value = value;
+  });
+
+  // Format expiry date input
+  document.getElementById('expiry-date').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+      value = value.substring(0, 2) + '/' + value.substring(2, 4);
+    }
+    e.target.value = value;
+  });
+</script>
 </body>
 </html>
-
