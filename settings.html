@@ -6,6 +6,7 @@
   <meta name="description" content="Victory Vision AI Settings and Integrations"/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Settings</title>
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -190,12 +191,14 @@
   <nav>
     <ul>
       <li><a href="ai-opt">🤖</a></li>
+      <li><a href="dashboard">KPI's</a></li>
       <li><a href="images">Images</a></li>
       <li><a href="videos">Videos</a></li>
       <li><a href="pages">Pages</a></li>
       <li><a href="ads">Ads</a></li>
       <li><a href="leads">Leads</a></li>
       <li><a href="social">Social</a></li>
+      <li><a href="messages">Messages</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
@@ -432,26 +435,171 @@
     alert('KPI settings saved successfully!');
   }
 
-  function updatePlan() {
-    alert('Redirecting to plan selection...');
-  }
-
-  function viewBillingHistory() {
-    alert('Opening billing history...');
-  }
-
-  function updatePaymentInfo() {
-    const cardNumber = document.getElementById('card-number').value;
-    const expiryDate = document.getElementById('expiry-date').value;
-    const cvc = document.getElementById('cvc').value;
-    const cardholderName = document.getElementById('cardholder-name').value;
-    
-    if (!cardNumber || !expiryDate || !cvc || !cardholderName) {
-      alert('Please fill in all payment information fields');
+  // Stripe Billing Functions
+  async function updatePlan() {
+    if (!stripeConnected) {
+      alert('Please connect Stripe first to manage your billing plan');
       return;
     }
+
+    // Create Stripe Billing Portal session for plan management
+    try {
+      const response = await fetch('/create-portal-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_id: 'cus_customer_id', // Replace with actual customer ID
+          return_url: window.location.href
+        })
+      });
+
+  /*
+  SERVER-SIDE IMPLEMENTATION EXAMPLES:
+  
+  1. Create Customer Portal Session (Node.js/Express):
+  
+  app.post('/create-portal-session', async (req, res) => {
+    const { customer_id, return_url, configuration } = req.body;
     
-    alert('Payment information updated successfully!');
+    try {
+      const session = await stripe.billingPortal.sessions.create({
+        customer: customer_id,
+        return_url: return_url,
+        configuration: configuration
+      });
+      
+      res.json({ url: session.url });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  2. Update Payment Method:
+  
+  app.post('/update-payment-method', async (req, res) => {
+    const { payment_method_id, customer_id } = req.body;
+    
+    try {
+      // Attach payment method to customer
+      await stripe.paymentMethods.attach(payment_method_id, {
+        customer: customer_id,
+      });
+      
+      // Set as default payment method
+      await stripe.customers.update(customer_id, {
+        invoice_settings: {
+          default_payment_method: payment_method_id,
+        },
+      });
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+
+  3. Create Subscription (for plan changes):
+  
+  app.post('/create-subscription', async (req, res) => {
+    const { customer_id, price_id } = req.body;
+    
+    try {
+      const subscription = await stripe.subscriptions.create({
+        customer: customer_id,
+        items: [{ price: price_id }],
+        payment_behavior: 'default_incomplete',
+        expand: ['latest_invoice.payment_intent'],
+      });
+      
+      res.json({
+        subscription_id: subscription.id,
+        client_secret: subscription.latest_invoice.payment_intent.client_secret
+      });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  });
+  */
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error creating portal session:', error);
+      // Fallback to demo modal
+      showPlanSelectionModal();
+    }
+  }
+
+  async function viewBillingHistory() {
+    if (!stripeConnected) {
+      alert('Please connect Stripe first to view billing history');
+      return;
+    }
+
+    // Create Stripe Customer Portal session for billing history
+    try {
+      const response = await fetch('/create-portal-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_id: 'cus_customer_id', // Replace with actual customer ID
+          return_url: window.location.href,
+          configuration: {
+            features: {
+              invoice_history: { enabled: true },
+              payment_method_update: { enabled: false },
+              subscription_cancel: { enabled: false }
+            }
+          }
+        })
+      });
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error creating portal session:', error);
+      // Fallback to demo modal
+      showBillingHistoryModal();
+    }
+  }
+
+  async function updatePaymentInfo() {
+    if (!stripeConnected) {
+      alert('Please connect Stripe first to update payment information');
+      return;
+    }
+
+    // Create Stripe Customer Portal session for payment method management
+    try {
+      const response = await fetch('/create-portal-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_id: 'cus_customer_id', // Replace with actual customer ID
+          return_url: window.location.href,
+          configuration: {
+            features: {
+              payment_method_update: { enabled: true },
+              invoice_history: { enabled: false },
+              subscription_cancel: { enabled: false }
+            }
+          }
+        })
+      });
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error('Error creating portal session:', error);
+      // Fallback to integrated payment method update
+      showPaymentMethodUpdateForm();
+    }
   }
 
   function saveAccountSettings() {
@@ -467,6 +615,227 @@
     
     localStorage.setItem('account_settings', JSON.stringify(settings));
     alert('Account settings saved successfully!');
+  }
+
+  // Demo Modal Functions (fallbacks when Stripe Customer Portal isn't available)
+  function showPlanSelectionModal() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.8); display: flex; align-items: center; 
+      justify-content: center; z-index: 1000;
+    `;
+    
+    modal.innerHTML = `
+      <div style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
+        <h3 style="margin-top: 0; color: #0A3161;">Select Your Plan</h3>
+        <div style="margin: 20px 0;">
+          <div style="border: 2px solid #e9ecef; padding: 20px; border-radius: 8px; margin: 10px 0;">
+            <h4>Starter - $99/month</h4>
+            <p>Perfect for small businesses</p>
+            <ul><li>10,000 API calls</li><li>Basic analytics</li><li>Email support</li></ul>
+            <button onclick="selectPlan('starter')" style="background: #0A3161; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Select Plan</button>
+          </div>
+          <div style="border: 2px solid #0A3161; padding: 20px; border-radius: 8px; margin: 10px 0; background: #f8f9ff;">
+            <h4>Premium - $500/month <span style="background: #0A3161; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">CURRENT</span></h4>
+            <p>For growing companies</p>
+            <ul><li>100,000 API calls</li><li>Advanced analytics</li><li>Priority support</li><li>Custom integrations</li></ul>
+            <button onclick="selectPlan('premium')" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Current Plan</button>
+          </div>
+          <div style="border: 2px solid #e9ecef; padding: 20px; border-radius: 8px; margin: 10px 0;">
+            <h4>Enterprise - $1,500/month</h4>
+            <p>For large organizations</p>
+            <ul><li>Unlimited API calls</li><li>Custom analytics</li><li>24/7 dedicated support</li><li>White-label options</li></ul>
+            <button onclick="selectPlan('enterprise')" style="background: #0A3161; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Upgrade</button>
+          </div>
+        </div>
+        <button onclick="closeModal()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; float: right;">Close</button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    window.selectPlan = function(plan) {
+      alert(`Redirecting to checkout for ${plan} plan...`);
+      document.body.removeChild(modal);
+    };
+    
+    window.closeModal = function() {
+      document.body.removeChild(modal);
+    };
+  }
+
+  function showBillingHistoryModal() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.8); display: flex; align-items: center; 
+      justify-content: center; z-index: 1000;
+    `;
+    
+    modal.innerHTML = `
+      <div style="background: white; padding: 30px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+        <h3 style="margin-top: 0; color: #0A3161;">Billing History</h3>
+        <div style="margin: 20px 0;">
+          <div style="border-bottom: 1px solid #e9ecef; padding: 15px 0; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong>May 26, 2025</strong><br>
+              <span style="color: #666;">Premium Plan</span>
+            </div>
+            <div style="text-align: right;">
+              <strong>$500.00</strong><br>
+              <span style="color: #28a745; font-size: 12px;">PAID</span>
+            </div>
+          </div>
+          <div style="border-bottom: 1px solid #e9ecef; padding: 15px 0; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong>April 26, 2025</strong><br>
+              <span style="color: #666;">Premium Plan</span>
+            </div>
+            <div style="text-align: right;">
+              <strong>$500.00</strong><br>
+              <span style="color: #28a745; font-size: 12px;">PAID</span>
+            </div>
+          </div>
+          <div style="border-bottom: 1px solid #e9ecef; padding: 15px 0; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong>March 26, 2025</strong><br>
+              <span style="color: #666;">Premium Plan</span>
+            </div>
+            <div style="text-align: right;">
+              <strong>$500.00</strong><br>
+              <span style="color: #28a745; font-size: 12px;">PAID</span>
+            </div>
+          </div>
+        </div>
+        <button onclick="closeModal()" style="background: #0A3161; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; float: right;">Close</button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+  }
+
+  function showPaymentMethodUpdateForm() {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+      background: rgba(0,0,0,0.8); display: flex; align-items: center; 
+      justify-content: center; z-index: 1000;
+    `;
+    
+    modal.innerHTML = `
+      <div style="background: white; padding: 30px; border-radius: 12px; max-width: 500px; width: 90%;">
+        <h3 style="margin-top: 0; color: #0A3161;">Update Payment Method</h3>
+        <div id="card-element-container" style="margin: 20px 0; padding: 15px; border: 2px solid #e9ecef; border-radius: 8px;">
+          <!-- Stripe Elements will be inserted here -->
+        </div>
+        <div style="margin: 20px 0;">
+          <button id="submit-payment-method" style="background: #0A3161; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer; margin-right: 10px;">Update Payment Method</button>
+          <button onclick="closeModal()" style="background: #6c757d; color: white; border: none; padding: 12px 24px; border-radius: 4px; cursor: pointer;">Cancel</button>
+        </div>
+        <div id="card-errors" style="color: #dc3545; margin-top: 10px;"></div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Initialize Stripe Elements for payment method update
+    initializeStripeElements();
+  }
+
+  // Stripe Elements Integration
+  let stripe = null;
+  let elements = null;
+  let cardElement = null;
+
+  function initializeStripeElements() {
+    const publishableKey = localStorage.getItem('stripe_publishable_key');
+    if (!publishableKey) {
+      document.getElementById('card-errors').textContent = 'Please configure Stripe keys first in the settings.';
+      return;
+    }
+
+    // Initialize Stripe
+    stripe = Stripe(publishableKey);
+    elements = stripe.elements();
+
+    // Create card element
+    cardElement = elements.create('card', {
+      style: {
+        base: {
+          fontSize: '16px',
+          color: '#424770',
+          '::placeholder': {
+            color: '#aab7c4',
+          },
+        },
+        invalid: {
+          color: '#9e2146',
+        },
+      },
+    });
+
+    // Mount card element
+    cardElement.mount('#card-element-container');
+
+    // Handle real-time validation errors from the card Element
+    cardElement.on('change', function(event) {
+      const displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }
+    });
+
+    // Handle form submission
+    document.getElementById('submit-payment-method').addEventListener('click', handlePaymentMethodSubmit);
+  }
+
+  async function handlePaymentMethodSubmit(event) {
+    event.preventDefault();
+
+    const submitButton = document.getElementById('submit-payment-method');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Processing...';
+
+    // Create payment method
+    const {error, paymentMethod} = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+    });
+
+    if (error) {
+      // Show error to customer
+      document.getElementById('card-errors').textContent = error.message;
+      submitButton.disabled = false;
+      submitButton.textContent = 'Update Payment Method';
+    } else {
+      // Send payment method to your server
+      try {
+        const response = await fetch('/update-payment-method', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            payment_method_id: paymentMethod.id,
+            customer_id: 'cus_customer_id' // Replace with actual customer ID
+          })
+        });
+
+        if (response.ok) {
+          alert('Payment method updated successfully!');
+          closeModal();
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (error) {
+        document.getElementById('card-errors').textContent = 'Error updating payment method. Please try again.';
+        submitButton.disabled = false;
+        submitButton.textContent = 'Update Payment Method';
+      }
+    }
   }
 
   // Utility Functions
