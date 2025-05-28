@@ -55,6 +55,11 @@
             background-color: #BB133E;
         }
 
+        button:disabled {
+            background-color: #B3B3B3;
+            cursor: not-allowed;
+        }
+
         .logo {
             margin-bottom: 20px;
             width: 150px;
@@ -101,29 +106,46 @@
             color: #BB133E;
             margin-top: 10px;
             display: none;
+            font-size: 0.9em;
         }
         
         .success-message {
             color: #28a745;
             margin-top: 10px;
             display: none;
+            font-size: 0.9em;
         }
         
         #reset-password-form {
             display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
 <div class="logo">
-    <img src="logo.jpg" alt="Victory Vision Logo">
+    <img src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%2260%22><rect width=%22150%22 height=%2260%22 fill=%22%230A3161%22 /><text x=%2275%22 y=%2235%22 font-size=%2224%22 fill=%22white%22 text-anchor=%22middle%22>Victory Vision</text></svg>'">
 </div>
 
 <div class="login-container" id="login-form">
     <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
     <button id="login-button" onclick="emailLogin()">Login</button>
     <div id="error-message" class="error-message"></div>
     <div id="success-message" class="success-message"></div>
@@ -139,7 +161,7 @@
 <div class="login-container" id="reset-password-form">
     <h2>Reset Password</h2>
     <p>Enter your email address and we'll send you a link to reset your password.</p>
-    <input type="email" id="reset-email" placeholder="Email">
+    <input type="email" id="reset-email" placeholder="Email" required>
     <button id="reset-button" onclick="resetPassword()">Send Reset Link</button>
     <div id="reset-error-message" class="error-message"></div>
     <div id="reset-success-message" class="success-message"></div>
@@ -154,6 +176,10 @@
     // Create a Supabase client
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
     
+    // Get current domain for redirects
+    const currentDomain = window.location.hostname === 'localhost' ? 
+        'http://localhost:3000' : 'https://victoryvision.app';
+    
     // Check for existing session on page load
     document.addEventListener('DOMContentLoaded', async function() {
         try {
@@ -161,37 +187,105 @@
             
             // If user is already logged in, redirect to dashboard
             if (session) {
+                await setupUserSession(session.user);
                 redirectToDashboard();
+                return;
             }
+            
+            // Handle OAuth callback
+            await handleAuthCallback();
             
             // Check for password reset confirmation
             const hash = window.location.hash;
             if (hash && hash.includes('type=recovery')) {
-                // Show password reset success
-                document.getElementById('success-message').textContent = 'You can now reset your password.';
-                document.getElementById('success-message').style.display = 'block';
+                showSuccess('You can now reset your password.');
             }
             
             // Check if there was a redirect from email verification
             const params = new URLSearchParams(window.location.search);
             if (params.get('verified') === 'true') {
-                document.getElementById('success-message').textContent = 'Email verified successfully! You can now log in.';
-                document.getElementById('success-message').style.display = 'block';
+                showSuccess('Email verified successfully! You can now log in.');
             }
         } catch (e) {
             console.error('Error checking authentication:', e);
+            showError('Authentication error. Please try again.');
         }
     });
+
+    // Handle OAuth callback
+    async function handleAuthCallback() {
+        try {
+            const { data, error } = await supabaseClient.auth.getSession();
+            
+            if (error) {
+                console.error('OAuth callback error:', error);
+                showError('Authentication failed: ' + error.message);
+                return;
+            }
+            
+            if (data.session) {
+                await setupUserSession(data.session.user);
+                redirectToDashboard();
+            }
+        } catch (e) {
+            console.error('Error handling auth callback:', e);
+        }
+    }
+
+    // Setup user session in localStorage
+    async function setupUserSession(user) {
+        try {
+            // Store essential user info securely
+            const userSession = {
+                id: user.id,
+                email: user.email,
+                customer_id: user.email, // Use email as customer_id
+                authenticated: true,
+                expires_at: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+            };
+            
+            localStorage.setItem('vv_session', JSON.stringify(userSession));
+            
+            // Update user profile in database
+            await updateUserProfile(user);
+            
+        } catch (e) {
+            console.error('Error setting up user session:', e);
+        }
+    }
+
+    // Update user profile in database
+    async function updateUserProfile(user) {
+        try {
+            const { error } = await supabaseClient
+                .from('users')
+                .upsert({
+                    id: user.id,
+                    email: user.email,
+                    customer_id: user.email,
+                    last_login: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                });
+                
+            if (error) {
+                console.error('Error updating user profile:', error);
+            }
+        } catch (e) {
+            console.error('Error in updateUserProfile:', e);
+        }
+    }
     
     // Show/hide form functions
     function showResetPasswordForm() {
         document.getElementById('login-form').style.display = 'none';
         document.getElementById('reset-password-form').style.display = 'block';
+        clearMessages();
     }
     
     function showLoginForm() {
         document.getElementById('reset-password-form').style.display = 'none';
         document.getElementById('login-form').style.display = 'block';
+        clearResetMessages();
     }
     
     // Display error message
@@ -199,6 +293,21 @@
         const errorElement = document.getElementById('error-message');
         errorElement.textContent = message;
         errorElement.style.display = 'block';
+        
+        // Hide success message
+        const successElement = document.getElementById('success-message');
+        successElement.style.display = 'none';
+    }
+    
+    // Display success message
+    function showSuccess(message) {
+        const successElement = document.getElementById('success-message');
+        successElement.textContent = message;
+        successElement.style.display = 'block';
+        
+        // Hide error message
+        const errorElement = document.getElementById('error-message');
+        errorElement.style.display = 'none';
     }
     
     // Display reset error message
@@ -206,6 +315,9 @@
         const errorElement = document.getElementById('reset-error-message');
         errorElement.textContent = message;
         errorElement.style.display = 'block';
+        
+        const successElement = document.getElementById('reset-success-message');
+        successElement.style.display = 'none';
     }
     
     // Display reset success message
@@ -213,33 +325,35 @@
         const successElement = document.getElementById('reset-success-message');
         successElement.textContent = message;
         successElement.style.display = 'block';
+        
+        const errorElement = document.getElementById('reset-error-message');
+        errorElement.style.display = 'none';
     }
     
-    // Clear error message
-    function clearError() {
-        const errorElement = document.getElementById('error-message');
-        errorElement.style.display = 'none';
-        const successElement = document.getElementById('success-message');
-        successElement.style.display = 'none';
+    // Clear messages
+    function clearMessages() {
+        document.getElementById('error-message').style.display = 'none';
+        document.getElementById('success-message').style.display = 'none';
     }
     
     // Clear reset form messages
     function clearResetMessages() {
-        const errorElement = document.getElementById('reset-error-message');
-        errorElement.style.display = 'none';
-        const successElement = document.getElementById('reset-success-message');
-        successElement.style.display = 'none';
+        document.getElementById('reset-error-message').style.display = 'none';
+        document.getElementById('reset-success-message').style.display = 'none';
     }
     
     // Redirect to dashboard
     function redirectToDashboard() {
-        window.location.href = 'ai-opt.html';
+        // Use a small delay to ensure session is properly set
+        setTimeout(() => {
+            window.location.href = 'companyprofile.html';
+        }, 100);
     }
 
     // Email and password login
     async function emailLogin() {
-        clearError();
-        const email = document.getElementById('email').value;
+        clearMessages();
+        const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
         
         if (!email || !password) {
@@ -247,10 +361,18 @@
             return;
         }
         
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError('Please enter a valid email address');
+            return;
+        }
+        
         try {
             const button = document.getElementById('login-button');
+            const originalText = button.textContent;
             button.disabled = true;
-            button.textContent = 'Logging in...';
+            button.innerHTML = '<span class="loading"></span> Logging in...';
             
             const { data, error } = await supabaseClient.auth.signInWithPassword({
                 email,
@@ -258,18 +380,18 @@
             });
 
             if (error) {
-                showError('Login error: ' + error.message);
+                showError('Login failed: ' + error.message);
                 button.disabled = false;
-                button.textContent = 'Login';
+                button.textContent = originalText;
             } else {
-                // Successfully logged in, now fetch user profile
-                await fetchUserProfile(data.user.id);
-                
-                // Redirect to dashboard
+                // Successfully logged in
+                await setupUserSession(data.user);
+                showSuccess('Login successful! Redirecting...');
                 redirectToDashboard();
             }
         } catch (e) {
-            showError('An unexpected error occurred: ' + e.message);
+            showError('An unexpected error occurred. Please try again.');
+            console.error('Login error:', e);
             document.getElementById('login-button').disabled = false;
             document.getElementById('login-button').textContent = 'Login';
         }
@@ -277,27 +399,29 @@
 
     // Google OAuth login
     async function loginWithGoogle() {
-        clearError();
+        clearMessages();
         try {
             const button = document.getElementById('google-button');
+            const originalText = button.textContent;
             button.disabled = true;
-            button.textContent = 'Connecting to Google...';
+            button.innerHTML = '<span class="loading"></span> Connecting...';
             
             const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: 'https://victoryvision.app/ai-opt'
+                    redirectTo: `${currentDomain}/companyprofile.html`
                 }
             });
 
             if (error) {
-                showError('Google login error: ' + error.message);
+                showError('Google login failed: ' + error.message);
                 button.disabled = false;
-                button.textContent = 'Login with Google';
+                button.textContent = originalText;
             }
-            // No need for success handling as OAuth will redirect
+            // Success will be handled by redirect
         } catch (e) {
-            showError('An unexpected error occurred: ' + e.message);
+            showError('Google login failed. Please try again.');
+            console.error('Google login error:', e);
             document.getElementById('google-button').disabled = false;
             document.getElementById('google-button').textContent = 'Login with Google';
         }
@@ -306,76 +430,46 @@
     // Password reset request
     async function resetPassword() {
         clearResetMessages();
-        const email = document.getElementById('reset-email').value;
+        const email = document.getElementById('reset-email').value.trim();
         
         if (!email) {
             showResetError('Please enter your email address');
             return;
         }
         
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showResetError('Please enter a valid email address');
+            return;
+        }
+        
         try {
             const button = document.getElementById('reset-button');
+            const originalText = button.textContent;
             button.disabled = true;
-            button.textContent = 'Sending...';
+            button.innerHTML = '<span class="loading"></span> Sending...';
             
             const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                redirectTo: 'https://victoryvision.app/reset-password'
+                redirectTo: `${currentDomain}/reset-password.html`
             });
 
             if (error) {
-                showResetError('Error: ' + error.message);
+                showResetError('Reset failed: ' + error.message);
                 button.disabled = false;
-                button.textContent = 'Send Reset Link';
+                button.textContent = originalText;
             } else {
                 showResetSuccess('Password reset link sent to your email!');
-                button.textContent = 'Send Reset Link';
+                button.textContent = originalText;
                 button.disabled = false;
+                // Clear the email field
+                document.getElementById('reset-email').value = '';
             }
         } catch (e) {
-            showResetError('An unexpected error occurred: ' + e.message);
+            showResetError('An unexpected error occurred. Please try again.');
+            console.error('Reset password error:', e);
             document.getElementById('reset-button').disabled = false;
             document.getElementById('reset-button').textContent = 'Send Reset Link';
-        }
-    }
-    
-    // Fetch user profile for RLS setup
-    async function fetchUserProfile(userId) {
-        try {
-            // Get user profile from profiles table (assumes you have this set up)
-            const { data, error } = await supabaseClient
-                .from('profiles')
-                .select('*')
-                .eq('id', userId)
-                .single();
-                
-            if (error && error.code !== 'PGRST116') {
-                console.error('Error fetching user profile:', error);
-                // If it's not a "not found" error, return
-                return;
-            }
-            
-            // If profile doesn't exist, create it
-            if (!data || error) {
-                const { data: userData } = await supabaseClient.auth.getUser();
-                
-                if (userData && userData.user) {
-                    const { error: insertError } = await supabaseClient
-                        .from('profiles')
-                        .insert([
-                            { 
-                                id: userId,
-                                email: userData.user.email,
-                                created_at: new Date().toISOString()
-                            }
-                        ]);
-                        
-                    if (insertError) {
-                        console.error('Error creating user profile:', insertError);
-                    }
-                }
-            }
-        } catch (e) {
-            console.error('Error in profile management:', e);
         }
     }
     
@@ -396,6 +490,24 @@
         if (e.key === 'Enter') {
             resetPassword();
         }
+    });
+
+    // Security: Prevent form submission via Enter if disabled
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const activeButton = document.activeElement;
+            if (activeButton && activeButton.disabled) {
+                e.preventDefault();
+            }
+        }
+    });
+
+    // Security: Clear sensitive data on page unload
+    window.addEventListener('beforeunload', function() {
+        // Clear form data
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('reset-email').value = '';
     });
 </script>
 
