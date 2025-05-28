@@ -6,6 +6,7 @@
   <meta name="description" content="Manage your company profile and SMART goals."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Company Profile</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -33,6 +34,23 @@
     .navbar nav ul li a {
       color: white;
       text-decoration: none;
+    }
+    .navbar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .navbar .logout-btn {
+      background: #BB133E;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .navbar .logout-btn:hover {
+      background: #9e1034;
     }
     .logo img {
       height: 60px;
@@ -79,11 +97,6 @@
       grid-template-columns: 1fr 1fr;
       gap: 15px;
     }
-    .form-row-triple {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 15px;
-    }
     button {
       background: #0A3161;
       color: white;
@@ -96,6 +109,10 @@
     }
     button:hover {
       background: #083050;
+    }
+    button:disabled {
+      background: #B3B3B3;
+      cursor: not-allowed;
     }
     button.secondary {
       background: #6c757d;
@@ -189,9 +206,79 @@
     .color-input input[type="text"] {
       width: 80px;
     }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 20px;
+      border: none;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+    }
+    .current-data {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 5px 0;
+      border-left: 4px solid #0A3161;
+    }
+    .auth-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+    .auth-loading .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0A3161;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
+
+<!-- Authentication Loading Screen -->
+<div id="authLoading" class="auth-loading">
+  <div class="spinner"></div>
+  <p>Verifying authentication...</p>
+</div>
+
 <header class="navbar">
   <div class="logo">
     <img src="logo.jpg" alt="Victory Vision Logo"
@@ -210,6 +297,10 @@
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 </header>
 
 <div class="content">
@@ -290,6 +381,7 @@
 
       <button type="submit">Save Company Profile</button>
       <button type="button" class="secondary" onclick="loadCompanyProfile()">Load Current Profile</button>
+      <button type="button" class="secondary" onclick="showCurrentData('company')">View Current Data</button>
     </form>
   </div>
 
@@ -413,12 +505,22 @@
     <div style="text-align: center; margin-top: 20px;">
       <button type="button" onclick="saveAllGoals()">Save All Goals</button>
       <button type="button" class="secondary" onclick="loadAllGoals()">Load Current Goals</button>
+      <button type="button" class="secondary" onclick="showCurrentData('goals')">View Current Goals</button>
     </div>
   </div>
 
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
   <div id="loader" class="loader"></div>
+</div>
+
+<!-- Modal for viewing current data -->
+<div id="dataModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="modalTitle">Current Data</h2>
+    <div id="modalContent"></div>
+  </div>
 </div>
 
 <footer>
@@ -430,30 +532,146 @@
 </footer>
 
 <script>
+  // Supabase configuration
+  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  
   const DEBUG = true;
-  const CUSTOMER_ID = "client-xyz"; // This should be dynamic based on logged-in user
+  let CUSTOMER_ID = null;
+  let currentUser = null;
+
+  // Authentication and session management
+  async function checkAuthentication() {
+    try {
+      // Check Supabase session first
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      
+      if (error) {
+        console.error('Auth error:', error);
+        redirectToLogin();
+        return false;
+      }
+
+      if (!session) {
+        // Check local session as fallback
+        const localSession = localStorage.getItem('vv_session');
+        if (!localSession) {
+          redirectToLogin();
+          return false;
+        }
+
+        try {
+          const sessionData = JSON.parse(localSession);
+          if (!sessionData.authenticated || Date.now() > sessionData.expires_at) {
+            localStorage.removeItem('vv_session');
+            redirectToLogin();
+            return false;
+          }
+          
+          CUSTOMER_ID = sessionData.customer_id;
+          currentUser = sessionData;
+        } catch (e) {
+          localStorage.removeItem('vv_session');
+          redirectToLogin();
+          return false;
+        }
+      } else {
+        // Valid Supabase session
+        CUSTOMER_ID = session.user.email;
+        currentUser = {
+          id: session.user.id,
+          email: session.user.email,
+          customer_id: session.user.email
+        };
+        
+        // Update local session
+        const userSession = {
+          id: session.user.id,
+          email: session.user.email,
+          customer_id: session.user.email,
+          authenticated: true,
+          expires_at: Date.now() + (24 * 60 * 60 * 1000)
+        };
+        localStorage.setItem('vv_session', JSON.stringify(userSession));
+      }
+
+      // Update UI with user info
+      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+      return true;
+    } catch (e) {
+      console.error('Authentication check failed:', e);
+      redirectToLogin();
+      return false;
+    }
+  }
+
+  function redirectToLogin() {
+    // Clear any existing session data
+    localStorage.removeItem('vv_session');
+    window.location.href = 'login.html';
+  }
+
+  async function logout() {
+    try {
+      // Sign out from Supabase
+      await supabaseClient.auth.signOut();
+      
+      // Clear local storage
+      localStorage.removeItem('vv_session');
+      
+      // Redirect to login
+      redirectToLogin();
+    } catch (e) {
+      console.error('Logout error:', e);
+      // Force redirect even if logout fails
+      localStorage.removeItem('vv_session');
+      redirectToLogin();
+    }
+  }
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', async function() {
+    // Show loading screen
+    document.getElementById('authLoading').style.display = 'flex';
+    
+    // Check authentication
+    const isAuthenticated = await checkAuthentication();
+    
+    if (isAuthenticated) {
+      // Hide loading screen
+      document.getElementById('authLoading').style.display = 'none';
+      
+      // Initialize page
+      setupColorPickers();
+      loadCompanyProfile();
+      loadAllGoals();
+    }
+    // If not authenticated, user will be redirected by checkAuthentication()
+  });
 
   // Color picker synchronization
-  document.getElementById('color1').addEventListener('change', function() {
-    document.getElementById('color1Text').value = this.value;
-  });
-  document.getElementById('color2').addEventListener('change', function() {
-    document.getElementById('color2Text').value = this.value;
-  });
-  document.getElementById('color3').addEventListener('change', function() {
-    document.getElementById('color3Text').value = this.value;
-  });
+  function setupColorPickers() {
+    document.getElementById('color1').addEventListener('change', function() {
+      document.getElementById('color1Text').value = this.value;
+    });
+    document.getElementById('color2').addEventListener('change', function() {
+      document.getElementById('color2Text').value = this.value;
+    });
+    document.getElementById('color3').addEventListener('change', function() {
+      document.getElementById('color3Text').value = this.value;
+    });
 
-  // Text input synchronization
-  document.getElementById('color1Text').addEventListener('change', function() {
-    document.getElementById('color1').value = this.value;
-  });
-  document.getElementById('color2Text').addEventListener('change', function() {
-    document.getElementById('color2').value = this.value;
-  });
-  document.getElementById('color3Text').addEventListener('change', function() {
-    document.getElementById('color3').value = this.value;
-  });
+    document.getElementById('color1Text').addEventListener('change', function() {
+      document.getElementById('color1').value = this.value;
+    });
+    document.getElementById('color2Text').addEventListener('change', function() {
+      document.getElementById('color2').value = this.value;
+    });
+    document.getElementById('color3Text').addEventListener('change', function() {
+      document.getElementById('color3').value = this.value;
+    });
+  }
 
   function showLoader() {
     document.getElementById('loader').style.display = 'block';
@@ -472,6 +690,128 @@
     setTimeout(() => {
       statusDiv.style.display = 'none';
     }, 5000);
+  }
+
+  // Secure API call wrapper
+  async function secureApiCall(url, data, method = 'POST') {
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      
+      const headers = {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      };
+      
+      // Add authorization header if session exists
+      if (session) {
+        headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
+      const response = await fetch(url, {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+    }
+  }
+
+  // Modal functions
+  function showCurrentData(type) {
+    const modal = document.getElementById('dataModal');
+    const modalTitle = document.getElementById('modalTitle');
+    
+    if (type === 'company') {
+      modalTitle.textContent = 'Current Company Profile';
+      loadCompanyDataForModal();
+    } else if (type === 'goals') {
+      modalTitle.textContent = 'Current Goals';
+      loadGoalsDataForModal();
+    }
+    
+    modal.style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('dataModal').style.display = 'none';
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('dataModal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  async function loadCompanyDataForModal() {
+    const modalContent = document.getElementById('modalContent');
+    modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
+    
+    try {
+      const data = await secureApiCall(
+        "https://victoryvision.app.n8n.cloud/webhook/get-company-profile",
+        { customer_id: CUSTOMER_ID }
+      );
+      
+      if (data.company) {
+        const company = data.company;
+        modalContent.innerHTML = `
+          <div class="current-data"><strong>Company Name:</strong> ${company.company_name || 'Not set'}</div>
+          <div class="current-data"><strong>Industry:</strong> ${company.industry || 'Not set'}</div>
+          <div class="current-data"><strong>Logo URL:</strong> ${company.logo_URL || 'Not set'}</div>
+          <div class="current-data"><strong>Company Description:</strong> ${company.company_description || 'Not set'}</div>
+          <div class="current-data"><strong>Primary Product:</strong> ${company.product_descriptions || 'Not set'}</div>
+          <div class="current-data"><strong>Secondary Product:</strong> ${company.product_descriptions_2 || 'Not set'}</div>
+          <div class="current-data"><strong>Third Product:</strong> ${company.product_descriptions_3 || 'Not set'}</div>
+          <div class="current-data"><strong>Brand Colors:</strong> ${company.brand_colors || 'Not set'}</div>
+        `;
+      } else {
+        modalContent.innerHTML = '<div class="current-data">No company profile found for this user.</div>';
+      }
+    } catch (error) {
+      modalContent.innerHTML = `<div class="current-data" style="color: red;">Error loading data: ${error.message}</div>`;
+    }
+  }
+
+  async function loadGoalsDataForModal() {
+    const modalContent = document.getElementById('modalContent');
+    modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
+    
+    try {
+      const data = await secureApiCall(
+        "https://victoryvision.app.n8n.cloud/webhook/get-goals",
+        { customer_id: CUSTOMER_ID }
+      );
+      
+      if (data.goals && data.goals.length > 0) {
+        let html = '';
+        data.goals.forEach(goal => {
+          html += `
+            <div class="current-data">
+              <h4>Goal ${goal.goal_number}</h4>
+              <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br>
+              <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br>
+              <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br>
+              <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br>
+              <strong>Time Limit:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
+            </div>
+          `;
+        });
+        modalContent.innerHTML = html;
+      } else {
+        modalContent.innerHTML = '<div class="current-data">No goals found for this user.</div>';
+      }
+    } catch (error) {
+      modalContent.innerHTML = `<div class="current-data" style="color: red;">Error loading data: ${error.message}</div>`;
+    }
   }
 
   // Company Profile Functions
@@ -496,21 +836,14 @@
                      formData.get('brand_colors_3')
       };
 
-      console.log('Saving company profile:', companyData);
+      if (DEBUG) console.log('Saving company profile:', companyData);
 
-      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/update-company-profile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(companyData)
-      });
+      const result = await secureApiCall(
+        "https://victoryvision.app.n8n.cloud/webhook/update-company-profile",
+        companyData
+      );
 
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Company profile save result:', result);
-      
+      if (DEBUG) console.log('Company profile save result:', result);
       showStatus('Company profile saved successfully!');
     } catch (error) {
       console.error('Error saving company profile:', error);
@@ -524,18 +857,12 @@
     showLoader();
     
     try {
-      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/get-company-profile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID })
-      });
+      const data = await secureApiCall(
+        "https://victoryvision.app.n8n.cloud/webhook/get-company-profile",
+        { customer_id: CUSTOMER_ID }
+      );
 
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Loaded company profile:', data);
+      if (DEBUG) console.log('Loaded company profile:', data);
 
       if (data.company) {
         const company = data.company;
@@ -605,21 +932,14 @@
         return;
       }
 
-      console.log('Saving goals:', goalsData);
+      if (DEBUG) console.log('Saving goals:', goalsData);
 
-      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/update-goals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goals: goalsData })
-      });
+      const result = await secureApiCall(
+        "https://victoryvision.app.n8n.cloud/webhook/update-goals",
+        { goals: goalsData }
+      );
 
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Goals save result:', result);
-      
+      if (DEBUG) console.log('Goals save result:', result);
       showStatus(`Successfully saved ${goalsData.length} goal(s)!`);
     } catch (error) {
       console.error('Error saving goals:', error);
@@ -633,18 +953,12 @@
     showLoader();
     
     try {
-      const response = await fetch("https://victoryvision.app.n8n.cloud/webhook/get-goals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID })
-      });
+      const data = await secureApiCall(
+        "https://victoryvision.app.n8n.cloud/webhook/get-goals",
+        { customer_id: CUSTOMER_ID }
+      );
 
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Loaded goals:', data);
+      if (DEBUG) console.log('Loaded goals:', data);
 
       // Clear all goal forms first
       const goalForms = document.querySelectorAll('.goal-form');
@@ -663,7 +977,7 @@
             form.querySelector('[name="achievable"]').value = goal.achievable || '';
             form.querySelector('[name="relationship"]').value = goal.relationship || '';
             if (goal.time_limit) {
-              form.querySelector('[name="time_limit"]').value = goal.time_limit.split('T')[0]; // Format date for input
+              form.querySelector('[name="time_limit"]').value = goal.time_limit.split('T')[0];
             }
           }
         });
@@ -678,10 +992,36 @@
     }
   }
 
-  // Load data on page load
-  document.addEventListener('DOMContentLoaded', function() {
-    loadCompanyProfile();
-    loadAllGoals();
+  // Security: Clear sensitive data on page unload
+  window.addEventListener('beforeunload', function() {
+    // Clear any temporary form data if needed
+    // This is handled automatically by the browser for form fields
+  });
+
+  // Security: Session timeout check
+  setInterval(async function() {
+    const localSession = localStorage.getItem('vv_session');
+    if (localSession) {
+      try {
+        const sessionData = JSON.parse(localSession);
+        if (Date.now() > sessionData.expires_at) {
+          await logout();
+        }
+      } catch (e) {
+        await logout();
+      }
+    }
+  }, 60000); // Check every minute
+
+  // Security: Detect tab visibility and re-verify auth when tab becomes visible
+  document.addEventListener('visibilitychange', async function() {
+    if (!document.hidden) {
+      // Tab became visible, re-verify authentication
+      const isAuthenticated = await checkAuthentication();
+      if (!isAuthenticated) {
+        redirectToLogin();
+      }
+    }
   });
 </script>
 </body>
