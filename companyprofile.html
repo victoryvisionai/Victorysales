@@ -269,6 +269,15 @@
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
     }
+    .save-all-button {
+      background: #28a745;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 15px 30px;
+    }
+    .save-all-button:hover {
+      background: #218838;
+    }
   </style>
 </head>
 <body>
@@ -286,8 +295,8 @@
   </div>
   <nav>
     <ul>
-      <li><a href="ai-opt">🤖-AI</a></li>
       <li><a href="companyprofile">Profile</a></li>
+      <li><a href="ai-opt">🤖-AI</a></li>
       <li><a href="campaigns">Campaigns</a></li>
       <li><a href="videos">Videos</a></li>
       <li><a href="pages">Pages</a></li>
@@ -378,10 +387,6 @@
           </div>
         </div>
       </div>
-
-      <button type="submit">Save Company Profile</button>
-      <button type="button" class="secondary" onclick="loadCompanyProfile()">Load Current Profile</button>
-      <button type="button" class="secondary" onclick="showCurrentData('company')">View Current Data</button>
     </form>
   </div>
 
@@ -503,9 +508,9 @@
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
-      <button type="button" onclick="saveAllGoals()">Save All Goals</button>
-      <button type="button" class="secondary" onclick="loadAllGoals()">Load Current Goals</button>
-      <button type="button" class="secondary" onclick="showCurrentData('goals')">View Current Goals</button>
+      <button type="button" class="save-all-button" onclick="saveAllData()">💾 Save Company Profile & Goals</button>
+      <button type="button" class="secondary" onclick="loadAllData()">📂 Load Current Data</button>
+      <button type="button" class="secondary" onclick="showCurrentData()">👁️ View Current Data</button>
     </div>
   </div>
 
@@ -537,14 +542,8 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n webhook endpoints - Fixed to match your webhook configuration
-  const N8N_ENDPOINTS = {
-    SAVE_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/company-profile',
-    GET_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/company-profile',
-    SAVE_GOALS: 'https://victoryvision.app.n8n.cloud/webhook/update-goals',
-    GET_GOALS: 'https://victoryvision.app.n8n.cloud/webhook/get-goals',
-    UPDATE_USER_PROFILE: 'https://victoryvision.app.n8n.cloud/webhook/update-user-profile'
-  };
+  // Single n8n webhook endpoint
+  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile';
   
   const DEBUG = true;
   let CUSTOMER_ID = null;
@@ -556,7 +555,6 @@
     try {
       console.log('Checking authentication...');
       
-      // Check Supabase session for auth only
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       
       if (error) {
@@ -603,10 +601,10 @@
     }
   }
 
-  // Secure API call wrapper with authentication
-  async function secureApiCall(endpoint, data, method = 'POST') {
+  // Secure API call wrapper
+  async function secureApiCall(data, method = 'POST') {
     try {
-      console.log(`Making secure API call to: ${endpoint} with method: ${method}`);
+      console.log(`Making API call to: ${N8N_ENDPOINT} with method: ${method}`);
       
       const headers = {
         'Content-Type': 'application/json',
@@ -615,7 +613,6 @@
         'X-Timestamp': new Date().toISOString()
       };
       
-      // Add auth token if available
       if (authToken) {
         headers['Authorization'] = `Bearer ${authToken}`;
       }
@@ -629,7 +626,7 @@
 
       console.log('Request payload:', requestPayload);
 
-      const response = await fetch(endpoint, {
+      const response = await fetch(N8N_ENDPOINT, {
         method: method,
         headers: headers,
         body: JSON.stringify(requestPayload)
@@ -646,7 +643,6 @@
     } catch (error) {
       console.error('API call failed:', error);
       
-      // Handle auth errors
       if (error.message.includes('401') || error.message.includes('403')) {
         showStatus('Session expired. Please log in again.', true);
         setTimeout(redirectToLogin, 2000);
@@ -670,8 +666,7 @@
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
         setupColorPickers();
-        await loadCompanyProfile();
-        await loadAllGoals();
+        await loadAllData();
       } else {
         redirectToLogin();
       }
@@ -683,24 +678,17 @@
 
   // Color picker synchronization
   function setupColorPickers() {
-    document.getElementById('color1').addEventListener('change', function() {
-      document.getElementById('color1Text').value = this.value;
-    });
-    document.getElementById('color2').addEventListener('change', function() {
-      document.getElementById('color2Text').value = this.value;
-    });
-    document.getElementById('color3').addEventListener('change', function() {
-      document.getElementById('color3Text').value = this.value;
-    });
-
-    document.getElementById('color1Text').addEventListener('change', function() {
-      document.getElementById('color1').value = this.value;
-    });
-    document.getElementById('color2Text').addEventListener('change', function() {
-      document.getElementById('color2').value = this.value;
-    });
-    document.getElementById('color3Text').addEventListener('change', function() {
-      document.getElementById('color3').value = this.value;
+    ['1', '2', '3'].forEach(num => {
+      const colorInput = document.getElementById(`color${num}`);
+      const textInput = document.getElementById(`color${num}Text`);
+      
+      colorInput.addEventListener('change', function() {
+        textInput.value = this.value;
+      });
+      
+      textInput.addEventListener('change', function() {
+        colorInput.value = this.value;
+      });
     });
   }
 
@@ -724,18 +712,12 @@
   }
 
   // Modal functions
-  function showCurrentData(type) {
+  function showCurrentData() {
     const modal = document.getElementById('dataModal');
     const modalTitle = document.getElementById('modalTitle');
     
-    if (type === 'company') {
-      modalTitle.textContent = 'Current Company Profile';
-      loadCompanyDataForModal();
-    } else if (type === 'goals') {
-      modalTitle.textContent = 'Current Goals';
-      loadGoalsDataForModal();
-    }
-    
+    modalTitle.textContent = 'Current Company Profile & Goals';
+    loadDataForModal();
     modal.style.display = 'block';
   }
 
@@ -750,42 +732,30 @@
     }
   }
 
-  async function loadCompanyDataForModal() {
+  async function loadDataForModal() {
     const modalContent = document.getElementById('modalContent');
     modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
     
     try {
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {}, 'GET');
+      const data = await secureApiCall({}, 'GET');
+      
+      let html = '';
       
       if (data.company) {
         const company = data.company;
-        modalContent.innerHTML = `
-          <div class="current-data"><strong>Company Name:</strong> ${company.company_name || 'Not set'}</div>
-          <div class="current-data"><strong>Industry:</strong> ${company.industry || 'Not set'}</div>
-          <div class="current-data"><strong>Logo URL:</strong> ${company.logo_URL || 'Not set'}</div>
-          <div class="current-data"><strong>Company Description:</strong> ${company.company_description || 'Not set'}</div>
-          <div class="current-data"><strong>Primary Product:</strong> ${company.product_descriptions || 'Not set'}</div>
-          <div class="current-data"><strong>Secondary Product:</strong> ${company.product_descriptions_2 || 'Not set'}</div>
-          <div class="current-data"><strong>Third Product:</strong> ${company.product_descriptions_3 || 'Not set'}</div>
-          <div class="current-data"><strong>Brand Colors:</strong> ${company.brand_colors || 'Not set'}</div>
-        `;
-      } else {
-        modalContent.innerHTML = '<div class="current-data">No company profile found for this user.</div>';
+        html += '<h3>Company Information</h3>';
+        html += `<div class="current-data"><strong>Company Name:</strong> ${company.company_name || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Industry:</strong> ${company.industry || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Logo URL:</strong> ${company.logo_URL || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Company Description:</strong> ${company.company_description || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Primary Product:</strong> ${company.product_descriptions || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Secondary Product:</strong> ${company.product_descriptions_2 || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Third Product:</strong> ${company.product_descriptions_3 || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Brand Colors:</strong> ${company.brand_colors || 'Not set'}</div>`;
       }
-    } catch (error) {
-      modalContent.innerHTML = `<div class="current-data" style="color: red;">Error loading data: ${error.message}</div>`;
-    }
-  }
-
-  async function loadGoalsDataForModal() {
-    const modalContent = document.getElementById('modalContent');
-    modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
-    
-    try {
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {}, 'GET');
       
       if (data.goals && data.goals.length > 0) {
-        let html = '';
+        html += '<h3>Goals</h3>';
         data.goals.forEach(goal => {
           html += `
             <div class="current-data">
@@ -798,24 +768,46 @@
             </div>
           `;
         });
-        modalContent.innerHTML = html;
-      } else {
-        modalContent.innerHTML = '<div class="current-data">No goals found for this user.</div>';
       }
+      
+      if (!html) {
+        html = '<div class="current-data">No data found for this user.</div>';
+      }
+      
+      modalContent.innerHTML = html;
     } catch (error) {
       modalContent.innerHTML = `<div class="current-data" style="color: red;">Error loading data: ${error.message}</div>`;
     }
   }
 
-  // Company Profile Functions - Via n8n Middleware
-  document.getElementById('companyForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
+  // Main save function - combines company and goals
+  async function saveAllData() {
     showLoader();
     
     try {
-      const formData = new FormData(this);
-      const companyData = {
+      const formData = new FormData(document.getElementById('companyForm'));
+      const goalForms = document.querySelectorAll('.goal-form');
+      const goalsData = [];
+
+      // Collect goals data
+      goalForms.forEach((form, index) => {
+        const goalFormData = new FormData(form);
+        const goalNumber = index + 1;
+        
+        if (goalFormData.get('goal_description') && goalFormData.get('goal_description').trim()) {
+          goalsData.push({
+            goal_number: goalNumber,
+            goal_description: goalFormData.get('goal_description'),
+            measurement: goalFormData.get('measurement'),
+            achievable: goalFormData.get('achievable'),
+            relationship: goalFormData.get('relationship'),
+            time_limit: goalFormData.get('time_limit') || null
+          });
+        }
+      });
+
+      // Combine all data into single payload
+      const allData = {
         company_name: formData.get('company_name'),
         industry: formData.get('industry'),
         logo_URL: formData.get('logo_URL'),
@@ -825,44 +817,37 @@
         product_descriptions_3: formData.get('product_descriptions_3'),
         brand_colors: formData.get('brand_colors_1') + ',' + 
                      formData.get('brand_colors_2') + ',' + 
-                     formData.get('brand_colors_3')
+                     formData.get('brand_colors_3'),
+        goals: goalsData
       };
 
-      console.log('Saving company profile via n8n:', companyData);
+      console.log('Saving all data:', allData);
 
-      // Save company profile - Using POST method
-      const companyResult = await secureApiCall(N8N_ENDPOINTS.SAVE_COMPANY, companyData, 'POST');
+      const result = await secureApiCall(allData, 'POST');
 
-      if (companyResult.success || companyResult.status === 'success') {
-        // Also update user profile with relevant info
-        try {
-          const userResult = await secureApiCall(N8N_ENDPOINTS.UPDATE_USER_PROFILE, companyData);
-          console.log('User profile updated:', userResult);
-        } catch (userError) {
-          console.warn('User profile update failed (non-critical):', userError);
-          // Don't fail the whole operation if user update fails
-        }
-        
-        showStatus('Company profile saved successfully!');
+      if (result.success || result.status === 'success') {
+        showStatus('Company profile and goals saved successfully!');
       } else {
-        throw new Error(companyResult.message || 'Save failed');
+        throw new Error(result.message || 'Save failed');
       }
     } catch (error) {
-      console.error('Error saving company profile:', error);
-      showStatus('Error saving company profile: ' + error.message, true);
+      console.error('Error saving data:', error);
+      showStatus('Error saving data: ' + error.message, true);
     } finally {
       hideLoader();
     }
-  });
+  }
 
-  async function loadCompanyProfile() {
+  // Load all data function
+  async function loadAllData() {
     showLoader();
     
     try {
-      console.log('Loading company profile via n8n for:', CUSTOMER_ID);
+      console.log('Loading all data for:', CUSTOMER_ID);
 
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {}, 'GET');
+      const data = await secureApiCall({}, 'GET');
 
+      // Load company data
       if (data.company) {
         const company = data.company;
         console.log('Loaded company profile:', company);
@@ -891,76 +876,7 @@
             document.getElementById('color3Text').value = colors[2].trim();
           }
         }
-        
-        showStatus('Company profile loaded successfully!');
-      } else {
-        console.log('No company profile found for user');
-        showStatus('No existing company profile found. Please fill out the form.');
       }
-    } catch (error) {
-      console.error('Error loading company profile:', error);
-      showStatus('Error loading company profile: ' + error.message, true);
-    } finally {
-      hideLoader();
-    }
-  }
-
-  // Goals Functions - Via n8n Middleware
-  async function saveAllGoals() {
-    showLoader();
-    
-    try {
-      const goalForms = document.querySelectorAll('.goal-form');
-      const goalsData = [];
-
-      goalForms.forEach((form, index) => {
-        const formData = new FormData(form);
-        const goalNumber = index + 1;
-        
-        // Only save goals that have at least a description
-        if (formData.get('goal_description') && formData.get('goal_description').trim()) {
-          goalsData.push({
-            goal_number: goalNumber,
-            goal_description: formData.get('goal_description'),
-            measurement: formData.get('measurement'),
-            achievable: formData.get('achievable'),
-            relationship: formData.get('relationship'),
-            time_limit: formData.get('time_limit') || null
-          });
-        }
-      });
-
-      if (goalsData.length === 0) {
-        showStatus('Please fill out at least one goal before saving.', true);
-        return;
-      }
-
-      console.log('Saving goals via n8n:', goalsData);
-
-      const result = await secureApiCall(N8N_ENDPOINTS.SAVE_GOALS, { goals: goalsData });
-
-      if (result.success || result.status === 'success') {
-        showStatus(`Successfully saved ${goalsData.length} goal(s)!`);
-      } else {
-        throw new Error(result.message || 'Save failed');
-      }
-    } catch (error) {
-      console.error('Error saving goals:', error);
-      showStatus('Error saving goals: ' + error.message, true);
-    } finally {
-      hideLoader();
-    }
-  }
-
-  async function loadAllGoals() {
-    showLoader();
-    
-    try {
-      console.log('Loading goals via n8n for:', CUSTOMER_ID);
-
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {}, 'GET');
-
-      console.log('Loaded goals:', data);
 
       // Clear all goal forms first
       const goalForms = document.querySelectorAll('.goal-form');
@@ -968,6 +884,7 @@
         form.reset();
       });
 
+      // Load goals data
       if (data.goals && data.goals.length > 0) {
         data.goals.forEach(goal => {
           const goalIndex = goal.goal_number - 1;
@@ -979,25 +896,34 @@
             form.querySelector('[name="achievable"]').value = goal.achievable || '';
             form.querySelector('[name="relationship"]').value = goal.relationship || '';
             if (goal.time_limit) {
-              // Format date for input field
               const date = new Date(goal.time_limit);
               const formattedDate = date.toISOString().split('T')[0];
               form.querySelector('[name="time_limit"]').value = formattedDate;
             }
           }
         });
-        
-        showStatus(`Loaded ${data.goals.length} goal(s) successfully!`);
+      }
+      
+      if (data.company || (data.goals && data.goals.length > 0)) {
+        const companyCount = data.company ? 1 : 0;
+        const goalsCount = data.goals ? data.goals.length : 0;
+        showStatus(`Loaded company profile and ${goalsCount} goal(s) successfully!`);
       } else {
-        showStatus('No existing goals found. Please fill out the goals.');
+        showStatus('No existing data found. Please fill out the forms.');
       }
     } catch (error) {
-      console.error('Error loading goals:', error);
-      showStatus('Error loading goals: ' + error.message, true);
+      console.error('Error loading data:', error);
+      showStatus('Error loading data: ' + error.message, true);
     } finally {
       hideLoader();
     }
   }
+
+  // Prevent default form submission
+  document.getElementById('companyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveAllData();
+  });
 
   // Security: Session timeout check
   setInterval(async function() {
@@ -1020,7 +946,6 @@
         if (!session) {
           redirectToLogin();
         } else {
-          // Update auth token if needed
           authToken = session.access_token;
         }
       } catch (e) {
@@ -1031,28 +956,22 @@
 
   // Security: Rate limiting for API calls
   const rateLimiter = {
-    calls: new Map(),
+    calls: [],
     maxCalls: 10,
     windowMs: 60000, // 1 minute
     
-    canMakeCall: function(endpoint) {
+    canMakeCall: function() {
       const now = Date.now();
       const windowStart = now - this.windowMs;
       
-      if (!this.calls.has(endpoint)) {
-        this.calls.set(endpoint, []);
-      }
-      
-      const calls = this.calls.get(endpoint);
       // Remove old calls outside the window
-      const recentCalls = calls.filter(time => time > windowStart);
-      this.calls.set(endpoint, recentCalls);
+      this.calls = this.calls.filter(time => time > windowStart);
       
-      if (recentCalls.length >= this.maxCalls) {
+      if (this.calls.length >= this.maxCalls) {
         return false;
       }
       
-      recentCalls.push(now);
+      this.calls.push(now);
       return true;
     }
   };
@@ -1077,11 +996,11 @@
     return sanitized;
   }
 
-  // Security: Override the secureApiCall to include validation and rate limiting
+  // Override the secureApiCall to include validation and rate limiting
   const originalSecureApiCall = secureApiCall;
-  secureApiCall = async function(endpoint, data, method = 'POST') {
+  secureApiCall = async function(data, method = 'POST') {
     // Rate limiting check
-    if (!rateLimiter.canMakeCall(endpoint)) {
+    if (!rateLimiter.canMakeCall()) {
       throw new Error('Rate limit exceeded. Please wait before making more requests.');
     }
     
@@ -1089,7 +1008,7 @@
     const sanitizedData = validateAndSanitizeInput(data);
     
     // Call original function with sanitized data
-    return originalSecureApiCall(endpoint, sanitizedData, method);
+    return originalSecureApiCall(sanitizedData, method);
   };
 </script>
 </body>
