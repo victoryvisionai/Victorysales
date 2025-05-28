@@ -537,10 +537,10 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n webhook endpoints - SECURE middleware layer
+  // n8n webhook endpoints - Fixed to match your webhook configuration
   const N8N_ENDPOINTS = {
-    SAVE_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/update-company-profile',
-    GET_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/get-company-profile',
+    SAVE_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/company-profile',
+    GET_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/company-profile',
     SAVE_GOALS: 'https://victoryvision.app.n8n.cloud/webhook/update-goals',
     GET_GOALS: 'https://victoryvision.app.n8n.cloud/webhook/get-goals',
     UPDATE_USER_PROFILE: 'https://victoryvision.app.n8n.cloud/webhook/update-user-profile'
@@ -606,7 +606,7 @@
   // Secure API call wrapper with authentication
   async function secureApiCall(endpoint, data, method = 'POST') {
     try {
-      console.log(`Making secure API call to: ${endpoint}`);
+      console.log(`Making secure API call to: ${endpoint} with method: ${method}`);
       
       const headers = {
         'Content-Type': 'application/json',
@@ -755,7 +755,7 @@
     modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
     
     try {
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {});
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {}, 'GET');
       
       if (data.company) {
         const company = data.company;
@@ -782,7 +782,7 @@
     modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
     
     try {
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {});
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {}, 'GET');
       
       if (data.goals && data.goals.length > 0) {
         let html = '';
@@ -830,8 +830,8 @@
 
       console.log('Saving company profile via n8n:', companyData);
 
-      // Save company profile
-      const companyResult = await secureApiCall(N8N_ENDPOINTS.SAVE_COMPANY, companyData);
+      // Save company profile - Using POST method
+      const companyResult = await secureApiCall(N8N_ENDPOINTS.SAVE_COMPANY, companyData, 'POST');
 
       if (companyResult.success || companyResult.status === 'success') {
         // Also update user profile with relevant info
@@ -861,7 +861,7 @@
     try {
       console.log('Loading company profile via n8n for:', CUSTOMER_ID);
 
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {});
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {}, 'GET');
 
       if (data.company) {
         const company = data.company;
@@ -958,7 +958,7 @@
     try {
       console.log('Loading goals via n8n for:', CUSTOMER_ID);
 
-      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {});
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {}, 'GET');
 
       console.log('Loaded goals:', data);
 
