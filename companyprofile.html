@@ -610,7 +610,7 @@
       
       const headers = {
         'Content-Type': 'application/json',
-        'X-Customer-ID': CUSTOMER_ID,
+    'X-Customer-ID': encodeURIComponent(CUSTOMER_ID),
         'X-Request-ID': generateRequestId(),
         'X-Timestamp': new Date().toISOString()
       };
