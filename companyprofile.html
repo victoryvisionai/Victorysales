@@ -532,122 +532,153 @@
 </footer>
 
 <script>
-  // Supabase configuration
+  // Supabase configuration - LIMITED to auth only
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
+  // n8n webhook endpoints - SECURE middleware layer
+  const N8N_ENDPOINTS = {
+    SAVE_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/update-company-profile',
+    GET_COMPANY: 'https://victoryvision.app.n8n.cloud/webhook/get-company-profile',
+    SAVE_GOALS: 'https://victoryvision.app.n8n.cloud/webhook/update-goals',
+    GET_GOALS: 'https://victoryvision.app.n8n.cloud/webhook/get-goals',
+    UPDATE_USER_PROFILE: 'https://victoryvision.app.n8n.cloud/webhook/update-user-profile'
+  };
+  
   const DEBUG = true;
   let CUSTOMER_ID = null;
   let currentUser = null;
+  let authToken = null;
 
   // Authentication and session management
   async function checkAuthentication() {
     try {
-      // Check Supabase session first
+      console.log('Checking authentication...');
+      
+      // Check Supabase session for auth only
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       
       if (error) {
         console.error('Auth error:', error);
-        redirectToLogin();
         return false;
       }
 
-      if (!session) {
-        // Check local session as fallback
-        const localSession = localStorage.getItem('vv_session');
-        if (!localSession) {
-          redirectToLogin();
-          return false;
-        }
-
-        try {
-          const sessionData = JSON.parse(localSession);
-          if (!sessionData.authenticated || Date.now() > sessionData.expires_at) {
-            localStorage.removeItem('vv_session');
-            redirectToLogin();
-            return false;
-          }
-          
-          CUSTOMER_ID = sessionData.customer_id;
-          currentUser = sessionData;
-        } catch (e) {
-          localStorage.removeItem('vv_session');
-          redirectToLogin();
-          return false;
-        }
-      } else {
-        // Valid Supabase session
+      if (session && session.user) {
+        console.log('Valid session found:', session.user.email);
         CUSTOMER_ID = session.user.email;
+        authToken = session.access_token;
         currentUser = {
           id: session.user.id,
           email: session.user.email,
           customer_id: session.user.email
         };
         
-        // Update local session
-        const userSession = {
-          id: session.user.id,
-          email: session.user.email,
-          customer_id: session.user.email,
-          authenticated: true,
-          expires_at: Date.now() + (24 * 60 * 60 * 1000)
-        };
-        localStorage.setItem('vv_session', JSON.stringify(userSession));
+        document.getElementById('userEmail').textContent = CUSTOMER_ID;
+        return true;
       }
 
-      // Update UI with user info
-      document.getElementById('userEmail').textContent = CUSTOMER_ID;
-      return true;
+      console.log('No valid session found');
+      return false;
     } catch (e) {
-      console.error('Authentication check failed:', e);
-      redirectToLogin();
+      console.error('Auth check error:', e);
       return false;
     }
   }
 
   function redirectToLogin() {
-    // Clear any existing session data
     localStorage.removeItem('vv_session');
     window.location.href = 'login.html';
   }
 
   async function logout() {
     try {
-      // Sign out from Supabase
       await supabaseClient.auth.signOut();
-      
-      // Clear local storage
       localStorage.removeItem('vv_session');
-      
-      // Redirect to login
       redirectToLogin();
     } catch (e) {
       console.error('Logout error:', e);
-      // Force redirect even if logout fails
       localStorage.removeItem('vv_session');
       redirectToLogin();
     }
   }
 
+  // Secure API call wrapper with authentication
+  async function secureApiCall(endpoint, data, method = 'POST') {
+    try {
+      console.log(`Making secure API call to: ${endpoint}`);
+      
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'X-Request-ID': generateRequestId(),
+        'X-Timestamp': new Date().toISOString()
+      };
+      
+      // Add auth token if available
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+
+      const requestPayload = {
+        ...data,
+        customer_id: CUSTOMER_ID,
+        timestamp: new Date().toISOString(),
+        request_id: generateRequestId()
+      };
+
+      console.log('Request payload:', requestPayload);
+
+      const response = await fetch(endpoint, {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(requestPayload)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const result = await response.json();
+      console.log('API response:', result);
+      return result;
+    } catch (error) {
+      console.error('API call failed:', error);
+      
+      // Handle auth errors
+      if (error.message.includes('401') || error.message.includes('403')) {
+        showStatus('Session expired. Please log in again.', true);
+        setTimeout(redirectToLogin, 2000);
+      }
+      
+      throw error;
+    }
+  }
+
+  function generateRequestId() {
+    return 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
   // Initialize page
   document.addEventListener('DOMContentLoaded', async function() {
-    // Show loading screen
     document.getElementById('authLoading').style.display = 'flex';
     
-    // Check authentication
-    const isAuthenticated = await checkAuthentication();
-    
-    if (isAuthenticated) {
-      // Hide loading screen
-      document.getElementById('authLoading').style.display = 'none';
+    try {
+      const isAuthenticated = await checkAuthentication();
       
-      // Initialize page
-      setupColorPickers();
-      loadCompanyProfile();
-      loadAllGoals();
+      if (isAuthenticated) {
+        document.getElementById('authLoading').style.display = 'none';
+        setupColorPickers();
+        await loadCompanyProfile();
+        await loadAllGoals();
+      } else {
+        redirectToLogin();
+      }
+    } catch (e) {
+      console.error('Initialization failed:', e);
+      redirectToLogin();
     }
-    // If not authenticated, user will be redirected by checkAuthentication()
   });
 
   // Color picker synchronization
@@ -692,38 +723,6 @@
     }, 5000);
   }
 
-  // Secure API call wrapper
-  async function secureApiCall(url, data, method = 'POST') {
-    try {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      
-      const headers = {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      };
-      
-      // Add authorization header if session exists
-      if (session) {
-        headers['Authorization'] = `Bearer ${session.access_token}`;
-      }
-
-      const response = await fetch(url, {
-        method: method,
-        headers: headers,
-        body: JSON.stringify(data)
-      });
-
-      if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('API call failed:', error);
-      throw error;
-    }
-  }
-
   // Modal functions
   function showCurrentData(type) {
     const modal = document.getElementById('dataModal');
@@ -756,10 +755,7 @@
     modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
     
     try {
-      const data = await secureApiCall(
-        "https://victoryvision.app.n8n.cloud/webhook/get-company-profile",
-        { customer_id: CUSTOMER_ID }
-      );
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {});
       
       if (data.company) {
         const company = data.company;
@@ -786,10 +782,7 @@
     modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
     
     try {
-      const data = await secureApiCall(
-        "https://victoryvision.app.n8n.cloud/webhook/get-goals",
-        { customer_id: CUSTOMER_ID }
-      );
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {});
       
       if (data.goals && data.goals.length > 0) {
         let html = '';
@@ -814,7 +807,7 @@
     }
   }
 
-  // Company Profile Functions
+  // Company Profile Functions - Via n8n Middleware
   document.getElementById('companyForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -823,7 +816,6 @@
     try {
       const formData = new FormData(this);
       const companyData = {
-        customer_id: CUSTOMER_ID,
         company_name: formData.get('company_name'),
         industry: formData.get('industry'),
         logo_URL: formData.get('logo_URL'),
@@ -836,15 +828,25 @@
                      formData.get('brand_colors_3')
       };
 
-      if (DEBUG) console.log('Saving company profile:', companyData);
+      console.log('Saving company profile via n8n:', companyData);
 
-      const result = await secureApiCall(
-        "https://victoryvision.app.n8n.cloud/webhook/update-company-profile",
-        companyData
-      );
+      // Save company profile
+      const companyResult = await secureApiCall(N8N_ENDPOINTS.SAVE_COMPANY, companyData);
 
-      if (DEBUG) console.log('Company profile save result:', result);
-      showStatus('Company profile saved successfully!');
+      if (companyResult.success || companyResult.status === 'success') {
+        // Also update user profile with relevant info
+        try {
+          const userResult = await secureApiCall(N8N_ENDPOINTS.UPDATE_USER_PROFILE, companyData);
+          console.log('User profile updated:', userResult);
+        } catch (userError) {
+          console.warn('User profile update failed (non-critical):', userError);
+          // Don't fail the whole operation if user update fails
+        }
+        
+        showStatus('Company profile saved successfully!');
+      } else {
+        throw new Error(companyResult.message || 'Save failed');
+      }
     } catch (error) {
       console.error('Error saving company profile:', error);
       showStatus('Error saving company profile: ' + error.message, true);
@@ -857,15 +859,14 @@
     showLoader();
     
     try {
-      const data = await secureApiCall(
-        "https://victoryvision.app.n8n.cloud/webhook/get-company-profile",
-        { customer_id: CUSTOMER_ID }
-      );
+      console.log('Loading company profile via n8n for:', CUSTOMER_ID);
 
-      if (DEBUG) console.log('Loaded company profile:', data);
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_COMPANY, {});
 
       if (data.company) {
         const company = data.company;
+        console.log('Loaded company profile:', company);
+        
         document.getElementById('companyName').value = company.company_name || '';
         document.getElementById('industry').value = company.industry || '';
         document.getElementById('logoUrl').value = company.logo_URL || '';
@@ -890,9 +891,12 @@
             document.getElementById('color3Text').value = colors[2].trim();
           }
         }
+        
+        showStatus('Company profile loaded successfully!');
+      } else {
+        console.log('No company profile found for user');
+        showStatus('No existing company profile found. Please fill out the form.');
       }
-      
-      showStatus('Company profile loaded successfully!');
     } catch (error) {
       console.error('Error loading company profile:', error);
       showStatus('Error loading company profile: ' + error.message, true);
@@ -901,7 +905,7 @@
     }
   }
 
-  // Goals Functions
+  // Goals Functions - Via n8n Middleware
   async function saveAllGoals() {
     showLoader();
     
@@ -916,13 +920,12 @@
         // Only save goals that have at least a description
         if (formData.get('goal_description') && formData.get('goal_description').trim()) {
           goalsData.push({
-            customer_id: CUSTOMER_ID,
             goal_number: goalNumber,
             goal_description: formData.get('goal_description'),
             measurement: formData.get('measurement'),
             achievable: formData.get('achievable'),
             relationship: formData.get('relationship'),
-            time_limit: formData.get('time_limit')
+            time_limit: formData.get('time_limit') || null
           });
         }
       });
@@ -932,15 +935,15 @@
         return;
       }
 
-      if (DEBUG) console.log('Saving goals:', goalsData);
+      console.log('Saving goals via n8n:', goalsData);
 
-      const result = await secureApiCall(
-        "https://victoryvision.app.n8n.cloud/webhook/update-goals",
-        { goals: goalsData }
-      );
+      const result = await secureApiCall(N8N_ENDPOINTS.SAVE_GOALS, { goals: goalsData });
 
-      if (DEBUG) console.log('Goals save result:', result);
-      showStatus(`Successfully saved ${goalsData.length} goal(s)!`);
+      if (result.success || result.status === 'success') {
+        showStatus(`Successfully saved ${goalsData.length} goal(s)!`);
+      } else {
+        throw new Error(result.message || 'Save failed');
+      }
     } catch (error) {
       console.error('Error saving goals:', error);
       showStatus('Error saving goals: ' + error.message, true);
@@ -953,12 +956,11 @@
     showLoader();
     
     try {
-      const data = await secureApiCall(
-        "https://victoryvision.app.n8n.cloud/webhook/get-goals",
-        { customer_id: CUSTOMER_ID }
-      );
+      console.log('Loading goals via n8n for:', CUSTOMER_ID);
 
-      if (DEBUG) console.log('Loaded goals:', data);
+      const data = await secureApiCall(N8N_ENDPOINTS.GET_GOALS, {});
+
+      console.log('Loaded goals:', data);
 
       // Clear all goal forms first
       const goalForms = document.querySelectorAll('.goal-form');
@@ -977,13 +979,18 @@
             form.querySelector('[name="achievable"]').value = goal.achievable || '';
             form.querySelector('[name="relationship"]').value = goal.relationship || '';
             if (goal.time_limit) {
-              form.querySelector('[name="time_limit"]').value = goal.time_limit.split('T')[0];
+              // Format date for input field
+              const date = new Date(goal.time_limit);
+              const formattedDate = date.toISOString().split('T')[0];
+              form.querySelector('[name="time_limit"]').value = formattedDate;
             }
           }
         });
+        
+        showStatus(`Loaded ${data.goals.length} goal(s) successfully!`);
+      } else {
+        showStatus('No existing goals found. Please fill out the goals.');
       }
-      
-      showStatus(`Loaded ${data.goals ? data.goals.length : 0} goal(s) successfully!`);
     } catch (error) {
       console.error('Error loading goals:', error);
       showStatus('Error loading goals: ' + error.message, true);
@@ -992,37 +999,98 @@
     }
   }
 
-  // Security: Clear sensitive data on page unload
-  window.addEventListener('beforeunload', function() {
-    // Clear any temporary form data if needed
-    // This is handled automatically by the browser for form fields
-  });
-
   // Security: Session timeout check
   setInterval(async function() {
-    const localSession = localStorage.getItem('vv_session');
-    if (localSession) {
-      try {
-        const sessionData = JSON.parse(localSession);
-        if (Date.now() > sessionData.expires_at) {
-          await logout();
-        }
-      } catch (e) {
-        await logout();
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        console.log('Session expired, redirecting to login');
+        redirectToLogin();
       }
+    } catch (e) {
+      console.error('Session check failed:', e);
     }
-  }, 60000); // Check every minute
+  }, 300000); // Check every 5 minutes
 
   // Security: Detect tab visibility and re-verify auth when tab becomes visible
   document.addEventListener('visibilitychange', async function() {
     if (!document.hidden) {
-      // Tab became visible, re-verify authentication
-      const isAuthenticated = await checkAuthentication();
-      if (!isAuthenticated) {
-        redirectToLogin();
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+          redirectToLogin();
+        } else {
+          // Update auth token if needed
+          authToken = session.access_token;
+        }
+      } catch (e) {
+        console.error('Visibility auth check failed:', e);
       }
     }
   });
+
+  // Security: Rate limiting for API calls
+  const rateLimiter = {
+    calls: new Map(),
+    maxCalls: 10,
+    windowMs: 60000, // 1 minute
+    
+    canMakeCall: function(endpoint) {
+      const now = Date.now();
+      const windowStart = now - this.windowMs;
+      
+      if (!this.calls.has(endpoint)) {
+        this.calls.set(endpoint, []);
+      }
+      
+      const calls = this.calls.get(endpoint);
+      // Remove old calls outside the window
+      const recentCalls = calls.filter(time => time > windowStart);
+      this.calls.set(endpoint, recentCalls);
+      
+      if (recentCalls.length >= this.maxCalls) {
+        return false;
+      }
+      
+      recentCalls.push(now);
+      return true;
+    }
+  };
+
+  // Security: Input validation and sanitization
+  function validateAndSanitizeInput(data) {
+    const sanitized = {};
+    
+    for (const [key, value] of Object.entries(data)) {
+      if (typeof value === 'string') {
+        // Basic XSS prevention
+        sanitized[key] = value
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+          .replace(/javascript:/gi, '')
+          .replace(/on\w+\s*=/gi, '')
+          .trim();
+      } else {
+        sanitized[key] = value;
+      }
+    }
+    
+    return sanitized;
+  }
+
+  // Security: Override the secureApiCall to include validation and rate limiting
+  const originalSecureApiCall = secureApiCall;
+  secureApiCall = async function(endpoint, data, method = 'POST') {
+    // Rate limiting check
+    if (!rateLimiter.canMakeCall(endpoint)) {
+      throw new Error('Rate limit exceeded. Please wait before making more requests.');
+    }
+    
+    // Input validation and sanitization
+    const sanitizedData = validateAndSanitizeInput(data);
+    
+    // Call original function with sanitized data
+    return originalSecureApiCall(endpoint, sanitizedData, method);
+  };
 </script>
 </body>
 </html>
