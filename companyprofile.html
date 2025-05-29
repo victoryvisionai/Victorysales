@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Manage your company profile and SMART goals."/>
+  <meta name="description" content="Manage your company profile and goals."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Company Profile</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -120,11 +120,6 @@
     button.secondary:hover {
       background: #5a6268;
     }
-    .goals-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
     .goal-card {
       border: 2px solid #e9ecef;
       border-radius: 8px;
@@ -206,6 +201,29 @@
     .color-input input[type="text"] {
       width: 80px;
     }
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .file-upload input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      z-index: -1;
+    }
+    .file-upload-label {
+      display: block;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+      text-align: center;
+      color: #666;
+    }
+    .file-upload-label:hover {
+      background: #f8f9fa;
+    }
     
     /* Modal Styles */
     .modal {
@@ -278,6 +296,19 @@
     .save-all-button:hover {
       background: #218838;
     }
+    #currentGoalDisplay {
+      min-height: 200px; 
+      padding: 15px; 
+      background: #f8f9fa; 
+      border-radius: 4px; 
+      border: 1px solid #e9ecef;
+      line-height: 1.6;
+    }
+    .file-name {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
@@ -295,11 +326,9 @@
   </div>
   <nav>
     <ul>
-      <li><a href="ai-opt">🤖-AI</a></li>
-      
       <li><a href="companyprofile">Profile</a></li>
+      <li><a href="ai-opt">🤖-AI</a></li>
       <li><a href="campaigns">Campaigns</a></li>
-      
       <li><a href="videos">Videos</a></li>
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>    
@@ -315,7 +344,7 @@
 </header>
 
 <div class="content">
-  <h2>Company Profile & Goals Management</h2>
+  <h2>Company Profile & Goal Management</h2>
   
   <!-- Company Profile Section -->
   <div class="card">
@@ -347,30 +376,31 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="logoUrl">Logo URL</label>
-        <input type="url" id="logoUrl" name="logo_URL" placeholder="https://example.com/logo.png">
-   <label for="domain">Company Website</label>
-        <input type="url" id="domain" name="domainL" placeholder="https://vvdoh.com">   
+      <div class="form-row">
+        <div class="form-group">
+          <label for="logoUpload">Company Logo</label>
+          <div class="file-upload">
+            <input type="file" id="logoUpload" name="logo_file" accept="image/*">
+            <label for="logoUpload" class="file-upload-label">
+              📁 Choose logo file (JPG, PNG, SVG)
+            </label>
+            <div id="logoFileName" class="file-name"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="domain">Company Domain</label>
+          <input type="url" id="domain" name="domain" placeholder="https://www.yourcompany.com">
+        </div>
       </div>
+
       <div class="form-group">
         <label for="companyDescription">Company Description *</label>
         <textarea id="companyDescription" name="company_description" required placeholder="Describe your company, mission, and what makes you unique..."></textarea>
       </div>
 
       <div class="form-group">
-        <label for="productDescription1">Primary Product/Service Description *</label>
-        <textarea id="productDescription1" name="product_descriptions" required placeholder="Describe your main product or service in detail..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="productDescription2">Secondary Product/Service Description</label>
-        <textarea id="productDescription2" name="product_descriptions_2" placeholder="Describe additional products or services..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="productDescription3">Third Product/Service Description</label>
-        <textarea id="productDescription3" name="product_descriptions_3" placeholder="Describe other products or services..."></textarea>
+        <label for="productDescription">Product/Service Description *</label>
+        <textarea id="productDescription" name="product_descriptions" required placeholder="Describe your main product or service in detail..."></textarea>
       </div>
 
       <div class="form-group">
@@ -393,18 +423,26 @@
     </form>
   </div>
 
-  <!-- SMART Goals Section -->
+  <!-- Goal Management Section -->
   <div class="card">
     <div class="section-header">
-      <h3>SMART Goals Management</h3>
-      <p style="margin: 5px 0 0 0; opacity: 0.9;">Define up to 4 Specific, Measurable, Achievable, Relevant, Time-bound goals</p>
+      <h3>Goal Management</h3>
+      <p style="margin: 5px 0 0 0; opacity: 0.9;">Create or replace your current goal</p>
     </div>
 
-    <div class="goals-container">
-      <!-- Goal 1 -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <!-- Current Goal Display -->
       <div class="goal-card">
-        <h4>Goal 1</h4>
-        <form class="goal-form" data-goal-number="1">
+        <h4>Current Goal</h4>
+        <div id="currentGoalDisplay">
+          <em>No goal set yet</em>
+        </div>
+      </div>
+
+      <!-- New Goal Input -->
+      <div class="goal-card">
+        <h4>New Goal</h4>
+        <form class="goal-form">
           <div class="form-group">
             <label>Goal Description (Specific) *</label>
             <textarea name="goal_description" required placeholder="What exactly do you want to achieve?"></textarea>
@@ -415,11 +453,11 @@
           </div>
           <div class="form-group">
             <label>Why is this achievable? (Achievable)</label>
-            <textarea name="achievable" placeholder="What resources/capabilities do you have to achieve this?"></textarea>
+            <textarea name="achievable" placeholder="What resources/capabilities do you have?"></textarea>
           </div>
           <div class="form-group">
             <label>How does this relate to your business? (Relevant)</label>
-            <textarea name="relationship" placeholder="How does this goal align with your overall business strategy?"></textarea>
+            <textarea name="relationship" placeholder="How does this align with your strategy?"></textarea>
           </div>
           <div class="form-group">
             <label>Time Limit *</label>
@@ -427,91 +465,10 @@
           </div>
         </form>
       </div>
-
-      <!-- Goal 2 -->
-      <div class="goal-card">
-        <h4>Goal 2</h4>
-        <form class="goal-form" data-goal-number="2">
-          <div class="form-group">
-            <label>Goal Description (Specific)</label>
-            <textarea name="goal_description" placeholder="What exactly do you want to achieve?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>How will you measure success? (Measurable)</label>
-            <input type="text" name="measurement" placeholder="e.g., 30% increase in revenue, 1000 new customers">
-          </div>
-          <div class="form-group">
-            <label>Why is this achievable? (Achievable)</label>
-            <textarea name="achievable" placeholder="What resources/capabilities do you have to achieve this?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>How does this relate to your business? (Relevant)</label>
-            <textarea name="relationship" placeholder="How does this goal align with your overall business strategy?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Time Limit</label>
-            <input type="date" name="time_limit">
-          </div>
-        </form>
-      </div>
-
-      <!-- Goal 3 -->
-      <div class="goal-card">
-        <h4>Goal 3</h4>
-        <form class="goal-form" data-goal-number="3">
-          <div class="form-group">
-            <label>Goal Description (Specific)</label>
-            <textarea name="goal_description" placeholder="What exactly do you want to achieve?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>How will you measure success? (Measurable)</label>
-            <input type="text" name="measurement" placeholder="e.g., 30% increase in revenue, 1000 new customers">
-          </div>
-          <div class="form-group">
-            <label>Why is this achievable? (Achievable)</label>
-            <textarea name="achievable" placeholder="What resources/capabilities do you have to achieve this?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>How does this relate to your business? (Relevant)</label>
-            <textarea name="relationship" placeholder="How does this goal align with your overall business strategy?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Time Limit</label>
-            <input type="date" name="time_limit">
-          </div>
-        </form>
-      </div>
-
-      <!-- Goal 4 -->
-      <div class="goal-card">
-        <h4>Goal 4</h4>
-        <form class="goal-form" data-goal-number="4">
-          <div class="form-group">
-            <label>Goal Description (Specific)</label>
-            <textarea name="goal_description" placeholder="What exactly do you want to achieve?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>How will you measure success? (Measurable)</label>
-            <input type="text" name="measurement" placeholder="e.g., 30% increase in revenue, 1000 new customers">
-          </div>
-          <div class="form-group">
-            <label>Why is this achievable? (Achievable)</label>
-            <textarea name="achievable" placeholder="What resources/capabilities do you have to achieve this?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>How does this relate to your business? (Relevant)</label>
-            <textarea name="relationship" placeholder="How does this goal align with your overall business strategy?"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Time Limit</label>
-            <input type="date" name="time_limit">
-          </div>
-        </form>
-      </div>
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
-      <button type="button" class="save-all-button" onclick="saveAllData()">💾 Save Company Profile & Goals</button>
+      <button type="button" class="save-all-button" onclick="saveAllData()">💾 Save Company Profile & Goal</button>
       <button type="button" class="secondary" onclick="loadAllData()">📂 Load Current Data</button>
       <button type="button" class="secondary" onclick="showCurrentData()">👁️ View Current Data</button>
     </div>
@@ -546,7 +503,7 @@
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
   // Single n8n webhook endpoint
-  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile' ;
+  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile';
   
   const DEBUG = true;
   let CUSTOMER_ID = null;
@@ -611,7 +568,7 @@
       
       const headers = {
         'Content-Type': 'application/json',
-    'X-Customer-ID': encodeURIComponent(CUSTOMER_ID),
+        'X-Customer-ID': CUSTOMER_ID,
         'X-Request-ID': generateRequestId(),
         'X-Timestamp': new Date().toISOString()
       };
@@ -669,6 +626,7 @@
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
         setupColorPickers();
+        setupFileUpload();
         await loadAllData();
       } else {
         redirectToLogin();
@@ -692,6 +650,20 @@
       textInput.addEventListener('change', function() {
         colorInput.value = this.value;
       });
+    });
+  }
+
+  // File upload setup
+  function setupFileUpload() {
+    const fileInput = document.getElementById('logoUpload');
+    const fileName = document.getElementById('logoFileName');
+    
+    fileInput.addEventListener('change', function() {
+      if (this.files && this.files[0]) {
+        fileName.textContent = `Selected: ${this.files[0].name}`;
+      } else {
+        fileName.textContent = '';
+      }
     });
   }
 
@@ -719,7 +691,7 @@
     const modal = document.getElementById('dataModal');
     const modalTitle = document.getElementById('modalTitle');
     
-    modalTitle.textContent = 'Current Company Profile & Goals';
+    modalTitle.textContent = 'Current Company Profile & Goal';
     loadDataForModal();
     modal.style.display = 'block';
   }
@@ -749,29 +721,24 @@
         html += '<h3>Company Information</h3>';
         html += `<div class="current-data"><strong>Company Name:</strong> ${company.company_name || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Industry:</strong> ${company.industry || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Logo URL:</strong> ${company.logo_URL || 'Not set'}</div>`;
-         html += `<div class="current-data"><strong> Domain:</strong> ${company.domain || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Domain:</strong> ${company.domain || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Company Description:</strong> ${company.company_description || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Primary Product:</strong> ${company.product_descriptions || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Secondary Product:</strong> ${company.product_descriptions_2 || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Third Product:</strong> ${company.product_descriptions_3 || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Product Description:</strong> ${company.product_descriptions || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Brand Colors:</strong> ${company.brand_colors || 'Not set'}</div>`;
       }
       
       if (data.goals && data.goals.length > 0) {
-        html += '<h3>Goals</h3>';
-        data.goals.forEach(goal => {
-          html += `
-            <div class="current-data">
-              <h4>Goal ${goal.goal_number}</h4>
-              <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br>
-              <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br>
-              <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br>
-              <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br>
-              <strong>Time Limit:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
-            </div>
-          `;
-        });
+        html += '<h3>Current Goal</h3>';
+        const goal = data.goals[0];
+        html += `
+          <div class="current-data">
+            <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br>
+            <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br>
+            <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br>
+            <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br>
+            <strong>Time Limit:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
+          </div>
+        `;
       }
       
       if (!html) {
@@ -784,46 +751,48 @@
     }
   }
 
-  // Main save function - combines company and goals
+  // Main save function - combines company and goal
   async function saveAllData() {
     showLoader();
     
     try {
       const formData = new FormData(document.getElementById('companyForm'));
-      const goalForms = document.querySelectorAll('.goal-form');
-      const goalsData = [];
+      const goalForm = document.querySelector('.goal-form');
+      const goalFormData = new FormData(goalForm);
+      
+      // Handle file upload
+      let logoUrl = '';
+      const logoFile = formData.get('logo_file');
+      if (logoFile && logoFile.size > 0) {
+        // Note: In production, you'd upload this to a file storage service
+        // For now, we'll just note that a file was selected
+        logoUrl = `File selected: ${logoFile.name}`;
+      }
 
-      // Collect goals data
-      goalForms.forEach((form, index) => {
-        const goalFormData = new FormData(form);
-        const goalNumber = index + 1;
-        
-        if (goalFormData.get('goal_description') && goalFormData.get('goal_description').trim()) {
-          goalsData.push({
-            goal_number: goalNumber,
-            goal_description: goalFormData.get('goal_description'),
-            measurement: goalFormData.get('measurement'),
-            achievable: goalFormData.get('achievable'),
-            relationship: goalFormData.get('relationship'),
-            time_limit: goalFormData.get('time_limit') || null
-          });
-        }
-      });
+      // Collect goal data only if description is provided
+      let goalData = null;
+      if (goalFormData.get('goal_description') && goalFormData.get('goal_description').trim()) {
+        goalData = {
+          goal_description: goalFormData.get('goal_description'),
+          measurement: goalFormData.get('measurement'),
+          achievable: goalFormData.get('achievable'),
+          relationship: goalFormData.get('relationship'),
+          time_limit: goalFormData.get('time_limit') || null
+        };
+      }
 
       // Combine all data into single payload
       const allData = {
         company_name: formData.get('company_name'),
         industry: formData.get('industry'),
-        logo_URL: formData.get('logo_URL'),
         domain: formData.get('domain'),
+        logo_URL: logoUrl,
         company_description: formData.get('company_description'),
         product_descriptions: formData.get('product_descriptions'),
-        product_descriptions_2: formData.get('product_descriptions_2'),
-        product_descriptions_3: formData.get('product_descriptions_3'),
         brand_colors: formData.get('brand_colors_1') + ',' + 
                      formData.get('brand_colors_2') + ',' + 
                      formData.get('brand_colors_3'),
-        goals: goalsData
+        goal: goalData
       };
 
       console.log('Saving all data:', allData);
@@ -831,7 +800,8 @@
       const result = await secureApiCall(allData, 'POST');
 
       if (result.success || result.status === 'success') {
-        showStatus('Company profile and goals saved successfully!');
+        showStatus('Company profile and goal saved successfully!');
+        await loadAllData(); // Refresh the display
       } else {
         throw new Error(result.message || 'Save failed');
       }
@@ -859,12 +829,9 @@
         
         document.getElementById('companyName').value = company.company_name || '';
         document.getElementById('industry').value = company.industry || '';
-        document.getElementById('logoUrl').value = company.logo_URL || '';
         document.getElementById('domain').value = company.domain || '';
         document.getElementById('companyDescription').value = company.company_description || '';
-        document.getElementById('productDescription1').value = company.product_descriptions || '';
-        document.getElementById('productDescription2').value = company.product_descriptions_2 || '';
-        document.getElementById('productDescription3').value = company.product_descriptions_3 || '';
+        document.getElementById('productDescription').value = company.product_descriptions || '';
         
         // Handle brand colors
         if (company.brand_colors) {
@@ -884,36 +851,41 @@
         }
       }
 
-      // Clear all goal forms first
-      const goalForms = document.querySelectorAll('.goal-form');
-      goalForms.forEach(form => {
-        form.reset();
-      });
+      // Clear goal form first
+      const goalForm = document.querySelector('.goal-form');
+      goalForm.reset();
 
-      // Load goals data
+      // Load and display current goal
       if (data.goals && data.goals.length > 0) {
-        data.goals.forEach(goal => {
-          const goalIndex = goal.goal_number - 1;
-          if (goalIndex >= 0 && goalIndex < goalForms.length) {
-            const form = goalForms[goalIndex];
-            
-            form.querySelector('[name="goal_description"]').value = goal.goal_description || '';
-            form.querySelector('[name="measurement"]').value = goal.measurement || '';
-            form.querySelector('[name="achievable"]').value = goal.achievable || '';
-            form.querySelector('[name="relationship"]').value = goal.relationship || '';
-            if (goal.time_limit) {
-              const date = new Date(goal.time_limit);
-              const formattedDate = date.toISOString().split('T')[0];
-              form.querySelector('[name="time_limit"]').value = formattedDate;
-            }
-          }
-        });
+        const goal = data.goals[0];
+        
+        // Fill the goal form
+        goalForm.querySelector('[name="goal_description"]').value = goal.goal_description || '';
+        goalForm.querySelector('[name="measurement"]').value = goal.measurement || '';
+        goalForm.querySelector('[name="achievable"]').value = goal.achievable || '';
+        goalForm.querySelector('[name="relationship"]').value = goal.relationship || '';
+        if (goal.time_limit) {
+          const date = new Date(goal.time_limit);
+          const formattedDate = date.toISOString().split('T')[0];
+          goalForm.querySelector('[name="time_limit"]').value = formattedDate;
+        }
+        
+        // Display current goal
+        document.getElementById('currentGoalDisplay').innerHTML = `
+          <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br><br>
+          <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br><br>
+          <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br><br>
+          <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br><br>
+          <strong>Deadline:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
+        `;
+      } else {
+        document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
       }
       
       if (data.company || (data.goals && data.goals.length > 0)) {
-        const companyCount = data.company ? 1 : 0;
+        const companyExists = data.company ? 1 : 0;
         const goalsCount = data.goals ? data.goals.length : 0;
-        showStatus(`Loaded company profile and ${goalsCount} goal(s) successfully!`);
+        showStatus(`Loaded company profile and ${goalsCount} goal successfully!`);
       } else {
         showStatus('No existing data found. Please fill out the forms.');
       }
