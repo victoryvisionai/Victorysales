@@ -350,8 +350,9 @@
       <div class="form-group">
         <label for="logoUrl">Logo URL</label>
         <input type="url" id="logoUrl" name="logo_URL" placeholder="https://example.com/logo.png">
+   <label for="domain">Company Website</label>
+        <input type="url" id="domain" name="domainL" placeholder="https://vvdoh.com">   
       </div>
-
       <div class="form-group">
         <label for="companyDescription">Company Description *</label>
         <textarea id="companyDescription" name="company_description" required placeholder="Describe your company, mission, and what makes you unique..."></textarea>
@@ -545,7 +546,7 @@
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
   // Single n8n webhook endpoint
-  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile';
+  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile' ;
   
   const DEBUG = true;
   let CUSTOMER_ID = null;
@@ -749,6 +750,7 @@
         html += `<div class="current-data"><strong>Company Name:</strong> ${company.company_name || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Industry:</strong> ${company.industry || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Logo URL:</strong> ${company.logo_URL || 'Not set'}</div>`;
+         html += `<div class="current-data"><strong> Domain:</strong> ${company.domain || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Company Description:</strong> ${company.company_description || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Primary Product:</strong> ${company.product_descriptions || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Secondary Product:</strong> ${company.product_descriptions_2 || 'Not set'}</div>`;
@@ -813,6 +815,7 @@
         company_name: formData.get('company_name'),
         industry: formData.get('industry'),
         logo_URL: formData.get('logo_URL'),
+        domain: formData.get('domain'),
         company_description: formData.get('company_description'),
         product_descriptions: formData.get('product_descriptions'),
         product_descriptions_2: formData.get('product_descriptions_2'),
@@ -857,6 +860,7 @@
         document.getElementById('companyName').value = company.company_name || '';
         document.getElementById('industry').value = company.industry || '';
         document.getElementById('logoUrl').value = company.logo_URL || '';
+        document.getElementById('domain').value = company.domain || '';
         document.getElementById('companyDescription').value = company.company_description || '';
         document.getElementById('productDescription1').value = company.product_descriptions || '';
         document.getElementById('productDescription2').value = company.product_descriptions_2 || '';
