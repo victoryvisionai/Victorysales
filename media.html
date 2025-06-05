@@ -488,10 +488,21 @@
         // data.media is now an array of all 50 items
         allMediaFiles = data.media;
         console.log('Added media files:', allMediaFiles.length);
+        console.log('First file sample:', allMediaFiles[0]);
+        console.log('First file URL:', allMediaFiles[0]?.URL);
+        console.log('First file keys:', Object.keys(allMediaFiles[0] || {}));
       }
       
-      // Filter only files with URLs
-      allMediaFiles = allMediaFiles.filter(file => file && file.URL);
+      // Filter only files with URLs - let's see what's being filtered
+      const beforeFilter = allMediaFiles.length;
+      allMediaFiles = allMediaFiles.filter(file => {
+        const hasURL = file && file.URL;
+        if (!hasURL) {
+          console.log('Filtering out file:', file);
+        }
+        return hasURL;
+      });
+      console.log(`Filtered: ${beforeFilter} -> ${allMediaFiles.length} files`);
       
       filteredMediaFiles = [...allMediaFiles];
       console.log('Final media files:', allMediaFiles);
