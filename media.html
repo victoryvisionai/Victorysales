@@ -554,13 +554,12 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n webhook endpoints - CORRECTED PATHS
+  // n8n webhook endpoints - MEDIA ONLY
   const N8N_ENDPOINTS = {
-    getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get',
-    getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
-    generateImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create-image',
-    generateVideo: 'https://victoryvision.app.n8n.cloud/webhook/media/create-video',
-    removeMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/remove'
+    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+    createMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/create',
+    removeMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/remove',
+    updateMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/update'
   };
   
   let CUSTOMER_ID = null;
@@ -661,14 +660,30 @@
     }
   }
 
-  // Load campaigns from n8n
+  // Load campaigns - get from existing media files' campaign_ids
   async function loadCampaigns() {
     try {
-      const result = await callN8nWebhook(N8N_ENDPOINTS.getCampaigns);
-      campaigns = result.campaigns || result.data || [];
+      // We'll extract campaign info from media files instead of separate campaigns call
+      await loadMediaFiles();
+      
+      // Extract unique campaigns from media files
+      const uniqueCampaigns = [];
+      const seenIds = new Set();
+      
+      allMediaFiles.forEach(file => {
+        if (file.campaign_id && !seenIds.has(file.campaign_id)) {
+          seenIds.add(file.campaign_id);
+          uniqueCampaigns.push({
+            id: file.campaign_id,
+            name: file.campaign_name || `Campaign ${file.campaign_id.slice(0, 8)}`
+          });
+        }
+      });
+      
+      campaigns = uniqueCampaigns;
       populateCampaignDropdowns();
     } catch (error) {
-      console.error('Error loading campaigns:', error);
+      console.error('Error loading campaigns from media:', error);
       showStatus('Error loading campaigns: ' + error.message, true);
     }
   }
@@ -676,8 +691,8 @@
   // Load media files from n8n
   async function loadMediaFiles() {
     try {
-      const result = await callN8nWebhook(N8N_ENDPOINTS.getCampaignFiles);
-      allMediaFiles = result.files || result.data || [];
+      const result = await callN8nWebhook(N8N_ENDPOINTS.getMedia);
+      allMediaFiles = result.files || result.data || result.media || [];
       
       // Filter only images and videos
       allMediaFiles = allMediaFiles.filter(file => 
@@ -767,10 +782,6 @@
   // Generate media (combined function)
   async function generateMedia(formData, mode) {
     try {
-      const endpoint = mode === 'image' ? 
-        N8N_ENDPOINTS.generateImage : 
-        N8N_ENDPOINTS.generateVideo;
-      
       showStatus(`Generating ${mode}... This may take a few moments.`);
       
       const payload = {
@@ -794,7 +805,7 @@
         payload.reference_image = base64Image;
       }
 
-      const result = await callN8nWebhook(endpoint, payload);
+      const result = await callN8nWebhook(N8N_ENDPOINTS.createMedia, payload);
 
       if (result.success) {
         showStatus(`${mode} generated successfully!`);
@@ -1107,10 +1118,7 @@
       
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
-        await Promise.all([
-          loadCampaigns(),
-          loadMediaFiles()
-        ]);
+        await loadCampaigns(); // This now calls loadMediaFiles internally
         setupEventListeners();
         applyFilters();
       } else {
