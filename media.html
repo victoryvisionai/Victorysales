@@ -493,16 +493,7 @@
         console.log('First file keys:', Object.keys(allMediaFiles[0] || {}));
       }
       
-      // Filter only files with URLs - let's see what's being filtered
-      const beforeFilter = allMediaFiles.length;
-      allMediaFiles = allMediaFiles.filter(file => {
-        const hasURL = file && file.URL;
-        if (!hasURL) {
-          console.log('Filtering out file:', file);
-        }
-        return hasURL;
-      });
-      console.log(`Filtered: ${beforeFilter} -> ${allMediaFiles.length} files`);
+     console.log(`Loaded ${allMediaFiles.length} media files`);
       
       filteredMediaFiles = [...allMediaFiles];
       console.log('Final media files:', allMediaFiles);
