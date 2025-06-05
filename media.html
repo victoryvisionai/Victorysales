@@ -483,16 +483,24 @@
       // Reset arrays
       allMediaFiles = [];
       
-      // Handle response with media array containing all items
-      if (data && data.media) {
-        // data.media is now an array of all 50 items
-        allMediaFiles = data.media;
-        console.log('Added media files:', allMediaFiles.length);
-        console.log('First file sample:', allMediaFiles[0]);
-        console.log('First file URL:', allMediaFiles[0]?.URL);
-        console.log('First file keys:', Object.keys(allMediaFiles[0] || {}));
-      }
-      
+     // Handle response from n8n webhook
+if (data && Array.isArray(data)) {
+  // Direct array response
+  allMediaFiles = data;
+} else if (data && data.media && Array.isArray(data.media)) {
+  // Nested media array
+  allMediaFiles = data.media;
+} else {
+  console.log('Unexpected response structure:', data);
+  allMediaFiles = [];
+}
+
+console.log('Added media files:', allMediaFiles.length);
+if (allMediaFiles.length > 0) {
+  console.log('First file sample:', allMediaFiles[0]);
+  console.log('First file URL:', allMediaFiles[0]?.URL);
+  console.log('First file keys:', Object.keys(allMediaFiles[0] || {}));
+}      
      console.log(`Loaded ${allMediaFiles.length} media files`);
       
       filteredMediaFiles = [...allMediaFiles];
