@@ -669,7 +669,7 @@
       const result = await callN8nWebhook(N8N_ENDPOINTS.getMedia);
       
       // FIXED: Check for media property first, then fallback to others
-      allMediaFiles = result.media || result.files || result.data || [];
+      allMediaFiles = result || [];
       
       // Filter only images and videos
       allMediaFiles = allMediaFiles.filter(file => 
