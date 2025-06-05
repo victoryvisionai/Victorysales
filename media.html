@@ -495,10 +495,10 @@
         allMediaFiles = [];
       }
 
-      // Filter for images/videos
-      allMediaFiles = allMediaFiles.filter(file => 
-        file.file_type && (file.file_type.includes('image') || file.file_type.includes('video'))
-      );
+      console.log('All files from n8n:', allMediaFiles);
+      
+      // Just keep files that have a URL - no filtering needed
+      allMediaFiles = allMediaFiles.filter(file => file && file.URL);
       
       filteredMediaFiles = [...allMediaFiles];
       console.log('Final media files:', allMediaFiles);
