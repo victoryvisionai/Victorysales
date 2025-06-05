@@ -329,15 +329,37 @@
       margin-right: 15px;
       text-decoration: none;
     }
-    .no-media-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      background: #f8f9fa;
+    .toggle-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-right: 10px;
+    }
+    .toggle-btn.active {
+      background: #28a745;
+    }
+    .toggle-btn:hover {
+      opacity: 0.8;
+    }
+    .preview-placeholder {
+      text-align: center;
+      padding: 3rem;
       color: #666;
-      font-size: 2rem;
       border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      background: #f8f9fa;
+    }
+    .preview-content {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .preview-content img,
+    .preview-content video {
+      max-width: 100%;
       border-radius: 8px;
     }
     
@@ -401,65 +423,79 @@
 
   <!-- Create New Media Section -->
   <section class="create-section">
-    <!-- Image Generation -->
+    <!-- Media Generation (Combined) -->
     <div class="card">
       <div class="section-header">
-        <h3>🎨 Generate Images</h3>
+        <h3 id="generationTitle">🎨 Generate Images</h3>
+        <div style="margin-top: 10px;">
+          <button type="button" id="imageToggle" class="toggle-btn active">🎨 Images</button>
+          <button type="button" id="videoToggle" class="toggle-btn">🎬 Videos</button>
+        </div>
       </div>
       
-      <form id="imageForm">
+      <form id="mediaForm">
         <div class="form-group">
-          <label for="imageCampaign">Campaign</label>
-          <select id="imageCampaign" required>
+          <label for="mediaCampaign">Campaign</label>
+          <select id="mediaCampaign" required>
             <option value="">Select Campaign</option>
           </select>
         </div>
+        
         <div class="form-group">
-          <label for="imagePrompt">Image Description *</label>
-          <textarea id="imagePrompt" required placeholder="Describe the image you want to generate..."></textarea>
+          <label for="mediaPrompt">Description *</label>
+          <textarea id="mediaPrompt" required placeholder="Describe what you want to generate..."></textarea>
         </div>
+
+        <!-- Image-specific fields -->
+        <div id="imageFields">
+          <div class="form-group">
+            <label for="imageStyle">Style</label>
+            <select id="imageStyle">
+              <option value="">Auto-select based on campaign</option>
+              <option value="professional">Professional</option>
+              <option value="minimalist">Minimalist</option>
+              <option value="modern">Modern</option>
+              <option value="creative">Creative</option>
+              <option value="corporate">Corporate</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Video-specific fields -->
+        <div id="videoFields" style="display: none;">
+          <div class="form-group">
+            <label for="videoDuration">Duration</label>
+            <select id="videoDuration">
+              <option value="5">5 seconds</option>
+              <option value="10">10 seconds</option>
+              <option value="15">15 seconds</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Optional image upload for both -->
         <div class="form-group">
-          <label for="imageStyle">Style</label>
-          <select id="imageStyle">
-            <option value="">Auto-select based on campaign</option>
-            <option value="professional">Professional</option>
-            <option value="minimalist">Minimalist</option>
-            <option value="modern">Modern</option>
-            <option value="creative">Creative</option>
-            <option value="corporate">Corporate</option>
-          </select>
+          <label for="referenceImage">Reference Image (Optional)</label>
+          <input type="file" id="referenceImage" accept="image/*">
+          <small>Upload an image to guide the generation</small>
         </div>
-        <button type="submit" class="generate-btn">🎨 Generate Image</button>
+
+        <button type="submit" class="generate-btn" id="generateBtn">🎨 Generate Image</button>
       </form>
     </div>
 
-    <!-- Video Generation -->
+    <!-- Display/Preview Panel -->
     <div class="card">
       <div class="section-header">
-        <h3>🎬 Generate Videos</h3>
+        <h3>📱 Preview & Recent</h3>
       </div>
       
-      <form id="videoForm">
-        <div class="form-group">
-          <label for="videoCampaign">Campaign</label>
-          <select id="videoCampaign" required>
-            <option value="">Select Campaign</option>
-          </select>
+      <div id="previewArea">
+        <div class="preview-placeholder">
+          <p>Generated content will appear here</p>
+          <small>Create your first image or video to see a preview</small>
         </div>
-        <div class="form-group">
-          <label for="videoPrompt">Video Description *</label>
-          <textarea id="videoPrompt" required placeholder="Describe the video scene you want to generate..."></textarea>
-        </div>
-        <div class="form-group">
-          <label for="videoDuration">Duration</label>
-          <select id="videoDuration">
-            <option value="5">5 seconds</option>
-            <option value="10">10 seconds</option>
-            <option value="15">15 seconds</option>
-          </select>
-        </div>
-        <button type="submit" class="generate-btn">🎬 Generate Video</button>
-      </form>
+      </div>
     </div>
   </section>
 
@@ -518,12 +554,13 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n webhook endpoints - UPDATE THESE WITH YOUR ACTUAL WEBHOOK URLS
+  // n8n webhook endpoints - CORRECTED PATHS
   const N8N_ENDPOINTS = {
-    getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/get-campaigns',
-    getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/get-campaign-files',
-    generateImage: 'https://victoryvision.app.n8n.cloud/webhook/generate-image',
-    generateVideo: 'https://victoryvision.app.n8n.cloud/webhook/generate-video'
+    getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get',
+    getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+    generateImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create-image',
+    generateVideo: 'https://victoryvision.app.n8n.cloud/webhook/media/create-video',
+    removeMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/remove'
   };
   
   let CUSTOMER_ID = null;
@@ -590,7 +627,7 @@
     }
   }
 
-  // n8n webhook call function
+  // n8n webhook call function with CORS headers
   async function callN8nWebhook(endpoint, data = {}) {
     try {
       const payload = {
@@ -604,6 +641,9 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
         },
         body: JSON.stringify(payload)
       });
@@ -655,83 +695,158 @@
     }
   }
 
-  // Populate campaign dropdowns
+  // Populate campaign dropdown (single dropdown now)
   function populateCampaignDropdowns() {
-    const dropdowns = [
-      document.getElementById('imageCampaign'),
-      document.getElementById('videoCampaign'),
-      campaignFilter
-    ];
+    const dropdown = document.getElementById('mediaCampaign');
     
-    dropdowns.forEach(dropdown => {
-      if (!dropdown) return;
-      
-      const currentValue = dropdown.value;
-      const isFilter = dropdown === campaignFilter;
-      
-      dropdown.innerHTML = isFilter ? 
-        '<option value="">All Campaigns</option>' : 
-        '<option value="">Select Campaign</option>';
+    if (!dropdown) return;
+    
+    const currentValue = dropdown.value;
+    dropdown.innerHTML = '<option value="">Select Campaign</option>';
+    
+    campaigns.forEach(campaign => {
+      const option = document.createElement('option');
+      option.value = campaign.id;
+      option.textContent = campaign.name;
+      dropdown.appendChild(option);
+    });
+
+    dropdown.value = currentValue;
+    
+    // Also populate filter dropdown
+    const filterDropdown = campaignFilter;
+    if (filterDropdown) {
+      const filterCurrentValue = filterDropdown.value;
+      filterDropdown.innerHTML = '<option value="">All Campaigns</option>';
       
       campaigns.forEach(campaign => {
         const option = document.createElement('option');
         option.value = campaign.id;
         option.textContent = campaign.name;
-        dropdown.appendChild(option);
+        filterDropdown.appendChild(option);
       });
 
-      dropdown.value = currentValue;
+      filterDropdown.value = filterCurrentValue;
+    }
+  }
+
+  // Toggle between image and video generation
+  function setupToggleButtons() {
+    const imageToggle = document.getElementById('imageToggle');
+    const videoToggle = document.getElementById('videoToggle');
+    const imageFields = document.getElementById('imageFields');
+    const videoFields = document.getElementById('videoFields');
+    const generationTitle = document.getElementById('generationTitle');
+    const generateBtn = document.getElementById('generateBtn');
+
+    let currentMode = 'image';
+
+    imageToggle.addEventListener('click', () => {
+      currentMode = 'image';
+      imageToggle.classList.add('active');
+      videoToggle.classList.remove('active');
+      imageFields.style.display = 'block';
+      videoFields.style.display = 'none';
+      generationTitle.textContent = '🎨 Generate Images';
+      generateBtn.textContent = '🎨 Generate Image';
+    });
+
+    videoToggle.addEventListener('click', () => {
+      currentMode = 'video';
+      videoToggle.classList.add('active');
+      imageToggle.classList.remove('active');
+      imageFields.style.display = 'none';
+      videoFields.style.display = 'block';
+      generationTitle.textContent = '🎬 Generate Videos';
+      generateBtn.textContent = '🎬 Generate Video';
+    });
+
+    return { getCurrentMode: () => currentMode };
+  }
+
+  // Generate media (combined function)
+  async function generateMedia(formData, mode) {
+    try {
+      const endpoint = mode === 'image' ? 
+        N8N_ENDPOINTS.generateImage : 
+        N8N_ENDPOINTS.generateVideo;
+      
+      showStatus(`Generating ${mode}... This may take a few moments.`);
+      
+      const payload = {
+        campaign_id: formData.get('campaign_id'),
+        prompt: formData.get('prompt'),
+        type: mode
+      };
+
+      // Add mode-specific fields
+      if (mode === 'image') {
+        payload.style = formData.get('style') || 'auto';
+      } else {
+        payload.duration = formData.get('duration') || 5;
+      }
+
+      // Handle reference image if provided
+      const referenceImage = formData.get('reference_image');
+      if (referenceImage && referenceImage.size > 0) {
+        // Convert to base64 for transmission
+        const base64Image = await fileToBase64(referenceImage);
+        payload.reference_image = base64Image;
+      }
+
+      const result = await callN8nWebhook(endpoint, payload);
+
+      if (result.success) {
+        showStatus(`${mode} generated successfully!`);
+        await loadMediaFiles();
+        renderMediaGrid();
+        showPreview(result.data); // Show in preview panel
+        document.getElementById('mediaForm').reset();
+      } else {
+        throw new Error(result.message || `${mode} generation failed`);
+      }
+    } catch (error) {
+      console.error(`Error generating ${mode}:`, error);
+      showStatus(`Error generating ${mode}: ` + error.message, true);
+    }
+  }
+
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
     });
   }
 
-  // Generate image
-  async function generateImage(formData) {
-    try {
-      showStatus('Generating image... This may take a few moments.');
-      
-      const result = await callN8nWebhook(N8N_ENDPOINTS.generateImage, {
-        campaign_id: formData.get('campaign_id'),
-        prompt: formData.get('prompt'),
-        style: formData.get('style') || 'auto'
-      });
-
-      if (result.success) {
-        showStatus('Image generated successfully!');
-        await loadMediaFiles();
-        renderMediaGrid();
-        document.getElementById('imageForm').reset();
-      } else {
-        throw new Error(result.message || 'Image generation failed');
-      }
-    } catch (error) {
-      console.error('Error generating image:', error);
-      showStatus('Error generating image: ' + error.message, true);
+  // Show preview in right panel
+  function showPreview(mediaData) {
+    const previewArea = document.getElementById('previewArea');
+    
+    if (!mediaData || !mediaData.URL) {
+      return;
     }
-  }
 
-  // Generate video
-  async function generateVideo(formData) {
-    try {
-      showStatus('Generating video... This may take several minutes.');
-      
-      const result = await callN8nWebhook(N8N_ENDPOINTS.generateVideo, {
-        campaign_id: formData.get('campaign_id'),
-        prompt: formData.get('prompt'),
-        duration: formData.get('duration') || 5
-      });
-
-      if (result.success) {
-        showStatus('Video generation started! It will appear in your media library once complete.');
-        await loadMediaFiles();
-        renderMediaGrid();
-        document.getElementById('videoForm').reset();
-      } else {
-        throw new Error(result.message || 'Video generation failed');
-      }
-    } catch (error) {
-      console.error('Error generating video:', error);
-      showStatus('Error generating video: ' + error.message, true);
-    }
+    const isVideo = mediaData.file_type && mediaData.file_type.includes('video');
+    
+    previewArea.innerHTML = `
+      <div class="preview-content">
+        ${isVideo ? 
+          `<video controls style="max-width: 100%; border-radius: 8px;">
+            <source src="${mediaData.URL}" type="${mediaData.mime_type}">
+          </video>` :
+          `<img src="${mediaData.URL}" alt="Generated content" style="max-width: 100%; border-radius: 8px;">`
+        }
+        <div style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+          <strong>${mediaData.name || 'Generated Content'}</strong>
+          <p style="margin: 5px 0; font-size: 0.9em; color: #666;">
+            ${mediaData.prompt || 'No description'}
+          </p>
+        </div>
+      </div>
+    `;
   }
 
   // Apply filters
@@ -935,24 +1050,31 @@
 
   // Event listeners
   function setupEventListeners() {
-    // Image form submission
-    document.getElementById('imageForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('campaign_id', document.getElementById('imageCampaign').value);
-      formData.append('prompt', document.getElementById('imagePrompt').value);
-      formData.append('style', document.getElementById('imageStyle').value);
-      await generateImage(formData);
-    });
+    // Setup toggle functionality
+    const toggleControls = setupToggleButtons();
 
-    // Video form submission
-    document.getElementById('videoForm').addEventListener('submit', async (e) => {
+    // Media form submission (combined)
+    document.getElementById('mediaForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      formData.append('campaign_id', document.getElementById('videoCampaign').value);
-      formData.append('prompt', document.getElementById('videoPrompt').value);
-      formData.append('duration', document.getElementById('videoDuration').value);
-      await generateVideo(formData);
+      formData.append('campaign_id', document.getElementById('mediaCampaign').value);
+      formData.append('prompt', document.getElementById('mediaPrompt').value);
+      
+      const currentMode = toggleControls.getCurrentMode();
+      
+      if (currentMode === 'image') {
+        formData.append('style', document.getElementById('imageStyle').value);
+      } else {
+        formData.append('duration', document.getElementById('videoDuration').value);
+      }
+      
+      // Add reference image if provided
+      const referenceImage = document.getElementById('referenceImage').files[0];
+      if (referenceImage) {
+        formData.append('reference_image', referenceImage);
+      }
+      
+      await generateMedia(formData, currentMode);
     });
 
     // Filter controls
