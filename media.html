@@ -89,18 +89,11 @@
       margin: -20px -20px 20px -20px;
       border-radius: 8px 8px 0 0;
     }
-    .filters {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .filter-row {
+    .create-section {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      align-items: end;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
     }
     .form-group {
       margin-bottom: 15px;
@@ -112,6 +105,7 @@
       color: #333;
     }
     .form-group input,
+    .form-group textarea,
     .form-group select {
       width: 100%;
       padding: 8px;
@@ -120,8 +114,9 @@
       font-size: 14px;
       box-sizing: border-box;
     }
-    .form-group input::placeholder {
-      color: #999;
+    .form-group textarea {
+      height: 100px;
+      resize: vertical;
     }
     button {
       background: #0A3161;
@@ -146,34 +141,25 @@
     button.secondary:hover {
       background: #5a6268;
     }
-    .filter-buttons {
-      display: flex;
-      gap: 10px;
+    button.generate-btn {
+      background: #28a745;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 15px 30px;
     }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      font-size: 1.1rem;
-      color: #666;
+    button.generate-btn:hover {
+      background: #218838;
     }
-    .loading::before {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #ddd;
-      border-top: 2px solid #0A3161;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 0.5rem;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .filter-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      align-items: end;
+      margin-bottom: 20px;
     }
     .media-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
     .media-card {
@@ -182,6 +168,7 @@
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
+      position: relative;
     }
     .media-card:hover {
       transform: translateY(-4px);
@@ -217,9 +204,6 @@
     .media-type-badge.image {
       background: linear-gradient(45deg, #28a745, #20c997);
     }
-    .media-type-badge.website {
-      background: linear-gradient(45deg, #6f42c1, #e83e8c);
-    }
     .media-info {
       padding: 15px;
     }
@@ -229,18 +213,13 @@
       margin-bottom: 8px;
       color: #0A3161;
     }
-    .media-campaign {
-      font-size: 0.9rem;
-      color: #666;
-      margin-bottom: 10px;
-    }
     .media-description {
       font-size: 0.85rem;
       color: #777;
       line-height: 1.4;
       margin-bottom: 15px;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -269,6 +248,27 @@
       font-size: 12px;
       flex: 1;
     }
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.1rem;
+      color: #666;
+    }
+    .loading::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ddd;
+      border-top: 2px solid #0A3161;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     .empty-state {
       text-align: center;
       padding: 4rem 2rem;
@@ -278,15 +278,6 @@
       font-size: 1.5rem;
       margin-bottom: 10px;
       color: #0A3161;
-    }
-    .error-state {
-      text-align: center;
-      padding: 3rem;
-      color: #dc3545;
-    }
-    .error-state h3 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
     }
     .status-message {
       padding: 10px;
@@ -358,14 +349,14 @@
       .page-title {
         font-size: 2rem;
       }
-      .filter-row {
+      .create-section {
+        grid-template-columns: 1fr;
+      }
+      .filter-section {
         grid-template-columns: 1fr;
       }
       .media-grid {
         grid-template-columns: 1fr;
-      }
-      .navbar nav ul {
-        gap: 5px;
       }
     }
   </style>
@@ -388,6 +379,7 @@
       <li><a href="companyprofile">Profile</a></li>
       <li><a href="campaigns">Campaigns</a></li>
       <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
       <li><a href="leads">Leads</a></li>
       <li><a href="ads">Ads</a></li>
@@ -403,23 +395,87 @@
 
 <div class="content">
   <header class="page-header">
-    <h1 class="page-title">My Media Library</h1>
-    <p class="page-subtitle">Manage your generated content, campaigns, and media assets</p>
+    <h1 class="page-title">Media Library</h1>
+    <p class="page-subtitle">Create and manage your generated images and videos</p>
   </header>
 
-  <section class="filters">
+  <!-- Create New Media Section -->
+  <section class="create-section">
+    <!-- Image Generation -->
+    <div class="card">
+      <div class="section-header">
+        <h3>🎨 Generate Images</h3>
+      </div>
+      
+      <form id="imageForm">
+        <div class="form-group">
+          <label for="imageCampaign">Campaign</label>
+          <select id="imageCampaign" required>
+            <option value="">Select Campaign</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="imagePrompt">Image Description *</label>
+          <textarea id="imagePrompt" required placeholder="Describe the image you want to generate..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="imageStyle">Style</label>
+          <select id="imageStyle">
+            <option value="">Auto-select based on campaign</option>
+            <option value="professional">Professional</option>
+            <option value="minimalist">Minimalist</option>
+            <option value="modern">Modern</option>
+            <option value="creative">Creative</option>
+            <option value="corporate">Corporate</option>
+          </select>
+        </div>
+        <button type="submit" class="generate-btn">🎨 Generate Image</button>
+      </form>
+    </div>
+
+    <!-- Video Generation -->
+    <div class="card">
+      <div class="section-header">
+        <h3>🎬 Generate Videos</h3>
+      </div>
+      
+      <form id="videoForm">
+        <div class="form-group">
+          <label for="videoCampaign">Campaign</label>
+          <select id="videoCampaign" required>
+            <option value="">Select Campaign</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="videoPrompt">Video Description *</label>
+          <textarea id="videoPrompt" required placeholder="Describe the video scene you want to generate..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="videoDuration">Duration</label>
+          <select id="videoDuration">
+            <option value="5">5 seconds</option>
+            <option value="10">10 seconds</option>
+            <option value="15">15 seconds</option>
+          </select>
+        </div>
+        <button type="submit" class="generate-btn">🎬 Generate Video</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Filter Section -->
+  <section class="card">
     <div class="section-header">
-      <h3>Filter Media Assets</h3>
+      <h3>📁 My Media Files</h3>
     </div>
     
-    <div class="filter-row">
+    <div class="filter-section">
       <div class="form-group">
         <label for="fileTypeFilter">File Type</label>
         <select id="fileTypeFilter">
           <option value="">All Types</option>
-          <option value="video">Videos</option>
           <option value="image">Images</option>
-          <option value="website">Websites</option>
+          <option value="video">Videos</option>
         </select>
       </div>
       <div class="form-group">
@@ -429,26 +485,17 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="dateFromFilter">Date From</label>
-        <input type="date" id="dateFromFilter">
-      </div>
-      <div class="form-group">
-        <label for="dateToFilter">Date To</label>
-        <input type="date" id="dateToFilter">
-      </div>
-      <div class="form-group">
         <label for="searchFilter">Search</label>
         <input type="text" id="searchFilter" placeholder="Search prompts, names...">
       </div>
       <div class="form-group">
-        <div class="filter-buttons">
-          <button id="applyFilters">Apply Filters</button>
-          <button id="clearFilters" class="secondary">Clear</button>
-        </div>
+        <button id="refreshMedia">🔄 Refresh</button>
+        <button id="clearFilters" class="secondary">Clear Filters</button>
       </div>
     </div>
   </section>
 
+  <!-- Media Grid -->
   <section id="mediaContainer">
     <div class="loading">Loading your media library...</div>
   </section>
@@ -466,12 +513,19 @@
 </footer>
 
 <script>
-  // Supabase configuration
+  // Supabase configuration for auth only
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  const DEBUG = true;
+  // n8n webhook endpoints - UPDATE THESE WITH YOUR ACTUAL WEBHOOK URLS
+  const N8N_ENDPOINTS = {
+    getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/get-campaigns',
+    getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/get-campaign-files',
+    generateImage: 'https://victoryvision.app.n8n.cloud/webhook/generate-image',
+    generateVideo: 'https://victoryvision.app.n8n.cloud/webhook/generate-video'
+  };
+  
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
@@ -485,17 +539,13 @@
   const mediaContainer = document.getElementById('mediaContainer');
   const fileTypeFilter = document.getElementById('fileTypeFilter');
   const campaignFilter = document.getElementById('campaignFilter');
-  const dateFromFilter = document.getElementById('dateFromFilter');
-  const dateToFilter = document.getElementById('dateToFilter');
   const searchFilter = document.getElementById('searchFilter');
-  const applyFiltersBtn = document.getElementById('applyFilters');
+  const refreshMediaBtn = document.getElementById('refreshMedia');
   const clearFiltersBtn = document.getElementById('clearFilters');
 
-  // Authentication and session management (same as companyprofile.html)
+  // Authentication (same as companyprofile.html)
   async function checkAuthentication() {
     try {
-      console.log('Checking authentication...');
-      
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       
       if (error) {
@@ -504,7 +554,6 @@
       }
 
       if (session && session.user) {
-        console.log('Valid session found:', session.user.email);
         CUSTOMER_ID = session.user.email;
         authToken = session.access_token;
         currentUser = {
@@ -517,7 +566,6 @@
         return true;
       }
 
-      console.log('No valid session found');
       return false;
     } catch (e) {
       console.error('Auth check error:', e);
@@ -542,76 +590,63 @@
     }
   }
 
-  // Initialize the page
-  async function init() {
+  // n8n webhook call function
+  async function callN8nWebhook(endpoint, data = {}) {
     try {
-      document.getElementById('authLoading').style.display = 'flex';
-      
-      const isAuthenticated = await checkAuthentication();
-      
-      if (isAuthenticated) {
-        document.getElementById('authLoading').style.display = 'none';
-        await Promise.all([
-          loadCampaigns(),
-          loadMediaFiles()
-        ]);
-        setupEventListeners();
-        applyFilters();
-      } else {
-        redirectToLogin();
+      const payload = {
+        customer_id: CUSTOMER_ID,
+        ...data
+      };
+
+      console.log('Calling n8n webhook:', endpoint, payload);
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
+
+      const result = await response.json();
+      console.log('n8n response:', result);
+      return result;
     } catch (error) {
-      console.error('Error initializing page:', error);
-      showError('Failed to load media library. Please refresh the page.');
-      document.getElementById('authLoading').style.display = 'none';
+      console.error('n8n webhook call failed:', error);
+      throw error;
     }
   }
 
-  // Load campaigns for the filter dropdown
+  // Load campaigns from n8n
   async function loadCampaigns() {
     try {
-      console.log('Loading campaigns for user:', CUSTOMER_ID);
-      
-      const { data, error } = await supabaseClient
-        .from('campaigns')
-        .select('id, name')
-        .eq('customer_id', CUSTOMER_ID)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error loading campaigns:', error);
-        throw error;
-      }
-
-      campaigns = data || [];
-      console.log('Loaded campaigns:', campaigns);
-      populateCampaignFilter();
+      const result = await callN8nWebhook(N8N_ENDPOINTS.getCampaigns);
+      campaigns = result.campaigns || result.data || [];
+      populateCampaignDropdowns();
     } catch (error) {
       console.error('Error loading campaigns:', error);
       showStatus('Error loading campaigns: ' + error.message, true);
     }
   }
 
-  // Load media files from campaigns_files table
+  // Load media files from n8n
   async function loadMediaFiles() {
     try {
-      console.log('Loading media files for user:', CUSTOMER_ID);
+      const result = await callN8nWebhook(N8N_ENDPOINTS.getCampaignFiles);
+      allMediaFiles = result.files || result.data || [];
       
-      const { data, error } = await supabaseClient
-        .from('campaigns_files')
-        .select(`
-          *,
-          campaigns!inner(name, customer_id)
-        `)
-        .eq('campaigns.customer_id', CUSTOMER_ID)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error loading media files:', error);
-        throw error;
-      }
-
-      allMediaFiles = data || [];
+      // Filter only images and videos
+      allMediaFiles = allMediaFiles.filter(file => 
+        file.file_type && (
+          file.file_type.includes('image') || 
+          file.file_type.includes('video')
+        )
+      );
+      
       filteredMediaFiles = [...allMediaFiles];
       console.log('Loaded media files:', allMediaFiles);
     } catch (error) {
@@ -620,27 +655,89 @@
     }
   }
 
-  // Populate campaign filter dropdown
-  function populateCampaignFilter() {
-    const currentValue = campaignFilter.value;
-    campaignFilter.innerHTML = '<option value="">All Campaigns</option>';
+  // Populate campaign dropdowns
+  function populateCampaignDropdowns() {
+    const dropdowns = [
+      document.getElementById('imageCampaign'),
+      document.getElementById('videoCampaign'),
+      campaignFilter
+    ];
     
-    campaigns.forEach(campaign => {
-      const option = document.createElement('option');
-      option.value = campaign.id;
-      option.textContent = campaign.name;
-      campaignFilter.appendChild(option);
-    });
+    dropdowns.forEach(dropdown => {
+      if (!dropdown) return;
+      
+      const currentValue = dropdown.value;
+      const isFilter = dropdown === campaignFilter;
+      
+      dropdown.innerHTML = isFilter ? 
+        '<option value="">All Campaigns</option>' : 
+        '<option value="">Select Campaign</option>';
+      
+      campaigns.forEach(campaign => {
+        const option = document.createElement('option');
+        option.value = campaign.id;
+        option.textContent = campaign.name;
+        dropdown.appendChild(option);
+      });
 
-    campaignFilter.value = currentValue;
+      dropdown.value = currentValue;
+    });
   }
 
-  // Apply filters to media files
+  // Generate image
+  async function generateImage(formData) {
+    try {
+      showStatus('Generating image... This may take a few moments.');
+      
+      const result = await callN8nWebhook(N8N_ENDPOINTS.generateImage, {
+        campaign_id: formData.get('campaign_id'),
+        prompt: formData.get('prompt'),
+        style: formData.get('style') || 'auto'
+      });
+
+      if (result.success) {
+        showStatus('Image generated successfully!');
+        await loadMediaFiles();
+        renderMediaGrid();
+        document.getElementById('imageForm').reset();
+      } else {
+        throw new Error(result.message || 'Image generation failed');
+      }
+    } catch (error) {
+      console.error('Error generating image:', error);
+      showStatus('Error generating image: ' + error.message, true);
+    }
+  }
+
+  // Generate video
+  async function generateVideo(formData) {
+    try {
+      showStatus('Generating video... This may take several minutes.');
+      
+      const result = await callN8nWebhook(N8N_ENDPOINTS.generateVideo, {
+        campaign_id: formData.get('campaign_id'),
+        prompt: formData.get('prompt'),
+        duration: formData.get('duration') || 5
+      });
+
+      if (result.success) {
+        showStatus('Video generation started! It will appear in your media library once complete.');
+        await loadMediaFiles();
+        renderMediaGrid();
+        document.getElementById('videoForm').reset();
+      } else {
+        throw new Error(result.message || 'Video generation failed');
+      }
+    } catch (error) {
+      console.error('Error generating video:', error);
+      showStatus('Error generating video: ' + error.message, true);
+    }
+  }
+
+  // Apply filters
   function applyFilters() {
     const fileType = fileTypeFilter.value;
     const campaignId = campaignFilter.value;
-    const dateFrom = dateFromFilter.value;
-    const dateTo = dateToFilter.value;
     const searchTerm = searchFilter.value.toLowerCase();
 
     filteredMediaFiles = allMediaFiles.filter(file => {
@@ -654,20 +751,11 @@
         return false;
       }
 
-      // Date filters
-      if (dateFrom && new Date(file.created_at) < new Date(dateFrom)) {
-        return false;
-      }
-      if (dateTo && new Date(file.created_at) > new Date(dateTo + 'T23:59:59')) {
-        return false;
-      }
-
       // Search filter
       if (searchTerm) {
         const searchableText = [
           file.name || '',
-          file.prompt || '',
-          file.campaigns?.name || ''
+          file.prompt || ''
         ].join(' ').toLowerCase();
         
         if (!searchableText.includes(searchTerm)) {
@@ -681,17 +769,15 @@
     renderMediaGrid();
   }
 
-  // Clear all filters
+  // Clear filters
   function clearFilters() {
     fileTypeFilter.value = '';
     campaignFilter.value = '';
-    dateFromFilter.value = '';
-    dateToFilter.value = '';
     searchFilter.value = '';
     applyFilters();
   }
 
-  // Render the media grid
+  // Render media grid
   function renderMediaGrid() {
     if (filteredMediaFiles.length === 0) {
       if (allMediaFiles.length === 0) {
@@ -714,7 +800,7 @@
     mediaContainer.appendChild(grid);
   }
 
-  // Create a media card element
+  // Create media card
   function createMediaCard(file) {
     const card = document.createElement('div');
     card.className = 'media-card';
@@ -722,7 +808,7 @@
     const fileType = getFileType(file.file_type);
     const previewUrl = file.thumbnail_URL || file.URL;
     const createdDate = new Date(file.created_at).toLocaleDateString();
-    const fileSize = formatFileSize(file.file_size);
+    const campaignName = campaigns.find(c => c.id === file.campaign_id)?.name || 'Unknown';
 
     card.innerHTML = `
       <div class="media-preview">
@@ -731,24 +817,23 @@
       </div>
       <div class="media-info">
         <h3 class="media-title">${file.name || 'Untitled'}</h3>
-        <p class="media-campaign">Campaign: ${file.campaigns?.name || 'Unknown'}</p>
-        ${file.prompt ? `<p class="media-description">${file.prompt}</p>` : ''}
+        <p class="media-description">${file.prompt || 'No description available'}</p>
         <div class="media-meta">
+          <div class="meta-item">
+            <span class="meta-label">Campaign:</span>
+            ${campaignName}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Created:</span>
+            ${createdDate}
+          </div>
           <div class="meta-item">
             <span class="meta-label">Dimensions:</span>
             ${file.width && file.height ? `${file.width}x${file.height}` : 'N/A'}
           </div>
           <div class="meta-item">
-            <span class="meta-label">File Size:</span>
-            ${fileSize}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Duration:</span>
-            ${file.duration || 'N/A'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Created:</span>
-            ${createdDate}
+            <span class="meta-label">Size:</span>
+            ${formatFileSize(file.file_size)}
           </div>
         </div>
         <div class="media-actions">
@@ -761,7 +846,7 @@
     return card;
   }
 
-  // Render media preview based on file type
+  // Render media preview
   function renderMediaPreview(file, previewUrl) {
     const fileType = getFileType(file.file_type);
     
@@ -774,35 +859,28 @@
       return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
                onerror="this.parentElement.innerHTML='<div class=\\"no-media-placeholder\\">📷</div>'">`;
     } else {
-      // Website or other file types
       return `<div class="no-media-placeholder">
-        ${fileType === 'website' ? '🌐' : '📄'}
+        ${fileType === 'video' ? '🎬' : '📷'}
       </div>`;
     }
   }
 
-  // Get simplified file type
+  // Utility functions
   function getFileType(mimeType) {
     if (!mimeType) return 'unknown';
-    
     if (mimeType.includes('video')) return 'video';
     if (mimeType.includes('image')) return 'image';
-    if (mimeType.includes('html') || mimeType.includes('web')) return 'website';
     return 'file';
   }
 
-  // Format file size
   function formatFileSize(bytes) {
     if (!bytes) return 'N/A';
-    
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 Bytes';
-    
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
 
-  // Download file
   function downloadFile(url, filename) {
     const link = document.createElement('a');
     link.href = url;
@@ -813,7 +891,6 @@
     document.body.removeChild(link);
   }
 
-  // Share file
   function shareFile(url) {
     if (navigator.share) {
       navigator.share({
@@ -827,17 +904,15 @@
     }
   }
 
-  // Show empty state
   function showEmptyState() {
     mediaContainer.innerHTML = `
       <div class="empty-state">
         <h3>No media files yet</h3>
-        <p>Create a campaign to start generating images, videos, and landing pages.</p>
+        <p>Generate your first image or video using the forms above.</p>
       </div>
     `;
   }
 
-  // Show no results state
   function showNoResultsState() {
     mediaContainer.innerHTML = `
       <div class="empty-state">
@@ -847,17 +922,6 @@
     `;
   }
 
-  // Show error state
-  function showError(message) {
-    mediaContainer.innerHTML = `
-      <div class="error-state">
-        <h3>Error</h3>
-        <p>${message}</p>
-      </div>
-    `;
-  }
-
-  // Show status message
   function showStatus(message, isError = false) {
     const statusDiv = document.getElementById('statusMessage');
     statusDiv.textContent = message;
@@ -869,13 +933,38 @@
     }, 5000);
   }
 
-  // Setup event listeners
+  // Event listeners
   function setupEventListeners() {
-    applyFiltersBtn.addEventListener('click', applyFilters);
+    // Image form submission
+    document.getElementById('imageForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('campaign_id', document.getElementById('imageCampaign').value);
+      formData.append('prompt', document.getElementById('imagePrompt').value);
+      formData.append('style', document.getElementById('imageStyle').value);
+      await generateImage(formData);
+    });
+
+    // Video form submission
+    document.getElementById('videoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('campaign_id', document.getElementById('videoCampaign').value);
+      formData.append('prompt', document.getElementById('videoPrompt').value);
+      formData.append('duration', document.getElementById('videoDuration').value);
+      await generateVideo(formData);
+    });
+
+    // Filter controls
+    refreshMediaBtn.addEventListener('click', async () => {
+      await loadMediaFiles();
+      applyFilters();
+    });
+
     clearFiltersBtn.addEventListener('click', clearFilters);
     
-    // Auto-apply filters on input change
-    [fileTypeFilter, campaignFilter, dateFromFilter, dateToFilter].forEach(element => {
+    // Auto-apply filters on change
+    [fileTypeFilter, campaignFilter].forEach(element => {
       element.addEventListener('change', applyFilters);
     });
 
@@ -887,7 +976,32 @@
     });
   }
 
-  // Security: Session timeout check (same as companyprofile.html)
+  // Initialize page
+  async function init() {
+    try {
+      document.getElementById('authLoading').style.display = 'flex';
+      
+      const isAuthenticated = await checkAuthentication();
+      
+      if (isAuthenticated) {
+        document.getElementById('authLoading').style.display = 'none';
+        await Promise.all([
+          loadCampaigns(),
+          loadMediaFiles()
+        ]);
+        setupEventListeners();
+        applyFilters();
+      } else {
+        redirectToLogin();
+      }
+    } catch (error) {
+      console.error('Error initializing page:', error);
+      showStatus('Failed to load media library. Please refresh the page.', true);
+      document.getElementById('authLoading').style.display = 'none';
+    }
+  }
+
+  // Security checks (same as companyprofile.html)
   setInterval(async function() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -900,7 +1014,6 @@
     }
   }, 300000); // Check every 5 minutes
 
-  // Security: Detect tab visibility and re-verify auth when tab becomes visible
   document.addEventListener('visibilitychange', async function() {
     if (!document.hidden) {
       try {
@@ -916,7 +1029,7 @@
     }
   });
 
-  // Initialize the page when DOM is loaded
+  // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
