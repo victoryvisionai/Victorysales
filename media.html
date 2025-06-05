@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Manage your generated media files and campaigns."/>
+  <meta name="description" content="Manage your generated media files."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Media Library</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -89,11 +89,12 @@
       margin: -20px -20px 20px -20px;
       border-radius: 8px 8px 0 0;
     }
-    .create-section {
+    .filter-section {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      align-items: end;
+      margin-bottom: 20px;
     }
     .form-group {
       margin-bottom: 15px;
@@ -105,7 +106,6 @@
       color: #333;
     }
     .form-group input,
-    .form-group textarea,
     .form-group select {
       width: 100%;
       padding: 8px;
@@ -113,10 +113,6 @@
       border-radius: 4px;
       font-size: 14px;
       box-sizing: border-box;
-    }
-    .form-group textarea {
-      height: 100px;
-      resize: vertical;
     }
     button {
       background: #0A3161;
@@ -131,31 +127,11 @@
     button:hover {
       background: #083050;
     }
-    button:disabled {
-      background: #B3B3B3;
-      cursor: not-allowed;
-    }
     button.secondary {
       background: #6c757d;
     }
     button.secondary:hover {
       background: #5a6268;
-    }
-    button.generate-btn {
-      background: #28a745;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 15px 30px;
-    }
-    button.generate-btn:hover {
-      background: #218838;
-    }
-    .filter-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      align-items: end;
-      margin-bottom: 20px;
     }
     .media-grid {
       display: grid;
@@ -168,7 +144,6 @@
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
-      position: relative;
     }
     .media-card:hover {
       transform: translateY(-4px);
@@ -329,39 +304,6 @@
       margin-right: 15px;
       text-decoration: none;
     }
-    .toggle-btn {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      margin-right: 10px;
-    }
-    .toggle-btn.active {
-      background: #28a745;
-    }
-    .toggle-btn:hover {
-      opacity: 0.8;
-    }
-    .preview-placeholder {
-      text-align: center;
-      padding: 3rem;
-      color: #666;
-      border: 2px dashed #dee2e6;
-      border-radius: 8px;
-      background: #f8f9fa;
-    }
-    .preview-content {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-    .preview-content img,
-    .preview-content video {
-      max-width: 100%;
-      border-radius: 8px;
-    }
     
     /* Responsive */
     @media (max-width: 768px) {
@@ -370,9 +312,6 @@
       }
       .page-title {
         font-size: 2rem;
-      }
-      .create-section {
-        grid-template-columns: 1fr;
       }
       .filter-section {
         grid-template-columns: 1fr;
@@ -418,74 +357,8 @@
 <div class="content">
   <header class="page-header">
     <h1 class="page-title">Media Library</h1>
-    <p class="page-subtitle">Create and manage your generated images and videos</p>
+    <p class="page-subtitle">View and manage your generated images and videos</p>
   </header>
-
-  <!-- Create New Media Section -->
-  <section class="create-section">
-    <!-- Media Generation (Combined) -->
-    <div class="card">
-      <div class="section-header">
-        <h3 id="generationTitle">🎨 Generate Images</h3>
-        <div style="margin-top: 10px;">
-          <button type="button" id="imageToggle" class="toggle-btn active">🎨 Images</button>
-          <button type="button" id="videoToggle" class="toggle-btn">🎬 Videos</button>
-        </div>
-      </div>
-      
-      <form id="mediaForm">
-        <div class="form-group">
-          <label for="mediaCampaign">Campaign</label>
-          <select id="mediaCampaign" required>
-            <option value="">Select Campaign</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label for="mediaPrompt">Description *</label>
-          <textarea id="mediaPrompt" required placeholder="Describe what you want to generate..."></textarea>
-        </div>
-
-        <!-- Image-specific fields -->
-        <div id="imageFields">
-          <div class="form-group">
-            <label for="imageStyle">Style</label>
-            <select id="imageStyle">
-              <option value="">Auto-select based on campaign</option>
-              <option value="professional">Professional</option>
-              <option value="minimalist">Minimalist</option>
-              <option value="modern">Modern</option>
-              <option value="creative">Creative</option>
-              <option value="corporate">Corporate</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Optional image upload for both -->
-        <div class="form-group">
-          <label for="referenceImage">Reference Image (Optional)</label>
-          <input type="file" id="referenceImage" accept="image/*">
-          <small>Upload an image to guide the generation</small>
-        </div>
-
-        <button type="submit" class="generate-btn" id="generateBtn">🎨 Generate Image</button>
-      </form>
-    </div>
-
-    <!-- Display/Preview Panel -->
-    <div class="card">
-      <div class="section-header">
-        <h3>📱 Preview & Recent</h3>
-      </div>
-      
-      <div id="previewArea">
-        <div class="preview-placeholder">
-          <p>Generated content will appear here</p>
-          <small>Create your first image or video to see a preview</small>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Filter Section -->
   <section class="card">
@@ -500,12 +373,6 @@
           <option value="">All Types</option>
           <option value="image">Images</option>
           <option value="video">Videos</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="campaignFilter">Campaign</label>
-        <select id="campaignFilter">
-          <option value="">All Campaigns</option>
         </select>
       </div>
       <div class="form-group">
@@ -542,32 +409,21 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n webhook endpoints - MEDIA ONLY
-  const N8N_ENDPOINTS = {
-    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
-    createMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/create',
-    removeMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/remove',
-    updateMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/update'
-  };
-  
   let CUSTOMER_ID = null;
-  let currentUser = null;
   let authToken = null;
 
-  // State management
+  // Simple state management
   let allMediaFiles = [];
   let filteredMediaFiles = [];
-  let campaigns = [];
 
   // DOM elements
   const mediaContainer = document.getElementById('mediaContainer');
   const fileTypeFilter = document.getElementById('fileTypeFilter');
-  const campaignFilter = document.getElementById('campaignFilter');
   const searchFilter = document.getElementById('searchFilter');
   const refreshMediaBtn = document.getElementById('refreshMedia');
   const clearFiltersBtn = document.getElementById('clearFilters');
 
-  // Authentication (same as companyprofile.html)
+  // Authentication
   async function checkAuthentication() {
     try {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -580,12 +436,6 @@
       if (session && session.user) {
         CUSTOMER_ID = session.user.email;
         authToken = session.access_token;
-        currentUser = {
-          id: session.user.id,
-          email: session.user.email,
-          customer_id: session.user.email
-        };
-        
         document.getElementById('userEmail').textContent = CUSTOMER_ID;
         return true;
       }
@@ -614,243 +464,61 @@
     }
   }
 
-  // n8n webhook call function
-  async function callN8nWebhook(endpoint, data = {}) {
+  // Simple media loading (based on working old code)
+  async function loadMediaFiles() {
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/get-campaign-files', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID, ...data })
+        body: JSON.stringify({ customer_id: CUSTOMER_ID })
       });
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error('n8n webhook call failed:', error);
-      throw error;
-    }
-  }
+      const data = await response.json();
+      console.log('Raw response:', data);
+      console.log('Type of data:', typeof data);
+      console.log('Is array:', Array.isArray(data));
+      
+      // Handle different possible response structures
+      if (Array.isArray(data)) {
+        allMediaFiles = data;
+      } else if (data && Array.isArray(data.files)) {
+        allMediaFiles = data.files;
+      } else if (data && Array.isArray(data.media)) {
+        allMediaFiles = data.media;
+      } else if (data && data.URL) {
+        allMediaFiles = [data]; // Single file response
+      } else {
+        allMediaFiles = [];
+      }
 
-  // Load campaigns - get from existing media files' campaign_ids
-  async function loadCampaigns() {
-    try {
-      // We'll extract campaign info from media files instead of separate campaigns call
-      await loadMediaFiles();
-      
-      // Extract unique campaigns from media files
-      const uniqueCampaigns = [];
-      const seenIds = new Set();
-      
-      allMediaFiles.forEach(file => {
-        if (file.campaign_id && !seenIds.has(file.campaign_id)) {
-          seenIds.add(file.campaign_id);
-          uniqueCampaigns.push({
-            id: file.campaign_id,
-            name: file.campaign_name || 'Unknown Campaign'
-          });
-        }
-      });
-      
-      campaigns = uniqueCampaigns;
-      populateCampaignDropdowns();
-    } catch (error) {
-      console.error('Error loading campaigns from media:', error);
-      showStatus('Error loading campaigns: ' + error.message, true);
-    }
-  }
-
-  // Load media files from n8n
-  async function loadMediaFiles() {
-    try {
-      const result = await callN8nWebhook(N8N_ENDPOINTS.getMedia);
-      
-      // FIXED: Check for media property first, then fallback to others
-      allMediaFiles = result || [];
-      
-      // Filter only images and videos
+      // Filter for images/videos
       allMediaFiles = allMediaFiles.filter(file => 
-        file.file_type && (
-          file.file_type.includes('image') || 
-          file.file_type.includes('video')
-        )
+        file.file_type && (file.file_type.includes('image') || file.file_type.includes('video'))
       );
       
       filteredMediaFiles = [...allMediaFiles];
-      console.log('Loaded media files:', allMediaFiles);
-    } catch (error) {
-      console.error('Error loading media files:', error);
-      throw error;
-    }
-  }
-
-  // Populate campaign dropdown (single dropdown now)
-  function populateCampaignDropdowns() {
-    const dropdown = document.getElementById('mediaCampaign');
-    
-    if (!dropdown) return;
-    
-    const currentValue = dropdown.value;
-    dropdown.innerHTML = '<option value="">Select Campaign</option>';
-    
-    campaigns.forEach(campaign => {
-      const option = document.createElement('option');
-      option.value = campaign.id;
-      option.textContent = campaign.name;
-      dropdown.appendChild(option);
-    });
-
-    dropdown.value = currentValue;
-    
-    // Also populate filter dropdown
-    const filterDropdown = campaignFilter;
-    if (filterDropdown) {
-      const filterCurrentValue = filterDropdown.value;
-      filterDropdown.innerHTML = '<option value="">All Campaigns</option>';
+      console.log('Final media files:', allMediaFiles);
       
-      campaigns.forEach(campaign => {
-        const option = document.createElement('option');
-        option.value = campaign.id;
-        option.textContent = campaign.name;
-        filterDropdown.appendChild(option);
-      });
-
-      filterDropdown.value = filterCurrentValue;
-    }
-  }
-
-  // Toggle between image and video generation
-  function setupToggleButtons() {
-    const imageToggle = document.getElementById('imageToggle');
-    const videoToggle = document.getElementById('videoToggle');
-    const imageFields = document.getElementById('imageFields');
-    const videoFields = document.getElementById('videoFields');
-    const generationTitle = document.getElementById('generationTitle');
-    const generateBtn = document.getElementById('generateBtn');
-
-    let currentMode = 'image';
-
-    imageToggle.addEventListener('click', () => {
-      currentMode = 'image';
-      imageToggle.classList.add('active');
-      videoToggle.classList.remove('active');
-      imageFields.style.display = 'block';
-      videoFields.style.display = 'none';
-      generationTitle.textContent = '🎨 Generate Images';
-      generateBtn.textContent = '🎨 Generate Image';
-    });
-
-    videoToggle.addEventListener('click', () => {
-      currentMode = 'video';
-      videoToggle.classList.add('active');
-      imageToggle.classList.remove('active');
-      imageFields.style.display = 'none';
-      videoFields.style.display = 'block';
-      generationTitle.textContent = '🎬 Generate Videos';
-      generateBtn.textContent = '🎬 Generate Video';
-    });
-
-    return { getCurrentMode: () => currentMode };
-  }
-
-  // Generate media (combined function)
-  async function generateMedia(formData, mode) {
-    try {
-      showStatus(`Generating ${mode}... This may take a few moments.`);
-      
-      const payload = {
-        campaign_id: formData.get('campaign_id'),
-        prompt: formData.get('prompt'),
-        type: mode
-      };
-
-      // Add mode-specific fields
-      if (mode === 'image') {
-        payload.style = formData.get('style') || 'auto';
-      } else {
-        payload.duration = formData.get('duration') || 5;
-      }
-
-      // Handle reference image if provided
-      const referenceImage = formData.get('reference_image');
-      if (referenceImage && referenceImage.size > 0) {
-        // Convert to base64 for transmission
-        const base64Image = await fileToBase64(referenceImage);
-        payload.reference_image = base64Image;
-      }
-
-      const result = await callN8nWebhook(N8N_ENDPOINTS.createMedia, payload);
-
-      if (result.success) {
-        showStatus(`${mode} generated successfully!`);
-        await loadMediaFiles();
-        renderMediaGrid();
-        showPreview(result.data); // Show in preview panel
-        document.getElementById('mediaForm').reset();
-      } else {
-        throw new Error(result.message || `${mode} generation failed`);
-      }
     } catch (error) {
-      console.error(`Error generating ${mode}:`, error);
-      showStatus(`Error generating ${mode}: ` + error.message, true);
+      console.error('Error loading media:', error);
+      allMediaFiles = [];
+      filteredMediaFiles = [];
+      showStatus('Error loading media files: ' + error.message, true);
     }
-  }
-
-  // Convert file to base64
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  }
-
-  // Show preview in right panel
-  function showPreview(mediaData) {
-    const previewArea = document.getElementById('previewArea');
-    
-    if (!mediaData || !mediaData.URL) {
-      return;
-    }
-
-    const isVideo = mediaData.file_type && mediaData.file_type.includes('video');
-    
-    previewArea.innerHTML = `
-      <div class="preview-content">
-        ${isVideo ? 
-          `<video controls style="max-width: 100%; border-radius: 8px;">
-            <source src="${mediaData.URL}" type="${mediaData.mime_type}">
-          </video>` :
-          `<img src="${mediaData.URL}" alt="Generated content" style="max-width: 100%; border-radius: 8px;">`
-        }
-        <div style="margin-top: 10px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
-          <strong>${mediaData.name || 'Generated Content'}</strong>
-          <p style="margin: 5px 0; font-size: 0.9em; color: #666;">
-            ${mediaData.prompt || 'No description'}
-          </p>
-        </div>
-      </div>
-    `;
   }
 
   // Apply filters
   function applyFilters() {
     const fileType = fileTypeFilter.value;
-    const campaignId = campaignFilter.value;
     const searchTerm = searchFilter.value.toLowerCase();
 
     filteredMediaFiles = allMediaFiles.filter(file => {
       // File type filter
       if (fileType && !file.file_type.toLowerCase().includes(fileType)) {
-        return false;
-      }
-
-      // Campaign filter
-      if (campaignId && file.campaign_id !== campaignId) {
         return false;
       }
 
@@ -875,7 +543,6 @@
   // Clear filters
   function clearFilters() {
     fileTypeFilter.value = '';
-    campaignFilter.value = '';
     searchFilter.value = '';
     applyFilters();
   }
@@ -911,7 +578,6 @@
     const fileType = getFileType(file.file_type);
     const previewUrl = file.thumbnail_URL || file.URL;
     const createdDate = new Date(file.created_at).toLocaleDateString();
-    const campaignName = campaigns.find(c => c.id === file.campaign_id)?.name || 'Unknown';
 
     card.innerHTML = `
       <div class="media-preview">
@@ -923,16 +589,8 @@
         <p class="media-description">${file.prompt || 'No description available'}</p>
         <div class="media-meta">
           <div class="meta-item">
-            <span class="meta-label">Campaign:</span>
-            ${campaignName}
-          </div>
-          <div class="meta-item">
             <span class="meta-label">Created:</span>
             ${createdDate}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Dimensions:</span>
-            ${file.width && file.height ? `${file.width}x${file.height}` : 'N/A'}
           </div>
           <div class="meta-item">
             <span class="meta-label">Size:</span>
@@ -960,9 +618,9 @@
       </video>`;
     } else if (fileType === 'image' && previewUrl) {
       return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
-               onerror="this.parentElement.innerHTML='<div class=\\"no-media-placeholder\\">📷</div>'">`;
+               onerror="this.parentElement.innerHTML='<div style=\\"display:flex;align-items:center;justify-content:center;height:100%;color:#999;\\">📷</div>'">`;
     } else {
-      return `<div class="no-media-placeholder">
+      return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">
         ${fileType === 'video' ? '🎬' : '📷'}
       </div>`;
     }
@@ -1011,7 +669,7 @@
     mediaContainer.innerHTML = `
       <div class="empty-state">
         <h3>No media files yet</h3>
-        <p>Generate your first image or video using the forms above.</p>
+        <p>Your generated images and videos will appear here.</p>
       </div>
     `;
   }
@@ -1038,33 +696,6 @@
 
   // Event listeners
   function setupEventListeners() {
-    // Setup toggle functionality
-    const toggleControls = setupToggleButtons();
-
-    // Media form submission (combined)
-    document.getElementById('mediaForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('campaign_id', document.getElementById('mediaCampaign').value);
-      formData.append('prompt', document.getElementById('mediaPrompt').value);
-      
-      const currentMode = toggleControls.getCurrentMode();
-      
-      if (currentMode === 'image') {
-        formData.append('style', document.getElementById('imageStyle').value);
-      } else {
-        formData.append('duration', document.getElementById('videoDuration').value);
-      }
-      
-      // Add reference image if provided
-      const referenceImage = document.getElementById('referenceImage').files[0];
-      if (referenceImage) {
-        formData.append('reference_image', referenceImage);
-      }
-      
-      await generateMedia(formData, currentMode);
-    });
-
     // Filter controls
     refreshMediaBtn.addEventListener('click', async () => {
       await loadMediaFiles();
@@ -1074,9 +705,7 @@
     clearFiltersBtn.addEventListener('click', clearFilters);
     
     // Auto-apply filters on change
-    [fileTypeFilter, campaignFilter].forEach(element => {
-      element.addEventListener('change', applyFilters);
-    });
+    fileTypeFilter.addEventListener('change', applyFilters);
 
     // Debounced search
     let searchTimeout;
@@ -1095,7 +724,7 @@
       
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
-        await loadCampaigns(); // This now calls loadMediaFiles internally
+        await loadMediaFiles();
         setupEventListeners();
         applyFilters();
       } else {
@@ -1108,7 +737,7 @@
     }
   }
 
-  // Security checks (same as companyprofile.html)
+  // Security checks
   setInterval(async function() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1120,21 +749,6 @@
       console.error('Session check failed:', e);
     }
   }, 300000); // Check every 5 minutes
-
-  document.addEventListener('visibilitychange', async function() {
-    if (!document.hidden) {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          redirectToLogin();
-        } else {
-          authToken = session.access_token;
-        }
-      } catch (e) {
-        console.error('Visibility auth check failed:', e);
-      }
-    }
-  });
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
