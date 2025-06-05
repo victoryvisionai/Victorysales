@@ -464,7 +464,7 @@
     }
   }
 
-  // Simple media loading (based on working old code)
+  // Simple media loading - handle individual responses
   async function loadMediaFiles() {
     try {
       const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/media/get', {
@@ -478,26 +478,22 @@
       }
 
       const data = await response.json();
-      console.log('Raw response:', data);
-      console.log('Type of data:', typeof data);
-      console.log('Is array:', Array.isArray(data));
+      console.log('Response from n8n:', data);
       
-      // Handle different possible response structures
-      if (Array.isArray(data)) {
-        allMediaFiles = data;
-      } else if (data && Array.isArray(data.files)) {
-        allMediaFiles = data.files;
-      } else if (data && Array.isArray(data.media)) {
-        allMediaFiles = data.media;
-      } else if (data && data.URL) {
-        allMediaFiles = [data]; // Single file response
-      } else {
-        allMediaFiles = [];
+      // Reset arrays
+      allMediaFiles = [];
+      
+      // Handle single response with media array
+      if (data && data.success && data.media) {
+        // Each response contains one item in media array
+        allMediaFiles.push(data.media[0]);
+        console.log('Added media file:', data.media[0]);
       }
-
-      console.log('All files from n8n:', allMediaFiles);
       
-      // Just keep files that have a URL - no filtering needed
+      // For now, we'll just handle one response
+      // Later we can implement polling or multiple calls if needed
+      
+      // Filter only files with URLs
       allMediaFiles = allMediaFiles.filter(file => file && file.URL);
       
       filteredMediaFiles = [...allMediaFiles];
