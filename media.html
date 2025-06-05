@@ -614,27 +614,27 @@
     }
   }
 
-  // n8n webhook call function with CORS headers
-async function callN8nWebhook(endpoint, data = {}) {
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_id: CUSTOMER_ID, ...data })
-    });
+  // n8n webhook call function
+  async function callN8nWebhook(endpoint, data = {}) {
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customer_id: CUSTOMER_ID, ...data })
+      });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('n8n webhook call failed:', error);
+      throw error;
     }
-
-    const result = await response.json();
-    console.log('n8n response:', result); // Add this debug line
-    return result;
-  } catch (error) {
-    console.error('n8n webhook call failed:', error);
-    throw error;
   }
-}
+
   // Load campaigns - get from existing media files' campaign_ids
   async function loadCampaigns() {
     try {
@@ -667,7 +667,9 @@ async function callN8nWebhook(endpoint, data = {}) {
   async function loadMediaFiles() {
     try {
       const result = await callN8nWebhook(N8N_ENDPOINTS.getMedia);
-      allMediaFiles = result.files || result.data || result.media || [];
+      
+      // FIXED: Check for media property first, then fallback to others
+      allMediaFiles = result.media || result.files || result.data || [];
       
       // Filter only images and videos
       allMediaFiles = allMediaFiles.filter(file => 
