@@ -615,39 +615,26 @@
   }
 
   // n8n webhook call function with CORS headers
-  async function callN8nWebhook(endpoint, data = {}) {
-    try {
-      const payload = {
-        customer_id: CUSTOMER_ID,
-        ...data
-      };
+async function callN8nWebhook(endpoint, data = {}) {
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: CUSTOMER_ID, ...data })
+    });
 
-      console.log('Calling n8n webhook:', endpoint, payload);
-
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      console.log('n8n response:', result);
-      return result;
-    } catch (error) {
-      console.error('n8n webhook call failed:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-  }
 
+    const result = await response.json();
+    console.log('n8n response:', result); // Add this debug line
+    return result;
+  } catch (error) {
+    console.error('n8n webhook call failed:', error);
+    throw error;
+  }
+}
   // Load campaigns - get from existing media files' campaign_ids
   async function loadCampaigns() {
     try {
