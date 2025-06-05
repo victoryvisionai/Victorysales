@@ -575,9 +575,18 @@
     const card = document.createElement('div');
     card.className = 'media-card';
 
-    const fileType = getFileType(file.file_type);
+    const fileType = getFileType(file.file_type || file.mime_type);
     const previewUrl = file.thumbnail_URL || file.URL;
-    const createdDate = new Date(file.created_at).toLocaleDateString();
+    
+    // Handle date properly
+    let createdDate = 'Unknown';
+    if (file.created_at) {
+      try {
+        createdDate = new Date(file.created_at).toLocaleDateString();
+      } catch (e) {
+        createdDate = file.created_at;
+      }
+    }
 
     card.innerHTML = `
       <div class="media-preview">
@@ -589,6 +598,10 @@
         <p class="media-description">${file.prompt || 'No description available'}</p>
         <div class="media-meta">
           <div class="meta-item">
+            <span class="meta-label">Campaign:</span>
+            ${file.campaign_name || 'Unknown'}
+          </div>
+          <div class="meta-item">
             <span class="meta-label">Created:</span>
             ${createdDate}
           </div>
@@ -596,9 +609,13 @@
             <span class="meta-label">Size:</span>
             ${formatFileSize(file.file_size)}
           </div>
+          <div class="meta-item">
+            <span class="meta-label">Type:</span>
+            ${file.file_type || file.mime_type || 'Unknown'}
+          </div>
         </div>
         <div class="media-actions">
-          <button onclick="downloadFile('${file.URL}', '${file.name}')" class="btn-small secondary">Download</button>
+          <button onclick="downloadFile('${file.URL}', '${file.name || 'download'}')" class="btn-small secondary">Download</button>
           <button onclick="shareFile('${file.URL}')" class="btn-small">Share</button>
         </div>
       </div>
