@@ -91,7 +91,7 @@
     }
     .filter-section {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: 1fr auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
@@ -105,8 +105,7 @@
       font-weight: bold;
       color: #333;
     }
-    .form-group input,
-    .form-group select {
+    .form-group input {
       width: 100%;
       padding: 8px;
       border: 1px solid #ddd;
@@ -365,7 +364,16 @@
     <div class="section-header">
       <h3>📁 My Media Files</h3>
     </div>
-   </section>
+    
+    <div class="filter-section">
+      <div class="form-group">
+        <label for="searchFilter">Search</label>
+        <input type="text" id="searchFilter" placeholder="Search prompts, names...">
+      </div>
+      <button id="refreshMedia">🔄 Refresh</button>
+      <button id="clearFilters" class="secondary">Clear Filters</button>
+    </div>
+  </section>
 
   <!-- Media Grid -->
   <section id="mediaContainer">
@@ -399,7 +407,6 @@
 
   // DOM elements
   const mediaContainer = document.getElementById('mediaContainer');
-  const fileTypeFilter = document.getElementById('fileTypeFilter');
   const searchFilter = document.getElementById('searchFilter');
   const refreshMediaBtn = document.getElementById('refreshMedia');
   const clearFiltersBtn = document.getElementById('clearFilters');
@@ -445,7 +452,7 @@
     }
   }
 
-  // Simple media loading - handle array of responses
+  // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
       const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/media/get', {
@@ -461,31 +468,18 @@
       const data = await response.json();
       console.log('Response from n8n:', data);
       
-      // Reset arrays
-      allMediaFiles = [];
-      
-     // Handle response from n8n webhook
-if (data && Array.isArray(data)) {
-  // Direct array response
-  allMediaFiles = data;
-} else if (data && data.media && Array.isArray(data.media)) {
-  // Nested media array
-  allMediaFiles = data.media;
-} else {
-  console.log('Unexpected response structure:', data);
-  allMediaFiles = [];
-}
+      // Handle response from n8n webhook
+      if (data && Array.isArray(data)) {
+        allMediaFiles = data;
+      } else if (data && data.media && Array.isArray(data.media)) {
+        allMediaFiles = data.media;
+      } else {
+        console.log('Unexpected response structure:', data);
+        allMediaFiles = [];
+      }
 
-console.log('Added media files:', allMediaFiles.length);
-if (allMediaFiles.length > 0) {
-  console.log('First file sample:', allMediaFiles[0]);
-  console.log('First file URL:', allMediaFiles[0]?.URL);
-  console.log('First file keys:', Object.keys(allMediaFiles[0] || {}));
-}      
-     console.log(`Loaded ${allMediaFiles.length} media files`);
-      
+      console.log(`Loaded ${allMediaFiles.length} media files`);
       filteredMediaFiles = [...allMediaFiles];
-      console.log('Final media files:', allMediaFiles);
       
     } catch (error) {
       console.error('Error loading media:', error);
@@ -497,15 +491,9 @@ if (allMediaFiles.length > 0) {
 
   // Apply filters
   function applyFilters() {
-    const fileType = fileTypeFilter.value;
     const searchTerm = searchFilter.value.toLowerCase();
 
     filteredMediaFiles = allMediaFiles.filter(file => {
-    // File type filter
-if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileType)) {
-  return false;
-}
-
       // Search filter
       if (searchTerm) {
         const searchableText = [
@@ -526,7 +514,6 @@ if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileTyp
 
   // Clear filters
   function clearFilters() {
-    fileTypeFilter.value = '';
     searchFilter.value = '';
     applyFilters();
   }
@@ -559,8 +546,8 @@ if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileTyp
     const card = document.createElement('div');
     card.className = 'media-card';
 
-    const fileType = getFileType(file.file_type || file.mime_type);
-    const previewUrl = file.URL ;
+    const fileType = getFileType(file.file_type);
+    const previewUrl = file.URL;
     
     // Handle date properly
     let createdDate = 'Unknown';
@@ -582,10 +569,6 @@ if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileTyp
         <p class="media-description">${file.prompt || 'No description available'}</p>
         <div class="media-meta">
           <div class="meta-item">
-            <span class="meta-label">Campaign:</span>
-            ${file.campaign_name || 'Unknown'}
-          </div>
-          <div class="meta-item">
             <span class="meta-label">Created:</span>
             ${createdDate}
           </div>
@@ -596,6 +579,10 @@ if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileTyp
           <div class="meta-item">
             <span class="meta-label">Type:</span>
             ${file.file_type || file.mime_type || 'Unknown'}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Dimensions:</span>
+            ${file.width && file.height ? `${file.width}x${file.height}` : 'N/A'}
           </div>
         </div>
         <div class="media-actions">
@@ -627,12 +614,13 @@ if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileTyp
     }
   }
 
- function getFileType(fileType) {
-  if (!fileType) return 'unknown';
-  if (fileType.toLowerCase().includes('video') || fileType.toLowerCase().includes('mp4')) return 'video';
-  if (fileType.toLowerCase().includes('image') || fileType.toLowerCase().includes('jpeg') || fileType.toLowerCase().includes('jpg') || fileType.toLowerCase().includes('png')) return 'image';
-  return 'file';
-}
+  // Utility functions
+  function getFileType(fileType) {
+    if (!fileType) return 'unknown';
+    if (fileType.toLowerCase().includes('video') || fileType.toLowerCase().includes('mp4')) return 'video';
+    if (fileType.toLowerCase().includes('image') || fileType.toLowerCase().includes('jpeg') || fileType.toLowerCase().includes('jpg') || fileType.toLowerCase().includes('png')) return 'image';
+    return 'file';
+  }
 
   function formatFileSize(bytes) {
     if (!bytes) return 'N/A';
@@ -703,9 +691,6 @@ if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileTyp
     });
 
     clearFiltersBtn.addEventListener('click', clearFilters);
-    
-    // Auto-apply filters on change
-    fileTypeFilter.addEventListener('change', applyFilters);
 
     // Debounced search
     let searchTimeout;
