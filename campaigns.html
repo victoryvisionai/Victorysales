@@ -281,28 +281,6 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
-    .auth-loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      flex-direction: column;
-    }
-    .auth-loading .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0A3161;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
     .modal {
       display: none;
       position: fixed;
@@ -399,12 +377,6 @@
   </style>
 </head>
 <body>
-
-<!-- Authentication Loading Screen -->
-<div id="authLoading" class="auth-loading">
-  <div class="spinner"></div>
-  <p>Verifying authentication...</p>
-</div>
 
 <header class="navbar">
   <div class="logo">
@@ -513,7 +485,7 @@
   const createCampaignBtn = document.getElementById('createCampaignBtn');
   const campaignModal = document.getElementById('campaignModal');
 
-  // Authentication
+  // Authentication - simplified without infinite loading
   async function checkAuthentication() {
     try {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -538,18 +510,15 @@
   }
 
   function redirectToLogin() {
-    localStorage.removeItem('vv_session');
     window.location.href = 'login.html';
   }
 
   async function logout() {
     try {
       await supabaseClient.auth.signOut();
-      localStorage.removeItem('vv_session');
       redirectToLogin();
     } catch (e) {
       console.error('Logout error:', e);
-      localStorage.removeItem('vv_session');
       redirectToLogin();
     }
   }
@@ -623,7 +592,6 @@
     const searchTerm = searchFilter.value.toLowerCase();
 
     filteredCampaigns = allCampaigns.filter(campaign => {
-      // Search filter
       if (searchTerm) {
         const searchableText = [
           campaign.name || '',
@@ -635,7 +603,6 @@
           return false;
         }
       }
-
       return true;
     });
 
@@ -677,7 +644,6 @@
     card.className = 'campaign-card';
     card.onclick = () => openCampaignModal(campaign);
 
-    // Handle date properly
     let createdDate = 'Unknown';
     if (campaign.created_at) {
       try {
@@ -749,34 +715,6 @@
         <div class="field-value">${campaign.keywords || 'N/A'}</div>
       </div>
       <div class="field-group">
-        <div class="field-label">Image Prompt</div>
-        <div class="field-value">${campaign.image_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Video Prompt</div>
-        <div class="field-value">${campaign.video_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">LinkedIn Prompt</div>
-        <div class="field-value">${campaign.LinkedIn_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">YouTube Prompt</div>
-        <div class="field-value">${campaign.YouTube_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">TikTok Prompt</div>
-        <div class="field-value">${campaign.TikTok_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Instagram Prompt</div>
-        <div class="field-value">${campaign.Instagram_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Facebook Prompt</div>
-        <div class="field-value">${campaign.Facebook_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
         <div class="field-label">Campaign URL</div>
         <div class="field-value">${campaign.campaign_URL || 'N/A'}</div>
       </div>
@@ -787,26 +725,6 @@
       <div class="field-group">
         <div class="field-label">Goal Description</div>
         <div class="field-value">${campaign.goal_description || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">30 Day Plan</div>
-        <div class="field-value">${campaign['30_day'] || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">90 Day Plan</div>
-        <div class="field-value">${campaign['90_day'] || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Social Posts</div>
-        <div class="field-value">${campaign.social_posts || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Stock Photo</div>
-        <div class="field-value">${campaign.stock_photo || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">ICP</div>
-        <div class="field-value">${campaign.icp || 'N/A'}</div>
       </div>
     `;
     
@@ -859,3 +777,71 @@
         <h3>No campaigns yet</h3>
         <p>Click "Create New Campaign" above to get started!</p>
       </div>
+    `;
+  }
+
+  function showNoResultsState() {
+    campaignsContainer.innerHTML = `
+      <div class="empty-state">
+        <h3>No campaigns match your filters</h3>
+        <p>Try adjusting your search criteria or clearing the filters.</p>
+      </div>
+    `;
+  }
+
+  function showStatus(message, isError = false) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+    statusDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 5000);
+  }
+
+  // Event listeners
+  function setupEventListeners() {
+    createCampaignBtn.addEventListener('click', createCampaign);
+    refreshCampaignsBtn.addEventListener('click', async () => {
+      await loadCampaigns();
+      applyFilters();
+    });
+    clearFiltersBtn.addEventListener('click', clearFilters);
+
+    let searchTimeout;
+    searchFilter.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(applyFilters, 300);
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === campaignModal) {
+        closeModal();
+      }
+    });
+  }
+
+  // Initialize page - simplified initialization
+  async function init() {
+    try {
+      const isAuthenticated = await checkAuthentication();
+      
+      if (isAuthenticated) {
+        await loadCampaigns();
+        setupEventListeners();
+        applyFilters();
+      } else {
+        redirectToLogin();
+      }
+    } catch (error) {
+      console.error('Error initializing page:', error);
+      showStatus('Failed to load campaigns. Please refresh the page.', true);
+    }
+  }
+
+  // Initialize when DOM loads
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
