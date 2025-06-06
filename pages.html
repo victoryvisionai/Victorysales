@@ -670,8 +670,8 @@
     console.log('Customer ID:', CUSTOMER_ID);
     
     try {
-      console.log('1. Calling media/get webhook...');
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/media/get', {
+      console.log('1. Calling videos/get webhook...');
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/videos/get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_id: CUSTOMER_ID })
@@ -688,51 +688,26 @@
       console.log('4. Data type:', typeof data);
       console.log('5. Is array?', Array.isArray(data));
       
-      // Check different possible response structures
-      if (data.media) {
-        console.log('6a. Found data.media:', data.media);
-        console.log('6a. data.media is array?', Array.isArray(data.media));
-      }
-      if (data.files) {
-        console.log('6b. Found data.files:', data.files);
-      }
-      
-      // Use the same logic as media.html
-      let allFiles = [];
+      // Handle response from videos/get webhook
+      let videos = [];
       if (Array.isArray(data)) {
-        allFiles = data;
-        console.log('7a. Using direct array, length:', allFiles.length);
-      } else if (data && Array.isArray(data.media)) {
-        allFiles = data.media;
-        console.log('7b. Using data.media, length:', allFiles.length);
+        videos = data;
+        console.log('6a. Using direct array, length:', videos.length);
+      } else if (data && Array.isArray(data.videos)) {
+        videos = data.videos;
+        console.log('6b. Using data.videos, length:', videos.length);
       } else {
-        console.log('7c. No usable data found');
-        allFiles = [];
+        console.log('6c. No usable video data found');
+        videos = [];
       }
 
-      console.log('8. All files:', allFiles);
-      
-      // Filter for videos
-      const videos = allFiles.filter(file => {
-        const hasURL = file && file.URL;
-        const hasFileType = file && file.file_type;
-        const isVideo = hasFileType && (
-          file.file_type.toLowerCase().includes('video') || 
-          file.file_type.toLowerCase().includes('mp4')
-        );
-        
-        console.log(`File "${file.name}": URL=${hasURL}, file_type="${file.file_type}", isVideo=${isVideo}`);
-        return hasURL && isVideo;
-      });
-      
-      console.log('9. Filtered videos:', videos);
-      console.log('10. Video count:', videos.length);
+      console.log('7. All videos:', videos);
       
       // Update global variable and dropdown
       availableVideos = videos;
       populateVideoDropdown();
       
-      showStatus(`Debug: Found ${videos.length} videos out of ${allFiles.length} total files`);
+      showStatus(`Debug: Found ${videos.length} videos`);
       
     } catch (error) {
       console.error('Debug error:', error);
