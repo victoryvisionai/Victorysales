@@ -516,7 +516,7 @@
   // Load campaigns from n8n webhook
   async function loadCampaigns() {
     try {
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/campaigns/get', {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/campaigns/get', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_id: CUSTOMER_ID })
@@ -528,7 +528,8 @@
 
       const data = await response.json();
       console.log('Response from n8n:', data);
-      
+   console.log('Raw response:', await response.text());
+const data = await response.clone().json();   
       // Handle response from n8n webhook
       if (data && Array.isArray(data)) {
         allCampaigns = data;
