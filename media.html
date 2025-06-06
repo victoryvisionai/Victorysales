@@ -520,10 +520,10 @@ if (allMediaFiles.length > 0) {
     const searchTerm = searchFilter.value.toLowerCase();
 
     filteredMediaFiles = allMediaFiles.filter(file => {
-      // File type filter
-      if (fileType && !file.file_type.toLowerCase().includes(fileType)) {
-        return false;
-      }
+    // File type filter
+if (fileType && file.file_type && !file.file_type.toLowerCase().includes(fileType)) {
+  return false;
+}
 
       // Search filter
       if (searchTerm) {
@@ -646,13 +646,12 @@ if (allMediaFiles.length > 0) {
     }
   }
 
-  // Utility functions
-  function getFileType(mimeType) {
-    if (!mimeType) return 'unknown';
-    if (mimeType.includes('video')) return 'video';
-    if (mimeType.includes('image')) return 'image';
-    return 'file';
-  }
+ function getFileType(fileType) {
+  if (!fileType) return 'unknown';
+  if (fileType.toLowerCase().includes('video') || fileType.toLowerCase().includes('mp4')) return 'video';
+  if (fileType.toLowerCase().includes('image') || fileType.toLowerCase().includes('jpeg') || fileType.toLowerCase().includes('jpg') || fileType.toLowerCase().includes('png')) return 'image';
+  return 'file';
+}
 
   function formatFileSize(bytes) {
     if (!bytes) return 'N/A';
