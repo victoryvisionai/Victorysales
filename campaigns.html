@@ -58,7 +58,7 @@
       max-height: 100px;
     }
     .content {
-      padding: 20px;
+      padding: 20px 10px;
       max-width: 1400px;
       margin: 0 auto;
     }
@@ -88,6 +88,32 @@
       padding: 15px;
       margin: -20px -20px 20px -20px;
       border-radius: 8px 8px 0 0;
+    }
+    .create-campaign-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .create-campaign-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 20px 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .create-campaign-btn:hover {
+      background: linear-gradient(135deg, #218838, #1e7e34);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    .create-campaign-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
     }
     .filter-section {
       display: grid;
@@ -350,7 +376,7 @@
     /* Responsive */
     @media (max-width: 768px) {
       .content {
-        padding: 10px;
+        padding: 10px 5px;
       }
       .page-title {
         font-size: 2rem;
@@ -364,6 +390,10 @@
       .modal-content {
         width: 95%;
         margin: 10% auto;
+      }
+      .create-campaign-btn {
+        padding: 15px 30px;
+        font-size: 16px;
       }
     }
   </style>
@@ -405,6 +435,16 @@
     <h1 class="page-title">Campaigns</h1>
     <p class="page-subtitle">Manage your marketing campaigns</p>
   </header>
+
+  <!-- Create Campaign Section -->
+  <section class="create-campaign-section">
+    <button id="createCampaignBtn" class="create-campaign-btn">
+      🚀 Create New Campaign
+    </button>
+    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+      Campaign creation takes up to 5 minutes. Your new campaign will appear below when ready.
+    </p>
+  </section>
 
   <!-- Filter Section -->
   <section class="card">
@@ -470,6 +510,7 @@
   const searchFilter = document.getElementById('searchFilter');
   const refreshCampaignsBtn = document.getElementById('refreshCampaigns');
   const clearFiltersBtn = document.getElementById('clearFilters');
+  const createCampaignBtn = document.getElementById('createCampaignBtn');
   const campaignModal = document.getElementById('campaignModal');
 
   // Authentication
@@ -516,7 +557,7 @@
   // Load campaigns from n8n webhook
   async function loadCampaigns() {
     try {
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/campaigns/get', { 
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/campaigns/get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_id: CUSTOMER_ID })
@@ -528,8 +569,7 @@
 
       const data = await response.json();
       console.log('Response from n8n:', data);
-   console.log('Raw response:', await response.text());
-const data = await response.clone().json();   
+      
       // Handle response from n8n webhook
       if (data && Array.isArray(data)) {
         allCampaigns = data;
@@ -548,6 +588,33 @@ const data = await response.clone().json();
       allCampaigns = [];
       filteredCampaigns = [];
       showStatus('Error loading campaigns: ' + error.message, true);
+    }
+  }
+
+  // Create new campaign
+  async function createCampaign() {
+    try {
+      createCampaignBtn.disabled = true;
+      createCampaignBtn.textContent = '🔄 Creating Campaign...';
+      
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/campaigns/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      showStatus('Campaign creation started! This will take up to 5 minutes. Refresh the page to see your new campaign.');
+      
+    } catch (error) {
+      console.error('Error creating campaign:', error);
+      showStatus('Error creating campaign: ' + error.message, true);
+    } finally {
+      createCampaignBtn.disabled = false;
+      createCampaignBtn.textContent = '🚀 Create New Campaign';
     }
   }
 
@@ -790,93 +857,5 @@ const data = await response.clone().json();
     campaignsContainer.innerHTML = `
       <div class="empty-state">
         <h3>No campaigns yet</h3>
-        <p>Your marketing campaigns will appear here.</p>
+        <p>Click "Create New Campaign" above to get started!</p>
       </div>
-    `;
-  }
-
-  function showNoResultsState() {
-    campaignsContainer.innerHTML = `
-      <div class="empty-state">
-        <h3>No campaigns match your filters</h3>
-        <p>Try adjusting your search criteria or clearing the filters.</p>
-      </div>
-    `;
-  }
-
-  function showStatus(message, isError = false) {
-    const statusDiv = document.getElementById('statusMessage');
-    statusDiv.textContent = message;
-    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
-    statusDiv.style.display = 'block';
-    
-    setTimeout(() => {
-      statusDiv.style.display = 'none';
-    }, 5000);
-  }
-
-  // Event listeners
-  function setupEventListeners() {
-    // Filter controls
-    refreshCampaignsBtn.addEventListener('click', async () => {
-      await loadCampaigns();
-      applyFilters();
-    });
-
-    clearFiltersBtn.addEventListener('click', clearFilters);
-
-    // Debounced search
-    let searchTimeout;
-    searchFilter.addEventListener('input', () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(applyFilters, 300);
-    });
-
-    // Close modal when clicking outside
-    window.addEventListener('click', (event) => {
-      if (event.target === campaignModal) {
-        closeModal();
-      }
-    });
-  }
-
-  // Initialize page
-  async function init() {
-    try {
-      document.getElementById('authLoading').style.display = 'flex';
-      
-      const isAuthenticated = await checkAuthentication();
-      
-      if (isAuthenticated) {
-        document.getElementById('authLoading').style.display = 'none';
-        await loadCampaigns();
-        setupEventListeners();
-        applyFilters();
-      } else {
-        redirectToLogin();
-      }
-    } catch (error) {
-      console.error('Error initializing page:', error);
-      showStatus('Failed to load campaigns. Please refresh the page.', true);
-      document.getElementById('authLoading').style.display = 'none';
-    }
-  }
-
-  // Security checks
-  setInterval(async function() {
-    try {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        console.log('Session expired, redirecting to login');
-        redirectToLogin();
-      }
-    } catch (e) {
-      console.error('Session check failed:', e);
-    }
-  }, 300000); // Check every 5 minutes
-
-  // Initialize when DOM loads
-  document.addEventListener('DOMContentLoaded', init);
-</script>
-</body>
-</html>
