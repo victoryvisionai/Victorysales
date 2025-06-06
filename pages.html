@@ -480,11 +480,34 @@
   </header>
 
   <!-- Create Page Section -->
-  <section class="create-page-section">
+  <section class="card">
+    <div class="section-header">
+      <h3>📄 Create New Landing Page</h3>
+    </div>
+    
+    <div class="form-group">
+      <label for="headerVideoSelect">Select Header Video *</label>
+      <select id="headerVideoSelect" required>
+        <option value="">Choose a video from your media library</option>
+      </select>
+      <small style="color: #666;">Select an existing video to use as the header for your landing page</small>
+    </div>
+    
+    <div class="form-group">
+      <label for="pageTitle">Page Title</label>
+      <input type="text" id="pageTitle" placeholder="Enter page title (optional)">
+    </div>
+    
+    <div class="form-group">
+      <label for="pageDescription">Page Description</label>
+      <textarea id="pageDescription" placeholder="Enter page description (optional)" style="height: 80px; resize: vertical;"></textarea>
+    </div>
+    
     <button id="createPageBtn" class="create-page-btn">
-      📄 Create New Landing Page
+      📄 Create Landing Page
     </button>
-    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
+    
+    <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">
       Landing pages are automatically created with campaigns, or create custom pages here.
     </p>
   </section>
@@ -587,9 +610,10 @@
   let authToken = null;
   let currentEditingPage = null;
 
-  // Simple state management
+  // State management
   let allPages = [];
   let filteredPages = [];
+  let availableVideos = []; // Store available campaign videos
 
   // DOM elements
   const pagesContainer = document.getElementById('pagesContainer');
@@ -638,6 +662,64 @@
     }
   }
 
+  // Load available videos for page creation
+  async function loadAvailableVideos() {
+    try {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/media/get', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Media response from n8n:', data);
+      
+      // Handle response and filter for videos only
+      let allMedia = [];
+      if (data && Array.isArray(data)) {
+        allMedia = data;
+      } else if (data && data.media && Array.isArray(data.media)) {
+        allMedia = data.media;
+      }
+
+      // Filter for videos only
+      availableVideos = allMedia.filter(file => 
+        file.file_type && file.file_type.toLowerCase().includes('video') && file.URL
+      );
+
+      populateVideoDropdown();
+      
+    } catch (error) {
+      console.error('Error loading videos:', error);
+      showStatus('Error loading videos: ' + error.message, true);
+    }
+  }
+
+  // Populate video dropdown
+  function populateVideoDropdown() {
+    const dropdown = document.getElementById('headerVideoSelect');
+    dropdown.innerHTML = '<option value="">Choose a video from your media library</option>';
+    
+    if (availableVideos.length === 0) {
+      const option = document.createElement('option');
+      option.value = '';
+      option.textContent = 'No videos available - create some campaigns first';
+      option.disabled = true;
+      dropdown.appendChild(option);
+      return;
+    }
+
+    availableVideos.forEach(video => {
+      const option = document.createElement('option');
+      option.value = video.id;
+      option.textContent = `${video.name || 'Untitled'} (${video.campaign_name || 'Unknown Campaign'})`;
+      dropdown.appendChild(option);
+    });
+  }
   // Load pages from n8n webhook
   async function loadPages() {
     try {
@@ -678,13 +760,27 @@
   // Create new page
   async function createPage() {
     try {
+      const selectedVideoId = document.getElementById('headerVideoSelect').value;
+      const pageTitle = document.getElementById('pageTitle').value.trim();
+      const pageDescription = document.getElementById('pageDescription').value.trim();
+
+      if (!selectedVideoId) {
+        showStatus('Please select a header video for your landing page', true);
+        return;
+      }
+
       createPageBtn.disabled = true;
       createPageBtn.textContent = '🔄 Creating Page...';
       
       const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/pages/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID })
+        body: JSON.stringify({ 
+          customer_id: CUSTOMER_ID,
+          campaigns_file_id: selectedVideoId,
+          title: pageTitle || '',
+          description: pageDescription || ''
+        })
       });
 
       if (!response.ok) {
@@ -695,6 +791,10 @@
       
       if (result.success) {
         showStatus('Landing page created successfully!');
+        // Clear form
+        document.getElementById('headerVideoSelect').value = '';
+        document.getElementById('pageTitle').value = '';
+        document.getElementById('pageDescription').value = '';
         await loadPages();
         applyFilters();
       } else {
@@ -706,7 +806,7 @@
       showStatus('Error creating page: ' + error.message, true);
     } finally {
       createPageBtn.disabled = false;
-      createPageBtn.textContent = '📄 Create New Landing Page';
+      createPageBtn.textContent = '📄 Create Landing Page';
     }
   }
 
