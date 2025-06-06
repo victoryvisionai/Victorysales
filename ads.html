@@ -1,72 +1,865 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victory Vision AI - Ads</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script defer src="scripts.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Manage your billboard and advertising campaigns."/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision AI - Advertising</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .navbar {
+      background-color: #0A3161;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar nav ul li {
+      margin: 0 10px;
+    }
+    .navbar nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    .navbar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .navbar .logout-btn {
+      background: #BB133E;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .navbar .logout-btn:hover {
+      background: #9e1034;
+    }
+    .logo img {
+      height: 60px;
+      width: auto;
+      max-height: 100px;
+    }
+    .content {
+      padding: 20px 4px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .page-header {
+      margin-bottom: 30px;
+    }
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 0.5rem;
+    }
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: #666;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .section-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 15px;
+      margin: -20px -20px 20px -20px;
+      border-radius: 8px 8px 0 0;
+    }
+    .billboard-creation {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .form-group textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    .billboard-preview {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: white;
+      border: 3px solid #333;
+    }
+    .billboard-content {
+      max-width: 100%;
+    }
+    .billboard-headline {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    .billboard-message {
+      font-size: 1.2rem;
+      line-height: 1.4;
+      margin-bottom: 15px;
+    }
+    .billboard-cta {
+      font-size: 1rem;
+      background: #BB133E;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 10px;
+    }
+    .campaign-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .campaign-card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .campaign-card:hover {
+      border-color: #0A3161;
+      transform: translateY(-2px);
+    }
+    .campaign-card.selected {
+      border-color: #28a745;
+      background: #f8fff9;
+    }
+    .campaign-duration {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 10px;
+    }
+    .campaign-price {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #28a745;
+      margin-bottom: 15px;
+    }
+    .campaign-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .campaign-features li {
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .campaign-features li:last-child {
+      border-bottom: none;
+    }
+    .special-opportunities {
+      margin-bottom: 30px;
+    }
+    .fortune-cookie-card {
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      margin-bottom: 20px;
+    }
+    .fortune-cookie-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #8b4513;
+      margin-bottom: 15px;
+    }
+    .fortune-cookie-price {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #d2691e;
+      margin-bottom: 15px;
+    }
+    .fortune-cookie-description {
+      font-size: 1.1rem;
+      color: #654321;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .video-preview-btn {
+      background: #BB133E;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 10px;
+      transition: all 0.3s ease;
+    }
+    .video-preview-btn:hover {
+      background: #9e1034;
+    }
+    .create-ad-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 20px 40px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: block;
+      margin: 20px auto;
+      width: fit-content;
+    }
+    .create-ad-btn:hover {
+      background: linear-gradient(135deg, #218838, #1e7e34);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    .create-ad-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+    }
+    button {
+      background: #0A3161;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px 5px 0 0;
+    }
+    button:hover {
+      background: #083050;
+    }
+    button.secondary {
+      background: #6c757d;
+    }
+    button.secondary:hover {
+      background: #5a6268;
+    }
+    button.danger {
+      background: #dc3545;
+    }
+    button.danger:hover {
+      background: #c82333;
+    }
+    .filter-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+    .ads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+    .ad-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .ad-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .ad-preview {
+      background: #1a1a1a;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .ad-info {
+      padding: 15px;
+    }
+    .ad-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #0A3161;
+    }
+    .ad-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-weight: 600;
+      color: #0A3161;
+    }
+    .ad-actions {
+      display: flex;
+      gap: 8px;
+      padding: 0 15px 15px;
+    }
+    .btn-small {
+      padding: 8px 12px;
+      font-size: 12px;
+      flex: 1;
+    }
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.1rem;
+      color: #666;
+    }
+    .loading::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ddd;
+      border-top: 2px solid #0A3161;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #666;
+    }
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #0A3161;
+    }
+    .status-message {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+    }
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .close {
+      color: white;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      opacity: 0.8;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .video-modal-content {
+      background-color: #000;
+      margin: 10% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+    }
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    footer {
+      background: #0A3161;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    footer a {
+      color: #fff;
+      margin-right: 15px;
+      text-decoration: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .content {
+        padding: 10px 5px;
+      }
+      .page-title {
+        font-size: 2rem;
+      }
+      .billboard-creation {
+        grid-template-columns: 1fr;
+      }
+      .campaign-options {
+        grid-template-columns: 1fr;
+      }
+      .filter-section {
+        grid-template-columns: 1fr;
+      }
+      .ads-grid {
+        grid-template-columns: 1fr;
+      }
+      .modal-content {
+        width: 95%;
+        margin: 10% auto;
+      }
+      .video-modal-content {
+        width: 95%;
+        margin: 20% auto;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <header class="navbar">
-    <div class="logo">
-        <img src="logo.jpg" alt="Victory Vision Logo">
-    </div>
-    <nav>
-        <ul>
-      <li><a href="ai-opt">🤖</a></li>
-          <li><a href="images">Images</a></li>
-      <li><a href="videos">Videos</a></li>
+  <div class="logo">
+    <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
       <li><a href="pages">Pages</a></li>
-      <li><a href="ads">Ads</a></li>
-      <li><a href="leads">Leads</a></li>
       <li><a href="social">Social</a></li>
-            <li><a href="settings">⚙️</a></li>
-        </ul>
-    </nav>
+      <li><a href="leads">Leads</a></li>
+      <li><a href="ads">Ads</a></li>
+      <li><a href="ai">🤖 AI</a></li>
+      <li><a href="settings">⚙️</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 </header>
 
 <div class="content">
-    <div class="card">
-        <h2>Create AI-Optimized Google Ads</h2>
-        <textarea placeholder="Describe the ad..."></textarea>
-        <input type="text" placeholder="Target URL">
-        <button>Generate Ad</button>
+  <header class="page-header">
+    <h1 class="page-title">Advertising Management</h1>
+    <p class="page-subtitle">Create billboard ads and manage advertising campaigns</p>
+  </header>
+
+  <!-- Billboard Creation Section -->
+  <section class="card">
+    <div class="section-header">
+      <h3>🏗️ Create Billboard Advertisement</h3>
+    </div>
+    
+    <div class="billboard-creation">
+      <div>
+        <div class="form-group">
+          <label for="billboardHeadline">Headline</label>
+          <input type="text" id="billboardHeadline" placeholder="Enter compelling headline" maxlength="50">
+        </div>
+        
+        <div class="form-group">
+          <label for="billboardMessage">Message</label>
+          <textarea id="billboardMessage" placeholder="Enter your marketing message" maxlength="150"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="billboardCTA">Call to Action</label>
+          <input type="text" id="billboardCTA" placeholder="Call Now! | Visit Us! | Get Started!" maxlength="25">
+        </div>
+        
+        <div class="form-group">
+          <label for="billboardLocation">Location</label>
+          <select id="billboardLocation">
+            <option value="">Select Location</option>
+            <option value="baton-rouge">Baton Rouge, Louisiana</option>
+            <option value="breaux-bridge">Breaux Bridge, Louisiana</option>
+            <option value="both">Both Locations</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <h4 style="margin-bottom: 15px; color: #0A3161;">Live Preview</h4>
+        <div class="billboard-preview">
+          <div class="billboard-content">
+            <div class="billboard-headline" id="previewHeadline">Your Headline Here</div>
+            <div class="billboard-message" id="previewMessage">Your marketing message will appear here</div>
+            <div class="billboard-cta" id="previewCTA">Call to Action</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Campaign Duration Options -->
+  <section class="card">
+    <div class="section-header">
+      <h3>📅 Campaign Duration & Pricing</h3>
+    </div>
+    
+    <div class="campaign-options">
+      <div class="campaign-card" data-duration="3-month">
+        <div class="campaign-duration">3 Month Campaign</div>
+        <div class="campaign-price">$12,000</div>
+        <ul class="campaign-features">
+          <li>✅ Prime billboard locations</li>
+          <li>✅ Both Baton Rouge & Breaux Bridge</li>
+          <li>✅ Professional design included</li>
+          <li>✅ Installation & maintenance</li>
+          <li>✅ Performance analytics</li>
+        </ul>
+      </div>
+      
+      <div class="campaign-card" data-duration="6-month">
+        <div class="campaign-duration">6 Month Campaign</div>
+        <div class="campaign-price">$20,000</div>
+        <ul class="campaign-features">
+          <li>✅ Everything in 3-month plan</li>
+          <li>✅ 15% discount vs monthly rate</li>
+          <li>✅ Mid-campaign design refresh</li>
+          <li>✅ Extended analytics report</li>
+          <li>✅ Priority customer support</li>
+        </ul>
+      </div>
+      
+      <div class="campaign-card" data-duration="full-year">
+        <div class="campaign-duration">Full Year Campaign</div>
+        <div class="campaign-price">$35,000</div>
+        <ul class="campaign-features">
+          <li>✅ Everything in 6-month plan</li>
+          <li>✅ 25% discount vs monthly rate</li>
+          <li>✅ Quarterly design updates</li>
+          <li>✅ Comprehensive market analysis</li>
+          <li>✅ Dedicated account manager</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Special Advertising Opportunities -->
+  <section class="card special-opportunities">
+    <div class="section-header">
+      <h3>🌟 Special Advertising Opportunities</h3>
+    </div>
+    
+    <div class="fortune-cookie-card">
+      <div class="fortune-cookie-title">🥠 Fortune Cookie Campaign</div>
+      <div class="fortune-cookie-price">$15,000</div>
+      <div class="fortune-cookie-description">
+        Blanket your target area with unique fortune cookie advertisements featuring your custom message. 
+        Each cookie includes a QR code that opens a personalized video message when scanned.
+      </div>
+      <button class="video-preview-btn" onclick="openVideoModal()">
+        📹 Preview Fortune Cookie Video
+      </button>
+      <button class="video-preview-btn" id="selectFortuneCookies">
+        🥠 Select Fortune Cookie Campaign
+      </button>
+    </div>
+  </section>
+
+  <!-- Create Advertisement Button -->
+  <div style="text-align: center; margin: 30px 0;">
+    <button id="createAdBtn" class="create-ad-btn">
+      🚀 Create Advertisement Campaign
+    </button>
+  </div>
+
+  <!-- Existing Ads Management -->
+  <section class="card">
+    <div class="section-header">
+      <h3>📊 Your Active Campaigns</h3>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="form-group">
+        <label for="searchFilter">Search</label>
+        <input type="text" id="searchFilter" placeholder="Search campaigns...">
+      </div>
+      <div class="form-group">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <button id="refreshAds">🔄 Refresh</button>
+      <button id="clearFilters" class="secondary">Clear Filters</button>
     </div>
 
-    <div class="card">
-        <h3>Recent Ads Performance</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Ad Title</th>
-                    <th>Clicks</th>
-                    <th>Impressions</th>
-                    <th>CTR (%)</th>
-                    <th>Conversion Rate (%)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Victory Vision Promo</td>
-                    <td>1,200</td>
-                    <td>20,000</td>
-                    <td>6%</td>
-                    <td>2%</td>
-                </tr>
-                <tr>
-                    <td>AI Marketing Tool Ad</td>
-                    <td>950</td>
-                    <td>15,500</td>
-                    <td>6.1%</td>
-                    <td>2.5%</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- Ads Grid -->
+    <div id="adsContainer">
+      <div class="loading">Loading your advertising campaigns...</div>
     </div>
+  </section>
+
+  <!-- Status Messages -->
+  <div id="statusMessage" class="status-message"></div>
 </div>
 
-</body>
-</html>
+<!-- Ad Details Modal -->
+<div id="adModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Campaign Details</h2>
+      <span class="close" onclick="closeModal()">&times;</span>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Campaign details will be loaded here -->
+    </div>
+  </div>
+</div>
+
+<!-- Video Modal -->
+<div id="videoModal" class="modal">
+  <div class="video-modal-content">
+    <div style="background: #000; padding: 10px; border-radius: 8px 8px 0 0; display: flex; justify-content: between; align-items: center;">
+      <h3 style="color: white; margin: 0;">Fortune Cookie Video Preview</h3>
+      <span class="close" onclick="closeVideoModal()" style="margin-left: auto;">&times;</span>
+    </div>
+    <div class="video-container">
+      <iframe id="fortuneCookieVideo" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+  // Supabase configuration for auth only
+  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  
+  let CUSTOMER_ID = null;
+  let authToken = null;
+
+  // State management
+  let allAds = [];
+  let filteredAds = [];
+  let selectedCampaignDuration = null;
+  let selectedSpecialOffers = [];
+
+  // DOM elements
+  const adsContainer = document.getElementById('adsContainer');
+  const searchFilter = document.getElementById('searchFilter');
+  const statusFilter = document.getElementById('statusFilter');
+  const refreshAdsBtn = document.getElementById('refreshAds');
+  const clearFiltersBtn = document.getElementById('clearFilters');
+  const createAdBtn = document.getElementById('createAdBtn');
+  const adModal = document.getElementById('adModal');
+  const videoModal = document.getElementById('videoModal');
+
+  // Billboard preview elements
+  const billboardHeadline = document.getElementById('billboardHeadline');
+  const billboardMessage = document.getElementById('billboardMessage');
+  const billboardCTA = document.getElementById('billboardCTA');
+  const previewHeadline = document.getElementById('previewHeadline');
+  const previewMessage = document.getElementById('previewMessage');
+  const previewCTA = document.getElementById('previewCTA');
+
+  // Authentication
+  async function checkAuthentication() {
+    try {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      
+      if (error) {
+        console.error('Auth error:', error);
+        return false;
+      }
+
+      if (session && session.user) {
+        CUSTOMER_ID = session.user.email;
+        authToken = session.access_token;
+        document.getElementById('userEmail').textContent = CUSTOMER_ID;
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      console.error('Auth check error:', e);
+      return false;
+    }
+  }
+
+  function redirectToLogin() {
+    window.location.href = 'login.html';
+  }
+
+  async function logout() {
+    try {
+      await supabaseClient.auth.signOut();
+      redirectToLogin();
+    } catch (e) {
+      console.error('Logout error:', e);
+      redirectToLogin();
+    }
+  }
+
+  // Load ads from n8n webhook
+  async function loadAds() {
+    try {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/ads/get', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Response from n8n:', data);
+      
+      // Handle response from n8n webhook
+      if (data && Array.isArray(data)) {
+        allAds = data;
+      } else if (data && data.ads && Array.isArray(data.ads)) {
+        allAds = data.ads;
+      } else {
+        console.log('Unexpected response structure:', data);
+        allAds = [];
+      }
+
+      console.log(`Loaded ${allAds.length} advertising campaigns`);
+      filteredAds = [...allAds];
+      
+    } catch (error) {
+      console.error('Error loading ads:', error);
+      allAds = [];
+      filteredAds = [];
+      showStatus('Error loading advertising campaigns: ' + error.message, true);
+    }
+  }
+
+  // Load billboards (if different from ads)
+  async function loadBillboards() {
+    try {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/billboards/get', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('Billboards
