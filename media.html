@@ -558,12 +558,11 @@
         createdDate = file.created_at;
       }
     }
-
-    card.innerHTML = `
-      <div class="media-preview">
-        ${renderMediaPreview(file, previewUrl)}
-        <div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>
-      </div>
+card.innerHTML = `
+  <div class="media-preview">
+    ${renderMediaPreview(file, previewUrl)}
+    ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
+  </div>
       <div class="media-info">
         <h3 class="media-title">${file.name || 'Untitled'}</h3>
         <p class="media-description">${file.prompt || 'No description available'}</p>
