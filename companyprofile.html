@@ -158,17 +158,6 @@
       display: none;
       margin: 10px auto;
     }
-    .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0A3161;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-      display: inline-block;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -235,47 +224,6 @@
     .file-upload-label:hover {
       background: #f8f9fa;
     }
-    
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.4);
-    }
-    .modal-content {
-      background-color: #fefefe;
-      margin: 5% auto;
-      padding: 20px;
-      border: none;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 800px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover,
-    .close:focus {
-      color: black;
-    }
-    .current-data {
-      background: #f8f9fa;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 5px 0;
-      border-left: 4px solid #0A3161;
-    }
     .auth-loading {
       position: fixed;
       top: 0;
@@ -307,10 +255,6 @@
     .save-all-button:hover {
       background: #218838;
     }
-    .save-all-button:disabled {
-      background: #B3B3B3;
-      cursor: not-allowed;
-    }
     #currentGoalDisplay {
       min-height: 200px; 
       padding: 15px; 
@@ -323,6 +267,29 @@
       margin-top: 5px;
       font-size: 12px;
       color: #666;
+    }
+    .logo-preview {
+      margin-top: 10px;
+      max-width: 200px;
+      max-height: 100px;
+    }
+    .logo-preview img {
+      max-width: 100%;
+      max-height: 100px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+    }
+    .spinner-inline {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #0A3161;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -348,7 +315,7 @@
       <li><a href="social">Social</a></li>    
       <li><a href="leads">Leads</a></li> 
       <li><a href="ads">Ads</a></li>
-       <li><a href="ai">🤖-AI</a></li>
+      <li><a href="ai">🤖 AI</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
@@ -397,8 +364,8 @@
             <option value="transportation-warehousing">Transportation and Warehousing</option>
             <option value="publishing">Publishing</option>
             <option value="tech-services">Tech Services</option>
-            <option value="real-estate-rental-leasing">Real Estate & Rental and Leasing</option>
-            <option value="arts-entertainment-recreation">Arts, Entertainment & Recreation</option>
+            <option value="real-estate-rental">Real Estate & Rental and Leasing</option>
+            <option value="arts-entertainment">Arts, Entertainment & Recreation</option>
             <option value="admin-support">Admin & Support</option>
             <option value="utilities-mining">Utilities & Mining</option>
             <option value="other">Other</option>
@@ -415,6 +382,7 @@
               📁 Choose logo file (JPG, PNG, SVG)
             </label>
             <div id="logoFileName" class="file-name"></div>
+            <div id="logoPreview" class="logo-preview"></div>
           </div>
         </div>
         <div class="form-group">
@@ -430,12 +398,7 @@
 
       <div class="form-group">
         <label for="productDescription">Product/Service Description *</label>
-        <textarea id="productDescription" name="product_descriptions" required placeholder="Describe your main product or service in detail..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="icp">Ideal Customer Profile (ICP)</label>
-        <textarea id="icp" name="icp" placeholder="Describe your ideal customer profile..."></textarea>
+        <textarea id="productDescription" name="product_description" required placeholder="Describe your main product or service in detail..."></textarea>
       </div>
 
       <div class="form-group">
@@ -503,24 +466,16 @@
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
-      <button type="button" id="saveAllBtn" class="save-all-button" onclick="saveAllData()">💾 Save Company Profile & Goal</button>
-      <button type="button" class="secondary" onclick="loadAllData()">📂 Load Current Data</button>
-      <button type="button" class="secondary" onclick="showCurrentData()">👁️ View Current Data</button>
+      <button type="button" class="save-all-button" onclick="saveAllData()">
+        <span id="saveButtonText">💾 Save Company Profile & Goal</span>
+        <span id="saveSpinner" class="spinner-inline" style="display: none;"></span>
+      </button>
     </div>
   </div>
 
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
   <div id="loader" class="loader"></div>
-</div>
-
-<!-- Modal for viewing current data -->
-<div id="dataModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2 id="modalTitle">Current Data</h2>
-    <div id="modalContent"></div>
-  </div>
 </div>
 
 <footer>
@@ -537,29 +492,18 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // Single n8n webhook endpoint
+  // n8n webhook endpoints
   const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile';
+  const N8N_LOGO_UPLOAD_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile/upload-logo';
   
-  const DEBUG = true;
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
-
-  // Convert file to base64 for webhook transmission
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  }
+  let uploadedLogoFile = null;
 
   // Authentication and session management
   async function checkAuthentication() {
     try {
-      console.log('Checking authentication...');
-      
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       
       if (error) {
@@ -568,7 +512,6 @@
       }
 
       if (session && session.user) {
-        console.log('Valid session found:', session.user.email);
         CUSTOMER_ID = session.user.email;
         authToken = session.access_token;
         currentUser = {
@@ -581,7 +524,6 @@
         return true;
       }
 
-      console.log('No valid session found');
       return false;
     } catch (e) {
       console.error('Auth check error:', e);
@@ -606,11 +548,9 @@
     }
   }
 
-  // Secure API call wrapper
-  async function secureApiCall(data, method = 'POST') {
+  // API call wrapper
+  async function secureApiCall(data, method = 'POST', endpoint = N8N_ENDPOINT) {
     try {
-      console.log(`Making API call to: ${N8N_ENDPOINT} with method: ${method}`);
-      
       const headers = {
         'Content-Type': 'application/json',
         'X-Customer-ID': CUSTOMER_ID,
@@ -629,9 +569,7 @@
         request_id: generateRequestId()
       };
 
-      console.log('Request payload:', requestPayload);
-
-      const response = await fetch(N8N_ENDPOINT, {
+      const response = await fetch(endpoint, {
         method: method,
         headers: headers,
         body: JSON.stringify(requestPayload)
@@ -643,7 +581,6 @@
       }
 
       const result = await response.json();
-      console.log('API response:', result);
       return result;
     } catch (error) {
       console.error('API call failed:', error);
@@ -698,16 +635,27 @@
     });
   }
 
-  // File upload setup
+  // File upload setup with preview
   function setupFileUpload() {
     const fileInput = document.getElementById('logoUpload');
     const fileName = document.getElementById('logoFileName');
+    const logoPreview = document.getElementById('logoPreview');
     
     fileInput.addEventListener('change', function() {
       if (this.files && this.files[0]) {
+        uploadedLogoFile = this.files[0];
         fileName.textContent = `Selected: ${this.files[0].name}`;
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo preview">`;
+        };
+        reader.readAsDataURL(this.files[0]);
       } else {
+        uploadedLogoFile = null;
         fileName.textContent = '';
+        logoPreview.innerHTML = '';
       }
     });
   }
@@ -731,99 +679,50 @@
     }, 5000);
   }
 
-  // Modal functions
-  function showCurrentData() {
-    const modal = document.getElementById('dataModal');
-    const modalTitle = document.getElementById('modalTitle');
-    
-    modalTitle.textContent = 'Current Company Profile & Goal';
-    loadDataForModal();
-    modal.style.display = 'block';
-  }
-
-  function closeModal() {
-    document.getElementById('dataModal').style.display = 'none';
-  }
-
-  window.onclick = function(event) {
-    const modal = document.getElementById('dataModal');
-    if (event.target === modal) {
-      modal.style.display = 'none';
-    }
-  }
-
-  async function loadDataForModal() {
-    const modalContent = document.getElementById('modalContent');
-    modalContent.innerHTML = '<div class="loader" style="display: block;"></div>';
-    
-    try {
-      const data = await secureApiCall({}, 'GET');
-      
-      let html = '';
-      
-      if (data.company) {
-        const company = data.company;
-        html += '<h3>Company Information</h3>';
-        html += `<div class="current-data"><strong>Company Name:</strong> ${company.company_name || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Industry:</strong> ${company.industry || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Domain:</strong> ${company.domain || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Company Description:</strong> ${company.company_description || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Product Description:</strong> ${company.product_descriptions || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Ideal Customer Profile:</strong> ${company.icp || 'Not set'}</div>`;
-        html += `<div class="current-data"><strong>Brand Colors:</strong> ${company.brand_colors || 'Not set'}</div>`;
-      }
-      
-      if (data.goals && data.goals.length > 0) {
-        html += '<h3>Current Goal</h3>';
-        const goal = data.goals[0];
-        html += `
-          <div class="current-data">
-            <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br>
-            <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br>
-            <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br>
-            <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br>
-            <strong>Time Limit:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
-          </div>
-        `;
-      }
-      
-      if (!html) {
-        html = '<div class="current-data">No data found for this user.</div>';
-      }
-      
-      modalContent.innerHTML = html;
-    } catch (error) {
-      modalContent.innerHTML = `<div class="current-data" style="color: red;">Error loading data: ${error.message}</div>`;
-    }
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   }
 
   // Main save function - combines company and goal
   async function saveAllData() {
-    const saveBtn = document.getElementById('saveAllBtn');
-    const originalText = saveBtn.innerHTML;
+    const saveButton = document.querySelector('.save-all-button');
+    const saveButtonText = document.getElementById('saveButtonText');
+    const saveSpinner = document.getElementById('saveSpinner');
     
-    // Disable button and show spinner
-    saveBtn.disabled = true;
-    saveBtn.innerHTML = '<span class="spinner"></span>Saving...';
-    
-    showLoader();
+    // Show spinner
+    saveButton.disabled = true;
+    saveButtonText.style.display = 'none';
+    saveSpinner.style.display = 'inline-block';
     
     try {
       const formData = new FormData(document.getElementById('companyForm'));
       const goalForm = document.querySelector('.goal-form');
       const goalFormData = new FormData(goalForm);
       
-      // Handle file upload - FIXED VERSION
+      // Handle file upload
       let logoUrl = '';
-      const logoFile = formData.get('logo_file');
-      if (logoFile && logoFile.size > 0) {
-        // Convert file to base64 for transmission to webhook
+      if (uploadedLogoFile) {
         try {
-          const base64Data = await fileToBase64(logoFile);
-          logoUrl = base64Data; // Send base64 data to webhook
-        } catch (error) {
-          console.error('Error converting file to base64:', error);
-          showStatus('Error processing logo file', true);
+          // Convert to base64 and send to webhook
+          const base64Logo = await fileToBase64(uploadedLogoFile);
+          const uploadResult = await secureApiCall({
+            logo_file: base64Logo,
+            file_name: uploadedLogoFile.name,
+            file_type: uploadedLogoFile.type
+          }, 'POST', N8N_LOGO_UPLOAD_ENDPOINT);
+          
+          if (uploadResult.logo_url) {
+            logoUrl = uploadResult.logo_url;
+          }
+        } catch (uploadError) {
+          console.error('Logo upload failed:', uploadError);
+          // Continue without logo rather than failing entire save
         }
       }
 
@@ -846,15 +745,12 @@
         domain: formData.get('domain'),
         logo_URL: logoUrl,
         company_description: formData.get('company_description'),
-        product_descriptions: formData.get('product_descriptions'),
-        icp: formData.get('icp'), // ADD ICP FIELD
+        product_description: formData.get('product_description'),
         brand_colors: formData.get('brand_colors_1') + ',' + 
                      formData.get('brand_colors_2') + ',' + 
                      formData.get('brand_colors_3'),
         goal: goalData
       };
-
-      console.log('Saving all data:', allData);
 
       const result = await secureApiCall(allData, 'POST');
 
@@ -868,10 +764,10 @@
       console.error('Error saving data:', error);
       showStatus('Error saving data: ' + error.message, true);
     } finally {
-      hideLoader();
-      // Re-enable button and restore original text
-      saveBtn.disabled = false;
-      saveBtn.innerHTML = originalText;
+      // Hide spinner
+      saveButton.disabled = false;
+      saveButtonText.style.display = 'inline';
+      saveSpinner.style.display = 'none';
     }
   }
 
@@ -880,21 +776,18 @@
     showLoader();
     
     try {
-      console.log('Loading all data for:', CUSTOMER_ID);
-
       const data = await secureApiCall({}, 'GET');
 
       // Load company data
       if (data.company) {
         const company = data.company;
-        console.log('Loaded company profile:', company);
         
+        // Populate form fields with existing data
         document.getElementById('companyName').value = company.company_name || '';
         document.getElementById('industry').value = company.industry || '';
         document.getElementById('domain').value = company.domain || '';
         document.getElementById('companyDescription').value = company.company_description || '';
-        document.getElementById('productDescription').value = company.product_descriptions || '';
-        document.getElementById('icp').value = company.icp || ''; // Load ICP
+        document.getElementById('productDescription').value = company.product_description || '';
         
         // Handle brand colors
         if (company.brand_colors) {
@@ -912,26 +805,21 @@
             document.getElementById('color3Text').value = colors[2].trim();
           }
         }
+        
+        // Show existing logo if available
+        if (company.logo_URL) {
+          document.getElementById('logoPreview').innerHTML = `<img src="${company.logo_URL}" alt="Company logo">`;
+          document.getElementById('logoFileName').textContent = 'Current logo uploaded';
+        }
       }
 
-      // Clear goal form first
+      // Clear goal form
       const goalForm = document.querySelector('.goal-form');
       goalForm.reset();
 
       // Load and display current goal
       if (data.goals && data.goals.length > 0) {
         const goal = data.goals[0];
-        
-        // Fill the goal form
-        goalForm.querySelector('[name="goal_description"]').value = goal.goal_description || '';
-        goalForm.querySelector('[name="measurement"]').value = goal.measurement || '';
-        goalForm.querySelector('[name="achievable"]').value = goal.achievable || '';
-        goalForm.querySelector('[name="relationship"]').value = goal.relationship || '';
-        if (goal.time_limit) {
-          const date = new Date(goal.time_limit);
-          const formattedDate = date.toISOString().split('T')[0];
-          goalForm.querySelector('[name="time_limit"]').value = formattedDate;
-        }
         
         // Display current goal
         document.getElementById('currentGoalDisplay').innerHTML = `
@@ -946,111 +834,109 @@
       }
       
       if (data.company || (data.goals && data.goals.length > 0)) {
-        const companyExists = data.company ? 1 : 0;
-        const goalsCount = data.goals ? data.goals.length : 0;
-        showStatus(`Loaded company profile and ${goalsCount} goal successfully!`);
+        showStatus('Data loaded successfully!');
       } else {
         showStatus('No existing data found. Please fill out the forms.');
       }
     } catch (error) {
       console.error('Error loading data:', error);
-      showStatus('Error loading data: ' + error.message, true);
-    } finally {
-      hideLoader();
-    }
-  }
+    showStatus('Error loading data: ' + error.message, true);
+   } finally {
+     hideLoader();
+   }
+ }
 
-  // Prevent default form submission
-  document.getElementById('companyForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    saveAllData();
-  });
+ // Prevent default form submission
+ document.getElementById('companyForm').addEventListener('submit', function(e) {
+   e.preventDefault();
+   saveAllData();
+ });
 
-  // Security: Session timeout check
-  setInterval(async function() {
-    try {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        console.log('Session expired, redirecting to login');
-        redirectToLogin();
-      }
-    } catch (e) {
-      console.error('Session check failed:', e);
-    }
-  }, 300000); // Check every 5 minutes
+ // Security: Session timeout check
+ setInterval(async function() {
+   try {
+     const { data: { session } } = await supabaseClient.auth.getSession();
+     if (!session) {
+       console.log('Session expired, redirecting to login');
+       redirectToLogin();
+     }
+   } catch (e) {
+     console.error('Session check failed:', e);
+   }
+ }, 300000); // Check every 5 minutes
 
-  // Security: Detect tab visibility and re-verify auth when tab becomes visible
-  document.addEventListener('visibilitychange', async function() {
-    if (!document.hidden) {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          redirectToLogin();
-        } else {
-          authToken = session.access_token;
-        }
-      } catch (e) {
-        console.error('Visibility auth check failed:', e);
-      }
-    }
-  });
+ // Security: Detect tab visibility and re-verify auth when tab becomes visible
+ document.addEventListener('visibilitychange', async function() {
+   if (!document.hidden) {
+     try {
+       const { data: { session } } = await supabaseClient.auth.getSession();
+       if (!session) {
+         redirectToLogin();
+       } else {
+         authToken = session.access_token;
+       }
+     } catch (e) {
+       console.error('Visibility auth check failed:', e);
+     }
+   }
+ });
 
-  // Security: Rate limiting for API calls
-  const rateLimiter = {
-    calls: [],
-    maxCalls: 10,
-    windowMs: 60000, // 1 minute
-    
-    canMakeCall: function() {
-      const now = Date.now();
-      const windowStart = now - this.windowMs;
-      
-      // Remove old calls outside the window
-      this.calls = this.calls.filter(time => time > windowStart);
-      
-      if (this.calls.length >= this.maxCalls) {
-        return false;
-      }
-      
-      this.calls.push(now);
-      return true;
-    }
-  };
+ // Security: Rate limiting for API calls
+ const rateLimiter = {
+   calls: [],
+   maxCalls: 10,
+   windowMs: 60000, // 1 minute
+   
+   canMakeCall: function() {
+     const now = Date.now();
+     const windowStart = now - this.windowMs;
+     
+     // Remove old calls outside the window
+     this.calls = this.calls.filter(time => time > windowStart);
+     
+     if (this.calls.length >= this.maxCalls) {
+       return false;
+     }
+     
+     this.calls.push(now);
+     return true;
+   }
+ };
 
-  // Security: Input validation and sanitization
-  function validateAndSanitizeInput(data) {
-    const sanitized = {};
-    
-    for (const [key, value] of Object.entries(data)) {
-      if (typeof value === 'string') {
-        // Basic XSS prevention
-        sanitized[key] = value
-          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-          .replace(/javascript:/gi, '')
-          .replace(/on\w+\s*=/gi, '')
-          .trim();
-      } else {
-        sanitized[key] = value;
-      }
-    }
-    
-    return sanitized;
-  }
+ // Security: Input validation and sanitization
+ function validateAndSanitizeInput(data) {
+   const sanitized = {};
+   
+   for (const [key, value] of Object.entries(data)) {
+     if (typeof value === 'string') {
+       // Basic XSS prevention
+       sanitized[key] = value
+         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+         .replace(/javascript:/gi, '')
+         .replace(/on\w+\s*=/gi, '')
+         .trim();
+     } else {
+       sanitized[key] = value;
+     }
+   }
+   
+   return sanitized;
+ }
 
-  // Override the secureApiCall to include validation and rate limiting
-  const originalSecureApiCall = secureApiCall;
-  secureApiCall = async function(data, method = 'POST') {
-    // Rate limiting check
-    if (!rateLimiter.canMakeCall()) {
-      throw new Error('Rate limit exceeded. Please wait before making more requests.');
-    }
-    
-    // Input validation and sanitization
-    const sanitizedData = validateAndSanitizeInput(data);
-    
-    // Call original function with sanitized data
-    return originalSecureApiCall(sanitizedData, method);
-  };
+ // Override the secureApiCall to include validation and rate limiting
+ const originalSecureApiCall = secureApiCall;
+ window.secureApiCall = async function(data, method = 'POST', endpoint = N8N_ENDPOINT) {
+   // Rate limiting check
+   if (!rateLimiter.canMakeCall()) {
+     throw new Error('Rate limit exceeded. Please wait before making more requests.');
+   }
+   
+   // Input validation and sanitization
+   const sanitizedData = validateAndSanitizeInput(data);
+   
+   // Call original function with sanitized data
+   return originalSecureApiCall(sanitizedData, method, endpoint);
+ };
 </script>
 </body>
 </html>
