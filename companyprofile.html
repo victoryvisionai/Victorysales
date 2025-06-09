@@ -493,8 +493,12 @@
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
   // n8n webhook endpoints
-  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile';
-  const N8N_LOGO_UPLOAD_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/company-profile/upload-logo';
+  const N8N_BASE_URL = 'https://victoryvision.app.n8n.cloud/webhook';
+  const ENDPOINTS = {
+    GET_USER: `${N8N_BASE_URL}/user/get`,
+    UPDATE_USER: `${N8N_BASE_URL}/user/update`,
+    UPLOAD_LOGO: `${N8N_BASE_URL}/user/logo`
+  };
   
   let CUSTOMER_ID = null;
   let currentUser = null;
@@ -548,11 +552,10 @@
     }
   }
 
-  // API call wrapper
-  async function secureApiCall(data, method = 'POST', endpoint = N8N_ENDPOINT) {
+  // API call wrapper that handles GET requests properly
+  async function apiCall(endpoint, data = null, method = 'POST') {
     try {
       const headers = {
-        'Content-Type': 'application/json',
         'X-Customer-ID': CUSTOMER_ID,
         'X-Request-ID': generateRequestId(),
         'X-Timestamp': new Date().toISOString()
@@ -562,17 +565,27 @@
         headers['Authorization'] = `Bearer ${authToken}`;
       }
 
-      const requestPayload = {
-        ...data,
-        customer_id: CUSTOMER_ID,
-        timestamp: new Date().toISOString(),
-        request_id: generateRequestId()
-      };
+      let url = endpoint;
+      let body = null;
 
-      const response = await fetch(endpoint, {
+      if (method === 'GET') {
+        // For GET requests, append customer_id as query parameter
+        url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
+      } else {
+        // For POST requests, include in body
+        headers['Content-Type'] = 'application/json';
+        body = JSON.stringify({
+          ...data,
+          customer_id: CUSTOMER_ID,
+          timestamp: new Date().toISOString(),
+          request_id: generateRequestId()
+        });
+      }
+
+      const response = await fetch(url, {
         method: method,
         headers: headers,
-        body: JSON.stringify(requestPayload)
+        body: body
       });
 
       if (!response.ok) {
@@ -711,14 +724,14 @@
         try {
           // Convert to base64 and send to webhook
           const base64Logo = await fileToBase64(uploadedLogoFile);
-          const uploadResult = await secureApiCall({
+          const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
             logo_file: base64Logo,
             file_name: uploadedLogoFile.name,
             file_type: uploadedLogoFile.type
-          }, 'POST', N8N_LOGO_UPLOAD_ENDPOINT);
+          }, 'POST');
           
-          if (uploadResult.logo_url) {
-            logoUrl = uploadResult.logo_url;
+          if (uploadResult.logo_url || uploadResult.url || uploadResult.URL) {
+            logoUrl = uploadResult.logo_url || uploadResult.url || uploadResult.URL;
           }
         } catch (uploadError) {
           console.error('Logo upload failed:', uploadError);
@@ -752,9 +765,9 @@
         goal: goalData
       };
 
-      const result = await secureApiCall(allData, 'POST');
+      const result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
 
-      if (result.success || result.status === 'success') {
+      if (result.success || result.status === 'success' || result.company || result.goals) {
         showStatus('Company profile and goal saved successfully!');
         await loadAllData(); // Refresh the display
       } else {
@@ -776,7 +789,9 @@
     showLoader();
     
     try {
-      const data = await secureApiCall({}, 'GET');
+      // Use GET method with query parameter
+      const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
+      console.log('Loaded data:', data);
 
       // Load company data
       if (data.company) {
@@ -840,7 +855,7 @@
       }
     } catch (error) {
       console.error('Error loading data:', error);
-    showStatus('Error loading data: ' + error.message, true);
+showStatus('Error loading data: ' + error.message, true);
    } finally {
      hideLoader();
    }
