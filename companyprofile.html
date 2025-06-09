@@ -842,20 +842,20 @@
           <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br><br>
           <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br><br>
           <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br><br>
-          <strong>Deadline:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
-        `;
-      } else {
-        document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
-      }
-      
-      if (data.company || (data.goals && data.goals.length > 0)) {
-        showStatus('Data loaded successfully!');
-      } else {
-        showStatus('No existing data found. Please fill out the forms.');
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-showStatus('Error loading data: ' + error.message, true);
+         <strong>Deadline:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
+       `;
+     } else {
+       document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
+     }
+     
+     if (data.company || (data.goals && data.goals.length > 0)) {
+       showStatus('Data loaded successfully!');
+     } else {
+       showStatus('No existing data found. Please fill out the forms.');
+     }
+   } catch (error) {
+     console.error('Error loading data:', error);
+     showStatus('Error loading data: ' + error.message, true);
    } finally {
      hideLoader();
    }
@@ -938,19 +938,21 @@ showStatus('Error loading data: ' + error.message, true);
    return sanitized;
  }
 
- // Override the secureApiCall to include validation and rate limiting
- const originalSecureApiCall = secureApiCall;
- window.secureApiCall = async function(data, method = 'POST', endpoint = N8N_ENDPOINT) {
+ // Override the apiCall to include validation and rate limiting
+ const originalApiCall = apiCall;
+ window.apiCall = async function(endpoint, data = null, method = 'POST') {
    // Rate limiting check
    if (!rateLimiter.canMakeCall()) {
      throw new Error('Rate limit exceeded. Please wait before making more requests.');
    }
    
-   // Input validation and sanitization
-   const sanitizedData = validateAndSanitizeInput(data);
+   // Input validation and sanitization for POST requests
+   if (method === 'POST' && data) {
+     data = validateAndSanitizeInput(data);
+   }
    
-   // Call original function with sanitized data
-   return originalSecureApiCall(sanitizedData, method, endpoint);
+   // Call original function
+   return originalApiCall(endpoint, data, method);
  };
 </script>
 </body>
