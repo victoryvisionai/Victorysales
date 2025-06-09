@@ -158,6 +158,17 @@
       display: none;
       margin: 10px auto;
     }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0A3161;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -296,6 +307,10 @@
     .save-all-button:hover {
       background: #218838;
     }
+    .save-all-button:disabled {
+      background: #B3B3B3;
+      cursor: not-allowed;
+    }
     #currentGoalDisplay {
       min-height: 200px; 
       padding: 15px; 
@@ -368,10 +383,24 @@
             <option value="retail">Retail</option>
             <option value="manufacturing">Manufacturing</option>
             <option value="education">Education</option>
-             <option value="media">Media</option>
+            <option value="media">Media</option>
             <option value="real-estate">Real Estate</option>
             <option value="food-beverage">Food & Beverage</option>
             <option value="consulting">Consulting</option>
+            <option value="construction">Construction</option>
+            <option value="legal">Legal</option>
+            <option value="accounting">Accounting</option>
+            <option value="architecture">Architecture</option>
+            <option value="engineering">Engineering</option>
+            <option value="marketing">Marketing</option>
+            <option value="wholesale-trade">Wholesale Trade</option>
+            <option value="transportation-warehousing">Transportation and Warehousing</option>
+            <option value="publishing">Publishing</option>
+            <option value="tech-services">Tech Services</option>
+            <option value="real-estate-rental-leasing">Real Estate & Rental and Leasing</option>
+            <option value="arts-entertainment-recreation">Arts, Entertainment & Recreation</option>
+            <option value="admin-support">Admin & Support</option>
+            <option value="utilities-mining">Utilities & Mining</option>
             <option value="other">Other</option>
           </select>
         </div>
@@ -402,6 +431,11 @@
       <div class="form-group">
         <label for="productDescription">Product/Service Description *</label>
         <textarea id="productDescription" name="product_descriptions" required placeholder="Describe your main product or service in detail..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="icp">Ideal Customer Profile (ICP)</label>
+        <textarea id="icp" name="icp" placeholder="Describe your ideal customer profile..."></textarea>
       </div>
 
       <div class="form-group">
@@ -469,7 +503,7 @@
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
-      <button type="button" class="save-all-button" onclick="saveAllData()">💾 Save Company Profile & Goal</button>
+      <button type="button" id="saveAllBtn" class="save-all-button" onclick="saveAllData()">💾 Save Company Profile & Goal</button>
       <button type="button" class="secondary" onclick="loadAllData()">📂 Load Current Data</button>
       <button type="button" class="secondary" onclick="showCurrentData()">👁️ View Current Data</button>
     </div>
@@ -510,6 +544,16 @@
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
+
+  // Convert file to base64 for webhook transmission
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
 
   // Authentication and session management
   async function checkAuthentication() {
@@ -725,6 +769,7 @@
         html += `<div class="current-data"><strong>Domain:</strong> ${company.domain || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Company Description:</strong> ${company.company_description || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Product Description:</strong> ${company.product_descriptions || 'Not set'}</div>`;
+        html += `<div class="current-data"><strong>Ideal Customer Profile:</strong> ${company.icp || 'Not set'}</div>`;
         html += `<div class="current-data"><strong>Brand Colors:</strong> ${company.brand_colors || 'Not set'}</div>`;
       }
       
@@ -754,6 +799,13 @@
 
   // Main save function - combines company and goal
   async function saveAllData() {
+    const saveBtn = document.getElementById('saveAllBtn');
+    const originalText = saveBtn.innerHTML;
+    
+    // Disable button and show spinner
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner"></span>Saving...';
+    
     showLoader();
     
     try {
@@ -761,13 +813,18 @@
       const goalForm = document.querySelector('.goal-form');
       const goalFormData = new FormData(goalForm);
       
-      // Handle file upload
+      // Handle file upload - FIXED VERSION
       let logoUrl = '';
       const logoFile = formData.get('logo_file');
       if (logoFile && logoFile.size > 0) {
-        // Note: In production, you'd upload this to a file storage service
-        // For now, we'll just note that a file was selected
-        logoUrl = `File selected: ${logoFile.name}`;
+        // Convert file to base64 for transmission to webhook
+        try {
+          const base64Data = await fileToBase64(logoFile);
+          logoUrl = base64Data; // Send base64 data to webhook
+        } catch (error) {
+          console.error('Error converting file to base64:', error);
+          showStatus('Error processing logo file', true);
+        }
       }
 
       // Collect goal data only if description is provided
@@ -790,6 +847,7 @@
         logo_URL: logoUrl,
         company_description: formData.get('company_description'),
         product_descriptions: formData.get('product_descriptions'),
+        icp: formData.get('icp'), // ADD ICP FIELD
         brand_colors: formData.get('brand_colors_1') + ',' + 
                      formData.get('brand_colors_2') + ',' + 
                      formData.get('brand_colors_3'),
@@ -811,6 +869,9 @@
       showStatus('Error saving data: ' + error.message, true);
     } finally {
       hideLoader();
+      // Re-enable button and restore original text
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = originalText;
     }
   }
 
@@ -833,6 +894,7 @@
         document.getElementById('domain').value = company.domain || '';
         document.getElementById('companyDescription').value = company.company_description || '';
         document.getElementById('productDescription').value = company.product_descriptions || '';
+        document.getElementById('icp').value = company.icp || ''; // Load ICP
         
         // Handle brand colors
         if (company.brand_colors) {
