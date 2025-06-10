@@ -70,11 +70,6 @@
       opacity: 0.9;
       transform: translateY(-1px);
     }
-    .subscription-medallion .credits-display {
-      font-size: 10px;
-      opacity: 0.8;
-      margin-left: 5px;
-    }
     .subscription-medallion .plan-name {
       font-weight: bold;
     }
@@ -128,7 +123,7 @@
       border-bottom: 2px solid #0A3161;
       padding-bottom: 10px;
     }
-    input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    input[type="text"] {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
@@ -191,10 +186,6 @@
       border-radius: 4px;
       margin: 10px 0;
     }
-    .api-key-input {
-      font-family: monospace;
-      background: #f8f9fa;
-    }
     footer {
       background: #0A3161;
       color: #fff;
@@ -206,36 +197,6 @@
       color: #fff;
       margin-right: 15px;
       text-decoration: none;
-    }
-    .loader {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #0A3161;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 1s linear infinite;
-      display: none;
-      margin: 10px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .success-message {
-      background: #d4edda;
-      color: #155724;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-      display: none;
-    }
-    .error-message {
-      background: #f8d7da;
-      color: #721c24;
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-      display: none;
     }
     .billing-section {
       display: grid;
@@ -311,6 +272,24 @@
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
     }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .success-message, .error-message {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+    }
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+    }
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+    }
     
     /* Mobile responsive */
     @media (max-width: 768px) {
@@ -354,9 +333,9 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button id="subscriptionMedallion" class="subscription-medallion bronze" onclick="manageBilling()">
+    <button id="subscriptionMedallion" class="subscription-medallion bronze">
       <span class="plan-name" id="planName">Bronze</span>
-      <span class="credits-display" id="creditsDisplay">Credits: 50</span>
+      <span id="trialStatus">7-Day Trial</span>
     </button>
   </div>
 </header>
@@ -409,14 +388,15 @@
     </div>
     
     <div class="plan-info">
-      <p><strong>Current Plan:</strong> <span id="currentPlanDisplay">Bronze - $99/month</span></p>
-      <p><strong>Next Billing Date:</strong> <span id="nextBillingDate">Loading...</span></p>
-      <p><strong>Payment Status:</strong> <span id="paymentStatus" style="color: #28a745;">Active</span></p>
+      <p><strong>Current Plan:</strong> Bronze - 7-Day Free Trial</p>
+      <p><strong>Trial Ends:</strong> <span id="trialEndDate">Loading...</span></p>
+      <p><strong>Status:</strong> <span style="color: #28a745;">Active Trial</span></p>
     </div>
 
     <h4>Available Plans</h4>
     <div class="billing-section">
-      <div class="plan-card" id="bronzePlan">
+      <div class="plan-card current" id="bronzePlan">
+        <div class="current-badge">CURRENT</div>
         <h4>Bronze Plan</h4>
         <div class="plan-price">$99<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -424,13 +404,13 @@
           <li>✓ 20 Video Credits</li>
           <li>✓ 50 Lead Credits</li>
           <li>✓ 10 Campaign Credits</li>
+          <li>✓ 25 Social Credits</li>
           <li>✓ Basic Support</li>
         </ul>
-        <button onclick="upgradeToPlan('bronze', 'price_bronze_monthly')">Select Bronze</button>
+        <button class="secondary" disabled>Current Trial</button>
       </div>
 
-      <div class="plan-card current" id="silverPlan">
-        <div class="current-badge">CURRENT</div>
+      <div class="plan-card" id="silverPlan">
         <h4>Silver Plan</h4>
         <div class="plan-price">$299<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -438,10 +418,11 @@
           <li>✓ 100 Video Credits</li>
           <li>✓ 200 Lead Credits</li>
           <li>✓ 50 Campaign Credits</li>
+          <li>✓ 100 Social Credits</li>
           <li>✓ Priority Support</li>
           <li>✓ Advanced Analytics</li>
         </ul>
-        <button class="secondary" disabled>Current Plan</button>
+        <button onclick="upgradeToPlan('silver', 'price_silver_monthly')">Upgrade to Silver</button>
       </div>
 
       <div class="plan-card" id="goldPlan">
@@ -452,17 +433,13 @@
           <li>✓ 500 Video Credits</li>
           <li>✓ 1000 Lead Credits</li>
           <li>✓ Unlimited Campaign Credits</li>
+          <li>✓ 500 Social Credits</li>
           <li>✓ 24/7 Dedicated Support</li>
           <li>✓ White-label Options</li>
           <li>✓ Custom Integrations</li>
         </ul>
         <button onclick="upgradeToPlan('gold', 'price_gold_monthly')">Upgrade to Gold</button>
       </div>
-    </div>
-
-    <div style="margin-top: 30px; text-align: center;">
-      <button onclick="manageBilling()" class="success">Manage Billing & Payment Methods</button>
-      <button class="secondary" onclick="viewBillingHistory()">View Billing History</button>
     </div>
   </div>
 
@@ -484,17 +461,12 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n webhook endpoints
-  const N8N_ENDPOINTS = {
-    getCheckout: 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
-    managePortal: 'https://victoryvision.app.n8n.cloud/webhook/payment/manage-portal',
-    getPayment: 'https://victoryvision.app.n8n.cloud/webhook/payment/update'
-  };
+  // n8n webhook endpoint
+  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout';
   
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
-  let userSubscriptionData = {};
 
   // Authentication functions
   async function checkAuthentication() {
@@ -531,24 +503,32 @@
     window.location.href = 'login.html';
   }
 
-  // n8n webhook call function
-  async function callN8nWebhook(endpoint, data = {}) {
+  // Set trial end date (7 days from now)
+  function setTrialEndDate() {
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 7);
+    document.getElementById('trialEndDate').textContent = trialEnd.toLocaleDateString();
+  }
+
+  // Stripe checkout function
+  async function upgradeToPlan(planName, priceId) {
     try {
-      const payload = {
-        customer_id: CUSTOMER_ID,
-        ...data
-      };
-
-      console.log('Calling n8n webhook:', endpoint, payload);
-
-      const response = await fetch(endpoint, {
+      showStatus('Redirecting to secure checkout...', false);
+      
+      const response = await fetch(N8N_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Customer-ID': CUSTOMER_ID,
           'Authorization': authToken ? `Bearer ${authToken}` : ''
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          price_id: priceId,
+          plan_name: planName,
+          success_url: `${window.location.origin}/settings?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${window.location.origin}/settings`
+        })
       });
 
       if (!response.ok) {
@@ -556,130 +536,7 @@
       }
 
       const result = await response.json();
-      console.log('n8n response:', result);
-      return result;
-    } catch (error) {
-      console.error('n8n webhook call failed:', error);
-      throw error;
-    }
-  }
-
-  // Load user subscription data
-  async function loadSubscriptionData() {
-    try {
-      const result = await callN8nWebhook(N8N_ENDPOINTS.getPayment);
       
-      if (result.success && result.data) {
-        userSubscriptionData = result.data;
-        updateSubscriptionDisplay();
-      }
-    } catch (error) {
-      console.error('Error loading subscription data:', error);
-      // Set default values if API fails
-      userSubscriptionData = {
-        subscription_plan: 'bronze',
-        subscription_status: 'active',
-        next_billing_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        video_credits: 20,
-        image_credits: 100,
-        lead_credits: 50,
-        campaign_credits: 10
-      };
-      updateSubscriptionDisplay();
-    }
-  }
-
-  // Update subscription display elements
-  function updateSubscriptionDisplay() {
-    const medallion = document.getElementById('subscriptionMedallion');
-    const planName = document.getElementById('planName');
-    const creditsDisplay = document.getElementById('creditsDisplay');
-    const currentPlanDisplay = document.getElementById('currentPlanDisplay');
-    const nextBillingDate = document.getElementById('nextBillingDate');
-    const paymentStatus = document.getElementById('paymentStatus');
-
-    // Update medallion
-    const plan = userSubscriptionData.subscription_plan || 'bronze';
-    medallion.className = `subscription-medallion ${plan}`;
-    planName.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-    
-    // Update credits display
-    const totalCredits = (userSubscriptionData.video_credits || 0) + 
-                        (userSubscriptionData.image_credits || 0) + 
-                        (userSubscriptionData.lead_credits || 0) + 
-                        (userSubscriptionData.campaign_credits || 0);
-    creditsDisplay.textContent = `Credits: ${totalCredits}`;
-
-    // Update plan info
-    const planPrices = {
-      bronze: '$99/month',
-      silver: '$299/month', 
-      gold: '$799/month'
-    };
-    currentPlanDisplay.textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} - ${planPrices[plan]}`;
-    
-    // Update billing date
-    if (userSubscriptionData.next_billing_date) {
-      const date = new Date(userSubscriptionData.next_billing_date);
-      nextBillingDate.textContent = date.toLocaleDateString();
-    }
-
-    // Update payment status
-    paymentStatus.textContent = userSubscriptionData.subscription_status === 'active' ? 'Active' : 'Inactive';
-    paymentStatus.style.color = userSubscriptionData.subscription_status === 'active' ? '#28a745' : '#dc3545';
-
-    // Update plan cards
-    updatePlanCards(plan);
-  }
-
-  // Update plan card displays
-  function updatePlanCards(currentPlan) {
-    const plans = ['bronze', 'silver', 'gold'];
-    
-    plans.forEach(plan => {
-      const card = document.getElementById(`${plan}Plan`);
-      const button = card.querySelector('button');
-      
-      if (plan === currentPlan) {
-        card.classList.add('current');
-        if (!card.querySelector('.current-badge')) {
-          const badge = document.createElement('div');
-          badge.className = 'current-badge';
-          badge.textContent = 'CURRENT';
-          card.appendChild(badge);
-        }
-        button.textContent = 'Current Plan';
-        button.className = 'secondary';
-        button.disabled = true;
-      } else {
-        card.classList.remove('current');
-        const badge = card.querySelector('.current-badge');
-        if (badge) badge.remove();
-        
-        button.disabled = false;
-        if (plans.indexOf(plan) > plans.indexOf(currentPlan)) {
-          button.textContent = `Upgrade to ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
-          button.className = '';
-        } else {
-          button.textContent = `Downgrade to ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
-          button.className = 'secondary';
-        }
-      }
-    });
-  }
-
-  // Stripe integration functions
-  async function upgradeToPlan(planName, priceId) {
-    try {
-      showStatus('Redirecting to secure checkout...', false);
-      
-      const result = await callN8nWebhook(N8N_ENDPOINTS.getCheckout, {
-        price_id: priceId,
-        plan_name: planName,
-        success_url: `${window.location.origin}/settings`,
-        cancel_url: `${window.location.origin}/settings`
-      });
-
       if (result.success && result.checkout_url) {
         // Redirect to Stripe Checkout
         window.location.href = result.checkout_url;
@@ -692,32 +549,7 @@
     }
   }
 
-  async function manageBilling() {
-    try {
-      showStatus('Opening billing portal...', false);
-      
-      const result = await callN8nWebhook(N8N_ENDPOINTS.managePortal, {
-        return_url: window.location.href
-      });
-
-      if (result.success && result.portal_url) {
-        // Redirect to Stripe Customer Portal
-        window.location.href = result.portal_url;
-      } else {
-        throw new Error(result.message || 'Failed to access billing portal');
-      }
-    } catch (error) {
-      console.error('Error accessing billing portal:', error);
-      showStatus('Error accessing billing portal: ' + error.message, true);
-    }
-  }
-
-  async function viewBillingHistory() {
-    // Same as manageBilling for now, Stripe portal handles both
-    await manageBilling();
-  }
-
-  // Social Media Integration Functions (kept as-is)
+  // Social Media Integration Functions
   function connectLinkedIn() {
     alert('Redirecting to LinkedIn for authorization...');
     setTimeout(() => {
@@ -774,7 +606,7 @@
       
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
-        await loadSubscriptionData();
+        setTrialEndDate();
       } else {
         redirectToLogin();
       }
@@ -785,7 +617,7 @@
     }
   }
 
-  // Security checks (same as other pages)
+  // Security checks
   setInterval(async function() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -819,11 +651,11 @@
   // Check for successful checkout return
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('session_id')) {
-    showStatus('Payment successful! Your subscription has been updated.', false);
-    // Reload subscription data
+    showStatus('Payment successful! Your subscription has been activated.', false);
+    // Clean URL after showing message
     setTimeout(() => {
-      loadSubscriptionData();
-    }, 1000);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }, 3000);
   }
 </script>
 </body>
