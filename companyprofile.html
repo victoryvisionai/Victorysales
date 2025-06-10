@@ -6,6 +6,7 @@
   <meta name="description" content="Manage your company profile and goals."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Company Profile</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
@@ -344,31 +345,31 @@
           <label for="industry">Industry</label>
           <select id="industry" name="industry">
             <option value="">Select Industry</option>
-            <option value="technology">Technology</option>
-            <option value="healthcare">Healthcare</option>
-            <option value="finance">Finance</option>
-            <option value="retail">Retail</option>
-            <option value="manufacturing">Manufacturing</option>
-            <option value="education">Education</option>
-            <option value="media">Media</option>
-            <option value="real-estate">Real Estate</option>
-            <option value="food-beverage">Food & Beverage</option>
+            <option value="accounting">Accounting</option>
+            <option value="admin-support">Admin & Support</option>
+            <option value="architecture">Architecture</option>
+            <option value="arts-entertainment">Arts, Entertainment & Recreation</option>
             <option value="consulting">Consulting</option>
             <option value="construction">Construction</option>
-            <option value="legal">Legal</option>
-            <option value="accounting">Accounting</option>
-            <option value="architecture">Architecture</option>
+            <option value="education">Education</option>
             <option value="engineering">Engineering</option>
+            <option value="finance">Finance</option>
+            <option value="food-beverage">Food & Beverage</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="it">IT</option>
+            <option value="legal">Legal</option>
+            <option value="manufacturing">Manufacturing</option>
             <option value="marketing">Marketing</option>
-            <option value="wholesale-trade">Wholesale Trade</option>
-            <option value="transportation-warehousing">Transportation and Warehousing</option>
-            <option value="publishing">Publishing</option>
-            <option value="tech-services">Tech Services</option>
-            <option value="real-estate-rental">Real Estate & Rental and Leasing</option>
-            <option value="arts-entertainment">Arts, Entertainment & Recreation</option>
-            <option value="admin-support">Admin & Support</option>
-            <option value="utilities-mining">Utilities & Mining</option>
+            <option value="media">Media</option>
             <option value="other">Other</option>
+            <option value="publishing">Publishing</option>
+            <option value="real-estate">Real Estate</option>
+            <option value="real-estate-rental">Real Estate & Rental and Leasing</option>
+            <option value="retail">Retail</option>
+            <option value="technology">Technology</option>
+            <option value="transportation-warehousing">Transportation and Warehousing</option>
+            <option value="utilities-mining">Utilities & Mining</option>
+            <option value="wholesale-trade">Wholesale Trade</option>
           </select>
         </div>
       </div>
@@ -487,6 +488,14 @@
 </footer>
 
 <script>
+  // Prevent favicon error
+  if (!document.querySelector('link[rel="icon"]')) {
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.href = 'data:,';
+    document.head.appendChild(link);
+  }
+
   // Supabase configuration - LIMITED to auth only
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
@@ -555,6 +564,11 @@
   // API call wrapper that handles GET requests properly
   async function apiCall(endpoint, data = null, method = 'POST') {
     try {
+      // Skip favicon requests
+      if (endpoint.includes('favicon')) {
+        return null;
+      }
+
       const headers = {
         'X-Customer-ID': CUSTOMER_ID,
         'X-Request-ID': generateRequestId(),
@@ -835,13 +849,12 @@
       // Load and display current goal
       if (data.goals && data.goals.length > 0) {
         const goal = data.goals[0];
-        
         // Display current goal
-        document.getElementById('currentGoalDisplay').innerHTML = `
-          <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br><br>
-          <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br><br>
-          <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br><br>
-          <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br><br>
+       document.getElementById('currentGoalDisplay').innerHTML = `
+         <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br><br>
+         <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br><br>
+         <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br><br>
+         <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br><br>
          <strong>Deadline:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
        `;
      } else {
