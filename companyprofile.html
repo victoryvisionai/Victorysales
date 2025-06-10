@@ -399,9 +399,13 @@
 
       <div class="form-group">
         <label for="productDescription">Product/Service Description *</label>
-        <textarea id="productDescription" name="product_description" required placeholder="Describe your main product or service in detail..."></textarea>
+        <textarea id="productDescription" name="product_description" required placeholder="Describe your primary product or service in detail..."></textarea>
       </div>
 
+      <div class="form-group">
+        <label for="icp">Ideal Customer Profile</label>
+        <textarea id="icp" name="icp" placeholder="Describe your ideal customer (demographics, company size, industry, pain points, background, wants, fears, etc.)..."></textarea>
+      </div>
       <div class="form-group">
         <label>Brand Color Palette</label>
         <div class="color-palette">
@@ -773,6 +777,7 @@
         logo_URL: logoUrl,
         company_description: formData.get('company_description'),
         product_description: formData.get('product_description'),
+        icp: formData.get('icp'),
         brand_colors: formData.get('brand_colors_1') + ',' + 
                      formData.get('brand_colors_2') + ',' + 
                      formData.get('brand_colors_3'),
@@ -807,6 +812,8 @@
    const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
 console.log('Loaded data:', data);
 console.log('Data structure:', typeof data, Object.keys(data || {}));
+console.log('Goal field in data:', data.goal);
+console.log('Goals field in data:', data.goals);      
    // Load company data - handle different possible data structures
 const company = data.company || data.user || data[0] || data;
 if (company && typeof company === 'object' && company.company_name !== undefined) {
@@ -816,8 +823,8 @@ if (company && typeof company === 'object' && company.company_name !== undefined
         document.getElementById('industry').value = company.industry || '';
         document.getElementById('domain').value = company.domain || '';
         document.getElementById('companyDescription').value = company.company_description || '';
-        document.getElementById('productDescription').value = company.product_description || '';
-        
+        document.getElementById('productDescription').value = company.product_description || company.product_descriptions || '';
+        document.getElementById('icp').value = company.icp || '';
         // Handle brand colors
         if (company.brand_colors) {
           const colors = company.brand_colors.split(',');
