@@ -510,9 +510,20 @@
     document.getElementById('trialEndDate').textContent = trialEnd.toLocaleDateString();
   }
 
+ // Price ID mapping function
+  function getPriceId(planName) {
+    const priceMap = {
+      'bronze': 'price_1RYVFiDtO3GiFEcMAmOjFNTA',
+      'silver': 'price_1RYVHzDtO3GiFEcMddvY6z5g', 
+      'gold': 'price_1RYVM0DtO3GiFEcMiFXfxVXQ'
+    };
+    return priceMap[planName];
+  }
+
   // Stripe checkout function
-  async function upgradeToPlan(planName, priceId) {
+  async function upgradeToPlan(planName) {
     try {
+      const priceId = getPriceId(planName);
       showStatus('Redirecting to secure checkout...', false);
       
       const response = await fetch(N8N_ENDPOINT, {
