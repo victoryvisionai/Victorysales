@@ -804,9 +804,9 @@
     
     try {
       // Use GET method with query parameter
-      const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
-      console.log('Loaded data:', data);
-
+   const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
+console.log('Loaded data:', data);
+console.log('Data structure:', typeof data, Object.keys(data || {}));
       // Load company data
       if (data.company) {
         const company = data.company;
