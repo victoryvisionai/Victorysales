@@ -437,15 +437,9 @@
       <!-- Current Goal Display -->
       <div class="goal-card">
         <h4>Current Goal</h4>
-        <div id="currentGoalDisplay">
-document.getElementById('currentGoalDisplay').innerHTML = `
-  <strong>Current Goal:</strong><br><br>
-  ${goalValue}
-`;
-} else {
-  document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
-}
-        </div>
+       <div id="currentGoalDisplay">
+  <em>No goal set yet</em>
+</div>
       </div>
 
       <!-- New Goal Input -->
@@ -855,38 +849,27 @@ if (company && typeof company === 'object' && company.company_name !== undefined
         }
       }
 
-      // Clear goal form
-      const goalForm = document.querySelector('.goal-form');
-      goalForm.reset();
+// Clear goal form
+const goalForm = document.querySelector('.goal-form');
+goalForm.reset();
 
-  // Load and display current goal - handle different possible data structures
 // Load and display current goal - handle different possible data structures  
 const goalValue = company.goal || data.goal;
-if (goalValue && typeof goalValue === 'string' && goalValue.trim()) {        const goal = data.goals[0];
-        // Display current goal
-       document.getElementById('currentGoalDisplay').innerHTML = `
-         <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br><br>
-         <strong>Measurement:</strong> ${goal.measurement || 'Not set'}<br><br>
-         <strong>Achievable:</strong> ${goal.achievable || 'Not set'}<br><br>
-         <strong>Relevant:</strong> ${goal.relationship || 'Not set'}<br><br>
-         <strong>Deadline:</strong> ${goal.time_limit ? new Date(goal.time_limit).toLocaleDateString() : 'Not set'}
-       `;
-     } else {
-       document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
-     }
-     
-  if (company || goalValue) {
-       showStatus('Data loaded successfully!');
-     } else {
-       showStatus('No existing data found. Please fill out the forms.');
-     }
-   } catch (error) {
-     console.error('Error loading data:', error);
-     showStatus('Error loading data: ' + error.message, true);
-   } finally {
-     hideLoader();
-   }
- }
+if (goalValue && typeof goalValue === 'string' && goalValue.trim()) {
+  // Display current goal as text (since it's stored as a single text field)
+  document.getElementById('currentGoalDisplay').innerHTML = `
+    <strong>Current Goal:</strong><br><br>
+    ${goalValue}
+  `;
+} else {
+  document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
+}
+
+if (company || goalValue) {
+  showStatus('Data loaded successfully!');
+} else {
+  showStatus('No existing data found. Please fill out the forms.');
+}
 
  // Prevent default form submission
  document.getElementById('companyForm').addEventListener('submit', function(e) {
