@@ -433,12 +433,23 @@
       <p style="margin: 5px 0 0 0; opacity: 0.9;">Create or replace your current goal</p>
     </div>
 
+   
+    
+    
+    
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
       <!-- Current Goal Display -->
       <div class="goal-card">
         <h4>Current Goal</h4>
         <div id="currentGoalDisplay">
-          <em>No goal set yet</em>
+         // Display current goal as text (since it's stored as a single text field)
+document.getElementById('currentGoalDisplay').innerHTML = `
+  <strong>Current Goal:</strong><br><br>
+  ${goalValue}
+`;
+} else {
+  document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
+}
         </div>
       </div>
 
@@ -854,9 +865,9 @@ if (company && typeof company === 'object' && company.company_name !== undefined
       goalForm.reset();
 
   // Load and display current goal - handle different possible data structures
-const goals = data.goals || data.goal || (Array.isArray(data) ? data.filter(item => item.goal_description) : []);
-if (goals && goals.length > 0) {
-        const goal = data.goals[0];
+// Load and display current goal - handle different possible data structures  
+const goalValue = company.goal || data.goal;
+if (goalValue && typeof goalValue === 'string' && goalValue.trim()) {        const goal = data.goals[0];
         // Display current goal
        document.getElementById('currentGoalDisplay').innerHTML = `
          <strong>Description:</strong> ${goal.goal_description || 'Not set'}<br><br>
@@ -869,7 +880,7 @@ if (goals && goals.length > 0) {
        document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
      }
      
-     if (data.company || (data.goals && data.goals.length > 0)) {
+  if (company || goalValue) {
        showStatus('Data loaded successfully!');
      } else {
        showStatus('No existing data found. Please fill out the forms.');
