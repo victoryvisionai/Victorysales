@@ -846,8 +846,9 @@ if (company && typeof company === 'object' && company.company_name !== undefined
       const goalForm = document.querySelector('.goal-form');
       goalForm.reset();
 
-      // Load and display current goal
-      if (data.goals && data.goals.length > 0) {
+  // Load and display current goal - handle different possible data structures
+const goals = data.goals || data.goal || (Array.isArray(data) ? data.filter(item => item.goal_description) : []);
+if (goals && goals.length > 0) {
         const goal = data.goals[0];
         // Display current goal
        document.getElementById('currentGoalDisplay').innerHTML = `
