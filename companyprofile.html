@@ -807,9 +807,9 @@
    const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
 console.log('Loaded data:', data);
 console.log('Data structure:', typeof data, Object.keys(data || {}));
-      // Load company data
-      if (data.company) {
-        const company = data.company;
+   // Load company data - handle different possible data structures
+const company = data.company || data.user || data[0] || data;
+if (company && typeof company === 'object' && company.company_name !== undefined) {
         
         // Populate form fields with existing data
         document.getElementById('companyName').value = company.company_name || '';
