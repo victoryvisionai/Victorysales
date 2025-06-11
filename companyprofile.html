@@ -678,32 +678,49 @@
       });
     });
   }
-
-  // File upload setup with preview
-  function setupFileUpload() {
-    const fileInput = document.getElementById('logoUpload');
-    const fileName = document.getElementById('logoFileName');
-    const logoPreview = document.getElementById('logoPreview');
-    
-    fileInput.addEventListener('change', function() {
-      if (this.files && this.files[0]) {
-        uploadedLogoFile = this.files[0];
-        fileName.textContent = `Selected: ${this.files[0].name}`;
+function setupFileUpload() {
+  const fileInput = document.getElementById('logoUpload');
+  const fileName = document.getElementById('logoFileName');
+  const logoPreview = document.getElementById('logoPreview');
+  
+  fileInput.addEventListener('change', async function() {
+    if (this.files && this.files[0]) {
+      const file = this.files[0];
+      fileName.textContent = `Uploading: ${file.name}...`;
+      
+      try {
+        // Convert to base64 and upload immediately
+        const base64Logo = await fileToBase64(file);
+        const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
+          logo_file: base64Logo,
+          file_name: file.name,
+          file_type: file.type
+        }, 'POST');
         
-        // Show preview
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo preview">`;
-        };
-        reader.readAsDataURL(this.files[0]);
-      } else {
+        if (uploadResult.success && (uploadResult.logo_url || uploadResult.url || uploadResult.URL)) {
+          const logoUrl = uploadResult.logo_url || uploadResult.url || uploadResult.URL;
+          fileName.textContent = `✓ Uploaded: ${file.name}`;
+          logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
+          showStatus('Logo uploaded successfully!');
+          
+          // Store the URL for the main save function
+          uploadedLogoFile = { url: logoUrl };
+        } else {
+          throw new Error(uploadResult.message || 'Upload failed');
+        }
+      } catch (error) {
+        console.error('Logo upload failed:', error);
+        fileName.textContent = `❌ Upload failed: ${file.name}`;
+        showStatus('Logo upload failed: ' + error.message, true);
         uploadedLogoFile = null;
-        fileName.textContent = '';
-        logoPreview.innerHTML = '';
       }
-    });
-  }
-
+    } else {
+      uploadedLogoFile = null;
+      fileName.textContent = '';
+      logoPreview.innerHTML = '';
+    }
+  });
+}
   function showLoader() {
     document.getElementById('loader').style.display = 'block';
   }
@@ -749,27 +766,11 @@
       const goalForm = document.querySelector('.goal-form');
       const goalFormData = new FormData(goalForm);
       
-      // Handle file upload
-      let logoUrl = '';
-      if (uploadedLogoFile) {
-        try {
-          // Convert to base64 and send to webhook
-          const base64Logo = await fileToBase64(uploadedLogoFile);
-          const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
-            logo_file: base64Logo,
-            file_name: uploadedLogoFile.name,
-            file_type: uploadedLogoFile.type
-          }, 'POST');
-          
-          if (uploadResult.logo_url || uploadResult.url || uploadResult.URL) {
-            logoUrl = uploadResult.logo_url || uploadResult.url || uploadResult.URL;
-          }
-        } catch (uploadError) {
-          console.error('Logo upload failed:', uploadError);
-          // Continue without logo rather than failing entire save
-        }
-      }
-
+// Use already uploaded logo URL
+let logoUrl = '';
+if (uploadedLogoFile && uploadedLogoFile.url) {
+  logoUrl = uploadedLogoFile.url;
+}
       // Collect goal data only if description is provided
       let goalData = null;
       if (goalFormData.get('goal_description') && goalFormData.get('goal_description').trim()) {
