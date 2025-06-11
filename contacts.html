@@ -960,14 +960,6 @@ function formatTags(tags) {
   return tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join(' ');
 }
 
-function formatRevenue(revenue) {
-  if (!revenue) return 'N/A';
-  if (typeof revenue === 'number') {
-    return ' + revenue.toLocaleString();
-  }
-  return revenue;
-}
-
 function formatDate(dateStr) {
   if (!dateStr) return 'Never';
   const date = new Date(dateStr);
