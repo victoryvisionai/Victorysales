@@ -859,7 +859,7 @@ function renderContactsTable() {
       <td>${contact.domain || 'N/A'}</td>
       <td>${contact.industry || 'N/A'}</td>
       <td>${formatTags(contact.tags)}</td>
-      <td class="revenue-cell">${formatRevenue(contact.annual_revenue)}</td>
+      <td>${(contact.annual_revenue)}</td>
       <td>${contact.employee_count || 'N/A'}</td>
       <td>${contact.city || 'N/A'}</td>
       <td>${formatDate(contact.last_responded)}</td>
@@ -888,7 +888,7 @@ async function showContactDetails(contactId, event) {
       ${renderDetailField('Domain', contact.domain)}
       ${renderDetailField('Industry', contact.industry)}
       ${renderDetailField('Tags', contact.tags)}
-      ${renderDetailField('Annual Revenue', formatRevenue(contact.annual_revenue))}
+      ${renderDetailField('Annual Revenue', contact.annual_revenue)}
       ${renderDetailField('Employee Count', contact.employee_count)}
       ${renderDetailField('Email', contact.email)}
       ${renderDetailField('LinkedIn', contact.linkedin, true)}
