@@ -697,8 +697,9 @@ function setupFileUpload() {
           file_type: file.type
         }, 'POST');
         
-        if (uploadResult.success && (uploadResult.logo_url || uploadResult.url || uploadResult.URL)) {
-          const logoUrl = uploadResult.logo_url || uploadResult.url || uploadResult.URL;
+      // Handle different response formats
+const logoUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
+if (uploadResult.success !== false && logoUrl) {
           fileName.textContent = `✓ Uploaded: ${file.name}`;
           logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
           showStatus('Logo uploaded successfully!');
