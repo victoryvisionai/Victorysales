@@ -225,14 +225,11 @@
       border-bottom: 1px solid #dee2e6;
       overflow: hidden;
     }
-    .page-preview iframe {
+    .page-thumbnail {
       width: 100%;
       height: 100%;
-      border: none;
-      transform: scale(0.3);
-      transform-origin: top left;
-      width: 333.33%;
-      height: 333.33%;
+      object-fit: cover;
+      display: block;
     }
     .page-preview-placeholder {
       display: flex;
@@ -241,6 +238,12 @@
       height: 100%;
       color: #999;
       font-size: 3rem;
+      flex-direction: column;
+    }
+    .page-preview-placeholder small {
+      font-size: 0.8rem;
+      margin-top: 10px;
+      color: #666;
     }
     .page-status {
       position: absolute;
@@ -278,6 +281,7 @@
       font-size: 0.9rem;
       opacity: 0.9;
       font-family: monospace;
+      word-break: break-all;
     }
     .page-info {
       padding: 15px;
@@ -333,6 +337,7 @@
       margin-bottom: 10px;
       min-height: 60px;
       resize: vertical;
+      box-sizing: border-box;
     }
     .edit-chat-btn {
       background: #17a2b8;
@@ -537,6 +542,9 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
+  // Screenshot API configuration (replace with your API key)
+  const SCREENSHOT_API_KEY = 'YOUR_SCREENSHOTLAYER_API_KEY'; // Get from screenshotlayer.com
+  
   let CUSTOMER_ID = null;
   let authToken = null;
   let userProfile = null;
@@ -609,6 +617,24 @@
     }
   }
 
+  // Generate website thumbnail URL
+  function generateThumbnailUrl(websiteUrl) {
+    if (!websiteUrl || websiteUrl === 'NULL' || websiteUrl === 'null') {
+      return null;
+    }
+    
+    // Option 1: Screenshotlayer (Free tier)
+    if (SCREENSHOT_API_KEY && SCREENSHOT_API_KEY !== 'YOUR_SCREENSHOTLAYER_API_KEY') {
+      return `http://api.screenshotlayer.com/api/capture?access_key=${SCREENSHOT_API_KEY}&url=${encodeURIComponent(websiteUrl)}&width=320&format=PNG`;
+    }
+    
+    // Option 2: Alternative free service (no API key needed but less reliable)
+    return `https://image.thum.io/get/width/320/crop/200/${encodeURIComponent(websiteUrl)}`;
+    
+    // Option 3: URLbox (paid but high quality) 
+    // return `https://api.urlbox.io/v1/YOUR_TOKEN/png?url=${encodeURIComponent(websiteUrl)}&width=320&height=200`;
+  }
+
   // Load user profile for subscription medallion
   async function loadUserProfile() {
     try {
@@ -626,7 +652,6 @@
       }
     } catch (error) {
       console.error('Error loading user profile:', error);
-      // Set default if error
       updateSubscriptionMedallion();
     }
   }
@@ -647,7 +672,6 @@
       const data = await apiCall('https://victoryvision.app.n8n.cloud/webhook/media/get');
       console.log('Media response from n8n:', data);
       
-      // Handle different response structures
       let allMedia = [];
       if (Array.isArray(data)) {
         allMedia = data;
@@ -660,9 +684,6 @@
         allMedia = [];
       }
 
-      console.log('All media files:', allMedia);
-
-      // Filter for videos only
       availableVideos = allMedia.filter(file => {
         const hasURL = file && file.URL;
         const isVideo = file.file_type && 
@@ -687,8 +708,6 @@
     const dropdown = document.getElementById('headerVideoSelect');
     dropdown.innerHTML = '<option value="">Choose a video from your media library</option>';
     
-    console.log('Populating dropdown with', availableVideos.length, 'videos');
-    
     if (availableVideos.length === 0) {
       const option = document.createElement('option');
       option.value = '';
@@ -707,23 +726,37 @@
     });
   }
 
-  // Load pages from n8n webhook
+  // Load pages from n8n webhook - FIXED to use correct field names
   async function loadPages() {
     try {
       const data = await apiCall('https://victoryvision.app.n8n.cloud/webhook/pages/get');
-      console.log('Response from n8n:', data);
+      console.log('Raw pages response from n8n:', data);
       
       // Handle response from n8n webhook
-      if (data && Array.isArray(data)) {
+      if (Array.isArray(data)) {
         allPages = data;
-      } else if (data && data.pages && Array.isArray(data.pages)) {
+      } else if (data && Array.isArray(data.pages)) {
         allPages = data.pages;
       } else {
         console.log('Unexpected response structure:', data);
         allPages = [];
       }
 
-      console.log(`Loaded ${allPages.length} pages`);
+      // Map fields to match webhook output structure
+      allPages = allPages.map(page => ({
+        ...page,
+        // Map webhook fields to frontend expectations
+        title: page.name || page.title || 'Untitled Page',
+        url: page.URL || page.google_page_url || page.url,
+        description: page.body || page.description || 'No description available',
+        id: page.id,
+        campaign_id: page.campaign_id,
+        customer_id: page.customer_id,
+        created_at: page.created_at,
+        status: 'draft' // Default status since not in webhook
+      }));
+
+      console.log(`Loaded and mapped ${allPages.length} pages:`, allPages);
       filteredPages = [...allPages];
       
     } catch (error) {
@@ -734,7 +767,7 @@
     }
   }
 
-  // Create new page - FIXED to use pages/create
+  // Create new page - FIXED to use correct webhook
   async function createPage() {
     try {
       const selectedVideoId = document.getElementById('headerVideoSelect').value;
@@ -757,7 +790,6 @@
       
       if (result.success) {
         showStatus('Landing page created successfully!');
-        // Clear form
         document.getElementById('headerVideoSelect').value = '';
         document.getElementById('pageTitle').value = '';
         document.getElementById('pageDescription').value = '';
@@ -776,7 +808,7 @@
     }
   }
 
-  // Update page with chat input
+  // Update page with chat input - FIXED parameter name
   async function updatePageWithChat(pageId, chatInput) {
     try {
       if (!chatInput.trim()) {
@@ -787,7 +819,7 @@
       showStatus('Updating page...');
       
       const result = await apiCall('https://victoryvision.app.n8n.cloud/webhook/pages/update', {
-        id: pageId,
+        page_id: pageId, // Changed from 'id' to 'page_id'
         chat: chatInput.trim()
       });
       
@@ -807,7 +839,7 @@
     }
   }
 
-  // Delete page - FIXED authentication
+  // Delete page - FIXED parameter name
   async function deletePage(pageId) {
     if (!confirm('Are you sure you want to delete this page?')) {
       return;
@@ -815,7 +847,7 @@
 
     try {
       const result = await apiCall('https://victoryvision.app.n8n.cloud/webhook/pages/remove', {
-        page_id: pageId 
+        id: pageId // Using 'id' as shown in webhook
       });
       
       if (result.success) {
@@ -883,7 +915,7 @@
     pagesContainer.appendChild(grid);
   }
 
-  // Create page card with edit functionality
+  // Create page card with website thumbnails - FIXED data mapping
   function createPageCard(page) {
     const card = document.createElement('div');
     card.className = 'page-card';
@@ -899,21 +931,30 @@
 
     const status = page.status || 'draft';
     const statusClass = status === 'active' ? 'active' : status === 'draft' ? 'draft' : 'inactive';
+    
+    // Use mapped fields
+    const pageTitle = page.title || 'Untitled Page';
+    const pageUrl = page.url || 'No URL set';
+    const pageDescription = page.description || 'No description available';
+    
+    // Generate thumbnail URL for website screenshot
+    const thumbnailUrl = generateThumbnailUrl(pageUrl);
 
     card.innerHTML = `
       <div class="page-preview">
-        ${page.url ? 
-          `<iframe src="${page.url}" sandbox="allow-same-origin"></iframe>` :
-          `<div class="page-preview-placeholder">📄</div>`
+        ${thumbnailUrl ? 
+          `<img src="${thumbnailUrl}" alt="Website preview" class="page-thumbnail" 
+               onerror="this.parentElement.innerHTML='<div class=\\"page-preview-placeholder\\">📄<br><small>Preview unavailable</small></div>'">` :
+          `<div class="page-preview-placeholder">📄<br><small>${pageUrl === 'No URL set' ? 'No URL available' : 'Preview loading...'}</small></div>`
         }
         <div class="page-status ${statusClass}">${status.toUpperCase()}</div>
       </div>
       <div class="page-card-header">
-        <div class="page-card-title">${page.title || 'Untitled Page'}</div>
-        <div class="page-url">${page.url || 'No URL set'}</div>
+        <div class="page-card-title">${pageTitle}</div>
+        <div class="page-url">${pageUrl}</div>
       </div>
       <div class="page-info">
-        <p class="page-description">${page.description || 'No description available'}</p>
+        <p class="page-description">${pageDescription}</p>
         <div class="page-meta">
           <div class="meta-item">
             <span class="meta-label">Created:</span>
@@ -951,8 +992,8 @@
         </div>
       </div>
       <div class="page-actions">
-        <button onclick="viewPage('${page.url}')" class="btn-small secondary">View</button>
-        <button onclick="copyPageUrl('${page.url}')" class="btn-small">Copy URL</button>
+        <button onclick="viewPage('${pageUrl}')" class="btn-small secondary">View</button>
+        <button onclick="copyPageUrl('${pageUrl}')" class="btn-small">Copy URL</button>
         <button onclick="deletePage('${page.id}')" class="btn-small danger">Delete</button>
       </div>
     `;
@@ -977,7 +1018,6 @@
       const newPageId = await updatePageWithChat(pageId, chatInput);
       
       if (newPageId) {
-        // Clear the input
         document.getElementById(`chatInput_${pageId}`).value = '';
         showStatus(`Page updated! New version created with ID: ${newPageId}`);
       }
@@ -990,7 +1030,7 @@
 
   // View page in new tab
   function viewPage(url) {
-    if (url && url !== 'No URL set') {
+    if (url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') {
       window.open(url, '_blank');
     } else {
       showStatus('No URL available for this page', true);
@@ -999,7 +1039,7 @@
 
   // Copy page URL to clipboard
   function copyPageUrl(url) {
-    if (url && url !== 'No URL set') {
+    if (url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') {
       navigator.clipboard.writeText(url).then(() => {
         showStatus('Page URL copied to clipboard!');
       }).catch(() => {
@@ -1091,7 +1131,7 @@
     } catch (e) {
       console.error('Session check failed:', e);
     }
-  }, 300000); // Check every 5 minutes
+  }, 300000);
 
   document.addEventListener('visibilitychange', async function() {
     if (!document.hidden) {
