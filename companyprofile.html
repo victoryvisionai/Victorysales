@@ -697,9 +697,10 @@ function setupFileUpload() {
           file_type: file.type
         }, 'POST');
         
-      // Handle different response formats
-const logoUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
-if (uploadResult.success !== false && logoUrl) {
+ // Handle different response formats
+        const logoUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
+        
+        if (uploadResult.success !== false && logoUrl) {
           fileName.textContent = `✓ Uploaded: ${file.name}`;
           logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
           showStatus('Logo uploaded successfully!');
@@ -707,7 +708,15 @@ if (uploadResult.success !== false && logoUrl) {
           // Store the URL for the main save function
           uploadedLogoFile = { url: logoUrl };
         } else {
-          throw new Error(uploadResult.message || 'Upload failed');
+          // Don't throw error if we got a URL, even without explicit success flag
+          if (logoUrl) {
+            fileName.textContent = `✓ Uploaded: ${file.name}`;
+            logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
+            showStatus('Logo uploaded successfully!');
+            uploadedLogoFile = { url: logoUrl };
+          } else {
+            throw new Error(uploadResult.message || 'Upload failed');
+          }
         }
       } catch (error) {
         console.error('Logo upload failed:', error);
