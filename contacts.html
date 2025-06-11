@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Manage your leads and generate new prospects."/>
+  <meta name="description" content="Manage your contacts and generate new prospects."/>
   <meta name="author" content="Victory Vision"/>
-  <title>Victory Vision AI - Leads</title>
+  <title>Victory Vision AI - contacts</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
@@ -439,7 +439,7 @@
       <li><a href="media">Media</a></li>
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
-      <li><a href="leads">Leads</a></li>
+      <li><a href="contacts">contacts</a></li>
       <li><a href="ads">Ads</a></li>
       <li><a href="ai">🤖 AI</a></li>
       <li><a href="settings">⚙️</a></li>
@@ -454,13 +454,13 @@
 <div class="content">
   <header class="page-header">
     <h1 class="page-title">Lead Management</h1>
-    <p class="page-subtitle">Generate new leads and manage your prospect database</p>
+    <p class="page-subtitle">Generate new contacts and manage your prospect database</p>
   </header>
 
   <!-- Lead Generation Section -->
   <section class="card lead-gen-section">
     <div class="section-header">
-      <h3>🎯 Generate New Leads</h3>
+      <h3>🎯 Generate New contacts</h3>
     </div>
     
     <p style="margin-bottom: 20px; color: #666;">
@@ -491,21 +491,21 @@
     </div>
     
     <button id="generateLeadsBtn" class="generate-leads-btn">
-      🚀 Generate 20 New Leads
+      🚀 Generate 20 New Contacts
     </button>
   </section>
 
-  <!-- Leads Management Section -->
+  <!-- Contacts Management Section -->
   <section class="card">
     <div class="section-header">
-      <h3>👥 Your Leads Database</h3>
+      <h3>👥 Your contacts Database</h3>
     </div>
     
     <!-- Filter Section -->
     <div class="filter-section">
       <div class="form-group">
         <label for="searchFilter">Search</label>
-        <input type="text" id="searchFilter" placeholder="Search leads...">
+        <input type="text" id="searchFilter" placeholder="Search contacts...">
       </div>
       <div class="form-group">
         <label for="industryFilter">Industry</label>
@@ -532,7 +532,7 @@
       <span id="selectedCount" style="margin-left: 10px; color: #666;">0 selected</span>
     </div>
 
-    <!-- Leads Table -->
+    <!-- contacts Table -->
     <div class="leads-table-container">
       <table class="leads-table">
         <thead>
@@ -558,7 +558,7 @@
         </thead>
         <tbody id="leadsTableBody">
           <tr>
-            <td colspan="15" class="loading">Loading your leads...</td>
+            <td colspan="15" class="loading">Loading your contacts...</td>
           </tr>
         </tbody>
       </table>
@@ -661,7 +661,7 @@
   // Load leads from n8n webhook
   async function loadLeads() {
     try {
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/leads/get', {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/contacts/get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customer_id: CUSTOMER_ID })
@@ -696,7 +696,7 @@
     }
   }
 
-  // Generate new leads
+  // Generate new contacts
   async function generateNewLeads() {
     try {
       generateLeadsBtn.disabled = true;
@@ -715,7 +715,7 @@
         throw new Error('Please enter at least one LinkedIn URL');
       }
 
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/leads/create', {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/contacts/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -731,7 +731,7 @@
       const result = await response.json();
       
       if (result.success) {
-        showStatus(`Successfully generated ${result.count || 20} new leads!`);
+        showStatus(`Successfully generated ${result.count || 20} new contacts!`);
         // Clear LinkedIn inputs
         for (let i = 1; i <= 5; i++) {
           document.getElementById(`linkedin${i}`).value = '';
@@ -743,29 +743,29 @@
       }
       
     } catch (error) {
-      console.error('Error generating leads:', error);
-      showStatus('Error generating leads: ' + error.message, true);
+      console.error('Error generating contacts:', error);
+      showStatus('Error generating contacts: ' + error.message, true);
     } finally {
       generateLeadsBtn.disabled = false;
-      generateLeadsBtn.textContent = '🚀 Generate 20 New Leads';
+      generateLeadsBtn.textContent = '🚀 Generate 20 New contacts';
     }
   }
 
-  // Delete selected leads
+  // Delete selected contacts
   async function deleteSelectedLeads() {
     if (selectedLeads.size === 0) {
-      showStatus('Please select leads to delete', true);
+      showStatus('Please select contacts to delete', true);
       return;
     }
 
-    if (!confirm(`Are you sure you want to delete ${selectedLeads.size} selected leads?`)) {
+    if (!confirm(`Are you sure you want to delete ${selectedLeads.size} selected contacts?`)) {
       return;
     }
 
     try {
       const leadIds = Array.from(selectedLeads);
       
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/leads/remove', {
+      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/contacts/remove', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -781,7 +781,7 @@
       const result = await response.json();
       
       if (result.success) {
-        showStatus(`Successfully deleted ${leadIds.length} leads!`);
+        showStatus(`Successfully deleted ${leadIds.length} contacts!`);
         selectedLeads.clear();
         await loadLeads();
         renderLeadsTable();
@@ -791,15 +791,15 @@
       }
       
     } catch (error) {
-      console.error('Error deleting leads:', error);
-      showStatus('Error deleting leads: ' + error.message, true);
+      console.error('Error deleting contacts:', error);
+      showStatus('Error deleting contacts: ' + error.message, true);
     }
   }
 
-  // AI Outreach for selected leads
+  // AI Outreach for selected contacts
   async function performAIOutreach() {
     if (selectedLeads.size === 0) {
-      showStatus('Please select leads for AI outreach', true);
+      showStatus('Please select contacts for AI outreach', true);
       return;
     }
 
@@ -807,7 +807,7 @@
       const leadIds = Array.from(selectedLeads);
       
       // This would trigger AI outreach workflow
-      showStatus(`AI outreach initiated for ${leadIds.length} leads. This may take a few minutes.`);
+      showStatus(`AI outreach initiated for ${leadIds.length} contacts. This may take a few minutes.`);
       
       // In a real implementation, this would call an n8n webhook for AI outreach
       // For now, we'll just show the status message
@@ -888,14 +888,14 @@
     applyFilters();
   }
 
-  // Render leads table
+  // Render contacts table
   function renderLeadsTable() {
     if (filteredLeads.length === 0) {
       leadsTableBody.innerHTML = `
         <tr>
           <td colspan="15" class="empty-state">
-            <h3>No leads found</h3>
-            <p>Generate new leads or adjust your filters.</p>
+            <h3>No contacts found</h3>
+            <p>Generate new contacts or adjust your filters.</p>
           </td>
         </tr>
       `;
