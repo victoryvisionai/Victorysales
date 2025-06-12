@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Manage your generated media files."/>
+  <meta name="description" content="Create and manage your generated media files."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Media Library</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -40,17 +40,35 @@
       align-items: center;
       gap: 10px;
     }
-    .navbar .logout-btn {
-      background: #BB133E;
+    .navbar .subscription-medallion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
       color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
       font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      position: relative;
+      border: none;
+      transition: all 0.3s ease;
     }
-    .navbar .logout-btn:hover {
-      background: #9e1034;
+    .subscription-medallion.bronze {
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+    }
+    .subscription-medallion.silver {
+      background: linear-gradient(45deg, #C0C0C0, #808080);
+    }
+    .subscription-medallion.gold {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+    }
+    .subscription-medallion:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
     .logo img {
       height: 60px;
@@ -58,7 +76,7 @@
       max-height: 100px;
     }
     .content {
-      padding: 20px;
+      padding: 20px 4px;
       max-width: 1400px;
       margin: 0 auto;
     }
@@ -89,12 +107,11 @@
       margin: -20px -20px 20px -20px;
       border-radius: 8px 8px 0 0;
     }
-    .filter-section {
+    .creation-grid {
       display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 15px;
-      align-items: end;
-      margin-bottom: 20px;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
     }
     .form-group {
       margin-bottom: 15px;
@@ -105,13 +122,49 @@
       font-weight: bold;
       color: #333;
     }
-    .form-group input {
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
       width: 100%;
       padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 14px;
       box-sizing: border-box;
+    }
+    .form-group textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    .reference-list {
+      max-height: 120px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 8px;
+      background: #f8f9fa;
+      font-size: 12px;
+    }
+    .reference-item {
+      padding: 2px 0;
+      cursor: pointer;
+      color: #0A3161;
+    }
+    .reference-item:hover {
+      background: #e9ecef;
+    }
+    .credits-display {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .credits-number {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0A3161;
     }
     button {
       background: #0A3161;
@@ -126,11 +179,32 @@
     button:hover {
       background: #083050;
     }
+    button:disabled {
+      background: #B3B3B3;
+      cursor: not-allowed;
+    }
     button.secondary {
       background: #6c757d;
     }
     button.secondary:hover {
       background: #5a6268;
+    }
+    button.create-btn {
+      background: #28a745;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 15px 30px;
+      width: 100%;
+    }
+    button.create-btn:hover {
+      background: #218838;
+    }
+    .filter-section {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 15px;
+      align-items: end;
+      margin-bottom: 20px;
     }
     .media-grid {
       display: grid;
@@ -307,10 +381,13 @@
     /* Responsive */
     @media (max-width: 768px) {
       .content {
-        padding: 10px;
+        padding: 10px 5px;
       }
       .page-title {
         font-size: 2rem;
+      }
+      .creation-grid {
+        grid-template-columns: 1fr;
       }
       .filter-section {
         grid-template-columns: 1fr;
@@ -331,8 +408,8 @@
 
 <header class="navbar">
   <div class="logo">
-  <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
-     onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+    <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
   </div>
   <nav>
     <ul>
@@ -349,17 +426,141 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
+    </div>
   </div>
 </header>
 
 <div class="content">
   <header class="page-header">
     <h1 class="page-title">Media Library</h1>
-    <p class="page-subtitle">View and manage your generated images and videos</p>
+    <p class="page-subtitle">Create and manage your AI-generated images and videos</p>
   </header>
 
-  <!-- Filter Section -->
+  <!-- Creation Section -->
+  <section class="creation-grid">
+    <!-- Image Creation -->
+    <div class="card">
+      <div class="section-header">
+        <h3>🎨 Create AI Images</h3>
+      </div>
+      
+      <div class="credits-display">
+        <div class="credits-number" id="imageCredits">Loading...</div>
+        <small>Image Credits Remaining</small>
+      </div>
+      
+      <form id="imageForm">
+        <div class="form-group">
+          <label for="imageChat">Description *</label>
+          <textarea id="imageChat" required placeholder="Describe the image you want to create..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="imageUpload">Reference Image (Optional)</label>
+          <input type="file" id="imageUpload" accept="image/*">
+        </div>
+        
+        <div class="form-group">
+          <label>Existing Images (Click to reference)</label>
+          <div id="imageReferenceList" class="reference-list">
+            Loading available images...
+          </div>
+        </div>
+        
+        <button type="submit" class="create-btn" id="imageCreateBtn">🎨 Create Image</button>
+      </form>
+    </div>
+
+    <!-- Video Creation -->
+    <div class="card">
+      <div class="section-header">
+        <h3>🎬 Create AI Videos</h3>
+      </div>
+      
+      <div class="credits-display">
+        <div class="credits-number" id="videoCredits">Loading...</div>
+        <small>Video Credits Remaining</small>
+      </div>
+      
+      <form id="videoForm">
+        <div class="form-group">
+          <label for="videoSourceImage">Source Image *</label>
+          <input type="file" id="videoSourceImage" accept="image/*">
+          <small>Upload an image or select from existing images below</small>
+        </div>
+        
+        <div class="form-group">
+          <label>Existing Images (Click to select)</label>
+          <div id="videoReferenceList" class="reference-list">
+            Loading available images...
+          </div>
+        </div>
+        
+        <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Image Update Section -->
+  <section class="card">
+    <div class="section-header">
+      <h3>✏️ Update Existing Image</h3>
+    </div>
+    
+    <form id="imageUpdateForm">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label for="updateImageChat">Modification Instructions</label>
+          <textarea id="updateImageChat" required placeholder="Describe how you want to modify the image..."></textarea>
+        </div>
+        
+        <div>
+          <div class="form-group">
+            <label for="updateImageFile">New Image Upload (Optional)</label>
+            <input type="file" id="updateImageFile" accept="image/*">
+          </div>
+          
+          <div class="form-group">
+            <label>Or Select Existing Image</label>
+            <div id="updateImageReferenceList" class="reference-list">
+              Loading available images...
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button type="submit" class="create-btn">✏️ Update Image</button>
+    </form>
+  </section>
+
+  <!-- Video Update Section -->
+  <section class="card">
+    <div class="section-header">
+      <h3>✏️ Update Existing Video</h3>
+    </div>
+    
+    <form id="videoUpdateForm">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label for="updateVideoName">Video File Name *</label>
+          <select id="updateVideoName" required>
+            <option value="">Select video to update...</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="updateVideoChat">Modification Instructions *</label>
+          <textarea id="updateVideoChat" required placeholder="Describe how you want to modify the video..."></textarea>
+        </div>
+      </div>
+      
+      <button type="submit" class="create-btn">✏️ Update Video</button>
+    </form>
+  </section>
+
+  <!-- Filter Section (existing) -->
   <section class="card">
     <div class="section-header">
       <h3>📁 My Media Files</h3>
@@ -375,7 +576,7 @@
     </div>
   </section>
 
-  <!-- Media Grid -->
+  <!-- Media Grid (existing) -->
   <section id="mediaContainer">
     <div class="loading">Loading your media library...</div>
   </section>
@@ -398,12 +599,28 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
+  // n8n endpoints
+  const ENDPOINTS = {
+    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+    createImage: 'https://victoryvision.app.n8n.cloud/webhook/images/create',
+    updateImage: 'https://victoryvision.app.n8n.cloud/webhook/images/update',
+    createVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/create',
+    updateVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/update'
+  };
+  
   let CUSTOMER_ID = null;
   let authToken = null;
+  let userCredits = { image_credits: 0, video_credits: 0 };
 
   // Simple state management
   let allMediaFiles = [];
   let filteredMediaFiles = [];
+  let imageFiles = [];
+  let videoFiles = [];
+  let selectedImageReference = null;
+  let selectedVideoReference = null;
+  let selectedUpdateImageReference = null;
 
   // DOM elements
   const mediaContainer = document.getElementById('mediaContainer');
@@ -440,32 +657,80 @@
     window.location.href = 'login.html';
   }
 
-  async function logout() {
+  // API call function
+  async function apiCall(endpoint, data = {}) {
     try {
-      await supabaseClient.auth.signOut();
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    } catch (e) {
-      console.error('Logout error:', e);
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
+      const url = endpoint.includes('/user/get') ? 
+        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+        endpoint;
+      
+      const requestOptions = {
+        method: endpoint.includes('/user/get') ? 'GET' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        }
+      };
+
+      if (!endpoint.includes('/user/get')) {
+        requestOptions.body = JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          ...data
+        });
+      }
+
+      const response = await fetch(url, requestOptions);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
     }
+  }
+
+  // Load user data and credits
+  async function loadUserData() {
+    try {
+      const userData = await apiCall(ENDPOINTS.getUserData);
+      console.log('User data:', userData);
+      
+      userCredits = {
+        image_credits: userData.image_credits || 0,
+        video_credits: userData.video_credits || 0
+      };
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'bronze';
+      medallion.className = `subscription-medallion ${plan}`;
+      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      
+      updateCreditsDisplay();
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
+    }
+  }
+
+  // Update credits display
+  function updateCreditsDisplay() {
+    document.getElementById('imageCredits').textContent = userCredits.image_credits;
+    document.getElementById('videoCredits').textContent = userCredits.video_credits;
+    
+    // Enable/disable buttons based on credits
+    document.getElementById('imageCreateBtn').disabled = userCredits.image_credits <= 0;
+    document.getElementById('videoCreateBtn').disabled = userCredits.video_credits <= 0;
   }
 
   // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/media/get', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID })
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
+      const data = await apiCall(ENDPOINTS.getMedia);
       console.log('Response from n8n:', data);
       
       // Handle response from n8n webhook
@@ -481,6 +746,13 @@
       console.log(`Loaded ${allMediaFiles.length} media files`);
       filteredMediaFiles = [...allMediaFiles];
       
+      // Separate images and videos
+      imageFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'image');
+      videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
+      
+      populateReferenceLists();
+      populateVideoUpdateDropdown();
+      
     } catch (error) {
       console.error('Error loading media:', error);
       allMediaFiles = [];
@@ -489,7 +761,215 @@
     }
   }
 
-  // Apply filters
+  // Populate reference lists
+  function populateReferenceLists() {
+    const imageList = document.getElementById('imageReferenceList');
+    const videoList = document.getElementById('videoReferenceList');
+    const updateImageList = document.getElementById('updateImageReferenceList');
+    
+    if (imageFiles.length === 0) {
+      imageList.innerHTML = '<div style="color: #999;">No images available</div>';
+      videoList.innerHTML = '<div style="color: #999;">No images available</div>';
+      updateImageList.innerHTML = '<div style="color: #999;">No images available</div>';
+      return;
+    }
+    
+    const imageItems = imageFiles.map(file => `
+      <div class="reference-item" onclick="selectImageReference('${file.name}', 'image')">${file.name}</div>
+    `).join('');
+    
+    const videoItems = imageFiles.map(file => `
+      <div class="reference-item" onclick="selectImageReference('${file.name}', 'video')">${file.name}</div>
+    `).join('');
+    
+    const updateItems = imageFiles.map(file => `
+      <div class="reference-item" onclick="selectImageReference('${file.name}', 'update')">${file.name}</div>
+    `).join('');
+    
+    imageList.innerHTML = imageItems;
+    videoList.innerHTML = videoItems;
+    updateImageList.innerHTML = updateItems;
+  }
+
+  // Populate video update dropdown
+  function populateVideoUpdateDropdown() {
+    const dropdown = document.getElementById('updateVideoName');
+    dropdown.innerHTML = '<option value="">Select video to update...</option>';
+    
+    videoFiles.forEach(file => {
+      const option = document.createElement('option');
+      option.value = file.name;
+      option.textContent = file.name;
+      dropdown.appendChild(option);
+    });
+  }
+
+  // Select image reference
+  function selectImageReference(fileName, type) {
+    if (type === 'image') {
+      selectedImageReference = fileName;
+      document.querySelectorAll('#imageReferenceList .reference-item').forEach(item => {
+        item.style.background = item.textContent === fileName ? '#e9ecef' : '';
+      });
+    } else if (type === 'video') {
+      selectedVideoReference = fileName;
+      document.querySelectorAll('#videoReferenceList .reference-item').forEach(item => {
+        item.style.background = item.textContent === fileName ? '#e9ecef' : '';
+      });
+    } else if (type === 'update') {
+      selectedUpdateImageReference = fileName;
+      document.querySelectorAll('#updateImageReferenceList .reference-item').forEach(item => {
+        item.style.background = item.textContent === fileName ? '#e9ecef' : '';
+      });
+    }
+  }
+
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  // Create image
+  async function createImage(formData) {
+    try {
+      if (userCredits.image_credits <= 0) {
+        throw new Error('Insufficient image credits');
+      }
+
+      showStatus('Creating image... This may take a few moments.');
+      
+      const payload = {
+        chat: formData.get('chat')
+      };
+
+      // Add reference image if provided
+      const referenceImage = formData.get('reference_image');
+      if (referenceImage && referenceImage.size > 0) {
+        payload.image_file = await fileToBase64(referenceImage);
+      } else if (selectedImageReference) {
+        payload.existing_image = selectedImageReference;
+      }
+
+      const result = await apiCall(ENDPOINTS.createImage, payload);
+
+      if (result.success !== false) {
+        showStatus('Image created successfully!');
+        userCredits.image_credits--;
+        updateCreditsDisplay();
+        await loadMediaFiles();
+        renderMediaGrid();
+        document.getElementById('imageForm').reset();
+        selectedImageReference = null;
+        populateReferenceLists();
+      } else {
+        throw new Error(result.message || 'Image creation failed');
+      }
+    } catch (error) {
+      console.error('Error creating image:', error);
+      showStatus('Error creating image: ' + error.message, true);
+    }
+  }
+
+  // Update image
+  async function updateImage(formData) {
+    try {
+      showStatus('Updating image... This may take a few moments.');
+      
+      const payload = {
+        chat: formData.get('chat')
+      };
+
+      // Add new image file if provided
+      const imageFile = formData.get('image_file');
+      if (imageFile && imageFile.size > 0) {
+        payload.image_file = await fileToBase64(imageFile);
+      } else if (selectedUpdateImageReference) {
+        payload.existing_image = selectedUpdateImageReference;
+      }
+
+      const result = await apiCall(ENDPOINTS.updateImage, payload);
+
+      if (result.success !== false) {
+        showStatus('Image updated successfully!');
+        await loadMediaFiles();
+        renderMediaGrid();
+        document.getElementById('imageUpdateForm').reset();
+        selectedUpdateImageReference = null;
+        populateReferenceLists();
+      } else {
+        throw new Error(result.message || 'Image update failed');
+      }
+    } catch (error) {
+      console.error('Error updating image:', error);
+      showStatus('Error updating image: ' + error.message, true);
+    }
+  }
+
+  // Create video
+  async function createVideo(formData) {
+    try {
+      if (userCredits.video_credits <= 0) {
+        throw new Error('Insufficient video credits');
+      }
+
+      showStatus('Creating video... This may take several minutes.');
+      
+      const payload = {};
+
+      // Add source image - required
+      const sourceImage = formData.get('source_image');
+      if (sourceImage && sourceImage.size > 0) {
+        payload.image_file = await fileToBase64(sourceImage);
+      } else if (selectedVideoReference) {
+        payload.existing_image = selectedVideoReference;
+      } else {
+        throw new Error('Source image is required for video creation');
+      }
+
+      const result = await apiCall(ENDPOINTS.createVideo, payload);
+
+      if (result.success !== false) {
+        showStatus('Video creation started! It will appear in your media library when ready.');
+        userCredits.video_credits--;
+        updateCreditsDisplay();
+        document.getElementById('videoForm').reset();
+        selectedVideoReference = null;
+        populateReferenceLists();
+      } else {
+        throw new Error(result.message || 'Video creation failed');
+      }
+    } catch (error) {
+      console.error('Error creating video:', error);
+      showStatus('Error creating video: ' + error.message, true);
+    }
+  }
+
+  // Update video
+  async function updateVideo(formData) {
+    try {
+      showStatus('Updating video... This may take several minutes.');
+      
+      const payload = {
+        campaigns_file_name: formData.get('video_name'),
+        chat: formData.get('chat')
+      };
+
+      const result = await apiCall(ENDPOINTS.updateVideo, payload);
+
+      showStatus('Video update started! The updated video will appear in your media library when ready.');
+      document.getElementById('videoUpdateForm').reset();
+    } catch (error) {
+      console.error('Error updating video:', error);
+      showStatus('Error updating video: ' + error.message, true);
+    }
+  }
+
+  // Apply filters (existing function)
   function applyFilters() {
     const searchTerm = searchFilter.value.toLowerCase();
 
@@ -518,7 +998,7 @@
     applyFilters();
   }
 
-  // Render media grid
+  // Render media grid (existing function)
   function renderMediaGrid() {
     if (filteredMediaFiles.length === 0) {
       if (allMediaFiles.length === 0) {
@@ -541,7 +1021,7 @@
     mediaContainer.appendChild(grid);
   }
 
-  // Create media card
+  // Create media card (existing function)
   function createMediaCard(file) {
     const card = document.createElement('div');
     card.className = 'media-card';
@@ -558,11 +1038,12 @@
         createdDate = file.created_at;
       }
     }
-card.innerHTML = `
-  <div class="media-preview">
-    ${renderMediaPreview(file, previewUrl)}
-    ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
-  </div>
+
+    card.innerHTML = `
+      <div class="media-preview">
+        ${renderMediaPreview(file, previewUrl)}
+        ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
+      </div>
       <div class="media-info">
         <h3 class="media-title">${file.name || 'Untitled'}</h3>
         <p class="media-description">${file.prompt || 'No description available'}</p>
@@ -594,7 +1075,7 @@ card.innerHTML = `
     return card;
   }
 
-  // Render media preview
+  // Render media preview (existing function)
   function renderMediaPreview(file, previewUrl) {
     const fileType = getFileType(file.file_type);
     
@@ -613,7 +1094,7 @@ card.innerHTML = `
     }
   }
 
-  // Utility functions
+  // Utility functions (existing)
   function getFileType(fileType) {
     if (!fileType) return 'unknown';
     if (fileType.toLowerCase().includes('video') || fileType.toLowerCase().includes('mp4')) return 'video';
@@ -656,7 +1137,7 @@ card.innerHTML = `
     mediaContainer.innerHTML = `
       <div class="empty-state">
         <h3>No media files yet</h3>
-        <p>Your generated images and videos will appear here.</p>
+        <p>Create your first AI-generated image or video using the tools above.</p>
       </div>
     `;
   }
@@ -683,15 +1164,51 @@ card.innerHTML = `
 
   // Event listeners
   function setupEventListeners() {
-    // Filter controls
+    // Image creation form
+    document.getElementById('imageForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('chat', document.getElementById('imageChat').value);
+      formData.append('reference_image', document.getElementById('imageUpload').files[0]);
+      await createImage(formData);
+    });
+
+    // Video creation form
+    document.getElementById('videoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('source_image', document.getElementById('videoSourceImage').files[0]);
+      await createVideo(formData);
+    });
+
+    // Image update form
+    document.getElementById('imageUpdateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('chat', document.getElementById('updateImageChat').value);
+      formData.append('image_file', document.getElementById('updateImageFile').files[0]);
+      await updateImage(formData);
+    });
+
+    // Video update form
+    document.getElementById('videoUpdateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('video_name', document.getElementById('updateVideoName').value);
+      formData.append('chat', document.getElementById('updateVideoChat').value);
+      await updateVideo(formData);
+    });
+
+    // Filter controls (existing)
     refreshMediaBtn.addEventListener('click', async () => {
       await loadMediaFiles();
+      await loadUserData(); // Refresh credits too
       applyFilters();
     });
 
     clearFiltersBtn.addEventListener('click', clearFilters);
 
-    // Debounced search
+    // Debounced search (existing)
     let searchTimeout;
     searchFilter.addEventListener('input', () => {
       clearTimeout(searchTimeout);
@@ -708,6 +1225,7 @@ card.innerHTML = `
       
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
+        await loadUserData();
         await loadMediaFiles();
         setupEventListeners();
         applyFilters();
@@ -721,7 +1239,7 @@ card.innerHTML = `
     }
   }
 
-  // Security checks
+  // Security checks (existing)
   setInterval(async function() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -733,6 +1251,9 @@ card.innerHTML = `
       console.error('Session check failed:', e);
     }
   }, 300000); // Check every 5 minutes
+
+  // Make selectImageReference globally available
+  window.selectImageReference = selectImageReference;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
