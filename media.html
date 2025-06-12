@@ -106,12 +106,89 @@
       padding: 15px;
       margin: -20px -20px 20px -20px;
       border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .creation-grid {
+    .toggle-group {
+      display: flex;
+      gap: 10px;
+    }
+    .toggle-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .toggle-btn.active {
+      background: white;
+      color: #0A3161;
+      border-color: white;
+    }
+    .toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .toggle-btn.active:hover {
+      background: white;
+    }
+    .creation-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 400px;
       gap: 30px;
       margin-bottom: 30px;
+    }
+    .creation-form {
+      display: none;
+    }
+    .creation-form.active {
+      display: block;
+    }
+    .preview-panel {
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .preview-content {
+      max-width: 100%;
+      max-height: 350px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .preview-content img,
+    .preview-content video {
+      max-width: 100%;
+      max-height: 350px;
+      border-radius: 8px;
+    }
+    .preview-info {
+      margin-top: 15px;
+      padding: 10px;
+      background: white;
+      border-radius: 6px;
+      text-align: left;
+      width: 100%;
+    }
+    .preview-title {
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 5px;
+    }
+    .preview-description {
+      font-size: 0.9em;
+      color: #666;
     }
     .form-group {
       margin-bottom: 15px;
@@ -146,25 +223,36 @@
       font-size: 12px;
     }
     .reference-item {
-      padding: 2px 0;
+      padding: 4px 8px;
       cursor: pointer;
       color: #0A3161;
+      border-radius: 3px;
+      margin-bottom: 2px;
     }
     .reference-item:hover {
       background: #e9ecef;
     }
+    .reference-item.selected {
+      background: #0A3161;
+      color: white;
+    }
     .credits-display {
-      background: #f8f9fa;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
       border: 1px solid #dee2e6;
-      border-radius: 4px;
-      padding: 10px;
+      border-radius: 6px;
+      padding: 12px;
       margin-bottom: 15px;
       text-align: center;
     }
     .credits-number {
-      font-size: 1.2em;
+      font-size: 1.4em;
       font-weight: bold;
       color: #0A3161;
+    }
+    .credits-label {
+      font-size: 0.85em;
+      color: #666;
+      margin-top: 2px;
     }
     button {
       background: #0A3161;
@@ -379,6 +467,14 @@
     }
     
     /* Responsive */
+    @media (max-width: 1024px) {
+      .creation-layout {
+        grid-template-columns: 1fr;
+      }
+      .preview-panel {
+        min-height: 250px;
+      }
+    }
     @media (max-width: 768px) {
       .content {
         padding: 10px 5px;
@@ -386,14 +482,14 @@
       .page-title {
         font-size: 2rem;
       }
-      .creation-grid {
-        grid-template-columns: 1fr;
-      }
       .filter-section {
         grid-template-columns: 1fr;
       }
       .media-grid {
         grid-template-columns: 1fr;
+      }
+      .toggle-group {
+        flex-wrap: wrap;
       }
     }
   </style>
@@ -439,125 +535,128 @@
   </header>
 
   <!-- Creation Section -->
-  <section class="creation-grid">
-    <!-- Image Creation -->
-    <div class="card">
-      <div class="section-header">
-        <h3>🎨 Create AI Images</h3>
-      </div>
-      
-      <div class="credits-display">
-        <div class="credits-number" id="imageCredits">Loading...</div>
-        <small>Image Credits Remaining</small>
-      </div>
-      
-      <form id="imageForm">
-        <div class="form-group">
-          <label for="imageChat">Description *</label>
-          <textarea id="imageChat" required placeholder="Describe the image you want to create..."></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="imageUpload">Reference Image (Optional)</label>
-          <input type="file" id="imageUpload" accept="image/*">
-        </div>
-        
-        <div class="form-group">
-          <label>Existing Images (Click to reference)</label>
-          <div id="imageReferenceList" class="reference-list">
-            Loading available images...
-          </div>
-        </div>
-        
-        <button type="submit" class="create-btn" id="imageCreateBtn">🎨 Create Image</button>
-      </form>
-    </div>
-
-    <!-- Video Creation -->
-    <div class="card">
-      <div class="section-header">
-        <h3>🎬 Create AI Videos</h3>
-      </div>
-      
-      <div class="credits-display">
-        <div class="credits-number" id="videoCredits">Loading...</div>
-        <small>Video Credits Remaining</small>
-      </div>
-      
-      <form id="videoForm">
-        <div class="form-group">
-          <label for="videoSourceImage">Source Image *</label>
-          <input type="file" id="videoSourceImage" accept="image/*">
-          <small>Upload an image or select from existing images below</small>
-        </div>
-        
-        <div class="form-group">
-          <label>Existing Images (Click to select)</label>
-          <div id="videoReferenceList" class="reference-list">
-            Loading available images...
-          </div>
-        </div>
-        
-        <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
-      </form>
-    </div>
-  </section>
-
-  <!-- Image Update Section -->
   <section class="card">
     <div class="section-header">
-      <h3>✏️ Update Existing Image</h3>
+      <h3 id="sectionTitle">🎨 AI Media Creation</h3>
+      <div class="toggle-group">
+        <button id="createToggle" class="toggle-btn active">Create</button>
+        <button id="editToggle" class="toggle-btn">Edit</button>
+        <span style="margin: 0 10px;">|</span>
+        <button id="imageToggle" class="toggle-btn active">🎨 Images</button>
+        <button id="videoToggle" class="toggle-btn">🎬 Videos</button>
+      </div>
     </div>
     
-    <form id="imageUpdateForm">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div class="form-group">
-          <label for="updateImageChat">Modification Instructions</label>
-          <textarea id="updateImageChat" required placeholder="Describe how you want to modify the image..."></textarea>
-        </div>
-        
-        <div>
-          <div class="form-group">
-            <label for="updateImageFile">New Image Upload (Optional)</label>
-            <input type="file" id="updateImageFile" accept="image/*">
+    <div class="creation-layout">
+      <!-- Forms Panel -->
+      <div class="forms-panel">
+        <!-- Create Image Form -->
+        <div id="createImageForm" class="creation-form active">
+          <div class="credits-display">
+            <div class="credits-number" id="imageCredits">Loading...</div>
+            <div class="credits-label">Image Credits Remaining</div>
           </div>
           
-          <div class="form-group">
-            <label>Or Select Existing Image</label>
-            <div id="updateImageReferenceList" class="reference-list">
-              Loading available images...
+          <form id="imageForm">
+            <div class="form-group">
+              <label for="imageChat">Description *</label>
+              <textarea id="imageChat" required placeholder="Describe the image you want to create..."></textarea>
             </div>
-          </div>
+            
+            <div class="form-group">
+              <label for="imageUpload">Reference Image (Optional)</label>
+              <input type="file" id="imageUpload" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+              <label>Existing Images (Click to reference)</label>
+              <div id="imageReferenceList" class="reference-list">
+                Loading available images...
+              </div>
+            </div>
+            
+            <button type="submit" class="create-btn" id="imageCreateBtn">🎨 Create Image</button>
+          </form>
         </div>
-      </div>
-      
-      <button type="submit" class="create-btn">✏️ Update Image</button>
-    </form>
-  </section>
 
-  <!-- Video Update Section -->
-  <section class="card">
-    <div class="section-header">
-      <h3>✏️ Update Existing Video</h3>
-    </div>
-    
-    <form id="videoUpdateForm">
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-        <div class="form-group">
-          <label for="updateVideoName">Video File Name *</label>
-          <select id="updateVideoName" required>
-            <option value="">Select video to update...</option>
-          </select>
+        <!-- Create Video Form -->
+        <div id="createVideoForm" class="creation-form">
+          <div class="credits-display">
+            <div class="credits-number" id="videoCredits">Loading...</div>
+            <div class="credits-label">Video Credits Remaining</div>
+          </div>
+          
+          <form id="videoForm">
+            <div class="form-group">
+              <label for="videoSourceImage">Source Image *</label>
+              <input type="file" id="videoSourceImage" accept="image/*">
+              <small>Upload an image or select from existing images below</small>
+            </div>
+            
+            <div class="form-group">
+              <label>Existing Images (Click to select)</label>
+              <div id="videoReferenceList" class="reference-list">
+                Loading available images...
+              </div>
+            </div>
+            
+            <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
+          </form>
         </div>
-        
-        <div class="form-group">
-          <label for="updateVideoChat">Modification Instructions *</label>
-          <textarea id="updateVideoChat" required placeholder="Describe how you want to modify the video..."></textarea>
+
+        <!-- Edit Image Form -->
+        <div id="editImageForm" class="creation-form">
+          <form id="imageUpdateForm">
+            <div class="form-group">
+              <label for="updateImageChat">Modification Instructions *</label>
+              <textarea id="updateImageChat" required placeholder="Describe how you want to modify the image..."></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="updateImageFile">New Image Upload (Optional)</label>
+              <input type="file" id="updateImageFile" accept="image/*">
+            </div>
+            
+            <div class="form-group">
+              <label>Or Select Existing Image</label>
+              <div id="updateImageReferenceList" class="reference-list">
+                Loading available images...
+              </div>
+            </div>
+            
+            <button type="submit" class="create-btn">✏️ Update Image</button>
+          </form>
+        </div>
+
+        <!-- Edit Video Form -->
+        <div id="editVideoForm" class="creation-form">
+          <form id="videoUpdateForm">
+            <div class="form-group">
+              <label for="updateVideoName">Video File Name *</label>
+              <select id="updateVideoName" required>
+                <option value="">Select video to update...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="updateVideoChat">Modification Instructions *</label>
+              <textarea id="updateVideoChat" required placeholder="Describe how you want to modify the video..."></textarea>
+            </div>
+            
+            <button type="submit" class="create-btn">✏️ Update Video</button>
+          </form>
         </div>
       </div>
-      
-      <button type="submit" class="create-btn">✏️ Update Video</button>
-    </form>
+
+      <!-- Preview Panel -->
+      <div class="preview-panel" id="previewPanel">
+        <div>
+          <h4>📱 Preview</h4>
+          <p>Generated content will appear here</p>
+          <small>Create or edit media to see a preview</small>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Filter Section (existing) -->
@@ -613,7 +712,7 @@
   let authToken = null;
   let userCredits = { image_credits: 0, video_credits: 0 };
 
-  // Simple state management
+  // State management
   let allMediaFiles = [];
   let filteredMediaFiles = [];
   let imageFiles = [];
@@ -621,6 +720,10 @@
   let selectedImageReference = null;
   let selectedVideoReference = null;
   let selectedUpdateImageReference = null;
+  
+  // UI state
+  let currentMode = 'create'; // 'create' or 'edit'
+  let currentType = 'image'; // 'image' or 'video'
 
   // DOM elements
   const mediaContainer = document.getElementById('mediaContainer');
@@ -690,6 +793,69 @@
     } catch (error) {
       console.error('API call failed:', error);
       throw error;
+    }
+  }
+
+  // Toggle functions
+  function setupToggles() {
+    const createToggle = document.getElementById('createToggle');
+    const editToggle = document.getElementById('editToggle');
+    const imageToggle = document.getElementById('imageToggle');
+    const videoToggle = document.getElementById('videoToggle');
+    const sectionTitle = document.getElementById('sectionTitle');
+
+    // Mode toggles (Create/Edit)
+    createToggle.addEventListener('click', () => {
+      currentMode = 'create';
+      createToggle.classList.add('active');
+      editToggle.classList.remove('active');
+      updateFormVisibility();
+      updateSectionTitle();
+    });
+
+    editToggle.addEventListener('click', () => {
+      currentMode = 'edit';
+      editToggle.classList.add('active');
+      createToggle.classList.remove('active');
+      updateFormVisibility();
+      updateSectionTitle();
+    });
+
+    // Type toggles (Image/Video)
+    imageToggle.addEventListener('click', () => {
+      currentType = 'image';
+      imageToggle.classList.add('active');
+      videoToggle.classList.remove('active');
+      updateFormVisibility();
+      updateSectionTitle();
+    });
+
+    videoToggle.addEventListener('click', () => {
+      currentType = 'video';
+      videoToggle.classList.add('active');
+      imageToggle.classList.remove('active');
+      updateFormVisibility();
+      updateSectionTitle();
+    });
+
+    function updateSectionTitle() {
+      const modeText = currentMode === 'create' ? 'Create' : 'Edit';
+      const typeText = currentType === 'image' ? '🎨 Images' : '🎬 Videos';
+      sectionTitle.textContent = `${typeText} - ${modeText}`;
+    }
+
+    function updateFormVisibility() {
+      // Hide all forms
+      document.querySelectorAll('.creation-form').forEach(form => {
+        form.classList.remove('active');
+      });
+
+      // Show the correct form
+      const formId = `${currentMode}${currentType.charAt(0).toUpperCase() + currentType.slice(1)}Form`;
+      const targetForm = document.getElementById(formId);
+      if (targetForm) {
+        targetForm.classList.add('active');
+      }
     }
   }
 
@@ -768,9 +934,10 @@
     const updateImageList = document.getElementById('updateImageReferenceList');
     
     if (imageFiles.length === 0) {
-      imageList.innerHTML = '<div style="color: #999;">No images available</div>';
-      videoList.innerHTML = '<div style="color: #999;">No images available</div>';
-      updateImageList.innerHTML = '<div style="color: #999;">No images available</div>';
+      const noImagesMsg = '<div style="color: #999; text-align: center; padding: 10px;">No images available</div>';
+      imageList.innerHTML = noImagesMsg;
+      videoList.innerHTML = noImagesMsg;
+      updateImageList.innerHTML = noImagesMsg;
       return;
     }
     
@@ -809,19 +976,54 @@
     if (type === 'image') {
       selectedImageReference = fileName;
       document.querySelectorAll('#imageReferenceList .reference-item').forEach(item => {
-        item.style.background = item.textContent === fileName ? '#e9ecef' : '';
+        item.classList.remove('selected');
+        if (item.textContent === fileName) {
+          item.classList.add('selected');
+        }
       });
     } else if (type === 'video') {
       selectedVideoReference = fileName;
       document.querySelectorAll('#videoReferenceList .reference-item').forEach(item => {
-        item.style.background = item.textContent === fileName ? '#e9ecef' : '';
+        item.classList.remove('selected');
+        if (item.textContent === fileName) {
+          item.classList.add('selected');
+        }
       });
     } else if (type === 'update') {
       selectedUpdateImageReference = fileName;
       document.querySelectorAll('#updateImageReferenceList .reference-item').forEach(item => {
-        item.style.background = item.textContent === fileName ? '#e9ecef' : '';
+        item.classList.remove('selected');
+        if (item.textContent === fileName) {
+          item.classList.add('selected');
+        }
       });
     }
+  }
+
+  // Show preview in right panel
+  function showPreview(mediaData) {
+    const previewPanel = document.getElementById('previewPanel');
+    
+    if (!mediaData || !mediaData.URL) {
+      return;
+    }
+
+    const isVideo = mediaData.file_type && mediaData.file_type.includes('video');
+    
+    previewPanel.innerHTML = `
+      <div class="preview-content">
+        ${isVideo ? 
+          `<video controls style="max-width: 100%; max-height: 350px; border-radius: 8px;">
+            <source src="${mediaData.URL}" type="${mediaData.mime_type}">
+          </video>` :
+          `<img src="${mediaData.URL}" alt="Generated content" class="preview-content">`
+        }
+      </div>
+      <div class="preview-info">
+        <div class="preview-title">${mediaData.name || 'Generated Content'}</div>
+        <div class="preview-description">${mediaData.prompt || 'No description'}</div>
+      </div>
+    `;
   }
 
   // Convert file to base64
@@ -863,6 +1065,7 @@
         updateCreditsDisplay();
         await loadMediaFiles();
         renderMediaGrid();
+        showPreview(result.data); // Show in preview panel
         document.getElementById('imageForm').reset();
         selectedImageReference = null;
         populateReferenceLists();
@@ -898,6 +1101,7 @@
         showStatus('Image updated successfully!');
         await loadMediaFiles();
         renderMediaGrid();
+        showPreview(result.data); // Show in preview panel
         document.getElementById('imageUpdateForm').reset();
         selectedUpdateImageReference = null;
         populateReferenceLists();
@@ -1164,6 +1368,9 @@
 
   // Event listeners
   function setupEventListeners() {
+    // Setup toggles
+    setupToggles();
+
     // Image creation form
     document.getElementById('imageForm').addEventListener('submit', async (e) => {
       e.preventDefault();
