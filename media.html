@@ -305,7 +305,6 @@
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
-      cursor: pointer;
     }
     .media-card:hover {
       transform: translateY(-4px);
@@ -454,102 +453,6 @@
       animation: spin 1s linear infinite;
       margin-bottom: 20px;
     }
-    
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.8);
-    }
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 0;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 800px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-    .modal-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 20px;
-      border-radius: 8px 8px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .modal-header h2 {
-      margin: 0;
-    }
-    .close-modal {
-      color: white;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 0;
-    }
-    .close-modal:hover,
-    .close-modal:focus {
-      opacity: 0.8;
-    }
-    .modal-body {
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    .modal-preview {
-      text-align: center;
-    }
-    .modal-preview img,
-    .modal-preview video {
-      max-width: 100%;
-      max-height: 400px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .modal-details {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    .detail-item {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
-    }
-    .detail-label {
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 5px;
-    }
-    .detail-value {
-      color: #333;
-      word-break: break-word;
-    }
-    .modal-actions {
-      grid-column: span 2;
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-    }
-    .delete-btn {
-      background: #dc3545;
-    }
-    .delete-btn:hover {
-      background: #c82333;
-    }
-    
     footer {
       background: #0A3161;
       color: #fff;
@@ -570,9 +473,6 @@
       }
       .preview-panel {
         min-height: 250px;
-      }
-      .modal-body {
-        grid-template-columns: 1fr;
       }
     }
     @media (max-width: 768px) {
@@ -622,8 +522,8 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <div id="subscriptionMedallion" class="subscription-medallion gold">
-      <span class="plan-name">Gold</span>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
     </div>
   </div>
 </header>
@@ -688,11 +588,6 @@
           
           <form id="videoForm">
             <div class="form-group">
-              <label for="videoChat">Description *</label>
-              <textarea id="videoChat" required placeholder="Describe the video you want to create..."></textarea>
-            </div>
-            
-            <div class="form-group">
               <label for="videoSourceImage">Source Image *</label>
               <input type="file" id="videoSourceImage" accept="image/*">
               <small>Upload an image or select from existing images below</small>
@@ -732,6 +627,25 @@
             <button type="submit" class="create-btn">✏️ Update Image</button>
           </form>
         </div>
+
+        <!-- Edit Video Form -->
+        <div id="editVideoForm" class="creation-form">
+          <form id="videoUpdateForm">
+            <div class="form-group">
+              <label for="updateVideoName">Video File Name *</label>
+              <select id="updateVideoName" required>
+                <option value="">Select video to update...</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="updateVideoChat">Modification Instructions *</label>
+              <textarea id="updateVideoChat" required placeholder="Describe how you want to modify the video..."></textarea>
+            </div>
+            
+            <button type="submit" class="create-btn">✏️ Update Video</button>
+          </form>
+        </div>
       </div>
 
       <!-- Preview Panel -->
@@ -745,7 +659,7 @@
     </div>
   </section>
 
-  <!-- Filter Section -->
+  <!-- Filter Section (existing) -->
   <section class="card">
     <div class="section-header">
       <h3>📁 My Media Files</h3>
@@ -761,36 +675,13 @@
     </div>
   </section>
 
-  <!-- Media Grid -->
+  <!-- Media Grid (existing) -->
   <section id="mediaContainer">
     <div class="loading">Loading your media library...</div>
   </section>
 
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
-</div>
-
-<!-- Media Detail Modal -->
-<div id="mediaModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="modalTitle">Media Details</h2>
-      <button class="close-modal" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-preview" id="modalPreview">
-        <!-- Preview content will be inserted here -->
-      </div>
-      <div class="modal-details" id="modalDetails">
-        <!-- Details will be inserted here -->
-      </div>
-      <div class="modal-actions">
-        <button onclick="downloadCurrentFile()" class="secondary">Download</button>
-        <button onclick="shareCurrentFile()">Share</button>
-        <button onclick="deleteCurrentFile()" class="delete-btn">Delete</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 <footer>
@@ -814,7 +705,7 @@
     createImage: 'https://victoryvision.app.n8n.cloud/webhook/images/create',
     updateImage: 'https://victoryvision.app.n8n.cloud/webhook/images/update',
     createVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/create',
-    removeMedia: 'https://victoryvision.app.n8n.cloud/webhook/images/remove'
+    updateVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/update'
   };
   
   let CUSTOMER_ID = null;
@@ -825,10 +716,10 @@
   let allMediaFiles = [];
   let filteredMediaFiles = [];
   let imageFiles = [];
+  let videoFiles = [];
   let selectedImageReference = null;
   let selectedVideoReference = null;
   let selectedUpdateImageReference = null;
-  let currentModalFile = null;
   
   // UI state
   let currentMode = 'create'; // 'create' or 'edit'
@@ -959,24 +850,8 @@
         form.classList.remove('active');
       });
 
-      // Show the correct form based on mode and type
-      let formId;
-      if (currentMode === 'create') {
-        formId = currentType === 'image' ? 'createImageForm' : 'createVideoForm';
-      } else {
-        // Edit mode - only show image edit form
-        if (currentType === 'image') {
-          formId = 'editImageForm';
-        } else {
-          // No video edit form, switch back to image
-          currentType = 'image';
-          imageToggle.classList.add('active');
-          videoToggle.classList.remove('active');
-          formId = 'editImageForm';
-          updateSectionTitle();
-        }
-      }
-      
+      // Show the correct form
+      const formId = `${currentMode}${currentType.charAt(0).toUpperCase() + currentType.slice(1)}Form`;
       const targetForm = document.getElementById(formId);
       if (targetForm) {
         targetForm.classList.add('active');
@@ -984,60 +859,40 @@
     }
   }
 
-// Load user profile for subscription medallion and credits
-async function loadUserProfile() {
-  try {
-    const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/user/get?customer_id=${encodeURIComponent(CUSTOMER_ID)}`, {
-      method: 'GET',
-      headers: {
-        'X-Customer-ID': CUSTOMER_ID,
-        'Authorization': authToken ? `Bearer ${authToken}` : ''
-      }
-    });
-
-    if (response.ok) {
-      userProfile = await response.json();
-      console.log('User profile loaded:', userProfile);
-      updateSubscriptionMedallion();
+  // Load user data and credits
+  async function loadUserData() {
+    try {
+      const userData = await apiCall(ENDPOINTS.getUserData);
+      console.log('User data:', userData);
+      
+      userCredits = {
+        image_credits: userData.image_credits || 0,
+        video_credits: userData.video_credits || 0
+      };
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'bronze';
+      medallion.className = `subscription-medallion ${plan}`;
+      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      
       updateCreditsDisplay();
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
     }
-  } catch (error) {
-    console.error('Error loading user profile:', error);
-    updateSubscriptionMedallion();
-    updateCreditsDisplay();
   }
-}
 
-// Update subscription medallion
-function updateSubscriptionMedallion() {
-  const medallion = document.getElementById('subscriptionMedallion');
-  const plan = userProfile?.subscription_plan || 'bronze';
-  
-  medallion.className = `subscription-medallion ${plan}`;
-  medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-}
+  // Update credits display
+  function updateCreditsDisplay() {
+    document.getElementById('imageCredits').textContent = userCredits.image_credits;
+    document.getElementById('videoCredits').textContent = userCredits.video_credits;
+    
+    // Enable/disable buttons based on credits
+    document.getElementById('imageCreateBtn').disabled = userCredits.image_credits <= 0;
+    document.getElementById('videoCreateBtn').disabled = userCredits.video_credits <= 0;
+  }
 
-// Update credit display
-function updateCreditsDisplay() {
-  const videoCreditsSpan = document.getElementById('videoCredits');
-  const imageCreditsSpan = document.getElementById('imageCredits');
-  
-  if (videoCreditsSpan && userProfile) {
-    videoCreditsSpan.textContent = userProfile.video_credits || '0';
-  }
-  if (imageCreditsSpan && userProfile) {
-    imageCreditsSpan.textContent = userProfile.image_credits || '0';
-  }
-  
-  // Enable/disable buttons based on credits (if they exist)
-  const imageBtn = document.getElementById('generateBtn');
-  const videoBtn = document.getElementById('generateBtn'); // Same button toggles between modes
-  
-  if (imageBtn && userProfile) {
-    // Don't disable buttons, just show credits for awareness
-    console.log('Credits available:', userProfile.video_credits, userProfile.image_credits);
-  }
-}
   // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
@@ -1057,10 +912,12 @@ function updateCreditsDisplay() {
       console.log(`Loaded ${allMediaFiles.length} media files`);
       filteredMediaFiles = [...allMediaFiles];
       
-      // Get ALL images from the database
+      // Separate images and videos
       imageFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'image');
+      videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
       
       populateReferenceLists();
+      populateVideoUpdateDropdown();
       
     } catch (error) {
       console.error('Error loading media:', error);
@@ -1070,7 +927,7 @@ function updateCreditsDisplay() {
     }
   }
 
-  // Populate reference lists with ALL images
+  // Populate reference lists
   function populateReferenceLists() {
     const imageList = document.getElementById('imageReferenceList');
     const videoList = document.getElementById('videoReferenceList');
@@ -1084,71 +941,63 @@ function updateCreditsDisplay() {
       return;
     }
     
-    // Show ALL images in the reference lists
-    const imageItems = imageFiles.map(file => {
-      const displayName = escapeHtml(file.name || 'Untitled');
-      return `<div class="reference-item" onclick="selectImageReference('${escapeHtml(file.name)}', 'image')">${displayName}</div>`;
-    }).join('');
+    const imageItems = imageFiles.map(file => `
+      <div class="reference-item" onclick="selectImageReference('${file.name}', 'image')">${file.name}</div>
+    `).join('');
     
-    const videoItems = imageFiles.map(file => {
-      const displayName = escapeHtml(file.name || 'Untitled');
-      return `<div class="reference-item" onclick="selectImageReference('${escapeHtml(file.name)}', 'video')">${displayName}</div>`;
-    }).join('');
+    const videoItems = imageFiles.map(file => `
+      <div class="reference-item" onclick="selectImageReference('${file.name}', 'video')">${file.name}</div>
+    `).join('');
     
-    const updateItems = imageFiles.map(file => {
-      const displayName = escapeHtml(file.name || 'Untitled');
-      return `<div class="reference-item" onclick="selectImageReference('${escapeHtml(file.name)}', 'update')">${displayName}</div>`;
-    }).join('');
+    const updateItems = imageFiles.map(file => `
+      <div class="reference-item" onclick="selectImageReference('${file.name}', 'update')">${file.name}</div>
+    `).join('');
     
     imageList.innerHTML = imageItems;
     videoList.innerHTML = videoItems;
     updateImageList.innerHTML = updateItems;
   }
 
-  // Escape HTML to prevent rendering issues
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text || '';
-    return div.innerHTML;
+  // Populate video update dropdown
+  function populateVideoUpdateDropdown() {
+    const dropdown = document.getElementById('updateVideoName');
+    dropdown.innerHTML = '<option value="">Select video to update...</option>';
+    
+    videoFiles.forEach(file => {
+      const option = document.createElement('option');
+      option.value = file.name;
+      option.textContent = file.name;
+      dropdown.appendChild(option);
+    });
   }
 
   // Select image reference
   function selectImageReference(fileName, type) {
-    // Unescape the filename
-    const unescapedFileName = unescapeHtml(fileName);
-    
     if (type === 'image') {
-      selectedImageReference = unescapedFileName;
+      selectedImageReference = fileName;
       document.querySelectorAll('#imageReferenceList .reference-item').forEach(item => {
         item.classList.remove('selected');
-        if (item.textContent === unescapedFileName) {
+        if (item.textContent === fileName) {
           item.classList.add('selected');
         }
       });
     } else if (type === 'video') {
-      selectedVideoReference = unescapedFileName;
+      selectedVideoReference = fileName;
       document.querySelectorAll('#videoReferenceList .reference-item').forEach(item => {
         item.classList.remove('selected');
-        if (item.textContent === unescapedFileName) {
+        if (item.textContent === fileName) {
           item.classList.add('selected');
         }
       });
     } else if (type === 'update') {
-      selectedUpdateImageReference = unescapedFileName;
+      selectedUpdateImageReference = fileName;
       document.querySelectorAll('#updateImageReferenceList .reference-item').forEach(item => {
         item.classList.remove('selected');
-        if (item.textContent === unescapedFileName) {
+        if (item.textContent === fileName) {
           item.classList.add('selected');
         }
       });
     }
-  }
-
-  // Unescape HTML
-  function unescapeHtml(text) {
-    const div = document.createElement('div');
-    div.innerHTML = text;
-    return div.textContent || div.innerText || '';
   }
 
   // Show preview in right panel
@@ -1171,8 +1020,8 @@ function updateCreditsDisplay() {
         }
       </div>
       <div class="preview-info">
-        <div class="preview-title">${escapeHtml(mediaData.name || 'Generated Content')}</div>
-        <div class="preview-description">${escapeHtml(mediaData.prompt || 'No description')}</div>
+        <div class="preview-title">${mediaData.name || 'Generated Content'}</div>
+        <div class="preview-description">${mediaData.prompt || 'No description'}</div>
       </div>
     `;
   }
@@ -1216,7 +1065,7 @@ function updateCreditsDisplay() {
         updateCreditsDisplay();
         await loadMediaFiles();
         renderMediaGrid();
-        showPreview(result.data || result); // Show in preview panel
+        showPreview(result.data); // Show in preview panel
         document.getElementById('imageForm').reset();
         selectedImageReference = null;
         populateReferenceLists();
@@ -1252,7 +1101,7 @@ function updateCreditsDisplay() {
         showStatus('Image updated successfully!');
         await loadMediaFiles();
         renderMediaGrid();
-        showPreview(result.data || result); // Show in preview panel
+        showPreview(result.data); // Show in preview panel
         document.getElementById('imageUpdateForm').reset();
         selectedUpdateImageReference = null;
         populateReferenceLists();
@@ -1274,9 +1123,7 @@ function updateCreditsDisplay() {
 
       showStatus('Creating video... This may take several minutes.');
       
-      const payload = {
-        chat: formData.get('chat')
-      };
+      const payload = {};
 
       // Add source image - required
       const sourceImage = formData.get('source_image');
@@ -1297,8 +1144,6 @@ function updateCreditsDisplay() {
         document.getElementById('videoForm').reset();
         selectedVideoReference = null;
         populateReferenceLists();
-        // Refresh media after a delay to catch new video
-        setTimeout(() => loadMediaFiles().then(() => renderMediaGrid()), 5000);
       } else {
         throw new Error(result.message || 'Video creation failed');
       }
@@ -1308,98 +1153,27 @@ function updateCreditsDisplay() {
     }
   }
 
-  // Delete media file
-  async function deleteFile(fileId) {
+  // Update video
+  async function updateVideo(formData) {
     try {
-      showStatus('Deleting file...');
+      showStatus('Updating video... This may take several minutes.');
       
-      const result = await apiCall(ENDPOINTS.removeMedia, {
-        id: fileId
-      });
+      const payload = {
+        campaigns_file_name: formData.get('video_name'),
+        chat: formData.get('chat')
+      };
 
-      if (result.success !== false) {
-        showStatus('File deleted successfully!');
-        closeModal();
-        await loadMediaFiles();
-        renderMediaGrid();
-      } else {
-        throw new Error(result.message || 'Delete failed');
-      }
+      const result = await apiCall(ENDPOINTS.updateVideo, payload);
+
+      showStatus('Video update started! The updated video will appear in your media library when ready.');
+      document.getElementById('videoUpdateForm').reset();
     } catch (error) {
-      console.error('Error deleting file:', error);
-      showStatus('Error deleting file: ' + error.message, true);
+      console.error('Error updating video:', error);
+      showStatus('Error updating video: ' + error.message, true);
     }
   }
 
-  // Modal functions
-  function openModal(file) {
-    currentModalFile = file;
-    const modal = document.getElementById('mediaModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalPreview = document.getElementById('modalPreview');
-    const modalDetails = document.getElementById('modalDetails');
-    
-    modalTitle.textContent = escapeHtml(file.name || 'Media File');
-    
-    // Show preview
-    const fileType = getFileType(file.file_type);
-    if (fileType === 'video') {
-      modalPreview.innerHTML = `
-        <video controls style="max-width: 100%; max-height: 400px;">
-          <source src="${file.URL}" type="${file.mime_type}">
-        </video>
-      `;
-    } else {
-      modalPreview.innerHTML = `<img src="${file.URL}" alt="${escapeHtml(file.name)}">`;
-    }
-    
-    // Show all details
-    const details = [
-      { label: 'Name', value: file.name },
-      { label: 'File Type', value: file.file_type },
-      { label: 'MIME Type', value: file.mime_type },
-      { label: 'Size', value: formatFileSize(file.file_size) },
-      { label: 'Dimensions', value: file.width && file.height ? `${file.width} × ${file.height}` : 'N/A' },
-      { label: 'Created', value: formatDate(file.created_at) },
-      { label: 'Campaign', value: file.campaign_name || 'N/A' },
-      { label: 'Prompt', value: file.prompt || 'N/A' },
-      { label: 'Metadata', value: file.metadata ? JSON.stringify(file.metadata, null, 2) : 'N/A' }
-    ];
-    
-    modalDetails.innerHTML = details.map(detail => `
-      <div class="detail-item">
-        <div class="detail-label">${detail.label}:</div>
-        <div class="detail-value">${escapeHtml(detail.value)}</div>
-      </div>
-    `).join('');
-    
-    modal.style.display = 'block';
-  }
-
-  function closeModal() {
-    document.getElementById('mediaModal').style.display = 'none';
-    currentModalFile = null;
-  }
-
-  function downloadCurrentFile() {
-    if (currentModalFile) {
-      downloadFile(currentModalFile.URL, currentModalFile.name);
-    }
-  }
-
-  function shareCurrentFile() {
-    if (currentModalFile) {
-      shareFile(currentModalFile.URL);
-    }
-  }
-
-  function deleteCurrentFile() {
-    if (currentModalFile && currentModalFile.id) {
-      deleteFile(currentModalFile.id);
-    }
-  }
-
-  // Apply filters
+  // Apply filters (existing function)
   function applyFilters() {
     const searchTerm = searchFilter.value.toLowerCase();
 
@@ -1428,7 +1202,7 @@ function updateCreditsDisplay() {
     applyFilters();
   }
 
-  // Render media grid
+  // Render media grid (existing function)
   function renderMediaGrid() {
     if (filteredMediaFiles.length === 0) {
       if (allMediaFiles.length === 0) {
@@ -1451,17 +1225,23 @@ function updateCreditsDisplay() {
     mediaContainer.appendChild(grid);
   }
 
-  // Create media card
+  // Create media card (existing function)
   function createMediaCard(file) {
     const card = document.createElement('div');
     card.className = 'media-card';
-    card.onclick = () => openModal(file);
 
     const fileType = getFileType(file.file_type);
     const previewUrl = file.URL;
     
     // Handle date properly
-    let createdDate = formatDate(file.created_at);
+    let createdDate = 'Unknown';
+    if (file.created_at) {
+      try {
+        createdDate = new Date(file.created_at).toLocaleDateString();
+      } catch (e) {
+        createdDate = file.created_at;
+      }
+    }
 
     card.innerHTML = `
       <div class="media-preview">
@@ -1469,8 +1249,8 @@ function updateCreditsDisplay() {
         ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
       </div>
       <div class="media-info">
-        <h3 class="media-title">${escapeHtml(file.name || 'Untitled')}</h3>
-        <p class="media-description">${escapeHtml(file.prompt || 'No description available')}</p>
+        <h3 class="media-title">${file.name || 'Untitled'}</h3>
+        <p class="media-description">${file.prompt || 'No description available'}</p>
         <div class="media-meta">
           <div class="meta-item">
             <span class="meta-label">Created:</span>
@@ -1480,6 +1260,18 @@ function updateCreditsDisplay() {
             <span class="meta-label">Size:</span>
             ${formatFileSize(file.file_size)}
           </div>
+          <div class="meta-item">
+            <span class="meta-label">Type:</span>
+            ${file.file_type || file.mime_type || 'Unknown'}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Dimensions:</span>
+            ${file.width && file.height ? `${file.width}x${file.height}` : 'N/A'}
+          </div>
+        </div>
+        <div class="media-actions">
+          <button onclick="downloadFile('${file.URL}', '${file.name || 'download'}')" class="btn-small secondary">Download</button>
+          <button onclick="shareFile('${file.URL}')" class="btn-small">Share</button>
         </div>
       </div>
     `;
@@ -1487,7 +1279,7 @@ function updateCreditsDisplay() {
     return card;
   }
 
-  // Render media preview
+  // Render media preview (existing function)
   function renderMediaPreview(file, previewUrl) {
     const fileType = getFileType(file.file_type);
     
@@ -1497,8 +1289,8 @@ function updateCreditsDisplay() {
         Your browser does not support the video tag.
       </video>`;
     } else if (fileType === 'image' && previewUrl) {
-      return `<img src="${previewUrl}" alt="${escapeHtml(file.name)}" loading="lazy" 
-               onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;height:100%;color:#999;\\'>📷</div>'">`;
+      return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
+               onerror="this.parentElement.innerHTML='<div style=\\"display:flex;align-items:center;justify-content:center;height:100%;color:#999;\\">📷</div>'">`;
     } else {
       return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">
         ${fileType === 'video' ? '🎬' : '📷'}
@@ -1506,35 +1298,20 @@ function updateCreditsDisplay() {
     }
   }
 
-  // Utility functions
+  // Utility functions (existing)
   function getFileType(fileType) {
     if (!fileType) return 'unknown';
-    const lowerType = fileType.toLowerCase();
-    if (lowerType.includes('video') || lowerType.includes('mp4')) return 'video';
-    if (lowerType.includes('image') || lowerType.includes('jpeg') || lowerType.includes('jpg') || lowerType.includes('png')) return 'image';
+    if (fileType.toLowerCase().includes('video') || fileType.toLowerCase().includes('mp4')) return 'video';
+    if (fileType.toLowerCase().includes('image') || fileType.toLowerCase().includes('jpeg') || fileType.toLowerCase().includes('jpg') || fileType.toLowerCase().includes('png')) return 'image';
     return 'file';
   }
 
   function formatFileSize(bytes) {
     if (!bytes) return 'N/A';
-    if (typeof bytes === 'string') {
-      // Try to parse if it's a string number
-      bytes = parseInt(bytes);
-      if (isNaN(bytes)) return 'N/A';
-    }
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     if (bytes === 0) return '0 Bytes';
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-  }
-
-  function formatDate(dateStr) {
-    if (!dateStr) return 'Unknown';
-    try {
-      return new Date(dateStr).toLocaleDateString();
-    } catch (e) {
-      return dateStr;
-    }
   }
 
   function downloadFile(url, filename) {
@@ -1607,7 +1384,6 @@ function updateCreditsDisplay() {
     document.getElementById('videoForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('videoChat').value);
       formData.append('source_image', document.getElementById('videoSourceImage').files[0]);
       await createVideo(formData);
     });
@@ -1621,7 +1397,16 @@ function updateCreditsDisplay() {
       await updateImage(formData);
     });
 
-    // Filter controls
+    // Video update form
+    document.getElementById('videoUpdateForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('video_name', document.getElementById('updateVideoName').value);
+      formData.append('chat', document.getElementById('updateVideoChat').value);
+      await updateVideo(formData);
+    });
+
+    // Filter controls (existing)
     refreshMediaBtn.addEventListener('click', async () => {
       await loadMediaFiles();
       await loadUserData(); // Refresh credits too
@@ -1630,20 +1415,12 @@ function updateCreditsDisplay() {
 
     clearFiltersBtn.addEventListener('click', clearFilters);
 
-    // Debounced search
+    // Debounced search (existing)
     let searchTimeout;
     searchFilter.addEventListener('input', () => {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(applyFilters, 300);
     });
-
-    // Close modal when clicking outside
-    window.onclick = function(event) {
-      const modal = document.getElementById('mediaModal');
-      if (event.target == modal) {
-        closeModal();
-      }
-    }
   }
 
   // Initialize page
@@ -1669,7 +1446,7 @@ function updateCreditsDisplay() {
     }
   }
 
-  // Security checks
+  // Security checks (existing)
   setInterval(async function() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1682,12 +1459,8 @@ function updateCreditsDisplay() {
     }
   }, 300000); // Check every 5 minutes
 
-  // Make functions globally available
+  // Make selectImageReference globally available
   window.selectImageReference = selectImageReference;
-  window.closeModal = closeModal;
-  window.downloadCurrentFile = downloadCurrentFile;
-  window.shareCurrentFile = shareCurrentFile;
-  window.deleteCurrentFile = deleteCurrentFile;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
