@@ -1,47 +1,241 @@
-<!-- Home Page -->
+# Victory Vision AI Landing Page
+
+Here's a high-converting SaaS landing page for Victory Vision AI, designed with professional aesthetics and optimized for C-suite executives:
+
+```html
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Victory Vision - Home</title>
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; }
-    .header-logo { background: #212e53; padding: 20px; text-align: center; }
-    .header-logo img { max-width: 180px; height: auto; }
-    .hero { background: #212e53; color: #fff; text-align: center; padding: 60px 20px; }
-    .hero h1 { font-size: 2.5em; margin-bottom: 0.5em; }
-    .hero p { font-size: 1.2em; margin-bottom: 1em; }
-    .hero button { background: #fff; color: #212e53; border: none; padding: 15px 30px; font-size: 1.1em; border-radius: 5px; cursor: pointer; }
-    .hero button:hover { opacity: 0.9; }
-    .hero .login-link { margin-top: 1em; font-size: 0.9em; }
-    .hero .login-link a { color: #fff; text-decoration: underline; }
-    .features { padding: 40px 20px; text-align: center; }
-    .features h2 { font-size: 2em; margin-bottom: 0.5em; }
-    .features ul { list-style: disc; margin: 0 auto; padding: 0; max-width: 600px; text-align: left; }
-    .features ul li { margin: 0.5em 0; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victory Vision AI - AI-Powered Marketing Platform for Executives</title>
+    <meta name="description" content="Transform your social media marketing with Victory Vision AI's cutting-edge platform. AI-powered solutions for mid-sized companies to maximize ROI.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #0a3161;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+        }
+        
+        .nav-shadow {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(10, 49, 97, 0.1);
+        }
+        
+        .testimonial-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+        }
+        
+        .cta-gradient {
+            background: linear-gradient(135deg, #0a3161 0%, #1a4b8c 100%);
+        }
+        
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
-<body>
-  <!-- Victory Vision logo centered at top -->
-  <div class="header-logo">
-    <img src="logo.png" alt="Victory Vision Logo">
-  </div>
-  <header class="hero">
-    <h1>Boost Your Sales with AI-Driven Content</h1>
-    <p>Victory Vision helps you create and share marketing content effortlessly.</p>
-    <button onclick="location.href='signup.html'">Get Started</button>
-    <div class="login-link">
-      <p><a href="login.html">Already have an account? Log in</a></p>
-    </div>
-  </header>
-  <section class="features">
-    <h2>Features</h2>
-    <ul>
-      <li>AI-generated images to captivate your audience</li>
-      <li>AI-driven video content creation and refinement</li>
-      <li>One-click social media posting to LinkedIn and Instagram</li>
-      <li>Integrated analytics for conversions, CTRs, and views</li>
-    </ul>
-  </section>
-</body>
-</html>
+<body class="bg-white">
+    <!-- Fixed Header -->
+    <header class="fixed w-full bg-white nav-shadow z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <img src="https://via.placeholder.com/180x50?text=Victory+Vision+AI" alt="Victory Vision AI Logo" class="h-10">
+                </div>
+                <nav class="hidden md:flex items-center space-x-10">
+                    <a href="#features" class="text-gray-700 hover:text-blue-800 font-medium transition-all">Features</a>
+                    <a href="#solutions" class="text-gray-700 hover:text-blue-800 font-medium transition-all">Solutions</a>
+                    <a href="#testimonials" class="text-gray-700 hover:text-blue-800 font-medium transition-all">Results</a>
+                    <a href="#pricing" class="text-gray-700 hover:text-blue-800 font-medium transition-all">Pricing</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="hidden md:inline-block text-gray-700 hover:text-blue-800 font-medium transition-all">Login</a>
+                    <a href="#cta" class="bg-blue-800 hover:bg-blue-900 text-white px-6 py-2 rounded-md font-medium transition-all">Get Started</a>
+                </div>
+                <button class="md:hidden text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Video -->
+    <section class="hero-gradient pt-32 pb-20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">Discover How AI is Reinventing Social Media Marketing</h1>
+                    <p class="text-xl text-gray-600 mb-8">Victory Vision AI empowers C-suite executives with data-driven insights and automation to transform marketing performance and drive measurable ROI.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#cta" class="bg-blue-800 hover:bg-blue-900 text-white px-8 py-4 rounded-md font-bold text-lg transition-all text-center">Start Free Trial</a>
+                        <a href="#" class="border border-blue-800 text-blue-800 hover:bg-blue-50 px-8 py-4 rounded-md font-bold text-lg transition-all text-center">See Demo</a>
+                    </div>
+                    <div class="mt-8 flex items-center">
+                        <div class="flex -space-x-2">
+                            <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/12.jpg" alt="">
+                            <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/men/32.jpg" alt="">
+                            <img class="w-10 h-10 rounded-full border-2 border-white" src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+                        </div>
+                        <p class="ml-4 text-gray-600">Trusted by 500+ executives worldwide</p>
+                    </div>
+                </div>
+                <div class="lg:w-1/2 relative">
+                    <div class="relative rounded-xl overflow-hidden shadow-2xl">
+                        <video class="w-full" autoplay loop muted playsinline>
+                            <source src="https://example.com/victory-vision-demo.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <button class="bg-white bg-opacity-80 hover:bg-opacity-100 rounded-full w-16 h-16 flex items-center justify-center transition-all">
+                                <svg class="w-6 h-6 text-blue-800" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Indicators -->
+    <section class="py-8 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-wrap items-center justify-center gap-8 md:gap-16">
+                <p class="text-gray-500 font-medium">Trusted by leaders at:</p>
+                <img src="https://via.placeholder.com/120x40?text=Company+1" alt="Company Logo" class="h-8 opacity-70">
+                <img src="https://via.placeholder.com/120x40?text=Company+2" alt="Company Logo" class="h-8 opacity-70">
+                <img src="https://via.placeholder.com/120x40?text=Company+3" alt="Company Logo" class="h-8 opacity-70">
+                <img src="https://via.placeholder.com/120x40?text=Company+4" alt="Company Logo" class="h-8 opacity-70">
+            </div>
+        </div>
+    </section>
+
+    <!-- Before/After Transformation -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Transform Your Marketing in Weeks, Not Years</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">See how Victory Vision AI turns chaotic marketing efforts into predictable, high-performing campaigns.</p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-10 lg:mb-0 lg:pr-8">
+                    <div class="bg-gray-100 p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4 text-red-600">Before Victory Vision AI</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-red-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <span>Manual campaign management draining resources</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-red-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <span>Unclear ROI from marketing spend</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-red-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <span>Reactive approach to market changes</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-red-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                <span>Difficulty scaling campaigns effectively</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 lg:pl-8">
+                    <div class="bg-gray-100 p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4 text-green-600">With Victory Vision AI</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-green-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>AI-optimized campaigns running 24/7</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-green-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Clear attribution and ROI measurement</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-green-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Proactive adjustments based on predictive analytics</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="h-5 w-5 text-green-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span>Effortless scaling with automated workflows</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">AI-Powered Solutions for Executive Challenges</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Designed specifically for C-suite leaders who need marketing results without the operational headaches.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white p-8 rounded-xl feature-card transition-all shadow-md hover:shadow-lg">
+                    <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-blue-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI-Driven Campaign Optimization</h3>
+                    <p class="text-gray-600 mb-4">Our algorithms continuously analyze performance data to automatically adjust bids, budgets, and targeting for maximum ROI.</p>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start">
+                            <svg class="h-5 w-5 text-green-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Real-time adjustments based on performance</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="h-5 w-5 text-green-500 mt-1 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Predictive analytics for future trends</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-white p-8 rounded-xl feature-card transition-all shadow-md hover:shadow-lg">
+                    <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <
