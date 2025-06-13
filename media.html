@@ -622,8 +622,8 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <div id="subscriptionMedallion" class="subscription-medallion bronze">
-      <span class="plan-name">Bronze</span>
+    <div id="subscriptionMedallion" class="subscription-medallion gold">
+      <span class="plan-name">Gold</span>
     </div>
   </div>
 </header>
@@ -984,40 +984,60 @@
     }
   }
 
-  // Load user data and credits
-  async function loadUserData() {
-    try {
-      const userData = await apiCall(ENDPOINTS.getUserData);
-      console.log('User data:', userData);
-      
-      userCredits = {
-        image_credits: userData.image_credits || 0,
-        video_credits: userData.video_credits || 0
-      };
-      
-      // Update subscription medallion
-      const medallion = document.getElementById('subscriptionMedallion');
-      const plan = userData.subscription_plan || 'bronze';
-      medallion.className = `subscription-medallion ${plan}`;
-      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-      
+// Load user profile for subscription medallion and credits
+async function loadUserProfile() {
+  try {
+    const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/user/get?customer_id=${encodeURIComponent(CUSTOMER_ID)}`, {
+      method: 'GET',
+      headers: {
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
+      }
+    });
+
+    if (response.ok) {
+      userProfile = await response.json();
+      console.log('User profile loaded:', userProfile);
+      updateSubscriptionMedallion();
       updateCreditsDisplay();
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      showStatus('Error loading user data: ' + error.message, true);
     }
+  } catch (error) {
+    console.error('Error loading user profile:', error);
+    updateSubscriptionMedallion();
+    updateCreditsDisplay();
   }
+}
 
-  // Update credits display
-  function updateCreditsDisplay() {
-    document.getElementById('imageCredits').textContent = userCredits.image_credits;
-    document.getElementById('videoCredits').textContent = userCredits.video_credits;
-    
-    // Enable/disable buttons based on credits
-    document.getElementById('imageCreateBtn').disabled = userCredits.image_credits <= 0;
-    document.getElementById('videoCreateBtn').disabled = userCredits.video_credits <= 0;
+// Update subscription medallion
+function updateSubscriptionMedallion() {
+  const medallion = document.getElementById('subscriptionMedallion');
+  const plan = userProfile?.subscription_plan || 'bronze';
+  
+  medallion.className = `subscription-medallion ${plan}`;
+  medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+}
+
+// Update credit display
+function updateCreditsDisplay() {
+  const videoCreditsSpan = document.getElementById('videoCredits');
+  const imageCreditsSpan = document.getElementById('imageCredits');
+  
+  if (videoCreditsSpan && userProfile) {
+    videoCreditsSpan.textContent = userProfile.video_credits || '0';
   }
-
+  if (imageCreditsSpan && userProfile) {
+    imageCreditsSpan.textContent = userProfile.image_credits || '0';
+  }
+  
+  // Enable/disable buttons based on credits (if they exist)
+  const imageBtn = document.getElementById('generateBtn');
+  const videoBtn = document.getElementById('generateBtn'); // Same button toggles between modes
+  
+  if (imageBtn && userProfile) {
+    // Don't disable buttons, just show credits for awareness
+    console.log('Credits available:', userProfile.video_credits, userProfile.image_credits);
+  }
+}
   // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
