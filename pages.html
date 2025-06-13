@@ -203,7 +203,7 @@
     }
     .pages-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
     .page-card {
@@ -213,17 +213,33 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
       cursor: pointer;
+      position: relative;
     }
     .page-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     }
+    .page-card.expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90vw;
+      max-width: 800px;
+      height: 90vh;
+      z-index: 1000;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
     .page-preview {
       position: relative;
-      height: 200px;
+      height: 150px;
       background: #f8f9fa;
       border-bottom: 1px solid #dee2e6;
       overflow: hidden;
+    }
+    .page-card.expanded .page-preview {
+      height: 200px;
     }
     .page-thumbnail {
       width: 100%;
@@ -237,12 +253,12 @@
       justify-content: center;
       height: 100%;
       color: #999;
-      font-size: 3rem;
+      font-size: 2rem;
       flex-direction: column;
     }
     .page-preview-placeholder small {
-      font-size: 0.8rem;
-      margin-top: 10px;
+      font-size: 0.7rem;
+      margin-top: 5px;
       color: #666;
     }
     .page-status {
@@ -251,7 +267,7 @@
       right: 10px;
       padding: 4px 8px;
       border-radius: 12px;
-      font-size: 12px;
+      font-size: 10px;
       font-weight: bold;
       text-transform: uppercase;
     }
@@ -259,46 +275,72 @@
       background: #28a745;
       color: white;
     }
-        .page-status.inactive {
+    .page-status.inactive {
       background: #6c757d;
       color: white;
     }
     .page-card-header {
       background: linear-gradient(135deg, #0A3161, #1a4c80);
       color: white;
+      padding: 12px;
+    }
+    .page-card.expanded .page-card-header {
       padding: 15px;
     }
     .page-card-title {
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+    .page-card.expanded .page-card-title {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
     }
     .page-url {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       opacity: 0.9;
       font-family: monospace;
       word-break: break-all;
+      line-height: 1.2;
+    }
+    .page-card.expanded .page-url {
+      font-size: 0.9rem;
     }
     .page-info {
+      padding: 12px;
+    }
+    .page-card.expanded .page-info {
       padding: 15px;
     }
     .page-description {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #777;
-      line-height: 1.4;
-      margin-bottom: 15px;
+      line-height: 1.3;
+      margin-bottom: 12px;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+    }
+    .page-card.expanded .page-description {
+      font-size: 0.9rem;
+      -webkit-line-clamp: unset;
+      display: block;
+      overflow: visible;
+      margin-bottom: 15px;
     }
     .page-meta {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 15px;
-      font-size: 0.8rem;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 0.7rem;
       color: #666;
+    }
+    .page-card.expanded .page-meta {
+      font-size: 0.8rem;
+      margin-bottom: 15px;
     }
     .meta-item {
       display: flex;
@@ -310,38 +352,61 @@
     }
     .page-actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
+      padding: 0 12px 12px;
+    }
+    .page-card.expanded .page-actions {
       padding: 0 15px 15px;
+      gap: 8px;
     }
     .btn-small {
-      padding: 8px 12px;
-      font-size: 12px;
+      padding: 6px 10px;
+      font-size: 11px;
       flex: 1;
     }
+    .page-card.expanded .btn-small {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
     .edit-chat-container {
-      margin-top: 10px;
-      padding: 15px;
+      margin-top: 8px;
+      padding: 12px;
       background: #f8f9fa;
       border-radius: 6px;
       border: 1px solid #dee2e6;
+      display: none;
+    }
+    .page-card.expanded .edit-chat-container {
+      display: block;
+      margin-top: 15px;
+      padding: 15px;
     }
     .edit-chat-input {
       width: 100%;
-      padding: 10px;
+      padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      margin-bottom: 10px;
-      min-height: 60px;
+      margin-bottom: 8px;
+      min-height: 50px;
       resize: vertical;
       box-sizing: border-box;
+    }
+    .page-card.expanded .edit-chat-input {
+      padding: 10px;
+      margin-bottom: 10px;
+      min-height: 60px;
     }
     .edit-chat-btn {
       background: #17a2b8;
       color: white;
-      padding: 8px 16px;
+      padding: 6px 12px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 12px;
+    }
+    .page-card.expanded .edit-chat-btn {
+      padding: 8px 16px;
       font-size: 14px;
     }
     .edit-chat-btn:hover {
@@ -350,6 +415,37 @@
     .edit-chat-btn:disabled {
       background: #6c757d;
       cursor: not-allowed;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      font-size: 16px;
+      display: none;
+      z-index: 1001;
+    }
+    .page-card.expanded .close-btn {
+      display: block;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+    .modal-overlay.show {
+      display: block;
     }
     .loading {
       text-align: center;
@@ -429,10 +525,17 @@
         padding: 15px 30px;
         font-size: 16px;
       }
+      .page-card.expanded {
+        width: 95vw;
+        height: 95vh;
+      }
     }
   </style>
 </head>
 <body>
+
+<!-- Modal Overlay -->
+<div id="modalOverlay" class="modal-overlay"></div>
 
 <header class="navbar">
   <div class="logo">
@@ -549,6 +652,7 @@
   let allPages = [];
   let filteredPages = [];
   let availableVideos = [];
+  let expandedCard = null;
 
   // DOM elements
   const pagesContainer = document.getElementById('pagesContainer');
@@ -556,6 +660,7 @@
   const refreshPagesBtn = document.getElementById('refreshPages');
   const clearFiltersBtn = document.getElementById('clearFilters');
   const createPageBtn = document.getElementById('createPageBtn');
+  const modalOverlay = document.getElementById('modalOverlay');
 
   // Authentication
   async function checkAuthentication() {
@@ -613,22 +718,26 @@
     }
   }
 
-  // Generate website thumbnail URL
+  // Generate website thumbnail URL with better error handling
   function generateThumbnailUrl(websiteUrl) {
-    if (!websiteUrl || websiteUrl === 'NULL' || websiteUrl === 'null') {
+    if (!websiteUrl || websiteUrl === 'NULL' || websiteUrl === 'null' || websiteUrl === 'No URL set') {
+      return null;
+    }
+    
+    // Clean the URL and remove problematic characters
+    const cleanUrl = websiteUrl.replace(/['"'>]/g, '').trim();
+    
+    if (!cleanUrl.startsWith('http')) {
       return null;
     }
     
     // Option 1: Screenshotlayer (Free tier)
     if (SCREENSHOT_API_KEY && SCREENSHOT_API_KEY !== 'YOUR_SCREENSHOTLAYER_API_KEY') {
-      return `http://api.screenshotlayer.com/api/capture?access_key=${SCREENSHOT_API_KEY}&url=${encodeURIComponent(websiteUrl)}&width=320&format=PNG`;
+      return `http://api.screenshotlayer.com/api/capture?access_key=${SCREENSHOT_API_KEY}&url=${encodeURIComponent(cleanUrl)}&width=320&format=PNG`;
     }
     
     // Option 2: Alternative free service (no API key needed but less reliable)
-    return `https://image.thum.io/get/width/320/crop/200/${encodeURIComponent(websiteUrl)}`;
-    
-    // Option 3: URLbox (paid but high quality) 
-    // return `https://api.urlbox.io/v1/YOUR_TOKEN/png?url=${encodeURIComponent(websiteUrl)}&width=320&height=200`;
+    return `https://image.thum.io/get/width/320/crop/150/${encodeURIComponent(cleanUrl)}`;
   }
 
   // Load user profile for subscription medallion
@@ -722,7 +831,7 @@
     });
   }
 
-  // Load pages from n8n webhook - FIXED to use correct field names
+  // Load pages from n8n webhook
   async function loadPages() {
     try {
       const data = await apiCall('https://victoryvision.app.n8n.cloud/webhook/pages/get');
@@ -738,18 +847,17 @@
         allPages = [];
       }
 
-      // Map fields to match webhook output structure
+      // Map fields and clean up problematic content
       allPages = allPages.map(page => ({
         ...page,
-        // Map webhook fields to frontend expectations
-        title: page.name || page.title || 'Untitled Page',
-        url: page.URL || page.google_page_url || page.url,
-        description: page.body || page.description || 'No description available',
+        title: (page.name || page.title || 'Untitled Page').replace(/['"'>]/g, ''),
+        url: cleanUrl(page.URL || page.google_page_url || page.url),
+        description: cleanDescription(page.body || page.description || 'No description available'),
         id: page.id,
         campaign_id: page.campaign_id,
         customer_id: page.customer_id,
         created_at: page.created_at,
-        status: 'draft' // Default status since not in webhook
+        status: 'draft'
       }));
 
       console.log(`Loaded and mapped ${allPages.length} pages:`, allPages);
@@ -763,7 +871,27 @@
     }
   }
 
-  // Create new page - FIXED to use correct webhook
+  // Clean URL by removing problematic characters
+  function cleanUrl(url) {
+    if (!url || url === 'NULL' || url === 'null') {
+      return 'No URL set';
+    }
+    return url.replace(/['"'>]/g, '').trim();
+  }
+
+  // Clean description by removing HTML artifacts and problematic characters
+  function cleanDescription(description) {
+    if (!description) return 'No description available';
+    
+    return description
+      .replace(/['"'>]/g, '') // Remove quotes and brackets
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim()
+      .substring(0, 200); // Limit length
+  }
+
+  // Create new page
   async function createPage() {
     try {
       const selectedVideoId = document.getElementById('headerVideoSelect').value;
@@ -804,7 +932,7 @@
     }
   }
 
-  // Update page with chat input - FIXED parameter name
+  // Update page with chat input
   async function updatePageWithChat(pageId, chatInput) {
     try {
       if (!chatInput.trim()) {
@@ -815,7 +943,7 @@
       showStatus('Updating page...');
       
       const result = await apiCall('https://victoryvision.app.n8n.cloud/webhook/pages/update', {
-        page_id: pageId, // Changed from 'id' to 'page_id'
+        page_id: pageId,
         chat: chatInput.trim()
       });
       
@@ -835,7 +963,7 @@
     }
   }
 
-  // Delete page - FIXED parameter name
+  // Delete page
   async function deletePage(pageId) {
     if (!confirm('Are you sure you want to delete this page?')) {
       return;
@@ -843,7 +971,7 @@
 
     try {
       const result = await apiCall('https://victoryvision.app.n8n.cloud/webhook/pages/remove', {
-        id: pageId // Using 'id' as shown in webhook
+        id: pageId
       });
       
       if (result.success) {
@@ -857,6 +985,35 @@
     } catch (error) {
       console.error('Error deleting page:', error);
       showStatus('Error deleting page: ' + error.message, true);
+    }
+  }
+
+  // Expand/collapse card functionality
+  function toggleCardExpansion(cardElement, pageId) {
+    if (expandedCard && expandedCard !== cardElement) {
+      // Close any other expanded card
+      expandedCard.classList.remove('expanded');
+    }
+
+    if (cardElement.classList.contains('expanded')) {
+      // Close this card
+      cardElement.classList.remove('expanded');
+      expandedCard = null;
+      modalOverlay.classList.remove('show');
+    } else {
+      // Expand this card
+      cardElement.classList.add('expanded');
+      expandedCard = cardElement;
+      modalOverlay.classList.add('show');
+    }
+  }
+
+  // Close expanded card
+  function closeExpandedCard() {
+    if (expandedCard) {
+      expandedCard.classList.remove('expanded');
+      expandedCard = null;
+      modalOverlay.classList.remove('show');
     }
   }
 
@@ -911,7 +1068,7 @@
     pagesContainer.appendChild(grid);
   }
 
-  // Create page card with website thumbnails - FIXED data mapping
+  // Create page card with better thumbnail handling
   function createPageCard(page) {
     const card = document.createElement('div');
     card.className = 'page-card';
@@ -925,9 +1082,7 @@
       }
     }
 
-    const statusClass = status === 'active' ? 'active' : status === 'draft' ? 'draft' : 'inactive';
-    
-    // Use mapped fields
+    const statusClass = page.status === 'active' ? 'active' : 'inactive';
     const pageTitle = page.title || 'Untitled Page';
     const pageUrl = page.url || 'No URL set';
     const pageDescription = page.description || 'No description available';
@@ -936,13 +1091,14 @@
     const thumbnailUrl = generateThumbnailUrl(pageUrl);
 
     card.innerHTML = `
+      <button class="close-btn" onclick="event.stopPropagation(); closeExpandedCard();">&times;</button>
       <div class="page-preview">
         ${thumbnailUrl ? 
           `<img src="${thumbnailUrl}" alt="Website preview" class="page-thumbnail" 
                onerror="this.parentElement.innerHTML='<div class=\\"page-preview-placeholder\\">📄<br><small>Preview unavailable</small></div>'">` :
           `<div class="page-preview-placeholder">📄<br><small>${pageUrl === 'No URL set' ? 'No URL available' : 'Preview loading...'}</small></div>`
         }
-        <div class="page-status ${statusClass}">${status.toUpperCase()}</div>
+        <div class="page-status ${statusClass}">${page.status.toUpperCase()}</div>
       </div>
       <div class="page-card-header">
         <div class="page-card-title">${pageTitle}</div>
@@ -979,7 +1135,7 @@
           ></textarea>
           <button 
             class="edit-chat-btn" 
-            onclick="handlePageEdit('${page.id}')"
+            onclick="event.stopPropagation(); handlePageEdit('${page.id}')"
             id="editBtn_${page.id}"
           >
             🤖 Update Page
@@ -987,11 +1143,20 @@
         </div>
       </div>
       <div class="page-actions">
-        <button onclick="viewPage('${pageUrl}')" class="btn-small secondary">View</button>
-        <button onclick="copyPageUrl('${pageUrl}')" class="btn-small">Copy URL</button>
-        <button onclick="deletePage('${page.id}')" class="btn-small danger">Delete</button>
+        <button onclick="event.stopPropagation(); viewPage('${pageUrl}')" class="btn-small secondary">View</button>
+        <button onclick="event.stopPropagation(); copyPageUrl('${pageUrl}')" class="btn-small">Copy URL</button>
+        <button onclick="event.stopPropagation(); deletePage('${page.id}')" class="btn-small danger">Delete</button>
       </div>
     `;
+
+    // Add click handler for expansion
+    card.addEventListener('click', (e) => {
+      // Don't expand if clicking on buttons or inputs
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      toggleCardExpansion(card, page.id);
+    });
 
     return card;
   }
@@ -1023,10 +1188,10 @@
     }
   }
 
-  // View page in new tab
+  // View page in new tab - FIXED to always open in new tab
   function viewPage(url) {
     if (url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') {
-      window.open(url, '_blank');
+      window.open(url, '_blank', 'noopener,noreferrer');
     } else {
       showStatus('No URL available for this page', true);
     }
@@ -1077,6 +1242,7 @@
   // Event listeners
   function setupEventListeners() {
     createPageBtn.addEventListener('click', createPage);
+    
     refreshPagesBtn.addEventListener('click', async () => {
       await Promise.all([
         loadAvailableVideos(),
@@ -1084,7 +1250,18 @@
       ]);
       applyFilters();
     });
+    
     clearFiltersBtn.addEventListener('click', clearFilters);
+
+    // Close modal when clicking overlay
+    modalOverlay.addEventListener('click', closeExpandedCard);
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && expandedCard) {
+        closeExpandedCard();
+      }
+    });
 
     let searchTimeout;
     searchFilter.addEventListener('input', () => {
