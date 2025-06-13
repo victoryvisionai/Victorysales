@@ -1410,6 +1410,7 @@
     refreshMediaBtn.addEventListener('click', async () => {
       await loadMediaFiles();
       await loadUserData(); // Refresh credits too
+      updateCreditsDisplay(); // Re-populates medallion and credit UI based on API response
       applyFilters();
     });
 
