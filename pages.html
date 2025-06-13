@@ -883,12 +883,13 @@
   function cleanDescription(description) {
     if (!description) return 'No description available';
     
-    return description
-      .replace(/['"'>]/g, '') // Remove quotes and brackets
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .replace(/\s+/g, ' ') // Normalize whitespace
-      .trim()
-      .substring(0, 200); // Limit length
+  return description
+  .replace(/['"'>]/g, '') // Remove quotes and brackets
+  .replace(/'''/g, '') // Remove triple quotes specifically
+  .replace(/<[^>]*>/g, '') // Remove HTML tags
+  .replace(/\s+/g, ' ') // Normalize whitespace
+  .trim()
+  .substring(0, 200); // Limit length
   }
 
   // Create new page
@@ -1093,11 +1094,11 @@
     card.innerHTML = `
       <button class="close-btn" onclick="event.stopPropagation(); closeExpandedCard();">&times;</button>
       <div class="page-preview">
-        ${thumbnailUrl ? 
-          `<img src="${thumbnailUrl}" alt="Website preview" class="page-thumbnail" 
-               onerror="this.parentElement.innerHTML='<div class=\\"page-preview-placeholder\\">📄<br><small>Preview unavailable</small></div>'">` :
-          `<div class="page-preview-placeholder">📄<br><small>${pageUrl === 'No URL set' ? 'No URL available' : 'Preview loading...'}</small></div>`
-        }
+      ${thumbnailUrl ? 
+  `<img src="${thumbnailUrl}" alt="Website preview" class="page-thumbnail" 
+       onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\"page-preview-placeholder\\">📄<br><small>Website preview</small></div>'">` :
+  `<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>`
+}
         <div class="page-status ${statusClass}">${page.status.toUpperCase()}</div>
       </div>
       <div class="page-card-header">
