@@ -867,11 +867,11 @@ async function loadUserData() {
     // Handle the response structure from n8n webhook
     const user = userData.user || userData;
     
-    userCredits = {
-      image_credits: user.image_credits || 0,
-      video_credits: user.video_credits || 0
-    };
-    
+   // Handle the response structure from n8n webhook - data is at root level
+userCredits = {
+  image_credits: userData.image_credits || 0,
+  video_credits: userData.video_credits || 0
+};    
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
     const plan = user.subscription_plan || 'bronze';
