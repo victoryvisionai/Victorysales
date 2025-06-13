@@ -884,8 +884,8 @@
     if (!description) return 'No description available';
     
   return description
+  .replace(/'''/g, '') // Remove triple quotes first
   .replace(/['"'>]/g, '') // Remove quotes and brackets
-  .replace(/'''/g, '') // Remove triple quotes specifically
   .replace(/<[^>]*>/g, '') // Remove HTML tags
   .replace(/\s+/g, ' ') // Normalize whitespace
   .trim()
@@ -1094,11 +1094,7 @@
     card.innerHTML = `
       <button class="close-btn" onclick="event.stopPropagation(); closeExpandedCard();">&times;</button>
       <div class="page-preview">
-      ${thumbnailUrl ? 
-  `<img src="${thumbnailUrl}" alt="Website preview" class="page-thumbnail" 
-       onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\\"page-preview-placeholder\\">📄<br><small>Website preview</small></div>'">` :
-  `<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>`
-}
+<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>
         <div class="page-status ${statusClass}">${page.status.toUpperCase()}</div>
       </div>
       <div class="page-card-header">
