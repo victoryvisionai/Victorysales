@@ -859,30 +859,31 @@
     }
   }
 
-  // Load user data and credits
-  async function loadUserData() {
-    try {
-      const userData = await apiCall(ENDPOINTS.getUserData);
-      console.log('User data:', userData);
-      
-      userCredits = {
-        image_credits: userData.image_credits || 0,
-        video_credits: userData.video_credits || 0
-      };
-      
-      // Update subscription medallion
-      const medallion = document.getElementById('subscriptionMedallion');
-      const plan = userData.subscription_plan || 'bronze';
-      medallion.className = `subscription-medallion ${plan}`;
-      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-      
-      updateCreditsDisplay();
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      showStatus('Error loading user data: ' + error.message, true);
-    }
+async function loadUserData() {
+  try {
+    const userData = await apiCall(ENDPOINTS.getUserData);
+    console.log('User data:', userData);
+    
+    // Handle the response structure from n8n webhook
+    const user = userData.user || userData;
+    
+    userCredits = {
+      image_credits: user.image_credits || 0,
+      video_credits: user.video_credits || 0
+    };
+    
+    // Update subscription medallion
+    const medallion = document.getElementById('subscriptionMedallion');
+    const plan = user.subscription_plan || 'bronze';
+    medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+    medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    
+    updateCreditsDisplay();
+  } catch (error) {
+    console.error('Error loading user data:', error);
+    showStatus('Error loading user data: ' + error.message, true);
   }
-
+}
   // Update credits display
   function updateCreditsDisplay() {
     document.getElementById('imageCredits').textContent = userCredits.image_credits;
