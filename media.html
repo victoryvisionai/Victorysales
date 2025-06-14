@@ -1344,11 +1344,48 @@ async function loadUserData() {
     mediaContainer.appendChild(grid);
   }
 
-  // Create media card (existing function)
+// Create media card (existing function)
   function createMediaCard(file) {
     const card = document.createElement('div');
     card.className = 'media-card';
+    card.style.cursor = 'pointer';
+    card.onclick = () => openModal(file);
 
+    const fileType = getFileType(file.file_type);
+    const previewUrl = file.URL;
+    
+    let createdDate = 'Unknown';
+    if (file.created_at) {
+      try {
+        createdDate = new Date(file.created_at).toLocaleDateString();
+      } catch (e) {
+        createdDate = file.created_at;
+      }
+    }
+
+    card.innerHTML = `
+      <div class="media-preview">
+        ${renderMediaPreview(file, previewUrl)}
+        ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
+      </div>
+      <div class="media-info">
+        <h3 class="media-title">${file.name || 'Untitled'}</h3>
+        <p class="media-description">${file.prompt || 'No description available'}</p>
+        <div class="media-meta">
+          <div class="meta-item">
+            <span class="meta-label">Created:</span>
+            ${createdDate}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Size:</span>
+            ${formatFileSize(file.file_size)}
+          </div>
+        </div>
+      </div>
+    `;
+
+    return card;
+  }
     const fileType = getFileType(file.file_type);
     const previewUrl = file.URL;
     
