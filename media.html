@@ -1395,9 +1395,9 @@ card.innerHTML = `
         <source src="${file.URL}" type="${file.mime_type}">
         Your browser does not support the video tag.
       </video>`;
-    } else if (fileType === 'image' && previewUrl) {
-      return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
-               onerror="this.parentElement.innerHTML='<div style=\\"display:flex;align-items:center;justify-content:center;height:100%;color:#999;\\">📷</div>'">`;
+  } else if (fileType === 'image' && previewUrl) {
+  return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
+           onerror="this.parentElement.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#999;&quot;>📷</div>'">`;
     } else {
       return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">
         ${fileType === 'video' ? '🎬' : '📷'}
