@@ -859,6 +859,31 @@
     }
   }
 
+// Update credits display
+function updateCreditsDisplay() {
+  console.log('updateCreditsDisplay called with:', userCredits);
+  const imageCreditsElement = document.getElementById('imageCredits');
+  const videoCreditsElement = document.getElementById('videoCredits');
+  
+  if (imageCreditsElement) {
+    imageCreditsElement.textContent = userCredits.image_credits;
+  }
+  if (videoCreditsElement) {
+    videoCreditsElement.textContent = userCredits.video_credits;
+  }
+  
+  // Enable/disable buttons based on credits
+  const imageBtn = document.getElementById('imageCreateBtn');
+  const videoBtn = document.getElementById('videoCreateBtn');
+  
+  if (imageBtn) {
+    imageBtn.disabled = userCredits.image_credits <= 0;
+  }
+  if (videoBtn) {
+    videoBtn.disabled = userCredits.video_credits <= 0;
+  }
+}
+
 async function loadUserData() {
   try {
     const userData = await apiCall(ENDPOINTS.getUserData);
@@ -887,7 +912,6 @@ async function loadUserData() {
     showStatus('Error loading user data: ' + error.message, true);
   }
 }
-
   // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
