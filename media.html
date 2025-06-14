@@ -863,18 +863,21 @@ async function loadUserData() {
   try {
     const userData = await apiCall(ENDPOINTS.getUserData);
     console.log('User data:', userData);
+    console.log('Image credits from API:', userData.image_credits);
+    console.log('Video credits from API:', userData.video_credits);
+    console.log('Subscription plan from API:', userData.subscription_plan);
     
-    // Handle the response structure from n8n webhook
-    const user = userData.user || userData;
+    // Handle the response structure from n8n webhook - data is at root level
+    userCredits = {
+      image_credits: userData.image_credits || 0,
+      video_credits: userData.video_credits || 0
+    };
     
-   // Handle the response structure from n8n webhook - data is at root level
-userCredits = {
-  image_credits: userData.image_credits || 0,
-  video_credits: userData.video_credits || 0
-};    
-    // Update subscription medallion
+    console.log('userCredits after assignment:', userCredits);
+    
+    // Update subscription medallion - use userData directly, not user
     const medallion = document.getElementById('subscriptionMedallion');
-    const plan = user.subscription_plan || 'bronze';
+    const plan = userData.subscription_plan || 'bronze';
     medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
     medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
     
@@ -884,15 +887,6 @@ userCredits = {
     showStatus('Error loading user data: ' + error.message, true);
   }
 }
-  // Update credits display
-  function updateCreditsDisplay() {
-    document.getElementById('imageCredits').textContent = userCredits.image_credits;
-    document.getElementById('videoCredits').textContent = userCredits.video_credits;
-    
-    // Enable/disable buttons based on credits
-    document.getElementById('imageCreateBtn').disabled = userCredits.image_credits <= 0;
-    document.getElementById('videoCreateBtn').disabled = userCredits.video_credits <= 0;
-  }
 
   // Load media files from n8n webhook
   async function loadMediaFiles() {
