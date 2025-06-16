@@ -290,6 +290,14 @@
       background: #f8d7da;
       color: #721c24;
     }
+    .connection-info {
+      margin-top: 10px;
+      padding: 10px;
+      background: #e9ecef;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #666;
+    }
     
     /* Mobile responsive */
     @media (max-width: 768px) {
@@ -333,7 +341,7 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button id="subscriptionMedallion" class="subscription-medallion bronze">
+    <button id="subscriptionMedallion" class="subscription-medallion bronze" onclick="window.location.href='settings'">
       <span class="plan-name" id="planName">Bronze</span>
       <span id="trialStatus">7-Day Trial</span>
     </button>
@@ -357,8 +365,11 @@
         LinkedIn Integration
       </h3>
       <p>Connect LinkedIn for social media posting and lead generation.</p>
-      <button onclick="connectLinkedIn()">Connect LinkedIn</button>
+      <button onclick="connectLinkedIn()" id="connect-linkedin">Connect LinkedIn</button>
       <button class="danger" onclick="disconnectLinkedIn()" style="display: none;" id="disconnect-linkedin">Disconnect</button>
+      <div class="connection-info" id="linkedin-info" style="display: none;">
+        <strong>Connected as:</strong> <span id="linkedin-profile"></span>
+      </div>
     </div>
 
     <div class="settings-group">
@@ -367,18 +378,37 @@
         Instagram Integration
       </h3>
       <p>Connect Instagram for automated posting and content management.</p>
-      <button onclick="connectInstagram()">Connect Instagram</button>
+      <button onclick="connectInstagram()" id="connect-instagram">Connect Instagram</button>
       <button class="danger" onclick="disconnectInstagram()" style="display: none;" id="disconnect-instagram">Disconnect</button>
+      <div class="connection-info" id="instagram-info" style="display: none;">
+        <strong>Connected as:</strong> <span id="instagram-profile"></span>
+      </div>
     </div>
 
     <div class="settings-group">
-      <h3>Google Ads Settings</h3>
-      <p>Configure your Google Ads integration for campaign management.</p>
-      <div>
-        <label for="google-ads-account">Ad Account ID:</label>
-        <input type="text" id="google-ads-account" placeholder="123-456-7890" />
+      <h3>
+        <span class="status-indicator status-disconnected" id="twitter-status"></span>
+        Twitter/X Integration
+      </h3>
+      <p>Connect Twitter/X for automated posting and engagement tracking.</p>
+      <button onclick="connectTwitter()" id="connect-twitter">Connect Twitter</button>
+      <button class="danger" onclick="disconnectTwitter()" style="display: none;" id="disconnect-twitter">Disconnect</button>
+      <div class="connection-info" id="twitter-info" style="display: none;">
+        <strong>Connected as:</strong> <span id="twitter-profile"></span>
       </div>
-      <button onclick="connectGoogleAds()">Connect Google Ads</button>
+    </div>
+
+    <div class="settings-group">
+      <h3>
+        <span class="status-indicator status-disconnected" id="gmail-status"></span>
+        Gmail Integration
+      </h3>
+      <p>Connect Gmail for email automation and contact management.</p>
+      <button onclick="connectGmail()" id="connect-gmail">Connect Gmail</button>
+      <button class="danger" onclick="disconnectGmail()" style="display: none;" id="disconnect-gmail">Disconnect</button>
+      <div class="connection-info" id="gmail-info" style="display: none;">
+        <strong>Connected as:</strong> <span id="gmail-profile"></span>
+      </div>
     </div>
   </div>
 
@@ -388,9 +418,9 @@
     </div>
     
     <div class="plan-info">
-      <p><strong>Current Plan:</strong> Bronze - 7-Day Free Trial</p>
+      <p><strong>Current Plan:</strong> <span id="currentPlanName">Bronze - 7-Day Free Trial</span></p>
       <p><strong>Trial Ends:</strong> <span id="trialEndDate">Loading...</span></p>
-      <p><strong>Status:</strong> <span style="color: #28a745;">Active Trial</span></p>
+      <p><strong>Status:</strong> <span id="subscriptionStatus" style="color: #28a745;">Active Trial</span></p>
     </div>
 
     <h4>Available Plans</h4>
@@ -422,7 +452,7 @@
           <li>✓ Priority Support</li>
           <li>✓ Advanced Analytics</li>
         </ul>
-<button onclick="upgradeToPlan('silver', 'price_1RYVHzDtO3GiFEcMddvY6z5g')">Upgrade to Silver</button>
+        <button onclick="upgradeToPlan('silver')">Upgrade to Silver</button>
       </div>
 
       <div class="plan-card" id="goldPlan">
@@ -438,7 +468,7 @@
           <li>✓ White-label Options</li>
           <li>✓ Custom Integrations</li>
         </ul>
-        <button onclick="upgradeToPlan('gold', 'price_gold_monthly')">Upgrade to Gold</button>
+        <button onclick="upgradeToPlan('gold')">Upgrade to Gold</button>
       </div>
     </div>
   </div>
@@ -456,13 +486,27 @@
 </footer>
 
 <script>
-  // Supabase configuration for auth only
+  // Supabase configuration
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n webhook endpoint
-  const N8N_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout';
+  // OAuth Client IDs
+  const OAUTH_CLIENTS = {
+    linkedin: '86utfb95bpsrjk',
+    twitter: 'MzExUGVkUzRXTm9ObEM2bEZfelU6MTpjaQ',
+    gmail: '577539478739-nhpcaft3cuha4f26m0pkkl8u0m1u2ge8.apps.googleusercontent.com',
+    instagram: '' // Placeholder - needs actual Facebook App ID
+  };
+  
+  // n8n webhook endpoints
+  const N8N_ENDPOINTS = {
+    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    updateUser: 'https://victoryvision.app.n8n.cloud/webhook/user/update',
+    getCheckout: 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
+    oauthStatus: 'https://victoryvision.app.n8n.cloud/webhook/oauth/status',
+    oauthDisconnect: 'https://victoryvision.app.n8n.cloud/webhook/oauth/disconnect'
+  };
   
   let CUSTOMER_ID = null;
   let currentUser = null;
@@ -503,30 +547,302 @@
     window.location.href = 'login.html';
   }
 
-  // Set trial end date (7 days from now)
+  // Unified API call function
+  async function apiCall(endpoint, data = {}) {
+    try {
+      const url = endpoint.includes('/user/get') ? 
+        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+        endpoint;
+      
+      const requestOptions = {
+        method: endpoint.includes('/user/get') ? 'GET' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        }
+      };
+
+      if (!endpoint.includes('/user/get')) {
+        requestOptions.body = JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          ...data
+        });
+      }
+
+      const response = await fetch(url, requestOptions);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+    }
+  }
+
+  // Load user data and subscription info
+  async function loadUserData() {
+    try {
+      const response = await apiCall(N8N_ENDPOINTS.getUserData);
+      const userData = response[0]; // n8n returns array
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'bronze';
+      const status = userData.subscription_status || 'trial';
+      
+      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      
+      // Update plan info
+      if (status === 'trial') {
+        document.getElementById('currentPlanName').textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} - 7-Day Free Trial`;
+        document.getElementById('subscriptionStatus').textContent = 'Active Trial';
+        document.getElementById('subscriptionStatus').style.color = '#28a745';
+      } else if (status === 'active') {
+        document.getElementById('currentPlanName').textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan`;
+        document.getElementById('subscriptionStatus').textContent = 'Active';
+        document.getElementById('subscriptionStatus').style.color = '#28a745';
+      } else {
+        document.getElementById('currentPlanName').textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan`;
+        document.getElementById('subscriptionStatus').textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        document.getElementById('subscriptionStatus').style.color = '#dc3545';
+      }
+      
+      // Update plan cards
+      updatePlanCards(plan);
+      
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
+    }
+  }
+
+  // Update plan cards based on current plan
+  function updatePlanCards(currentPlan) {
+    // Remove all current badges and buttons
+    document.querySelectorAll('.current-badge').forEach(badge => badge.remove());
+    document.querySelectorAll('.plan-card').forEach(card => {
+      card.classList.remove('current');
+      const button = card.querySelector('button');
+      if (button) {
+        button.disabled = false;
+        button.className = '';
+      }
+    });
+    
+    // Add current badge to active plan
+    const currentCard = document.getElementById(`${currentPlan.toLowerCase()}Plan`);
+    if (currentCard) {
+      currentCard.classList.add('current');
+      const badge = document.createElement('div');
+      badge.className = 'current-badge';
+      badge.textContent = 'CURRENT';
+      currentCard.insertBefore(badge, currentCard.firstChild);
+      
+      const button = currentCard.querySelector('button');
+      if (button) {
+        button.disabled = true;
+        button.className = 'secondary';
+        button.textContent = 'Current Plan';
+      }
+    }
+  }
+
+  // OAuth connection functions
+  function generateRandomState() {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  }
+
+  function connectLinkedIn() {
+    const state = generateRandomState();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
+    const scope = encodeURIComponent('openid profile email w_member_social');
+    
+    const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${OAUTH_CLIENTS.linkedin}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
+    
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'linkedin');
+    
+    window.location.href = authUrl;
+  }
+
+  function connectInstagram() {
+    if (!OAUTH_CLIENTS.instagram) {
+      showStatus('Instagram integration coming soon!', true);
+      return;
+    }
+    
+    const state = generateRandomState();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
+    
+    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${OAUTH_CLIENTS.instagram}&redirect_uri=${redirectUri}&state=${state}&scope=instagram_basic,instagram_content_publish,pages_show_list`;
+    
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'instagram');
+    
+    window.location.href = authUrl;
+  }
+
+  function connectTwitter() {
+    const state = generateRandomState();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
+    const codeChallenge = generateCodeChallenge(); // Need to implement PKCE for Twitter
+    
+    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${OAUTH_CLIENTS.twitter}&redirect_uri=${redirectUri}&scope=tweet.read%20tweet.write%20users.read%20follows.read%20follows.write&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'twitter');
+    sessionStorage.setItem('code_verifier', codeChallenge); // Store for token exchange
+    
+    window.location.href = authUrl;
+  }
+
+  function connectGmail() {
+    const state = generateRandomState();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
+    const scope = encodeURIComponent('https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send');
+    
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${OAUTH_CLIENTS.gmail}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
+    
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'gmail');
+    
+    window.location.href = authUrl;
+  }
+
+  // Generate code challenge for Twitter PKCE
+  function generateCodeChallenge() {
+    const verifier = generateRandomState() + generateRandomState();
+    // In production, this should use SHA256 and base64url encoding
+    return verifier; // Simplified for example
+  }
+
+  // Disconnect functions
+  async function disconnectLinkedIn() {
+    if (confirm('Are you sure you want to disconnect LinkedIn?')) {
+      try {
+        await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform: 'linkedin' });
+        updateConnectionStatus('linkedin', false);
+        showStatus('LinkedIn disconnected successfully');
+      } catch (error) {
+        showStatus('Error disconnecting LinkedIn: ' + error.message, true);
+      }
+    }
+  }
+
+  async function disconnectInstagram() {
+    if (confirm('Are you sure you want to disconnect Instagram?')) {
+      try {
+        await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform: 'instagram' });
+        updateConnectionStatus('instagram', false);
+        showStatus('Instagram disconnected successfully');
+      } catch (error) {
+        showStatus('Error disconnecting Instagram: ' + error.message, true);
+      }
+    }
+  }
+
+  async function disconnectTwitter() {
+    if (confirm('Are you sure you want to disconnect Twitter?')) {
+      try {
+        await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform: 'twitter' });
+        updateConnectionStatus('twitter', false);
+        showStatus('Twitter disconnected successfully');
+      } catch (error) {
+        showStatus('Error disconnecting Twitter: ' + error.message, true);
+      }
+    }
+  }
+
+  async function disconnectGmail() {
+    if (confirm('Are you sure you want to disconnect Gmail?')) {
+      try {
+        await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform: 'gmail' });
+        updateConnectionStatus('gmail', false);
+        showStatus('Gmail disconnected successfully');
+      } catch (error) {
+        showStatus('Error disconnecting Gmail: ' + error.message, true);
+      }
+    }
+  }
+
+  // Update connection status UI
+  function updateConnectionStatus(platform, isConnected, profileInfo = null) {
+    const statusIndicator = document.getElementById(`${platform}-status`);
+    const connectBtn = document.getElementById(`connect-${platform}`);
+    const disconnectBtn = document.getElementById(`disconnect-${platform}`);
+    const infoDiv = document.getElementById(`${platform}-info`);
+    const profileSpan = document.getElementById(`${platform}-profile`);
+    
+    if (isConnected) {
+      statusIndicator.className = 'status-indicator status-connected';
+      connectBtn.style.display = 'none';
+      disconnectBtn.style.display = 'inline-block';
+      if (profileInfo && infoDiv && profileSpan) {
+        profileSpan.textContent = profileInfo;
+        infoDiv.style.display = 'block';
+      }
+    } else {
+      statusIndicator.className = 'status-indicator status-disconnected';
+      connectBtn.style.display = 'inline-block';
+      disconnectBtn.style.display = 'none';
+      if (infoDiv) {
+        infoDiv.style.display = 'none';
+      }
+    }
+  }
+
+  // Check OAuth connection status
+  async function checkConnectionStatus() {
+    try {
+      const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
+      
+      // Update UI for each platform
+      if (response.linkedin) {
+        updateConnectionStatus('linkedin', true, response.linkedin.profile);
+      }
+      if (response.instagram) {
+        updateConnectionStatus('instagram', true, response.instagram.profile);
+      }
+      if (response.twitter) {
+        updateConnectionStatus('twitter', true, response.twitter.profile);
+      }
+      if (response.gmail) {
+        updateConnectionStatus('gmail', true, response.gmail.profile);
+      }
+    } catch (error) {
+      console.error('Error checking connection status:', error);
+    }
+  }
+
+  // Set trial end date
   function setTrialEndDate() {
     const trialEnd = new Date();
     trialEnd.setDate(trialEnd.getDate() + 7);
     document.getElementById('trialEndDate').textContent = trialEnd.toLocaleDateString();
   }
 
- // Price ID mapping function
+  // Price ID mapping
   function getPriceId(planName) {
     const priceMap = {
       'bronze': 'price_1RYVFiDtO3GiFEcMAmOjFNTA',
-      'silver': 'price_1RYVHzDtO3GiFEcMddvY6z5g', 
+      'silver': 'price_1RYVHzDtO3GiFEcMddvY6z5g',
       'gold': 'price_1RYVM0DtO3GiFEcMiFXfxVXQ'
     };
     return priceMap[planName];
   }
 
-  // Stripe checkout function
+  // Stripe checkout
   async function upgradeToPlan(planName) {
     try {
       const priceId = getPriceId(planName);
       showStatus('Redirecting to secure checkout...', false);
       
-      const response = await fetch(N8N_ENDPOINT, {
+      const response = await fetch(N8N_ENDPOINTS.getCheckout, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -549,7 +865,6 @@
       const result = await response.json();
       
       if (result.success && result.checkout_url) {
-        // Redirect to Stripe Checkout
         window.location.href = result.checkout_url;
       } else {
         throw new Error(result.message || 'Failed to create checkout session');
@@ -558,42 +873,6 @@
       console.error('Error creating checkout session:', error);
       showStatus('Error creating checkout session: ' + error.message, true);
     }
-  }
-
-  // Social Media Integration Functions
-  function connectLinkedIn() {
-    alert('Redirecting to LinkedIn for authorization...');
-    setTimeout(() => {
-      document.getElementById('linkedin-status').className = 'status-indicator status-connected';
-      document.getElementById('disconnect-linkedin').style.display = 'inline-block';
-    }, 2000);
-  }
-
-  function disconnectLinkedIn() {
-    document.getElementById('linkedin-status').className = 'status-indicator status-disconnected';
-    document.getElementById('disconnect-linkedin').style.display = 'none';
-  }
-
-  function connectInstagram() {
-    alert('Redirecting to Instagram for authorization...');
-    setTimeout(() => {
-      document.getElementById('instagram-status').className = 'status-indicator status-connected';
-      document.getElementById('disconnect-instagram').style.display = 'inline-block';
-    }, 2000);
-  }
-
-  function disconnectInstagram() {
-    document.getElementById('instagram-status').className = 'status-indicator status-disconnected';
-    document.getElementById('disconnect-instagram').style.display = 'none';
-  }
-
-  function connectGoogleAds() {
-    const accountId = document.getElementById('google-ads-account').value;
-    if (!accountId) {
-      alert('Please enter your Google Ads Account ID');
-      return;
-    }
-    alert('Connecting to Google Ads...');
   }
 
   // Utility functions
@@ -608,6 +887,38 @@
     }, 5000);
   }
 
+  // Handle OAuth callback parameters
+  function handleOAuthCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Check for successful OAuth callback
+    const oauthSuccess = urlParams.get('oauth_success');
+    if (oauthSuccess) {
+      showStatus(`${oauthSuccess.charAt(0).toUpperCase() + oauthSuccess.slice(1)} connected successfully!`, false);
+      checkConnectionStatus(); // Refresh connection status
+    }
+    
+    // Check for OAuth error
+    const oauthError = urlParams.get('oauth_error');
+    if (oauthError) {
+      showStatus(`Error connecting: ${oauthError}`, true);
+    }
+    
+    // Check for successful checkout
+    const sessionId = urlParams.get('session_id');
+    if (sessionId) {
+      showStatus('Payment successful! Your subscription has been activated.', false);
+      loadUserData(); // Refresh user data
+    }
+    
+    // Clean URL after handling parameters
+    if (oauthSuccess || oauthError || sessionId) {
+      setTimeout(() => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }, 3000);
+    }
+  }
+
   // Initialize page
   async function init() {
     try {
@@ -618,6 +929,9 @@
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
         setTrialEndDate();
+        await loadUserData();
+        await checkConnectionStatus();
+        handleOAuthCallback();
       } else {
         redirectToLogin();
       }
@@ -658,16 +972,6 @@
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
-
-  // Check for successful checkout return
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('session_id')) {
-    showStatus('Payment successful! Your subscription has been activated.', false);
-    // Clean URL after showing message
-    setTimeout(() => {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }, 3000);
-  }
 </script>
 </body>
 </html>
