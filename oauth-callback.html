@@ -127,13 +127,28 @@
       }
 
       // Validate state
-      if (!code || !state || state !== storedState) {
-        showError('Invalid authorization response. Please try again.');
-        setTimeout(() => {
-          window.location.href = '/settings?oauth_error=invalid_state';
-        }, 3000);
-        return;
-      }
+  if (!code || !state) {
+  showError('Missing authorization parameters. Please try again.');
+  setTimeout(() => {
+    window.location.href = '/settings?oauth_error=missing_params';
+  }, 3000);
+  return;
+}
+
+// Optionally validate state against current session
+try {
+  const decoded = atob(state);
+  const [email] = decoded.split(':');
+  if (email !== CUSTOMER_ID) {
+    throw new Error('Session mismatch');
+  }
+} catch (e) {
+  showError('Invalid state parameter. Please log in and try again.');
+  setTimeout(() => {
+    window.location.href = '/settings?oauth_error=invalid_state';
+  }, 3000);
+  return;
+}
 
       // Update status
       document.getElementById('statusMessage').textContent = `Connecting ${platform}...`;
