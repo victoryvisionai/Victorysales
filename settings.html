@@ -659,7 +659,7 @@
 
   function connectLinkedIn() {
     const state = generateRandomState();
-    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
     const scope = encodeURIComponent('openid profile email w_member_social');
     
     const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${OAUTH_CLIENTS.linkedin}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
