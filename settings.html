@@ -653,12 +653,13 @@
   }
 
   // OAuth connection functions
-  function generateRandomState() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  }
-
+  function generateStateFromSession() {
+  const raw = `${CUSTOMER_ID}:${Date.now()}`;
+  return btoa(raw); // Encodes user info in base64
+}
+  
   function connectLinkedIn() {
-    const state = generateRandomState();
+    const state = generateStateFromSession();
     const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
   const scope = encodeURIComponent('openid profile email w_member_social');
     const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${OAUTH_CLIENTS.linkedin}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
@@ -675,7 +676,7 @@
       return;
     }
     
-    const state = generateRandomState();
+    const state = generateStateFromSession();
     const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
     
     const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${OAUTH_CLIENTS.instagram}&redirect_uri=${redirectUri}&state=${state}&scope=instagram_basic,instagram_content_publish,pages_show_list`;
@@ -687,7 +688,7 @@
   }
 
   function connectTwitter() {
-    const state = generateRandomState();
+    const state = generateStateFromSession();
     const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
     const codeChallenge = generateCodeChallenge(); // Need to implement PKCE for Twitter
     
@@ -701,7 +702,7 @@
   }
 
   function connectGmail() {
-    const state = generateRandomState();
+    const state = generateStateFromSession();
     const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
     const scope = encodeURIComponent('https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send');
     
@@ -715,7 +716,7 @@
 
   // Generate code challenge for Twitter PKCE
   function generateCodeChallenge() {
-    const verifier = generateRandomState() + generateRandomState();
+    const verifier = generateStateFromSession() + generateStateFromSession();
     // In production, this should use SHA256 and base64url encoding
     return verifier; // Simplified for example
   }
