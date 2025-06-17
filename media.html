@@ -1242,8 +1242,9 @@ async function loadUserData() {
 
       showStatus('Creating video... This may take several minutes.');
       
-      const payload = {};
-
+  const payload = {
+  chat: formData.get('chat')
+};
       // Add source image - required
       const sourceImage = formData.get('source_image');
       if (sourceImage && sourceImage.size > 0) {
@@ -1574,14 +1575,13 @@ card.innerHTML = `
       await createImage(formData);
     });
 
-    // Video creation form
-    document.getElementById('videoForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('source_image', document.getElementById('videoSourceImage').files[0]);
-      await createVideo(formData);
-    });
-
+ // Video creation form
+document.getElementById('videoForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  formData.append('source_image', document.getElementById('videoSourceImage').files[0]);
+  await createVideo(formData);
+});
     // Image update form
     document.getElementById('imageUpdateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
