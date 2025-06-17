@@ -189,12 +189,6 @@ if (result.success) {
   sessionStorage.removeItem('oauth_platform');
   sessionStorage.removeItem('code_verifier');
 
-        if (result.success) {
-          // Clear stored OAuth data
-          sessionStorage.removeItem('oauth_state');
-          sessionStorage.removeItem('oauth_platform');
-          sessionStorage.removeItem('code_verifier');
-
           // Show success message
           document.getElementById('statusMessage').textContent = `${platform.charAt(0).toUpperCase() + platform.slice(1)} connected successfully!`;
           document.querySelector('.spinner').style.display = 'none';
