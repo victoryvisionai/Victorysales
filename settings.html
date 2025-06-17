@@ -970,10 +970,13 @@
     }
   });
 
+<script>
   // Initialize when DOM loads
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', () => {
+    init();
+    loadPlatformStatuses();
+  });
 
-  <script>
   const platforms = [
     { name: 'linkedin', label: 'LinkedIn' },
     { name: 'twitter', label: 'Twitter' },
@@ -1002,8 +1005,6 @@
       updatePlatformUI(name, profile);
     });
   }
-
-  document.addEventListener('DOMContentLoaded', loadPlatformStatuses);
 </script>
 </body>
 </html>
