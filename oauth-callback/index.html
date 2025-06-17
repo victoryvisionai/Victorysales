@@ -175,6 +175,19 @@ try {
         }
 
         const result = await response.json();
+// Save profile info for UI update in settings
+if (platform === 'linkedin') {
+  sessionStorage.setItem('linkedin_profile', result.email || '');
+} else if (platform === 'twitter') {
+  sessionStorage.setItem('twitter_profile', result.email || '');
+} else if (platform === 'gmail') {
+  sessionStorage.setItem('gmail_profile', result.email || '');
+}
+if (result.success) {
+  // Clear stored OAuth data
+  sessionStorage.removeItem('oauth_state');
+  sessionStorage.removeItem('oauth_platform');
+  sessionStorage.removeItem('code_verifier');
 
         if (result.success) {
           // Clear stored OAuth data
