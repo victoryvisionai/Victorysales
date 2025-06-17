@@ -972,6 +972,40 @@
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
+
+  <script>
+  const platforms = [
+    { name: 'linkedin', label: 'LinkedIn' },
+    { name: 'twitter', label: 'Twitter' },
+    { name: 'gmail', label: 'Gmail' }
+  ];
+
+  function updatePlatformUI(name, profile) {
+    if (!profile) return;
+    const statusId = `${name}-status`;
+    const profileId = `${name}-profile`;
+    const infoId = `${name}-info`;
+    const connectBtn = `connect-${name}`;
+    const disconnectBtn = `disconnect-${name}`;
+
+    document.getElementById(statusId)?.classList.remove('status-disconnected');
+    document.getElementById(statusId)?.classList.add('status-connected');
+    document.getElementById(profileId).textContent = profile;
+    document.getElementById(infoId).style.display = 'block';
+    document.getElementById(connectBtn).style.display = 'none';
+    document.getElementById(disconnectBtn).style.display = 'inline-block';
+  }
+
+  function loadPlatformStatuses() {
+    platforms.forEach(({ name }) => {
+      const profile = sessionStorage.getItem(`${name}_profile`);
+      updatePlatformUI(name, profile);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', loadPlatformStatuses);
+</script>
+
 </script>
 </body>
 </html>
