@@ -769,7 +769,7 @@
 
   function connectGmail() {
     const state = generateStateFromSession();
-    const redirectUri = encodeURIComponent('https://www.victoryvision.appoauth-callback/');
+    const redirectUri = encodeURIComponent('https://www.victoryvision.app/oauth-callback/');
     const scope = encodeURIComponent('https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send');
     
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${OAUTH_CLIENTS.gmail}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
