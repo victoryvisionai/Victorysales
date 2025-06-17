@@ -44,7 +44,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: linear-gradient(45deg, #FFD700, #FFA500);
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
       color: white;
       padding: 8px 15px;
       border-radius: 20px;
@@ -341,10 +341,9 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button id="subscriptionMedallion" class="subscription-medallion bronze" onclick="window.location.href='settings'">
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
       <span class="plan-name" id="planName">Bronze</span>
-      <span id="trialStatus">7-Day Trial</span>
-    </button>
+    </div>
   </div>
 </header>
 
@@ -418,15 +417,14 @@
     </div>
     
     <div class="plan-info">
-      <p><strong>Current Plan:</strong> <span id="currentPlanName">Bronze - 7-Day Free Trial</span></p>
-      <p><strong>Trial Ends:</strong> <span id="trialEndDate">Loading...</span></p>
-      <p><strong>Status:</strong> <span id="subscriptionStatus" style="color: #28a745;">Active Trial</span></p>
+      <p><strong>Current Plan:</strong> <span id="currentPlanName">Loading...</span></p>
+      <p><strong>Status:</strong> <span id="subscriptionStatus">Loading...</span></p>
+      <p id="nextBillingInfo" style="display: none;"><strong>Next Billing:</strong> <span id="nextBillingDate">Loading...</span></p>
     </div>
 
     <h4>Available Plans</h4>
     <div class="billing-section">
-      <div class="plan-card current" id="bronzePlan">
-        <div class="current-badge">CURRENT</div>
+      <div class="plan-card" id="bronzePlan">
         <h4>Bronze Plan</h4>
         <div class="plan-price">$99<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -437,7 +435,7 @@
           <li>✓ 25 Social Credits</li>
           <li>✓ Basic Support</li>
         </ul>
-        <button class="secondary" disabled>Current Trial</button>
+        <button onclick="upgradeToPlan('bronze')" id="bronzeButton">Select Bronze</button>
       </div>
 
       <div class="plan-card" id="silverPlan">
@@ -452,7 +450,7 @@
           <li>✓ Priority Support</li>
           <li>✓ Advanced Analytics</li>
         </ul>
-        <button onclick="upgradeToPlan('silver')">Upgrade to Silver</button>
+        <button onclick="upgradeToPlan('silver')" id="silverButton">Select Silver</button>
       </div>
 
       <div class="plan-card" id="goldPlan">
@@ -468,7 +466,7 @@
           <li>✓ White-label Options</li>
           <li>✓ Custom Integrations</li>
         </ul>
-        <button onclick="upgradeToPlan('gold')">Upgrade to Gold</button>
+        <button onclick="upgradeToPlan('gold')" id="goldButton">Select Gold</button>
       </div>
     </div>
   </div>
@@ -589,31 +587,41 @@
       const response = await apiCall(N8N_ENDPOINTS.getUserData);
       const userData = response[0]; // n8n returns array
       
-      // Update subscription medallion
-      const medallion = document.getElementById('subscriptionMedallion');
-      const plan = userData.subscription_plan || 'bronze';
-      const status = userData.subscription_status || 'trial';
+      console.log('User data loaded:', userData);
       
+      // Get plan from API response
+      const plan = userData.subscription_plan || 'Bronze';
+      const status = userData.subscription_status || 'trial';
+      const nextBilling = userData.next_billing_date;
+      
+      // Update subscription medallion - use exact plan value from API
+      const medallion = document.getElementById('subscriptionMedallion');
       medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
-      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      medallion.querySelector('.plan-name').textContent = plan;
       
       // Update plan info
+      document.getElementById('currentPlanName').textContent = `${plan} Plan`;
+      
+      // Update status
       if (status === 'trial') {
-        document.getElementById('currentPlanName').textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} - 7-Day Free Trial`;
-        document.getElementById('subscriptionStatus').textContent = 'Active Trial';
+        document.getElementById('subscriptionStatus').textContent = 'Free Trial Active';
         document.getElementById('subscriptionStatus').style.color = '#28a745';
       } else if (status === 'active') {
-        document.getElementById('currentPlanName').textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan`;
         document.getElementById('subscriptionStatus').textContent = 'Active';
         document.getElementById('subscriptionStatus').style.color = '#28a745';
       } else {
-        document.getElementById('currentPlanName').textContent = `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan`;
         document.getElementById('subscriptionStatus').textContent = status.charAt(0).toUpperCase() + status.slice(1);
         document.getElementById('subscriptionStatus').style.color = '#dc3545';
       }
       
-      // Update plan cards
-      updatePlanCards(plan);
+      // Show next billing date if available
+      if (nextBilling && status === 'active') {
+        document.getElementById('nextBillingInfo').style.display = 'block';
+        document.getElementById('nextBillingDate').textContent = new Date(nextBilling).toLocaleDateString();
+      }
+      
+      // Update plan cards based on current plan
+      updatePlanCards(plan.toLowerCase());
       
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -623,19 +631,25 @@
 
   // Update plan cards based on current plan
   function updatePlanCards(currentPlan) {
-    // Remove all current badges and buttons
+    // Remove all current badges and reset buttons
     document.querySelectorAll('.current-badge').forEach(badge => badge.remove());
     document.querySelectorAll('.plan-card').forEach(card => {
       card.classList.remove('current');
-      const button = card.querySelector('button');
+    });
+    
+    // Reset all buttons
+    const plans = ['bronze', 'silver', 'gold'];
+    plans.forEach(plan => {
+      const button = document.getElementById(`${plan}Button`);
       if (button) {
         button.disabled = false;
         button.className = '';
+        button.textContent = `Select ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
       }
     });
     
     // Add current badge to active plan
-    const currentCard = document.getElementById(`${currentPlan.toLowerCase()}Plan`);
+    const currentCard = document.getElementById(`${currentPlan}Plan`);
     if (currentCard) {
       currentCard.classList.add('current');
       const badge = document.createElement('div');
@@ -643,7 +657,7 @@
       badge.textContent = 'CURRENT';
       currentCard.insertBefore(badge, currentCard.firstChild);
       
-      const button = currentCard.querySelector('button');
+      const button = document.getElementById(`${currentPlan}Button`);
       if (button) {
         button.disabled = true;
         button.className = 'secondary';
@@ -652,16 +666,64 @@
     }
   }
 
+  // Check OAuth connection status
+  async function checkConnectionStatus() {
+    try {
+      const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
+      console.log('OAuth status response:', response);
+      
+      // Update UI for each platform based on access_token presence
+      updateConnectionStatus('linkedin', !!(response.linkedin && response.linkedin.access_token), response.linkedin?.profile_id);
+      updateConnectionStatus('instagram', !!(response.instagram && response.instagram.access_token), response.instagram?.profile_id);
+      updateConnectionStatus('twitter', !!(response.twitter && response.twitter.access_token), response.twitter?.profile_id);
+      updateConnectionStatus('gmail', !!(response.gmail && response.gmail.access_token), response.gmail?.profile_id);
+      
+    } catch (error) {
+      console.error('Error checking connection status:', error);
+      // Set all to disconnected on error
+      updateConnectionStatus('linkedin', false);
+      updateConnectionStatus('instagram', false);
+      updateConnectionStatus('twitter', false);
+      updateConnectionStatus('gmail', false);
+    }
+  }
+
+  // Update connection status UI
+  function updateConnectionStatus(platform, isConnected, profileInfo = null) {
+    const statusIndicator = document.getElementById(`${platform}-status`);
+    const connectBtn = document.getElementById(`connect-${platform}`);
+    const disconnectBtn = document.getElementById(`disconnect-${platform}`);
+    const infoDiv = document.getElementById(`${platform}-info`);
+    const profileSpan = document.getElementById(`${platform}-profile`);
+    
+    if (isConnected) {
+      statusIndicator.className = 'status-indicator status-connected';
+      connectBtn.style.display = 'none';
+      disconnectBtn.style.display = 'inline-block';
+      if (profileInfo && infoDiv && profileSpan) {
+        profileSpan.textContent = profileInfo;
+        infoDiv.style.display = 'block';
+      }
+    } else {
+      statusIndicator.className = 'status-indicator status-disconnected';
+      connectBtn.style.display = 'inline-block';
+      disconnectBtn.style.display = 'none';
+      if (infoDiv) {
+        infoDiv.style.display = 'none';
+      }
+    }
+  }
+
   // OAuth connection functions
   function generateStateFromSession() {
-  const raw = `${CUSTOMER_ID}:${Date.now()}`;
-  return btoa(raw); // Encodes user info in base64
-}
+    const raw = `${CUSTOMER_ID}:${Date.now()}`;
+    return btoa(raw); // Encodes user info in base64
+  }
   
   function connectLinkedIn() {
     const state = generateStateFromSession();
     const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
-  const scope = encodeURIComponent('openid profile email w_member_social');
+    const scope = encodeURIComponent('openid profile email w_member_social');
     const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${OAUTH_CLIENTS.linkedin}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
     
     sessionStorage.setItem('oauth_state', state);
@@ -770,61 +832,6 @@
     }
   }
 
-  // Update connection status UI
-  function updateConnectionStatus(platform, isConnected, profileInfo = null) {
-    const statusIndicator = document.getElementById(`${platform}-status`);
-    const connectBtn = document.getElementById(`connect-${platform}`);
-    const disconnectBtn = document.getElementById(`disconnect-${platform}`);
-    const infoDiv = document.getElementById(`${platform}-info`);
-    const profileSpan = document.getElementById(`${platform}-profile`);
-    
-    if (isConnected) {
-      statusIndicator.className = 'status-indicator status-connected';
-      connectBtn.style.display = 'none';
-      disconnectBtn.style.display = 'inline-block';
-      if (profileInfo && infoDiv && profileSpan) {
-        profileSpan.textContent = profileInfo;
-        infoDiv.style.display = 'block';
-      }
-    } else {
-      statusIndicator.className = 'status-indicator status-disconnected';
-      connectBtn.style.display = 'inline-block';
-      disconnectBtn.style.display = 'none';
-      if (infoDiv) {
-        infoDiv.style.display = 'none';
-      }
-    }
-  }
-
- // Check OAuth connection status
-async function checkConnectionStatus() {
-  try {
-    const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
-    console.log('OAuth status response:', response);
-    
-    // Update UI for each platform based on access_token presence
-    updateConnectionStatus('linkedin', !!(response.linkedin && response.linkedin.access_token), response.linkedin?.profile_id);
-    updateConnectionStatus('instagram', !!(response.instagram && response.instagram.access_token), response.instagram?.profile_id);
-    updateConnectionStatus('twitter', !!(response.twitter && response.twitter.access_token), response.twitter?.profile_id);
-    updateConnectionStatus('gmail', !!(response.gmail && response.gmail.access_token), response.gmail?.profile_id);
-    
-  } catch (error) {
-    console.error('Error checking connection status:', error);
-    // Set all to disconnected on error
-    updateConnectionStatus('linkedin', false);
-    updateConnectionStatus('instagram', false);
-    updateConnectionStatus('twitter', false);
-    updateConnectionStatus('gmail', false);
-  }
-}
-
-  // Set trial end date
-  function setTrialEndDate() {
-    const trialEnd = new Date();
-    trialEnd.setDate(trialEnd.getDate() + 7);
-    document.getElementById('trialEndDate').textContent = trialEnd.toLocaleDateString();
-  }
-
   // Price ID mapping
   function getPriceId(planName) {
     const priceMap = {
@@ -927,7 +934,6 @@ async function checkConnectionStatus() {
       
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
-        setTrialEndDate();
         await loadUserData();
         await checkConnectionStatus();
         handleOAuthCallback();
