@@ -796,28 +796,27 @@
     }
   }
 
-  // Check OAuth connection status
-  async function checkConnectionStatus() {
-    try {
-      const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
-      
-      // Update UI for each platform
-      if (response.linkedin) {
-        updateConnectionStatus('linkedin', true, response.linkedin.profile);
-      }
-      if (response.instagram) {
-        updateConnectionStatus('instagram', true, response.instagram.profile);
-      }
-      if (response.twitter) {
-        updateConnectionStatus('twitter', true, response.twitter.profile);
-      }
-      if (response.gmail) {
-        updateConnectionStatus('gmail', true, response.gmail.profile);
-      }
-    } catch (error) {
-      console.error('Error checking connection status:', error);
-    }
+ // Check OAuth connection status
+async function checkConnectionStatus() {
+  try {
+    const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
+    console.log('OAuth status response:', response);
+    
+    // Update UI for each platform based on access_token presence
+    updateConnectionStatus('linkedin', !!(response.linkedin && response.linkedin.access_token), response.linkedin?.profile_id);
+    updateConnectionStatus('instagram', !!(response.instagram && response.instagram.access_token), response.instagram?.profile_id);
+    updateConnectionStatus('twitter', !!(response.twitter && response.twitter.access_token), response.twitter?.profile_id);
+    updateConnectionStatus('gmail', !!(response.gmail && response.gmail.access_token), response.gmail?.profile_id);
+    
+  } catch (error) {
+    console.error('Error checking connection status:', error);
+    // Set all to disconnected on error
+    updateConnectionStatus('linkedin', false);
+    updateConnectionStatus('instagram', false);
+    updateConnectionStatus('twitter', false);
+    updateConnectionStatus('gmail', false);
   }
+}
 
   // Set trial end date
   function setTrialEndDate() {
