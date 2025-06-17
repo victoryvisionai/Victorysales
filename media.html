@@ -149,6 +149,7 @@
       display: block;
     }
     .preview-panel {
+      position: relative;
       background: #f8f9fa;
       border: 2px dashed #dee2e6;
       border-radius: 8px;
@@ -160,6 +161,34 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+    }
+    .processing-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 100;
+      border-radius: 8px;
+    }
+    .processing-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0A3161;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+    .processing-text {
+      color: #0A3161;
+      font-weight: bold;
+      text-align: center;
     }
     .preview-content {
       max-width: 100%;
@@ -466,6 +495,102 @@
       text-decoration: none;
     }
     
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .modal-video {
+      width: 100%;
+      max-height: 300px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .close {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    .close:hover {
+      opacity: 0.7;
+    }
+
+    .modal-field {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .modal-field:last-child {
+      border-bottom: none;
+    }
+
+    .modal-label {
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 5px;
+    }
+
+    .modal-value {
+      color: #333;
+      word-break: break-all;
+    }
+
+    .modal-link {
+      color: #0A3161;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .modal-link:hover {
+      color: #083050;
+    }
+    
     /* Responsive */
     @media (max-width: 1024px) {
       .creation-layout {
@@ -492,103 +617,6 @@
         flex-wrap: wrap;
       }
     }
-  /* Modal styles */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.modal-content {
-  background-color: white;
-  margin: 5% auto;
-  padding: 0;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  background: linear-gradient(135deg, #0A3161, #1a4c80);
-  color: white;
-  padding: 20px;
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-body {
-  padding: 20px;
-}
-
-.modal-image {
-  width: 100%;
-  max-height: 300px;
-  object-fit: contain;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.modal-video {
-  width: 100%;
-  max-height: 300px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.close {
-  color: white;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-
-.close:hover {
-  opacity: 0.7;
-}
-
-.modal-field {
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-.modal-field:last-child {
-  border-bottom: none;
-}
-
-.modal-label {
-  font-weight: bold;
-  color: #0A3161;
-  margin-bottom: 5px;
-}
-
-.modal-value {
-  color: #333;
-  word-break: break-all;
-}
-
-.modal-link {
-  color: #0A3161;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.modal-link:hover {
-  color: #083050;
-}
-  </style>
-</head>
   </style>
 </head>
 <body>
@@ -677,35 +705,34 @@
         </div>
 
         <!-- Create Video Form -->
-<!-- Create Video Form -->
-<div id="createVideoForm" class="creation-form">
-  <div class="credits-display">
-    <div class="credits-number" id="videoCredits">Loading...</div>
-    <div class="credits-label">Video Credits Remaining</div>
-  </div>
-  
-  <form id="videoForm">
-    <div class="form-group">
-      <label for="videoChat">Description *</label>
-      <textarea id="videoChat" required placeholder="Describe the video motion you want to create..."></textarea>
-    </div>
-    
-    <div class="form-group">
-      <label for="videoSourceImage">Source Image *</label>
-      <input type="file" id="videoSourceImage" accept="image/*">
-      <small>Upload an image or select from existing images below</small>
-    </div>
-    
-    <div class="form-group">
-      <label>Existing Images (Click to select)</label>
-      <div id="videoReferenceList" class="reference-list">
-        Loading available images...
-      </div>
-    </div>
-    
-    <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
-  </form>
-</div>
+        <div id="createVideoForm" class="creation-form">
+          <div class="credits-display">
+            <div class="credits-number" id="videoCredits">Loading...</div>
+            <div class="credits-label">Video Credits Remaining</div>
+          </div>
+          
+          <form id="videoForm">
+            <div class="form-group">
+              <label for="videoChat">Description *</label>
+              <textarea id="videoChat" required placeholder="Describe the video motion you want to create..."></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="videoSourceImage">Source Image *</label>
+              <input type="file" id="videoSourceImage" accept="image/*">
+              <small>Upload an image or select from existing images below</small>
+            </div>
+            
+            <div class="form-group">
+              <label>Existing Images (Click to select)</label>
+              <div id="videoReferenceList" class="reference-list">
+                Loading available images...
+              </div>
+            </div>
+            
+            <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
+          </form>
+        </div>
 
         <!-- Edit Image Form -->
         <div id="editImageForm" class="creation-form">
@@ -758,11 +785,17 @@
           <p>Generated content will appear here</p>
           <small>Create or edit media to see a preview</small>
         </div>
+        
+        <!-- Processing Overlay -->
+        <div id="processingOverlay" class="processing-overlay">
+          <div class="processing-spinner"></div>
+          <div class="processing-text" id="processingText">Processing...</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Filter Section (existing) -->
+  <!-- Filter Section -->
   <section class="card">
     <div class="section-header">
       <h3>📁 My Media Files</h3>
@@ -778,7 +811,7 @@
     </div>
   </section>
 
-  <!-- Media Grid (existing) -->
+  <!-- Media Grid -->
   <section id="mediaContainer">
     <div class="loading">Loading your media library...</div>
   </section>
@@ -794,6 +827,19 @@
     <a href="terms.html">Terms of Service</a>
   </nav>
 </footer>
+
+<!-- Modal -->
+<div id="mediaModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Media Details</h3>
+      <button class="close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Content will be inserted here -->
+    </div>
+  </div>
+</div>
 
 <script>
   // Supabase configuration for auth only
@@ -861,6 +907,18 @@
   function redirectToLogin() {
     localStorage.removeItem('vv_session');
     window.location.href = 'login.html';
+  }
+
+  async function logout() {
+    try {
+      await supabaseClient.auth.signOut();
+      localStorage.removeItem('vv_session');
+      redirectToLogin();
+    } catch (e) {
+      console.error('Logout error:', e);
+      localStorage.removeItem('vv_session');
+      redirectToLogin();
+    }
   }
 
   // API call function
@@ -962,63 +1020,64 @@
     }
   }
 
-// Update credits display
-function updateCreditsDisplay() {
-  console.log('updateCreditsDisplay called with:', userCredits);
-  const imageCreditsElement = document.getElementById('imageCredits');
-  const videoCreditsElement = document.getElementById('videoCredits');
-  
-  if (imageCreditsElement) {
-    imageCreditsElement.textContent = userCredits.image_credits;
+  // Update credits display
+  function updateCreditsDisplay() {
+    console.log('updateCreditsDisplay called with:', userCredits);
+    const imageCreditsElement = document.getElementById('imageCredits');
+    const videoCreditsElement = document.getElementById('videoCredits');
+    
+    if (imageCreditsElement) {
+      imageCreditsElement.textContent = userCredits.image_credits;
+    }
+    if (videoCreditsElement) {
+      videoCreditsElement.textContent = userCredits.video_credits;
+    }
+    
+    // Enable/disable buttons based on credits
+    const imageBtn = document.getElementById('imageCreateBtn');
+    const videoBtn = document.getElementById('videoCreateBtn');
+    
+    if (imageBtn) {
+      imageBtn.disabled = userCredits.image_credits <= 0;
+    }
+    if (videoBtn) {
+      videoBtn.disabled = userCredits.video_credits <= 0;
+    }
   }
-  if (videoCreditsElement) {
-    videoCreditsElement.textContent = userCredits.video_credits;
-  }
-  
-  // Enable/disable buttons based on credits
-  const imageBtn = document.getElementById('imageCreateBtn');
-  const videoBtn = document.getElementById('videoCreateBtn');
-  
-  if (imageBtn) {
-    imageBtn.disabled = userCredits.image_credits <= 0;
-  }
-  if (videoBtn) {
-    videoBtn.disabled = userCredits.video_credits <= 0;
-  }
-}
 
-async function loadUserData() {
-  try {
-    const response = await apiCall(ENDPOINTS.getUserData);
-    console.log('Raw response:', response);
-    
-    // Get the first element from the array
-    const userData = response[0];
-    console.log('User data (first element):', userData);
-    console.log('Image credits from API:', userData.image_credits);
-    console.log('Video credits from API:', userData.video_credits);
-    console.log('Subscription plan from API:', userData.subscription_plan);
-    
-    userCredits = {
-      image_credits: userData.image_credits || 0,
-      video_credits: userData.video_credits || 0
-    };
-    
-    console.log('userCredits after assignment:', userCredits);
-    
-    // Update subscription medallion
-    const medallion = document.getElementById('subscriptionMedallion');
-    const plan = userData.subscription_plan || 'bronze';
-    medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
-    medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-    
-    updateCreditsDisplay();
-  } catch (error) {
-    console.error('Error loading user data:', error);
-    showStatus('Error loading user data: ' + error.message, true);
+  async function loadUserData() {
+    try {
+      const response = await apiCall(ENDPOINTS.getUserData);
+      console.log('Raw response:', response);
+      
+      // Get the first element from the array
+      const userData = response[0];
+      console.log('User data (first element):', userData);
+      console.log('Image credits from API:', userData.image_credits);
+      console.log('Video credits from API:', userData.video_credits);
+      console.log('Subscription plan from API:', userData.subscription_plan);
+      
+      userCredits = {
+        image_credits: userData.image_credits || 0,
+        video_credits: userData.video_credits || 0
+      };
+      
+      console.log('userCredits after assignment:', userCredits);
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'bronze';
+      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      
+      updateCreditsDisplay();
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
+    }
   }
-}
- // Load media files from n8n webhook
+
+  // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
       const data = await apiCall(ENDPOINTS.getMedia);
@@ -1125,6 +1184,19 @@ async function loadUserData() {
     }
   }
 
+  // Show/Hide Processing functions
+  function showProcessing(message = 'Processing...') {
+    const overlay = document.getElementById('processingOverlay');
+    const text = document.getElementById('processingText');
+    text.textContent = message;
+    overlay.style.display = 'flex';
+  }
+
+  function hideProcessing() {
+    const overlay = document.getElementById('processingOverlay');
+    overlay.style.display = 'none';
+  }
+
   // Show preview in right panel
   function showPreview(mediaData) {
     const previewPanel = document.getElementById('previewPanel');
@@ -1146,7 +1218,13 @@ async function loadUserData() {
       </div>
       <div class="preview-info">
         <div class="preview-title">${mediaData.name || 'Generated Content'}</div>
-        <div class="preview-description">${mediaData.prompt || 'No description'}</div>
+        <div class="preview-description">${mediaData.prompt || mediaData.chat || 'No description'}</div>
+      </div>
+      
+      <!-- Processing Overlay -->
+      <div id="processingOverlay" class="processing-overlay">
+        <div class="processing-spinner"></div>
+        <div class="processing-text" id="processingText">Processing...</div>
       </div>
     `;
   }
@@ -1169,6 +1247,7 @@ async function loadUserData() {
       }
 
       showStatus('Creating image... This may take a few moments.');
+      showProcessing('Creating image...');
       
       const payload = {
         chat: formData.get('chat')
@@ -1185,6 +1264,7 @@ async function loadUserData() {
       const result = await apiCall(ENDPOINTS.createImage, payload);
 
       if (result.success !== false) {
+        hideProcessing();
         showStatus('Image created successfully!');
         userCredits.image_credits--;
         updateCreditsDisplay();
@@ -1195,9 +1275,11 @@ async function loadUserData() {
         selectedImageReference = null;
         populateReferenceLists();
       } else {
+        hideProcessing();
         throw new Error(result.message || 'Image creation failed');
       }
     } catch (error) {
+      hideProcessing();
       console.error('Error creating image:', error);
       showStatus('Error creating image: ' + error.message, true);
     }
@@ -1207,6 +1289,7 @@ async function loadUserData() {
   async function updateImage(formData) {
     try {
       showStatus('Updating image... This may take a few moments.');
+      showProcessing('Updating image...');
       
       const payload = {
         chat: formData.get('chat')
@@ -1223,6 +1306,7 @@ async function loadUserData() {
       const result = await apiCall(ENDPOINTS.updateImage, payload);
 
       if (result.success !== false) {
+        hideProcessing();
         showStatus('Image updated successfully!');
         await loadMediaFiles();
         renderMediaGrid();
@@ -1231,9 +1315,11 @@ async function loadUserData() {
         selectedUpdateImageReference = null;
         populateReferenceLists();
       } else {
+        hideProcessing();
         throw new Error(result.message || 'Image update failed');
       }
     } catch (error) {
+      hideProcessing();
       console.error('Error updating image:', error);
       showStatus('Error updating image: ' + error.message, true);
     }
@@ -1247,10 +1333,12 @@ async function loadUserData() {
       }
 
       showStatus('Creating video... This may take several minutes.');
+      showProcessing('Creating video...');
       
-  const payload = {
-  chat: formData.get('chat')
-};
+      const payload = {
+        chat: formData.get('chat')
+      };
+
       // Add source image - required
       const sourceImage = formData.get('source_image');
       if (sourceImage && sourceImage.size > 0) {
@@ -1258,12 +1346,14 @@ async function loadUserData() {
       } else if (selectedVideoReference) {
         payload.existing_image = selectedVideoReference;
       } else {
+        hideProcessing();
         throw new Error('Source image is required for video creation');
       }
 
       const result = await apiCall(ENDPOINTS.createVideo, payload);
 
       if (result.success !== false) {
+        hideProcessing();
         showStatus('Video creation started! It will appear in your media library when ready.');
         userCredits.video_credits--;
         updateCreditsDisplay();
@@ -1271,9 +1361,11 @@ async function loadUserData() {
         selectedVideoReference = null;
         populateReferenceLists();
       } else {
+        hideProcessing();
         throw new Error(result.message || 'Video creation failed');
       }
     } catch (error) {
+      hideProcessing();
       console.error('Error creating video:', error);
       showStatus('Error creating video: ' + error.message, true);
     }
@@ -1283,6 +1375,7 @@ async function loadUserData() {
   async function updateVideo(formData) {
     try {
       showStatus('Updating video... This may take several minutes.');
+      showProcessing('Updating video...');
       
       const payload = {
         campaigns_file_name: formData.get('video_name'),
@@ -1291,9 +1384,11 @@ async function loadUserData() {
 
       const result = await apiCall(ENDPOINTS.updateVideo, payload);
 
+      hideProcessing();
       showStatus('Video update started! The updated video will appear in your media library when ready.');
       document.getElementById('videoUpdateForm').reset();
     } catch (error) {
+      hideProcessing();
       console.error('Error updating video:', error);
       showStatus('Error updating video: ' + error.message, true);
     }
@@ -1370,26 +1465,26 @@ async function loadUserData() {
       }
     }
 
-card.innerHTML = `
-  <div class="media-preview">
-    ${renderMediaPreview(file, previewUrl)}
-    ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
-  </div>
-  <div class="media-info">
-    <h3 class="media-title">${file.name || 'Untitled'}</h3>
-    <p class="media-description">${file.prompt || 'No description available'}</p>
-    <div class="media-meta">
-      <div class="meta-item">
-        <span class="meta-label">Created:</span>
-        ${createdDate}
+    card.innerHTML = `
+      <div class="media-preview">
+        ${renderMediaPreview(file, previewUrl)}
+        ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
       </div>
-      <div class="meta-item">
-        <span class="meta-label">Size:</span>
-        ${formatFileSize(file.file_size)}
+      <div class="media-info">
+        <h3 class="media-title">${file.name || 'Untitled'}</h3>
+        <p class="media-description">${file.prompt || 'No description available'}</p>
+        <div class="media-meta">
+          <div class="meta-item">
+            <span class="meta-label">Created:</span>
+            ${createdDate}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Size:</span>
+            ${formatFileSize(file.file_size)}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-`;
+    `;
     return card;
   }
 
@@ -1402,9 +1497,9 @@ card.innerHTML = `
         <source src="${file.URL}" type="${file.mime_type}">
         Your browser does not support the video tag.
       </video>`;
-  } else if (fileType === 'image' && previewUrl) {
-  return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
-           onerror="this.parentElement.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#999;&quot;>📷</div>'">`;
+    } else if (fileType === 'image' && previewUrl) {
+      return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
+               onerror="this.parentElement.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#999;&quot;>📷</div>'">`;
     } else {
       return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">
         ${fileType === 'video' ? '🎬' : '📷'}
@@ -1581,13 +1676,15 @@ card.innerHTML = `
       await createImage(formData);
     });
 
- // Video creation form
-document.getElementById('videoForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  formData.append('source_image', document.getElementById('videoSourceImage').files[0]);
-  await createVideo(formData);
-});
+    // Video creation form
+    document.getElementById('videoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      formData.append('chat', document.getElementById('videoChat').value);
+      formData.append('source_image', document.getElementById('videoSourceImage').files[0]);
+      await createVideo(formData);
+    });
+
     // Image update form
     document.getElementById('imageUpdateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1665,19 +1762,6 @@ document.getElementById('videoForm').addEventListener('submit', async (e) => {
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
-
-<!-- Modal -->
-<div id="mediaModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modalTitle">Media Details</h3>
-      <button class="close" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-body" id="modalBody">
-      <!-- Content will be inserted here -->
-    </div>
-  </div>
-</div>
 
 </body>
 </html>
