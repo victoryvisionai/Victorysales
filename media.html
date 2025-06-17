@@ -677,29 +677,35 @@
         </div>
 
         <!-- Create Video Form -->
-        <div id="createVideoForm" class="creation-form">
-          <div class="credits-display">
-            <div class="credits-number" id="videoCredits">Loading...</div>
-            <div class="credits-label">Video Credits Remaining</div>
-          </div>
-          
-          <form id="videoForm">
-            <div class="form-group">
-              <label for="videoSourceImage">Source Image *</label>
-              <input type="file" id="videoSourceImage" accept="image/*">
-              <small>Upload an image or select from existing images below</small>
-            </div>
-            
-            <div class="form-group">
-              <label>Existing Images (Click to select)</label>
-              <div id="videoReferenceList" class="reference-list">
-                Loading available images...
-              </div>
-            </div>
-            
-            <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
-          </form>
-        </div>
+<!-- Create Video Form -->
+<div id="createVideoForm" class="creation-form">
+  <div class="credits-display">
+    <div class="credits-number" id="videoCredits">Loading...</div>
+    <div class="credits-label">Video Credits Remaining</div>
+  </div>
+  
+  <form id="videoForm">
+    <div class="form-group">
+      <label for="videoChat">Description *</label>
+      <textarea id="videoChat" required placeholder="Describe the video motion you want to create..."></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label for="videoSourceImage">Source Image *</label>
+      <input type="file" id="videoSourceImage" accept="image/*">
+      <small>Upload an image or select from existing images below</small>
+    </div>
+    
+    <div class="form-group">
+      <label>Existing Images (Click to select)</label>
+      <div id="videoReferenceList" class="reference-list">
+        Loading available images...
+      </div>
+    </div>
+    
+    <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
+  </form>
+</div>
 
         <!-- Edit Image Form -->
         <div id="editImageForm" class="creation-form">
