@@ -1,17 +1,27 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Queen - A Living Legacy on the Mississippi</title>
+    <title>The Queen Casino - Baton Rouge's Historic Riverboat Casino</title>
+    <meta name="description" content="Experience the luxury of The Queen Casino, Baton Rouge's premier historic riverboat casino featuring gaming, dining, and entertainment on the Mississippi River.">
+    <meta name="keywords" content="Baton Rouge casino, riverboat casino, gaming, poker, slots, entertainment, Mississippi River">
+    <meta property="og:title" content="The Queen Casino - Baton Rouge's Historic Riverboat Casino">
+    <meta property="og:description" content="Experience the luxury of The Queen Casino, Baton Rouge's premier historic riverboat casino featuring gaming, dining, and entertainment on the Mississippi River.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=1200&h=630&fit=crop">
+    <meta property="og:url" content="https://thequeencasino.com">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Queen Casino - Baton Rouge's Historic Riverboat Casino">
+    <meta name="twitter:description" content="Experience the luxury of The Queen Casino, Baton Rouge's premier historic riverboat casino.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=1200&h=630&fit=crop">
+    <link rel="icon" type="image/x-icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f451.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
             --primary-blue: #0a3161;
             --white: #ffffff;
@@ -21,19 +31,7 @@
             --text-medium: #666666;
             --shadow: rgba(10, 49, 97, 0.1);
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        .serif {
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* Navigation */
+        .serif { font-family: 'Playfair Display', serif; }
         nav {
             position: fixed;
             top: 0;
@@ -44,12 +42,10 @@
             padding: 1rem 2rem;
             transition: all 0.3s ease;
         }
-
         nav.scrolled {
             background: rgba(255, 255, 255, 0.98);
             box-shadow: 0 2px 20px var(--shadow);
         }
-
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -57,18 +53,19 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        .logo img {
-            height: 50px;
-            width: auto;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-family: 'Playfair Display', serif;
         }
-
         .nav-links {
             display: flex;
             list-style: none;
             gap: 2rem;
+            margin: 0;
+            padding: 0;
         }
-
         .nav-links a {
             text-decoration: none;
             color: var(--primary-blue);
@@ -76,11 +73,9 @@
             transition: all 0.3s ease;
             position: relative;
         }
-
         .nav-links a:hover {
             color: var(--accent-gold);
         }
-
         .nav-links a::after {
             content: '';
             position: absolute;
@@ -91,12 +86,24 @@
             background: var(--accent-gold);
             transition: width 0.3s ease;
         }
-
         .nav-links a:hover::after {
             width: 100%;
         }
-
-        /* Hero Section */
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-blue);
+            transition: all 0.3s ease;
+        }
         .hero {
             height: 100vh;
             position: relative;
@@ -104,50 +111,41 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            background: linear-gradient(45deg, rgba(10, 49, 97, 0.8), rgba(10, 49, 97, 0.6)), url('https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=1920&h=1080&fit=crop') center/cover;
         }
-
-        .hero-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -2;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, rgba(10, 49, 97, 0.7), rgba(10, 49, 97, 0.4));
-            z-index: -1;
-        }
-
         .hero-content {
             text-align: center;
             color: var(--white);
             max-width: 800px;
-            padding: 0 2rem;
+            padding: 2rem;
             animation: fadeInUp 1s ease-out;
         }
-
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
+            font-size: clamp(3rem, 8vw, 5rem);
             font-weight: 700;
             margin-bottom: 1rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-
         .hero-subtitle {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            margin-bottom: 2rem;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            margin-bottom: 1rem;
             opacity: 0.95;
             font-weight: 300;
         }
-
+        .hero-description {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
         .hero-cta {
             display: inline-block;
             padding: 1rem 2.5rem;
@@ -159,111 +157,20 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
-
         .hero-cta:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
         }
-
-        /* Story Sections */
-        .story-section {
-            padding: 6rem 2rem;
-            position: relative;
+        .hero-cta.secondary {
+            background: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+            box-shadow: none;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .section-title {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            color: var(--primary-blue);
-            margin-bottom: 1rem;
-        }
-
-        .section-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-medium);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .story-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .story-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: var(--text-dark);
-        }
-
-        .story-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .story-image {
-            position: relative;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px var(--shadow);
-        }
-
-        .story-image img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .story-image:hover img {
-            transform: scale(1.05);
-        }
-
-        /* Timeline Section */
-        .timeline {
-            background: var(--light-gray);
-        }
-
-        .timeline-container {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline-line {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--accent-gold);
-            transform: translateX(-50%);
-        }
-
-        .timeline-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4rem;
-            position: relative;
-        }
-
-        .timeline-item:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-
-        .timeline-content {
-            width: 45%;
+        .hero-cta.secondary:hover {
             background: var(--white);
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px var(
+            color: var(--primary-blue);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity
