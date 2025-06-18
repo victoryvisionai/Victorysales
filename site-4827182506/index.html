@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Queen Casino | Where Legacy Meets Luxury</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a3161;
+      --white: #ffffff;
+      --grey: #f5f5f5;
+      --font-heading: 'Cinzel', serif;
+      --font-body: 'Roboto', sans-serif;
+    }
+    *{
+      margin:0;padding:0;box-sizing:border-box;
+    }
+    body {
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      background-color: var(--grey);
+      color: var(--navy);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+    img,video{max-width: 100%;}
+    header {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top:0; left:0;
+      filter: brightness(.7);
+    }
+    .overlay {
+      position: absolute;
+      background-image: linear-gradient(rgba(10,49,97,.8),rgba(10,49,97,.4));
+      top:0;left:0;width:100%;height:100%;
+      display:flex;
+      justify-content:center;align-items:center;
+      text-align:center;color:var(--white);padding:0 20px;
+    }
+    nav {
+      position: absolute;top:0;width:100%;padding:20px 5%;
+      display:flex;justify-content:space-between;align-items:center;z-index:2;
+    }
+    nav img{width:180px;}
+    nav a{color:var(--white);text-decoration:none;font-weight:500;margin-left:20px;font-size:1rem;transition:.3s;}
+    nav a:hover{opacity:.7;}
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 4rem;
+      font-weight:700;
+      margin-bottom:20px;
+      letter-spacing:2px;
+    }
+    .tagline {
+      font-size:1.2rem;font-weight:300;max-width:700px;margin:auto;margin-bottom:40px;
+    }
+    .btn {
+      background-color:var(--white);
+      color:var(--navy);
+      padding:14px 30px;border-radius:40px;text-decoration:none;
+      font-weight:600;display:inline-block;margin-top:20px;
+      transition:.3s ease-in-out;
+    }
+    .btn:hover {
+      transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,.1);
+    }
+    section {
+      padding:60px 5%;max-width:1200px;margin:auto;text-align:center;
+    }
+    .section-title {
+      font-family:var(--font-heading);font-size:2.5rem;margin-bottom:15px;font-weight:600;
+    }
+    .text {
+      max-width:800px;margin:25px auto;font-weight:300;
+    }
+    .flex {
+      display:flex;gap:30px;margin-top:40px;flex-wrap: wrap;justify-content:center;
+    }
+    .feature {
+      background-color:var(--white);padding:25px;border-radius:12px;flex:1;min-width:280px;
+      transition:transform .3s, box-shadow .3s;
+    }
+    .feature:hover {
+      transform:translateY(-10px);box-shadow:0 15px 30px rgba(0,0,0,.1);
+    }
+    footer {
+      background-color:var(--navy);color:var(--white);text-align:center;padding:40px 5%;margin-top:60px;
+    }
+    footer p {margin-bottom:20px;font-weight:300;}
+    footer a {
+      color:var(--white);margin:0 10px;text-decoration:none;font-weight:400;transition:.3s;font-size:.9rem;
+    }
+    footer a:hover {opacity:.7;}
+    @media(max-width:768px){
+      h1{font-size:2.5rem;}
+      nav{flex-direction:column;gap:10px;}
+      nav a{margin:5px;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1749610708/sbxtwd6td5v7x8upl795.jpg" alt="The Queen Casino Logo">
+    <div>
+      <a href="#heritage">Our Heritage</a>
+      <a href="#amenities">Amenities</a>
+      <a href="#events">Exclusive Events</a>
+      <a href="#signup">Stay Connected</a>
+    </div>
+  </nav>
+  <video autoplay loop muted playsinline>
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750267750/inruf6twugmckkfcowcz.mp4" type="video/mp4">
+  </video>
+  <div class="overlay">
+    <div>
+      <h1>The Queen Casino</h1>
+      <p class="tagline">Where Historic Charm Meets Modern Luxury on the Riverside.</p>
+      <a href="#amenities" class="btn">Discover More</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="heritage">
+    <h2 class="section-title">Rooted in Tradition, Crafted for Today</h2>
+    <p class="text">Drawing inspiration from the enchanting history of riverboat casinos, The Queen Casino merges classic flair with contemporary elegance. Situated gracefully at the riverfront, our iconic vintage paddleboat and sophisticated new venue offer an unmatched experience of leisure and charm.</p>
+  </section>
+
+  <section id="amenities">
+    <h2 class="section-title">Superior Amenities & Exquisite Hospitality</h2>
+    <div class="flex">
+      <div class="feature">
+        <h3>Grand Gaming Halls</h3>
+        <p>Step into luxury with state-of-the-art gaming spaces blending the excitement of modern gaming with timeless design.</p>
+      </div>
+      <div class="feature">
+        <h3>Fine Dining Experiences</h3>
+        <p>Savor crafted culinary excellence while overlooking serene river views and captivating interiors.</p>
+      </div>
+      <div class="feature">
+        <h3>Luxury Entertainment</h3>
+        <p>A curated lineup of live shows and musical performances in a setting that epitomizes glamour and exclusivity.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="events">
+    <h2 class="section-title">Events at The Queen</h2>
+    <p class="text">From glamorous evenings to exclusive launches, every event at The Queen Casino is uniquely immersive, bridging nostalgia with contemporary elegance. Stay engaged for an extraordinary social experience by the waterfront.</p>
+    <a href="#signup" class="btn">Join Our Exclusive List</a>
+  </section>
+
+  <section id="signup">
+    <h2 class="section-title">Stay Connected</h2>
+    <p class="text">Sign up now and be among the first to know about special events, exclusive offers, and privileged experiences curated especially for you.</p>
+    <a href="#" class="btn">Subscribe</a>
+  </section>
+  
+</main>
+
+<footer>
+  <p>© 2024 The Queen Casino. All Rights Reserved.</p>
+  <div>
+    <a href="#">Privacy Policy</a>|
+    <a href="#">Terms & Conditions</a>|
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
