@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Queen - Baton Rouge's Premium Riverboat Casino Experience. Enjoy vibrant gaming, upscale dining, lively nightlife along the scenic Mississippi.">
+    <title>The Queen Riverboat Casino | Baton Rouge, LA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a3161;
+            --white: #ffffff;
+            --bg-gray: #f5f5f5;
+            --font-heading: 'Cinzel', serif;
+            --font-body: 'Montserrat', sans-serif;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-body);
+            color: var(--primary);
+            scroll-behavior: smooth;
+            background-color: var(--white);
+        }
+        h1, h2, h3 {
+            font-family: var(--font-heading);
+            margin: 0;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 24px;
+            border: none;
+            font-weight: 500;
+            transition: 0.3s;
+            border-radius: 3px;
+        }
+        .btn-primary:hover {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 4px 14px rgba(10,49,97,0.2);
+        }
+        header {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            overflow: hidden;
+        }
+        header video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top:0; left:0;
+            z-index: -1;
+        }
+        .overlay {
+            background: rgba(10,49,97,0.45);
+            position: absolute;
+            top:0; left:0; height:100%; width:100%;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            color:var(--white);
+            padding: 20px;
+        }
+        .overlay img {
+            max-width: 250px;
+            margin-bottom: 20px;
+        }
+        .section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+        }
+        .feature {
+            flex:1;
+            min-width:250px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        .testimonial {
+            background: var(--bg-gray);
+            padding: 40px;
+            border-radius: 8px;
+            margin: 30px auto;
+            text-align: center;
+            max-width: 800px;
+            font-style: italic;
+        }
+        .cta {
+            background: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 50px 20px;
+        }
+        footer {
+            background: var(--bg-gray);
+            text-align: center;
+            padding: 30px;
+            font-size: 14px;
+        }
+        @media (max-width: 768px) {
+            header {height:60vh;}
+            .features {flex-direction: column; align-items:center;}
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <video autoplay muted loop playsinline>
+        <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750267750/inruf6twugmckkfcowcz.mp4" type="video/mp4">
+    </video>
+    <div class="overlay">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1749610708/sbxtwd6td5v7x8upl795.jpg" alt="The Queen Casino Logo">
+        <h1>Experience the Thrill & Elegance</h1>
+        <p>Baton Rouge's Premier Riverboat Casino on the Mississippi River</p>
+        <a href="#booking"><button class="btn-primary">Reserve Now</button></a>
+    </div>
+</header>
+
+<main>
+
+    <section class="section">
+        <h2 style="text-align:center;margin-bottom:50px;">Why Visit The Queen?</h2>
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎲</div>
+                <h3>Premier Gaming</h3>
+                <p>Experience the excitement of upscale casino gaming with table games, video poker, and slots.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🍽️</div>
+                <h3>Fine Dining</h3>
+                <p>Savor the tastes of Louisiana cuisine, exceptional seafood, and signature cocktails.</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎶</div>
+                <h3>Live Entertainment</h3>
+                <p>Enjoy vibrant nightlife with live music, shows, and exclusive events right at the waterfront.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="testimonial">
+            “The Queen is beyond just a casino—it’s an authentic Louisiana riverboat adventure with the elegance and thrill we look for in a memorable night out.”<br>– Ashley W., Visitor
+        </div>
+    </section>
+
+    <section class="cta" id="booking">
+        <h2>Plan Your Visit Today</h2>
+        <p>Reserve your spot, view upcoming events, or join our rewards club for exclusive offers.</p>
+        <button class="btn-primary">Book a Table</button>
+        &nbsp; 
+        <button class="btn-primary">Join Rewards</button>
+    </section>
+
+    <section class="section">
+        <h2 style="text-align:center;margin-bottom:40px;">Location & Accessibility</h2>
+        <p style="text-align:center;max-width:800px;margin:auto;">Conveniently located along the beautiful Mississippi River in Baton Rouge, LA, The Queen offers easy access with ample parking and proximity to local transportation options. Whether you're visiting from near or far, we invite you to experience the very best in Southern hospitality and entertainment.</p>
+    </section>
+
+</main>
+
+<footer>
+    © 2024 The Queen Casino | 1717 River Rd, Baton Rouge, Louisiana | (225) 555-0123<br>
+    Please gamble responsibly. 21+ only.
+</footer>
+
+</body>
+</html>
