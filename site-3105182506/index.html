@@ -1,0 +1,259 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Queen of Baton Rouge – A Riverboat Through Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      color: var(--navy);
+      background-color: var(--light);
+      line-height: 1.6;
+    }
+    header {
+      position: relative;
+      height: 100vh;
+      color: var(--white);
+      overflow: hidden;
+    }
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .overlay {
+      background: rgba(10, 49, 97, 0.6);
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 120px 20px;
+    }
+    .hero-content img.logo {
+      height: 60px;
+      margin-bottom: 30px;
+    }
+    .hero-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+    }
+    .hero-content p {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #e2e2e2;
+    }
+
+    main {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .timeline-event {
+      background-color: var(--white);
+      border-left: 4px solid var(--navy);
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .timeline-event:hover {
+      transform: translateX(5px);
+    }
+    .timeline-event h3 {
+      font-size: 1.3rem;
+    }
+    .timeline-event time {
+      font-style: italic;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      margin-top: 60px;
+      justify-content: space-between;
+    }
+
+    .feature-box {
+      flex: 1 1 300px;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: box-shadow 0.3s ease;
+    }
+    .feature-box:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .feature-box h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--navy);
+    }
+
+    .gallery {
+      margin-top: 60px;
+      text-align: center;
+    }
+
+    .gallery img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .footer {
+      margin-top: 80px;
+      padding: 40px 20px;
+      background-color: var(--navy);
+      color: var(--white);
+      text-align: center;
+    }
+
+    .footer a {
+      color: #ddd;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.1rem;
+      }
+      .features {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <video autoplay muted loop>
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750267750/inruf6twugmckkfcowcz.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1749610708/sbxtwd6td5v7x8upl795.jpg" alt="Queen Riverboat Logo" class="logo">
+    <h1>The Queen of Baton Rouge</h1>
+    <p>A living monument to the rhythm of the Mississippi — where steam, spirit, and Southern soul converge.</p>
+  </div>
+</header>
+
+<main>
+
+  <section>
+    <h2 class="section-title">A Steamboat's Journey</h2>
+    <div class="timeline">
+      <div class="timeline-event">
+        <time>1870</time>
+        <h3>The Birth of the Queen</h3>
+        <p>The Queen was commissioned along the Mississippi during a booming era of steamboat innovation—crafted to carry goods, stories, and souls upstream and down.</p>
+      </div>
+      <div class="timeline-event">
+        <time>1905</time>
+        <h3>Golden Age</h3>
+        <p>Carving water trails from Baton Rouge to New Orleans, the Queen became a beloved fixture in Southern commerce and music, often carrying jazz bands on her evening cruises.</p>
+      </div>
+      <div class="timeline-event">
+        <time>1942</time>
+        <h3>Service in Wartime</h3>
+        <p>During World War II, she was enlisted for military logistics support—an unexpected chapter for a traditionally leisure vessel.</p>
+      </div>
+      <div class="timeline-event">
+        <time>1988</time>
+        <h3>Retirement & Reflection</h3>
+        <p>With modern vessels taking her place, the Queen was moored permanently—preserved as a historical landmark for generations to explore and remember.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Design & Craftsmanship</h2>
+    <div class="features">
+      <div class="feature-box">
+        <h4>Iconic Red Paddle Wheel</h4>
+        <p>Driven by steam-engine power, the Queen's paddle wheel became as much a sonic emblem as it was mechanical—a heartbeat echoing along the riverfront.</p>
+      </div>
+      <div class="feature-box">
+        <h4>Triple Smokestacks</h4>
+        <p>Majestic and towering, her smokestacks framed the skyline, billowing plumes that marked her arrival before she was seen.</p>
+      </div>
+      <div class="feature-box">
+        <h4>Victorian Interiors</h4>
+        <p>Decked in mahogany and velvet with chandeliers and brasswork, the Queen's salons transported guests not just across waters, but back in time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery">
+    <h2 class="section-title">Through the Lens of History</h2>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Natchez_IV_steamboat.jpg/1280px-Natchez_IV_steamboat.jpg" alt="Queen Riverboat Historical Photo" />
+    <p style="margin-top: 10px; font-size: 0.9rem; color: #555;">Archival photo of a sister vessel on the Mississippi</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">Legacy & Preservation</h2>
+    <p style="max-width:800px; margin: 0 auto; text-align: center; font-size: 1rem;">
+      Today, the Queen remains docked along Baton Rouge’s vibrant waterfront—not as a fading relic, but as a testament to the heartbeat of a river town rich in rhythm, struggle, and celebration.
+      Initiatives are underway to fund further preservation efforts. Local historians and community members are invited to share memories, photographs, and oral histories.
+    </p>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>&copy; 2024 Tribute to the Queen Riverboat | Baton Rouge Heritage Initiative</p>
+  <p><a href="mailto:info@queenhistory.org">info@queenhistory.org</a></p>
+</footer>
+
+</body>
+</html>
+```
