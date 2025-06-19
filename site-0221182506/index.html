@@ -1,234 +1,84 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Discover the legacy and new chapter of The Queen Casino in Baton Rouge — a tribute to Southern heritage and a celebration of the future." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover the legacy and new chapter of The Queen Casino in Baton Rouge — a tribute to Southern heritage and a celebration of the future along the Mississippi River.">
+  <meta name="keywords" content="The Queen Casino, Baton Rouge casino, Mississippi River gaming, Louisiana riverboat casino, historic casino">
+  <meta name="author" content="The Queen Casino">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="The Queen – Baton Rouge's River Legacy Reimagined">
+  <meta property="og:description" content="Discover the legacy and new chapter of The Queen Casino in Baton Rouge — a tribute to Southern heritage and a celebration of the future along the Mississippi River.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200">
+  <meta property="og:url" content="https://www.thequeencasino.com">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Queen Casino">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Queen – Baton Rouge's River Legacy Reimagined">
+  <meta name="twitter:description" content="Discover the legacy and new chapter of The Queen Casino in Baton Rouge — a tribute to Southern heritage and a celebration of the future along the Mississippi River.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200">
+  
   <title>The Queen – Baton Rouge's River Legacy Reimagined</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f451.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  
   <style>
-    :root {
-      --brand-blue: #0a3161;
-      --light: #ffffff;
-      --soft-gray: #f5f5f5;
-      --heading-font: 'EB Garamond', serif;
-      --body-font: 'Inter', sans-serif;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: var(--body-font);
-      color: #222;
-      background-color: var(--soft-gray);
-      line-height: 1.6;
-    }
-
-    header {
-      position: relative;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    header video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-
-    .overlay {
-      background: rgba(10, 49, 97, 0.55);
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 4rem 2rem;
-      color: var(--light);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      height: 100%;
-    }
-
-    .hero-logo {
-      max-width: 160px;
-      margin: 0 auto 1rem;
-    }
-
-    h1 {
-      font-size: 3rem;
-      font-family: var(--heading-font);
-      margin-bottom: 1rem;
-      text-shadow: 1px 2px 6px rgba(0,0,0,0.4);
-    }
-
-    .lead {
-      font-size: 1.25rem;
-      max-width: 600px;
-      margin: 0 auto;
-      color: #f5f5f5;
-    }
-
-    main {
-      background-color: var(--soft-gray);
-    }
-
-    section {
-      padding: 4rem 2rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    section h2 {
-      font-family: var(--heading-font);
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--brand-blue);
-    }
-
-    .history p, .future p {
-      max-width: 750px;
-      margin-bottom: 1.5rem;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .gallery img {
-      width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    }
-
-    .cta {
-      text-align: center;
-      background-color: var(--brand-blue);
-      color: var(--light);
-      padding: 5rem 2rem;
-    }
-
-    .cta h2 {
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-
-    .cta p {
-      max-width: 600px;
-      margin: 0 auto 2rem;
-      font-size: 1.1rem;
-    }
-
-    .cta button {
-      background-color: #fff;
-      color: var(--brand-blue);
-      font-weight: 600;
-      font-size: 1rem;
-      border: none;
-      padding: 0.75rem 2rem;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .cta button:hover {
-      background-color: #e2e2e2;
-      transform: translateY(-2px);
-    }
-
-    footer {
-      background-color: #0a3161;
-      color: #fff;
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-    }
-
+    .text-shadow { text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    .text-shadow-lg { text-shadow: 3px 3px 6px rgba(0,0,0,0.4); }
+    .font-serif { font-family: 'EB Garamond', serif; }
+    .font-sans { font-family: 'Inter', sans-serif; }
+    .from-opacity-40 { --tw-bg-opacity: 0.4; }
+    .to-opacity-70 { --tw-bg-opacity: 0.7; }
+    
     @media (max-width: 768px) {
-      h1 {
-        font-size: 2.4rem;
-      }
-
-      .hero-content {
-        padding: 3rem 1.5rem;
-      }
-
-      section h2 {
-        font-size: 1.75rem;
-      }
+      .timeline-card { flex-direction: column !important; }
+      .timeline-card .flex-row-reverse { flex-direction: column !important; }
     }
   </style>
 </head>
-<body>
-
-  <header>
-    <video autoplay muted loop playsinline>
+<body class="font-sans text-gray-900 bg-gray-100 leading-relaxed">
+  <header class="relative h-screen overflow-hidden">
+    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0" aria-label="The Queen Casino video background">
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750267750/inruf6twugmckkfcowcz.mp4" type="video/mp4">
+      <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070" alt="Casino gaming floor with elegant lighting" class="w-full h-full object-cover">
     </video>
-    <div class="overlay"></div>
-    <div class="hero-content">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1749610708/sbxtwd6td5v7x8upl795.jpg" alt="The Queen Logo" class="hero-logo">
-      <h1>The Queen Returns</h1>
-      <p class="lead">A Southern landmark reawakens on the Mississippi — honoring the past, thrilling the future.</p>
+    
+    <div class="absolute inset-0 bg-gradient-to-b from-blue-900 from-opacity-40 to-blue-900 to-opacity-70 z-10" aria-hidden="true"></div>
+    
+    <div class="relative z-20 flex flex-col justify-center items-center h-full text-center text-white px-4 sm:px-8 max-w-4xl mx-auto">
+      <img src="https://images.unsplash.com/photo-1518991669776-877229cc4d3a?q=80&w=200" alt="The Queen Casino Logo" class="w-32 sm:w-48 mb-6 sm:mb-8 filter drop-shadow-lg">
+      
+      <h1 class="text-4xl sm:text-6xl font-serif font-semibold mb-4 sm:mb-6 text-shadow-lg">The Queen Casino</h1>
+      
+      <p class="text-lg sm:text-2xl max-w-3xl mx-auto mb-6 sm:mb-8 text-gray-100 text-shadow">Where Southern elegance meets modern gaming excellence along the mighty Mississippi River</p>
+      
+      <div class="mt-4 sm:mt-8">
+        <button class="bg-yellow-500 text-blue-900 font-semibold text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 rounded-full hover:bg-yellow-600 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2" aria-label="Learn more about The Queen Casino's history and legacy">
+          Discover Our Legacy
+        </button>
+      </div>
     </div>
   </header>
 
-  <main>
-    <section class="history">
-      <h2>A Storied Legacy on the River</h2>
-      <p>Since the early days of steamboat glitz and riverfront revelry, The Queen has stood as a symbol of Baton Rouge's vibrant spirit. Anchored in tradition and community, this riverboat casino has welcomed generations of locals, travelers, and players, offering not just games of chance but memories for a lifetime.</p>
-      <p>Born from the romance of paddlewheels and the grandeur of Mississippi nights, The Queen carved its place in Louisiana’s cultural tapestry. From historic jazz nights echoing against her railings, to the first jackpots won under her chandeliers, her story has always been one of legacy and laughter.</p>
-
-      <div class="gallery">
-        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750267750/inruf6twugmckkfcowcz.jpg" alt="Historic Queen exterior">
-        <img src="https://res.cloudinary.com/demo/image/upload/sample.jpg" alt="Archival gaming floor">
-        <img src="https://res.cloudinary.com/demo/image/upload/sample.jpg" alt="Original steamboat rendering">
+  <main class="bg-gray-50">
+    <section class="py-12 sm:py-20 px-4 sm:px-8 max-w-6xl mx-auto">
+      <h2 class="font-serif text-3xl sm:text-5xl mb-6 sm:mb-8 text-blue-900 text-center">A Rich History on the River</h2>
+      
+      <div class="max-w-4xl mx-auto mb-8 text-lg sm:text-xl text-gray-700 space-y-6">
+        <p>For over three decades, The Queen has been Baton Rouge's premier casino destination, floating majestically on the Mississippi River. Our storied history began in 1987 when Louisiana first embraced riverboat gaming, bringing excitement and entertainment to the heart of Louisiana's capital city.</p>
+        
+        <p>Named after the grand riverboats that once plied these waters during the golden age of Mississippi River commerce, The Queen has maintained its commitment to Southern hospitality while evolving with the times. From our humble beginnings as a modest riverboat to our current status as Louisiana's most beloved gaming destination, we've always honored our heritage.</p>
+        
+        <p>Throughout the years, The Queen has weathered storms both literal and figurative, always emerging stronger and more committed to serving our community. We've been witness to Baton Rouge's growth and have proudly contributed to the economic vitality of our great city.</p>
+        
+        <p>Today, as we embark on a new chapter with our state-of-the-art facility, we carry forward the traditions that have made The Queen a cherished institution. Our commitment to excellence, community, and the timeless spirit of Southern hospitality remains unwavering as we write the next chapter of our river legacy.</p>
       </div>
-    </section>
 
-    <section class="future">
-      <h2>The Next Chapter: Reimagined Elegance</h2>
-      <p>As we steer into the future, The Queen rises anew — redefined with refined entertainment, cutting-edge gaming experiences, and unparalleled Southern hospitality. Opening soon in Baton Rouge, the new Queen will be a destination that honors her heritage while providing amenities that satisfy today’s traveler and thrill seeker.</p>
-      <p>Step aboard a fresh experience: From rooftop lounges overlooking the river to curated dining rooted in Louisiana flavor, from modern architecture that nods to the past to immersive entertainment that celebrates local talent — the new Queen is more than revival. She’s a renaissance.</p>
-
-      <div class="gallery">
-        <img src="https://res.cloudinary.com/demo/image/upload/sample.jpg" alt="Artist rendering of the new Queen">
-        <img src="https://res.cloudinary.com/demo/image/upload/sample.jpg" alt="Modern interior mockup">
-      </div>
-    </section>
-
-    <section class="cta">
-      <h2>Be Part of Her Return</h2>
-      <p>Join us as we unveil the new era of The Queen. Sign up for updates, special invitations, and behind-the-scenes stories of a landmark reawakening.</p>
-      <button>Notify Me</button>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2024 The Queen Casino, Baton Rouge. All Rights Reserved.</p>
-    <p>Designed with love along the Mississippi.</p>
-  </footer>
-
-</body>
-</html>
-```
+      <div class="relative my-12 sm:my-16">
+        <div class="absolute left-1/2
