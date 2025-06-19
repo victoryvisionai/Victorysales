@@ -1,316 +1,361 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Victory Vision AI | Discover the Truth Behind the Screen</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet">
-    <style>
-      :root {
-        --primary: #0a3161;
-        --white: #ffffff;
-        --light: #f5f5f5;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI | Real-Time Billboard Intelligence for CMOs & CEOs</title>
+  <meta name="description" content="Victory Vision AI empowers marketing executives with AI-optimized digital billboard campaigns. Engage audiences with clarity, personalization, and accountability in real-time.">
+  <meta property="og:title" content="Victory Vision AI | Real-Time Billboard Intelligence for CMOs & CEOs">
+  <meta property="og:description" content="AI-driven billboard optimization for actionable marketing clarity, trusted by growth-focused CMOs and CEOs.">
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg">
+  <meta property="og:url" content="https://www.victoryvision.app">
+  <meta name="theme-color" content="#0a3161">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f441.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --accent: #dfe9f3;
+    }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--white);
-        color: var(--primary);
-        line-height: 1.6;
-      }
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--white);
+      color: var(--primary);
+      line-height: 1.6;
+    }
 
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
-      header, main, footer {
-        width: 100%;
-      }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0 1rem;
+    }
 
-      .container {
-        max-width: 1200px;
-        margin: auto;
-        padding: 0 1rem;
-      }
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--white);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
 
-      /* Hero */
-      .hero {
-        position: relative;
-        width: 100%;
-        height: 100vh;
-        overflow: hidden;
-      }
+    header.hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-      .hero video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+    header.hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-      .hero-overlay {
-        position: relative;
-        z-index: 2;
-        background: rgba(10, 49, 97, 0.65);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-        text-align: center;
-        color: var(--white);
-        padding: 2rem;
-      }
+    header.hero .fallback-img {
+      display: none;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
 
-      .hero-overlay img {
-        width: 150px;
-        margin-bottom: 1.5rem;
+    .hero-overlay {
+      position: relative;
+      z-index: 2;
+      background: rgba(10, 49, 97, 0.65);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+      color: var(--white);
+      padding: 2rem;
+    }
+
+    .hero-overlay img {
+      width: 150px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-overlay h1 {
+      font-size: 2.75rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero-overlay p {
+      font-size: 1.125rem;
+      max-width: 700px;
+    }
+
+    .hero-overlay .cta-button {
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--white);
+      color: var(--primary);
+      border: none;
+      font-weight: 600;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+
+    .hero-overlay .cta-button:hover {
+      background-color: var(--accent);
+    }
+
+    .sticky-cta {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: var(--white);
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 1000;
+      display: none;
+    }
+
+    section {
+      padding: 4rem 1rem;
+    }
+
+    .intro, .testimonials {
+      background-color: var(--light);
+    }
+
+    .intro .content, .narrative .container, .interactive .quiz-grid, .offer form {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 1.25rem;
+      line-height: 1.75;
+    }
+
+    .testimonial-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .testimonial {
+      background: #fff;
+      padding: 1.5rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    .testimonial p.quote {
+      font-style: italic;
+      color: #111;
+    }
+
+    .testimonial .author {
+      margin-top: 0.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .quiz-card {
+      background: var(--light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .quiz-card:hover {
+      transform: scale(1.02);
+    }
+
+    .offer {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .offer input[type="email"] {
+      padding: 0.75rem;
+      border-radius: 4px;
+      border: none;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .offer button {
+      padding: 0.75rem;
+      background-color: var(--white);
+      color: var(--primary);
+      border: none;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .offer button:hover {
+      background-color: var(--accent);
+    }
+
+    footer {
+      background-color: #0a3161;
+      color: #ffffff;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 0.875rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .quiz-grid {
+        grid-template-columns: 1fr;
       }
 
       .hero-overlay h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-      }
-
-      .hero-overlay p {
-        font-size: 1.125rem;
-        font-weight: 400;
-      }
-
-      /* Intro */
-      .intro {
-        background-color: var(--light);
-        padding: 4rem 1rem;
-      }
-
-      .intro .content {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: center;
-      }
-
-      .intro h2 {
         font-size: 2rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
       }
 
-      .intro p {
-        font-size: 1rem;
-        color: #333;
+      h2 {
+        font-size: 1.5rem;
       }
 
-      /* Narrative */
-      .narrative {
-        padding: 4rem 1rem;
+      header.hero video {
+        display: none;
       }
 
-      .narrative .container {
-        max-width: 900px;
+      header.hero .fallback-img {
+        display: block;
       }
 
-      .narrative h2 {
-        font-size: 2rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
+      .sticky-cta {
+        display: block;
       }
-
-      .narrative p {
-        font-size: 1rem;
-        margin-bottom: 1.25rem;
-        line-height: 1.75;
-      }
-
-      /* Visual Challenges */
-      .interactive {
-        background-color: var(--white);
-        padding: 4rem 1rem;
-      }
-
-      .interactive h2 {
-        text-align: center;
-        font-size: 2rem;
-        margin-bottom: 2rem;
-      }
-
-      .quiz-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        max-width: 1000px;
-        margin: 0 auto;
-      }
-
-      .quiz-card {
-        background: var(--light);
-        padding: 1.5rem;
-        border-radius: 8px;
-        transition: transform 0.3s ease;
-      }
-
-      .quiz-card:hover {
-        transform: scale(1.02);
-      }
-
-      .quiz-card h3 {
-        font-size: 1.125rem;
-        margin-bottom: 0.75rem;
-      }
-
-      .quiz-card p {
-        font-size: 0.95rem;
-        color: #222;
-      }
-
-      /* Founders Deal */
-      .offer {
-        background-color: var(--primary);
-        color: var(--white);
-        padding: 4rem 1rem;
-        text-align: center;
-      }
-
-      .offer h2 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-
-      .offer p {
-        font-size: 1rem;
-        margin-bottom: 2rem;
-        max-width: 700px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .offer form {
-        display: flex;
-        flex-direction: column;
-        max-width: 400px;
-        margin: 0 auto;
-      }
-
-      .offer input[type="email"] {
-        padding: 0.75rem;
-        border-radius: 4px;
-        border: none;
-        margin-bottom: 1rem;
-        font-size: 1rem;
-      }
-
-      .offer button {
-        padding: 0.75rem;
-        background-color: var(--white);
-        color: var(--primary);
-        border: none;
-        font-weight: 600;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-      }
-
-      .offer button:hover {
-        background-color: #dfe9f3;
-      }
-
-      /* Footer */
-      footer {
-        background-color: #0a3161;
-        color: #ffffff;
-        padding: 2rem 1rem;
-        text-align: center;
-        font-size: 0.875rem;
-      }
-
-      @media (max-width: 768px) {
-        .quiz-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .hero-overlay h1 {
-          font-size: 2rem;
-        }
-
-        .interactive h2,
-        .narrative h2,
-        .intro h2,
-        .offer h2 {
-          font-size: 1.5rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header class="hero">
-      <video autoplay muted loop playsinline>
-        <source
-          src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750376018/q2ac4gcisw0dbp9ai459.mp4"
-          type="video/mp4" />
-      </video>
-      <div class="hero-overlay">
-        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
-        <h1>What’s Real Anymore?<br />Discover the Truth Behind the Screen</h1>
-        <p>Clarity. Trust. Growth — Built with AI-powered billboard intelligence.</p>
+    }
+  </style>
+</head>
+<body>
+  <div id="loader">Loading Victory Vision AI...</div>
+  <header class="hero">
+    <video autoplay muted loop playsinline onloadeddata="document.getElementById('loader').style.display='none'">
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750376018/q2ac4gcisw0dbp9ai459.mp4" type="video/mp4" />
+      Your browser does not support HTML5 video.
+    </video>
+    <img class="fallback-img" src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI fallback visual" />
+    <div class="hero-overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <h1>AI-Powered Billboard Optimization<br />for Clear & Accountable Messaging</h1>
+      <p>Victory Vision AI helps CMOs and CEOs cut through digital noise with adaptive, location-aware billboard messaging that builds trust and drives growth.</p>
+      <button class="cta-button" onclick="document.querySelector('.offer').scrollIntoView({behavior: 'smooth'})">Get Early Access</button>
+    </div>
+  </header>
+  <button class="sticky-cta" onclick="document.querySelector('.offer').scrollIntoView({behavior: 'smooth'})">Request Access</button>
+  <main>
+    <section class="intro">
+      <div class="content">
+        <h2>Transform Traditional Marketing into Real-Time Intelligence</h2>
+        <p>Victory Vision AI enables marketing leaders to reach high-intent audiences through AI-enhanced digital billboards. It integrates real-time traffic, weather, and behavioral data to automatically optimize campaign timing and messaging—delivering measurable results with clarity and precision.</p>
       </div>
-    </header>
-
-    <main>
-      <section class="intro">
-        <div class="content">
-          <h2>Intelligent Billboard Marketing Reimagined</h2>
-          <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
+    </section>
+    <section class="narrative">
+      <div class="container">
+        <h2>Deepfake Dilemma: Marketing in the Age of Visual Deception</h2>
+        <p>Executives today face a fractured media landscape—viral deepfakes and manipulated narratives breed mistrust and dilute message control. This erosion of brand integrity stifles engagement and ROI.</p>
+        <p>Victory Vision AI provides clarity. By broadcasting verified, context-aware content in the physical world, you stand above the noise and ensure real brand accountability and resonance—where it truly counts.</p>
+      </div>
+    </section>
+    <section class="testimonials">
+      <h2>Trusted by Visionary Marketers</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial">
+          <p class="quote">“Within 3 weeks, our campaign ROI increased by 38%. Victory’s real-time adjustments made all the difference.”</p>
+          <div class="author">— Amanda Lee, CMO @ BrightGrid</div>
         </div>
-      </section>
-
-      <section class="narrative">
-        <div class="container">
-          <h2>Campaign: Deepfake Dilemma</h2>
-          <p>Today’s digital marketing environment is plagued by uncertainty and deception—viral deepfakes, misinformation, and AI-crafted illusions blur what's real. For CMOs and CEOs, these trends introduce new forms of risk: erosion of consumer trust, ineffective messaging, and misallocated budgets.</p>
-          <p>Victory Vision AI turns this dilemma into an opportunity. Our intelligent billboard platform delivers verifiable, real-time messages to authentic, geo-contextual audiences—cutting through digital noise with clarity. It's not just innovation—it's marketing accountability you can see.</p>
+        <div class="testimonial">
+          <p class="quote">“Finally, a billboard platform that thinks like a marketer. No fluff—just data, clarity, and lift.”</p>
+          <div class="author">— Daniel Morris, CEO @ Innovize Media</div>
         </div>
-      </section>
-
-      <section class="interactive">
-        <h2>Can You Tell What’s Real?</h2>
-        <div class="quiz-grid">
-          <div class="quiz-card">
-            <h3>Challenge: Deepfake or Reality?</h3>
-            <p>Interactive media spot tests your visual literacy. Try identifying synthetic content—in real time, just like your audience does daily.</p>
-          </div>
-          <div class="quiz-card">
-            <h3>Visual Deception Simulator</h3>
-            <p>Experience how manipulated visuals mislead and why transparent OOH messaging remedies brand erosion and misinformation crisis.</p>
-          </div>
+      </div>
+    </section>
+    <section class="interactive">
+      <h2>Can You Tell What’s Real?</h2>
+      <div class="quiz-grid">
+        <div class="quiz-card">
+          <h3>Challenge: Deepfake or Reality?</h3>
+          <p>Interactive media spot tests your visual literacy. Try identifying synthetic content—in real time, just like your audience does daily.</p>
         </div>
-      </section>
-
-      <section class="offer">
-        <h2>Founders Deal: Your First Step Toward Trust-Driven Marketing</h2>
-        <p>We're onboarding a select group of innovators with early access pricing, concierge setup, and real-time campaign analytics starting day one. No calls. No demos. Just results.</p>
-        <form>
-          <input type="email" placeholder="Enter your business email" required />
-          <button type="submit">Request Early Access</button>
-        </form>
-      </section>
-    </main>
-
-    <footer>
-      &copy; 2024 Victory Vision AI. All rights reserved.
-    </footer>
-  </body>
+        <div class="quiz-card">
+          <h3>Visual Deception Simulator</h3>
+          <p>Experience how manipulated visuals mislead and why transparent OOH messaging remedies brand erosion and misinformation crisis.</p>
+        </div>
+      </div>
+    </section>
+    <section class="offer">
+      <h2>Founders Deal: Real-Time Billboard Mastery from Day One</h2>
+      <p>Get early access to Victory Vision AI with exclusive pricing, concierge onboarding, and zero friction. No demos. No delay. Just real results in real time—designed for mid-market marketing executives ready to lead.</p>
+      <form>
+        <input type="email" placeholder="Enter your business email" required />
+        <button type="submit">Request Early Access</button>
+      </form>
+    </section>
+  </main>
+  <footer>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener">Build your free AI website at Victory Vision</a></p>
+  </footer>
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=11b40282b4b5c2fcc6e7a521f3433f65ae673cb6" width="1" height="1" style="display:none;" alt="Tracking Pixel">
+</body>
 </html>
-```
+</DOCTYPE HTML>
