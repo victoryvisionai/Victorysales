@@ -1,0 +1,253 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Queen | A Legacy Reimagined by Bally's</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --accent: #b3322e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Open Sans', sans-serif;
+      color: var(--blue);
+      background-color: var(--white);
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--white);
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(10, 49, 97, 0.5);
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 4rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .hero-content img {
+      width: 120px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-content h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      line-height: 1.2;
+      max-width: 800px;
+      margin: 0 auto 1rem;
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: var(--white);
+      padding: 0.8rem 1.6rem;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #8a231f;
+    }
+
+    main {
+      background-color: var(--light);
+    }
+
+    section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--blue);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .grid img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .history p,
+    .future p {
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .signup {
+      text-align: center;
+    }
+
+    .signup form {
+      margin-top: 1.5rem;
+    }
+
+    .signup input[type="email"] {
+      padding: 0.8rem;
+      font-size: 1rem;
+      width: 300px;
+      max-width: 90%;
+      border: 1px solid #ccc;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+
+    .signup button {
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      border: none;
+      background-color: var(--blue);
+      color: var(--white);
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .signup button:hover {
+      background-color: #061e3f;
+    }
+
+    footer {
+      background-color: var(--blue);
+      color: var(--white);
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    footer p {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content h1 {
+        font-size: 2.2rem;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750267750/inruf6twugmckkfcowcz.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="hero-content">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1749610708/sbxtwd6td5v7x8upl795.jpg" alt="The Queen Logo">
+      <h1>Welcome Aboard The Queen</h1>
+      <p>A Baton Rouge legend returns — where heritage meets hospitality. Join us as Bally’s breathes new life into this icon of the Mississippi.</p>
+      <a href="#updates"><button class="btn-primary">Be the First to Know</button></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="history">
+      <h2 class="section-title">A Timeless Symbol of the River</h2>
+      <div class="grid">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1749610708/sbxtwd6td5v7x8upl795.jpg" alt="The Queen steamboat">
+        <div>
+          <p>The Queen isn't just a boat — she's a memory, a landmark, and a source of pride for generations of Baton Rouge locals. Since her first glides down the Mississippi, she’s carried not just guests, but stories, culture, music, and hope.</p>
+          <p>Red paddle wheels turning under Southern skies, the call of the riverbank train, and laughter spilling from the deck — these are the rhythms of her legacy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="future">
+      <h2 class="section-title">A New Chapter with Bally's</h2>
+      <div class="grid">
+        <div>
+          <p>Bally’s is honored to steward the next era of The Queen, blending her storied past with new energy, entertainment, and community. Plans for her revitalization include immersive experiences, riverside dining, live music, and more — all rooted in the vibrant soul of Baton Rouge.</p>
+          <p>This isn’t just a destination — it’s a comeback for a riverboat legend, driven by passion and powered by progress.</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1589561084283-930aa7b1fafd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzMXwxfDB8MHx8fHx8fHx8MTcwOTcwMDAwMA&ixlib=rb-4.0.3&q=80&w=800" alt="Concept future riverside render">
+      </div>
+    </section>
+
+    <section class="signup" id="updates">
+      <h2 class="section-title">Stay in the Loop</h2>
+      <p>Be among the first to hear about events, opening dates, and exclusive early access invites.</p>
+      <form action="#" method="POST">
+        <input type="email" placeholder="Enter your email" required />
+        <button type="submit">Notify Me</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 The Queen | A Bally's Experience</p>
+    <p>Anchored in Baton Rouge · Proudly Moving Forward</p>
+  </footer>
+</body>
+</html>
+```
