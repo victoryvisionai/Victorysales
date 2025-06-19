@@ -1,18 +1,26 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision AI | Human-Centered AI Marketing Platform</title>
+  <meta name="description" content="Victory Vision AI empowers marketing leaders to launch smarter, ethical campaigns effortlessly using real-time adaptive automation." />
+  <meta property="og:title" content="Victory Vision AI | Human-Centered AI Marketing Platform" />
+  <meta property="og:description" content="Smarter, ethical automation that humanizes your campaigns. Launch in minutes with zero onboarding." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="robots" content="index, follow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4bb.png" type="image/png" />
   <style>
     :root {
       --blue: #0a3161;
       --white: #ffffff;
       --light: #f5f5f5;
       --dark: #1c1c1c;
+      --overlay: rgba(10, 49, 97, 0.6);
     }
 
     * {
@@ -21,14 +29,20 @@
       padding: 0;
     }
 
-    body {
+    html, body {
+      width: 100%;
+      height: 100%;
       font-family: 'Inter', sans-serif;
       color: var(--blue);
       background-color: var(--white);
       line-height: 1.6;
     }
 
-    header, section, footer {
+    main {
+      display: block;
+    }
+
+    section, footer {
       width: 100%;
       max-width: 1200px;
       margin: auto;
@@ -43,6 +57,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--white);
+      text-align: center;
     }
 
     .hero video {
@@ -52,14 +68,24 @@
       object-fit: cover;
       width: 100%;
       height: 100%;
+      z-index: -2;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: var(--overlay);
       z-index: -1;
     }
 
     .hero-text {
-      color: var(--white);
-      text-align: center;
       z-index: 1;
       max-width: 800px;
+      padding: 2rem;
     }
 
     .hero-text img {
@@ -70,7 +96,12 @@
     .hero-text h1 {
       font-size: 2.8rem;
       font-weight: 700;
-      line-height: 1.2;
+    }
+
+    .hero-text h2 {
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-top: 1.2rem;
     }
 
     .hero-text p {
@@ -84,9 +115,9 @@
       padding: 1rem 2rem;
       background-color: var(--white);
       color: var(--blue);
-      border: none;
       font-weight: 600;
       font-size: 1rem;
+      border: none;
       border-radius: 8px;
       text-decoration: none;
       transition: background 0.3s ease;
@@ -94,10 +125,6 @@
 
     .cta-btn:hover {
       background-color: var(--light);
-    }
-
-    .intro, .pitch, .benefits, .ethics, .conversion {
-      background-color: var(--white);
     }
 
     .section-title {
@@ -108,11 +135,25 @@
     }
 
     .intro p, .pitch p {
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       text-align: center;
-      color: var(--dark);
       font-size: 1.1rem;
+      color: var(--dark);
+    }
+
+    .logo-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      opacity: 0.7;
+    }
+
+    .logo-bar img {
+      max-height: 40px;
     }
 
     .benefits-grid {
@@ -164,7 +205,6 @@
       background-color: var(--blue);
       color: var(--white);
       text-align: center;
-      padding: 4rem 1.5rem;
     }
 
     .conversion h2 {
@@ -208,18 +248,43 @@
       background-color: var(--light);
     }
 
+    .testimonial {
+      margin-top: 3rem;
+      text-align: center;
+      color: var(--dark);
+    }
+
+    .testimonial p {
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial span {
+      font-weight: 600;
+    }
+
     footer {
       background-color: var(--white);
-      padding: 2rem 1.5rem;
       text-align: center;
       font-size: 0.9rem;
-      color: #777;
+      color: #555;
+      padding: 2rem 1.5rem;
+    }
+
+    footer a {
+      color: var(--blue);
+      text-decoration: underline;
     }
 
     @media (max-width: 768px) {
       .hero-text h1 {
         font-size: 2rem;
       }
+
+      .hero-text h2 {
+        font-size: 1.1rem;
+      }
+
       .hero-text p {
         font-size: 1rem;
       }
@@ -227,82 +292,101 @@
   </style>
 </head>
 <body>
+  <main>
+    <section class="hero" id="hero">
+      <video autoplay muted loop playsinline>
+        <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750376638/p78rq8cljoe66qpnpbe2.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div class="hero-text">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+        <h1>What Happens When AI Forgets to Be Human?</h1>
+        <h2>Victory Vision AI empowers marketers with ethical, adaptive automation—launch smarter, real-time campaigns in minutes.</h2>
+        <a href="#founders" class="cta-btn">Claim the Founders Deal</a>
+      </div>
+    </section>
 
-  <section class="hero">
-    <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750376638/p78rq8cljoe66qpnpbe2.mp4" type="video/mp4" />
-    </video>
-    <div class="hero-text">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
-      <h1>What Happens When AI Forgets to Be Human?</h1>
-      <p>A new era in marketing intelligence — ethical, adaptive, and built around you.</p>
-      <a href="#founders" class="cta-btn">Claim the Founders Deal</a>
-    </div>
-  </section>
+    <section class="intro">
+      <h2 class="section-title">About Victory Vision AI</h2>
+      <p>Victory Vision AI is a performance-driven marketing automation platform built for growth-minded executives. It seamlessly blends human oversight with adaptive AI to eliminate wasted time and optimize results. From traffic patterns to weather conditions and location-based insights, campaigns update themselves—freeing your team to focus on strategy, not spreadsheets.</p>
+      <div class="logo-bar">
+        <img src="https://dummyimage.com/120x40/cccccc/000&text=RetailCo" alt="RetailCo logo" />
+        <img src="https://dummyimage.com/120x40/cccccc/000&text=SmartMedics" alt="SmartMedics logo" />
+        <img src="https://dummyimage.com/120x40/cccccc/000&text=ProServe" alt="ProServe logo" />
+      </div>
+    </section>
 
-  <section class="intro">
-    <h2 class="section-title">About Victory Vision AI</h2>
-    <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
-  </section>
+    <section class="pitch">
+      <h2 class="section-title">Campaign: Ethics.exe Failed</h2>
+      <p>Unlike black-box algorithms that prioritize speed over safety, Victory Vision AI redefines automation ethics. Today’s buyers expect more—transparency, consent, and control. We give marketing leaders trusted performance tools that align with their values.</p>
+    </section>
 
-  <section class="pitch">
-    <h2 class="section-title">Campaign: Ethics.exe Failed</h2>
-    <p>Trusted technology is more than code — it’s conscience. From biased algorithms to unconsented experiments, today’s AI marketing solutions cut corners that compromise brand integrity. Victory Vision AI redefines what it means to be “automated” — empowering humans with smarter tech, not replacing them. Deliver performance without forfeiting principles.</p>
-  </section>
+    <section class="conversion" id="founders">
+      <h2>Founders Deal: Limited Early Access</h2>
+      <p>Spend less time on meetings and approvals—Victory Vision AI lets you launch adaptive, multi-channel campaigns in minutes. No setup calls, no code — deliver ROI faster.</p>
+      <form>
+        <input type="email" placeholder="Your work email address" required />
+        <button type="submit">Request Access</button>
+      </form>
+    </section>
 
-  <section class="benefits">
-    <h2 class="section-title">What You Gain</h2>
-    <div class="benefits-grid">
-      <div class="benefit-card">
-        <h3>Time-Saving Automation</h3>
-        <p>Deploy multi-channel campaigns in minutes — not weeks. No demos, no meetings, just results.</p>
+    <section class="benefits">
+      <h2 class="section-title">What You Gain</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <h3>Time-Saving Automation</h3>
+          <p>Spend less time managing and more time scaling with rapid, code-free campaign launches across channels.</p>
+        </div>
+        <div class="benefit-card">
+          <h3>Real-Time Adaptation</h3>
+          <p>Your campaigns evolve live—reacting to behavior, weather, and traffic to increase effectiveness.</p>
+        </div>
+        <div class="benefit-card">
+          <h3>Human + AI Synergy</h3>
+          <p>Stay in command. Detect trends, activate campaigns, and steer outcomes—all from a manager-friendly dashboard.</p>
+        </div>
+        <div class="benefit-card">
+          <h3>Transparent Metrics</h3>
+          <p>From impressions to ROI, see your full performance profile in granular, investor-ready reports.</p>
+        </div>
       </div>
-      <div class="benefit-card">
-        <h3>Real-Time Adaptation</h3>
-        <p>Our AI adjusts billboards and media dynamically based on behavior, traffic, and weather — maximizing conversions.</p>
+      <div style="text-align:center; margin-top: 3rem;">
+        <a href="#founders" class="cta-btn">Claim the Founders Deal</a>
       </div>
-      <div class="benefit-card">
-        <h3>Human + AI Synergy</h3>
-        <p>Designed for marketers, not engineers. Stay in control with dashboards built for strategic minds.</p>
-      </div>
-      <div class="benefit-card">
-        <h3>Transparent Metrics</h3>
-        <p>Full visibility into every data touchpoint. Track ROI across audience, region, and time.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="ethics">
-    <h2 class="section-title">Why It Matters</h2>
-    <div class="ethics-content">
-      <div class="ethics-block">
-        <h4>Unconsented Experiments</h4>
-        <p>Many platforms test on users without permission. We built a consent-forward architecture that protects brand trust.</p>
+    <section class="ethics">
+      <h2 class="section-title">Why It Matters</h2>
+      <div class="ethics-content">
+        <div class="ethics-block">
+          <h4>Unconsented Experiments</h4>
+          <p>Many platforms run A/B tests silently on customers. Ours asks permission first—ensuring ethical marketing and customer trust.</p>
+        </div>
+        <div class="ethics-block">
+          <h4>Algorithm Bias</h4>
+          <p>We audit models for fairness to ensure outreach is inclusive, not divisive.</p>
+        </div>
+        <div class="ethics-block">
+          <h4>Human Oversight, Always</h4>
+          <p>With customizable guardrails and manual overrides, our system keeps you in the driver’s seat—always.</p>
+        </div>
       </div>
-      <div class="ethics-block">
-        <h4>Algorithm Bias</h4>
-        <p>Our machine learning models are stress-tested for bias — so your brand communicates ethically and inclusively.</p>
+      <div style="text-align:center; margin-top: 3rem;">
+        <a href="#founders" class="cta-btn">Claim the Founders Deal</a>
       </div>
-      <div class="ethics-block">
-        <h4>Human Oversight, Always</h4>
-        <p>Automate without going rogue. Our platform keeps strategic decision-making with you — not the algorithm.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="conversion" id="founders">
-    <h2>Founders Deal: Limited Early Access</h2>
-    <p>Be among the first to experience Victory Vision AI. No risk. No meetings. Just smarter marketing in minutes.</p>
-    <form>
-      <input type="email" placeholder="Your work email address" required />
-      <button type="submit">Request Access</button>
-    </form>
-  </section>
+    <section class="testimonial">
+      <p>"With Victory Vision AI, we reduced campaign deployment time by 70% and saw a 33% increase in lead conversions—without hiring a single engineer."</p>
+      <span>— CMO, Horizon Retail Group</span>
+    </section>
+  </main>
 
   <footer>
-    &copy; 2024 Victory Vision AI. All rights reserved.
+    <p>&copy; 2024 Victory Vision AI. All rights reserved.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener">Build your free AI website at Victory Vision</a></p>
   </footer>
 
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=a5558c5249ced63abbcc1823377efc733de45c31" width="1" height="1" style="display:none;" alt="Tracking pixel" />
 </body>
 </html>
-```
