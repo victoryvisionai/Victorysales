@@ -1,0 +1,273 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Queen — Past, Present & Beyond</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a3161;
+      --light: #f5f5f5;
+      --white: #ffffff;
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: var(--font-body);
+      background-color: var(--light);
+      color: #333;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    header video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      filter: brightness(0.6);
+    }
+
+    .overlay {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: var(--white);
+      padding: 2rem;
+    }
+
+    .overlay img {
+      width: 120px;
+      margin-bottom: 1rem;
+    }
+
+    .overlay h1 {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .overlay p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    main section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .story-block {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      align-items: flex-start;
+      margin-bottom: 4rem;
+    }
+
+    .story-block img {
+      flex: 1 1 300px;
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .story-text {
+      flex: 2;
+    }
+
+    .story-text h2 {
+      font-family: var(--font-display);
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .story-text p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .announcement {
+      text-align: center;
+      background-color: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+      padding: 3rem 2rem;
+    }
+
+    .announcement h2 {
+      font-size: 2.2rem;
+      color: var(--primary);
+      font-family: var(--font-display);
+      margin-bottom: 1rem;
+    }
+
+    .announcement p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .announcement img {
+      max-width: 100%;
+      max-height: 400px;
+      margin-bottom: 2rem;
+      border-radius: 10px;
+    }
+
+    .cta {
+      text-align: center;
+      background-color: var(--primary);
+      padding: 4rem 2rem;
+      color: var(--white);
+    }
+
+    .cta h2 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .cta input[type="email"] {
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      border: none;
+      flex: 1 1 250px;
+      font-size: 1rem;
+    }
+
+    .cta button {
+      background-color: #ffffff;
+      border: none;
+      color: var(--primary);
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta button:hover {
+      background-color: var(--light);
+    }
+
+    footer {
+      background-color: #0a3161;
+      text-align: center;
+      color: #ffffff;
+      padding: 2rem 1rem;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+      .overlay h1 {
+        font-size: 2.5rem;
+      }
+
+      .story-block {
+        flex-direction: column;
+      }
+
+      .announcement img {
+        max-height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750267750/inruf6twugmckkfcowcz.mp4" type="video/mp4">
+    </video>
+    <div class="overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1749610708/sbxtwd6td5v7x8upl795.jpg" alt="The Queen Logo">
+      <h1>The Queen Returns</h1>
+      <p>Celebrating a legacy on the Mississippi — and ushering in a new era of riverfront entertainment in Baton Rouge.</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="story-block">
+        <img src="https://res.cloudinary.com/demo/image/upload/sample.jpg" alt="Vintage photo of The Queen">
+        <div class="story-text">
+          <h2>A Riverboat Like No Other</h2>
+          <p>Since her christening, The Queen has graced the Baton Rouge riverfront as a timeless icon. From spinning roulette wheels to live jazz echoing into the night, she’s been a heart of entertainment under the southern stars.</p>
+          <p>With her signature blue roof and paddlewheel charm, The Queen was more than a casino—it was where memories were made, stories were shared, and history came alive on the Big Muddy.</p>
+        </div>
+      </div>
+
+      <div class="story-block">
+        <img src="https://res.cloudinary.com/demo/image/upload/casino-night.jpg" alt="Casino night event">
+        <div class="story-text">
+          <h2>Echoes of the Past</h2>
+          <p>Locals remember the riverwalk fireworks, steamboat dinners, and the rhythmic hum of the passing train. Generations laughed, danced, and placed their bets in an atmosphere where southern hospitality met timeless thrill.</p>
+          <p>“There was magic in stepping aboard,” shared longtime Baton Rougean Mary Lou Franklin. “You felt connected to something grand – and homegrown.”</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="announcement">
+      <h2>Something New on the Horizon</h2>
+      <p>The spirit of The Queen will live on – bigger, bolder, and more vibrant than ever. We're excited to announce our next chapter: a new development in Baton Rouge that reimagines casino luxury while honoring riverboat roots.</p>
+      <img src="https://res.cloudinary.com/demo/image/upload/futuristic-building.jpg" alt="Rendering of new casino">
+      <p>From immersive gaming halls and curated culinary experiences, to performance venues anchored in Gulf Coast style—every detail has been crafted to reflect the soul of the Mississippi while charting a course toward tomorrow.</p>
+    </section>
+
+    <section class="cta">
+      <h2>Stay in the Loop</h2>
+      <p>Be the first to hear about exclusive events, grand opening news, and behind-the-scenes stories from The Queen’s journey.</p>
+      <form>
+        <input type="email" placeholder="Your email address" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    © 2024 The Queen Riverfront Casino. All rights reserved. | Made with ❤️ in Baton Rouge
+  </footer>
+</body>
+</html>
+```
