@@ -1,0 +1,308 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI | Human-Centered AI Marketing Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --dark: #1c1c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--blue);
+      background-color: var(--white);
+      line-height: 1.6;
+    }
+
+    header, section, footer {
+      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 4rem 1.5rem;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .hero-text {
+      color: var(--white);
+      text-align: center;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .hero-text img {
+      width: 160px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-text h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-top: 1.2rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      background-color: var(--white);
+      color: var(--blue);
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .cta-btn:hover {
+      background-color: var(--light);
+    }
+
+    .intro, .pitch, .benefits, .ethics, .conversion {
+      background-color: var(--white);
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .intro p, .pitch p {
+      max-width: 800px;
+      margin: auto;
+      text-align: center;
+      color: var(--dark);
+      font-size: 1.1rem;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2.5rem;
+    }
+
+    .benefit-card {
+      background: var(--light);
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .benefit-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .benefit-card p {
+      color: #333;
+    }
+
+    .ethics {
+      background-color: var(--light);
+    }
+
+    .ethics-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .ethics-block {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--blue);
+    }
+
+    .ethics-block h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .conversion {
+      background-color: var(--blue);
+      color: var(--white);
+      text-align: center;
+      padding: 4rem 1.5rem;
+    }
+
+    .conversion h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .conversion p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .conversion form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .conversion input[type="email"] {
+      padding: 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+    }
+
+    .conversion button {
+      background-color: var(--white);
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .conversion button:hover {
+      background-color: var(--light);
+    }
+
+    footer {
+      background-color: var(--white);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    @media (max-width: 768px) {
+      .hero-text h1 {
+        font-size: 2rem;
+      }
+      .hero-text p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750376638/p78rq8cljoe66qpnpbe2.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-text">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <h1>What Happens When AI Forgets to Be Human?</h1>
+      <p>A new era in marketing intelligence — ethical, adaptive, and built around you.</p>
+      <a href="#founders" class="cta-btn">Claim the Founders Deal</a>
+    </div>
+  </section>
+
+  <section class="intro">
+    <h2 class="section-title">About Victory Vision AI</h2>
+    <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
+  </section>
+
+  <section class="pitch">
+    <h2 class="section-title">Campaign: Ethics.exe Failed</h2>
+    <p>Trusted technology is more than code — it’s conscience. From biased algorithms to unconsented experiments, today’s AI marketing solutions cut corners that compromise brand integrity. Victory Vision AI redefines what it means to be “automated” — empowering humans with smarter tech, not replacing them. Deliver performance without forfeiting principles.</p>
+  </section>
+
+  <section class="benefits">
+    <h2 class="section-title">What You Gain</h2>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <h3>Time-Saving Automation</h3>
+        <p>Deploy multi-channel campaigns in minutes — not weeks. No demos, no meetings, just results.</p>
+      </div>
+      <div class="benefit-card">
+        <h3>Real-Time Adaptation</h3>
+        <p>Our AI adjusts billboards and media dynamically based on behavior, traffic, and weather — maximizing conversions.</p>
+      </div>
+      <div class="benefit-card">
+        <h3>Human + AI Synergy</h3>
+        <p>Designed for marketers, not engineers. Stay in control with dashboards built for strategic minds.</p>
+      </div>
+      <div class="benefit-card">
+        <h3>Transparent Metrics</h3>
+        <p>Full visibility into every data touchpoint. Track ROI across audience, region, and time.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ethics">
+    <h2 class="section-title">Why It Matters</h2>
+    <div class="ethics-content">
+      <div class="ethics-block">
+        <h4>Unconsented Experiments</h4>
+        <p>Many platforms test on users without permission. We built a consent-forward architecture that protects brand trust.</p>
+      </div>
+      <div class="ethics-block">
+        <h4>Algorithm Bias</h4>
+        <p>Our machine learning models are stress-tested for bias — so your brand communicates ethically and inclusively.</p>
+      </div>
+      <div class="ethics-block">
+        <h4>Human Oversight, Always</h4>
+        <p>Automate without going rogue. Our platform keeps strategic decision-making with you — not the algorithm.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="conversion" id="founders">
+    <h2>Founders Deal: Limited Early Access</h2>
+    <p>Be among the first to experience Victory Vision AI. No risk. No meetings. Just smarter marketing in minutes.</p>
+    <form>
+      <input type="email" placeholder="Your work email address" required />
+      <button type="submit">Request Access</button>
+    </form>
+  </section>
+
+  <footer>
+    &copy; 2024 Victory Vision AI. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
