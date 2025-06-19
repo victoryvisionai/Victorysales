@@ -1,10 +1,18 @@
-```html
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Victory Vision AI - Take Control of Your Data</title>
+  <title>Victory Vision AI - Convert Data into Revenue</title>
+  <meta name="description" content="Victory Vision AI turns your complex data into autonomous, ROI-optimized digital marketing campaigns. No demos. No meetings. Instant results." />
+  <meta property="og:title" content="Victory Vision AI - Convert Data into Revenue" />
+  <meta property="og:description" content="Reclaim lost ad spend and drive ROI-driven marketing with autonomous campaign management powered by AI." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f916.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -12,9 +20,10 @@
       --white: #ffffff;
       --light: #f5f5f5;
       --dark: #001f3f;
+      --accent: #ffc600;
     }
 
-    * {
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -27,11 +36,9 @@
       line-height: 1.6;
     }
 
-    header,
-    main,
-    section,
-    footer {
+    header, main, section, footer {
       width: 100%;
+      display: block;
     }
 
     .hero {
@@ -56,7 +63,8 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(10, 49, 97, 0.4);
+      background: rgba(10, 49, 97, 0.5);
+      z-index: 0;
     }
 
     .hero-content {
@@ -73,19 +81,29 @@
     }
 
     .hero-content img {
-      width: 150px;
-      margin-bottom: 1em;
+      width: 180px;
+      margin-bottom: 0.75em;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.45));
+    }
+
+    .tagline {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--white);
+      opacity: 0.85;
     }
 
     .hero-content h1 {
       font-size: 3rem;
       font-weight: 700;
       margin-bottom: 1rem;
+      max-width: 800px;
     }
 
     .hero-content p {
       font-size: 1.25rem;
-      max-width: 600px;
+      max-width: 650px;
     }
 
     .cta-btn {
@@ -99,25 +117,21 @@
       margin-top: 2rem;
       cursor: pointer;
       transition: background 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
     }
 
     .cta-btn:hover {
       background: var(--light);
     }
 
-    section.intro,
-    section.problems,
-    section.features,
-    section.cta {
+    section {
       padding: 4rem 2rem;
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    section.intro h2,
-    section.problems h2,
-    section.features h2,
-    section.cta h2 {
+    section h2 {
       font-size: 2rem;
       font-weight: 700;
       margin-bottom: 1rem;
@@ -125,8 +139,7 @@
       color: var(--primary);
     }
 
-    section.intro p,
-    section.cta p {
+    section p {
       font-size: 1.1rem;
       max-width: 800px;
       margin: 0 auto;
@@ -134,10 +147,9 @@
       color: var(--dark);
     }
 
-    section.problems .grid,
-    section.features .grid {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
@@ -146,11 +158,17 @@
       background: var(--light);
       padding: 2rem;
       border-radius: 8px;
+      text-align: center;
       transition: transform 0.3s ease;
     }
 
     .card:hover {
       transform: translateY(-5px);
+    }
+
+    .card img {
+      width: 40px;
+      margin-bottom: 1rem;
     }
 
     .card h3 {
@@ -210,6 +228,29 @@
       background: var(--light);
     }
 
+    .cta-note {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      color: var(--white);
+      opacity: 0.9;
+    }
+
+    .trust-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .trust-icons img {
+      max-height: 50px;
+      max-width: 120px;
+      object-fit: contain;
+      opacity: 0.8;
+    }
+
     footer {
       background: var(--primary);
       color: var(--white);
@@ -218,13 +259,23 @@
       margin-top: 4rem;
     }
 
-    @media screen and (max-width: 600px) {
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
       .hero-content h1 {
         font-size: 2rem;
       }
 
       .hero-content p {
         font-size: 1rem;
+      }
+
+      .hero-content img {
+        width: 130px;
       }
     }
   </style>
@@ -238,83 +289,98 @@
     <div class="overlay"></div>
     <div class="hero-content">
       <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
-      <h1>Your data isn’t safe—until you take control.</h1>
-      <p>The Founders Deal is live. Simplify your campaigns, amplify your results—no demos needed.</p>
-      <a href="#signup" class="cta-btn">Request Access</a>
+      <div class="tagline">AI that converts context into revenue</div>
+      <h1>Reclaim Lost Ad Spend. Deliver Smarter Campaigns—Autonomously.</h1>
+      <p>Instant results. No demos. No meetings. The Founders Deal grants priority access to real-time, ROI-boosting campaign automation.</p>
+      <a href="#signup" class="cta-btn">Unlock Founders Deal Now</a>
     </div>
   </header>
 
   <main>
     <section class="intro">
-      <h2>Smart Media. Smarter Decisions.</h2>
-      <p>
-        Victory Vision AI is a pioneering platform at the intersection of media and technology,
-        revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology,
-        we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies
-        in real-time with precision targeting based on critical data points such as location, weather,
-        traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes.
-      </p>
+      <h2>Built for CMOs Who Demand Efficiency and ROI</h2>
+      <p>Victory Vision AI turns dynamic, data-aligned campaigns into a competitive advantage. Our autonomous platform simplifies execution, adapts ad delivery to real-world variables like traffic, weather, and time of day, and helps high-performance teams optimize conversions with less lift. Get measurable impact in minutes—not quarters.</p>
     </section>
 
     <section class="problems">
-      <h2>Your Privacy Crisis is a Marketing Opportunity</h2>
+      <h2>Your Marketing Shouldn't Leak Your Budget</h2>
       <div class="grid">
         <div class="card">
+          <img src="https://img.icons8.com/ios-filled/50/fingerprint.png" alt="AI Privacy Scandals" />
           <h3>AI Privacy Scandals</h3>
-          <p>Capitalize ethically in a climate of AI misuse transparency—where your competitors falter, you thrive with control.</p>
+          <p>Capitalize ethically where others stumble. Lead with transparency, comply with regulation, and still outperform.</p>
         </div>
         <div class="card">
-          <h3>Data Exposure Threats</h3>
-          <p>We zero in on the unseen vulnerabilities that leak billions in customer trust—and turn them into safeguarded insights.</p>
+          <img src="https://img.icons8.com/ios-filled/50/shield.png" alt="Invisible Data Leaks" />
+          <h3>Invisible Data Leaks</h3>
+          <p>Plug the leaks your platform doesn't even see. Victory Vision finds and fixes gaps before they cost you ad dollars or customer trust.</p>
         </div>
         <div class="card">
-          <h3>Surveillance Capitalism Burnout</h3>
-          <p>Let go of the parasitic targeting models—our platform ensures autonomy and explicit-marketing consent paths.</p>
+          <img src="https://img.icons8.com/ios-filled/50/no-ads.png" alt="Ad Blindness & Burnout" />
+          <h3>Ad Blindness & Burnout</h3>
+          <p>Move past tired remarketing—we enable relevant engagement when and where your audience is most responsive.</p>
         </div>
         <div class="card">
-          <h3>Invisible Leaks, Visible Loss</h3>
-          <p>Don’t wait until the damage is public—Victory Vision AI detects patterns you can't see, and automates course-correction.</p>
+          <img src="https://img.icons8.com/ios-filled/50/system-task.png" alt="Complex Campaign Tools" />
+          <h3>Too Many Tools, Not Enough Time</h3>
+          <p>Stop stitching together platforms. Our AI handles optimization, placement, and reporting—autonomously.</p>
         </div>
       </div>
     </section>
 
     <section class="features">
-      <h2>Technology Built to Empower, Not Overwhelm</h2>
+      <h2>Turn Context Into Conversions with Autonomy</h2>
       <div class="grid">
         <div class="card">
-          <h3>Autonomous AI Optimization</h3>
-          <p>Continuously evolving AI models adapt messaging based on real-world stimuli for maximized ad relevance and ROI.</p>
+          <img src="https://img.icons8.com/ios-filled/50/artificial-intelligence.png" alt="Adaptive AI Campaigns" />
+          <h3>Adaptive AI Campaigns</h3>
+          <p>Victory Vision responds to stimuli like weather, traffic, local events—adjusting campaigns without human input.</p>
         </div>
         <div class="card">
-          <h3>Real-Time Billboard Activation</h3>
-          <p>Trigger dynamic campaigns aware of local weather, pedestrian density, and locale events—automated within minutes.</p>
+          <img src="https://img.icons8.com/ios-filled/50/video-wall.png" alt="Dynamic Billboard Activation" />
+          <h3>Dynamic Billboard Activation</h3>
+          <p>Launch nationwide campaigns in minutes that self-optimize across city screens and smart displays.</p>
         </div>
         <div class="card">
-          <h3>No Meetings. No Demos. Just Results.</h3>
-          <p>We built Victory Vision for pros who want proof, not pitches. Integrate and launch in <strong>under 5 minutes</strong>.</p>
+          <img src="https://img.icons8.com/ios-filled/50/online.png" alt="Speedy Deployment" />
+          <h3>Launch in Under 5 Minutes</h3>
+          <p>No meetings. No demos. Skip sales cycles and get live in minutes—with Stripe-powered checkout.</p>
         </div>
         <div class="card">
-          <h3>Measurable Outcomes. Always.</h3>
-          <p>From impression lift to foot-traffic attribution, we surface it all in one intuitive dashboard with exportable reporting.</p>
+          <img src="https://img.icons8.com/ios-filled/50/graph-report.png" alt="Real Attribution" />
+          <h3>Real Attribution, Real ROI</h3>
+          <p>Track impressions, foot traffic, dwell time, and lift—visualized in an intuitive dashboard made for decisions.</p>
         </div>
+      </div>
+    </section>
+
+    <section class="trust">
+      <h2>Trusted by Forward-Thinking Teams</h2>
+      <p>Adopted by innovative firms in retail, CPG, real estate, and tech—see why they're seeing a 3x ROAS almost instantly.</p>
+      <div class="trust-icons">
+        <img src="https://res.cloudinary.com/demo/image/upload/logos1.png" alt="Partner Logo 1" />
+        <img src="https://res.cloudinary.com/demo/image/upload/logos2.png" alt="Partner Logo 2" />
+        <img src="https://res.cloudinary.com/demo/image/upload/logos3.png" alt="Partner Logo 3" />
       </div>
     </section>
 
     <section class="cta" id="signup">
       <div class="cta-block">
         <h3>Founders Deal Ends Soon ⏳</h3>
-        <p>Secure lifetime access today—priority onboarding, no demo required, pay via Stripe in seconds.</p>
+        <p>One-time lifetime access. No demos. No contracts. Just revenue-boosting autonomy in your hands, instantly.</p>
         <form action="#" method="POST">
           <input type="email" name="email" placeholder="Your work email" required />
           <button type="submit">Claim Founders Deal</button>
+          <div class="cta-note">No demo, no commitment. Secure Stripe checkout.</div>
         </form>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>© 2024 Victory Vision AI. All rights reserved.</p>
+    <p>&copy; 2024 Victory Vision AI. All rights reserved.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a></p>
   </footer>
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=7ba3f259c4947b12bf2924d14932d1bf1805a4c8" width="1" height="1" style="display:none;" alt="Tracking Pixel" />
 </body>
 </html>
-```
