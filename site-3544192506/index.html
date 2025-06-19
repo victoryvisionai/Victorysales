@@ -1,0 +1,306 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI — Adaptive Billboard Marketing Redefined</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #0a3161;
+      --white: #ffffff;
+      --light-gray: #f5f5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--white);
+      color: #111;
+      line-height: 1.6;
+    }
+
+    header, section, footer {
+      width: 100%;
+      padding: 60px 5%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+    }
+
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .hero-overlay {
+      background: rgba(10,49,97,0.6);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .hero-content img {
+      height: 60px;
+      margin-bottom: 30px;
+    }
+
+    .hero-content h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+    }
+
+    .cta-button {
+      background: var(--white);
+      color: var(--primary-color);
+      padding: 15px 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background: #e4e4e4;
+    }
+
+    .intro, .problem, .features, .offer {
+      background-color: var(--light-gray);
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .intro p, .problem p, .features p {
+      font-size: 1.1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .graph-mockup {
+      width: 100%;
+      max-width: 800px;
+      margin: 40px auto;
+      display: block;
+      border: 4px solid var(--primary-color);
+      border-radius: 10px;
+      background: #fff;
+      height: 240px;
+      background-image: linear-gradient(to right, rgba(10,49,97,0.05) 20%, rgba(10,49,97,0.15) 40%, rgba(10,49,97,0.05) 60%);
+      background-size: 200% 100%;
+      animation: shimmer 3s infinite linear;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .features-list {
+      display: grid;
+      gap: 40px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      margin-top: 40px;
+    }
+
+    .feature-block {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+
+    .feature-block h3 {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .offer-form {
+      max-width: 600px;
+      margin: auto;
+      background: var(--white);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0px 6px 15px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    .offer-form h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+
+    .offer-form input[type="email"] {
+      width: 100%;
+      padding: 15px;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .offer-form button {
+      width: 100%;
+      background: var(--primary-color);
+      color: var(--white);
+      padding: 15px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .offer-form button:hover {
+      background: #061f3b;
+    }
+
+    footer {
+      text-align: center;
+      background: var(--primary-color);
+      color: var(--white);
+      padding: 40px 5%;
+    }
+
+    footer p {
+      font-size: 0.95rem;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750376638/xes7nfwdneowdmijsb1b.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI logo" />
+      <h1>What’s real, what’s fake, and who’s pulling the strings?</h1>
+      <p>Victory Vision AI empowers your brand to lead in a new marketing era — through clarity, automation, and performance at scale.</p>
+      <a href="#signup"><button class="cta-button">Claim Your Founders Deal</button></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2 class="section-title">Introducing Victory Vision AI</h2>
+      <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior.</p>
+      <p>Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
+    </section>
+
+    <section class="problem">
+      <h2 class="section-title">AIspiracy Campaign</h2>
+      <p>Misleading content. Deepfake influencers. Invisible algorithmic decisions. The age of AI comes with unseen threats – but also unprecedented opportunity. The real question is: who’s really influencing your brand?</p>
+      <div class="graph-mockup" aria-label="Visualization of fake vs. real campaign performance"></div>
+      <p><strong>#AIspiracy</strong> uncovers the illusion. Our tools highlight the distortion and offer CEOs & CMOs clarity in the chaos. Spot misinformation. Navigate algorithm bias. Build trust in a world of machine-mediated influence.</p>
+    </section>
+
+    <section class="features">
+      <h2 class="section-title">Why Forward-Thinking Leaders Choose Victory Vision AI</h2>
+      <div class="features-list">
+        <div class="feature-block">
+          <h3>Execute Advertising — 10x Faster</h3>
+          <p>From concept to launch in under 30 minutes. No meetings, no sales calls. Just results.</p>
+        </div>
+        <div class="feature-block">
+          <h3>Unlock a 62% Performance Boost</h3>
+          <p>Our platform has consistently delivered dramatic uplifts in campaign engagement and ROI.</p>
+        </div>
+        <div class="feature-block">
+          <h3>Real-Time Adaptation</h3>
+          <p>Adjust dynamic billboards based on weather, time, traffic flow, or behavior—instantly.</p>
+        </div>
+        <div class="feature-block">
+          <h3>Insights That Matter</h3>
+          <p>No dashboards full of fluff. Just actionable signals aligned with executive KPIs.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="signup" class="offer">
+      <div class="offer-form">
+        <h2>Limited-Time Founders Deal</h2>
+        <p>Skip the calls. Instantly access the full platform and launch your first AI-optimized campaign today.</p>
+        <form>
+          <input type="email" placeholder="Enter your business email" required />
+          <button type="submit">Start My Trial</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Victory Vision AI. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
+```
