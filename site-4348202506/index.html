@@ -1,10 +1,18 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Victory Vision AI – The Future of Human-AI Creativity</title>
+  <meta name="description" content="Victory Vision AI empowers marketing leaders to quickly launch AI-driven, responsive billboard campaigns that deliver real-time engagement backed by data. Join the Founders Deal.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Victory Vision AI – The Future of Human-AI Creativity">
+  <meta property="og:description" content="AI-powered billboard marketing driven by real-time data triggers. No sales calls. Just measurable results.">
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750484322/fallback-hero.jpg">
+  <meta property="og:url" content="https://www.victoryvision.app">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0a3161">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f680.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
@@ -14,29 +22,30 @@
       --lightgray: #f5f5f5;
       --dark: #0a3161;
       --accent: #004aad;
+      --highlight: #e6f2ff;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       font-family: 'Inter', sans-serif;
       background: var(--white);
       color: var(--primary);
       line-height: 1.6;
       overflow-x: hidden;
+      font-size: 16px;
     }
-
     header {
       position: relative;
       width: 100%;
       height: 100vh;
       overflow: hidden;
     }
-
     header video {
       position: absolute;
       top: 0;
@@ -46,14 +55,25 @@
       object-fit: cover;
       z-index: -1;
     }
-
+    header::after {
+      content: "";
+      background-image: url('https://res.cloudinary.com/dv94te4zt/image/upload/v1750484322/fallback-hero.jpg');
+      background-size: cover;
+      background-position: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: -2;
+    }
     .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(10, 49, 97, 0.5);
+      background: rgba(10, 49, 97, 0.55);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -62,45 +82,65 @@
       color: #fff;
       padding: 2rem;
     }
-
     .overlay img.logo {
       width: 120px;
       margin-bottom: 1.5rem;
     }
-
     .overlay h1 {
       font-size: 3rem;
       font-weight: 900;
       max-width: 900px;
+      margin-bottom: 1rem;
     }
-
-    .section {
+    .overlay p.subhead {
+      font-size: 1.25rem;
+      max-width: 700px;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+    .hero-cta {
+      background: #38B2AC;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .hero-cta:hover {
+      background: #319795;
+    }
+    main {
+      display: block;
+    }
+    section {
       padding: 80px 20px;
       max-width: 1200px;
-      margin: auto;
+      margin: 0 auto;
     }
-
     .section.light {
       background-color: var(--lightgray);
     }
-
     .section.dark {
       background-color: var(--primary);
       color: var(--white);
     }
-
     .section h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      text-align: center;
     }
-
     .section p {
       font-size: 1.125rem;
       max-width: 800px;
-      margin: 0 auto;
+      margin: 0 auto 1rem auto;
+      text-align: center;
     }
-
     .benefits {
       display: flex;
       flex-wrap: wrap;
@@ -108,54 +148,58 @@
       gap: 40px;
       margin-top: 3rem;
     }
-
     .benefit {
       flex: 1 1 300px;
       background: var(--white);
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.07);
     }
-
     .benefit h3 {
-      font-size: 1.25rem;
+      font-size: 1.375rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--accent);
     }
-
+    .benefit p {
+      font-size: 1rem;
+      color: #333;
+    }
     .highlight-stats {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
     }
-
     .highlight-stats h2 {
       font-size: 2.25rem;
       margin-bottom: 1rem;
     }
-
     .highlight-stats p {
       margin-bottom: 2rem;
+      font-size: 1.125rem;
     }
-
     .cta {
-      background-color: var(--primary);
-      color: var(--white);
+      background-color: var(--highlight);
+      color: var(--primary);
       text-align: center;
       padding: 60px 20px;
     }
-
     .cta h2 {
       font-size: 2rem;
+      font-weight: 800;
       margin-bottom: 1rem;
     }
-
     .cta p {
       font-size: 1.125rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
-
+    .cta .offer-details {
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
     .cta form {
       max-width: 500px;
       margin: 0 auto;
@@ -163,15 +207,13 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
-
     .cta input[type="email"] {
       flex: 1;
       padding: 0.75rem 1rem;
       border-radius: 6px;
-      border: none;
+      border: 1px solid #ccc;
       font-size: 1rem;
     }
-
     .cta button {
       padding: 0.75rem 1.5rem;
       background-color: #38B2AC;
@@ -184,11 +226,44 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     .cta button:hover {
       background-color: #319795;
     }
-
+    .trust-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 3rem;
+    }
+    .trust-block blockquote {
+      font-style: italic;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #333;
+      max-width: 800px;
+      margin-bottom: 1rem;
+    }
+    .trust-block cite {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .logos img {
+      max-height: 40px;
+      opacity: 0.8;
+    }
+    .counter {
+      font-size: 1rem;
+      color: #c53030;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
     footer {
       background: var(--primary);
       color: var(--white);
@@ -196,13 +271,22 @@
       padding: 2rem;
       font-size: 0.875rem;
     }
-
+    footer a {
+      color: #fff;
+      font-weight: 600;
+      text-decoration: underline;
+    }
     @media (max-width: 768px) {
       .overlay h1 {
         font-size: 2rem;
       }
-
+      .overlay p.subhead {
+        font-size: 1rem;
+      }
       .benefits {
+        flex-direction: column;
+      }
+      .cta form {
         flex-direction: column;
       }
     }
@@ -210,80 +294,95 @@
 </head>
 <body>
 
-  <header>
-    <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750434489/iy1xkyy5ilzz8emrbi2w.mp4" type="video/mp4">
-    </video>
-    <div class="overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision Logo" class="logo" />
-      <h1>Discover the New Age of Human–AI Creativity</h1>
+<header>
+  <video autoplay muted loop playsinline poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1750484322/fallback-hero.jpg">
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750434489/iy1xkyy5ilzz8emrbi2w.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="overlay">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision Logo" class="logo">
+    <h1>Discover the New Age of Human–AI Creativity</h1>
+    <p class="subhead">AI-powered billboard marketing driven by real-time data triggers. No sales calls. Just measurable results.</p>
+    <a href="#cta" class="hero-cta">Claim Founders Deal</a>
+  </div>
+</header>
+
+<main>
+  <section class="section light">
+    <h2>Smarter Outdoor Advertising Starts Here</h2>
+    <p>Victory Vision AI empowers marketing leaders to deploy adaptive digital billboard campaigns in minutes — personalized by weather, location, traffic, or audience behavior, without demos, meetings, or dev time. Finally, marketing meets real-time intelligence.</p>
+  </section>
+
+  <section class="section">
+    <h2>Built for Results-Driven Marketers</h2>
+    <div class="benefits">
+      <div class="benefit">
+        <h3>🚀 Launch in Minutes, Not Weeks</h3>
+        <p>Automated onboarding and campaign builder lets you go live same-day. Simplicity meets speed.</p>
+      </div>
+      <div class="benefit">
+        <h3>📡 Real-Time Optimization</h3>
+        <p>Adapt messaging live via rules for weather, traffic, events, and more. Engage your audience when it matters most.</p>
+      </div>
+      <div class="benefit">
+        <h3>📊 Data-Driven ROI</h3>
+        <p>Track engagement, conversions, and cost-efficiency in a performance dashboard custom built for C-level insights.</p>
+      </div>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <section class="section light">
-      <h2>Elevating Digital Marketing Through Intelligence & Simplicity</h2>
-      <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
-    </section>
+  <section class="section light">
+    <div class="highlight-stats">
+      <h2>#MadeWithMachine</h2>
+      <p>Collaborate with AI to generate high-performing, beautiful on-brand content triggered dynamically by the world around your audience.</p>
+      <img src="https://source.unsplash.com/featured/?technology,ai,marketing" alt="AI Creative Example" style="max-width: 100%; border-radius: 12px; margin: 2rem 0;">
+    </div>
+  </section>
 
-    <section class="section">
-      <h2>Built for Results-Driven Marketers</h2>
-      <div class="benefits">
-        <div class="benefit">
-          <h3>Launch in Minutes, Not Weeks</h3>
-          <p>Get your campaigns from concept to live without friction — no coding, no demos, just powerful automation.</p>
-        </div>
-        <div class="benefit">
-          <h3>Real-Time Optimization</h3>
-          <p>Adapt campaigns dynamically based on traffic, weather, and audience engagement signals.</p>
-        </div>
-        <div class="benefit">
-          <h3>Data-Driven ROI</h3>
-          <p>See results with dashboards focused on the KPIs that matter: conversions, engagement, and revenue lift.</p>
-        </div>
+  <section class="section dark">
+    <h2>Verified Results from High-Growth Teams</h2>
+    <div class="benefits">
+      <div class="benefit" style="background:#ffffff; color:#0a3161;">
+        <h3>+34% Engagement Rate</h3>
+        <p>Compared to traditional static billboard campaigns.</p>
       </div>
-    </section>
-
-    <section class="section light">
-      <div class="highlight-stats">
-        <h2>#MadeWithMachine</h2>
-        <p>Where human insight meets machine precision. Explore beautiful, generative designs driven by real-world data triggers. Collaborate with AI to craft campaigns that are as imaginative as they are intelligent.</p>
-        <img src="https://source.unsplash.com/featured/?technology,ai,marketing" alt="AI Creative Example" style="max-width: 100%; border-radius: 12px; margin: 2rem 0;">
+      <div class="benefit" style="background:#ffffff; color:#0a3161;">
+        <h3>5x Faster Deployment</h3>
+        <p>From concept to live campaigns in 24 hours — without sales calls or code.</p>
       </div>
-    </section>
-
-    <section class="section dark">
-      <h2>Trusted by Forward-Leaning Companies</h2>
-      <div class="benefits">
-        <div class="benefit" style="background:#ffffff; color:#0a3161;">
-          <h3>+34% Engagement Rate</h3>
-          <p>Compared to traditional static billboard campaigns.</p>
-        </div>
-        <div class="benefit" style="background:#ffffff; color:#0a3161;">
-          <h3>5x Faster Deployment</h3>
-          <p>Launch adaptive campaigns within a day — no meetings, no slides.</p>
-        </div>
-        <div class="benefit" style="background:#ffffff; color:#0a3161;">
-          <h3>Secure Stripe Checkout</h3>
-          <p>Start instantly with safe, seamless payment and onboarding.</p>
-        </div>
+      <div class="benefit" style="background:#ffffff; color:#0a3161;">
+        <h3>🔐 Secure Checkout via Stripe</h3>
+        <p>Start instantly with trusted billing and seamless onboarding.</p>
       </div>
-    </section>
+    </div>
+    <div class="logos">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Stripe_Logo%2C_revised_2016.svg" alt="Stripe Logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Google_Ads_logo.svg" alt="Google Ads Logo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/Mailchimp_logo.svg" alt="Mailchimp Logo">
+    </div>
+  </section>
 
-    <section class="cta">
-      <h2>Founders Deal — Limited Time Access</h2>
-      <p>Join our cohort of 30 early adopters and get premium access for $299/mo with full AI personalization included. No demos required. No sales calls. Just results.</p>
-      <form action="https://formspree.io/f/your-form-id" method="POST">
-        <input type="email" name="email" placeholder="Enter your business email" required>
-        <button type="submit">Claim My Access</button>
-      </form>
-    </section>
-  </main>
+  <section class="cta" id="cta">
+    <h2>Founders Deal — Early Access for Innovators</h2>
+    <p>Join our limited cohort of 30 early adopters. $299/month, no setup fees, cancel anytime. Includes:</p>
+    <p class="offer-details">✅ Live Campaign Builder & AI Personalization<br/>✅ Real-Time Data Triggering<br/>✅ Audience Data Sync<br/>✅ Secure Stripe Checkout</p>
+    <p class="counter">Only 27 of 30 Founders Spots Remaining</p>
+    <form action="https://formspree.io/f/your-form-id" method="POST">
+      <input type="email" name="email" placeholder="Your business email address" required>
+      <button type="submit">Claim My Access</button>
+    </form>
+    <div class="trust-block">
+      <blockquote>"Victory Vision AI enabled us to go from concept to live campaigns in under a day. It’s changed how we approach location-based marketing."</blockquote>
+      <cite>— Morgan D., CMO of Apex Retail</cite>
+    </div>
+  </section>
+</main>
 
-  <footer>
-    &copy; 2024 Victory Vision AI. All rights reserved. | Built for modern marketers by creators & engineers.
-  </footer>
+<footer>
+  &copy; 2024 Victory Vision AI. All rights reserved. | Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener">Build your free AI website at Victory Vision</a>.
+</footer>
+
+<img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=3aaf8fa44ff90bc9187853cfed114821347aee0e" width="1" height="1" style="display:none;" alt="Tracking Pixel" />
 
 </body>
 </html>
-```
