@@ -653,32 +653,32 @@
       }
     }
 
-    card.innerHTML = `
-      <div class="campaign-header">
-        <div class="campaign-title">${campaign.name || 'Untitled Campaign'}</div>
-        <div class="campaign-tagline">${campaign.tagline || 'No tagline'}</div>
+card.innerHTML = `
+  <div class="campaign-header">
+    <div class="campaign-title">${campaign.video_URL ? 'Playing' : 'No Video'}</div>
+    <div class="campaign-tagline">${campaign.tagline || 'No tagline'}</div>
+  </div>
+  <div class="campaign-info">
+    <p class="campaign-description">${campaign.viral || campaign.main_prompt || 'No description available'}</p>
+    <div class="campaign-meta">
+      <div class="meta-item">
+        <span class="meta-label">Name:</span>
+        ${campaign.name || 'Untitled'}
       </div>
-      <div class="campaign-info">
-        <p class="campaign-description">${campaign.viral || campaign.main_prompt || 'No description available'}</p>
-        <div class="campaign-meta">
-          <div class="meta-item">
-            <span class="meta-label">Created:</span>
-            ${createdDate}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Revenue:</span>
-            ${campaign.revenue || 'N/A'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Keywords:</span>
-            ${campaign.keywords || 'None'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Goal:</span>
-            ${campaign.goal_description || 'No goal set'}
-          </div>
-        </div>
+      <div class="meta-item">
+        <span class="meta-label">Revenue:</span>
+        ${campaign.revenue || 'N/A'}
       </div>
+      <div class="meta-item">
+        <span class="meta-label">Keywords:</span>
+        ${campaign.keywords || 'None'}
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Video URL:</span>
+        ${campaign.video_URL ? 'Available' : 'None'}
+      </div>
+    </div>
+  </div>
       <div class="campaign-actions">
         <button onclick="event.stopPropagation(); editCampaign('${campaign.id}')" class="btn-small">Edit</button>
         <button onclick="event.stopPropagation(); deleteCampaign('${campaign.id}')" class="btn-small danger">Delete</button>
@@ -699,12 +699,24 @@ modalBody.innerHTML = `
     <div class="field-value">${campaign.name || 'N/A'}</div>
   </div>
   <div class="field-group">
+    <div class="field-label">Created At</div>
+    <div class="field-value">${campaign.created_at ? new Date(campaign.created_at).toLocaleString() : 'N/A'}</div>
+  </div>
+  <div class="field-group">
     <div class="field-label">Revenue</div>
     <div class="field-value">${campaign.revenue || 'N/A'}</div>
   </div>
   <div class="field-group">
     <div class="field-label">Tagline</div>
     <div class="field-value">${campaign.tagline || 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Campaign URL</div>
+    <div class="field-value">${campaign.campaign_URL ? `<a href="${campaign.campaign_URL}" target="_blank">${campaign.campaign_URL}</a>` : 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Social Posts</div>
+    <div class="field-value">${campaign.social_posts || 'N/A'}</div>
   </div>
   <div class="field-group">
     <div class="field-label">Main Prompt</div>
@@ -715,19 +727,30 @@ modalBody.innerHTML = `
     <div class="field-value">${campaign.keywords || 'N/A'}</div>
   </div>
   <div class="field-group">
+    <div class="field-label">Viral</div>
+    <div class="field-value">${campaign.viral || 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Goal Description</div>
+    <div class="field-value">${campaign.goal_description || 'N/A'}</div>
+  </div>
+  <div class="field-group">
     <div class="field-label">Video URL</div>
     <div class="field-value">${campaign.video_URL ? `<a href="${campaign.video_URL}" target="_blank">${campaign.video_URL}</a>` : 'N/A'}</div>
   </div>
   <div class="field-group">
-    <div class="field-label">Image URL</div>
-    <div class="field-value">${campaign.image_URL ? `<a href="${campaign.image_URL}" target="_blank">${campaign.image_URL}</a>` : 'N/A'}</div>
+    <div class="field-label">Stock Photo</div>
+    <div class="field-value">${campaign.stock_photo || 'N/A'}</div>
   </div>
   <div class="field-group">
-    <div class="field-label">Created At</div>
-    <div class="field-value">${campaign.created_at ? new Date(campaign.created_at).toLocaleString() : 'N/A'}</div>
+    <div class="field-label">30 Day Plan</div>
+    <div class="field-value">${campaign['30_day'] ? JSON.stringify(campaign['30_day'], null, 2) : 'N/A'}</div>
   </div>
-`;    
-    campaignModal.style.display = 'block';
+  <div class="field-group">
+    <div class="field-label">90 Day Plan</div>
+    <div class="field-value">${campaign['90_day'] ? JSON.stringify(campaign['90_day'], null, 2) : 'N/A'}</div>
+  </div>
+`;    campaignModal.style.display = 'block';
   }
 
   // Close modal
