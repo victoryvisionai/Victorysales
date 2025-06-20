@@ -1,0 +1,328 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="L.A. Confidential HR Solutions - HR compliance and workforce consulting for startups and small businesses in California. Bilingual, culturally fluent, and results-driven." />
+  <title>L.A. Confidential HR Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #a50928;
+      --white: #ffffff;
+      --gray: #f5f5f5;
+      --text-dark: #1e1e1e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--white);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    header,
+    section,
+    footer {
+      width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero-tagline {
+      color: var(--white);
+      font-size: 2.5rem;
+      font-weight: 700;
+      max-width: 800px;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-button {
+      padding: 0.75rem 2rem;
+      background-color: var(--primary);
+      color: var(--white);
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #8e0822;
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .brand-intro {
+      text-align: center;
+    }
+
+    .brand-intro img.logo {
+      width: 120px;
+      margin-bottom: 1.5rem;
+    }
+
+    .brand-intro h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .brand-intro p {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    .problem-narrative {
+      background-color: var(--gray);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .problem-narrative h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .problem-narrative p {
+      max-width: 900px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    .highlights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .highlight {
+      background: var(--white);
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 2rem;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .highlight:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .highlight h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .highlight p {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .testimonials {
+      padding: 4rem 2rem;
+      background-color: var(--white);
+      text-align: center;
+    }
+
+    .testimonials h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 2rem;
+    }
+
+    .testimonial {
+      max-width: 800px;
+      margin: 1.5rem auto;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: #444;
+    }
+
+    .lead-form {
+      background: var(--primary);
+      color: var(--white);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .lead-form h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .lead-form p {
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    .form-inline {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .form-inline input[type="email"] {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 5px;
+      width: 280px;
+      max-width: 100%;
+    }
+
+    .form-inline button {
+      padding: 0.75rem 1.5rem;
+      background: #ffffff;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .form-inline button:hover {
+      background: #f5f5f5;
+    }
+
+    footer {
+      background-color: var(--gray);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .hero-tagline {
+        font-size: 1.8rem;
+      }
+
+      .highlights {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750390210/rvzfpbwxkq3kyrevne0b.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential Logo" style="width:100px; margin-bottom: 1rem;">
+      <h1 class="hero-tagline">When systems crack, trust breaks — how secure are your internal operations?</h1>
+      <a href="#contact"><button class="cta-button">Get a Free HR Risk Assessment</button></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section brand-intro">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential Logo" class="logo">
+      <h2>Your Trusted HR Partner</h2>
+      <p>L.A. Confidential HR Solutions is a progressive HR consulting firm dedicated to demystifying human resources for startups and small to mid-sized businesses. We prioritize empathy, compliance, and team building, delivering bilingual HR expertise and cross-cultural insights that empower companies to thrive. With a unique blend of professionalism and a light-hearted approach, we create a welcoming environment where every client feels seen and supported. Our focus is on fostering strong workplace cultures while ensuring smooth HR operations, making us a trusted partner for businesses invested in their people.</p>
+    </section>
+
+    <section class="problem-narrative" id="protocol-fail">
+      <h2>Campaign: Protocol Fail</h2>
+      <p>From compliance gaps to communication breakdowns, institutional failures trigger real consequences — legal risk, brand damage, broken trust. We help founders and decision-makers navigate turbulent HR terrain through foresight, empathy, and executable systems. How resilient is your organization under pressure?</p>
+
+      <div class="highlights">
+        <div class="highlight">
+          <h3>Security & Accountability</h3>
+          <p>We help secure your HR infrastructure and ensure leadership takes responsibility through clear, defensible workflows.</p>
+        </div>
+        <div class="highlight">
+          <h3>Communication Breakdowns</h3>
+          <p>Our coaching improves cross-functional and bilingual communication, preventing tension from becoming toxicity.</p>
+        </div>
+        <div class="highlight">
+          <h3>Leadership Under Fire</h3>
+          <p>We train and equip management teams to lead with clarity, ethics, and cultural fluency in high-stakes situations.</p>
+        </div>
+        <div class="highlight">
+          <h3>Trust & Transparency</h3>
+          <p>Through audits and assessments, we restore transparency and rebuild channels of institutional trust.</p>
+        </div>
+        <div class="highlight">
+          <h3>Internal Failure Points</h3>
+          <p>We identify systemic risks in hiring, onboarding, and conflict resolution before they escalate into crises.</p>
+        </div>
+        <div class="highlight">
+          <h3>Employee Safety Protocols</h3>
+          <p>We create compliant, compassionate safety and DEI policies tailored for small teams with big vision.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <h2>What Our Clients Are Saying</h2>
+      <div class="testimonial">"Before L.A. Confidential, we were constantly reacting to HR problems. Now, we’re proactive, inclusive, and compliant. They’re the best investment we’ve made in our operations." — Grace W., COO, Fintech Startup</div>
+      <div class="testimonial">"Their bilingual team helped us translate not just languages, but culture. We avoided major missteps and engaged our team like never before." — David L., Founder, China-U.S. health tech firm</div>
+    </section>
+
+    <section class="lead-form" id="contact">
+      <h2>Ready to Strengthen Your People Systems?</h2>
+      <p>Start with a free 30-minute consultation. Discover how we can craft an HR strategy that aligns with your culture and champions your team’s performance.</p>
+      <form class="form-inline" action="#" method="post">
+        <input type="email" name="email" placeholder="Your business email" required>
+        <button type="submit">Request Consultation</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 L.A. Confidential HR Solutions. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
