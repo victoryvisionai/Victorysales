@@ -693,41 +693,40 @@
     document.getElementById('modalTitle').textContent = campaign.name || 'Campaign Details';
     
     const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = `
-      <div class="field-group">
-        <div class="field-label">Name</div>
-        <div class="field-value">${campaign.name || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Tagline</div>
-        <div class="field-value">${campaign.tagline || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Main Prompt</div>
-        <div class="field-value">${campaign.main_prompt || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Viral Content</div>
-        <div class="field-value">${campaign.viral || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Keywords</div>
-        <div class="field-value">${campaign.keywords || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Campaign URL</div>
-        <div class="field-value">${campaign.campaign_URL || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Revenue</div>
-        <div class="field-value">${campaign.revenue || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Goal Description</div>
-        <div class="field-value">${campaign.goal_description || 'N/A'}</div>
-      </div>
-    `;
-    
+modalBody.innerHTML = `
+  <div class="field-group">
+    <div class="field-label">Name</div>
+    <div class="field-value">${campaign.name || 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Revenue</div>
+    <div class="field-value">${campaign.revenue || 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Tagline</div>
+    <div class="field-value">${campaign.tagline || 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Main Prompt</div>
+    <div class="field-value">${campaign.main_prompt || 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Keywords</div>
+    <div class="field-value">${campaign.keywords || 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Video URL</div>
+    <div class="field-value">${campaign.video_URL ? `<a href="${campaign.video_URL}" target="_blank">${campaign.video_URL}</a>` : 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Image URL</div>
+    <div class="field-value">${campaign.image_URL ? `<a href="${campaign.image_URL}" target="_blank">${campaign.image_URL}</a>` : 'N/A'}</div>
+  </div>
+  <div class="field-group">
+    <div class="field-label">Created At</div>
+    <div class="field-value">${campaign.created_at ? new Date(campaign.created_at).toLocaleString() : 'N/A'}</div>
+  </div>
+`;    
     campaignModal.style.display = 'block';
   }
 
