@@ -1,10 +1,15 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="L.A. Confidential HR Solutions - HR compliance and workforce consulting for startups and small businesses in California. Bilingual, culturally fluent, and results-driven." />
+  <meta property="og:title" content="L.A. Confidential HR Solutions - Secure HR for Startups">
+  <meta property="og:description" content="Expert HR strategy, bilingual guidance, and workforce compliance for California's startups.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lacondfidentialhr.com">
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4bc.png" type="image/png" />
   <title>L.A. Confidential HR Solutions</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -14,40 +19,36 @@
       --gray: #f5f5f5;
       --text-dark: #1e1e1e;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
-    body {
+    html, body {
       font-family: 'Inter', sans-serif;
       background-color: var(--white);
       color: var(--text-dark);
       line-height: 1.6;
+      scroll-behavior: smooth;
     }
-
-    header,
-    section,
-    footer {
+    header, main, footer, section {
       width: 100%;
     }
-
-    .hero {
+    header.hero {
       position: relative;
       height: 100vh;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    .hero video {
+    header.hero video {
       position: absolute;
       width: 100%;
       height: 100%;
       object-fit: cover;
       z-index: 1;
     }
-
     .hero-overlay {
       position: absolute;
       z-index: 2;
@@ -61,17 +62,26 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 2rem;
+      padding: 1.5rem;
     }
-
+    .hero-logo {
+      max-width: 140px;
+      margin-bottom: 1rem;
+    }
     .hero-tagline {
       color: var(--white);
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
       max-width: 800px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
-
+    .hero-subheading {
+      color: var(--white);
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
     .cta-button {
       padding: 0.75rem 2rem;
       background-color: var(--primary);
@@ -83,98 +93,83 @@
       border-radius: 5px;
       transition: background 0.3s ease;
     }
-
     .cta-button:hover {
       background-color: #8e0822;
     }
-
     .section {
       padding: 4rem 2rem;
       max-width: 1200px;
       margin: 0 auto;
     }
-
-    .brand-intro {
+    .brand-intro, .problem-narrative, .testimonials, .lead-form {
       text-align: center;
     }
-
     .brand-intro img.logo {
       width: 120px;
       margin-bottom: 1.5rem;
     }
-
     .brand-intro h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
       color: var(--primary);
     }
-
     .brand-intro p {
       max-width: 800px;
       margin: 0 auto;
       font-size: 1.1rem;
     }
-
     .problem-narrative {
       background-color: var(--gray);
-      padding: 4rem 2rem;
-      text-align: center;
     }
-
     .problem-narrative h2 {
       font-size: 2rem;
       color: var(--primary);
       margin-bottom: 1rem;
     }
-
     .problem-narrative p {
       max-width: 900px;
       margin: 0 auto;
       font-size: 1.1rem;
     }
-
+    .highlight-category {
+      margin-top: 3rem;
+    }
+    .highlight-category h3 {
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
     .highlights {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
-
     .highlight {
       background: var(--white);
       border: 1px solid #ddd;
       border-radius: 8px;
       padding: 2rem;
       transition: box-shadow 0.3s ease;
+      text-align: left;
     }
-
     .highlight:hover {
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     }
-
-    .highlight h3 {
+    .highlight h4 {
       color: var(--primary);
       margin-bottom: 0.5rem;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
     }
-
     .highlight p {
       font-size: 1rem;
       color: #333;
     }
-
-    .testimonials {
-      padding: 4rem 2rem;
-      background-color: var(--white);
-      text-align: center;
-    }
-
     .testimonials h2 {
       font-size: 2rem;
       color: var(--primary);
       margin-bottom: 2rem;
     }
-
     .testimonial {
       max-width: 800px;
       margin: 1.5rem auto;
@@ -182,24 +177,36 @@
       font-style: italic;
       color: #444;
     }
-
+    .testimonial-source {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-top: 0.5rem;
+    }
+    .client-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .client-logos img {
+      height: 40px;
+      max-width: 120px;
+      object-fit: contain;
+    }
     .lead-form {
       background: var(--primary);
       color: var(--white);
-      padding: 4rem 2rem;
-      text-align: center;
     }
-
     .lead-form h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
-
     .lead-form p {
       max-width: 700px;
       margin: 0 auto 2rem;
     }
-
     .form-inline {
       display: flex;
       flex-wrap: wrap;
@@ -207,7 +214,6 @@
       gap: 1rem;
       margin-top: 1rem;
     }
-
     .form-inline input[type="email"] {
       padding: 0.75rem;
       border: none;
@@ -215,7 +221,6 @@
       width: 280px;
       max-width: 100%;
     }
-
     .form-inline button {
       padding: 0.75rem 1.5rem;
       background: #ffffff;
@@ -227,11 +232,9 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .form-inline button:hover {
       background: #f5f5f5;
     }
-
     footer {
       background-color: var(--gray);
       text-align: center;
@@ -239,79 +242,114 @@
       font-size: 0.9rem;
       color: #666;
     }
-
+    footer a {
+      color: var(--text-dark);
+      text-decoration: underline;
+      font-weight: 600;
+    }
     @media (max-width: 768px) {
       .hero-tagline {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
       }
-
-      .highlights {
-        grid-template-columns: 1fr;
+      .hero-subheading {
+        font-size: 1rem;
+      }
+      .hero-logo {
+        width: 100px;
+      }
+      .form-inline {
+        flex-direction: column;
+      }
+      .cta-button {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
       }
     }
   </style>
 </head>
 <body>
-
   <header class="hero">
     <video autoplay muted loop playsinline>
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750390210/rvzfpbwxkq3kyrevne0b.mp4" type="video/mp4" />
     </video>
     <div class="hero-overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential Logo" style="width:100px; margin-bottom: 1rem;">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential HR Logo" class="hero-logo">
       <h1 class="hero-tagline">When systems crack, trust breaks — how secure are your internal operations?</h1>
+      <p class="hero-subheading">Bilingual HR compliance and culture-first consulting for ambitious teams in California’s startup landscape.</p>
       <a href="#contact"><button class="cta-button">Get a Free HR Risk Assessment</button></a>
     </div>
   </header>
 
   <main>
     <section class="section brand-intro">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential Logo" class="logo">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="Brand Logo" class="logo">
       <h2>Your Trusted HR Partner</h2>
-      <p>L.A. Confidential HR Solutions is a progressive HR consulting firm dedicated to demystifying human resources for startups and small to mid-sized businesses. We prioritize empathy, compliance, and team building, delivering bilingual HR expertise and cross-cultural insights that empower companies to thrive. With a unique blend of professionalism and a light-hearted approach, we create a welcoming environment where every client feels seen and supported. Our focus is on fostering strong workplace cultures while ensuring smooth HR operations, making us a trusted partner for businesses invested in their people.</p>
+      <p>L.A. Confidential HR Solutions delivers expert-level HR strategy, compliance, and consulting tailored for startups and small businesses navigating California's complex legal landscape. With bilingual fluency and deep cross-cultural understanding, we help companies turn chaotic HR challenges into structured, growth-ready solutions. Our ethos? Precision, empathy, and a partnership that feels personal.</p>
     </section>
 
     <section class="problem-narrative" id="protocol-fail">
       <h2>Campaign: Protocol Fail</h2>
-      <p>From compliance gaps to communication breakdowns, institutional failures trigger real consequences — legal risk, brand damage, broken trust. We help founders and decision-makers navigate turbulent HR terrain through foresight, empathy, and executable systems. How resilient is your organization under pressure?</p>
+      <p>HR missteps don’t just affect morale — they lead to lawsuits, high turnover, and broken trust with your team. Protocol Fail is our response strategy for founders and managers seeking structured, compassionate recovery and future-proofed systems.</p>
 
-      <div class="highlights">
-        <div class="highlight">
-          <h3>Security & Accountability</h3>
-          <p>We help secure your HR infrastructure and ensure leadership takes responsibility through clear, defensible workflows.</p>
+      <div class="highlight-category">
+        <h3>1. Infrastructure + Risk Prevention</h3>
+        <div class="highlights">
+          <div class="highlight">
+            <h4>Security & Accountability</h4>
+            <p>We design clear workflows and audit trails that insulate your organization from compliance risks.</p>
+          </div>
+          <div class="highlight">
+            <h4>Internal Failure Points</h4>
+            <p>From onboarding gaps to performance review misfires — we uncover and eliminate recurring friction zones.</p>
+          </div>
         </div>
-        <div class="highlight">
-          <h3>Communication Breakdowns</h3>
-          <p>Our coaching improves cross-functional and bilingual communication, preventing tension from becoming toxicity.</p>
+      </div>
+
+      <div class="highlight-category">
+        <h3>2. Organizational Communication</h3>
+        <div class="highlights">
+          <div class="highlight">
+            <h4>Leadership Under Fire</h4>
+            <p>Train executives to lead confidently and ethically, even during cultural conflict or legal ambiguity.</p>
+          </div>
+          <div class="highlight">
+            <h4>Communication Breakdowns</h4>
+            <p>Bridge linguistic and cultural divides with bilingual alignment training across your departments.</p>
+          </div>
         </div>
-        <div class="highlight">
-          <h3>Leadership Under Fire</h3>
-          <p>We train and equip management teams to lead with clarity, ethics, and cultural fluency in high-stakes situations.</p>
-        </div>
-        <div class="highlight">
-          <h3>Trust & Transparency</h3>
-          <p>Through audits and assessments, we restore transparency and rebuild channels of institutional trust.</p>
-        </div>
-        <div class="highlight">
-          <h3>Internal Failure Points</h3>
-          <p>We identify systemic risks in hiring, onboarding, and conflict resolution before they escalate into crises.</p>
-        </div>
-        <div class="highlight">
-          <h3>Employee Safety Protocols</h3>
-          <p>We create compliant, compassionate safety and DEI policies tailored for small teams with big vision.</p>
+      </div>
+
+      <div class="highlight-category">
+        <h3>3. People-Centric Safety Systems</h3>
+        <div class="highlights">
+          <div class="highlight">
+            <h4>Trust & Transparency</h4>
+            <p>Rebuild morale and trust through facilitated conversations, employee insight sessions, and clear policies.</p>
+          </div>
+          <div class="highlight">
+            <h4>Employee Safety Protocols</h4>
+            <p>Roll out safety and DEI protocols that are both compliant and human-first for a psychologically safe workplace.</p>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="testimonials">
-      <h2>What Our Clients Are Saying</h2>
-      <div class="testimonial">"Before L.A. Confidential, we were constantly reacting to HR problems. Now, we’re proactive, inclusive, and compliant. They’re the best investment we’ve made in our operations." — Grace W., COO, Fintech Startup</div>
-      <div class="testimonial">"Their bilingual team helped us translate not just languages, but culture. We avoided major missteps and engaged our team like never before." — David L., Founder, China-U.S. health tech firm</div>
+      <h2>Client Stories that Speak</h2>
+      <div class="testimonial">"Before L.A. Confidential, we were constantly reacting to HR problems. Now, we’re proactive, inclusive, and compliant."</div>
+      <div class="testimonial-source">— Grace W., COO, Fintech Startup</div>
+      <div class="testimonial">"Their bilingual team helped us translate not just languages, but culture. We avoided major missteps and engaged our team like never before."</div>
+      <div class="testimonial-source">— David L., Founder, China-U.S. Health Tech</div>
+      <div class="client-logos">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750521000/sample-client1.png" alt="Client Logo 1">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750521000/sample-client2.png" alt="Client Logo 2">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750521000/sample-client3.png" alt="Client Logo 3">
+      </div>
     </section>
 
     <section class="lead-form" id="contact">
       <h2>Ready to Strengthen Your People Systems?</h2>
-      <p>Start with a free 30-minute consultation. Discover how we can craft an HR strategy that aligns with your culture and champions your team’s performance.</p>
+      <p>Schedule your free 30-minute consultation and receive a personalized HR risk assessment for your business. Let’s build a culture—and a company—your team can trust.</p>
       <form class="form-inline" action="#" method="post">
         <input type="email" name="email" placeholder="Your business email" required>
         <button type="submit">Request Consultation</button>
@@ -320,9 +358,11 @@
   </main>
 
   <footer>
-    &copy; 2024 L.A. Confidential HR Solutions. All rights reserved.
+    &copy; 2024 L.A. Confidential HR Solutions. All rights reserved. <br />
+    <small><a href="https://www.victoryvision.app" target="_blank" rel="noopener">Your Vision. Our AI. Pure Victory. Build your free AI website at Victory Vision</a></small>
   </footer>
+
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=6c6f7d8f35a61df594f74f6272cecceb007e5ec8" width="1" height="1" style="display:none;" alt="pixel" />
 
 </body>
 </html>
-```
