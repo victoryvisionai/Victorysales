@@ -1,12 +1,19 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>L.A. Confidential HR Solutions</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
+  <link rel="icon" href="https://cdnjs.cloudflare.com/ajax/libs/favicon/0.0.1/favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <meta name="description" content="Strategic, bilingual HR consulting that blends compliance with empathy for California's growing startups and small businesses." />
+  <meta property="og:title" content="L.A. Confidential HR Solutions" />
+  <meta property="og:description" content="Empathy-forward, bilingual HR strategy for startups and small businesses seeking compliance and culture." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" />
+  <meta property="og:url" content="https://www.laconfidentialhr.com" />
+  <meta name="theme-color" content="#a50928" />
   <style>
     :root {
       --primary: #a50928;
@@ -14,31 +21,33 @@
       --light: #f5f5f5;
       --font-main: 'Inter', sans-serif;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       font-family: var(--font-main);
       background-color: var(--white);
       color: #222;
       line-height: 1.6;
     }
-
-    header, main, footer {
+    header,
+    main,
+    footer,
+    nav,
+    section {
       width: 100%;
     }
-
     .hero {
       position: relative;
       width: 100%;
       height: 90vh;
       overflow: hidden;
     }
-
     .hero video {
       position: absolute;
       top: 50%;
@@ -48,7 +57,6 @@
       transform: translate(-50%, -50%);
       object-fit: cover;
     }
-
     .overlay {
       position: absolute;
       top: 0;
@@ -56,118 +64,134 @@
       z-index: 2;
       width: 100%;
       height: 100%;
-      background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2));
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.2));
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 0 1.5rem;
     }
-
     .overlay h1 {
       color: var(--white);
       font-size: 2.5rem;
       max-width: 800px;
       font-weight: 700;
+      margin-bottom: 1rem;
     }
-
+    .overlay p {
+      color: var(--white);
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+      max-width: 650px;
+    }
+    .overlay .hero-cta {
+      margin-top: 2rem;
+    }
+    .overlay .hero-cta button {
+      background-color: #fff;
+      color: var(--primary);
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 1rem 2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .overlay .hero-cta button:hover {
+      background-color: #fce4e7;
+    }
     nav {
       position: absolute;
       top: 20px;
       left: 20px;
-      z-index: 3;
+      z-index: 4;
     }
-
     nav img {
-      height: 50px;
+      height: 80px;
+      filter: drop-shadow(0px 0px 5px rgba(0, 0, 0, 0.7));
     }
-
-    section.intro {
+    section.intro,
+    section.narrative,
+    section.features,
+    section.testimonials,
+    section.cta {
       padding: 4rem 2rem;
       text-align: center;
+    }
+    .intro {
       background-color: var(--light);
     }
-
-    .intro h2 {
+    .intro h2,
+    .narrative h2,
+    .testimonials h2,
+    .cta h2 {
       font-size: 2rem;
       color: var(--primary);
       margin-bottom: 1rem;
     }
-
-    .intro p {
+    .intro .intro-block,
+    .narrative .narrative-block,
+    .cta p {
       max-width: 800px;
-      margin: 0 auto;
+      margin: 0 auto 1.5rem;
+      font-size: 1.1rem;
       color: #444;
-      font-size: 1.1rem;
     }
-
-    section.narrative {
-      padding: 4rem 2rem;
+    .intro .intro-subhead {
+      margin-top: 2rem;
+      font-weight: 600;
+      color: #222;
+    }
+    .narrative {
       background-color: var(--white);
-      text-align: center;
     }
-
-    .narrative h2 {
-      font-size: 2rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-
-    .narrative p {
-      max-width: 700px;
-      margin: 0 auto;
-      color: #333;
-      font-size: 1.1rem;
-    }
-
     .features {
+      background-color: var(--light);
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
-      padding: 4rem 2rem;
-      background-color: var(--light);
     }
-
     .feature {
       background: var(--white);
       border-radius: 8px;
       padding: 2rem;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
       text-align: center;
       transition: transform 0.3s ease;
     }
-
     .feature:hover {
       transform: translateY(-5px);
     }
-
     .feature h3 {
       color: var(--primary);
       margin-bottom: 1rem;
       font-size: 1.2rem;
     }
-
     .feature p {
       color: #555;
     }
-
+    .testimonials {
+      background-color: #fff;
+    }
+    .testimonial {
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      font-style: italic;
+      color: #333;
+    }
+    .testimonial strong {
+      display: block;
+      margin-top: 0.5rem;
+      font-style: normal;
+      font-weight: 600;
+      color: #000;
+    }
     .cta {
       background-color: var(--primary);
       color: var(--white);
-      text-align: center;
-      padding: 4rem 2rem;
     }
-
-    .cta h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .cta p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-
     .cta button {
       background-color: #fff;
       color: var(--primary);
@@ -179,11 +203,9 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .cta button:hover {
       background-color: #fce4e7;
     }
-
     footer {
       background: #110103;
       color: var(--white);
@@ -191,16 +213,23 @@
       padding: 2rem 1rem;
       font-size: 0.9rem;
     }
-
+    footer a {
+      color: var(--white);
+      text-decoration: underline;
+    }
     @media (max-width: 600px) {
       .overlay h1 {
         font-size: 1.7rem;
       }
-      .intro h2, .narrative h2, .cta h2 {
+      .overlay p {
+        font-size: 1rem;
+      }
+      .intro h2,
+      .narrative h2,
+      .cta h2 {
         font-size: 1.5rem;
       }
     }
-
   </style>
 </head>
 <body>
@@ -211,63 +240,70 @@
     </nav>
     <div class="overlay">
       <h1>Because empathy isn’t a perk — it’s your workplace foundation.</h1>
+      <p>Strategic HR consulting for ambitious, people-first startups and small businesses in California.</p>
+      <div class="hero-cta">
+        <form action="mailto:hello@laconfidentialhr.com" method="GET">
+          <button type="submit">Get Your Custom HR Plan</button>
+        </form>
+      </div>
     </div>
   </header>
-
   <main>
     <section class="intro">
-      <h2>Human-Centered. Culture-Driven. Always Compliant.</h2>
-      <p>
-        L.A. Confidential HR Solutions is a progressive HR consulting firm dedicated to demystifying human resources for startups and small to mid-sized businesses. We prioritize empathy, compliance, and team building, delivering bilingual HR expertise and cross-cultural insights that empower companies to thrive. With a unique blend of professionalism and a light-hearted approach, we create a welcoming environment where every client feels seen and supported.
-      </p>
+      <h2>More Than HR. Human Infrastructure for Growth.</h2>
+      <div class="intro-block">L.A. Confidential HR Solutions partners with founders who seek inclusive, compliant, and compassionate HR strategy — not just checklists. We support startups and growth-stage businesses in navigating regulatory complexity while fostering emotionally intelligent workplaces.</div>
+      <div class="intro-block">Our team delivers consulting with clarity, humor, and bilingual sensibility — so business leaders can focus on scaling impact and building culture.</div>
+      <div class="intro-subhead">Our specialties include:</div>
+      <div class="intro-block">✔ California compliance consulting<br/>✔ DEI strategy & inclusive leadership<br/>✔ Bilingual workforce development<br/>✔ Equity-centered hiring support<br/>✔ Customized HR infrastructure design</div>
     </section>
-
     <section class="narrative">
       <h2>Campaign: <em>Humans First</em></h2>
-      <p>
-        From equity-driven hiring to emotionally intelligent leadership, we believe that building thriving teams starts with empathy. Founders don’t just want to “check the box.” They want to lead with confidence, understand California’s ever-evolving mandates, and build positive cultures where people belong. That's why we do more than translate regulations — we translate culture. Our team delivers tailored, bilingual HR strategies designed to make small businesses more human, inclusive, and scalable.
-      </p>
+      <div class="narrative-block">We believe leadership driven by cultural fluency and empathy outperforms checkbox policies. That’s why our work centers the humanity in HR — amplifying team cohesion, trust, and compliance for sustainably scaling companies.</div>
+      <div class="narrative-block">Whether you're hiring your first employee or navigating multilingual team challenges, we meet you with solutions tailored to your people and your mission. Our team of bilingual consultants transforms HR from a risk function into a relationship strategy.</div>
     </section>
-
     <section class="features">
       <div class="feature">
         <h3>Empathy in Management</h3>
-        <p>Emotionally intelligent leadership training and executive coaching that drives better communication and team trust.</p>
+        <p>Leadership training designed for founders and managers to build trust, improve communication, and unlock performance.</p>
       </div>
       <div class="feature">
         <h3>Cultural Awareness</h3>
-        <p>We help multicultural and bilingual teams understand each other — bridging languages, expectations, and experiences.</p>
+        <p>Bilingual and cross-cultural guidance that bridges workplace norms, expectations, and communication gaps.</p>
       </div>
       <div class="feature">
         <h3>Human-Centric HR</h3>
-        <p>No templates here. We design HR systems that feel good because they are good — for everyone involved.</p>
+        <p>No generic playbooks. We build processes aligned with your values, operations, and long-term vision.</p>
       </div>
       <div class="feature">
         <h3>Inclusive Workplace Planning</h3>
-        <p>Diversity is good for business. We make sure your policies, training, and leadership reflect that truth.</p>
+        <p>From inclusive handbooks to bias-free hiring, our strategies embed equity into your company's foundation.</p>
       </div>
       <div class="feature">
         <h3>Strategic Compliance</h3>
-        <p>Stay proactive. We consult on California labor laws, ensure bilingual compliance, and streamline HR documentation.</p>
+        <p>Worksafe policies and labor law compliance — simplified and translated across cultures and languages.</p>
       </div>
       <div class="feature">
         <h3>Founder-Focused Advisory</h3>
-        <p>We simplify complexity — advising growth-stage leaders on everything from hiring and terminations to team cohesion and DEI.</p>
+        <p>We act as your fractional HR partner, supporting executive decision-making with warmth and rigor.</p>
       </div>
     </section>
-
+    <section class="testimonials">
+      <h2>What Our Clients Say</h2>
+      <div class="testimonial">“L.A. Confidential saved us from hiring disasters and helped shape our team into a more inclusive, resilient unit. Their bilingual expertise made our onboarding seamless.”<strong>— COO, California-based tech startup</strong></div>
+      <div class="testimonial">“They translate HR into human terms. It’s rare to find consultants who genuinely care. We expanded with clarity and confidence because of them.”<strong>— Founder, women-owned wellness brand</strong></div>
+    </section>
     <section class="cta">
       <h2>Let’s Craft Your Custom HR Roadmap</h2>
-      <p>You’re just one conversation away from HR that actually works — for your culture and your people.</p>
+      <p>You’re just one conversation away from HR solutions that reflect your culture, your team—and the future you’re building.</p>
       <form action="mailto:hello@laconfidentialhr.com" method="GET">
         <button type="submit">Schedule a Consultation</button>
       </form>
     </section>
   </main>
-
   <footer>
     <p>&copy; 2024 L.A. Confidential HR Solutions — Human-Centric. Bilingual. Trusted in California.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a></p>
   </footer>
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=973195b851f04e9a3003b255c4477a9309119adf" width="1" height="1" style="display:none;" alt="Tracking Pixel" />
 </body>
 </html>
-```
