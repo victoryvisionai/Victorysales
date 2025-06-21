@@ -656,7 +656,7 @@ async function checkAuthentication() {
     }
 
     if (session && session.user) {
-      CUSTOMER_ID = session.user.email;
+      CUSTOMER_ID = session.user.id;
       authToken = session.access_token;
       document.getElementById('userEmail').textContent = CUSTOMER_ID;
       await loadUserProfile();
