@@ -1,33 +1,40 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Victory Vision AI - Strategic marketing intelligence platform with AI-powered transparency and human oversight. Transform data into insights with full executive control." />
+  <meta property="og:title" content="Victory Vision AI - Control Meets Clarity" />
+  <meta property="og:description" content="Maintain control in the AI era. Victory Vision AI delivers strategic insight and executive clarity." />
+  <meta property="og:image" content="https://www.victoryvision.app/assets/og-image.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4bb.svg" type="image/svg+xml">
   <title>Victory Vision AI - Control Meets Clarity</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     html, body {
       font-family: 'Inter', sans-serif;
       background: #f5f5f5;
       color: #0a3161;
       scroll-behavior: smooth;
     }
-
     header {
       position: relative;
       width: 100%;
       height: 100vh;
       overflow: hidden;
     }
-
     header video {
       position: absolute;
       top: 0;
@@ -37,7 +44,6 @@
       object-fit: cover;
       z-index: 1;
     }
-
     .header-overlay {
       position: absolute;
       top: 0;
@@ -53,51 +59,68 @@
       text-align: center;
       padding: 2rem;
     }
-
     .header-overlay img {
       max-width: 180px;
       margin-bottom: 2rem;
     }
-
     .header-overlay h1 {
       font-size: 2.5rem;
-      color: #ffffff;
-      margin-bottom: 1rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
     }
-
-    .cta-button {
-      margin-top: 1rem;
+    .header-overlay h2 {
+      font-size: 1.25rem;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+    .cta-button, .cta-secondary {
       padding: 1rem 2rem;
-      background-color: #d60000;
-      color: #ffffff;
       font-weight: 600;
       font-size: 1rem;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
       transition: background-color 0.3s ease;
     }
-
+    .cta-button {
+      background-color: #d60000;
+      color: #fff;
+    }
     .cta-button:hover {
       background-color: #b90000;
     }
-
-    main {
-      background-color: #ffffff;
+    .cta-secondary {
+      background-color: #0a3161;
+      color: #fff;
+      margin: 2rem auto 0;
+      text-align: center;
     }
-
-    .section {
+    .cta-secondary:hover {
+      background-color: #06264a;
+    }
+    main {
+      background-color: #fff;
+    }
+    section {
       padding: 4rem 2rem;
       max-width: 1200px;
       margin: auto;
     }
-
-    .section h2 {
-      font-size: 2rem;
+    h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
       margin-bottom: 1.5rem;
       text-align: center;
     }
-
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
     .intro p {
       font-size: 1.125rem;
       line-height: 1.8;
@@ -105,15 +128,12 @@
       margin: 0 auto;
       color: #333;
     }
-
     .campaign {
       background-color: #f5f5f5;
     }
-
     .campaign h2 {
       color: #0a3161;
     }
-
     .campaign-tagline {
       font-size: 1.5rem;
       font-weight: 600;
@@ -121,22 +141,19 @@
       text-align: center;
       margin: 2rem 0 1rem;
     }
-
-    .campaign-description {
-      max-width: 800px;
-      margin: 0 auto 2rem;
-      font-size: 1.125rem;
-      color: #444;
+    .campaign-subcopy, .campaign-description {
+      font-size: 1rem;
+      color: #333;
       text-align: center;
+      margin: 0 auto 1.5rem;
+      max-width: 700px;
     }
-
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
-
     .feature-box {
       background-color: #fff;
       border: 1px solid #e5e5e5;
@@ -144,236 +161,146 @@
       padding: 2rem;
       text-align: center;
     }
-
     .feature-box h3 {
       font-size: 1.25rem;
       color: #0a3161;
       margin-bottom: 0.75rem;
+      font-weight: 700;
     }
-
     .feature-box p {
       font-size: 0.95rem;
       color: #333;
+      line-height: 1.5;
     }
-
     .stats {
-      background-color: #ffffff;
+      background-color: #fff;
       text-align: center;
-      padding: 4rem 2rem;
     }
-
-    .stats h2 {
-      margin-bottom: 3rem;
-    }
-
     .stat-items {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 2rem;
     }
-
     .stat {
       background-color: #0a3161;
-      color: #ffffff;
+      color: #fff;
       padding: 2rem;
       border-radius: 10px;
       width: 220px;
     }
-
     .stat h3 {
       font-size: 2rem;
       margin-bottom: 0.5rem;
     }
-
     .stat p {
       font-size: 0.9rem;
     }
-
     .testimonials {
       background-color: #f5f5f5;
-      padding: 4rem 2rem;
-    }
-
-    .testimonial-box {
-      max-width: 800px;
-      margin: 0 auto;
       text-align: center;
     }
-
+    .testimonial-box {
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
     .testimonial-box p {
       font-style: italic;
       font-size: 1.05rem;
       margin-bottom: 1rem;
     }
-
     .testimonial-box span {
       font-weight: 600;
       color: #0a3161;
     }
-
-    .conversion {
-      background-color: #ffffff;
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-
-    .conversion h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .conversion p {
-      font-size: 1rem;
-      color: #333;
-      margin-bottom: 2rem;
-    }
-
-    .signup-form input[type="email"] {
-      padding: 0.8rem;
-      font-size: 1rem;
-      width: 280px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-right: 1rem;
-    }
-
-    .signup-form button {
-      padding: 0.8rem 1.5rem;
-      background-color: #d60000;
-      color: white;
-      font-weight: 600;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .signup-form button:hover {
-      background-color: #b90000;
-    }
-
     footer {
-      background-color: #0a3161;
-      color: white;
-      padding: 2rem;
+      background-color: #f5f5f5;
       text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.95rem;
+      color: #333;
     }
-
-    @media (max-width: 768px) {
-      .header-overlay h1 {
-        font-size: 1.75rem;
-      }
-
-      .cta-button {
-        width: 100%;
-        max-width: 300px;
-      }
-
-      .signup-form input[type="email"] {
-        display: block;
-        width: 100%;
-        margin: 0 auto 1rem;
-      }
-
-      .signup-form button {
-        width: 100%;
-        max-width: 300px;
-      }
+    footer a {
+      color: #0a3161;
+      text-decoration: underline;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-
-  <header>
-    <video autoplay muted loop playsinline>
+  <header role="banner">
+    <video autoplay muted loop playsinline preload="auto">
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750561852/abqk7phjoklt410enrwl.mp4" type="video/mp4">
+      Your browser does not support the video tag.
     </video>
     <div class="header-overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <img src="https://www.victoryvision.app/assets/logo.svg" alt="Victory Vision AI Logo" />
       <h1>When AI Knows Too Much, Who’s Really in Control?</h1>
-      <a href="#signup"><button class="cta-button">Founders Deal – Get Early Access</button></a>
+      <h2>Victory Vision AI — Feel the precision. Seize the control.</h2>
+      <a href="#signup" class="cta-button">Join the Founders Deal</a>
     </div>
   </header>
-
-  <main>
-    <section class="section intro">
-      <h2>Meet Victory Vision AI</h2>
-      <p>
-        Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations.
-        In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.
-      </p>
+  <main role="main">
+    <section class="intro">
+      <h2>Clarity and Control for Your Marketing Future</h2>
+      <p>Victory Vision AI empowers marketing leaders to deploy transparent, ROI-driven campaigns with data precision and human oversight. No black boxes—just bold results.</p>
     </section>
-
-    <section class="section campaign">
-      <h2>The Campaign: Data Backfire</h2>
-      <div class="campaign-tagline">“When AI Knows Too Much, Who’s Really in Control?”</div>
-      <p class="campaign-description">
-        As AI becomes more integrated into decision making, fears rise about privacy, data misuse, and control. Victory Vision AI doesn't just use data—it respects it. Our platform offers full transparency into algorithms, campaign behavior, and user tracking. You're always in control.
-      </p>
+    <section class="campaign">
+      <h2>Smarter Campaigns. Sharper Decisions.</h2>
+      <p class="campaign-tagline">Turn Complexity into Clarity</p>
+      <p class="campaign-subcopy">Our platform adapts in real-time, optimizing dynamic campaigns across billboards and screens with AI logic you can audit—and override.</p>
+      <p class="campaign-description">Designed for CMOs, marketing directors, and digital consultants who demand outcome-based intelligence with maximum executive control.</p>
       <div class="features-grid">
         <div class="feature-box">
-          <h3>AI Privacy Safeguards</h3>
-          <p>Our proprietary AI respects personal boundaries by enforcing ethical data guidelines.</p>
+          <h3>AI-Powered Transparency</h3>
+          <p>Full visibility into how campaigns are optimized, when, and why—so your AI strategy never overrides your business vision.</p>
         </div>
         <div class="feature-box">
-          <h3>Transparent Algorithms</h3>
-          <p>Every decision is explainable and every campaign is auditable through your dashboard.</p>
+          <h3>Privacy First</h3>
+          <p>Integrated safeguards detect suspicious data behaviors and notify you when privacy thresholds are crossed.</p>
         </div>
         <div class="feature-box">
-          <h3>Data Breach Simulation</h3>
-          <p>Interactive simulator reveals where your campaigns may be leaking information.</p>
+          <h3>Real-Time Reporting</h3>
+          <p>Live dashboards transform signal complexity into strategic clarity so you can track ROI as it happens.</p>
         </div>
         <div class="feature-box">
-          <h3>Executive-Level Control</h3>
-          <p>CMOs and CEOs define the guardrails—AI simply executes within them.</p>
+          <h3>Campaign Efficiency</h3>
+          <p>Automate what matters, eliminate guesswork, and unlock revenue gains through agile campaign intelligence.</p>
         </div>
       </div>
+      <a href="#signup" class="cta-secondary">Get Early Access</a>
     </section>
-
     <section class="stats">
-      <h2>Real Results Backed by Data</h2>
+      <h2>Proven Results that Drive Growth</h2>
       <div class="stat-items">
-        <div class="stat">
-          <h3>4.3x</h3>
-          <p>Higher engagement vs. traditional campaigns</p>
-        </div>
-        <div class="stat">
-          <h3>29%</h3>
-          <p>Revenue lift benchmark in 60 days</p>
-        </div>
-        <div class="stat">
-          <h3>86%</h3>
-          <p>Reduction in team hours spent setting campaigns</p>
-        </div>
-        <div class="stat">
-          <h3>ZERO</h3>
-          <p>Data breaches to date across all client campaigns</p>
-        </div>
+        <div class="stat"><h3>37%</h3><p>Avg. campaign efficiency boost</p></div>
+        <div class="stat"><h3>21hrs</h3><p>Avg. weekly time saved per team</p></div>
+        <div class="stat"><h3>+28%</h3><p>Revenue increase using adaptive AI playbooks</p></div>
+        <div class="stat"><h3>0</h3><p>Surprises. Every AI action is logged & explainable.</p></div>
       </div>
     </section>
-
     <section class="testimonials">
-      <h2>Trusted by Visionary Leaders</h2>
+      <h2>What Leaders Are Saying</h2>
       <div class="testimonial-box">
-        <p>"Victory Vision AI completely transformed our marketing operations. We didn’t lose control—we finally gained visibility."</p>
-        <span>— Sarah Chen, CEO, InovaCare Group</span>
+        <p>"Victory Vision AI raised our campaign agility and gave us peace of mind. We trust what we see—and now we act faster."</p>
+        <span>— Alexandra M., CEO, Digital Clarity Partners</span>
+      </div>
+      <div class="testimonial-box">
+        <p>"AI used to feel like a gamble. Now it's a tool I control. The executive dashboard alone is worth the switch."</p>
+        <span>— Darren K., CMO, TruePixel Health</span>
       </div>
     </section>
-
-    <section id="signup" class="conversion">
-      <h2>Become a Founding Partner</h2>
-      <p>Start reclaiming control over your AI-powered marketing. Get in early for direct access and executive reporting tools tailored just for leaders like you.</p>
-      <form class="signup-form">
-        <input type="email" placeholder="Your Business Email" required />
-        <button type="submit">Claim the Founders Deal</button>
-      </form>
+    <section id="signup">
+      <h2>Founders Deal Sign-Up</h2>
+      <p class="intro">Be among the first to experience Victory Vision AI in action. Early access. Lifetime pricing. Total control.</p>
+      <div style="text-align: center; margin-top: 2rem;">
+        <a href="https://www.victoryvision.app/signup" class="cta-button">Claim Founders Offer</a>
+      </div>
     </section>
   </main>
-
-  <footer>
-    &copy; 2024 Victory Vision AI. All Rights Reserved.
+  <footer role="contentinfo">
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a>.</p>
   </footer>
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=4f13dbc07de0ebd6198da36feb3fc7a6dc0b52a0" width="1" height="1" style="display:none;" alt="Tracking Pixel">
 </body>
 </html>
-```
