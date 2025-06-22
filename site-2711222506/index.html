@@ -1,0 +1,301 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>L.A. Confidential HR Solutions | From Mistakes to Mastery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #a50928;
+      --light: #ffffff;
+      --gray: #f5f5f5;
+      --dark: #1a1a1a;
+      --navy: #1c2b38;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    header video {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+    header {
+      position: relative;
+      overflow: hidden;
+    }
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      color: var(--light);
+      padding: 2rem;
+      z-index: 2;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 1rem;
+    }
+    .tagline {
+      font-size: 2rem;
+      font-weight: 700;
+      max-width: 700px;
+    }
+
+    main {
+      background: var(--light);
+    }
+
+    section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .intro {
+      text-align: center;
+    }
+    .intro h2 {
+      font-size: 2.2rem;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+    .intro p {
+      max-width: 800px;
+      margin: auto;
+      font-size: 1.1rem;
+    }
+
+    .campaign {
+      background: var(--gray);
+    }
+
+    .campaign h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .campaign p {
+      font-size: 1.1rem;
+      max-width: 900px;
+      margin-bottom: 2rem;
+    }
+
+    .campaign-img {
+      width: 100%;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .case-studies, .expert-insights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: var(--light);
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-bottom: 1rem;
+      color: var(--navy);
+    }
+
+    .card p {
+      font-size: 1rem;
+    }
+
+    .testimonial-slider {
+      margin-top: 2rem;
+    }
+
+    blockquote {
+      font-style: italic;
+      border-left: 4px solid var(--primary);
+      padding-left: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .slider-item {
+      margin-bottom: 2rem;
+    }
+
+    .lead-magnet {
+      background: var(--primary);
+      color: var(--light);
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .lead-magnet h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .lead-magnet p {
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .lead-magnet form {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lead-magnet input[type="email"] {
+      padding: 0.8rem 1rem;
+      border: none;
+      border-radius: 4px;
+      max-width: 400px;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .lead-magnet button {
+      background: var(--light);
+      color: var(--primary);
+      font-weight: bold;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .lead-magnet button:hover {
+      background: #fbeaec;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .tagline {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750619457/laxhw5phds2y7ealsxa9.mp4" type="video/mp4"/>
+      Your browser does not support the video tag.
+    </video>
+    <div class="video-overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential Logo" class="logo" />
+      <div class="tagline">From Mistakes to Mastery: Strengthening Workplace Trust</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Empathetic. Bilingual. Built for Founders.</h2>
+      <p>
+        L.A. Confidential HR Solutions is a progressive HR consulting firm dedicated to demystifying human resources for startups and small to mid-sized businesses. We prioritize empathy, compliance, and team building, delivering bilingual HR expertise and cross-cultural insights that empower companies to thrive. With a unique blend of professionalism and a light-hearted approach, we create a welcoming environment where every client feels seen and supported. Our focus is on fostering strong workplace cultures while ensuring smooth HR operations, making us a trusted partner for businesses invested in their people.
+      </p>
+    </section>
+
+    <section class="campaign">
+      <h2>Campaign: Trust Rebuilt</h2>
+      <p>
+        Poor management communication. Missed compliance deadlines. Broken trust that fractures teams. These are challenges faced by countless startups and small businesses—until now. “From Mistakes to Mastery” is more than a slogan—it’s our live case study. With a unique understanding of security flaws, leadership gaps, and cultural barriers, L.A. Confidential guides founders through their toughest people problems and into their most powerful growth phase yet.
+      </p>
+      <img src="https://images.unsplash.com/photo-1581093448793-cbc8d0c70c95" class="campaign-img" alt="Trust Restoration Visual"/>
+    </section>
+
+    <section class="case-studies">
+      <article class="card">
+        <h3>Reforming Crisis Culture at a Tech Startup</h3>
+        <p>We led HR reformation workshops for a 30-person SaaS company after a major internal miscommunication nearly lost them a VC deal. Outcome: +42% team alignment in post-training feedback.</p>
+      </article>
+      <article class="card">
+        <h3>Accountability Reset in Media Co.</h3>
+        <p>Following a leadership resignation, we restructured chain-of-command, conducted bilingual (English/Mandarin) conflict sessions, and rebuilt trust through mission-led values work.</p>
+      </article>
+      <article class="card">
+        <h3>Cross-border Onboarding for Chinese Retail Brands</h3>
+        <p>Provided culturally-aware compliance and U.S. labor law consulting for store expansions across L.A., reducing risk of legal infractions and easing leadership transitions for new immigrant founders.</p>
+      </article>
+    </section>
+
+    <section class="expert-insights">
+      <div class="card">
+        <h3>Leadership Accountability: The First Step</h3>
+        <p>“You can't rebuild trust on silence. L.A. Confidential starts with conversations that matter.”</p>
+      </div>
+      <div class="card">
+        <h3>Crisis Moments Are Tipping Points</h3>
+        <p>Our founder explains why most HR disasters are predictable and how proactive systems turn turmoil into trust restoration.</p>
+      </div>
+    </section>
+
+    <section class="testimonial-slider">
+      <blockquote class="slider-item">
+        “I thought HR compliance was just paperwork. Turns out, it saved my business culture. L.A. Confidential saw us—and helped us see each other.”
+        <br><strong>— Sam Y., Tech Cofounder</strong>
+      </blockquote>
+      <blockquote class="slider-item">
+        “They led our management through a healing process after a workplace crisis. Trust is up. Turnover is down.”
+        <br><strong>— Julia M., Consumer Brand CEO</strong>
+      </blockquote>
+    </section>
+
+    <section class="lead-magnet">
+      <h2>Get Our Free Workplace Trust Restoration Toolkit</h2>
+      <p>Take the first step to rebuilding trust and compliance with our expert-designed guide—no credit card, just clarity.</p>
+      <form>
+        <input type="email" placeholder="Enter your work email" required />
+        <button type="submit">Download Toolkit</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 L.A. Confidential HR Solutions — Built for trust. Powered by empathy.
+  </footer>
+
+</body>
+</html>
+```
