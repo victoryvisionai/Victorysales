@@ -1,0 +1,300 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L.A. Confidential HR Solutions | Compliance Unlocked</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #a50928;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --dark: #111111;
+      --font: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    header, main, footer {
+      width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .hero .overlay {
+      position: relative;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.6);
+      color: var(--white);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      max-width: 800px;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .hero .cta-btn {
+      background: var(--primary);
+      color: var(--white);
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .hero .cta-btn:hover {
+      background: #87071f;
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .intro {
+      text-align: center;
+    }
+
+    .intro img {
+      height: 80px;
+      margin-bottom: 1.5rem;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      max-width: 900px;
+      margin: 0.5rem auto;
+      color: #333;
+    }
+
+    .highlight {
+      background: var(--primary);
+      color: var(--white);
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .highlight h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .highlight p {
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: auto;
+      opacity: 0.95;
+    }
+
+    .flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin-top: 3rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      flex: 1 1 300px;
+      max-width: 360px;
+      padding: 2rem;
+      text-align: left;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      color: var(--primary);
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+    }
+
+    .card p {
+      color: #444;
+      font-size: 0.95rem;
+    }
+
+    .cta-section {
+      background-color: var(--light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+
+    .cta-form {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .cta-form input, .cta-form button {
+      width: 100%;
+      padding: 0.9rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .cta-form button {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      font-weight: 600;
+    }
+
+    .cta-form button:hover {
+      background: #87071f;
+    }
+
+    footer {
+      background: var(--dark);
+      color: var(--white);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .flex {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750619481/qaoyuz4yukqybu3knv2v.mp4" type="video/mp4">
+    </video>
+    <div class="overlay">
+      <h1>Stay ahead of every HR rule—before it costs you</h1>
+      <p>Strategic HR compliance solutions designed for growth-minded founders & global startups entering California’s workforce landscape.</p>
+      <button class="cta-btn">Get the Free HR Toolkit</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section intro">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="LA Confidential HR Logo">
+      <p><strong>L.A. Confidential HR Solutions</strong> is a progressive HR consulting firm dedicated to demystifying human resources for startups and small to mid-sized businesses. We prioritize empathy, compliance, and team building, delivering bilingual HR expertise and cross-cultural insights that empower companies to thrive.</p>
+      <p>With a unique blend of professionalism and a light-hearted approach, we create a welcoming environment where every client feels seen and supported. Our focus is on fostering strong workplace cultures while ensuring smooth HR operations, making us a trusted partner for businesses invested in their people.</p>
+    </section>
+
+    <section class="highlight">
+      <h2>Compliance Unlocked Campaign</h2>
+      <p>Our clients aren’t looking to just 'check the box.' They’re building inclusive, globally competitive, and compliant teams from day one. Through personalized consulting, bilingual resources, and strategic foresight, we help you navigate California labor law, mitigate risk, and unlock HR advantages that fuel your growth.</p>
+    </section>
+
+    <section class="section">
+      <div class="flex">
+        <div class="card">
+          <h3>⚖️ Regulatory Change Alerts</h3>
+          <p>Stay notified about California-specific HR law changes before they hit — including bilingual briefs and visual compliance roadmaps custom to your industry.</p>
+        </div>
+        <div class="card">
+          <h3>🧑‍💼 Outsourced HR Solutions</h3>
+          <p>Empower your team with culturally conscious and scalable HR support — ideal for startup environments and international expansion into the U.S. market.</p>
+        </div>
+        <div class="card">
+          <h3>📅 Strategic Planning Tools</h3>
+          <p>Download our HR Audit Checklist and map your risk zones across hiring, onboarding, benefits, and compliance milestones. Gated access builds authority — and trust.</p>
+        </div>
+        <div class="card">
+          <h3>📽 Weekly Webinars On Demand</h3>
+          <p>Watch replays featuring ‘Compliance Horror Stories’ from real founders — and learn how to avoid their fate with seasoned bilingual advisors by your side.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section" id="signup">
+      <h2>Start Your Compliance Journey Today</h2>
+      <p>Download our powerful, ready-to-use HR Toolkit and get alerts on upcoming California labor changes—free when you subscribe.</p>
+      <form class="cta-form">
+        <input type="email" placeholder="Your business email" required>
+        <button type="submit">Download Toolkit</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 L.A. Confidential HR Solutions. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
+```
