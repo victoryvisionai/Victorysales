@@ -654,6 +654,8 @@
     }
 
 card.innerHTML = `
+ card.innerHTML = `
+  ${campaign.image_URL ? `<img src="${campaign.image_URL}" alt="Campaign Image" style="width: 100%; height: 150px; object-fit: cover; display: block;">` : ''}
   <div class="campaign-header">
     <div class="campaign-title">${campaign.video_URL ? 'Playing' : 'No Video'}</div>
     <div class="campaign-tagline">${campaign.tagline || 'No tagline'}</div>
