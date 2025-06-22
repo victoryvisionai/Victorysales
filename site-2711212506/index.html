@@ -1,369 +1,172 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Victory Vision AI - Autonomous AI platform for performance-focused marketing executives. Optimize digital campaigns in real-time with AI-driven insights." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Victory Vision AI — Meet Your Smartest Team Member" />
+  <meta property="og:description" content="Optimize marketing performance with AI-driven insights. Automate, personalize, and grow — smarter and faster." />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f47e.png" type="image/png" />
   <title>Victory Vision AI — Meet Your Smartest Team Member</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f5f5f5;
-      color: #0a3161;
-      line-height: 1.6;
-    }
-
-    header {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    header video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-
-    .overlay {
-      background: rgba(10,49,97,0.6);
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .overlay img {
-      width: 80px;
-      margin-bottom: 1.5rem;
-    }
-
-    .overlay h1 {
-      font-size: 2.75rem;
-      color: #ffffff;
-      margin-bottom: 1rem;
-      max-width: 700px;
-      font-weight: 700;
-    }
-
-    .overlay p {
-      color: #ffffff;
-      font-size: 1.2rem;
-      max-width: 600px;
-    }
-
-    main {
-      background: #ffffff;
-      padding: 4rem 2rem;
-    }
-
-    .intro {
-      max-width: 950px;
-      margin: 0 auto;
-      text-align: center;
-      padding-bottom: 4rem;
-    }
-
-    .intro h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #0a3161;
-      margin-bottom: 1.5rem;
-    }
-
-    .intro p {
-      font-size: 1.1rem;
-      color: #333;
-    }
-
-    .section {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding-bottom: 4rem;
-    }
-
-    .section h3 {
-      font-size: 1.75rem;
-      color: #0a3161;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-
-    .feature-card {
-      background-color: #f5f5f5;
-      border-radius: 12px;
-      padding: 2rem 1.5rem;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-      text-align: center;
-      transition: transform 0.3s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-6px);
-    }
-
-    .feature-card h4 {
-      margin-bottom: 0.75rem;
-      font-weight: 600;
-      color: #0a3161;
-    }
-
-    .feature-card p {
-      color: #333;
-    }
-
-    .roi-section {
-      background: #0a3161;
-      color: #ffffff;
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-
-    .roi-section h3 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .roi-box {
-      max-width: 600px;
-      margin: 1.5rem auto;
-      background: #ffffff;
-      color: #0a3161;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
-
-    .roi-box input[type="range"] {
-      width: 100%;
-      margin: 1.5rem 0;
-    }
-
-    .roi-result {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .video-section {
-      max-width: 1000px;
-      margin: 0 auto 4rem;
-      text-align: center;
-    }
-
-    .video-section h3 {
-      font-size: 1.75rem;
-      margin-bottom: 1rem;
-    }
-
-    .video-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-    }
-
-    .video-grid iframe {
-      border: none;
-      width: 100%;
-      max-width: 480px;
-      height: 270px;
-      border-radius: 12px;
-    }
-
-    .how-it-works {
-      background: #f5f5f5;
-      padding: 4rem 2rem;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .step {
-      background: #fff;
-      border-left: 4px solid #0a3161;
-      padding: 1.5rem;
-      border-radius: 8px;
-    }
-
-    .step h4 {
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-    }
-
-    footer {
-      background: #0a3161;
-      color: #ffffff;
-      text-align: center;
-      padding: 3rem 2rem;
-    }
-
-    footer h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    form {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    form input,
-    form button {
-      padding: 0.8rem 1rem;
-      width: 100%;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 6px;
-    }
-
-    form input {
-      background: #ffffff;
-      color: #0a3161;
-    }
-
-    form button {
-      background: #ffffff;
-      color: #0a3161;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    form button:hover {
-      background: #dbe4ef;
-    }
-
-    @media (min-width: 768px) {
-      .steps {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .overlay h1 {
-        font-size: 3.25rem;
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'brand-navy': '#0a3161',
+            'brand-gray': '#f5f5f5'
+          },
+          fontFamily: {
+            'inter': ['Inter', 'sans-serif']
+          }
+        }
       }
     }
-  </style>
+  </script>
 </head>
-<body>
-  <header>
-    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750561854/tyqndhmnznjx0ipxnu6k.mp4" autoplay muted loop playsinline></video>
-    <div class="overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
-      <h1>Meet Your New Smartest Team Member — AI</h1>
-      <p>Victory Vision AI helps you automate smarter, optimize faster, and grow with confidence.</p>
+<body class="font-inter bg-brand-gray text-brand-navy leading-relaxed">
+
+  <header class="relative w-full h-screen overflow-hidden" role="banner">
+    <video 
+      src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750561854/tyqndhmnznjx0ipxnu6k.mp4" 
+      autoplay 
+      muted 
+      loop 
+      playsinline 
+      poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg"
+      class="absolute top-0 left-0 object-cover w-full h-full -z-10"
+      aria-hidden="true">
+    </video>
+    <div class="bg-brand-navy bg-opacity-75 w-full h-full flex flex-col justify-center items-center text-center px-6 md:px-10 py-8">
+      <img 
+        src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" 
+        alt="Victory Vision AI Logo" 
+        class="w-20 mb-6"
+        loading="eager" />
+      <h1 class="text-4xl md:text-5xl text-white mb-4 max-w-4xl font-bold drop-shadow-lg">
+        Meet Your New Smartest Team Member — AI
+      </h1>
+      <p class="text-white text-xl max-w-3xl mb-8 drop-shadow-md">
+        Empower your marketing team with autonomous AI that delivers real ROI — faster, smarter, and tailored to your KPIs.
+      </p>
+      <a href="#roi-calc" class="bg-white text-brand-navy font-bold py-4 px-8 rounded-md text-lg hover:bg-gray-200 transition-colors duration-300 inline-block">
+        Explore Your ROI
+      </a>
     </div>
   </header>
 
   <main>
-    <section class="intro">
-      <h2>Elevate Your Marketing — Effortlessly</h2>
-      <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
-    </section>
-
-    <section class="roi-section">
-      <h3>Discover Your Potential ROI</h3>
-      <div class="roi-box">
-        <label for="budget">Monthly Ad Budget ($):</label>
-        <input type="range" id="budget" name="budget" min="1000" max="100000" step="500" value="15000" onchange="document.getElementById('roi').innerText = '$' + Math.round(this.value * 3.4)">
-        <p class="roi-result">Estimated Return: <span id="roi">$51000</span></p>
-        <p style="font-size: 0.9rem; color:#555;">Powered by AI campaign insights</p>
+    <section class="bg-white py-16 px-6 md:px-8">
+      <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-brand-navy mb-6">
+          Elevate Your Marketing — Effortlessly
+        </h2>
+        <p class="text-lg text-gray-700 leading-relaxed">
+          Victory Vision AI is an intelligent platform designed for performance-focused executives. It optimizes digital campaigns in real-time using AI-driven insights from environmental, audience, and behavioral data sources. The result? Smarter decisions, faster execution, and measurable growth — all with less input from your team and clearer results that speak your language.
+        </p>
       </div>
     </section>
 
-    <section class="section">
-      <h3>Why Executives Choose Victory Vision AI</h3>
-      <div class="grid">
-        <div class="feature-card">
-          <h4>AI-Powered Optimization</h4>
-          <p>Let your campaigns evolve in real time — based on live data, seasonality, and performance signals.</p>
+    <section class="bg-brand-navy text-white py-16 px-6 md:px-8 text-center" id="roi-calc">
+      <h3 class="text-3xl font-bold mb-4">
+        Discover Your Potential ROI
+      </h3>
+      <div class="max-w-2xl mx-auto bg-white text-brand-navy p-8 rounded-xl shadow-2xl mt-6">
+        <label for="budget" class="font-semibold block mb-4 text-lg">
+          Monthly Ad Budget ($):
+        </label>
+        <input 
+          type="range" 
+          id="budget" 
+          name="budget" 
+          min="1000" 
+          max="100000" 
+          step="500" 
+          value="15000" 
+          class="w-full my-6 h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
+          onchange="updateROI(this.value)"
+          aria-label="Monthly advertising budget slider" />
+        <div class="text-2xl font-bold mb-4">
+          Estimated Return: <span id="roi" class="text-green-600">$51,000</span>
         </div>
-        <div class="feature-card">
-          <h4>Personalized Automation</h4>
-          <p>Deliver tailored experiences at scale, based on rich customer behaviors and location inputs.</p>
-        </div>
-        <div class="feature-card">
-          <h4>Campaign Autopilot</h4>
-          <p>Set your goals — and let our AI execute and adapt across channels with minimal intervention.</p>
-        </div>
-        <div class="feature-card">
-          <h4>Clear Metrics & ROI</h4>
-          <p>Real-time dashboards that speak CEO — not data science. Highlight what matters most.</p>
-        </div>
+        <p class="text-sm text-gray-600">
+          Powered by AI campaign insights
+        </p>
       </div>
     </section>
 
-    <section class="video-section">
-      <h3>See What Our Clients Are Saying</h3>
-      <div class="video-grid">
-        <iframe src="https://www.youtube.com/embed/ysz5S6PUM-U" title="Client Testimonial" allowfullscreen></iframe>
-        <iframe src="https://www.youtube.com/embed/ScMzIvxBSi4" title="Before & After Results" allowfullscreen></iframe>
-      </div>
-    </section>
-
-    <section class="how-it-works">
-      <h3 style="text-align:center; margin-bottom:2rem;">How It Works</h3>
-      <div class="steps">
-        <div class="step">
-          <h4>1. Connect Your Channels</h4>
-          <p>Victory Vision AI integrates seamlessly with your existing tools and ad platforms.</p>
-        </div>
-        <div class="step">
-          <h4>2. Define Objectives</h4>
-          <p>Set your KPIs, markets, and budget. Let our AI analyze multiple data streams instantly.</p>
-        </div>
-        <div class="step">
-          <h4>3. Launch Autopilot Campaigns</h4>
-          <p>Deploy AI-optimized messaging based on live environmental, behavioral, and temporal data.</p>
-        </div>
-        <div class="step">
-          <h4>4. Track & Optimize</h4>
-          <p>See real-time results, projections, and next-step recommendations — in one dashboard.</p>
-        </div>
+    <section class="max-w-6xl mx-auto pb-16 px-6 md:px-8">
+      <h3 class="text-3xl text-brand-navy font-semibold mb-8 text-center">
+        Why Executives Choose Victory Vision AI
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <article class="bg-brand-gray rounded-xl p-8 shadow-lg text-center hover:-translate-y-2 transition-transform duration-300">
+          <div class="text-5xl mb-4 text-brand-navy" aria-hidden="true">⚙️</div>
+          <h4 class="mb-3 font-semibold text-brand-navy text-xl">
+            AI-Powered Optimization
+          </h4>
+          <p class="text-gray-700">
+            Respond in real-time to market, audience, and seasonal signals — automatically adjusting to maximize every marketing dollar.
+          </p>
+        </article>
+        <article class="bg-brand-gray rounded-xl p-8 shadow-lg text-center hover:-translate-y-2 transition-transform duration-300">
+          <div class="text-5xl mb-4 text-brand-navy" aria-hidden="true">📍</div>
+          <h4 class="mb-3 font-semibold text-brand-navy text-xl">
+            Personalized Automation
+          </h4>
+          <p class="text-gray-700">
+            Deliver hyper-targeted experiences to the right person, at the right time, in the right location with zero manual effort.
+          </p>
+        </article>
+        <article class="bg-brand-gray rounded-xl p-8 shadow-lg text-center hover:-translate-y-2 transition-transform duration-300">
+          <div class="text-5xl mb-4 text-brand-navy" aria-hidden="true">🧠</div>
+          <h4 class="mb-3 font-semibold text-brand-navy text-xl">
+            Autopilot Campaign Execution
+          </h4>
+          <p class="text-gray-700">
+            Define outcomes, then let AI manage creative, budget allocation, and multichannel delivery — continuously learning and improving.
+          </p>
+        </article>
+        <article class="bg-brand-gray rounded-xl p-8 shadow-lg text-center hover:-translate-y-2 transition-transform duration-300">
+          <div class="text-5xl mb-4 text-brand-navy" aria-hidden="true">📈</div>
+          <h4 class="mb-3 font-semibold text-brand-navy text-xl">
+            Marketing That Pays for Itself
+          </h4>
+          <p class="text-gray-700">
+            Generate measurable performance across every step of the funnel — without extra complexity or wasted spend.
+          </p>
+        </article>
       </div>
     </section>
   </main>
 
-  <footer>
-    <h3>Lock in our limited-time Founders Deal</h3>
-    <p>Sign up today and get 3 months free. No contracts. No risk.</p>
-    <form>
-      <input type="email" placeholder="Enter your work email" required />
-      <button type="submit">Request Early Access</button>
-    </form>
-    <p style="margin-top: 2rem; font-size: 0.9rem;">© 2024 Victory Vision AI. All rights reserved.</p>
+  <footer class="bg-brand-navy text-white text-center py-8 px-6 md:px-8">
+    <p class="text-lg">
+      Your Vision. Our AI. Pure Victory.
+    </p>
+    <p class="mt-1 text-sm">
+      <a href="https://www.victoryvision.app" class="underline hover:text-gray-300">
+        Build your free AI website at Victory Vision
+      </a>
+    </p>
   </footer>
+
+  <script>
+    function updateROI(value) {
+      const multiplier = 3.4;
+      const roi = value * multiplier;
+      document.getElementById('roi').textContent = `$${roi.toLocaleString()}`;
+    }
+  </script>
+
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=ea999da46333653554485e28918f2eecd6b2e374" width="1" height="1" style="display:none;" alt="tracking pixel" />
+
 </body>
 </html>
-```
