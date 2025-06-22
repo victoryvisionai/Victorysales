@@ -5,9 +5,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision AI — Discover the Secrets</title>
+  <meta name="description" content="Victory Vision AI empowers growth-driven teams with covert AI-powered tools for unlocking inbound revenue, real-time insights & stealth campaign execution." />
+  <meta property="og:title" content="Victory Vision AI — Discover the Secrets" />
+  <meta property="og:description" content="Unlock hidden revenue channels and unleash marketing AI with Victory Vision. Explore confidential tactics designed for mid-sized enterprises." />
+  <meta property="og:image" content="https://www.victoryvision.app/og-cover.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@tabler/icons@2.46.0/icons/brain.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     :root {
       --dark-blue: #0a3161;
@@ -34,7 +42,6 @@
       width: 100%;
     }
 
-    /* Hero Video */
     .hero {
       position: relative;
       height: 100vh;
@@ -79,23 +86,31 @@
     }
 
     .hero-logo {
-      width: 160px;
+      width: 200px;
       margin-bottom: 20px;
     }
 
     .hero-tagline {
-      font-size: 2.5rem;
+      font-size: 2.6rem;
       font-weight: 700;
-      max-width: 700px;
-      margin-bottom: 20px;
+      max-width: 720px;
+      margin-bottom: 18px;
+    }
+
+    .hero-subheading {
+      font-size: 1.1rem;
+      max-width: 620px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+      color: #e2e9f3;
     }
 
     .signin-cta {
-      margin-top: 25px;
+      margin-top: 10px;
       background: var(--accent-red);
       border: none;
       color: var(--white);
-      padding: 14px 30px;
+      padding: 14px 34px;
       border-radius: 8px;
       font-size: 1rem;
       font-weight: 600;
@@ -107,7 +122,18 @@
       background: #cc3c45;
     }
 
-    /* Intro */
+    .signin-cta:focus {
+      outline: 2px solid #ffffff;
+      outline-offset: 2px;
+    }
+
+    .tooltip {
+      font-size: 0.85rem;
+      margin-top: 8px;
+      color: #ddd;
+      opacity: 0.8;
+    }
+
     .intro {
       background-color: var(--off-white);
       color: var(--dark-blue);
@@ -127,7 +153,6 @@
       line-height: 1.7;
     }
 
-    /* Intelligence Brief */
     .brief {
       background: #0e1a27;
       padding: 100px 20px;
@@ -159,12 +184,23 @@
       border: 1px solid rgba(255,255,255,0.1);
       padding: 30px;
       border-radius: 12px;
-      transition: transform 0.3s ease, border 0.3s ease;
+      transition: transform 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .tactic::before {
+      content: '🔍';
+      font-size: 1.5rem;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      opacity: 0.6;
     }
 
     .tactic:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
       border: 1px solid var(--accent-red);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
 
     .tactic h3 {
@@ -178,7 +214,6 @@
       line-height: 1.6;
     }
 
-    /* Case Studies */
     .case-studies {
       background: var(--off-white);
       color: var(--dark-blue);
@@ -207,195 +242,113 @@
       background: var(--white);
       border-radius: 12px;
       padding: 20px;
-      min-width: 280px;
+      min-width: 300px;
       flex: 0 0 auto;
       scroll-snap-align: start;
       box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-
-    .case-card h4 {
-      margin-bottom: 10px;
-      color: var(--accent-blue);
-    }
-
-    .case-card p {
-      font-size: 0.9rem;
-      line-height: 1.6;
-    }
-
-    /* Call to Action */
-    .cta {
-      background: linear-gradient(120deg, #0a3161, #1f6bff);
-      color: var(--white);
-      padding: 100px 20px;
-      text-align: center;
-    }
-
-    .cta h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-
-    .cta p {
-      font-size: 1.1rem;
-      margin-bottom: 40px;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .cta-form {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
-      max-width: 500px;
-      margin: 0 auto;
     }
 
-    .cta-form input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 6px;
-      border: none;
-      font-size: 1rem;
+    .case-card img {
+      width: 60px;
+      margin-bottom: 10px;
     }
 
-    .cta-form button {
-      background-color: var(--accent-red);
-      border: none;
-      color: var(--white);
-      padding: 14px 24px;
-      font-size: 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s ease;
+    .case-card h4 {
+      margin-bottom: 8px;
+      color: var(--accent-blue);
     }
 
-    .cta-form button:hover {
-      background-color: #cc3c45;
-    }
-
-    /* Footer */
-    footer {
-      background-color: #051e3a;
+    .footer {
+      background-color: #0a1e3f;
       color: var(--off-white);
+      padding: 40px 20px;
       text-align: center;
-      padding: 30px 20px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
-    @media (max-width: 600px) {
-      .hero-tagline {
-        font-size: 1.8rem;
-      }
-
-      .signin-cta {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-      }
-
-      .carousel {
-        padding-left: 10px;
-      }
+    .footer a {
+      color: var(--accent-blue);
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
+  <header>
+    <main>
+      <section class="hero">
+        <video playsinline autoplay muted loop aria-hidden="true">
+          <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750570525/wopiv4hknggshsekivgd.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <img src="https://www.victoryvision.app/logo.svg" alt="Victory Vision AI Logo" class="hero-logo">
+          <h1 class="hero-tagline">Discover the Secrets Your Competition Doesn’t Want You to Know</h1>
+          <p class="hero-subheading">Victory Vision AI gives forward-thinking marketers the stealth tools they need to dominate—faster, smarter, and automated.</p>
+          <a href="https://www.victoryvision.app/early-access" class="signin-cta">Access Top-Secret Invite</a>
+          <div class="tooltip">Rapid setup. AI-powered campaigns. No demo required.</div>
+        </div>
+      </section>
 
-  <!-- Hero Section -->
-  <header class="hero">
-    <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750570525/wopiv4hknggshsekivgd.mp4" type="video/mp4">
-    </video>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" class="hero-logo" />
-      <h1 class="hero-tagline">Discover the Secrets Your Competition Doesn’t Want You to Know</h1>
-      <button class="signin-cta">Request Top-Secret Invite</button>
-    </div>
+      <section class="intro">
+        <h2>Unlock Revenue Like Never Before</h2>
+        <p>Victory Vision isn't just AI—it’s your covert operations center for uncovering untapped opportunities, optimizing campaigns in real time, and keeping your competitors in the dark while you surge ahead.</p>
+      </section>
+
+      <section class="brief">
+        <h2>Why Victory Vision?</h2>
+        <p>Precision-engineered for mid-market leaders who demand immediate results, radical clarity, and zero friction. Activate plug-and-play intelligence that works from day one.</p>
+        <div class="tactic-grid">
+          <div class="tactic">
+            <h3>Stealth Segmentation</h3>
+            <p>Uncover hidden patterns in your buyer journey. AI dynamically adjusts segmentation for maximum yield.</p>
+          </div>
+          <div class="tactic">
+            <h3>Real-Time Intel</h3>
+            <p>Get alerts on shifting audience behavior and digital trends before the competition sees them coming.</p>
+          </div>
+          <div class="tactic">
+            <h3>Ghost Campaigns</h3>
+            <p>Launch fully automated campaigns that execute behind the scenes—no hands, no hassle, all data-driven.</p>
+          </div>
+          <div class="tactic">
+            <h3>Conversion Heatmaps</h3>
+            <p>Visualize exactly where clicks turn into cash. Your next growth move, decoded with clarity.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="case-studies">
+        <h2>Field-Proven Results</h2>
+        <div class="carousel">
+          <div class="case-card">
+            <img src="https://www.victoryvision.app/assets/retail.png" alt="Retail Case Study">
+            <h4>Retail Surge</h4>
+            <p>43% lift in campaign revenue in 21 days. No code, just covert optimization at scale.</p>
+          </div>
+          <div class="case-card">
+            <img src="https://www.victoryvision.app/assets/healthcare.png" alt="Healthcare Case Study">
+            <h4>Healthcare Wins</h4>
+            <p>Reduced CPA by 32% using AI-driven patient onboarding flows.</p>
+          </div>
+          <div class="case-card">
+            <img src="https://www.victoryvision.app/assets/legal.png" alt="Legal Case Study">
+            <h4>Legal Lead Domination</h4>
+            <p>Outmaneuvered local competitors with dynamic geo-intent triggers.</p>
+          </div>
+        </div>
+      </section>
+    </main>
   </header>
 
-  <!-- Intro Section -->
-  <section class="intro">
-    <h2>The Future of Strategic Marketing</h2>
-    <p>
-      Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.
-    </p>
-  </section>
-
-  <!-- Intelligence Brief -->
-  <section class="brief">
-    <h2>Algorithm Unlocked: Unlock Your Competitive Edge</h2>
-    <p>
-      You’re not just buying software — you’re securing an unfair advantage. We designed Victory Vision AI to quietly activate real marketing gains through AI-powered stealth tactics, influencer-aware data, and algorithm insight layers. Below are the tactics silently transforming brands across industries.
-    </p>
-    <div class="tactic-grid">
-      <div class="tactic">
-        <h3>Secret Social Playbooks</h3>
-        <p>Tap into an arsenal of real-time social strategies informed by real-world behavior patterns and adaptive performance analysis.</p>
-      </div>
-      <div class="tactic">
-        <h3>Covert ROI Signals</h3>
-        <p>See hidden revenue leaks, uncover attribution blindspots, and tighten performance loops with predictive intelligence.</p>
-      </div>
-      <div class="tactic">
-        <h3>Influencer Intel Engine</h3>
-        <p>Analyze micro-influencer win-rates and leverage anonymized audience overlays to influence with surgical precision.</p>
-      </div>
-      <div class="tactic">
-        <h3>Algorithmic Elevation</h3>
-        <p>Reverse engineer platform preferencing for maximum organic reach with automated post-optimization routines.</p>
-      </div>
-      <div class="tactic">
-        <h3>Stealth Growth Hacking</h3>
-        <p>Run invite-only FOMO campaigns, unlock viral loop incentives, and track engagement hotspots in real time.</p>
-      </div>
-      <div class="tactic">
-        <h3>Win-Rate Dashboards</h3>
-        <p>Visualize campaign impact by vertical, geo, and device — down to the minute — and iterate before competitors adapt.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Case Studies Carousel -->
-  <section class="case-studies">
-    <h2>Proof Behind the Precision</h2>
-    <div class="carousel">
-      <div class="case-card">
-        <h4>E-commerce Brand</h4>
-        <p>35% increase in ROAS using weather-based targeting. Reduced CPA by 22% within 10 days.</p>
-      </div>
-      <div class="case-card">
-        <h4>Healthcare Provider</h4>
-        <p>Geo-fenced campaigns delivered 4x patient acquisition uplift with no increase in ad spend.</p>
-      </div>
-      <div class="case-card">
-        <h4>Retail Chain</h4>
-        <p>Automated social campaign variants yielded 480% engagement increase over manually-run efforts.</p>
-      </div>
-      <div class="case-card">
-        <h4>Digital Agency</h4>
-        <p>Used Victory Vision AI to onboard 7 new clients with intelligent growth blueprints — in under 30 days.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Call to Action -->
-  <section class="cta">
-    <h2>Secure Your Founders Deal</h2>
-    <p>This top-secret invitation includes early access, concierge onboarding, and guaranteed pricing before July 25th. Only 30 businesses will be accepted. Claim your advantage today.</p>
-    <form class="cta-form">
-      <input type="email" placeholder="Enter your work email" required />
-      <button type="submit">Get Top-Secret Access</button>
-    </form>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    &copy; 2024 Victory Vision AI. All rights reserved. | Confidential & Proprietary
+  <footer class="footer">
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener">Build your free AI website at Victory Vision</a></p>
   </footer>
+
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=2d7f02b2242767238eed0437e2be46cfa7508346" width="1" height="1" style="display:none;" alt="Tracking Pixel">
 </body>
 </html>
 ```
