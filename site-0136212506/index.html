@@ -1,0 +1,401 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI — Discover the Secrets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --dark-blue: #0a3161;
+      --white: #ffffff;
+      --off-white: #f5f5f5;
+      --accent-blue: #1f6bff;
+      --accent-red: #ff4f55;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark-blue);
+      color: var(--off-white);
+      overflow-x: hidden;
+    }
+
+    header, section, footer {
+      width: 100%;
+    }
+
+    /* Hero Video */
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: 0;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0.9;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(10, 49, 97, 0.65), rgba(10,49,97,0.95));
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--white);
+      padding: 0 20px;
+    }
+
+    .hero-logo {
+      width: 160px;
+      margin-bottom: 20px;
+    }
+
+    .hero-tagline {
+      font-size: 2.5rem;
+      font-weight: 700;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+
+    .signin-cta {
+      margin-top: 25px;
+      background: var(--accent-red);
+      border: none;
+      color: var(--white);
+      padding: 14px 30px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background 0.3s ease;
+      cursor: pointer;
+    }
+
+    .signin-cta:hover {
+      background: #cc3c45;
+    }
+
+    /* Intro */
+    .intro {
+      background-color: var(--off-white);
+      color: var(--dark-blue);
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .intro h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Intelligence Brief */
+    .brief {
+      background: #0e1a27;
+      padding: 100px 20px;
+      color: var(--white);
+      text-align: center;
+    }
+
+    .brief h2 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .brief p {
+      font-size: 1.05rem;
+      max-width: 700px;
+      margin: 0 auto 50px;
+    }
+
+    .tactic-grid {
+      display: grid;
+      gap: 40px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .tactic {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 12px;
+      transition: transform 0.3s ease, border 0.3s ease;
+    }
+
+    .tactic:hover {
+      transform: translateY(-5px);
+      border: 1px solid var(--accent-red);
+    }
+
+    .tactic h3 {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      color: var(--accent-blue);
+    }
+
+    .tactic p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Case Studies */
+    .case-studies {
+      background: var(--off-white);
+      color: var(--dark-blue);
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .case-studies h2 {
+      font-size: 1.8rem;
+      margin-bottom: 40px;
+    }
+
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 20px;
+      padding-bottom: 10px;
+    }
+
+    .carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .case-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      min-width: 280px;
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .case-card h4 {
+      margin-bottom: 10px;
+      color: var(--accent-blue);
+    }
+
+    .case-card p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Call to Action */
+    .cta {
+      background: linear-gradient(120deg, #0a3161, #1f6bff);
+      color: var(--white);
+      padding: 100px 20px;
+      text-align: center;
+    }
+
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .cta p {
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .cta-form input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .cta-form button {
+      background-color: var(--accent-red);
+      border: none;
+      color: var(--white);
+      padding: 14px 24px;
+      font-size: 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .cta-form button:hover {
+      background-color: #cc3c45;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #051e3a;
+      color: var(--off-white);
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero-tagline {
+        font-size: 1.8rem;
+      }
+
+      .signin-cta {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+      }
+
+      .carousel {
+        padding-left: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750570525/wopiv4hknggshsekivgd.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" class="hero-logo" />
+      <h1 class="hero-tagline">Discover the Secrets Your Competition Doesn’t Want You to Know</h1>
+      <button class="signin-cta">Request Top-Secret Invite</button>
+    </div>
+  </header>
+
+  <!-- Intro Section -->
+  <section class="intro">
+    <h2>The Future of Strategic Marketing</h2>
+    <p>
+      Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.
+    </p>
+  </section>
+
+  <!-- Intelligence Brief -->
+  <section class="brief">
+    <h2>Algorithm Unlocked: Unlock Your Competitive Edge</h2>
+    <p>
+      You’re not just buying software — you’re securing an unfair advantage. We designed Victory Vision AI to quietly activate real marketing gains through AI-powered stealth tactics, influencer-aware data, and algorithm insight layers. Below are the tactics silently transforming brands across industries.
+    </p>
+    <div class="tactic-grid">
+      <div class="tactic">
+        <h3>Secret Social Playbooks</h3>
+        <p>Tap into an arsenal of real-time social strategies informed by real-world behavior patterns and adaptive performance analysis.</p>
+      </div>
+      <div class="tactic">
+        <h3>Covert ROI Signals</h3>
+        <p>See hidden revenue leaks, uncover attribution blindspots, and tighten performance loops with predictive intelligence.</p>
+      </div>
+      <div class="tactic">
+        <h3>Influencer Intel Engine</h3>
+        <p>Analyze micro-influencer win-rates and leverage anonymized audience overlays to influence with surgical precision.</p>
+      </div>
+      <div class="tactic">
+        <h3>Algorithmic Elevation</h3>
+        <p>Reverse engineer platform preferencing for maximum organic reach with automated post-optimization routines.</p>
+      </div>
+      <div class="tactic">
+        <h3>Stealth Growth Hacking</h3>
+        <p>Run invite-only FOMO campaigns, unlock viral loop incentives, and track engagement hotspots in real time.</p>
+      </div>
+      <div class="tactic">
+        <h3>Win-Rate Dashboards</h3>
+        <p>Visualize campaign impact by vertical, geo, and device — down to the minute — and iterate before competitors adapt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Case Studies Carousel -->
+  <section class="case-studies">
+    <h2>Proof Behind the Precision</h2>
+    <div class="carousel">
+      <div class="case-card">
+        <h4>E-commerce Brand</h4>
+        <p>35% increase in ROAS using weather-based targeting. Reduced CPA by 22% within 10 days.</p>
+      </div>
+      <div class="case-card">
+        <h4>Healthcare Provider</h4>
+        <p>Geo-fenced campaigns delivered 4x patient acquisition uplift with no increase in ad spend.</p>
+      </div>
+      <div class="case-card">
+        <h4>Retail Chain</h4>
+        <p>Automated social campaign variants yielded 480% engagement increase over manually-run efforts.</p>
+      </div>
+      <div class="case-card">
+        <h4>Digital Agency</h4>
+        <p>Used Victory Vision AI to onboard 7 new clients with intelligent growth blueprints — in under 30 days.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta">
+    <h2>Secure Your Founders Deal</h2>
+    <p>This top-secret invitation includes early access, concierge onboarding, and guaranteed pricing before July 25th. Only 30 businesses will be accepted. Claim your advantage today.</p>
+    <form class="cta-form">
+      <input type="email" placeholder="Enter your work email" required />
+      <button type="submit">Get Top-Secret Access</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2024 Victory Vision AI. All rights reserved. | Confidential & Proprietary
+  </footer>
+</body>
+</html>
+```
