@@ -1,312 +1,103 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Victory Vision AI | Lead the AI Future</title>
+  <meta name="description" content="Victory Vision AI empowers marketing leaders with ethical AI automation, cutting marketing ops time by 60% and providing total ROI visibility.">
+  <meta property="og:title" content="Victory Vision AI | Ethical AI Marketing Platform">
+  <meta property="og:description" content="Empower your marketing team with ethical AI-led automation. Save time, boost ROI, and lead with innovation.">
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg">
+  <meta property="og:url" content="https://www.victoryvision.app">
+  <meta name="theme-color" content="#1e3a8a">
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@tabler/icons-web@latest/icons/favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #0a3161;
-      --white: #ffffff;
-      --gray: #f5f5f5;
-      --text-dark: #0a3161;
-      --text-light: #ffffff;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--white);
-      color: var(--text-dark);
-      line-height: 1.6;
-    }
-
-    header {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    header video {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -1;
-    }
-
-    .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(10, 49, 97, 0.55);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: var(--white);
-      padding: 2rem;
-    }
-
-    .hero-overlay img {
-      max-width: 180px;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero-overlay h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .hero-overlay p {
-      font-size: 1.2rem;
-      font-weight: 400;
-      max-width: 700px;
-    }
-
-    main {
-      padding: 4rem 2rem;
-      background-color: var(--gray);
-    }
-
-    .section {
-      max-width: 1200px;
-      margin: 0 auto 4rem auto;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-
-    .section-header h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: var(--primary);
-    }
-
-    .section-header p {
-      font-size: 1rem;
-      max-width: 700px;
-      margin: 0 auto;
-      color: #333;
-    }
-
-    .features-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-    }
-
-    .feature-card {
-      background-color: var(--white);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      padding: 2rem;
-      flex: 1 1 300px;
-      max-width: 350px;
-      transition: transform 0.3s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .feature-card h3 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
-
-    .feature-card p {
-      font-size: 0.95rem;
-      color: #333;
-    }
-
-    .quiz-section {
-      background-color: var(--white);
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-
-    .quiz-section h2 {
-      font-size: 2rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-
-    .quiz-section p {
-      margin-bottom: 2rem;
-      font-size: 1rem;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      color: var(--white);
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .btn-primary:hover {
-      background-color: #082447;
-    }
-
-    .cta-section {
-      background-color: var(--primary);
-      color: var(--white);
-      text-align: center;
-      padding: 4rem 2rem;
-    }
-
-    .cta-section h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .cta-section p {
-      font-size: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .cta-form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .cta-form input[type="email"] {
-      padding: 0.75rem;
-      border: none;
-      border-radius: 5px;
-      width: 100%;
-      max-width: 400px;
-    }
-
-    footer {
-      background-color: #eeeeee;
-      padding: 2rem;
-      text-align: center;
-      font-size: 0.85rem;
-      color: #777;
-    }
-
-    @media (min-width: 768px) {
-      .hero-overlay h1 {
-        font-size: 3rem;
-      }
-
-      .hero-overlay p {
-        font-size: 1.3rem;
-      }
-
-      .cta-form {
-        flex-direction: row;
-      }
-
-      .cta-form input[type="email"] {
-        flex: 1;
-      }
-    }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="font-sans bg-white text-blue-900 leading-relaxed">
 
-  <header>
-    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750561852/lfclsotq3eygp3ifscx3.mp4" autoplay muted loop playsinline></video>
-    <div class="hero-overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
-      <h1>The AI Future Demands Leaders, Not Followers.</h1>
-      <p>Empowering CMOs and CEOs to redefine marketing leadership through ethical, intelligent automation. Your time is priceless — so is your vision.</p>
+  <header class="relative w-full h-screen overflow-hidden">
+    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750561852/lfclsotq3eygp3ifscx3.mp4" autoplay muted loop playsinline poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" class="absolute inset-0 w-full h-full object-cover -z-10" aria-label="Background video showing AI technology">
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750561852/lfclsotq3eygp3ifscx3.mp4" type="video/mp4">
+    </video>
+    <noscript>
+      <div class="text-white text-base bg-blue-900 p-4 hidden">Victory Vision AI empowers ambitious marketing leaders through automation and ethics.</div>
+    </noscript>
+    <div class="absolute inset-0 bg-blue-900 bg-opacity-60 flex flex-col justify-center items-center text-center text-white p-8">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" class="max-w-xs mb-6 w-auto h-auto" loading="eager">
+      <div class="flex flex-col items-center mb-6">
+        <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 max-w-4xl">The AI Future Demands Leaders, Not Followers.</h1>
+        <p class="text-lg md:text-xl font-normal max-w-3xl mx-auto">Cut your marketing ops time by 60% and gain total ROI visibility. Victory Vision AI turns ethical intelligence into competitive advantage.</p>
+      </div>
+      <a href="#quiz" class="inline-block bg-blue-900 text-white px-8 py-4 text-base rounded-lg font-semibold hover:bg-blue-800 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" aria-label="Take the ethical marketing quiz">Discover Your Ethical Marketing Score</a>
     </div>
   </header>
 
-  <main>
-    <section class="section">
-      <div class="section-header">
-        <h2>Intelligent Marketing Starts Here</h2>
-        <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. Leverage predictive AI to drive results across location, traffic, weather, and behavioral patterns — all in real time.</p>
+  <a href="#cta" class="fixed bottom-5 right-5 bg-yellow-400 text-black px-5 py-3 rounded-full font-semibold text-sm z-50 shadow-lg hover:bg-yellow-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2" aria-label="Claim founders deal">Claim Founders Deal</a>
+
+  <main class="py-16 px-6 sm:px-8 bg-gray-50">
+
+    <section class="max-w-6xl mx-auto mb-20">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-blue-900">Intelligent Marketing Starts Here</h2>
+        <p class="text-base sm:text-lg max-w-3xl mx-auto text-gray-700">Victory Vision AI blends behavioral signals, AI modeling, and ethical frameworks to provide 24/7 visibility across campaigns, audience movement, and marketing ROI—no spreadsheets or dashboards required.</p>
       </div>
     </section>
 
-    <section class="section">
-      <div class="section-header">
-        <h2>Lead with Clarity, Act with Responsibility</h2>
-        <p>In a world of noise, our platform promotes algorithmic accountability and transparent AI. We believe in building ethically conscious marketing systems that not only convert — but uplift.</p>
+    <section class="max-w-6xl mx-auto mb-20">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-blue-900">Lead with Clarity, Act with Responsibility</h2>
+        <p class="text-base sm:text-lg max-w-3xl mx-auto text-gray-700">Busy visionaries need more than automation. We deliver traceable transparency, faster decisions, and AI-driven campaigns that align with both ROI and modern values.</p>
       </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <h3>AI Ethics at the Core</h3>
-          <p>Designed with a conscious code to ensure fairness, bias mitigation, and stakeholder trust, all marketing decisions are transparently traced.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Data Stewardship</h3>
-          <p>We ensure responsible data use with built-in compliance, intelligent anonymization, and granular visibility across the pipeline.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Behaviorally Aware Campaigns</h3>
-          <p>Victory Vision processes behavioral signals in real-time to adjust messaging with precision — like weather, location, and intent.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Corporate Accountability</h3>
-          <p>Your brand is accountable — so is our code. Track ethical metrics and ensure marketing aligns with modern values.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Seamless AI Integration</h3>
-          <p>Plug directly into your stack with zero-code APIs and let our algorithms drive optimal reach, impact, and returns — no meetings required.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Transparent Results</h3>
-          <p>Get real-time attribution dashboards to track ROI, engagement, and growth. Clarity, not complexity.</p>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <article class="bg-white rounded-xl shadow-lg p-8 transition-transform duration-300 hover:-translate-y-2">
+          <h3 class="text-lg font-semibold mb-3">AI Ethics at the Core</h3>
+          <p class="text-sm text-gray-700">Built-in ethical auditing ensures all creative and targeting decisions meet your brand's values—bias-mitigated by design.</p>
+        </article>
+        <article class="bg-white rounded-xl shadow-lg p-8 transition-transform duration-300 hover:-translate-y-2">
+          <h3 class="text-lg font-semibold mb-3">Data Stewardship</h3>
+          <p class="text-sm text-gray-700">Advanced encryption, anonymization, and consent-based governance are default—not optional—keeping your users protected and regulators satisfied.</p>
+        </article>
+        <article class="bg-white rounded-xl shadow-lg p-8 transition-transform duration-300 hover:-translate-y-2">
+          <h3 class="text-lg font-semibold mb-3">Behavior-Based Targeting</h3>
+          <p class="text-sm text-gray-700">Leverage live signals from location, weather, mobile habits, and behavior to adapt campaigns in milliseconds—no manual toggles required.</p>
+        </article>
+        <article class="bg-white rounded-xl shadow-lg p-8 transition-transform duration-300 hover:-translate-y-2">
+          <h3 class="text-lg font-semibold mb-3">Accountability Metrics</h3>
+          <p class="text-sm text-gray-700">Track fairness, equity, and carbon performance metrics across your campaigns—bringing ESG into your Martech stack.</p>
+        </article>
+        <article class="bg-white rounded-xl shadow-lg p-8 transition-transform duration-300 hover:-translate-y-2">
+          <h3 class="text-lg font-semibold mb-3">No-Code AI Deployment</h3>
+          <p class="text-sm text-gray-700">Instantly integrate via prebuilt APIs and connectors. Launch hyper-personalized campaigns without involving developers or product teams.</p>
+        </article>
+        <article class="bg-white rounded-xl shadow-lg p-8 transition-transform duration-300 hover:-translate-y-2">
+          <h3 class="text-lg font-semibold mb-3">Transparent Attribution</h3>
+          <p class="text-sm text-gray-700">Real-time dashboards track ROI down to each dollar—plus sentiment shifts and influence charts you won’t find anywhere else.</p>
+        </article>
       </div>
     </section>
 
-    <section class="quiz-section">
-      <h2>How Ethical is Your Marketing AI?</h2>
-      <p>Take our free 2-minute quiz to discover your Ethical Marketing Score. Instantly detect blind spots, benchmark your team, and access actionable AI insights.</p>
-      <a href="#cta" class="btn-primary">Take the Quiz</a>
+    <section class="max-w-6xl mx-auto text-center bg-white py-20 px-6 rounded-lg shadow-md" id="quiz">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-blue-900">How Ethical is Your Marketing AI?</h2>
+      <p class="text-base sm:text-lg text-gray-700 mb-8 max-w-3xl mx-auto">Take our 2-minute quiz and discover how aligned your marketing tech stack is with today's ethical standards—and how Victory Vision AI can help.</p>
+      <a href="https://www.victoryvision.app/quiz" class="inline-block bg-blue-900 text-white px-8 py-4 text-base rounded-lg font-semibold hover:bg-blue-800 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" aria-label="Start the quiz">Start the Quiz</a>
     </section>
+
+    <section class="max-w-6xl mx-auto text-center bg-yellow-100 mt-20 py-16 px-6 rounded-lg shadow-inner" id="cta">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6 text-blue-900">Limited-Time Founders Deal</h2>
+      <p class="text-base sm:text-lg text-gray-700 mb-6 max-w-3xl mx-auto">Join the marketing revolution risk-free. Get exclusive access to Victory Vision AI with no meetings, no friction—just results. For early adopters only.</p>
+      <a href="https://www.victoryvision.app/signup" class="inline-block bg-yellow-400 text-black px-10 py-4 text-base rounded-lg font-semibold hover:bg-yellow-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2" aria-label="Sign up for founders deal">Claim Your Access Now</a>
+    </section>
+
   </main>
 
-  <section id="cta" class="cta-section">
-    <h2>Join the AI Marketing Vanguard</h2>
-    <p>Unlock full access with our limited-time Founders Deal. No demos. No delays. Just results.</p>
-    <form class="cta-form">
-      <input type="email" placeholder="Your work email" required />
-      <button type="submit" class="btn-primary">Activate Founders Deal</button>
-    </form>
-  </section>
-
-  <footer>
-    &copy; 2024 Victory Vision AI. All rights reserved.
+  <footer class="bg-blue-900 text-white py-8 px-6 text-center">
+    <p class="text-sm mb-2">&copy; 2024 Victory Vision AI. All rights reserved.</p>
+    <p class="text-base font-semibold">Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" class="underline hover:text-yellow-400" aria-label="Visit Victory Vision website">Build your free AI website at Victory Vision</a></p>
   </footer>
 
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=0c65944a17ee78333ce009aef4d0b1331462518f" width="1" height="1" style="display:none;" alt="tracking pixel">
 </body>
 </html>
-```
