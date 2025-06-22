@@ -1,10 +1,17 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>L.A. Confidential HR Solutions</title>
+  <meta name="description" content="L.A. Confidential HR Solutions - Turn HR chaos into scalable systems. Specialized support for California founders with bilingual expertise, compliance guidance, and team building solutions."/>
+  <meta name="keywords" content="HR consulting, California labor law, startup HR, bilingual HR services, compliance, employee handbook, onboarding"/>
+  <meta property="og:title" content="L.A. Confidential HR Solutions - Turn HR Chaos Into a Scalable System"/>
+  <meta property="og:description" content="Specialized HR support for California startups and founders. Transform chaos into compliance and culture through trusted bilingual guidance."/>
+  <meta property="og:url" content="https://www.laconfidentialhr.com"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:image" content="https://www.laconfidentialhr.com/og-image.jpg"/>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4bc.svg" type="image/svg+xml">
+  <title>L.A. Confidential HR Solutions - Turn HR Chaos Into a Scalable System</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -14,37 +21,42 @@
       --dark: #1a1a1a;
     }
 
-    * {
+    *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     html, body {
       font-family: 'Inter', sans-serif;
       background-color: var(--white);
       color: var(--dark);
-      scroll-behavior: smooth;
       line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
     header {
       position: relative;
       height: 100vh;
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: black;
+      overflow: hidden;
       text-align: center;
-      background-color: black;
     }
 
     header video {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
+      top: 0;
+      left: 0;
       object-fit: cover;
       z-index: 1;
     }
@@ -56,16 +68,16 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(10, 10, 10, 0.4);
+      background: rgba(10, 10, 10, 0.6);
       z-index: 2;
     }
 
     .hero-content {
       position: relative;
       z-index: 3;
-      color: var(--white);
       max-width: 800px;
       padding: 0 1rem;
+      color: var(--white);
     }
 
     .hero-content img {
@@ -74,8 +86,15 @@
     }
 
     .hero-content h1 {
-      font-size: 2.5rem;
+      font-size: 2.7rem;
+      font-weight: 700;
       margin-bottom: 1rem;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      margin: 1rem 0;
     }
 
     .btn-primary {
@@ -84,7 +103,6 @@
       color: var(--white);
       padding: 0.75rem 1.5rem;
       border-radius: 4px;
-      text-decoration: none;
       font-weight: 600;
       margin-top: 1.5rem;
       transition: background 0.3s ease;
@@ -92,6 +110,15 @@
 
     .btn-primary:hover {
       background-color: #88081f;
+    }
+
+    .btn-primary:focus {
+      outline: 2px solid var(--white);
+      outline-offset: 2px;
+    }
+
+    main {
+      display: block;
     }
 
     section {
@@ -121,6 +148,20 @@
       color: #444;
     }
 
+    .hero-video-intro {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-video-intro iframe {
+      width: 100%;
+      max-width: 560px;
+      height: 315px;
+      border: none;
+      border-radius: 8px;
+    }
+
     .story {
       background-color: var(--white);
     }
@@ -134,7 +175,7 @@
 
     .story-content {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
@@ -143,6 +184,14 @@
       background-color: var(--light);
       padding: 2rem;
       border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .story-content img {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 1rem;
     }
 
     .highlight {
@@ -177,6 +226,13 @@
       background-color: var(--light);
     }
 
+    .roadmap h2 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
     .roadmap-steps {
       display: grid;
       gap: 2rem;
@@ -190,8 +246,25 @@
       border-radius: 4px;
     }
 
+    .roadmap-steps h4 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .story-cta {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
     .faq {
       background-color: var(--white);
+    }
+
+    .faq h2 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-align: center;
     }
 
     .accordion {
@@ -200,194 +273,148 @@
 
     .accordion details {
       margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1rem;
     }
 
     .accordion summary {
       font-weight: 600;
       cursor: pointer;
       color: var(--primary);
+      padding: 0.5rem 0;
     }
 
-    .cta {
-      background-color: var(--primary);
-      color: var(--white);
-      text-align: center;
-      padding: 3rem 1rem;
+    .accordion summary:hover {
+      color: #88081f;
     }
 
-    .cta h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+    .accordion summary:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
     }
 
-    .cta-form {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .cta-form input,
-    .cta-form button {
-      padding: 0.75rem 1rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 4px;
-    }
-
-    .cta-form input {
-      width: 250px;
-    }
-
-    .cta-form button {
-      background-color: var(--white);
-      color: var(--primary);
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .cta-form button:hover {
-      background: #eee;
+    .accordion p {
+      margin-top: 0.5rem;
     }
 
     footer {
-      background: var(--dark);
+      background-color: var(--dark);
       color: var(--white);
-      text-align: center;
       padding: 2rem 1rem;
+      text-align: center;
       font-size: 0.9rem;
     }
 
-    @media (max-width: 768px) {
-      .story-content {
-        grid-template-columns: 1fr;
-      }
+    footer a {
+      color: var(--white);
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-
   <header>
-    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750619456/flaaysik7e1miiqjizrj.mp4" autoplay muted loop playsinline></video>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750619456/flaaysik7e1miiqjizrj.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
     <div class="hero-content">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential Logo"/>
+      <img src="https://www.laconfidentialhr.com/logo.svg" alt="L.A. Confidential HR Solutions Logo">
       <h1>Turn HR Chaos Into a Scalable System</h1>
-      <a href="#consult" class="btn-primary">Book Your Free Consultation</a>
+      <p>Specialized human resources support for California startups with bilingual and compliance-focused solutions designed to grow with you.</p>
+      <a href="#roadmap" class="btn-primary">Book Free Compliance Consultation</a>
+      <div class="hero-video-intro">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0" title="Welcome Video from L.A. Confidential HR" allowfullscreen></iframe>
+      </div>
     </div>
   </header>
-
   <main>
-
     <section class="intro">
       <div class="container">
-        <h2>Empathy. Clarity. Compliance.</h2>
-        <p>
-          L.A. Confidential HR Solutions is a progressive HR consulting firm dedicated to demystifying human resources for startups and small to mid-sized businesses. We prioritize empathy, compliance, and team building, delivering bilingual HR expertise and cross-cultural insights that empower companies to thrive. With a unique blend of professionalism and a light-hearted approach, we create a welcoming environment where every client feels seen and supported.
-        </p>
+        <h2>Empathetic. Culturally Aware. Scalable.</h2>
+        <p>We partner with founders and HR leaders in high-growth environments, especially those navigating bilingual dynamics and California labor law, to turn messy HR into a compliant, confident system.</p>
       </div>
     </section>
 
     <section class="story">
       <div class="container">
-        <h2>Campaign: Compliance Reboot</h2>
+        <h2>From Pain Points to Performance</h2>
         <div class="story-content">
           <div>
-            <span class="highlight">Before</span>
-            <h3>Fractured Systems, HR Burnout</h3>
-            <p>Startups attempting DIY HR often face untracked files, hiring missteps, and compliance blind spots. Our clients come to us exhausted, uncertain—and exposed to legal risk.</p>
+            <span class="highlight">01</span>
+            <h3>HR Chaos</h3>
+            <p>Onboarding feels patchy. More questions than answers. Nobody owns compliance. Sound familiar?</p>
           </div>
           <div>
-            <span class="highlight">After</span>
-            <h3>Clarity, Culture, and Compliance</h3>
-            <p>With our bilingual HR team guiding the way, these founders regain confidence. We build repeatable systems, inclusive cultures, and proactive workforce strategies that scale with them.</p>
+            <span class="highlight">02</span>
+            <h3>We Step In</h3>
+            <p>With bilingual expertise and startup fluency, we clean up your HR landscape—fast and responsibly.</p>
+          </div>
+          <div>
+            <span class="highlight">03</span>
+            <h3>Systems for Scale</h3>
+            <p>Policies, handbooks, and processes designed to grow with your business — not against it.</p>
+          </div>
+          <div>
+            <span class="highlight">04</span>
+            <h3>Thriving Culture</h3>
+            <p>We don’t just check boxes. We build brave, compliant cultures where people belong and businesses thrive.</p>
           </div>
         </div>
-        <div class="features">
-          <div class="feature-box">
-            <h4>✅ HR Compliance Simplified</h4>
-            <p>From handbooks to audits — we translate California labor law into bite-sized, bilingual support.</p>
-          </div>
-          <div class="feature-box">
-            <h4>👥 Team Cohesion</h4>
-            <p>We help cross-cultural teams align values, communication styles, and policies — for real unity.</p>
-          </div>
-          <div class="feature-box">
-            <h4>📈 Workforce Strategy</h4>
-            <p>Hiring plans, role clarity, culture onboarding: HR as a foundation for healthy growth.</p>
-          </div>
-          <div class="feature-box">
-            <h4>💡 Crisis Prevention</h4>
-            <p>Catch red flags before they escalate. Our HR Crisis Checklist is your safety net.</p>
-          </div>
+        <div class="story-cta">
+          <a href="#faq" class="btn-primary">How We Help</a>
         </div>
       </div>
     </section>
 
-    <section class="roadmap">
+    <section class="roadmap" id="roadmap">
       <div class="container">
-        <h2>Your Compliance Roadmap</h2>
+        <h2>Compliance Roadmap</h2>
         <div class="roadmap-steps">
           <div>
-            <h4>Step 1: Discovery & HR Health Rating</h4>
-            <p>We assess current risk level and cultural pain points in a 1-on-1 consult.</p>
+            <h4>Step 1: Discovery</h4>
+            <p>We audit your current HR setup to identify problems, risks, and inefficiencies.</p>
           </div>
           <div>
-            <h4>Step 2: Core Documentation</h4>
-            <p>We build key systems: employee handbook, offer letters, onboarding templates, and role clarity documents.</p>
+            <h4>Step 2: Fix Urgencies</h4>
+            <p>Anything noncompliant or legally risky—we handle immediately with precision and documentation.</p>
           </div>
           <div>
-            <h4>Step 3: Culture & Coaching</h4>
-            <p>Training your managers to lead diverse teams with empathy and legal clarity.</p>
+            <h4>Step 3: Build Systems</h4>
+            <p>Create and implement scalable hiring, onboarding, training, and handbook frameworks customized to your culture.</p>
           </div>
           <div>
-            <h4>Step 4: Ongoing Partnership</h4>
-            <p>We remain your on-call HR ally, scaling with you as your business evolves.</p>
+            <h4>Step 4: Cultivate Team</h4>
+            <p>Help your people flourish with performance guidance, role design, and inclusive communication systems.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="faq">
+    <section class="faq" id="faq">
       <div class="container">
-        <h2>FAQs: You Asked, We Answered</h2>
+        <h2>Frequently Asked Questions</h2>
         <div class="accordion">
           <details>
-            <summary>Are you fluent in Mandarin or Cantonese?</summary>
-            <p>Yes. Our bilingual consultants support Chinese startups navigating California HR from both a legal and cultural perspective.</p>
+            <summary>Do you serve startups without HR departments?</summary>
+            <p>Yes—we specialize in building HR systems from scratch for startups in early hiring stages.</p>
           </details>
           <details>
-            <summary>What’s the scope of the free consult?</summary>
-            <p>We’ll identify your top 2–3 compliance gaps and provide a health rating to help you prioritize next steps. No obligation.</p>
+            <summary>Are your services bilingual?</summary>
+            <p>Absolutely. We work fluently in both English and Mandarin Chinese.</p>
           </details>
           <details>
-            <summary>Do you offer ongoing HR support or just setup?</summary>
-            <p>Both. We specialize in turnkey setup, then embed as part-time HR partners depending on your growth stage.</p>
-          </details>
-          <details>
-            <summary>Is this just for California businesses?</summary>
-            <p>While CA compliance is indeed our specialty, we consult companies expanding into CA or managing distributed teams.</p>
+            <summary>What does a consultation include?</summary>
+            <p>A custom discovery of your company's HR compliance risk, documentation standards, and team health checkpoints.</p>
           </details>
         </div>
       </div>
     </section>
-
-    <section id="consult" class="cta">
-      <h2>Book Your Free Compliance Consultation</h2>
-      <p>Let’s audit your HR chaos and map a path forward — together.</p>
-      <form class="cta-form">
-        <input type="email" placeholder="your@email.com" required>
-        <button type="submit">Book Now</button>
-      </form>
-    </section>
-
   </main>
-
   <footer>
-    &copy; 2024 L.A. Confidential HR Solutions. Built with empathy, driven by results.
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener">Build your free AI website at Victory Vision</a></p>
   </footer>
-
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=09b6526f38ea9f81e7408351b544f0d2447caed0" width="1" height="1" style="display:none;" alt="tracking pixel">
 </body>
 </html>
-```
+</DOCTYPE HTML>
