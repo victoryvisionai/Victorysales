@@ -1,0 +1,379 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI - Control Meets Clarity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      color: #0a3161;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 49, 97, 0.55);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .header-overlay img {
+      max-width: 180px;
+      margin-bottom: 2rem;
+    }
+
+    .header-overlay h1 {
+      font-size: 2.5rem;
+      color: #ffffff;
+      margin-bottom: 1rem;
+    }
+
+    .cta-button {
+      margin-top: 1rem;
+      padding: 1rem 2rem;
+      background-color: #d60000;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #b90000;
+    }
+
+    main {
+      background-color: #ffffff;
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .intro p {
+      font-size: 1.125rem;
+      line-height: 1.8;
+      max-width: 900px;
+      margin: 0 auto;
+      color: #333;
+    }
+
+    .campaign {
+      background-color: #f5f5f5;
+    }
+
+    .campaign h2 {
+      color: #0a3161;
+    }
+
+    .campaign-tagline {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #d60000;
+      text-align: center;
+      margin: 2rem 0 1rem;
+    }
+
+    .campaign-description {
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      font-size: 1.125rem;
+      color: #444;
+      text-align: center;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .feature-box {
+      background-color: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .feature-box h3 {
+      font-size: 1.25rem;
+      color: #0a3161;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-box p {
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .stats {
+      background-color: #ffffff;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .stats h2 {
+      margin-bottom: 3rem;
+    }
+
+    .stat-items {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .stat {
+      background-color: #0a3161;
+      color: #ffffff;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 220px;
+    }
+
+    .stat h3 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat p {
+      font-size: 0.9rem;
+    }
+
+    .testimonials {
+      background-color: #f5f5f5;
+      padding: 4rem 2rem;
+    }
+
+    .testimonial-box {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .testimonial-box p {
+      font-style: italic;
+      font-size: 1.05rem;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial-box span {
+      font-weight: 600;
+      color: #0a3161;
+    }
+
+    .conversion {
+      background-color: #ffffff;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .conversion h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .conversion p {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 2rem;
+    }
+
+    .signup-form input[type="email"] {
+      padding: 0.8rem;
+      font-size: 1rem;
+      width: 280px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 1rem;
+    }
+
+    .signup-form button {
+      padding: 0.8rem 1.5rem;
+      background-color: #d60000;
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .signup-form button:hover {
+      background-color: #b90000;
+    }
+
+    footer {
+      background-color: #0a3161;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .header-overlay h1 {
+        font-size: 1.75rem;
+      }
+
+      .cta-button {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .signup-form input[type="email"] {
+        display: block;
+        width: 100%;
+        margin: 0 auto 1rem;
+      }
+
+      .signup-form button {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750561852/abqk7phjoklt410enrwl.mp4" type="video/mp4">
+    </video>
+    <div class="header-overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <h1>When AI Knows Too Much, Who’s Really in Control?</h1>
+      <a href="#signup"><button class="cta-button">Founders Deal – Get Early Access</button></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section intro">
+      <h2>Meet Victory Vision AI</h2>
+      <p>
+        Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations.
+        In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.
+      </p>
+    </section>
+
+    <section class="section campaign">
+      <h2>The Campaign: Data Backfire</h2>
+      <div class="campaign-tagline">“When AI Knows Too Much, Who’s Really in Control?”</div>
+      <p class="campaign-description">
+        As AI becomes more integrated into decision making, fears rise about privacy, data misuse, and control. Victory Vision AI doesn't just use data—it respects it. Our platform offers full transparency into algorithms, campaign behavior, and user tracking. You're always in control.
+      </p>
+      <div class="features-grid">
+        <div class="feature-box">
+          <h3>AI Privacy Safeguards</h3>
+          <p>Our proprietary AI respects personal boundaries by enforcing ethical data guidelines.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Transparent Algorithms</h3>
+          <p>Every decision is explainable and every campaign is auditable through your dashboard.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Data Breach Simulation</h3>
+          <p>Interactive simulator reveals where your campaigns may be leaking information.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Executive-Level Control</h3>
+          <p>CMOs and CEOs define the guardrails—AI simply executes within them.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <h2>Real Results Backed by Data</h2>
+      <div class="stat-items">
+        <div class="stat">
+          <h3>4.3x</h3>
+          <p>Higher engagement vs. traditional campaigns</p>
+        </div>
+        <div class="stat">
+          <h3>29%</h3>
+          <p>Revenue lift benchmark in 60 days</p>
+        </div>
+        <div class="stat">
+          <h3>86%</h3>
+          <p>Reduction in team hours spent setting campaigns</p>
+        </div>
+        <div class="stat">
+          <h3>ZERO</h3>
+          <p>Data breaches to date across all client campaigns</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <h2>Trusted by Visionary Leaders</h2>
+      <div class="testimonial-box">
+        <p>"Victory Vision AI completely transformed our marketing operations. We didn’t lose control—we finally gained visibility."</p>
+        <span>— Sarah Chen, CEO, InovaCare Group</span>
+      </div>
+    </section>
+
+    <section id="signup" class="conversion">
+      <h2>Become a Founding Partner</h2>
+      <p>Start reclaiming control over your AI-powered marketing. Get in early for direct access and executive reporting tools tailored just for leaders like you.</p>
+      <form class="signup-form">
+        <input type="email" placeholder="Your Business Email" required />
+        <button type="submit">Claim the Founders Deal</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Victory Vision AI. All Rights Reserved.
+  </footer>
+</body>
+</html>
+```
