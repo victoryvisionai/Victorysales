@@ -1,0 +1,286 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI – Human-First AI Marketing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #0a3161;
+      scroll-behavior: smooth;
+    }
+
+    header, main, footer {
+      width: 100%;
+    }
+
+    .video-hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .video-hero video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .hero-overlay {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom right, rgba(10, 49, 97, 0.4), rgba(0, 0, 0, 0.4));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+      padding: 2rem;
+    }
+
+    .hero-overlay img.logo {
+      width: 160px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-tagline {
+      font-size: 2.5rem;
+      line-height: 1.3;
+      max-width: 700px;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    .hero-subline {
+      font-size: 1.1rem;
+      max-width: 600px;
+      color: #f5f5f5;
+    }
+
+    section {
+      padding: 4rem 2rem;
+    }
+
+    .intro,
+    .narrative,
+    .features,
+    .call-to-action {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .intro h2,
+    .narrative h2,
+    .features h2,
+    .call-to-action h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: #0a3161;
+    }
+
+    .intro p,
+    .narrative p,
+    .features p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #333;
+    }
+
+    .narrative .hashtag {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #0a3161;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .feature-box {
+      background-color: #f5f5f5;
+      padding: 2rem;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-box h3 {
+      margin-bottom: 0.6rem;
+      font-size: 1.25rem;
+    }
+
+    .call-to-action {
+      text-align: center;
+      background: linear-gradient(to right, #0a3161, #1e4e98);
+      color: #ffffff;
+      padding: 3rem 2rem;
+      border-radius: 16px;
+      margin-top: 5rem;
+    }
+
+    .call-to-action h2 {
+      color: #ffffff;
+    }
+
+    .cta-subtext {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+    }
+
+    .cta-input {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    .cta-input input {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 1rem;
+    }
+
+    .cta-input button {
+      background-color: #ffffff;
+      color: #0a3161;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .cta-input button:hover {
+      background-color: #f5f5f5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      background-color: #f5f5f5;
+      color: #777;
+    }
+
+    @media (max-width: 768px) {
+      .hero-tagline {
+        font-size: 2rem;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="video-hero">
+  <video autoplay muted loop playsinline>
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750570525/w1mbwz9vok7kpjk4rfou.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="hero-overlay">
+    <img class="logo" src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+    <h1 class="hero-tagline">Are We Connected or Just Clicking?</h1>
+    <p class="hero-subline">Reclaim authenticity in digital marketing with human-centered AI that cuts through the noise.</p>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <h2>Meet Victory Vision AI</h2>
+    <p>
+      Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.
+    </p>
+  </section>
+
+  <section class="narrative">
+    <h2>Ghosts in the Feed</h2>
+    <p>
+      Today’s digital marketers chase impressions, but miss real impact. As executives scroll through endless reports, campaign dashboards, and data points, they’re left wondering: “Are we really connecting with people?” Victory Vision AI was born from this pain point — to eliminate digital digital loneliness, fix fragmented engagement, and empower leaders to reach people, not pixels.
+    </p>
+    <p>
+      Our viral campaign, <strong>“Ghosts in the Feed”</strong>, invites you to examine your brand's digital presence. It’s not about more content; it’s about deeper connection. Join us to create poetic stories around authenticity, burnout, and what it means to lead with empathy.
+    </p>
+    <p class="hashtag">#GhostsInTheFeed</p>
+  </section>
+
+  <section class="features">
+    <h2>From Burnout to Breakthrough</h2>
+
+    <div class="feature-box">
+      <h3>Digital Loneliness</h3>
+      <p>Algorithms keep us visible but not connected. Our AI fosters storytelling and resonance, not just scale.</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Online Burnout</h3>
+      <p>Executives are tired of dashboards no one reads. We deliver simplicity powered by smart segmentation.</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Authentic Engagement</h3>
+      <p>Predictive models tailor your ads for genuine attention—not just faster clicks, but longer relationships.</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Quality Over Quantity</h3>
+      <p>Cut through campaign clutter. Focus on fewer, smarter, more effective messages. No fluff—just ROI.</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Human-First Marketing</h3>
+      <p>People forget impressions. They remember conversations. Our platform makes brands feel human again.</p>
+    </div>
+
+    <div class="feature-box">
+      <h3>Social Disconnection</h3>
+      <p>You’re online. But are you really seen? AI that brings the viewer into the message — not the algorithm.</p>
+    </div>
+  </section>
+
+  <section class="call-to-action">
+    <h2>Get Back to Real Conversations with AI That Feels Human</h2>
+    <p class="cta-subtext">Join the Founders Deal: early access, human support, and results without the wait.</p>
+    <div class="cta-input">
+      <input type="email" placeholder="Enter your business email" required />
+      <button type="submit">Request Early Access</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  &copy; 2024 Victory Vision AI · Crafted for connection, built on intelligence.
+</footer>
+
+</body>
+</html>
+```
