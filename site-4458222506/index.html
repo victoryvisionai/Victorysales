@@ -1,0 +1,339 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marketing Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #ffffff;
+        color: #0a3161;
+        scroll-behavior: smooth;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      header {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      header video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        filter: brightness(0.6);
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2rem 4%;
+        position: relative;
+        z-index: 10;
+      }
+
+      .nav img {
+        max-height: 40px;
+      }
+
+      .nav a.cta {
+        background-color: #ffffff;
+        color: #0a3161;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .nav a.cta:hover {
+        background-color: #f5f5f5;
+      }
+
+      .hero {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 6%;
+        color: #ffffff;
+        position: relative;
+        z-index: 5;
+        flex-direction: column;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        max-width: 800px;
+        line-height: 1.2;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hero p {
+        font-size: 1.25rem;
+        max-width: 600px;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+      }
+
+      .hero .button {
+        padding: 1rem 2rem;
+        background-color: #ffffff;
+        color: #0a3161;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .hero .button:hover {
+        background-color: #f5f5f5;
+      }
+
+      section {
+        padding: 5rem 6%;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2.5rem;
+      }
+
+      .feature {
+        background-color: #f5f5f5;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+      }
+
+      .feature:hover {
+        transform: translateY(-5px);
+      }
+
+      .feature h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .feature p {
+        line-height: 1.6;
+        font-size: 1rem;
+        color: #333;
+      }
+
+      .testimonial-section {
+        background-color: #f5f5f5;
+      }
+
+      .testimonials {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+      }
+
+      .testimonial {
+        background: #ffffff;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.04);
+      }
+
+      .testimonial p {
+        color: #444;
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+
+      .testimonial span {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #0a3161;
+      }
+
+      .cta-section {
+        background-color: #0a3161;
+        color: #ffffff;
+        text-align: center;
+        padding: 4rem 2rem;
+      }
+
+      .cta-section h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .cta-section p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-section .button {
+        background-color: #ffffff;
+        color: #0a3161;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .cta-section .button:hover {
+        background-color: #f5f5f5;
+      }
+
+      footer {
+        padding: 2rem 6%;
+        text-align: center;
+        font-size: 0.875rem;
+        color: #777;
+        background-color: #fafafa;
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2.25rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <video autoplay muted loop playsinline>
+        <source
+          src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750645381/npmvexzilfsxkdshijy6.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <div class="nav">
+        <img
+          src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg"
+          alt="Marketing Playbook Logo"
+        />
+        <a href="#get-started" class="cta">Get Access</a>
+      </div>
+      <div class="hero">
+        <h1>Unlock Data-Driven Growth Without Lifting a Finger</h1>
+        <p>
+          The Marketing Playbook helps savvy teams turn complex analytics into
+          simple, decisive strategies that scale with ease.
+        </p>
+        <a href="#demo" class="button">Request a Demo</a>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2 class="section-title">Why Marketing Playbook Works</h2>
+        <div class="features">
+          <div class="feature">
+            <h3>Automated Intelligence</h3>
+            <p>
+              Seamlessly extract meaningful insights from your campaigns without
+              touching a spreadsheet. Let automation do the heavy lifting.
+            </p>
+          </div>
+          <div class="feature">
+            <h3>Enterprise-Grade Clarity</h3>
+            <p>
+              Designed for CMOs, strategists, and growth leads — our platform
+              delivers clarity at speed and scale.
+            </p>
+          </div>
+          <div class="feature">
+            <h3>Plug & Play Simplicity</h3>
+            <p>
+              No steep learning curves. The Playbook integrates with your
+              existing stack and delivers results out of the box.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonial-section">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <div class="testimonials">
+          <div class="testimonial">
+            <p>
+              “Within a week of using the Playbook, we were already catching
+              patterns we’d missed for months. It's like having an entire data
+              team on autopilot.”
+            </p>
+            <span>— Julia M., Head of Growth</span>
+          </div>
+          <div class="testimonial">
+            <p>
+              “This turned our marketing meetings from chaos into clarity.
+              Beautiful interface, and the insights are insanely actionable.”
+            </p>
+            <span>— David S., VP of Marketing</span>
+          </div>
+          <div class="testimonial">
+            <p>
+              “The Playbook saved hundreds of hours for our analytics team and
+              gave leadership the visibility they were hungry for.”
+            </p>
+            <span>— Leena K., Data Director</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="demo" class="cta-section">
+        <h2>Start Smarter</h2>
+        <p>
+          Schedule a live walkthrough and discover how Marketing Playbook makes
+          insights immediate and effortless.
+        </p>
+        <a href="#get-started" class="button">Book My Demo</a>
+      </section>
+    </main>
+
+    <footer>
+      &copy; 2024 Marketing Playbook. All rights reserved.
+    </footer>
+  </body>
+</html>
+```
