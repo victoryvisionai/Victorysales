@@ -1,0 +1,313 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Unlock effortless growth with the AI-powered Marketing Playbook from Victory Vision AI. Built for marketers, executives, and business strategists."/>
+    <title>Victory Vision AI – The Marketing Playbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <style>
+      :root {
+        --primary: #0a3161;
+        --light: #f5f5f5;
+        --white: #ffffff;
+        --transition: 0.3s ease;
+        --font: 'Inter', sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        font-family: var(--font);
+        background-color: var(--white);
+        color: #1c1c1c;
+        scroll-behavior: smooth;
+      }
+
+      header {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      header video {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+
+      .overlay {
+        background: linear-gradient(to bottom right, rgba(10,49,97,0.95), rgba(10,49,97,0.75));
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 720px;
+        padding: 1rem;
+      }
+
+      .hero-content img {
+        height: 60px;
+        margin-bottom: 2rem;
+      }
+
+      .hero-content h1 {
+        font-size: 2.75rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+      }
+
+      .hero-content p {
+        font-size: 1.25rem;
+        font-weight: 400;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 0.9rem 2rem;
+        background-color: var(--white);
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: background var(--transition), color var(--transition);
+      }
+
+      .cta-button:hover {
+        background-color: var(--light);
+      }
+
+      section {
+        padding: 5rem 1.5rem;
+        max-width: 1140px;
+        margin: auto;
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--primary);
+      }
+
+      .section-title p {
+        font-size: 1.125rem;
+        color: #444;
+      }
+
+      .features-grid {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .feature-box {
+        background: var(--light);
+        padding: 2rem;
+        border-radius: 10px;
+        transition: transform var(--transition), box-shadow var(--transition);
+      }
+
+      .feature-box:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      }
+
+      .feature-box h3 {
+        color: var(--primary);
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+      }
+
+      .feature-box p {
+        font-size: 1rem;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+        text-align: center;
+      }
+
+      .stat {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .stat-label {
+        font-size: 1rem;
+        color: #555;
+        margin-top: 0.5rem;
+      }
+
+      .testimonial-slider {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        align-items: stretch;
+      }
+
+      .testimonial {
+        background: var(--white);
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      }
+
+      .testimonial p {
+        font-style: italic;
+        margin-bottom: 1rem;
+      }
+
+      .testimonial h4 {
+        font-weight: 600;
+        color: #333;
+      }
+
+      footer {
+        background-color: var(--primary);
+        color: var(--white);
+        text-align: center;
+        padding: 3rem 1rem;
+      }
+
+      footer p {
+        font-size: 0.95rem;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 768px) {
+        .hero-content h1 {
+          font-size: 2rem;
+        }
+
+        .hero-content p {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <header>
+      <video autoplay muted loop playsinline>
+        <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750645381/npmvexzilfsxkdshijy6.mp4" type="video/mp4">
+      </video>
+      <div class="overlay"></div>
+      <div class="hero-content">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+        <h1>The Marketing Playbook for Effortless Growth</h1>
+        <p>Unlock automated insights, increase conversions, and grow revenue—without lifting a finger.</p>
+        <a href="#get-started" class="cta-button">Get the Playbook</a>
+      </div>
+    </header>
+
+    <main>
+
+      <section>
+        <div class="section-title">
+          <h2>Why Victory Vision AI</h2>
+          <p>Your team, empowered by intelligent, zero-effort marketing decisions.</p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-box">
+            <h3>Real-Time AI Insights</h3>
+            <p>See your most valuable channels, customer segments, and growth levers—updated automatically in real time with AI analysis.</p>
+          </div>
+          <div class="feature-box">
+            <h3>Zero Setup, Full Optimization</h3>
+            <p>No spreadsheets, no code. Connect your accounts—our playbook handles the rest. SEO, ads, email, all optimized.</p>
+          </div>
+          <div class="feature-box">
+            <h3>Predictive Growth Paths</h3>
+            <p>Leverage data-backed recommendations to confidently plan next quarters and act proactively, not reactively.</p>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div>
+            <div class="stat">+38%</div>
+            <div class="stat-label">Avg. increase in traffic</div>
+          </div>
+          <div>
+            <div class="stat">+22%</div>
+            <div class="stat-label">Avg. lift in revenue in 60 days</div>
+          </div>
+          <div>
+            <div class="stat">95%</div>
+            <div class="stat-label">Insights adopted by marketing teams</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">
+          <h2>The Playbook in Action</h2>
+          <p>See how data turns into results—instantly.</p>
+        </div>
+        <div class="testimonial-slider">
+          <div class="testimonial">
+            <p>"Victory Vision's AI playbook replaced weeks of manual reporting. We saw a major spike in qualified leads within one month."</p>
+            <h4>— Emily R., VP of Marketing at AxisTech</h4>
+          </div>
+          <div class="testimonial">
+            <p>"We no longer debate next steps. The recommendations just make sense—and they work. Best decision in our MarTech stack."</p>
+            <h4>— Jordan M., Growth Strategist, CodeScale</h4>
+          </div>
+        </div>
+      </section>
+
+      <section id="get-started">
+        <div class="section-title">
+          <h2>Ready to Transform Your Strategy?</h2>
+          <p>Access the free playbook and start growing smarter today.</p>
+        </div>
+        <div style="text-align:center;">
+          <a href="#" class="cta-button">Access the Playbook Now</a>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <p>&copy; 2024 Victory Vision AI. All rights reserved.</p>
+    </footer>
+
+  </body>
+</html>
+```
