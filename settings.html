@@ -666,42 +666,42 @@
     }
   }
 
-  // Check OAuth connection status
-  async function checkConnectionStatus() {
-    try {
-      const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
-      console.log('OAuth status response:', response);
-      
-// FIXED:
-const oauthData = Array.isArray(response) ? response : [response];
-
-// Group by platform
-const platformData = {};
-oauthData.forEach(item => {
-  if (item.platform && item.access_token) {
-    platformData[item.platform] = {
-      access_token: item.access_token,
-      profile_id: item.customer_id || item.profile_id
-    };
+async function checkConnectionStatus() {
+  try {
+    const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
+    console.log('OAuth status response:', response);
+    
+    // Handle array response - each item is a separate OAuth record
+    const oauthArray = Array.isArray(response) ? response : [response];
+    
+    // Group by platform
+    const platformData = {};
+    oauthArray.forEach(item => {
+      if (item && item.platform && item.access_token) {
+        platformData[item.platform] = {
+          access_token: item.access_token,
+          profile_id: item.customer_id // Use customer_id as profile identifier
+        };
+      }
+    });
+    
+    console.log('Processed platform data:', platformData);
+    
+    // Update UI for each platform
+    updateConnectionStatus('linkedin', !!(platformData.linkedin), platformData.linkedin?.profile_id);
+    updateConnectionStatus('instagram', !!(platformData.instagram), platformData.instagram?.profile_id);
+    updateConnectionStatus('twitter', !!(platformData.twitter), platformData.twitter?.profile_id);
+    updateConnectionStatus('gmail', !!(platformData.gmail), platformData.gmail?.profile_id);
+    
+  } catch (error) {
+    console.error('Error checking connection status:', error);
+    // Set all to disconnected on error
+    updateConnectionStatus('linkedin', false);
+    updateConnectionStatus('instagram', false);
+    updateConnectionStatus('twitter', false);
+    updateConnectionStatus('gmail', false);
   }
-});
-
-// Update each platform
-updateConnectionStatus('linkedin', !!(platformData.linkedin?.access_token), platformData.linkedin?.profile_id);
-updateConnectionStatus('instagram', !!(platformData.instagram?.access_token), platformData.instagram?.profile_id);
-updateConnectionStatus('twitter', !!(platformData.twitter?.access_token), platformData.twitter?.profile_id);
-updateConnectionStatus('gmail', !!(platformData.gmail?.access_token), platformData.gmail?.profile_id);    
-      
-    } catch (error) {
-      console.error('Error checking connection status:', error);
-      // Set all to disconnected on error
-      updateConnectionStatus('linkedin', false);
-      updateConnectionStatus('instagram', false);
-      updateConnectionStatus('twitter', false);
-      updateConnectionStatus('gmail', false);
-    }
-  }
-
+}
   // Update connection status UI
   function updateConnectionStatus(platform, isConnected, profileInfo = null) {
     const statusIndicator = document.getElementById(`${platform}-status`);
