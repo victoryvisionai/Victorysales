@@ -1,108 +1,219 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision AI | Ethical AI for Smarter Marketing</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <meta name="description" content="Victory Vision AI is the essential AI platform empowering ethical, real-time, and smart marketing for CEOs and CMOs. Jumpstart your journey with the Founders Deal." />
+  <meta property="og:title" content="Victory Vision AI | Ethical AI for Smarter Marketing" />
+  <meta property="og:description" content="Elevate your marketing with AI that’s ethically grounded, real-time reactive, and built for ROI. Access the Founders Deal now." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f916.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <style>
     :root {
       --primary: #0a3161;
       --light: #ffffff;
       --soft: #f5f5f5;
       --font: 'Inter', sans-serif;
+      --accent: #edc84b;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       font-family: var(--font);
       background-color: var(--light);
       color: var(--primary);
       line-height: 1.6;
+      overflow-x: hidden;
+      font-size: 16px;
     }
-
     header {
       position: relative;
       width: 100%;
       height: 100vh;
       overflow: hidden;
     }
-
     header video {
       position: absolute;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      z-index: -1;
+      z-index: -2;
     }
-
     .overlay {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(to bottom, rgba(10,49,97,0.75), rgba(10,49,97,0.92));
+      background: linear-gradient(to bottom, rgba(10,49,97,0.85), rgba(10,49,97,0.95));
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       padding: 2rem;
+      z-index: 1;
     }
-
     .overlay img {
-      width: 160px;
+      width: 190px;
       margin-bottom: 2rem;
     }
-
     .overlay h1 {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       color: var(--light);
-      max-width: 700px;
-      font-weight: 800;
+      font-weight: 900;
+      max-width: 720px;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
     }
-
+    .overlay p {
+      color: #c7d7ea;
+      font-size: 1.2rem;
+      max-width: 600px;
+    }
+    .hero-cta {
+      margin-top: 2rem;
+    }
+    .hero-cta a {
+      display: inline-block;
+      background-color: var(--accent);
+      color: var(--primary);
+      font-weight: 700;
+      padding: 0.9rem 1.6rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .hero-cta a:hover {
+      background-color: #f7d867;
+    }
     main {
       padding: 4rem 2rem;
     }
-
     section {
       max-width: 1200px;
       margin: 0 auto 4rem auto;
     }
-
     .intro p {
-      font-size: 1.1rem;
-      max-width: 800px;
+      font-size: 1.15rem;
+      max-width: 840px;
       margin: 0 auto;
       text-align: center;
     }
-
+    .intro p + p {
+      margin-top: 1.8rem;
+    }
+    .cta-teaser {
+      max-width: 900px;
+      margin: 3rem auto 4rem auto;
+      text-align: center;
+    }
+    .cta-teaser h3 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+    .cta-teaser a {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    .split {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .left,.right {
+      flex: 1 1 45%;
+    }
+    .left h2,.right h2 {
+      font-size: 1.9rem;
+      margin-bottom: 1rem;
+    }
+    .right ul {
+      list-style-type: disc;
+      padding-left: 1.5rem;
+    }
+    .right ul li {
+      margin-bottom: 0.75rem;
+    }
+    .value-icons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .value-icons .item {
+      flex: 1 1 250px;
+      background: var(--soft);
+      padding: 1.5rem;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .value-icons .item img {
+      width: 50px;
+      margin-bottom: 1rem;
+    }
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .timeline-item {
+      background-color: var(--soft);
+      padding: 1.5rem;
+      border-radius: 6px;
+    }
+    .timeline-item h4 {
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+    .quote-block {
+      background-color: var(--soft);
+      padding: 2rem;
+      border-left: 5px solid var(--primary);
+      margin: 2rem 0;
+    }
+    .quote-block em {
+      font-size: 1.1rem;
+    }
     .cta-block {
       background-color: var(--primary);
       color: var(--light);
       padding: 4rem 2rem;
       text-align: center;
       border-radius: 8px;
+      margin-top: 4rem;
     }
-
     .cta-block h2 {
-      font-size: 2rem;
+      font-size: 2.2rem;
       margin-bottom: 1rem;
     }
-
     .cta-block p {
       font-size: 1.1rem;
       margin-bottom: 2rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
+    .cta-block form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
     .cta-block input,
     .cta-block button {
       padding: 0.75rem 1rem;
@@ -111,12 +222,10 @@
       border-radius: 4px;
       margin: 0.5rem;
     }
-
     .cta-block input {
       max-width: 300px;
       width: 100%;
     }
-
     .cta-block button {
       background-color: #ffffff;
       color: var(--primary);
@@ -124,64 +233,24 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     .cta-block button:hover {
       background-color: #dce0e5;
     }
-
-    .split {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .left,
-    .right {
-      flex: 1 1 45%;
-    }
-
-    .left h2,
-    .right h2 {
-      font-size: 1.75rem;
-      margin-bottom: 1rem;
-    }
-
-    .quote-block {
-      background-color: var(--soft);
-      padding: 2rem;
-      border-left: 5px solid var(--primary);
-      margin: 2rem 0;
-    }
-
-    .timeline {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .timeline-item {
-      background-color: var(--soft);
-      padding: 1.5rem;
-      border-radius: 6px;
-    }
-
-    .timeline-item h4 {
-      margin-bottom: 0.5rem;
-      color: var(--primary);
-    }
-
     footer {
       background-color: var(--primary);
       color: var(--light);
       text-align: center;
       padding: 2rem 1rem;
     }
-
+    footer p {
+      margin-bottom: 0.5rem;
+    }
     @media (max-width: 768px) {
       .overlay h1 {
-        font-size: 1.8rem;
+        font-size: 2rem;
+      }
+      .overlay img {
+        width: 140px;
       }
       .split {
         flex-direction: column;
@@ -189,84 +258,103 @@
       .cta-block {
         padding: 2rem 1rem;
       }
+      .cta-block form {
+        flex-direction: column;
+      }
+      .timeline,
+      .value-icons {
+        display: block;
+      }
+      .timeline-item,
+      .value-icons .item {
+        margin-bottom: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
-
   <header>
     <video autoplay loop muted playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750657291/j1jxfcmxjsrnrzcsb6w8.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750657291/j1jxfcmxjsrnrzcsb6w8.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
     <div class="overlay">
       <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
       <h1>Why Ethical AI Isn’t Optional Anymore</h1>
+      <p>Modern decision-makers demand marketing that's not only smart—but principled, verifiable, and fast.</p>
+      <div class="hero-cta">
+        <a href="#founders-deal">Access Founders Deal</a>
+      </div>
     </div>
   </header>
-
   <main>
     <section class="intro">
-      <p>
-        <strong>Victory Vision AI</strong> is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior.
-      </p>
-      <p style="margin-top: 1.5rem;">
-        Our goal is to maximize ROI for enterprises of all sizes—empowering mid-sized startups to global corporations with actionable insights and simplified execution. In a constantly evolving digital landscape, Victory Vision AI ensures impactful marketing campaigns resonate, ethically and effectively.
-      </p>
+      <p><strong>Victory Vision AI</strong> is the essential AI-powered platform for marketing leaders who need precision, efficiency, and transparency. Our platform ingests real-time inputs—like weather shifts, traffic flows, and customer behavior—to create campaigns that adapt dynamically and ethically.</p>
+      <p>CEOs and CMOs choose us to reduce waste, accelerate insights, and safeguard brand trust. Whether you're leading a mid-sized company or scaling globally, Victory Vision AI empowers smarter marketing—no demo, call, or onboarding barriers required.</p>
     </section>
-
+    <section class="cta-teaser">
+      <h3>Already intrigued?</h3>
+      <p><a href="#founders-deal">Jump to limited-time Founders Deal &rarr;</a></p>
+    </section>
     <section>
       <div class="split">
         <div class="left">
-          <h2>Trust the Machine</h2>
-          <p>
-            In a world increasingly defined by automation, transparency and trust are more than values—they're imperatives. Victory Vision AI transforms the ambiguous realm of machine learning into a transparent, ethical partner for your brand. Our platform goes beyond compliance, embedding core values of integrity and conscious technology into every decision your campaigns make.
-          </p>
-          <p style="margin-top: 1rem;">
-            With AI at the heart of your marketing, Victory Vision AI ensures your storytelling evolves responsibly—with precision targeting, heightened engagement, and verifiable compliance, all while saving your team hours of manual work.
-          </p>
+          <h2>Trustworthy Automation Starts Here</h2>
+          <p>In a world accelerated by AI, brands must demand ethical clarity, not just speed. Victory Vision AI builds that foundation—every automation, every decision, every output is explainable and grounded in compliance-readiness. We don't just keep up with rules—we build for what's next.</p>
+          <p style="margin-top:1rem;">Equip your team to move from guesswork to guidance, from static targeting to real-time impact—with AI that leads responsibly.</p>
         </div>
         <div class="right">
-          <h2>What Sets Us Apart</h2>
+          <h2>What Makes Us Different</h2>
           <ul>
-            <li><strong>Ethical Automation:</strong> Our algorithms prioritize fairness and explainability.</li>
-            <li><strong>Real-Time Adaptation:</strong> AI campaigns adjust based on weather, traffic, and user context.</li>
-            <li><strong>ROI Focused:</strong> Concrete performance metrics with smarter spend per dollar.</li>
-            <li><strong>Effortless Execution:</strong> Self-guided setup—no call or demo required.</li>
+            <li><strong>Ethical by Design:</strong> Bias-checked models. Transparent reporting. Compliance first.</li>
+            <li><strong>Real-Time Intelligence:</strong> Campaigns adapt instantly based on live conditions.</li>
+            <li><strong>Enterprise-Grade ROI:</strong> Every dollar tracked. Every decision justified.</li>
+            <li><strong>Self-Guided Setup:</strong> Go live in minutes. No call, contract, or technician needed.</li>
           </ul>
         </div>
       </div>
-    </section>
-
-    <section>
-      <h2 style="text-align: center;">Ethics in Action: Regulatory Milestones</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <h4>2023 – EU AI Act Drafted</h4>
-          <p>European lawmakers push for transparency, triggering global conversation on AI governance.</p>
+      <div class="value-icons">
+        <div class="item">
+          <img src="https://img.icons8.com/ios-filled/100/0a3161/artificial-intelligence.png" alt="Ethics Icon" />
+          <p><strong>Ethical AI</strong><br/>Rooted in fairness, auditability, and trust.</p>
         </div>
-        <div class="timeline-item">
-          <h4>2024 – FTC Guidance Emerging</h4>
-          <p>Victory Vision AI aligns product roadmap with ethical banner of proactive compliance.</p>
+        <div class="item">
+          <img src="https://img.icons8.com/ios-filled/100/0a3161/dashboard.png" alt="Real-time Icon" />
+          <p><strong>Live Decisions</strong><br/>Auto-tuned campaigns based on real-world signals.</p>
         </div>
-        <div class="timeline-item">
-          <h4>2025 – Global Standards Solidify</h4>
-          <p>As frameworks evolve, our ethics-led infrastructure becomes a strategic asset, not just a safeguard.</p>
+        <div class="item">
+          <img src="https://img.icons8.com/ios-filled/100/0a3161/sales-performance.png" alt="ROI Icon" />
+          <p><strong>Smart ROI</strong><br/>Track cost, conversion, compliance—continuously.</p>
         </div>
       </div>
     </section>
-
     <section>
-      <h2 style="text-align: center;">What Industry Leaders Are Saying</h2>
+      <h2 style="text-align: center;">The Global AI Ethics Timeline</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>2023 – EU AI Act Drafted</h4>
+          <p>Regulators emphasize transparency and auditability—sparking global scrutiny on AI in marketing.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>2024 – FTC Guidance Emerging</h4>
+          <p>Victory Vision AI adapts infrastructure to anticipate U.S. frameworks, not just react to them.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>2025 – Standards Go Global</h4>
+          <p>Our platform emerges as a benchmark for responsible automation in performance media.</p>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2 style="text-align: center;">Voices of Impact</h2>
       <div class="quote-block">
         <em>"Victory Vision AI is one of the few platforms integrating ethics into marketing automation—not as a checkbox, but as a core differentiator. They’re shaping the future of trustworthy brand intelligence."</em><br />
         <strong>- Maya Truss, CMO, MindSpring Analytics</strong>
       </div>
     </section>
-
-    <section class="cta-block">
-      <h2>Founders Deal: Join the Movement</h2>
-      <p>Experience ethical AI firsthand. Limited-time access to our premium tier—no sales call required. Join now & shape the future of responsible automation.</p>
+    <section class="cta-block" id="founders-deal">
+      <h2>Founders Deal: Get Early Access Now</h2>
+      <p>Tap into AI that is accountable, adaptive, and autonomous. This limited-time founders tier gives you full access with zero friction. Launch smarter—not later.</p>
       <form>
         <input type="email" placeholder="Your work email" required />
         <button type="submit">Request Access</button>
@@ -274,11 +362,10 @@
       <p style="font-size: 0.9rem; margin-top: 1rem;">Or <a href="#" style="color: #ffffff; text-decoration: underline;">sign up for our live Ethics & AI Q&A webinar</a></p>
     </section>
   </main>
-
   <footer>
-    <p>&copy; 2024 Victory Vision AI. Ethical AI for a smarter marketing future.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" style="color: #ffffff; text-decoration: underline;">Build your free AI website at Victory Vision</a></p>
+    <p><a href="#" style="color: #ffffff; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #ffffff; text-decoration: underline;">Terms of Use</a></p>
   </footer>
-
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=28db6fdf73b73b62e1440c4eb000f4bf6d5db19f" width="1" height="1" style="display:none;" alt="Tracking pixel" />
 </body>
 </html>
-```
