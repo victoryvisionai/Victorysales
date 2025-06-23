@@ -34,6 +34,16 @@
       animation: spin 1s linear infinite;
       margin: 0 auto 20px;
     }
+    .success-icon {
+      font-size: 50px;
+      color: #28a745;
+      margin: 0 auto 20px;
+    }
+    .error-icon {
+      font-size: 50px;
+      color: #dc3545;
+      margin: 0 auto 20px;
+    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -68,173 +78,128 @@
       <img src="logo.jpg" alt="Victory Vision Logo"
            onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
     </div>
-    <div class="spinner"></div>
-    <h2>Connecting Your Account</h2>
+    
+    <div id="spinner" class="spinner"></div>
+    <div id="successIcon" class="success-icon" style="display: none;">✓</div>
+    <div id="errorIcon" class="error-icon" style="display: none;">✗</div>
+    
+    <h2 id="title">Connecting Your Account</h2>
     <p id="statusMessage">Processing authorization...</p>
     <div id="errorMessage" class="error-message" style="display: none;"></div>
   </div>
 
   <script>
-    // Supabase configuration
     const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     let CUSTOMER_ID = null;
-    let authToken = null;
 
-    // Check authentication
-    async function checkAuthentication() {
-      try {
-        const { data: { session }, error } = await supabaseClient.auth.getSession();
-        
-        if (error || !session) {
-          return false;
-        }
-
-        if (session && session.user) {
-          CUSTOMER_ID = session.user.email;
-          authToken = session.access_token;
-          return true;
-        }
-
-        return false;
-      } catch (e) {
-        console.error('Auth check error:', e);
-        return false;
+    async function getAuth() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session?.user) {
+        CUSTOMER_ID = session.user.email;
+        return session.access_token;
       }
+      return null;
     }
 
-    // Process OAuth callback
-    async function processOAuthCallback() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      const state = urlParams.get('state');
-      const error = urlParams.get('error');
-      const errorDescription = urlParams.get('error_description');
-
-      // Check for stored state and platform
-      const storedState = sessionStorage.getItem('oauth_state');
-      const platform = sessionStorage.getItem('oauth_platform');
-
-      // Handle errors
-      if (error) {
-        showError(`Authorization failed: ${errorDescription || error}`);
-        setTimeout(() => {
-          window.location.href = `/settings?oauth_error=${encodeURIComponent(error)}`;
-        }, 3000);
-        return;
-      }
-
-      // Validate state
-  if (!code || !state) {
-  showError('Missing authorization parameters. Please try again.');
-  setTimeout(() => {
-    window.location.href = '/settings?oauth_error=missing_params';
-  }, 3000);
-  return;
-}
-
-// Optionally validate state against current session
-try {
-  const decoded = atob(state);
-  const [email] = decoded.split(':');
-  if (email !== CUSTOMER_ID) {
-    throw new Error('Session mismatch');
-  }
-} catch (e) {
-  showError('Invalid state parameter. Please log in and try again.');
-  setTimeout(() => {
-    window.location.href = '/settings?oauth_error=invalid_state';
-  }, 3000);
-  return;
-}
-
-      // Update status
-      document.getElementById('statusMessage').textContent = `Connecting ${platform}...`;
-
-      try {
-        // Send code to backend for token exchange
-        const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/oauth/${platform}/callback`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Customer-ID': CUSTOMER_ID,
-            'Authorization': authToken ? `Bearer ${authToken}` : ''
-          },
-          body: JSON.stringify({
-            customer_id: CUSTOMER_ID,
-            code: code,
-            redirect_uri: 'https://victoryvision.app/oauth-callback/',
-            code_verifier: sessionStorage.getItem('code_verifier') || null // For Twitter PKCE
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-// Save profile info for UI update in settings
-if (platform === 'linkedin') {
-  sessionStorage.setItem('linkedin_profile', result.email || '');
-} else if (platform === 'twitter') {
-  sessionStorage.setItem('twitter_profile', result.email || '');
-} else if (platform === 'gmail') {
-  sessionStorage.setItem('gmail_profile', result.email || '');
-}
-if (result.success) {
-  // Clear stored OAuth data
-  sessionStorage.removeItem('oauth_state');
-  sessionStorage.removeItem('oauth_platform');
-  sessionStorage.removeItem('code_verifier');
-
-          // Show success message
-          document.getElementById('statusMessage').textContent = `${platform.charAt(0).toUpperCase() + platform.slice(1)} connected successfully!`;
-          document.querySelector('.spinner').style.display = 'none';
-
-          // Redirect back to settings
-          setTimeout(() => {
-            window.location.href = `/settings?oauth_success=${platform}`;
-          }, 1500);
-        } else {
-          throw new Error(result.message || 'Token exchange failed');
-        }
-      } catch (error) {
-        console.error('OAuth callback error:', error);
-        showError(`Failed to connect ${platform}: ${error.message}`);
-        setTimeout(() => {
-          window.location.href = `/settings?oauth_error=${encodeURIComponent(error.message)}`;
-        }, 3000);
-      }
+    function showSuccess(platform) {
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('successIcon').style.display = 'block';
+      document.getElementById('title').textContent = 'Success!';
+      document.getElementById('statusMessage').textContent = `${platform.charAt(0).toUpperCase() + platform.slice(1)} connected successfully!`;
     }
 
     function showError(message) {
-      document.querySelector('.spinner').style.display = 'none';
-      document.getElementById('statusMessage').textContent = 'Connection failed';
+      document.getElementById('spinner').style.display = 'none';
+      document.getElementById('errorIcon').style.display = 'block';
+      document.getElementById('title').textContent = 'Connection Failed';
+      document.getElementById('statusMessage').textContent = 'Something went wrong';
       const errorDiv = document.getElementById('errorMessage');
       errorDiv.textContent = message;
       errorDiv.style.display = 'block';
     }
 
-    // Initialize
-    async function init() {
-      // Check if user is authenticated
-      const isAuthenticated = await checkAuthentication();
+    function redirectToSettings(success, platform, error = null) {
+      const params = new URLSearchParams();
+      if (success) {
+        params.set('oauth_success', platform);
+      } else {
+        params.set('oauth_error', error || 'unknown');
+      }
+      window.location.href = `/settings?${params.toString()}`;
+    }
+
+    async function processCallback() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const state = urlParams.get('state');
+      const error = urlParams.get('error');
       
-      if (!isAuthenticated) {
-        // Store current URL and redirect to login
-        sessionStorage.setItem('oauth_redirect', window.location.href);
+      // Get platform from stored session or URL
+      const platform = sessionStorage.getItem('oauth_platform') || 'linkedin';
+      
+      // Handle OAuth errors
+      if (error) {
+        showError(`Authorization failed: ${error}`);
+        setTimeout(() => redirectToSettings(false, platform, error), 3000);
+        return;
+      }
+
+      // Validate required params
+      if (!code || !state) {
+        showError('Missing authorization parameters');
+        setTimeout(() => redirectToSettings(false, platform, 'missing_params'), 3000);
+        return;
+      }
+
+      const authToken = await getAuth();
+      if (!authToken) {
         window.location.href = '/login.html';
         return;
       }
 
-      // Process OAuth callback
-      processOAuthCallback();
+      document.getElementById('statusMessage').textContent = `Connecting ${platform}...`;
+
+      try {
+        const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/oauth/${platform}/callback`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Customer-ID': CUSTOMER_ID,
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            customer_id: CUSTOMER_ID,
+            code: code,
+            redirect_uri: 'https://victoryvision.app/oauth-callback/',
+            code_verifier: sessionStorage.getItem('code_verifier') || null
+          })
+        });
+
+        // Consider any 2xx response as success
+        if (response.ok) {
+          // Clear OAuth session data
+          ['oauth_state', 'oauth_platform', 'code_verifier'].forEach(key => 
+            sessionStorage.removeItem(key)
+          );
+
+          showSuccess(platform);
+          setTimeout(() => redirectToSettings(true, platform), 1500);
+        } else {
+          const errorText = await response.text();
+          throw new Error(`Server error: ${response.status}`);
+        }
+      } catch (error) {
+        console.error('OAuth callback error:', error);
+        showError(`Failed to connect ${platform}: ${error.message}`);
+        setTimeout(() => redirectToSettings(false, platform, error.message), 3000);
+      }
     }
 
-    // Start processing when page loads
-    document.addEventListener('DOMContentLoaded', init);
+    // Auto-start when page loads
+    document.addEventListener('DOMContentLoaded', processCallback);
   </script>
 </body>
 </html>
