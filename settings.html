@@ -672,15 +672,25 @@
       const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
       console.log('OAuth status response:', response);
       
-      // Handle array response from n8n - get first element
-      const oauthData = Array.isArray(response) ? response[0] : response;
-      console.log('OAuth data after array handling:', oauthData);
-      
-      // Update UI for each platform based on access_token presence
-      updateConnectionStatus('linkedin', !!(oauthData.linkedin && oauthData.linkedin.access_token), oauthData.linkedin?.profile_id);
-      updateConnectionStatus('instagram', !!(oauthData.instagram && oauthData.instagram.access_token), oauthData.instagram?.profile_id);
-      updateConnectionStatus('twitter', !!(oauthData.twitter && oauthData.twitter.access_token), oauthData.twitter?.profile_id);
-      updateConnectionStatus('gmail', !!(oauthData.gmail && oauthData.gmail.access_token), oauthData.gmail?.profile_id);
+// FIXED:
+const oauthData = Array.isArray(response) ? response : [response];
+
+// Group by platform
+const platformData = {};
+oauthData.forEach(item => {
+  if (item.platform && item.access_token) {
+    platformData[item.platform] = {
+      access_token: item.access_token,
+      profile_id: item.customer_id || item.profile_id
+    };
+  }
+});
+
+// Update each platform
+updateConnectionStatus('linkedin', !!(platformData.linkedin?.access_token), platformData.linkedin?.profile_id);
+updateConnectionStatus('instagram', !!(platformData.instagram?.access_token), platformData.instagram?.profile_id);
+updateConnectionStatus('twitter', !!(platformData.twitter?.access_token), platformData.twitter?.profile_id);
+updateConnectionStatus('gmail', !!(platformData.gmail?.access_token), platformData.gmail?.profile_id);    
       
     } catch (error) {
       console.error('Error checking connection status:', error);
