@@ -1,269 +1,83 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Victory Vision AI — Confidence Through Clarity</title>
-  <meta name="description" content="Victory Vision AI transforms complex data into clarity and growth. Discover how your business can unlock strategic insights using our cutting-edge AI analytics platform." />
+  <title>Victory Vision AI — Turn Data Into Growth</title>
+  <meta name="description" content="Victory Vision AI empowers business growth by transforming complex data into clear, actionable insights through cutting-edge AI analytics and executive-grade dashboards." />
+  <meta property="og:title" content="Victory Vision AI — Turn Data Into Growth" />
+  <meta property="og:description" content="Executive-grade AI analytics platform designed to transform enterprise complexity into strategic growth opportunities through real-time, actionable insight." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1751122333/victory-vision-logo-highres.png" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="theme-color" content="#0a3161" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4bb.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Work Sans', sans-serif;
-      background-color: #ffffff;
-      color: #0a3161;
-      line-height: 1.6;
-    }
-
-    header {
-      position: relative;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: left;
-      color: white;
-    }
-
-    header::before {
-      content: "";
-      position: absolute;
-      z-index: 1;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(to right, rgba(10, 49, 97, 0.85), rgba(10, 49, 97, 0.65));
-    }
-
-    header video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 1200px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .hero-logo {
-      width: 160px;
-    }
-
-    h1 {
-      font-size: 3rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    p.hero-subtitle {
-      font-size: 1.25rem;
-      max-width: 600px;
-      color: #f5f5f5;
-    }
-
-    .hero-cta {
-      margin-top: 1rem;
-    }
-
-    .btn-primary {
-      display: inline-block;
-      background-color: #ffffff;
-      color: #0a3161;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .btn-primary:hover {
-      background-color: #f5f5f5;
-      transform: translateY(-1px);
-    }
-
-    main {
-      background-color: #f5f5f5;
-    }
-
-    section {
-      padding: 4rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-title {
-      font-size: 2rem;
-      margin-bottom: 2rem;
-      font-weight: 600;
-      color: #0a3161;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-
-    .feature {
-      background: white;
-      border-radius: 8px;
-      padding: 2rem;
-      border: 1px solid #ddd;
-      transition: box-shadow 0.3s ease;
-    }
-
-    .feature:hover {
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-    }
-
-    .feature h3 {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
-      color: #0a3161;
-    }
-
-    .clients {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      align-items: center;
-      margin-top: 2rem;
-      justify-content: center;
-    }
-
-    .clients img {
-      max-height: 50px;
-      filter: grayscale(100%);
-      opacity: 0.7;
-    }
-
-    .cta-banner {
-      background-color: #0a3161;
-      color: white;
-      text-align: center;
-      padding: 4rem 2rem;
-      border-radius: 8px;
-    }
-
-    .cta-banner h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .about-methodology {
-      display: grid;
-      gap: 2rem;
-    }
-
-    .method-text {
-      max-width: 700px;
-    }
-
-    footer {
-      background-color: #0a3161;
-      color: white;
-      padding: 2rem;
-      text-align: center;
-      font-size: 0.9rem;
-    }
-
-    @media (min-width: 768px) {
-      .about-methodology {
-        grid-template-columns: 1fr 1fr;
-        align-items: center;
-      }
-
-      h1 {
-        font-size: 3.5rem;
-      }
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-
-  <header>
-    <video autoplay muted loop playsinline>
+<body class="font-sans bg-white text-blue-900 leading-relaxed">
+  <header class="relative h-screen overflow-hidden flex items-center justify-center text-left text-white">
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-900/85 to-blue-900/65 z-10"></div>
+    <video autoplay muted loop playsinline class="absolute top-0 left-0 w-full h-full object-cover z-0">
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750646608/d3yvutsrcx4jz1x7i1uc.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
     </video>
-    <div class="hero-content">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" class="hero-logo"/>
-      <h1>Confidence Through Clarity</h1>
-      <p class="hero-subtitle">Victory Vision AI converts your complex data into decisive action—empowering growth through insight-driven intelligence.</p>
-      <div class="hero-cta">
-        <a href="#cta" class="btn-primary">Schedule a Demo</a>
+    <div class="relative z-20 max-w-6xl px-8 flex flex-col gap-6">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1751122333/victory-vision-logo-highres.png" alt="Victory Vision AI Logo" class="w-44 h-auto"/>
+      <h1 class="text-4xl md:text-5xl font-semibold leading-tight">Confidence Through Clarity:<br>Turn Data Into Growth</h1>
+      <p class="text-xl max-w-2xl text-gray-100">Executive-grade AI analytics platform designed to transform enterprise complexity into strategic growth opportunities through real-time, actionable insight.</p>
+      <div class="mt-4">
+        <a href="#cta" class="inline-block bg-yellow-400 text-blue-900 px-6 py-3 rounded-md font-semibold text-base no-underline transition-all duration-300 hover:bg-yellow-500 hover:-translate-y-0.5">Schedule a Demo</a>
       </div>
     </div>
   </header>
 
-  <main>
-    <section>
-      <h2 class="section-title">Built for Executives & Data Leaders</h2>
-      <div class="features-grid">
-        <div class="feature">
-          <h3>Real-Time Insight</h3>
-          <p>Get instant clarity on your key metrics with our intelligent dashboards and predictive analytics tools.</p>
+  <main class="bg-gray-100">
+    <section class="py-16 px-8 max-w-6xl mx-auto">
+      <h2 class="text-3xl mb-8 font-semibold text-blue-900">Why Data Leaders Choose Victory Vision AI</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white rounded-lg p-8 border border-gray-300 transition-shadow duration-300 hover:shadow-lg">
+          <h3 class="text-xl mb-2 text-blue-900">Real-Time Visibility</h3>
+          <p>Gain instant access to your most critical performance indicators with intuitive dashboards and dynamic alerts tailored for executive decision-making.</p>
         </div>
-        <div class="feature">
-          <h3>ROI-Focused Modelling</h3>
-          <p>Victory Vision doesn’t just show data—it contextualizes it for bottom-line impact across business units.</p>
+        <div class="bg-white rounded-lg p-8 border border-gray-300 transition-shadow duration-300 hover:shadow-lg">
+          <h3 class="text-xl mb-2 text-blue-900">ROI-Focused Intelligence</h3>
+          <p>Go beyond reporting—quantify business impact through predictive modeling designed to surface high-ROI actions backed by your data.</p>
         </div>
-        <div class="feature">
-          <h3>Enterprise-Ready Security</h3>
-          <p>Deploy with confidence. Our platform meets enterprise-grade security and compliance standards.</p>
+        <div class="bg-white rounded-lg p-8 border border-gray-300 transition-shadow duration-300 hover:shadow-lg">
+          <h3 class="text-xl mb-2 text-blue-900">Enterprise-Grade Security</h3>
+          <p>Built from the ground up for regulated environments, Victory Vision meets strict compliance standards including SOC 2, ISO 27001, and GDPR.</p>
         </div>
-        <div class="feature">
-          <h3>Intuitive Design</h3>
-          <p>Sophisticated, elegant UX makes navigating your business intelligence feel effortless.</p>
+        <div class="bg-white rounded-lg p-8 border border-gray-300 transition-shadow duration-300 hover:shadow-lg">
+          <h3 class="text-xl mb-2 text-blue-900">User-First Design</h3>
+          <p>Elegant, responsive interfaces crafted to eliminate friction between insight and action—empowering every stakeholder from boardroom to analyst.</p>
         </div>
       </div>
     </section>
 
-    <section>
-      <h2 class="section-title">Trusted by Industry Leaders</h2>
-      <div class="clients">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/76/Microsoft_logo.svg" alt="Microsoft">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Googleplex-Logo.svg" alt="Google">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/IBM_logo.svg" alt="IBM">
+    <section class="py-16 px-8 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h2 class="text-3xl mb-8 font-semibold text-blue-900">Behind the Platform</h2>
+        <p class="mb-4">Our proprietary AI engine combines natural-language querying, deep learning, and domain-specific training to navigate complexity without sacrificing clarity. Seamless integrations with your existing tech stack ensure deployment is fast, and results are faster.</p>
+        <p class="mb-8">Explainable AI features bring transparency to recommendations, while scalable architecture grows with your enterprise's needs from data lakes to business units.</p>
+        <div class="flex flex-wrap gap-8 mt-8">
+          <div class="flex-1 min-w-48 text-center">
+            <h3 class="text-3xl text-blue-900">+38%</h3>
+            <p class="text-base text-gray-700">Average uplift in actionable revenue insights within 90 days</p>
+          </div>
+          <div class="flex-1 min-w-48 text-center">
+            <h3 class="text-3xl text-blue-900">4.9/5</h3>
+            <p class="text-base text-gray-700">Client satisfaction score from enterprise IT & Ops teams</p>
+          </div>
+          <div class="flex-1 min-w-48 text-center">
+            <h3 class="text-3xl text-blue-900">2x</h3>
+            <p class="text-base text-gray-700">Improvement in decision-making speed across departments</p>
+          </div>
+        </div>
       </div>
+      <img src="https://images.unsplash.com/photo-1611974789855-9c91cb7c38e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Dashboard on Screen" class="w-full rounded-lg"/>
     </section>
 
-    <section class="about-methodology">
-      <div class="method-text">
-        <h2 class="section-title">Our Technology</h2>
-        <p>Behind Victory Vision AI is a proprietary data engine that blends machine learning, pattern recognition, and domain-specific training to turn data overload into decision-making clarity. With plug-and-play integrations, enterprise-grade models, and explainable AI, you’re equipped with both power and transparency—delivering growth with precision.</p>
-        <p>Every feature is built to scale with your vision. Every insight is made actionable.</p>
-      </div>
-      <img src="https://images.unsplash.com/photo-1611974789855-9c91cb7c38e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="AI Dashboard" style="width: 100%; border-radius: 8px;"/>
-    </section>
-
-    <section id="cta" class="cta-banner">
-      <h2>See Your Data. Know Your Direction.</h2>
-      <p>Request a demo or download our strategic whitepaper to understand how Victory Vision AI drives measurable business performance.</p>
-      <a href="#" class="btn-primary" style="margin-top: 1rem;">Request Demo</a>
-    </section>
-
-  </main>
-
-  <footer>
-    &copy; 2024 Victory Vision AI. All rights reserved. | Privacy Policy | Terms of Service
-  </footer>
-
-</body>
-</html>
-```
+    <section class="py-16 px-8 max-w-6xl mx-auto">
+      <h2 class="text-3xl mb-8 font-semibold text-blue-900">What Our Clients Say</h2>
+      <div class="bg-white border-l-4 border-blue-900 p-6 mb-8 rounded-m
