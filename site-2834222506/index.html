@@ -1,0 +1,301 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketing Playbook | Victory Vision AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #0a3161;
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    header video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .overlay {
+      background: rgba(0, 10, 25, 0.65);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .hero-content {
+      z-index: 1;
+      max-width: 700px;
+      padding: 2rem;
+    }
+
+    .hero-logo {
+      width: 150px;
+      margin: 0 auto 1.5rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .subheadline {
+      font-size: 1.25rem;
+      font-weight: 400;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      background-color: #ffffff;
+      color: #0a3161;
+      padding: 0.9rem 2rem;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #f5f5f5;
+    }
+
+    section {
+      padding: 5rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      font-weight: 400;
+      color: #333;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature {
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      padding: 2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature p {
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .testimonial-slider {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .testimonial {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 350px;
+    }
+
+    .testimonial p {
+      font-style: italic;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial span {
+      font-weight: 600;
+      display: block;
+      color: #0a3161;
+    }
+
+    .logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      align-items: center;
+    }
+
+    .logos img {
+      height: 40px;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .logos img:hover {
+      opacity: 1;
+    }
+
+    .cta-section {
+      background-color: #0a3161;
+      color: #ffffff;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      border-radius: 10px;
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: #f5f5f5;
+      color: #555;
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2.25rem;
+      }
+      .section-title {
+        font-size: 1.75rem;
+      }
+      .cta-section h2 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750645381/npmvexzilfsxkdshijy6.mp4" type="video/mp4" />
+    </video>
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" class="hero-logo">
+      <h1>Marketing Playbook</h1>
+      <p class="subheadline">Harness AI-powered insights to unlock measurable growth and marketing clarity. Victory Vision AI helps your team make informed decisions, drive ROI, and own every opportunity.</p>
+      <a href="#action" class="cta-button">Get the Playbook</a>
+    </div>
+  </header>
+
+  <main>
+
+    <section>
+      <h2 class="section-title">What Makes Our Playbook Different</h2>
+      <p class="section-subtitle">Designed for marketing leaders and performance teams ready to act on data instead of assumptions.</p>
+      <div class="features-grid">
+        <div class="feature">
+          <h3>AI-Driven Strategy Engine</h3>
+          <p>Generate actionable growth plans using predictive modeling and proprietary segmentation. No more guesswork—just results that scale.</p>
+        </div>
+        <div class="feature">
+          <h3>Real-Time Data Dashboards</h3>
+          <p>Monitor campaign efficiency, audience behavior, and revenue impact with live dashboards your executive team will actually understand.</p>
+        </div>
+        <div class="feature">
+          <h3>Marketing ROI Maximized</h3>
+          <p>From media spend optimization to creative impact scoring, the Playbook doesn't just show metrics—it prioritizes what moves the needle.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Trusted By Teams That Scale</h2>
+      <p class="section-subtitle">High-growth brands rely on Victory Vision AI to guide every campaign, every quarter, every decision.</p>
+      <div class="testimonial-slider">
+        <div class="testimonial">
+          <p>“The Marketing Playbook became our team’s north star. We grew quarterly leads by 46% while reducing our CPL by 22%.”</p>
+          <span>— Alexis Chen, VP Marketing, ScaleCore</span>
+        </div>
+        <div class="testimonial">
+          <p>“Every board meeting, I open up dashboards built with Victory Vision. It’s strategic clarity without the noise.”</p>
+          <span>— Brendan Lee, CEO, VoltCloud</span>
+        </div>
+        <div class="testimonial">
+          <p>“This isn’t just a tool. It’s a methodology. We finally know how to focus.”</p>
+          <span>— Priya Desai, CMO, Orbitly</span>
+        </div>
+      </div>
+      <div class="logos">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Spotify_logo_with_text.svg" alt="Client Logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Stripe_Logo%2C_revised_2016.svg" alt="Client Logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Airbnb_logo_B%C3%A9lo.svg" alt="Client Logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/HubSpot_Logo.svg" alt="Client Logo">
+      </div>
+    </section>
+
+    <section class="cta-section" id="action">
+      <h2>Ready to Activate the Playbook?</h2>
+      <p>Get access to the full strategy toolkit—real-time dashboards, intelligent insights, and a growth framework trusted by the world’s top teams.</p>
+      <a href="#" class="cta-button">Schedule a Demo</a>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    &copy; 2024 Victory Vision AI. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
