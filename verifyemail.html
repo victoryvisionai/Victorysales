@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
   <title>Victory Vision - Verify Email</title>
   <style>
     body { margin: 0; font-family: Arial, sans-serif; background: #212e53; color: #fff; }
@@ -18,13 +22,25 @@
 <body>
   <!-- Victory Vision logo centered at top -->
   <div class="header-logo">
-    <img src="logo.png" alt="Victory Vision Logo">
+    <img src="logo.png" alt="Victory Vision Logo" onerror="this.style.display='none'">
   </div>
   <div class="form-container">
     <h1>Verify Your Email</h1>
     <p>We have sent a verification link to your email address. Please click the link in that email to verify your account.</p>
-    <p>If you did not receive the email, <a href="#">click here to resend</a>.</p>
+    <p>If you did not receive the email, <a href="#" id="resendLink">click here to resend</a>.</p>
     <p>Once verified, you can proceed to <a href="login.html">Log in</a>.</p>
   </div>
+
+  <script>
+    // Prevent multiple rapid clicks on resend
+    let resendClicked = false;
+    document.getElementById('resendLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (resendClicked) return;
+      resendClicked = true;
+      // Your resend logic here
+      setTimeout(() => { resendClicked = false; }, 5000);
+    });
+  </script>
 </body>
 </html>
