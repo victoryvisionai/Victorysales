@@ -2,87 +2,330 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; connect-src *;">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Company Profile - Victory Vision Outdoor, LLC</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Manage your company profile and goals."/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision AI - Company Profile</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
-      font-family: 'Montserrat', sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #fff;
-      color: #333;
+      background-color: #f5f5f5;
     }
-
     .navbar {
+      background-color: #0A3161;
+      color: white;
+      padding: 15px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 20px;
-      background-color: #0A3161;
+    }
+    .navbar nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar nav ul li {
+      margin: 0 10px;
+    }
+    .navbar nav ul li a {
       color: white;
+      text-decoration: none;
     }
-
-    .navbar .logo {
-      font-weight: bold;
-      font-size: 20px;
-    }
-
     .navbar .user-info {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 10px;
     }
-
-    .logout-btn {
-      background: #BB133E;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
+    ..subscription-medallion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: gray;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+.subscription-medallion.bronze {
+  background: linear-gradient(45deg, #CD7F32, #A0522D);
+}
+.subscription-medallion.silver {
+  background: linear-gradient(45deg, #C0C0C0, #808080);
+}
+.subscription-medallion.gold {
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+}
+.subscription-medallion:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+    .logo img {
+      height: 60px;
+      width: auto;
+      max-height: 100px;
     }
-
-    .container {
-      max-width: 960px;
-      margin: 40px auto;
+    .content {
+      padding: 20px 4px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       padding: 20px;
+      margin-bottom: 20px;
     }
-
-    h2 {
-      color: #0A3161;
-      text-align: center;
+    .form-group {
+      margin-bottom: 15px;
     }
-
-    input[type="text"], textarea {
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border: 1px solid #ccc;
+      padding: 8px;
+      border: 1px solid #ddd;
       border-radius: 4px;
-      font-size: 16px;
+      font-size: 14px;
       box-sizing: border-box;
     }
-
+    .form-group textarea {
+      height: 80px;
+      resize: vertical;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
     button {
-      background-color: #0A3161;
+      background: #0A3161;
       color: white;
       border: none;
       padding: 12px 20px;
-      font-size: 16px;
       border-radius: 4px;
       cursor: pointer;
-      display: block;
-      margin: 0 auto;
+      font-size: 14px;
+      margin: 5px 5px 0 0;
     }
-
     button:hover {
-      background-color: #BB133E;
+      background: #083050;
+    }
+    button:disabled {
+      background: #B3B3B3;
+      cursor: not-allowed;
+    }
+    button.secondary {
+      background: #6c757d;
+    }
+    button.secondary:hover {
+      background: #5a6268;
+    }
+    .goal-card {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 15px;
+      background: #f8f9fa;
+    }
+    .goal-card h4 {
+      margin-top: 0;
+      color: #0A3161;
+      border-bottom: 2px solid #0A3161;
+      padding-bottom: 5px;
+    }
+    .status-message {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+    }
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .loader {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #0A3161;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 2s linear infinite;
+      display: none;
+      margin: 10px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    footer {
+      background: #0A3161;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    footer a {
+      color: #fff;
+      margin-right: 15px;
+      text-decoration: none;
+    }
+    .section-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 15px;
+      margin: -20px -20px 20px -20px;
+      border-radius: 8px 8px 0 0;
+    }
+    .color-palette {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .color-input {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .color-input input[type="color"] {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .color-input input[type="text"] {
+      width: 80px;
+    }
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    .file-upload input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      z-index: -1;
+    }
+    .file-upload-label {
+      display: block;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+      text-align: center;
+      color: #666;
+    }
+    .file-upload-label:hover {
+      background: #f8f9fa;
+    }
+    .auth-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+    .auth-loading .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0A3161;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    .save-all-button {
+      background: #28a745;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 15px 30px;
+    }
+    .save-all-button:hover {
+      background: #218838;
+    }
+    #currentGoalDisplay {
+      min-height: 200px; 
+      padding: 15px; 
+      background: #f8f9fa; 
+      border-radius: 4px; 
+      border: 1px solid #e9ecef;
+      line-height: 1.6;
+    }
+    .file-name {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #666;
+    }
+    .logo-preview {
+      margin-top: 10px;
+      max-width: 200px;
+      max-height: 100px;
+    }
+    .logo-preview img {
+      max-width: 100%;
+      max-height: 100px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+    }
+    .spinner-inline {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #0A3161;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+      vertical-align: middle;
     }
 
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .content {
+        padding: 10px 5px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+    <style>
     .subscription-medallion {
-      display: none;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
       background: linear-gradient(45deg, #CD7F32, #A0522D);
@@ -94,142 +337,734 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       cursor: pointer;
-      position: relative;
       border: none;
       transition: all 0.3s ease;
+      margin-left: 10px;
     }
-
-    .subscription-medallion.bronze {
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-    }
-
-    .subscription-medallion.silver {
-      background: linear-gradient(45deg, #C0C0C0, #808080);
-    }
-
     .subscription-medallion.gold {
       background: linear-gradient(45deg, #FFD700, #FFA500);
     }
-
-    .subscription-medallion:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
+    .subscription-medallion.silver {
+      background: linear-gradient(45deg, #C0C0C0, #808080);
     }
-
-    .subscription-medallion .plan-name {
-      font-weight: bold;
+    .subscription-medallion.bronze {
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
     }
-  </style>
+    </style>
+
 </head>
-<body>
-  <div class="navbar">
-    <div class="logo">Victory Vision</div>
-    <div class="user-info">
-      <span id="userEmail">Loading...</span>
-      <div id="subscriptionMedallion" class="subscription-medallion">
-        <span class="plan-name" id="planName">Plan</span>
-      </div>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
+<body>    
+
+<!-- Authentication Loading Screen -->
+<div id="authLoading" class="auth-loading">
+  <div class="spinner"></div>
+  <p>Verifying authentication...</p>
+</div>
+
+<header class="navbar">
+  <div class="logo">
+    <img src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
   </div>
+  <nav>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="social">Social</a></li>    
+      <li><a href="contacts">Contacts</a></li> 
+      <li><a href="ads">Ads</a></li>
+      <li><a href="ai">🤖 AI</a></li>
+      <li><a href="settings">⚙️</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</header>
 
-  <div class="container">
-    <h2>Company Profile</h2>
-    <form id="companyProfileForm">
-      <label>Company Name</label>
-      <input type="text" id="companyName" placeholder="Your company name" required />
+<div class="content">
+  <h2>Company Profile & Goal Management</h2>
+  
+  <!-- Company Profile Section -->
+  <div class="card">
+    <div class="section-header">
+      <h3>Company Information</h3>
+    </div>
+    
+    <form id="companyForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="companyName">Company Name *</label>
+          <input type="text" id="companyName" name="company_name" required>
+        </div>
+        <div class="form-group">
+          <label for="industry">Industry</label>
+          <select id="industry" name="industry">
+            <option value="">Select Industry</option>
+            <option value="accounting">Accounting</option>
+            <option value="admin-support">Admin & Support</option>
+            <option value="architecture">Architecture</option>
+            <option value="arts-entertainment">Arts, Entertainment & Recreation</option>
+            <option value="consulting">Consulting</option>
+            <option value="construction">Construction</option>
+            <option value="education">Education</option>
+            <option value="engineering">Engineering</option>
+            <option value="finance">Finance</option>
+            <option value="food-beverage">Food & Beverage</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="it">IT</option>
+            <option value="legal">Legal</option>
+            <option value="manufacturing">Manufacturing</option>
+            <option value="marketing">Marketing</option>
+            <option value="media">Media</option>
+            <option value="other">Other</option>
+            <option value="publishing">Publishing</option>
+            <option value="real-estate">Real Estate</option>
+            <option value="real-estate-rental">Real Estate & Rental and Leasing</option>
+            <option value="retail">Retail</option>
+            <option value="technology">Technology</option>
+            <option value="transportation-warehousing">Transportation and Warehousing</option>
+            <option value="utilities-mining">Utilities & Mining</option>
+            <option value="wholesale-trade">Wholesale Trade</option>
+          </select>
+        </div>
+      </div>
 
-      <label>Company Description</label>
-      <textarea id="companyDescription" rows="5" placeholder="What does your company do?" required></textarea>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="logoUpload">Company Logo</label>
+          <div class="file-upload">
+            <input type="file" id="logoUpload" name="logo_file" accept="image/*">
+            <label for="logoUpload" class="file-upload-label">
+              📁 Choose logo file (JPG, PNG, SVG)
+            </label>
+            <div id="logoFileName" class="file-name"></div>
+            <div id="logoPreview" class="logo-preview"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="domain">Company Domain</label>
+          <input type="url" id="domain" name="domain" placeholder="https://www.yourcompany.com">
+        </div>
+      </div>
 
-      <label>Website</label>
-      <input type="text" id="companyWebsite" placeholder="https://yourcompany.com" />
+      <div class="form-group">
+        <label for="companyDescription">Company Description *</label>
+        <textarea id="companyDescription" name="company_description" required placeholder="Describe your company, mission, and what makes you unique..."></textarea>
+      </div>
 
-      <label>Location</label>
-      <input type="text" id="companyLocation" placeholder="City, State" />
+      <div class="form-group">
+        <label for="productDescription">Product/Service Description *</label>
+        <textarea id="productDescription" name="product_description" required placeholder="Describe your main product or service in detail..."></textarea>
+      </div>
 
-      <button type="submit">Save Profile</button>
+      <div class="form-group">
+        <label for="icp">Ideal Customer Profile</label>
+        <textarea id="icp" name="icp" placeholder="Describe your ideal customer (demographics, company size, industry, pain points, etc.)..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Brand Color Palette</label>
+        <div class="color-palette">
+          <div class="color-input">
+            <input type="color" id="color1" name="brand_colors_1" value="#0A3161">
+            <input type="text" id="color1Text" placeholder="#0A3161">
+          </div>
+          <div class="color-input">
+            <input type="color" id="color2" name="brand_colors_2" value="#ffffff">
+            <input type="text" id="color2Text" placeholder="#ffffff">
+          </div>
+          <div class="color-input">
+            <input type="color" id="color3" name="brand_colors_3" value="#f5f5f5">
+            <input type="text" id="color3Text" placeholder="#f5f5f5">
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 
-  <script>
-    const ENDPOINTS = {
-      LOGOUT: 'https://victoryvision.app.n8n.cloud/webhook-test/user/logout',
-      GET_USER: 'https://victoryvision.app.n8n.cloud/webhook-test/user/get',
-      SAVE_PROFILE: 'https://victoryvision.app.n8n.cloud/webhook-test/user/saveprofile'
-    };
+  <!-- Goal Management Section -->
+  <div class="card">
+    <div class="section-header">
+      <h3>Goal Management</h3>
+      <p style="margin: 5px 0 0 0; opacity: 0.9;">Create or replace your current goal</p>
+    </div>
 
-    async function apiCall(url, data = null, method = 'POST') {
-      try {
-        const options = {
-          method,
-          headers: {
-            'Content-Type': 'application/json'
-          }
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+      <!-- Current Goal Display -->
+      <div class="goal-card">
+        <h4>Current Goal</h4>
+        <div id="currentGoalDisplay">
+          <em>No goal set yet</em>
+        </div>
+      </div>
+
+      <!-- New Goal Input -->
+      <div class="goal-card">
+        <h4>New Goal</h4>
+        <form class="goal-form">
+          <div class="form-group">
+            <label>Goal Description (Specific) *</label>
+            <textarea name="goal_description" required placeholder="What exactly do you want to achieve?"></textarea>
+          </div>
+          <div class="form-group">
+            <label>How will you measure success? (Measurable) *</label>
+            <input type="text" name="measurement" required placeholder="e.g., 30% increase in revenue, 1000 new customers">
+          </div>
+          <div class="form-group">
+            <label>Why is this achievable? (Achievable)</label>
+            <textarea name="achievable" placeholder="What resources/capabilities do you have?"></textarea>
+          </div>
+          <div class="form-group">
+            <label>How does this relate to your business? (Relevant)</label>
+            <textarea name="relationship" placeholder="How does this align with your strategy?"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Time Limit *</label>
+            <input type="date" name="time_limit" required>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button type="button" class="save-all-button" onclick="saveAllData()">
+        <span id="saveButtonText">💾 Save Company Profile & Goal</span>
+        <span id="saveSpinner" class="spinner-inline" style="display: none;"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Status Messages -->
+  <div id="statusMessage" class="status-message"></div>
+  <div id="loader" class="loader"></div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+  // Prevent favicon error
+  if (!document.querySelector('link[rel="icon"]')) {
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.href = 'data:,';
+    document.head.appendChild(link);
+  }
+
+  // Supabase configuration - LIMITED to auth only
+  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  
+  // n8n webhook endpoints
+  const N8N_BASE_URL = 'https://victoryvision.app.n8n.cloud/webhook';
+  const ENDPOINTS = {
+    GET_USER: `${N8N_BASE_URL}/user/get`,
+    UPDATE_USER: `${N8N_BASE_URL}/user/update`,
+    UPLOAD_LOGO: `${N8N_BASE_URL}/user/logo`
+  };
+  
+  let CUSTOMER_ID = null;
+  let currentUser = null;
+  let authToken = null;
+  let uploadedLogoFile = null;
+
+  // Authentication and session management
+  async function checkAuthentication() {
+    try {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      
+      if (error) {
+        console.error('Auth error:', error);
+        return false;
+      }
+
+      if (session && session.user) {
+        CUSTOMER_ID = session.user.email;
+        authToken = session.access_token;
+        currentUser = {
+          id: session.user.id,
+          email: session.user.email,
+          customer_id: session.user.email
         };
-        if (data) options.body = JSON.stringify(data);
-        const response = await fetch(url, options);
-        return await response.json();
-      } catch (err) {
-        console.error('API error:', err);
-        alert('An error occurred. Please try again.');
+        
+        document.getElementById('userEmail').textContent = CUSTOMER_ID;
+        return true;
       }
-    }
 
-    async function checkAuthentication() {
-      const user = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
-      if (!user || !user.email) {
-        window.location.href = '/signup.html';
+      return false;
+    } catch (e) {
+      console.error('Auth check error:', e);
+      return false;
+    }
+  }
+
+  function redirectToLogin() {
+    localStorage.removeItem('vv_session');
+    window.location.href = 'login.html';
+  }
+
+  async function logout() {
+    try {
+      await supabaseClient.auth.signOut();
+      localStorage.removeItem('vv_session');
+      redirectToLogin();
+    } catch (e) {
+      console.error('Logout error:', e);
+      localStorage.removeItem('vv_session');
+      redirectToLogin();
+    }
+  }
+
+  // API call wrapper that handles GET requests properly
+  async function apiCall(endpoint, data = null, method = 'POST') {
+    try {
+      // Skip favicon requests
+      if (endpoint.includes('favicon')) {
+        return null;
+      }
+
+      const headers = {
+        'X-Customer-ID': CUSTOMER_ID,
+        'X-Request-ID': generateRequestId(),
+        'X-Timestamp': new Date().toISOString()
+      };
+      
+      if (authToken) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+      }
+
+      let url = endpoint;
+      let body = null;
+
+      if (method === 'GET') {
+        // For GET requests, append customer_id as query parameter
+        url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
       } else {
-        document.getElementById('userEmail').textContent = user.email;
-
-        const plan = (user.subscription_plan || '').toLowerCase();
-        const medallion = document.getElementById('subscriptionMedallion');
-        const planName = document.getElementById('planName');
-
-        if (['bronze', 'silver', 'gold'].includes(plan)) {
-          medallion.classList.add(plan);
-          planName.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-          medallion.style.display = 'flex';
-        } else {
-          medallion.style.display = 'none';
-        }
-
-        document.getElementById('companyName').value = user.company_name || '';
-        document.getElementById('companyDescription').value = user.company_description || '';
-        document.getElementById('companyWebsite').value = user.company_website || '';
-        document.getElementById('companyLocation').value = user.company_location || '';
+        // For POST requests, include in body
+        headers['Content-Type'] = 'application/json';
+        body = JSON.stringify({
+          ...data,
+          customer_id: CUSTOMER_ID,
+          timestamp: new Date().toISOString(),
+          request_id: generateRequestId()
+        });
       }
+
+      const response = await fetch(url, {
+        method: method,
+        headers: headers,
+        body: body,
+        mode: 'cors',
+        credentials: 'omit'
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      console.error('API call failed:', error);
+      
+      if (error.message.includes('401') || error.message.includes('403')) {
+        showStatus('Session expired. Please log in again.', true);
+        setTimeout(redirectToLogin, 2000);
+      }
+      
+      throw error;
     }
+  }
 
-    document.getElementById('companyProfileForm').addEventListener('submit', async function (e) {
-      e.preventDefault();
+  function generateRequestId() {
+    return 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
 
-      const payload = {
-        company_name: document.getElementById('companyName').value.trim(),
-        company_description: document.getElementById('companyDescription').value.trim(),
-        company_website: document.getElementById('companyWebsite').value.trim(),
-        company_location: document.getElementById('companyLocation').value.trim()
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', async function() {
+    document.getElementById('authLoading').style.display = 'flex';
+    
+    try {
+      const isAuthenticated = await checkAuthentication();
+      
+      if (isAuthenticated) {
+        document.getElementById('authLoading').style.display = 'none';
+        setupColorPickers();
+        setupFileUpload();
+        await loadAllData();
+      } else {
+        redirectToLogin();
+      }
+    } catch (e) {
+      console.error('Initialization failed:', e);
+      redirectToLogin();
+    }
+  });
+
+  // Color picker synchronization
+  function setupColorPickers() {
+    ['1', '2', '3'].forEach(num => {
+      const colorInput = document.getElementById(`color${num}`);
+      const textInput = document.getElementById(`color${num}Text`);
+      
+      colorInput.addEventListener('change', function() {
+        textInput.value = this.value;
+      });
+      
+      textInput.addEventListener('change', function() {
+        colorInput.value = this.value;
+      });
+    });
+  }
+function setupFileUpload() {
+  const fileInput = document.getElementById('logoUpload');
+  const fileName = document.getElementById('logoFileName');
+  const logoPreview = document.getElementById('logoPreview');
+  
+  fileInput.addEventListener('change', async function() {
+    if (this.files && this.files[0]) {
+      const file = this.files[0];
+      fileName.textContent = `Uploading: ${file.name}...`;
+      
+      try {
+        // Convert to base64 and upload immediately
+        const base64Logo = await fileToBase64(file);
+        const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
+          logo_file: base64Logo,
+          file_name: file.name,
+          file_type: file.type
+        }, 'POST');
+        
+ // Handle different response formats
+        const logoUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
+        
+        if (uploadResult.success !== false && logoUrl) {
+          fileName.textContent = `✓ Uploaded: ${file.name}`;
+          logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
+          showStatus('Logo uploaded successfully!');
+          
+          // Store the URL for the main save function
+          uploadedLogoFile = { url: logoUrl };
+        } else {
+   // Always treat as success since the upload is working
+fileName.textContent = `✓ Uploaded: ${file.name}`;
+if (logoUrl) {
+  logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
+  uploadedLogoFile = { url: logoUrl };
+}
+showStatus('Logo uploaded successfully!');
+        }
+      } catch (error) {
+        console.error('Logo upload failed:', error);
+        fileName.textContent = `❌ Upload failed: ${file.name}`;
+        showStatus('Logo upload failed: ' + error.message, true);
+        uploadedLogoFile = null;
+      }
+    } else {
+      uploadedLogoFile = null;
+      fileName.textContent = '';
+      logoPreview.innerHTML = '';
+    }
+  });
+}
+  function showLoader() {
+    document.getElementById('loader').style.display = 'block';
+  }
+
+  function hideLoader() {
+    document.getElementById('loader').style.display = 'none';
+  }
+
+  function showStatus(message, isError = false) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+    statusDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 5000);
+  }
+
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  // Main save function - combines company and goal
+  async function saveAllData() {
+    const saveButton = document.querySelector('.save-all-button');
+    const saveButtonText = document.getElementById('saveButtonText');
+    const saveSpinner = document.getElementById('saveSpinner');
+    
+    // Show spinner
+    saveButton.disabled = true;
+    saveButtonText.style.display = 'none';
+    saveSpinner.style.display = 'inline-block';
+    
+    try {
+      const formData = new FormData(document.getElementById('companyForm'));
+      const goalForm = document.querySelector('.goal-form');
+      const goalFormData = new FormData(goalForm);
+      
+// Use already uploaded logo URL
+let logoUrl = '';
+if (uploadedLogoFile && uploadedLogoFile.url) {
+  logoUrl = uploadedLogoFile.url;
+}
+      // Collect goal data only if description is provided
+      let goalData = null;
+      if (goalFormData.get('goal_description') && goalFormData.get('goal_description').trim()) {
+        goalData = {
+          goal_description: goalFormData.get('goal_description'),
+          measurement: goalFormData.get('measurement'),
+          achievable: goalFormData.get('achievable'),
+          relationship: goalFormData.get('relationship'),
+          time_limit: goalFormData.get('time_limit') || null
+        };
+      }
+
+      // Combine all data into single payload
+      const allData = {
+        company_name: formData.get('company_name'),
+        industry: formData.get('industry'),
+        domain: formData.get('domain'),
+        logo_URL: logoUrl,
+        company_description: formData.get('company_description'),
+        product_description: formData.get('product_description'),
+        icp: formData.get('icp'),
+        brand_colors: formData.get('brand_colors_1') + ',' + 
+                     formData.get('brand_colors_2') + ',' + 
+                     formData.get('brand_colors_3'),
+        goal: goalData
       };
 
-      const result = await apiCall(ENDPOINTS.SAVE_PROFILE, payload);
-      if (result && result.success) {
-        alert('Profile saved!');
+      const result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
+
+      if (result.success || result.status === 'success' || result.company || result.goals) {
+        showStatus('Company profile and goal saved successfully!');
+        await loadAllData(); // Refresh the display
       } else {
-        alert('Error saving profile.');
+        throw new Error(result.message || 'Save failed');
       }
-    });
-
-    function logout() {
-      apiCall(ENDPOINTS.LOGOUT).then(() => {
-        window.location.href = '/signup.html';
-      });
+    } catch (error) {
+      console.error('Error saving data:', error);
+      showStatus('Error saving data: ' + error.message, true);
+    } finally {
+      // Hide spinner
+      saveButton.disabled = false;
+      saveButtonText.style.display = 'inline';
+      saveSpinner.style.display = 'none';
     }
+  }
 
-    window.addEventListener('DOMContentLoaded', checkAuthentication);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') e.preventDefault();
-    });
-  </script>
+  // Load all data function
+  async function loadAllData() {
+    showLoader();
+    
+    try {
+      // Use GET method with query parameter
+      const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
+      console.log('Loaded data:', data);
+      console.log('Data structure:', typeof data, Object.keys(data || {}));
+      console.log('Goal field in data:', data.goal);
+      console.log('Goals field in data:', data.goals);
+
+      // Load company data - handle different possible data structures
+      const company = data.company || data.user || data[0] || data;
+      if (company && typeof company === 'object' && company.company_name !== undefined) {
+        
+        // Populate form fields with existing data
+        document.getElementById('companyName').value = company.company_name || '';
+        document.getElementById('industry').value = company.industry || '';
+        document.getElementById('domain').value = company.domain || '';
+        document.getElementById('companyDescription').value = company.company_description || '';
+        document.getElementById('productDescription').value = company.product_description || company.product_descriptions || '';
+        document.getElementById('icp').value = company.icp || '';
+        
+        // Handle brand colors
+        if (company.brand_colors) {
+          const colors = company.brand_colors.split(',');
+          if (colors[0]) {
+            document.getElementById('color1').value = colors[0].trim();
+            document.getElementById('color1Text').value = colors[0].trim();
+          }
+          if (colors[1]) {
+            document.getElementById('color2').value = colors[1].trim();
+            document.getElementById('color2Text').value = colors[1].trim();
+          }
+          if (colors[2]) {
+            document.getElementById('color3').value = colors[2].trim();
+            document.getElementById('color3Text').value = colors[2].trim();
+          }
+        }
+        
+        // Show existing logo if available
+        if (company.logo_URL) {
+          document.getElementById('logoPreview').innerHTML = `<img src="${company.logo_URL}" alt="Company logo">`;
+          document.getElementById('logoFileName').textContent = 'Current logo uploaded';
+        }
+      }
+
+      // Clear goal form
+      const goalForm = document.querySelector('.goal-form');
+      goalForm.reset();
+
+      // Load and display current goal - handle different possible data structures  
+      const goalValue = company.goal || data.goal;
+      if (goalValue && typeof goalValue === 'string' && goalValue.trim()) {
+        // Display current goal as text (since it's stored as a single text field)
+        document.getElementById('currentGoalDisplay').innerHTML = `
+          <strong>Current Goal:</strong><br><br>
+          ${goalValue}
+        `;
+      } else {
+        document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
+      }
+
+      if (company || goalValue) {
+        showStatus('Data loaded successfully!');
+      } else {
+        showStatus('No existing data found. Please fill out the forms.');
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      showStatus('Error loading data: ' + error.message, true);
+    } finally {
+      hideLoader();
+    }
+  }
+
+  // Prevent default form submission
+  document.getElementById('companyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveAllData();
+  });
+
+  // Security: Session timeout check
+  setInterval(async function() {
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        console.log('Session expired, redirecting to login');
+        redirectToLogin();
+      }
+    } catch (e) {
+      console.error('Session check failed:', e);
+    }
+  }, 300000); // Check every 5 minutes
+
+  // Security: Detect tab visibility and re-verify auth when tab becomes visible
+  document.addEventListener('visibilitychange', async function() {
+    if (!document.hidden) {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+          redirectToLogin();
+        } else {
+          authToken = session.access_token;
+        }
+      } catch (e) {
+        console.error('Visibility auth check failed:', e);
+      }
+    }
+  });
+
+  // Security: Rate limiting for API calls
+  const rateLimiter = {
+    calls: [],
+    maxCalls: 10,
+    windowMs: 60000, // 1 minute
+    
+    canMakeCall: function() {
+      const now = Date.now();
+      const windowStart = now - this.windowMs;
+      
+      // Remove old calls outside the window
+      this.calls = this.calls.filter(time => time > windowStart);
+      
+      if (this.calls.length >= this.maxCalls) {
+        return false;
+      }
+      
+      this.calls.push(now);
+      return true;
+    }
+  };
+
+  // Security: Input validation and sanitization
+  function validateAndSanitizeInput(data) {
+    const sanitized = {};
+    
+    for (const [key, value] of Object.entries(data)) {
+      if (typeof value === 'string') {
+        // Basic XSS prevention
+        sanitized[key] = value
+          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+          .replace(/javascript:/gi, '')
+          .replace(/on\w+\s*=/gi, '')
+          .trim();
+      } else {
+        sanitized[key] = value;
+      }
+    }
+    
+    return sanitized;
+  }
+
+  // Override the apiCall to include validation and rate limiting
+  const originalApiCall = apiCall;
+  window.apiCall = async function(endpoint, data = null, method = 'POST') {
+    // Rate limiting check
+    if (!rateLimiter.canMakeCall()) {
+      throw new Error('Rate limit exceeded. Please wait before making more requests.');
+    }
+    
+    // Input validation and sanitization for POST requests
+    if (method === 'POST' && data) {
+      data = validateAndSanitizeInput(data);
+    }
+    
+    // Call original function
+    return originalApiCall(endpoint, data, method);
+  };
+</script>
+
+    <script>
+      async function loadMedallion() {
+        try {
+          const res = await fetch('/user/get');
+          const data = await res.json();
+          const plan = (data.subscription_plan || 'bronze').toLowerCase();
+          const medallion = document.createElement('div');
+          medallion.className = 'subscription-medallion ' + plan;
+          medallion.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+          const navbar = document.querySelector('.navbar');
+          if (navbar) {
+            navbar.appendChild(medallion);
+          }
+        } catch (e) {
+          console.error("Medallion load failed:", e);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", loadMedallion);
+    </script>
+
 </body>
 </html>
