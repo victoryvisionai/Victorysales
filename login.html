@@ -176,9 +176,21 @@
     // Create a Supabase client
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
     
+    // Security: Rate limiting
+    let loginAttempts = 0;
+    const maxAttempts = 5;
+    const lockoutTime = 300000; // 5 minutes
+    let lockoutStart = 0;
+    
     // Get current domain for redirects
     const currentDomain = window.location.hostname === 'localhost' ? 
         'http://localhost:3000' : 'https://victoryvision.app';
+    
+    // Input sanitization
+    function sanitizeInput(input) {
+        if (typeof input !== 'string') return input;
+        return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').trim();
+    }
     
     // Check for existing session on page load
     document.addEventListener('DOMContentLoaded', async function() {
@@ -232,46 +244,24 @@
         }
     }
 
-    // Setup user session in localStorage
+    // Setup user session - SECURE VERSION
     async function setupUserSession(user) {
         try {
-            // Store essential user info securely
+            // Use sessionStorage instead of localStorage for security
             const userSession = {
                 id: user.id,
                 email: user.email,
-                customer_id: user.email, // Use email as customer_id
+                customer_id: user.email,
                 authenticated: true,
                 expires_at: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
             };
             
-            localStorage.setItem('vv_session', JSON.stringify(userSession));
+            sessionStorage.setItem('vv_session', JSON.stringify(userSession));
             
-            // Update user profile in database
-            await updateUserProfile(user);
+            // Backend will handle user profile updates via auth webhooks
             
         } catch (e) {
             console.error('Error setting up user session:', e);
-        }
-    }
-
-    // Update user profile in database
-    async function updateUserProfile(user) {
-        try {
-            const { error } = await supabaseClient
-                .from('users')
-                .upsert({
-                    id: user.id,
-                    email: user.email,
-                    customer_id: user.email,
-                    last_login: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                });
-                
-            if (error) {
-                console.error('Error updating user profile:', error);
-            }
-        } catch (e) {
-            console.error('Error in updateUserProfile:', e);
         }
     }
     
@@ -350,10 +340,22 @@
         }, 100);
     }
 
-    // Email and password login
+    // Email and password login - SECURE VERSION
     async function emailLogin() {
         clearMessages();
-        const email = document.getElementById('email').value.trim();
+        
+        // Rate limiting check
+        if (loginAttempts >= maxAttempts) {
+            const timeLeft = Math.ceil((lockoutTime - (Date.now() - lockoutStart)) / 60000);
+            if (timeLeft > 0) {
+                showError(`Too many attempts. Try again in ${timeLeft} minutes.`);
+                return;
+            } else {
+                loginAttempts = 0; // Reset after lockout period
+            }
+        }
+        
+        const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
         if (!email || !password) {
@@ -361,9 +363,13 @@
             return;
         }
         
+        // Input sanitization
+        const cleanEmail = sanitizeInput(email.trim());
+        const cleanPassword = password.trim();
+        
         // Basic email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(cleanEmail)) {
             showError('Please enter a valid email address');
             return;
         }
@@ -375,21 +381,26 @@
             button.innerHTML = '<span class="loading"></span> Logging in...';
             
             const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email,
-                password
+                email: cleanEmail,
+                password: cleanPassword
             });
 
             if (error) {
+                loginAttempts++;
+                if (loginAttempts >= maxAttempts) {
+                    lockoutStart = Date.now();
+                }
                 showError('Login failed: ' + error.message);
                 button.disabled = false;
                 button.textContent = originalText;
             } else {
-                // Successfully logged in
+                loginAttempts = 0; // Reset on success
                 await setupUserSession(data.user);
                 showSuccess('Login successful! Redirecting...');
                 redirectToDashboard();
             }
         } catch (e) {
+            loginAttempts++;
             showError('An unexpected error occurred. Please try again.');
             console.error('Login error:', e);
             document.getElementById('login-button').disabled = false;
@@ -430,16 +441,19 @@
     // Password reset request
     async function resetPassword() {
         clearResetMessages();
-        const email = document.getElementById('reset-email').value.trim();
+        const email = document.getElementById('reset-email').value;
         
         if (!email) {
             showResetError('Please enter your email address');
             return;
         }
         
+        // Input sanitization
+        const cleanEmail = sanitizeInput(email.trim());
+        
         // Basic email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(cleanEmail)) {
             showResetError('Please enter a valid email address');
             return;
         }
@@ -450,8 +464,8 @@
             button.disabled = true;
             button.innerHTML = '<span class="loading"></span> Sending...';
             
-            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                redirectTo: `${currentDomain}/reset-password.html`
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(cleanEmail, {
+                redirectTo: `${currentDomain}/changepassword.html`
             });
 
             if (error) {
