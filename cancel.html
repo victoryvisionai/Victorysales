@@ -1,12 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Checkout canceled</title>
-  <link rel="stylesheet" href="style.css">
+    <title>Checkout Cancelled</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <section>
-    <p>Picked the wrong subscription? Shop around then come back to pay!</p>
-  </section>
+    <section>
+        <p>Picked the wrong subscription? Shop around then come back to pay!</p>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+    async function checkAuth() {
+      try {
+        const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        if (!session) {
+          window.location.href = 'login.html';
+          return;
+        }
+        
+        // Show content only after auth check
+        document.body.style.display = 'block';
+      } catch (e) {
+        console.error('Auth check failed:', e);
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Hide content initially
+    document.body.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', checkAuth);
+    </script>
 </body>
 </html>
