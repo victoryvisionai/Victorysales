@@ -22,6 +22,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
     .navbar nav ul {
       display: flex;
@@ -41,37 +42,40 @@
       align-items: center;
       gap: 10px;
     }
-    ..subscription-medallion {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: gray;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-weight: bold;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  z-index: 10;
-  transition: all 0.3s ease;
-}
-.subscription-medallion.bronze {
-  background: linear-gradient(45deg, #CD7F32, #A0522D);
-}
-.subscription-medallion.silver {
-  background: linear-gradient(45deg, #C0C0C0, #808080);
-}
-.subscription-medallion.gold {
-  background: linear-gradient(45deg, #FFD700, #FFA500);
-}
-.subscription-medallion:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
+    .subscription-medallion {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .subscription-medallion.bronze {
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+    }
+    .subscription-medallion.silver {
+      background: linear-gradient(45deg, #C0C0C0, #808080);
+    }
+    .subscription-medallion.gold {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+    }
+    .subscription-medallion:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .subscription-medallion .plan-name {
+      font-weight: bold;
+    }
     .logo img {
       height: 60px;
       width: auto;
@@ -320,38 +324,16 @@
       .form-row {
         grid-template-columns: 1fr;
       }
+      .navbar {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .navbar nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     }
   </style>
-
-    <style>
-    .subscription-medallion {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      border: none;
-      transition: all 0.3s ease;
-      margin-left: 10px;
-    }
-    .subscription-medallion.gold {
-      background: linear-gradient(45deg, #FFD700, #FFA500);
-    }
-    .subscription-medallion.silver {
-      background: linear-gradient(45deg, #C0C0C0, #808080);
-    }
-    .subscription-medallion.bronze {
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-    }
-    </style>
-
 </head>
 <body>    
 
@@ -381,7 +363,9 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
+    </div>
   </div>
 </header>
 
@@ -578,6 +562,44 @@
   let authToken = null;
   let uploadedLogoFile = null;
 
+  // Rate limiting for API calls
+  const rateLimiter = {
+    calls: [],
+    maxCalls: 20,
+    windowMs: 60000,
+    
+    canMakeCall: function() {
+      const now = Date.now();
+      const windowStart = now - this.windowMs;
+      this.calls = this.calls.filter(time => time > windowStart);
+      
+      if (this.calls.length >= this.maxCalls) {
+        return false;
+      }
+      
+      this.calls.push(now);
+      return true;
+    }
+  };
+
+  // Input sanitization
+  function sanitizeInput(value) {
+    if (typeof value !== 'string') return value;
+    
+    return value
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, '')
+      .replace(/data:/gi, '')
+      .trim();
+  }
+
+  // Validate email format
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   // Authentication and session management
   async function checkAuthentication() {
     try {
@@ -589,6 +611,12 @@
       }
 
       if (session && session.user) {
+        // Validate session data
+        if (!isValidEmail(session.user.email)) {
+          console.error('Invalid email format in session');
+          return false;
+        }
+        
         CUSTOMER_ID = session.user.email;
         authToken = session.access_token;
         currentUser = {
@@ -609,34 +637,37 @@
   }
 
   function redirectToLogin() {
+    // Clear all session data
     localStorage.removeItem('vv_session');
+    sessionStorage.clear();
+    
+    // Redirect
     window.location.href = 'login.html';
   }
 
-  async function logout() {
-    try {
-      await supabaseClient.auth.signOut();
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    } catch (e) {
-      console.error('Logout error:', e);
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    }
-  }
-
-  // API call wrapper that handles GET requests properly
+  // API call wrapper with enhanced security
   async function apiCall(endpoint, data = null, method = 'POST') {
     try {
+      // Rate limiting check
+      if (!rateLimiter.canMakeCall()) {
+        throw new Error('Too many requests. Please wait before trying again.');
+      }
+
       // Skip favicon requests
       if (endpoint.includes('favicon')) {
         return null;
       }
 
+      // Validate endpoint
+      if (!endpoint.startsWith('https://victoryvision.app.n8n.cloud/webhook/')) {
+        throw new Error('Invalid endpoint');
+      }
+
       const headers = {
         'X-Customer-ID': CUSTOMER_ID,
         'X-Request-ID': generateRequestId(),
-        'X-Timestamp': new Date().toISOString()
+        'X-Timestamp': new Date().toISOString(),
+        'X-User-Agent': 'VictoryVision/1.0'
       };
       
       if (authToken) {
@@ -647,13 +678,20 @@
       let body = null;
 
       if (method === 'GET') {
-        // For GET requests, append customer_id as query parameter
         url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
       } else {
-        // For POST requests, include in body
         headers['Content-Type'] = 'application/json';
+        
+        // Sanitize input data
+        const sanitizedData = {};
+        if (data) {
+          for (const [key, value] of Object.entries(data)) {
+            sanitizedData[key] = sanitizeInput(value);
+          }
+        }
+        
         body = JSON.stringify({
-          ...data,
+          ...sanitizedData,
           customer_id: CUSTOMER_ID,
           timestamp: new Date().toISOString(),
           request_id: generateRequestId()
@@ -665,7 +703,8 @@
         headers: headers,
         body: body,
         mode: 'cors',
-        credentials: 'omit'
+        credentials: 'omit',
+        signal: AbortSignal.timeout(30000) // 30 second timeout
       });
 
       if (!response.ok) {
@@ -689,6 +728,42 @@
 
   function generateRequestId() {
     return 'req_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+  }
+
+  // Load user data and update medallion
+  async function loadUserSubscriptionData() {
+    try {
+      const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
+      console.log('User data loaded:', data);
+      
+      // Handle array response from n8n
+      const userData = Array.isArray(data) ? data[0] : data;
+      
+      if (userData && userData.subscription_plan) {
+        updateSubscriptionMedallion(userData.subscription_plan);
+      } else {
+        updateSubscriptionMedallion('Bronze'); // Default
+      }
+      
+      return userData;
+    } catch (error) {
+      console.error('Error loading user subscription data:', error);
+      updateSubscriptionMedallion('Bronze'); // Fallback
+      throw error;
+    }
+  }
+
+  // Update subscription medallion
+  function updateSubscriptionMedallion(plan) {
+    const medallion = document.getElementById('subscriptionMedallion');
+    const planName = medallion.querySelector('.plan-name');
+    
+    // Validate plan value
+    const validPlans = ['Bronze', 'Silver', 'Gold'];
+    const safePlan = validPlans.includes(plan) ? plan : 'Bronze';
+    
+    medallion.className = `subscription-medallion ${safePlan.toLowerCase()}`;
+    planName.textContent = safePlan;
   }
 
   // Initialize page
@@ -723,61 +798,68 @@
       });
       
       textInput.addEventListener('change', function() {
-        colorInput.value = this.value;
+        // Validate color format
+        if (/^#[0-9A-F]{6}$/i.test(this.value)) {
+          colorInput.value = this.value;
+        }
       });
     });
   }
-function setupFileUpload() {
-  const fileInput = document.getElementById('logoUpload');
-  const fileName = document.getElementById('logoFileName');
-  const logoPreview = document.getElementById('logoPreview');
-  
-  fileInput.addEventListener('change', async function() {
-    if (this.files && this.files[0]) {
-      const file = this.files[0];
-      fileName.textContent = `Uploading: ${file.name}...`;
-      
-      try {
-        // Convert to base64 and upload immediately
-        const base64Logo = await fileToBase64(file);
-        const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
-          logo_file: base64Logo,
-          file_name: file.name,
-          file_type: file.type
-        }, 'POST');
+
+  function setupFileUpload() {
+    const fileInput = document.getElementById('logoUpload');
+    const fileName = document.getElementById('logoFileName');
+    const logoPreview = document.getElementById('logoPreview');
+    
+    fileInput.addEventListener('change', async function() {
+      if (this.files && this.files[0]) {
+        const file = this.files[0];
         
- // Handle different response formats
-        const logoUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
-        
-        if (uploadResult.success !== false && logoUrl) {
-          fileName.textContent = `✓ Uploaded: ${file.name}`;
-          logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
-          showStatus('Logo uploaded successfully!');
-          
-          // Store the URL for the main save function
-          uploadedLogoFile = { url: logoUrl };
-        } else {
-   // Always treat as success since the upload is working
-fileName.textContent = `✓ Uploaded: ${file.name}`;
-if (logoUrl) {
-  logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
-  uploadedLogoFile = { url: logoUrl };
-}
-showStatus('Logo uploaded successfully!');
+        // Validate file
+        if (!file.type.startsWith('image/')) {
+          showStatus('Please select a valid image file', true);
+          return;
         }
-      } catch (error) {
-        console.error('Logo upload failed:', error);
-        fileName.textContent = `❌ Upload failed: ${file.name}`;
-        showStatus('Logo upload failed: ' + error.message, true);
+        
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          showStatus('File size must be less than 5MB', true);
+          return;
+        }
+        
+        fileName.textContent = `Uploading: ${file.name}...`;
+        
+        try {
+          const base64Logo = await fileToBase64(file);
+          const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
+            logo_file: base64Logo,
+            file_name: sanitizeInput(file.name),
+            file_type: file.type
+          }, 'POST');
+          
+          const logoUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
+          
+          if (logoUrl) {
+            fileName.textContent = `✓ Uploaded: ${file.name}`;
+            logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
+            showStatus('Logo uploaded successfully!');
+            uploadedLogoFile = { url: logoUrl };
+          } else {
+            throw new Error('Upload failed - no URL returned');
+          }
+        } catch (error) {
+          console.error('Logo upload failed:', error);
+          fileName.textContent = `❌ Upload failed: ${file.name}`;
+          showStatus('Logo upload failed: ' + error.message, true);
+          uploadedLogoFile = null;
+        }
+      } else {
         uploadedLogoFile = null;
+        fileName.textContent = '';
+        logoPreview.innerHTML = '';
       }
-    } else {
-      uploadedLogoFile = null;
-      fileName.textContent = '';
-      logoPreview.innerHTML = '';
-    }
-  });
-}
+    });
+  }
+
   function showLoader() {
     document.getElementById('loader').style.display = 'block';
   }
@@ -788,7 +870,7 @@ showStatus('Logo uploaded successfully!');
 
   function showStatus(message, isError = false) {
     const statusDiv = document.getElementById('statusMessage');
-    statusDiv.textContent = message;
+    statusDiv.textContent = sanitizeInput(message);
     statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
     statusDiv.style.display = 'block';
     
@@ -823,35 +905,41 @@ showStatus('Logo uploaded successfully!');
       const goalForm = document.querySelector('.goal-form');
       const goalFormData = new FormData(goalForm);
       
-// Use already uploaded logo URL
-let logoUrl = '';
-if (uploadedLogoFile && uploadedLogoFile.url) {
-  logoUrl = uploadedLogoFile.url;
-}
+      // Validate required fields
+      if (!formData.get('company_name') || !formData.get('company_description') || !formData.get('product_description')) {
+        throw new Error('Please fill in all required fields');
+      }
+      
+      // Use already uploaded logo URL
+      let logoUrl = '';
+      if (uploadedLogoFile && uploadedLogoFile.url) {
+        logoUrl = uploadedLogoFile.url;
+      }
+      
       // Collect goal data only if description is provided
       let goalData = null;
       if (goalFormData.get('goal_description') && goalFormData.get('goal_description').trim()) {
         goalData = {
-          goal_description: goalFormData.get('goal_description'),
-          measurement: goalFormData.get('measurement'),
-          achievable: goalFormData.get('achievable'),
-          relationship: goalFormData.get('relationship'),
+          goal_description: sanitizeInput(goalFormData.get('goal_description')),
+          measurement: sanitizeInput(goalFormData.get('measurement')),
+          achievable: sanitizeInput(goalFormData.get('achievable')),
+          relationship: sanitizeInput(goalFormData.get('relationship')),
           time_limit: goalFormData.get('time_limit') || null
         };
       }
 
       // Combine all data into single payload
       const allData = {
-        company_name: formData.get('company_name'),
-        industry: formData.get('industry'),
-        domain: formData.get('domain'),
+        company_name: sanitizeInput(formData.get('company_name')),
+        industry: sanitizeInput(formData.get('industry')),
+        domain: sanitizeInput(formData.get('domain')),
         logo_URL: logoUrl,
-        company_description: formData.get('company_description'),
-        product_description: formData.get('product_description'),
-        icp: formData.get('icp'),
-        brand_colors: formData.get('brand_colors_1') + ',' + 
-                     formData.get('brand_colors_2') + ',' + 
-                     formData.get('brand_colors_3'),
+        company_description: sanitizeInput(formData.get('company_description')),
+        product_description: sanitizeInput(formData.get('product_description')),
+        icp: sanitizeInput(formData.get('icp')),
+        brand_colors: sanitizeInput(formData.get('brand_colors_1')) + ',' + 
+                     sanitizeInput(formData.get('brand_colors_2')) + ',' + 
+                     sanitizeInput(formData.get('brand_colors_3')),
         goal: goalData
       };
 
@@ -879,28 +967,22 @@ if (uploadedLogoFile && uploadedLogoFile.url) {
     showLoader();
     
     try {
-      // Use GET method with query parameter
-      const data = await apiCall(ENDPOINTS.GET_USER, null, 'GET');
-      console.log('Loaded data:', data);
-      console.log('Data structure:', typeof data, Object.keys(data || {}));
-      console.log('Goal field in data:', data.goal);
-      console.log('Goals field in data:', data.goals);
-
-      // Load company data - handle different possible data structures
-      const company = data.company || data.user || data[0] || data;
-      if (company && typeof company === 'object' && company.company_name !== undefined) {
+      // Load user data and update medallion
+      const userData = await loadUserSubscriptionData();
+      
+      if (userData && typeof userData === 'object' && userData.company_name !== undefined) {
         
         // Populate form fields with existing data
-        document.getElementById('companyName').value = company.company_name || '';
-        document.getElementById('industry').value = company.industry || '';
-        document.getElementById('domain').value = company.domain || '';
-        document.getElementById('companyDescription').value = company.company_description || '';
-        document.getElementById('productDescription').value = company.product_description || company.product_descriptions || '';
-        document.getElementById('icp').value = company.icp || '';
+        document.getElementById('companyName').value = userData.company_name || '';
+        document.getElementById('industry').value = userData.industry || '';
+        document.getElementById('domain').value = userData.domain || '';
+        document.getElementById('companyDescription').value = userData.company_description || '';
+        document.getElementById('productDescription').value = userData.product_description || userData.product_descriptions || '';
+        document.getElementById('icp').value = userData.icp || '';
         
         // Handle brand colors
-        if (company.brand_colors) {
-          const colors = company.brand_colors.split(',');
+        if (userData.brand_colors) {
+          const colors = userData.brand_colors.split(',');
           if (colors[0]) {
             document.getElementById('color1').value = colors[0].trim();
             document.getElementById('color1Text').value = colors[0].trim();
@@ -916,8 +998,8 @@ if (uploadedLogoFile && uploadedLogoFile.url) {
         }
         
         // Show existing logo if available
-        if (company.logo_URL) {
-          document.getElementById('logoPreview').innerHTML = `<img src="${company.logo_URL}" alt="Company logo">`;
+        if (userData.logo_URL) {
+          document.getElementById('logoPreview').innerHTML = `<img src="${userData.logo_URL}" alt="Company logo">`;
           document.getElementById('logoFileName').textContent = 'Current logo uploaded';
         }
       }
@@ -926,19 +1008,18 @@ if (uploadedLogoFile && uploadedLogoFile.url) {
       const goalForm = document.querySelector('.goal-form');
       goalForm.reset();
 
-      // Load and display current goal - handle different possible data structures  
-      const goalValue = company.goal || data.goal;
+      // Load and display current goal
+      const goalValue = userData.goal;
       if (goalValue && typeof goalValue === 'string' && goalValue.trim()) {
-        // Display current goal as text (since it's stored as a single text field)
         document.getElementById('currentGoalDisplay').innerHTML = `
           <strong>Current Goal:</strong><br><br>
-          ${goalValue}
+          ${sanitizeInput(goalValue)}
         `;
       } else {
         document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
       }
 
-      if (company || goalValue) {
+      if (userData || goalValue) {
         showStatus('Data loaded successfully!');
       } else {
         showStatus('No existing data found. Please fill out the forms.');
@@ -957,7 +1038,9 @@ if (uploadedLogoFile && uploadedLogoFile.url) {
     saveAllData();
   });
 
-  // Security: Session timeout check
+  // Enhanced security measures
+  
+  // Session timeout check
   setInterval(async function() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -967,10 +1050,11 @@ if (uploadedLogoFile && uploadedLogoFile.url) {
       }
     } catch (e) {
       console.error('Session check failed:', e);
+      redirectToLogin();
     }
   }, 300000); // Check every 5 minutes
 
-  // Security: Detect tab visibility and re-verify auth when tab becomes visible
+  // Detect tab visibility and re-verify auth when tab becomes visible
   document.addEventListener('visibilitychange', async function() {
     if (!document.hidden) {
       try {
@@ -979,92 +1063,73 @@ if (uploadedLogoFile && uploadedLogoFile.url) {
           redirectToLogin();
         } else {
           authToken = session.access_token;
+          // Refresh medallion data
+          await loadUserSubscriptionData();
         }
       } catch (e) {
         console.error('Visibility auth check failed:', e);
+        redirectToLogin();
       }
     }
   });
 
-  // Security: Rate limiting for API calls
-  const rateLimiter = {
-    calls: [],
-    maxCalls: 10,
-    windowMs: 60000, // 1 minute
-    
-    canMakeCall: function() {
-      const now = Date.now();
-      const windowStart = now - this.windowMs;
-      
-      // Remove old calls outside the window
-      this.calls = this.calls.filter(time => time > windowStart);
-      
-      if (this.calls.length >= this.maxCalls) {
-        return false;
-      }
-      
-      this.calls.push(now);
-      return true;
+  // Prevent right-click in production
+  document.addEventListener('contextmenu', function(e) {
+    if (window.location.hostname === 'victoryvision.app') {
+      e.preventDefault();
     }
-  };
+  });
 
-  // Security: Input validation and sanitization
-  function validateAndSanitizeInput(data) {
-    const sanitized = {};
-    
-    for (const [key, value] of Object.entries(data)) {
-      if (typeof value === 'string') {
-        // Basic XSS prevention
-        sanitized[key] = value
-          .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-          .replace(/javascript:/gi, '')
-          .replace(/on\w+\s*=/gi, '')
-          .trim();
-      } else {
-        sanitized[key] = value;
+  // Prevent F12 and other dev shortcuts in production
+  document.addEventListener('keydown', function(e) {
+    if (window.location.hostname === 'victoryvision.app') {
+      if (e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+          (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+          (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
       }
     }
-    
-    return sanitized;
+  });
+
+  // Content Security Policy enforcement
+  if (window.location.hostname === 'victoryvision.app') {
+    // Monitor for suspicious activity
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      const url = args[0];
+      if (typeof url === 'string' && !url.startsWith('https://victoryvision.app') && !url.startsWith('https://nyyvsdkumxvuwimmucdb.supabase.co')) {
+        console.warn('Blocked suspicious fetch request to:', url);
+        return Promise.reject(new Error('Blocked external request'));
+      }
+      return originalFetch.apply(this, args);
+    };
   }
 
-  // Override the apiCall to include validation and rate limiting
-  const originalApiCall = apiCall;
-  window.apiCall = async function(endpoint, data = null, method = 'POST') {
-    // Rate limiting check
-    if (!rateLimiter.canMakeCall()) {
-      throw new Error('Rate limit exceeded. Please wait before making more requests.');
-    }
-    
-    // Input validation and sanitization for POST requests
-    if (method === 'POST' && data) {
-      data = validateAndSanitizeInput(data);
-    }
-    
-    // Call original function
-    return originalApiCall(endpoint, data, method);
+  // Prevent eval and other dangerous functions
+  window.eval = function() {
+    throw new Error('eval is disabled for security');
   };
-</script>
 
-    <script>
-      async function loadMedallion() {
-        try {
-          const res = await fetch('/user/get');
-          const data = await res.json();
-          const plan = (data.subscription_plan || 'bronze').toLowerCase();
-          const medallion = document.createElement('div');
-          medallion.className = 'subscription-medallion ' + plan;
-          medallion.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-          const navbar = document.querySelector('.navbar');
-          if (navbar) {
-            navbar.appendChild(medallion);
+  // Monitor for XSS attempts
+  const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      mutation.addedNodes.forEach(function(node) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const scripts = node.querySelectorAll ? node.querySelectorAll('script') : [];
+          if (scripts.length > 0) {
+            console.warn('Suspicious script injection detected');
           }
-        } catch (e) {
-          console.error("Medallion load failed:", e);
         }
-      }
-      document.addEventListener("DOMContentLoaded", loadMedallion);
-    </script>
+      });
+    });
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 
+</script>
 </body>
 </html>
