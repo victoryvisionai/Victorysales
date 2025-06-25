@@ -1,12 +1,21 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision AI — Smarter Marketing Starts Here</title>
+  <meta name="description" content="Victory Vision AI empowers CMOs and CEOs with self-optimizing, real-time AI billboard marketing. Claim your Founders Deal today.">
+  <meta property="og:title" content="Victory Vision AI — Smarter Marketing Starts Here" />
+  <meta property="og:description" content="Autonomous, data-driven billboard campaigns with proven ROI. No onboarding calls. Just results." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="author" content="Victory Vision AI" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/robot.svg" type="image/svg+xml" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
@@ -14,7 +23,6 @@
       color: #0a3161;
       scroll-behavior: smooth;
     }
-
     header {
       position: relative;
       width: 100%;
@@ -24,7 +32,6 @@
       align-items: center;
       justify-content: center;
     }
-
     header video {
       position: absolute;
       top: 0;
@@ -34,113 +41,33 @@
       object-fit: cover;
       z-index: -1;
     }
-
     .overlay {
       position: relative;
       text-align: center;
       color: white;
       background: rgba(10, 49, 97, 0.65);
-      padding: 4rem 1rem;
+      padding: 6rem 1rem;
+      width: 100%;
     }
-
     .overlay img {
       width: 160px;
       margin-bottom: 2rem;
     }
-
     .hero-tagline {
-      font-size: 2.5rem;
-      font-weight: 800;
-      max-width: 700px;
-      margin: 0 auto;
+      font-size: 3rem;
+      font-weight: 900;
+      max-width: 800px;
+      margin: 0 auto 1rem;
       line-height: 1.2;
     }
-
-    .section {
-      padding: 80px 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
+    .hero-subtext {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto 2rem;
     }
-
-    .section h2 {
-      font-size: 2.2rem;
-      color: #0a3161;
-      font-weight: 800;
-      margin-bottom: 1rem;
+    .hero-cta {
+      margin-top: 2rem;
     }
-
-    .section p {
-      font-size: 1.125rem;
-      line-height: 1.7;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .features {
-      display: grid;
-      gap: 2rem;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      margin-top: 60px;
-    }
-
-    .feature {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 2rem;
-      transition: transform 0.3s;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    }
-
-    .feature:hover {
-      transform: translateY(-5px);
-    }
-
-    .feature h3 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      color: #0a3161;
-    }
-
-    .feature p {
-      color: #324a6d;
-    }
-
-    .highlight {
-      background: #0a3161;
-      color: white;
-    }
-
-    .highlight h2 {
-      color: #ffffff;
-    }
-
-    .highlight-cta {
-      margin-top: 50px;
-    }
-
-    .quiz {
-      margin: 2rem 0;
-      padding: 2rem;
-      background: #ffffff;
-      border-radius: 12px;
-    }
-
-    .quiz h3 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .quiz input[type="email"] {
-      padding: 0.75rem 1rem;
-      width: 80%;
-      max-width: 400px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-    }
-
     .btn {
       display: inline-block;
       background: #0a3161;
@@ -154,23 +81,95 @@
       text-decoration: none;
       cursor: pointer;
     }
-
     .btn:hover {
       background: #042040;
     }
-
+    main {
+      display: block;
+    }
+    section.section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    section h2 {
+      font-size: 2.5rem;
+      color: #0a3161;
+      font-weight: 900;
+      margin-bottom: 1.25rem;
+    }
+    section p {
+      font-size: 1.2rem;
+      line-height: 1.75;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .features {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      margin-top: 60px;
+    }
+    .feature {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      transition: transform 0.3s;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .feature:hover {
+      transform: translateY(-5px);
+    }
+    .feature h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #0a3161;
+      font-weight: 700;
+    }
+    .feature p {
+      color: #324a6d;
+      font-size: 1.05rem;
+    }
+    .highlight {
+      background: #0a3161;
+      color: white;
+    }
+    .highlight h2 {
+      color: #ffffff;
+    }
+    .highlight p {
+      color: #f1f3f8;
+    }
+    .highlight-cta {
+      margin-top: 40px;
+    }
+    .quiz {
+      margin: 2rem 0;
+      padding: 3rem 2rem;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+    .quiz h3 {
+      font-size: 1.7rem;
+      margin-bottom: 1rem;
+      font-weight: 800;
+    }
+    .quiz p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
     .case-studies {
       margin-top: 4rem;
     }
-
     .video-wrapper {
-      max-width: 800px;
+      max-width: 900px;
       margin: 2rem auto;
       border-radius: 8px;
       overflow: hidden;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     }
-
     .visuals {
       display: flex;
       flex-wrap: wrap;
@@ -178,7 +177,6 @@
       gap: 2rem;
       margin-top: 4rem;
     }
-
     .visual {
       flex: 1 1 300px;
       background: #ffffff;
@@ -186,20 +184,41 @@
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
     }
-
     .visual img {
       width: 100%;
       height: auto;
       border-radius: 8px;
+      margin-bottom: 1rem;
     }
-
+    .kpi-stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .kpi {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      flex: 1 1 280px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+    .kpi h4 {
+      font-size: 2rem;
+      color: #0a3161;
+      margin-bottom: 0.5rem;
+    }
+    .kpi p {
+      font-size: 1rem;
+      color: #324a6d;
+    }
     footer {
       background: #0a3161;
       color: white;
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
     }
-
     footer form input[type="email"] {
       padding: 0.75rem 1rem;
       width: 300px;
@@ -210,134 +229,147 @@
       font-size: 1rem;
       margin-bottom: 1rem;
     }
-
     footer form .btn {
       padding: 0.75rem 1.25rem;
       font-size: 1rem;
       font-weight: 600;
     }
-
+    .footer-tagline {
+      margin-top: 3rem;
+      font-size: 1rem;
+      color: #d3dce6;
+    }
+    .footer-tagline a {
+      color: #ffffff;
+      text-decoration: underline;
+    }
     @media (max-width: 640px) {
       .hero-tagline {
-        font-size: 1.75rem;
+        font-size: 2rem;
         padding-top: 1rem;
       }
-
+      .hero-subtext {
+        font-size: 1rem;
+      }
       footer form input[type="email"] {
         width: 100%;
         margin: 0 0 1rem 0;
       }
-
       footer form .btn {
         width: 100%;
+      }
+      .kpi-stats {
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
-
   <header>
     <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750872854/uxnqhdn6wyqkg8l9ioiq.mp4" type="video/mp4">
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750872854/uxnqhdn6wyqkg8l9ioiq.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
     </video>
     <div class="overlay">
       <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
-      <h1 class="hero-tagline">AI-Powered Marketing That Meets the Moment — Automate, Personalize, Win.</h1>
-    </div>
-  </header>
-
-  <main>
-    <section class="section">
-      <h2>Victory Vision AI</h2>
-      <p>We are a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize strategies in real-time using data like location, weather, traffic, and consumer behavior. From ambitious startups to corporate giants — Victory Vision AI empowers modern marketers to move faster, smarter, and more effectively.</p>
-    </section>
-
-    <section class="section highlight">
-      <h2>Campaign: One in a Million</h2>
-      <p>Ready for marketing that actually understands your customer? “One in a Million” isn’t just a campaign name—it’s the outcome. Our AI knows your audience better than anyone, delivering hyper-personalized visuals on digital billboards based on live weather, traffic, and browsing data. The result? Higher engagement, less spend, and drastically better customer experience.</p>
-      
-      <div class="highlight-cta">
+      <h1 class="hero-tagline">Meet Your AI Marketing Co-Pilot</h1>
+      <p class="hero-subtext">Victory Vision AI powers hyper-personalized, real-time billboard campaigns—autonomously. No guesswork. No demos. Just results.</p>
+      <div class="hero-cta">
         <a href="#form" class="btn">Claim Your Founders Deal</a>
       </div>
-    </section>
-
+    </div>
+  </header>
+  <main>
     <section class="section">
-      <h2>How It Works</h2>
+      <h2>What Is Victory Vision AI?</h2>
+      <p>Victory Vision AI liberates marketing teams from static campaigns and manual workflows. Our smart, self-optimizing platform uses live consumer signals—weather, traffic, browsing patterns—to dynamically update billboard visuals in real-time. You get intelligent outreach at scale with proof-backed metrics and zero onboarding barriers.</p>
+    </section>
+    <section class="section highlight">
+      <h2>Founders Deal: Own the Advantage</h2>
+      <p>For a limited time, fast-moving companies can access our full targeting and personalization platform at an exclusive rate. Seize this chance to automate visibility and outperform competitors before this offer closes.</p>
+      <div class="highlight-cta">
+        <a href="#form" class="btn">Start My AI Campaign</a>
+      </div>
+    </section>
+    <section class="section">
+      <h2>How It Works in 3 Steps</h2>
       <div class="features">
         <div class="feature">
-          <h3>Data-Responsive Campaigns</h3>
-          <p>Target audiences dynamically based on live data inputs — from time of day to weather to pedestrian density.</p>
+          <h3>Live Data Targeting</h3>
+          <p>Victory AI reads real-world triggers like commute time, sunshine, or major events—then delivers optimized content at the perfect moment.</p>
         </div>
         <div class="feature">
-          <h3>AI Personalization Engine</h3>
-          <p>Automatic creative swaps based on viewer profiles make every impression hyper-relevant — and more effective.</p>
+          <h3>Instant Personalization</h3>
+          <p>Our algorithm swaps content per viewer demographic, device, and location—ensuring every impression feels hand-crafted.</p>
         </div>
         <div class="feature">
-          <h3>Easy Execution</h3>
-          <p>No demos or onboarding required. Setup takes minutes. Results are tracked in real-time from your dashboard.</p>
+          <h3>Autonomous Optimization</h3>
+          <p>You launch once. From there, the system learns, updates, and boosts performance without touching a thing.</p>
         </div>
       </div>
     </section>
-
     <section class="section quiz">
-      <h3>What’s Your AI Marketing Maturity?</h3>
-      <p>Take our free 60-second assessment and get a tailored roadmap to hyper-effective campaigns.</p>
-      <a href="#" class="btn">Start the Quiz</a>
+      <h3>What’s Your AI Marketing Readiness?</h3>
+      <p>Take our 60-second quiz to uncover your AI advantage—and receive a tailored roadmap for immediate performance lift.</p>
+      <a href="#" class="btn">Take the Quiz</a>
     </section>
-
     <section class="section case-studies">
-      <h2>Real Results. Real Clients.</h2>
-      <p>See how Victory Vision AI has helped real businesses drive engagement and revenue in weeks—not months.</p>
-      <div class="video-wrapper">
-        <iframe width="100%" height="400" src="https://www.youtube.com/embed/lTTajzrSkCw" frameborder="0" allowfullscreen></iframe>
+      <h2>Client Results You Can See</h2>
+      <p>Watch how high-performing CMOs unlocked triple-digit ROI within weeks of switching to Victory Vision AI.</p>
+      <div class="video-wrapper" role="region" aria-label="Client Success Video">
+        <iframe width="100%" height="450" src="https://www.youtube.com/embed/lTTajzrSkCw" title="Client Case Study" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
     </section>
-
     <section class="section">
-      <h2>Before & After: The AI Difference</h2>
+      <h2>Before vs. After: The AI Edge</h2>
       <div class="visuals">
         <div class="visual">
-          <h3>Before: Manual Guesswork</h3>
-          <img src="https://via.placeholder.com/400x250?text=Before+AI+Campaign" alt="Before" />
-          <p>Generic messaging. Stagnant CTR. High spend. Low ROI.</p>
+          <h3>Before:</h3>
+          <img src="https://via.placeholder.com/400x250?text=Before+AI" alt="Before AI Billboard Example" />
+          <p>Manual configuration. Broad messaging. Inconsistent outcomes.</p>
         </div>
         <div class="visual">
-          <h3>After: Victory Insights</h3>
-          <img src="https://via.placeholder.com/400x250?text=After+AI+Campaign" alt="After" />
-          <p>Dynamic content. 3x engagement. 42% spend reduction. Clear attribution.</p>
+          <h3>After: Powered by Victory AI</h3>
+          <img src="https://via.placeholder.com/400x250?text=After+AI" alt="After AI Billboard Example" />
+          <p>Real-time creative swaps. 3x CTR growth. 40% lower cost per action.</p>
         </div>
       </div>
     </section>
-
     <section class="section">
-      <h2>Smarter Metrics, Clearer Wins</h2>
-      <div class="features">
-        <div class="feature">
-          <h3>+220% Average Increase in Engagement</h3>
-          <p>Customer interactions spike rapidly with AI-relevant messaging.</p>
+      <h2>The Metrics That Matter</h2>
+      <div class="kpi-stats">
+        <div class="kpi">
+          <h4>+220%</h4>
+          <p>Average lift in engagement within 30 days</p>
         </div>
-        <div class="feature">
-          <h3>Instant Dashboard</h3>
-          <p>Watch every metric update in real-time as campaigns adjust algorithmically.</p>
+        <div class="kpi">
+          <h4>42%</h4>
+          <p>Reduction in total media spend vs. traditional campaigns</p>
         </div>
-        <div class="feature">
-          <h3>Predictive Performance Graphs</h3>
-          <p>Our AI forecasts outcomes for smarter budgeting and planning.</p>
+        <div class="kpi">
+          <h4>100%</h4>
+          <p>Campaigns optimized autonomously—save time, skip tools</p>
+        </div>
+        <div class="kpi">
+          <h4>Live</h4>
+          <p>Dashboard updates let you watch performance evolve in real-time</p>
         </div>
       </div>
     </section>
   </main>
-
   <footer id="form">
-    <h2>Join Now — Founders Deal Ends Soon</h2>
-    <p>Slots are limited. Skip the waitlist and start optimizing today.</p>
+    <h2>Act Fast — Founders Deal Ends Soon</h2>
+    <p>This exclusive offer is limited by time and capacity. Accelerate your marketing now.</p>
     <form action="#" method="POST">
       <input type="email" name="email" placeholder="Enter your business email" required />
-      <button type="submit" class="btn">Get Started</button>
+      <button type="submit" class="btn">Get Started Now</button>
     </form>
-    <p style="margin-top: 1rem; font-size: 0.9rem; color: #d3dce6;">No onboarding calls. No demos. Just smarter marketing.</p>
+    <p style="margin-top: 1rem; font-size: 0.9rem; color: #d3dce6;">No onboarding calls. No demos. Just launch, optimize, and lead.</p>
+    <div class="footer-tagline">
+      Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" aria-label="Victory Vision App Official Site">Build your free AI website at Victory Vision</a>
+    </div>
   </footer>
-
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=004edc1b907764efebd97dee0128411fefa8fddd" width="1" height="1" alt="" style="display:none;" />
 </body>
 </html>
-```
