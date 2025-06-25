@@ -1,11 +1,19 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision AI – Marketing Mastery Without the Overhead</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <meta name="description" content="Victory Vision AI enables CEOs and CMOs to launch adaptive, AI-powered marketing campaigns with speed, clarity, and zero overhead." />
+  <meta name="theme-color" content="#0a3161" />
+  <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4bb.png" />
+  <meta property="og:title" content="Victory Vision AI – Marketing Mastery Without the Overhead">
+  <meta property="og:description" content="AI-powered campaign automation for marketing leaders. Execute smarter, scale faster.">
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg">
+  <meta property="og:url" content="https://www.victoryvision.app">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -15,14 +23,13 @@
       --font: 'Inter', sans-serif;
     }
 
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: var(--font);
     }
 
     body {
+      margin: 0;
+      font-family: var(--font);
       background-color: var(--white);
       color: var(--primary);
       line-height: 1.6;
@@ -55,13 +62,14 @@
       height: 100%;
       text-align: center;
       padding: 2rem;
-      background: rgba(10, 49, 97, 0.5);
+      background: rgba(10, 49, 97, 0.6);
       backdrop-filter: blur(4px);
     }
 
     .hero-overlay img {
       width: 120px;
       margin-bottom: 1rem;
+      border-radius: 50%;
     }
 
     .hero-overlay h1 {
@@ -78,30 +86,62 @@
       max-width: 600px;
     }
 
+    .hero-overlay .hero-subtext {
+      font-size: 1.4rem;
+      color: var(--white);
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+
+    .hero-cta {
+      margin-top: 2rem;
+    }
+
+    .hero-cta button {
+      padding: 0.9rem 1.6rem;
+      background-color: var(--white);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .hero-cta button:hover {
+      background-color: #dbe7f4;
+    }
+
+    main {
+      display: block;
+    }
+
     section {
       padding: 4rem 2rem;
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    .intro {
+    .intro,
+    .headline {
       text-align: center;
     }
 
-    .intro p {
+    .intro p,
+    .headline p {
       font-size: 1.1rem;
       margin-top: 1rem;
       color: #333;
     }
 
-    .headline {
-      text-align: center;
-      padding: 4rem 2rem 2rem;
-    }
-
-    .headline h2 {
+    .headline h2,
+    .intro h2,
+    .demo-preview h2,
+    .testimonial-section h2,
+    .cta-section h2 {
       font-size: 2.2rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       color: var(--primary);
     }
 
@@ -144,6 +184,17 @@
       100% { opacity: 1; transform: scale(1); }
     }
 
+    .demo-preview {
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    .demo-preview img {
+      max-width: 100%;
+      border-radius: 10px;
+      border: 2px solid var(--light);
+    }
+
     .testimonial-section {
       background-color: #ffffff;
       padding: 4rem 2rem;
@@ -165,28 +216,12 @@
       color: var(--primary);
     }
 
-    .demo-preview {
-      text-align: center;
-      margin-top: 3rem;
-    }
-
-    .demo-preview img {
-      max-width: 100%;
-      border-radius: 10px;
-      border: 2px solid var(--light);
-    }
-
     .cta-section {
       background-color: var(--primary);
       color: var(--white);
       text-align: center;
       padding: 4rem 2rem;
       position: relative;
-    }
-
-    .cta-section h2 {
-      font-size: 2rem;
-      margin-bottom: 1.2rem;
     }
 
     .countdown {
@@ -197,13 +232,25 @@
       padding: 0.5rem 1rem;
       margin: 1rem auto 2rem;
       border-radius: 8px;
+      font-weight: 700;
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta-section form {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
     .cta-section input[type="email"] {
       padding: 0.8rem 1rem;
       border-radius: 6px;
       border: none;
-      margin-right: 1rem;
       width: 280px;
       max-width: 90%;
     }
@@ -231,108 +278,116 @@
       color: #777;
     }
 
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
     @media (max-width: 600px) {
       .hero-overlay h1 {
         font-size: 2rem;
       }
 
-      .cta-section {
-        text-align: center;
+      .cta-section form {
+        flex-direction: column;
+        align-items: center;
       }
 
-      .cta-section input[type="email"] {
-        display: block;
-        margin: 0 auto 1rem;
-      }
-
+      .cta-section input[type="email"],
       .cta-section button {
-        display: block;
-        margin: 0 auto;
+        width: 100%;
+        max-width: 90%;
+        margin: 0;
       }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <video autoplay loop muted playsinline>
-    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750872832/apkv1c4mj8g2rgte9ytd.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <div class="hero-overlay">
-    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
-    <h1>Marketing Mastery Without the Overhead</h1>
-    <p>Launch smarter, faster campaigns — powered by AI, not staff meetings.</p>
-  </div>
-</header>
-
-<main>
-
-  <section class="intro">
-    <h2>Introducing Victory Vision AI</h2>
-    <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations.</p>
-  </section>
-
-  <section class="headline">
-    <h2>No Desk, No Problem</h2>
-    <p>AI marketing automation for CEOs & CMOs who want more scale without more staff. From predictive targeting to auto-optimized creative—Victory Vision AI delivers success without the spreadsheet chaos.</p>
-  </section>
-
-  <section>
-    <div class="columns">
-      <div class="column animated-icons">
-        <h3>AI Tools for Social Media</h3>
-        <p>Auto-generate, test, and deploy scroll-stopping content backed by real behavioral data, no social team required.</p>
-      </div>
-      <div class="column animated-icons">
-        <h3>Marketing Automation</h3>
-        <p>Set once — adapt continuously. Our AI refines strategy in real time across platforms as performance data flows in.</p>
-      </div>
-      <div class="column animated-icons">
-        <h3>No Manager Needed</h3>
-        <p>Save 60+ hours/month — zero hires required. The platform’s autonomy lets you launch campaigns in hours, not weeks.</p>
-      </div>
-      <div class="column animated-icons">
-        <h3>Scale Smarter with AI</h3>
-        <p>Designed for fast-moving execs, Victory Vision AI helps you grow with insights, not guesswork.</p>
+  <header>
+    <video autoplay loop muted playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750872832/apkv1c4mj8g2rgte9ytd.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="hero-overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+      <h1>Marketing Mastery Without the Overhead</h1>
+      <p class="hero-subtext">Launch 3x faster. Cut campaign costs by up to 70% with AI-powered execution.</p>
+      <div class="hero-cta">
+        <button onclick="document.querySelector('.cta-section').scrollIntoView({behavior: 'smooth'})">Unlock Early Access – 3 Days Left</button>
       </div>
     </div>
+  </header>
 
-    <div class="demo-preview">
-      <h2>See it in Action</h2>
-      <p>Experience the platform in your browser – no login, no sales calls.</p>
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Platform Interface Simulation">
-    </div>
-  </section>
+  <main>
+    <section class="intro">
+      <h2>Introducing Victory Vision AI</h2>
+      <p>Victory Vision AI revolutionizes enterprise marketing by eliminating manual complexity. Through real-time, AI-driven automation, you can launch precision campaigns that react to live signals — audience behavior, weather shifts, traffic patterns — without ever opening a spreadsheet. Our goal: measurable outcomes with zero operational drag.</p>
+    </section>
 
-  <section class="testimonial-section">
-    <h2>What Marketing Leaders Are Saying</h2>
-    <div class="testimonial">
-      "Victory Vision AI cut our campaign setup time by 85%. It's like having a full-stack marketing team in a single app."
-      <span>– Julia K., CMO, FastScale Media</span>
-    </div>
-    <div class="testimonial">
-      "Finally, someone built an AI tool that doesn’t require months of onboarding. We were live in 24 hours — and profitable in 7 days."
-      <span>– Malik E., Solo Growth Marketer</span>
-    </div>
-  </section>
+    <section class="headline">
+      <h2>No Desk, No Problem</h2>
+      <p>Designed for fast-paced CEOs & CMOs. Victory Vision AI runs cross-channel campaigns on autopilot — predictive targeting, adaptive messaging, auto-optimized creative — with zero micromanagement. Get back your time and your margin.</p>
+    </section>
 
-  <section class="cta-section">
-    <h2>Founders Deal: Early Access, No Strings</h2>
-    <div class="countdown">🔥 Deal expires in 3 days</div>
-    <p>Be one of the first 30 users to lock in premium features at just $99/month — no meetings, no demos, just results.</p>
-    <form action="#" method="POST">
-      <input type="email" placeholder="Your work email" required>
-      <button type="submit">Claim Offer</button>
-    </form>
-  </section>
+    <section aria-label="Platform Features">
+      <div class="columns">
+        <div class="column animated-icons">
+          <h3><span aria-hidden="true">⚡</span> AI Tools for Social Media</h3>
+          <p>Generate, test, and scale content automatically. Our behavioral engine ensures real engagement — no social team needed.</p>
+        </div>
+        <div class="column animated-icons">
+          <h3><span aria-hidden="true">⚡</span> Autonomous Campaigns</h3>
+          <p>Our AI adapts in real time — adjusting spend, creative, and placement on its own based on results. You monitor. It executes.</p>
+        </div>
+        <div class="column animated-icons">
+          <h3><span aria-hidden="true">⚡</span> Staff-Free Scalability</h3>
+          <p>Save 60+ hours/month and tens of thousands in salaries. No coordinator or ads manager required to grow.</p>
+        </div>
+        <div class="column animated-icons">
+          <h3><span aria-hidden="true">⚡</span> Real-Time Revenue Insights</h3>
+          <p>Cut waste and double down intelligently. Victory Vision tracks impact live and recommends optimizations you can trust.</p>
+        </div>
+      </div>
 
-</main>
+      <div class="demo-preview">
+        <h2>See it in Action</h2>
+        <p>Experience our live browser-based simulation — no logins, no sales calls, just real-time speed and ease.</p>
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Platform Interface Simulation">
+      </div>
+    </section>
 
-<footer>
-  © 2024 Victory Vision AI. All rights reserved.
-</footer>
+    <section class="testimonial-section">
+      <h2>What Marketing Leaders Are Saying</h2>
+      <div class="testimonial">
+        "Victory Vision AI cut our campaign setup time by 85%. It's like having a full-stack marketing team in a single app."
+        <span>– Julia K., CMO, FastScale Media</span>
+      </div>
+      <div class="testimonial">
+        "Finally, someone built an AI tool that doesn’t require months of onboarding. We were live in 24 hours — and profitable in 7 days."
+        <span>– Malik E., Solo Growth Marketer</span>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Founders Deal: Early Access, No Strings</h2>
+      <div class="countdown" aria-label="Deal expires in 3 days">🔥 Deal expires in 3 days</div>
+      <p>Only 30 seats available. Get the full platform for just $99/month — immediate access, no calls or contracts required. This rate locks in for life.</p>
+      <form action="#" method="POST">
+        <label for="email" class="sr-only">Your work email</label>
+        <input id="email" type="email" name="email" placeholder="Your work email" required>
+        <button type="submit">Unlock Founders Rate Now</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2024 Victory Vision AI. All rights reserved.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener">Build your free AI website at Victory Vision</a></p>
+  </footer>
+
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=a0b9b4d669931798457c960924a95912abcd9642" width="1" height="1" style="display:none;" alt="Pixel Tracker"/>
 
 </body>
 </html>
-```
