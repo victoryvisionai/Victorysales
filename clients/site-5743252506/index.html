@@ -1,43 +1,49 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision AI — Marketing That Understands More Than Clicks</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <meta name="description" content="Empathy-driven AI billboard marketing for CEOs and CMOs. Launch in 15 mins. No demos. 60% ROI. Start free with Victory Vision AI." />
+  <meta property="og:title" content="Victory Vision AI — Marketing That Understands More Than Clicks" />
+  <meta property="og:description" content="Real-time emotional analytics. No sales calls. 60% average ROI gains. Transform your billboard campaigns with empathy-driven AI." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f441.png" type="image/png" />
   <style>
     :root {
       --blue: #0a3161;
       --white: #ffffff;
       --light-gray: #f5f5f5;
       --font: 'Inter', sans-serif;
+      --accent: #ffaa00;
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: var(--font);
       background-color: var(--white);
       color: var(--blue);
       line-height: 1.6;
     }
-
     header, main, footer {
       width: 100%;
     }
-
-    /* HERO VIDEO SECTION */
     .hero {
       position: relative;
       height: 100vh;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
     .hero video {
       width: 100%;
       height: 100%;
@@ -47,207 +53,196 @@
       left: 0;
       z-index: -1;
     }
-
     .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(10, 49, 97, 0.5);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      position: relative;
       text-align: center;
       color: var(--white);
-      padding: 0 1.5rem;
+      padding: 0 2rem;
+      max-width: 900px;
+      z-index: 1;
     }
-
     .hero-overlay img {
       width: 120px;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
-
     .hero-overlay h1 {
-      font-size: 2.8rem;
+      font-size: 3rem;
       font-weight: 800;
       margin-bottom: 1rem;
     }
-
     .hero-overlay p {
       font-size: 1.2rem;
       font-weight: 400;
+      margin-bottom: 2rem;
     }
-
-    /* INTRO SECTION */
-    .intro {
-      background: var(--white);
+    .hero-subhead {
+      font-size: 1rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+    .cta-hero-form {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
+    .cta-hero-form input[type="email"] {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px 0 0 6px;
+      width: 260px;
+      max-width: 80%;
+    }
+    .cta-hero-form button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      background-color: var(--accent);
+      color: var(--blue);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .cta-hero-form button:hover {
+      background-color: #e69900;
+    }
+    section {
       padding: 5rem 2rem;
+    }
+    .intro, .cta {
+      background: var(--white);
+      text-align: center;
       max-width: 1000px;
       margin: 0 auto;
-      text-align: center;
     }
-
-    .intro h2 {
-      font-size: 2rem;
+    .intro h2, .narrative h3, .cta h3 {
+      font-size: 2.2rem;
       font-weight: 700;
       margin-bottom: 1.5rem;
     }
-
-    .intro p {
+    .intro p, .cta p {
       font-size: 1.1rem;
       color: #333;
       line-height: 1.8;
-    }
-
-    /* NARRATIVE SECTION */
-    .narrative {
-      background: var(--light-gray);
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-
-    .narrative h3 {
-      font-size: 1.8rem;
-      font-weight: 700;
       margin-bottom: 1rem;
     }
-
+    .narrative {
+      background: var(--light-gray);
+      text-align: center;
+    }
     .narrative p {
       max-width: 800px;
       margin: 0 auto;
       font-size: 1.1rem;
+      line-height: 1.7;
     }
-
-    /* INTERACTIVE AI SECTION */
     .features {
+      background-color: var(--white);
+      text-align: center;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
-      padding: 5rem 2rem;
-      background-color: var(--white);
-      text-align: center;
     }
-
     .feature {
       border: 1px solid #ddd;
-      padding: 2.5rem 1.5rem;
+      padding: 2rem 1.5rem;
       border-radius: 12px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
     .feature:hover {
       transform: translateY(-5px);
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
     }
-
     .feature h4 {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 600;
       margin-bottom: 1rem;
     }
-
     .feature p {
       font-size: 1rem;
       color: #444;
     }
-
-    /* TESTIMONIALS */
+    .results-bar {
+      background-color: var(--accent);
+      color: var(--blue);
+      padding: 1rem;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+    }
     .testimonials {
       background-color: var(--light-gray);
-      padding: 5rem 2rem;
       text-align: center;
     }
-
     .testimonials h3 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: 700;
       margin-bottom: 2.5rem;
     }
-
     .testimonial-carousel {
       display: flex;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      gap: 1.5rem;
+      gap: 2rem;
       padding-bottom: 1rem;
     }
-
     .testimonial {
-      background: white;
-      flex: 0 0 300px;
+      background: var(--white);
+      flex: 0 0 320px;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.06);
       scroll-snap-align: center;
       transition: transform 0.3s ease;
     }
-
     .testimonial:hover {
       transform: scale(1.03);
     }
-
     .testimonial p {
       font-style: italic;
-      font-size: 1rem;
+      font-size: 1.05rem;
       margin-bottom: 1rem;
     }
-
     .testimonial span {
       display: block;
       font-weight: 600;
       color: var(--blue);
     }
-
-    /* CALL TO ACTION */
     .cta {
       background-color: var(--blue);
       color: var(--white);
-      padding: 5rem 2rem;
-      text-align: center;
     }
-
-    .cta h3 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .cta p {
-      font-size: 1.1rem;
-      margin-bottom: 2rem;
-    }
-
-    .cta form input[type="email"] {
-      padding: 0.75rem;
-      border: none;
-      border-radius: 6px 0 0 6px;
-      width: 250px;
-      max-width: 80%;
-    }
-
-    .cta form button {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 0 6px 6px 0;
-      background-color: #ffffff;
-      color: var(--blue);
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .cta form button:hover {
-      background-color: #ddd;
-    }
-
     .cta form {
       display: inline-flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: center;
     }
-
+    .cta input[type="email"] {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px 0 0 6px;
+      width: 250px;
+      max-width: 80%;
+    }
+    .cta button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      background-color: var(--accent);
+      color: var(--blue);
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .cta button:hover {
+      background-color: #e69900;
+    }
     footer {
       background: var(--light-gray);
       text-align: center;
@@ -255,25 +250,31 @@
       font-size: 0.9rem;
       color: #666;
     }
-
+    footer a {
+      color: #0a3161;
+      text-decoration: underline;
+      font-weight: 500;
+    }
     @media (max-width: 600px) {
       .hero-overlay h1 {
-        font-size: 1.8rem;
+        font-size: 2rem;
+      }
+      .hero-subhead {
+        font-size: 0.9rem;
       }
       .hero-overlay p {
         font-size: 1rem;
       }
-
       .feature {
         padding: 2rem 1rem;
       }
-
       .cta form {
         flex-direction: column;
       }
-
-      .cta form input[type="email"],
-      .cta form button {
+      .cta input[type="email"],
+      .cta button,
+      .cta-hero-form input[type="email"],
+      .cta-hero-form button {
         border-radius: 6px;
         margin: 0.25rem 0;
         width: 100%;
@@ -283,54 +284,53 @@
   </style>
 </head>
 <body>
-
 <header class="hero">
-  <video autoplay muted loop playsinline>
+  <video autoplay muted loop playsinline poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg">
     <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750876985/pmncm8nvdgrxuuzhtl0g.mp4" type="video/mp4">
+    Your browser does not support the video tag.
   </video>
   <div class="hero-overlay">
-    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
-    <h1>Where AI meets empathy</h1>
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+    <h1>Where AI Meets Empathy</h1>
     <p>Marketing that understands more than clicks</p>
+    <div class="hero-subhead">Real-time emotional analytics. No sales calls. 60% average ROI gains.</div>
+    <form class="cta-hero-form" action="#" method="post">
+      <input type="email" placeholder="Enter your business email" required />
+      <button type="submit">Start Free Trial</button>
+    </form>
   </div>
 </header>
-
 <main>
   <section class="intro">
-    <h2>Precision Meets Empathy</h2>
-    <p>
-      Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.
-    </p>
+    <h2>Built for Busy Decision Makers</h2>
+    <p>Victory Vision AI is revolutionizing billboard marketing for forward-thinking CMOs and CEOs. Our frictionless software pairs advanced artificial intelligence with authentic emotional insight to deliver campaign performance you can feel. No learning curve. No sales rep. Just launch and go—on your own terms.</p>
+    <p>With real-time audience emotion detection, adaptive displays that change with weather, traffic, or sentiment, and a no-code, self-service interface, Victory Vision AI is the fastest path to relevance and ROI in outdoor media.</p>
   </section>
-
   <section class="narrative">
-    <h3>Campaign: Feel the Signal</h3>
-    <p>
-      The future of marketing is emotionally intelligent. Victory Vision AI enables campaigns to respond in real-time—not just to impressions and data, but to human emotion. Our platform understands facial expression, mood patterns, and contextual behavior, turning digital billboards into empathy-powered storytellers. Marketing is no longer just about reach—it's about resonance. It's time to stop guessing and start connecting.
-    </p>
+    <h3>Campaign Spotlight: Feel the Signal</h3>
+    <p>Imagine a digital campaign that notices when a commuter frowns—and changes its message. That’s what Victory Vision AI enables. Our platform turns static impressions into live emotional conversations, driving action by aligning context with content. It’s not just advertising. It’s signals that feel.</p>
   </section>
-
   <section class="features">
     <div class="feature">
       <h4>Emotional Analytics Engine</h4>
-      <p>Detects audience sentiment and optimizes campaign messaging dynamically.</p>
+      <p>Detects mood in real-time and adjusts billboard messaging for improved emotional resonance and recall.</p>
     </div>
     <div class="feature">
       <h4>Adaptive Billboard Intelligence</h4>
-      <p>Your ads shift tone, visuals, and offers based on context like weather and traffic.</p>
+      <p>Automatically modifies visuals and offers based on current weather, traffic flow, and time of day.</p>
     </div>
     <div class="feature">
       <h4>Empathy-Led Targeting</h4>
-      <p>Goes beyond demographics to predict emotional response and decision-making patterns.</p>
+      <p>Goes beyond demographics—predicts behavioral outcomes from real human response patterns.</p>
     </div>
     <div class="feature">
       <h4>No-Code Campaign Launch</h4>
-      <p>Any marketer can go live in minutes — no demo, no sales call, no friction.</p>
+      <p>Launch optimized billboard ads in under 15 minutes. No IT. No demos. Full autonomy.</p>
     </div>
   </section>
-
+  <div class="results-bar">🚀 Real Results: 60% Avg. ROI Growth · 15-Min Campaign Launch · 0 Calls Required</div>
   <section class="testimonials">
-    <h3>Trusted by Forward-Thinking Leaders</h3>
+    <h3>Validated by Visionary Leaders</h3>
     <div class="testimonial-carousel">
       <div class="testimonial">
         <p>"Victory Vision AI utterly transformed our approach. ROI shot up 60%—with no added headcount."</p>
@@ -346,21 +346,18 @@
       </div>
     </div>
   </section>
-
   <section class="cta">
     <h3>Join the Founders Deal</h3>
-    <p>Be among the first 30 to access Victory Vision AI with a 14-day free trial — no demo, no calls, full autonomy. Ends July 19, 2025.</p>
-    <form>
+    <p>Gain exclusive access to Victory Vision AI with a 14-day free trial. No demos. No sales emails. Just results. Offer available to the first 30 signups before <strong>July 19, 2025</strong>.</p>
+    <form action="#" method="post">
       <input type="email" placeholder="Enter your business email" required />
       <button type="submit">Start Free Trial</button>
     </form>
   </section>
 </main>
-
 <footer>
-  &copy; 2024 Victory Vision AI. All rights reserved.
+  Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a>
 </footer>
-
+<img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=4b29501f627209c24451a809eccfeb7fcf0235c3" width="1" height="1" style="display:none;" alt="tracking pixel" />
 </body>
 </html>
-```
