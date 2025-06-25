@@ -1,0 +1,370 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI – Transforming Business for Good</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-blue: #0a3161;
+      --white: #ffffff;
+      --light-gray: #f5f5f5;
+      --font-family: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      color: var(--brand-blue);
+      background-color: var(--white);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(10, 49, 97, 0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero-overlay img {
+      width: 180px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-overlay h1 {
+      font-size: 2.5rem;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+
+    .hero-overlay p {
+      font-size: 1.2rem;
+      color: var(--light-gray);
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      background-color: var(--white);
+      color: var(--brand-blue);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: var(--light-gray);
+    }
+
+    main {
+      background-color: var(--white);
+    }
+
+    section {
+      padding: 4rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .intro h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    .narrative {
+      background-color: var(--light-gray);
+      border-top: 4px solid var(--brand-blue);
+    }
+
+    .narrative h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .narrative p {
+      font-size: 1.1rem;
+      max-width: 900px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .feature-box {
+      background-color: var(--white);
+      border: 1px solid #e0e0e0;
+      border-left: 5px solid var(--brand-blue);
+      padding: 1.5rem;
+      border-radius: 6px;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-box h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stats-section {
+      padding: 4rem 1.5rem;
+      background: linear-gradient(to right, #0a3161, #102f56);
+      color: var(--white);
+    }
+
+    .stats-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .stat-box {
+      background-color: rgba(255,255,255,0.05);
+      padding: 2rem;
+      border-radius: 6px;
+    }
+
+    .stat-box strong {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .testimonials {
+      background-color: var(--light-gray);
+    }
+
+    .quote {
+      font-style: italic;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .quote::before, .quote::after {
+      content: '"';
+    }
+
+    .user-name {
+      font-weight: 600;
+    }
+
+    .cta-final {
+      text-align: center;
+      padding: 4rem 1.5rem;
+      background-color: var(--white);
+    }
+
+    .cta-final h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--brand-blue);
+      margin: 1.5rem 0;
+    }
+
+    .signup-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .signup-form input[type="email"] {
+      padding: 0.75rem;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .signup-form button {
+      background-color: var(--brand-blue);
+      color: var(--white);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .signup-form button:hover {
+      background-color: #082849;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
+      background-color: #f5f5f5;
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      .hero-overlay h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero-overlay p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750873812/jhijiiq4lbtstwglzu9a.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <h1>How AI Is Transforming Business for Good</h1>
+      <p>Victory Vision AI empowers CEOs and CMOs with instant, ethical marketing execution — no meetings, no guesswork.</p>
+      <a class="cta-button" href="#cta">See How AI Can Work for Good in Your Business</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Redefining Marketing with Precision</h2>
+      <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations.</p>
+    </section>
+
+    <section class="narrative">
+      <h2>AI for Impact</h2>
+      <p>Marketing bottlenecks cost you time and revenue. Victory Vision AI offers scalable, ethical AI that adapts in real-time to market changes and audience behavior, freeing your team to focus on strategy while the AI handles execution. This is not just automation—it's transformation with purpose. Transformative technology meets ethical intelligence to drive meaningful, human-centered growth.</p>
+
+      <div class="features">
+        <div class="feature-box">
+          <h3>Ethical AI Framework</h3>
+          <p>Every decision modeled with accountability, data integrity, and long-term brand alignment in mind.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Adaptive Campaigns</h3>
+          <p>Algorithms that evolve in real-time based on audience behavior and external factors like weather and traffic.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Real-World Impact</h3>
+          <p>95% of teams report faster go-to-market times and 34% revenue lift within 90 days of onboarding.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-section">
+      <h2>Victory Vision in Action</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <strong>34%</strong>
+          Revenue Increase in 90 Days
+        </div>
+        <div class="stat-box">
+          <strong>−68%</strong>
+          Time Spent Managing Campaigns
+        </div>
+        <div class="stat-box">
+          <strong>3x</strong>
+          Higher Engagement Using Contextual Triggers
+        </div>
+        <div class="stat-box">
+          <strong>90%</strong>
+          Client Satisfaction + Retention
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials">
+      <h2>Trusted by Forward-Thinking Leaders</h2>
+      <div class="features">
+        <div class="feature-box">
+          <p class="quote">Victory Vision AI let us shrink decision-to-execution time from weeks to hours. This is the future of responsible marketing.</p>
+          <p class="user-name">— Amelia Torres, CMO, BlueStone Ecommerce</p>
+        </div>
+        <div class="feature-box">
+          <p class="quote">As a healthcare leader, data compliance and efficiency matter. This platform exceeded both expectations without slowing us down.</p>
+          <p class="user-name">— Dr. Isaac Reynolds, Exec Director, CareSync Health</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" class="cta-final">
+      <h2>Join the Founders Deal – Limited Time Offer</h2>
+      <div class="timer">⏳ Offer expires in: <span>3 days, 14 hours</span></div>
+      <form class="signup-form" name="signup" method="POST" action="#">
+        <input type="email" name="email" placeholder="Enter your work email" required />
+        <button type="submit">See How AI Can Work for Good in Your Business</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Victory Vision AI. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
