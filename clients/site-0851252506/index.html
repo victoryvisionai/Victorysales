@@ -1,0 +1,316 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Victory Vision AI | Master the Algorithm. Own the Feed.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --accent: #ff385c;
+      --font-main: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--white);
+      color: var(--primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header,
+    main,
+    footer {
+      width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      color: var(--white);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero-content img.logo {
+      max-width: 180px;
+      margin-bottom: 20px;
+    }
+
+    .hero-content h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-content a.cta-button {
+      background: var(--white);
+      color: var(--primary);
+      padding: 1rem 2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .hero-content a.cta-button:hover {
+      background: var(--light);
+    }
+
+    .section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section-light {
+      background-color: var(--light);
+    }
+
+    .section h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+    }
+
+    .intro p {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.125rem;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .card p {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .quiz-section {
+      text-align: center;
+      padding-top: 4rem;
+    }
+
+    .quiz-section a {
+      display: inline-block;
+      background: var(--primary);
+      color: var(--white);
+      padding: 1rem 2rem;
+      font-weight: 600;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+      margin-top: 1.5rem;
+    }
+
+    .quiz-section a:hover {
+      background: #09264f;
+    }
+
+    .founders-deal {
+      background: var(--primary);
+      color: var(--white);
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .founders-deal h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .founders-deal p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+
+    .founders-deal input[type="email"] {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 4px;
+      margin-right: 1rem;
+      width: 280px;
+      max-width: 100%;
+    }
+
+    .founders-deal button {
+      background: var(--white);
+      color: var(--primary);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .founders-deal button:hover {
+      background: var(--light);
+    }
+
+    footer {
+      background: var(--light);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750873833/wktdjc5zjmmyql6xitil.mp4" autoplay muted loop playsinline></video>
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <img class="logo" src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+      <h1>Master the Algorithm. Own the Feed.</h1>
+      <p>Gamify your growth with AI insights that decode the media maze—designed for visionary marketers like you.</p>
+      <a class="cta-button" href="#quiz">Take the Algorithm IQ Quiz</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section intro">
+      <h2>Revolutionizing Modern Marketing</h2>
+      <p>
+        Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior.
+        In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring impactful marketing campaigns resonate with audiences and drive substantial growth.
+      </p>
+    </section>
+
+    <section class="section section-light">
+      <h2>Decode Growth Opportunities</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Social Media Optimization</h3>
+          <p>Pinpoint what works — from timing and reach to audience triggers — with data-fueled AI recommendations.</p>
+        </div>
+        <div class="card">
+          <h3>Algorithm Decoding</h3>
+          <p>Stop guessing. Our AI reveals what the feed favors today — and how to ride it to maximum visibility.</p>
+        </div>
+        <div class="card">
+          <h3>Engagement Hacks</h3>
+          <p>Break through content fatigue with elite tactics that earn you shares, saves, and clicks where it counts.</p>
+        </div>
+        <div class="card">
+          <h3>Trending Content Rebroadcast</h3>
+          <p>Stay in the loop and on top with AI-curated trend alerts and cross-platform publishing tools.</p>
+        </div>
+        <div class="card">
+          <h3>Real-Time AI Insights</h3>
+          <p>Adapt instantly with intelligent feedback on campaign performance, audience moods, and regional nuance.</p>
+        </div>
+        <div class="card">
+          <h3>Content Visibility Breakthroughs</h3>
+          <p>Get seen — not scrolled past — with automated syndication and placement prioritization based on feed logic.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section quiz-section" id="quiz">
+      <h2>What’s Your Algorithm IQ?</h2>
+      <p>Crack the code, compete with peers, and earn your place on the viral leaderboard. It’s free, fast, and ridiculously fun.</p>
+      <a href="#">Start the Quiz</a>
+    </section>
+
+    <section class="founders-deal">
+      <h2>🚀 Unlock the Founders Deal</h2>
+      <p>First 30 users get lifetime premium access for just $99/mo. Limited time. Immediate advantage.</p>
+      <form action="#" method="post">
+        <input type="email" name="email" placeholder="Enter your business email" required>
+        <button type="submit">Claim My Spot</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Victory Vision AI. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
