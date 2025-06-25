@@ -945,7 +945,7 @@
     card.innerHTML = `
       ${campaign.image_URL ? `<img src="${sanitizeInput(campaign.image_URL)}" alt="Campaign Image" style="width: 100%; height: 150px; object-fit: cover; display: block;" onerror="this.style.display='none'">` : ''}
       <div class="campaign-header">
-        <div class="campaign-title">${campaign.name}</div>
+        <div class="campaign-title">${sanitizeInput(campaign.name)}</div>
         <div class="campaign-tagline">${safeTagline}</div>
       </div>
       <div class="campaign-info">
