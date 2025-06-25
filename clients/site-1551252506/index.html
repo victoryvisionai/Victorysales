@@ -1,0 +1,356 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI – Effortless AI-Powered Marketing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0a3161;
+      --white: #ffffff;
+      --light-grey: #f5f5f5;
+      --font: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--primary);
+      background-color: var(--light-grey);
+      line-height: 1.6;
+    }
+
+    header, section, footer {
+      width: 100%;
+      position: relative;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero video {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      z-index: -1;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(10, 49, 97, 0.7), rgba(10, 49, 97, 0.9));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      color: white;
+    }
+
+    .overlay img {
+      max-width: 180px;
+      margin-bottom: 1rem;
+    }
+
+    .overlay h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      max-width: 800px;
+    }
+
+    .overlay p {
+      font-size: 1.2rem;
+      max-width: 640px;
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section.light {
+      background-color: var(--light-grey);
+    }
+
+    .section.white {
+      background-color: var(--white);
+    }
+
+    .section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-top: 2rem;
+      justify-content: space-between;
+    }
+
+    .card {
+      flex: 1 1 300px;
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .compare-slider {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 3rem;
+      flex-direction: column;
+    }
+
+    .compare-images {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 400px;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .compare-images img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s ease;
+    }
+
+    .labels {
+      display: flex;
+      justify-content: space-between;
+      max-width: 800px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    .testimonial-carousel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .testimonial {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      max-width: 700px;
+    }
+
+    .testimonial p {
+      font-style: italic;
+    }
+
+    .testimonial span {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .cta {
+      text-align: center;
+      background-color: var(--primary);
+      color: white;
+      padding: 3rem 2rem;
+    }
+
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    .cta input[type="email"] {
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .cta button {
+      padding: 0.8rem 1rem;
+      background-color: #ffffff;
+      color: var(--primary);
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 4px;
+    }
+
+    .cta button:hover {
+      background-color: #dfe9f3;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      background-color: var(--light-grey);
+      color: #666;
+    }
+
+    @media only screen and (max-width: 768px) {
+      .overlay h1 {
+        font-size: 2rem;
+      }
+
+      .columns {
+        flex-direction: column;
+      }
+
+      .compare-images {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750873810/thsecvwbmosnprxcbfsq.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <h1>Unlock AI-Powered Marketing Without Lifting a Finger</h1>
+      <p>Turn intelligent insights into impact—automate your next digital billboard campaign with just $1.</p>
+    </div>
+  </header>
+
+  <!-- Intro Section -->
+  <section class="section light intro">
+    <h2>The Future of Marketing is Effortless</h2>
+    <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. We simplify the complexities of marketing campaigns using AI, helping brands optimize strategies in real time—based on dynamic data like location, weather, and audience behavior—so you see real results, fast.</p>
+  </section>
+
+  <!-- Value Narrative -->
+  <section class="section white">
+    <h2>Campaign: Automate to Dominate</h2>
+    <div class="columns">
+      <div class="card">
+        <h3>Time-Saving AI</h3>
+        <p>Set it and scale it—automate complex workflows and free your team from routine ad buying, campaign tuning, and A/B scheduling.</p>
+      </div>
+      <div class="card">
+        <h3>Data-Driven Growth</h3>
+        <p>Victory Vision AI reads the signals: demographic trends, real-time traffic surge, local weather, even competitors’ presence—so your message hits when it matters.</p>
+      </div>
+      <div class="card">
+        <h3>Scalable Personalization</h3>
+        <p>Tweak messaging by location, time of day, or audience segment—automatically. Reach thousands with personalized relevance and measurable impact.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Before vs After Slider -->
+  <section class="section light">
+    <h2>See the Difference: Before vs After AI</h2>
+    <div class="compare-slider">
+      <div class="compare-images">
+        <img src="https://via.placeholder.com/800x400/cccccc/ffffff?text=Before+AI" style="opacity:1;" alt="Before" />
+        <img src="https://via.placeholder.com/800x400/0a3161/ffffff?text=After+AI" style="opacity:0.95;" alt="After" />
+      </div>
+      <div class="labels">
+        <span>Before AI: Manual & Fragmented</span>
+        <span>After AI: Automated & Impactful</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section white">
+    <h2>What Business Leaders Are Saying</h2>
+    <div class="testimonial-carousel">
+      <div class="testimonial">
+        <p>"Victory Vision AI cut our campaign setup time by 80%, and conversions jumped 37% in just 2 weeks."</p>
+        <span>— Maya S., CMO, EcomNova</span>
+      </div>
+      <div class="testimonial">
+        <p>"I signed up for $1 out of curiosity, and within a month, our regional brand awareness shot up thanks to intelligent timing and precision delivery."</p>
+        <span>— Alex D., CEO, LawCo Strategies</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <h2>Start Automating for Just $1 – Founders Deal Ends Soon</h2>
+    <p>No demos, no meetings – just ROI. Launch your first AI-powered campaign today before July 19, 2025</p>
+    <form action="#" method="POST">
+      <input type="email" name="email" placeholder="Your business email" required />
+      <button type="submit">Get Started Now</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2024 Victory Vision AI. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
