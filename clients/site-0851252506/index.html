@@ -1,11 +1,21 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Victory Vision AI | Master the Algorithm. Own the Feed.</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <meta name="description" content="Victory Vision AI empowers marketers with real-time AI marketing intelligence. Master the algorithm. Own the feed. Take the Algorithm IQ quiz." />
+  <meta name="keywords" content="AI marketing, digital growth, algorithm quiz, B2B SaaS, Victory Vision AI" />
+  <meta name="author" content="Victory Vision AI" />
+  <meta property="og:title" content="Victory Vision AI | Master the Algorithm. Own the Feed." />
+  <meta property="og:description" content="AI-powered marketing mastery for modern businesses. Start by taking the Algorithm IQ quiz and unlock your full digital potential." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="theme-color" content="#0a3161" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/code.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" />
   <style>
     :root {
       --primary: #0a3161;
@@ -14,34 +24,26 @@
       --accent: #ff385c;
       --font-main: 'Inter', sans-serif;
     }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
-    body {
+    html, body {
       font-family: var(--font-main);
       background-color: var(--white);
       color: var(--primary);
       line-height: 1.6;
       overflow-x: hidden;
     }
-
-    header,
-    main,
-    footer {
+    header, main, footer, section, nav, article, aside {
       width: 100%;
     }
-
     .hero {
       position: relative;
-      width: 100%;
       height: 100vh;
       overflow: hidden;
     }
-
     .hero video {
       position: absolute;
       top: 0;
@@ -51,14 +53,12 @@
       object-fit: cover;
       z-index: 0;
     }
-
     .overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.45);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.3));
       z-index: 1;
     }
-
     .hero-content {
       position: relative;
       z-index: 2;
@@ -71,70 +71,69 @@
       text-align: center;
       padding: 2rem;
     }
-
     .hero-content img.logo {
       max-width: 180px;
-      margin-bottom: 20px;
+      margin-bottom: 1.5rem;
     }
-
     .hero-content h1 {
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 900;
       margin-bottom: 1rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
-
     .hero-content p {
-      font-size: 1.25rem;
-      max-width: 600px;
-      margin-bottom: 2rem;
+      font-size: 1.4rem;
+      max-width: 700px;
+      margin-bottom: 2.5rem;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
     }
-
-    .hero-content a.cta-button {
-      background: var(--white);
-      color: var(--primary);
-      padding: 1rem 2rem;
-      border-radius: 6px;
+    .cta-button {
+      background: var(--accent);
+      color: var(--white);
+      padding: 1.2rem 2.5rem;
+      border-radius: 8px;
       text-decoration: none;
-      font-weight: 600;
-      transition: background 0.3s ease;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: background 0.3s ease, transform 0.3s ease;
+      animation: pulse 2s infinite;
     }
-
-    .hero-content a.cta-button:hover {
-      background: var(--light);
+    .cta-button:hover {
+      background: #e92e50;
+      transform: scale(1.05);
     }
-
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,56,92,0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(255,56,92,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,56,92,0); }
+    }
     .section {
       padding: 5rem 2rem;
       max-width: 1200px;
       margin: auto;
     }
-
     .section-light {
       background-color: var(--light);
     }
-
     .section h2 {
       text-align: center;
-      font-size: 2.5rem;
+      font-size: 2.75rem;
       font-weight: 700;
       margin-bottom: 2rem;
     }
-
     .intro p {
-      max-width: 800px;
+      max-width: 850px;
       margin: 0 auto;
-      font-size: 1.125rem;
-      line-height: 1.8;
+      font-size: 1.25rem;
+      line-height: 1.9;
       text-align: center;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
       margin-top: 3rem;
     }
-
     .card {
       background: var(--white);
       border-radius: 8px;
@@ -142,27 +141,28 @@
       box-shadow: 0 8px 16px rgba(0,0,0,0.05);
       transition: transform 0.3s ease;
     }
-
     .card:hover {
       transform: translateY(-5px);
     }
-
     .card h3 {
       margin-bottom: 1rem;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: var(--primary);
     }
-
     .card p {
-      font-size: 1rem;
+      font-size: 1.05rem;
       color: #333;
     }
-
     .quiz-section {
       text-align: center;
-      padding-top: 4rem;
+      padding: 5rem 2rem;
+      background: #f0f4fc;
     }
-
+    .quiz-section p {
+      font-size: 1.25rem;
+      max-width: 750px;
+      margin: 0 auto 2rem;
+    }
     .quiz-section a {
       display: inline-block;
       background: var(--primary);
@@ -172,42 +172,40 @@
       border-radius: 6px;
       text-decoration: none;
       transition: background 0.3s ease;
-      margin-top: 1.5rem;
     }
-
     .quiz-section a:hover {
       background: #09264f;
     }
-
     .founders-deal {
       background: var(--primary);
       color: var(--white);
       text-align: center;
       padding: 4rem 2rem;
     }
-
     .founders-deal h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
-
     .founders-deal p {
       font-size: 1.125rem;
       margin-bottom: 2rem;
     }
-
+    .founders-deal form {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
     .founders-deal input[type="email"] {
       padding: 0.75rem;
       border: none;
       border-radius: 4px;
-      margin-right: 1rem;
       width: 280px;
       max-width: 100%;
     }
-
     .founders-deal button {
-      background: var(--white);
-      color: var(--primary);
+      background: var(--accent);
+      color: var(--white);
       padding: 0.75rem 1.5rem;
       border: none;
       border-radius: 4px;
@@ -215,11 +213,31 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .founders-deal button:hover {
-      background: var(--light);
+      background: #e92e50;
     }
-
+    .social-proof {
+      background: var(--white);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+    .social-proof h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+    .logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      align-items: center;
+    }
+    .logos img {
+      height: 40px;
+      max-width: 100%;
+      object-fit: contain;
+      opacity: 0.7;
+    }
     footer {
       background: var(--light);
       text-align: center;
@@ -227,90 +245,93 @@
       font-size: 0.9rem;
       color: #666;
     }
-
+    .footer-note {
+      margin-top: 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .footer-note a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .footer-note a:hover {
+      text-decoration: underline;
+    }
     @media (max-width: 768px) {
       .hero-content h1 {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
       }
-
       .hero-content p {
-        font-size: 1rem;
+        font-size: 1.1rem;
       }
     }
   </style>
 </head>
 <body>
-
-  <header class="hero">
-    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750873833/wktdjc5zjmmyql6xitil.mp4" autoplay muted loop playsinline></video>
-    <div class="overlay"></div>
+  <header class="hero" role="banner">
+    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750873833/wktdjc5zjmmyql6xitil.mp4" autoplay muted loop playsinline aria-label="Background promotional video of Victory Vision AI"></video>
+    <div class="overlay" aria-hidden="true"></div>
     <div class="hero-content">
-      <img class="logo" src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+      <img class="logo" src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
       <h1>Master the Algorithm. Own the Feed.</h1>
-      <p>Gamify your growth with AI insights that decode the media maze—designed for visionary marketers like you.</p>
-      <a class="cta-button" href="#quiz">Take the Algorithm IQ Quiz</a>
+      <p>Dominate digital marketing with AI that turns chaos into clarity. Precision growth for modern marketers starts here.</p>
+      <a class="cta-button" href="#quiz">🚀 Take the Algorithm IQ Quiz</a>
     </div>
   </header>
 
-  <main>
+  <main id="main" role="main">
     <section class="section intro">
       <h2>Revolutionizing Modern Marketing</h2>
       <p>
-        Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior.
-        In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring impactful marketing campaigns resonate with audiences and drive substantial growth.
+        Victory Vision AI turns every marketer into a tactical innovator. With hyper-targeted AI campaign tools powered by real-time data—like regional trends, weather shifts, audience sentiment—we help you execute omnichannel marketing with surgical precision. Save time, unlock clarity, and take control of your entire digital footprint.
       </p>
     </section>
 
     <section class="section section-light">
-      <h2>Decode Growth Opportunities</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Social Media Optimization</h3>
-          <p>Pinpoint what works — from timing and reach to audience triggers — with data-fueled AI recommendations.</p>
-        </div>
-        <div class="card">
-          <h3>Algorithm Decoding</h3>
-          <p>Stop guessing. Our AI reveals what the feed favors today — and how to ride it to maximum visibility.</p>
-        </div>
-        <div class="card">
-          <h3>Engagement Hacks</h3>
-          <p>Break through content fatigue with elite tactics that earn you shares, saves, and clicks where it counts.</p>
-        </div>
-        <div class="card">
-          <h3>Trending Content Rebroadcast</h3>
-          <p>Stay in the loop and on top with AI-curated trend alerts and cross-platform publishing tools.</p>
-        </div>
-        <div class="card">
-          <h3>Real-Time AI Insights</h3>
-          <p>Adapt instantly with intelligent feedback on campaign performance, audience moods, and regional nuance.</p>
-        </div>
-        <div class="card">
-          <h3>Content Visibility Breakthroughs</h3>
-          <p>Get seen — not scrolled past — with automated syndication and placement prioritization based on feed logic.</p>
-        </div>
+      <h2>High-Impact Growth, Simplified by AI</h2>
+      <div class="grid" aria-label="AI-driven marketing features">
+        <article class="card"><h3>Automate Audience Lift</h3><p>Instantly identify top-performing times, formats, and messages to engage deeper with power audiences.</p></article>
+        <article class="card"><h3>Crack the Platform Code</h3><p>Know what each algorithm prioritizes—be it recency, engagement, or video—and tailor campaigns in real time.</p></article>
+        <article class="card"><h3>Multiply Engagement ROI</h3><p>Deploy actionable AI-led growth hacks that accelerate visibility and retention across social channels.</p></article>
+        <article class="card"><h3>Trend Hijack Autopilot</h3><p>Avoid content fatigue. Stay topical with real-time trend detection and auto-rebroadcasting tools.</p></article>
+        <article class="card"><h3>Predictive Signal Sync</h3><p>Let AI guide you as it reacts to regional behavior patterns and environmental shifts before your competition does.</p></article>
+        <article class="card"><h3>Feed Domination Protocol</h3><p>AI-led placement prioritization gets your content shown—not scrolled past—across every channel, on autopilot.</p></article>
       </div>
     </section>
 
     <section class="section quiz-section" id="quiz">
       <h2>What’s Your Algorithm IQ?</h2>
-      <p>Crack the code, compete with peers, and earn your place on the viral leaderboard. It’s free, fast, and ridiculously fun.</p>
-      <a href="#">Start the Quiz</a>
+      <p>Join thousands mastering feed logic. Compete live. Discover your strengths. Rise the leaderboard—and unlock premium growth tactics powered by Victory Vision AI.</p>
+      <a href="/quiz">🎯 Start the Quiz</a>
+    </section>
+
+    <section class="social-proof" aria-label="Social proof logos">
+      <h2>As Featured In</h2>
+      <div class="logos">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750381100/logo1.png" alt="TechCrunch logo" />
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750381100/logo2.png" alt="Forbes logo" />
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750381100/logo3.png" alt="Inc. logo" />
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750381100/logo4.png" alt="MarketingProfs logo" />
+      </div>
     </section>
 
     <section class="founders-deal">
       <h2>🚀 Unlock the Founders Deal</h2>
-      <p>First 30 users get lifetime premium access for just $99/mo. Limited time. Immediate advantage.</p>
-      <form action="#" method="post">
-        <input type="email" name="email" placeholder="Enter your business email" required>
+      <p>Be among the first 30 marketers to claim lifetime premium AI access for just $99/mo. Immediate ROI. Zero friction.</p>
+      <form action="/subscribe" method="post">
+        <input type="email" name="email" placeholder="Enter your business email" required />
         <button type="submit">Claim My Spot</button>
       </form>
     </section>
   </main>
 
-  <footer>
+  <footer role="contentinfo">
     &copy; 2024 Victory Vision AI. All rights reserved.
+    <div class="footer-note">
+      Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a>
+    </div>
   </footer>
 
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=4444c2e1d683d7075bb6fb7919d3af2e9986121f" width="1" height="1" style="display:none;" alt="Tracking pixel" />
 </body>
 </html>
-```
