@@ -1,0 +1,379 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI - Unleash Your Inner Visionary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f5f5f5;
+      color: #0a3161;
+      scroll-behavior: smooth;
+    }
+
+    header, section, footer {
+      width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 49, 97, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .hero-overlay img {
+      height: 60px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-overlay h1 {
+      font-size: 2.6rem;
+      line-height: 1.3;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      max-width: 800px;
+    }
+
+    .hero-overlay p {
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .cta-btn {
+      background-color: #ffffff;
+      color: #0a3161;
+      padding: 0.9rem 2rem;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .cta-btn:hover {
+      background-color: #f5f5f5;
+      transform: scale(1.05);
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-light {
+      background-color: #ffffff;
+    }
+
+    .section-dark {
+      background-color: #f5f5f5;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      color: #0a3161;
+      text-align: center;
+    }
+
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+    }
+
+    .benefit {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease;
+    }
+
+    .benefit:hover {
+      transform: translateY(-5px);
+    }
+
+    .benefit h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: #0a3161;
+    }
+
+    .benefit p {
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .workflow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+
+    .workflow-block {
+      flex: 1 1 45%;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .workflow-block h3 {
+      color: #0a3161;
+      margin-bottom: 1rem;
+    }
+
+    .carousel {
+      margin-top: 2rem;
+      overflow: hidden;
+      white-space: nowrap;
+      animation: scroll 30s linear infinite;
+    }
+
+    .testimonial {
+      display: inline-block;
+      width: 300px;
+      vertical-align: top;
+      margin-right: 1rem;
+      background-color: #ffffff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .testimonial p {
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    .testimonial h4 {
+      margin-top: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0a3161;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .founders-deal {
+      background-color: #0a3161;
+      color: #ffffff;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .founders-deal h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .founders-deal p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .countdown {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .signup-form input {
+      padding: 0.8rem;
+      font-size: 1rem;
+      margin: 0.5rem 0;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+    }
+
+    .signup-form button {
+      background-color: #ffffff;
+      color: #0a3161;
+      padding: 0.9rem 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .signup-form button:hover {
+      background-color: #f5f5f5;
+      transform: scale(1.05);
+    }
+
+    footer {
+      background-color: #ffffff;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .hero-overlay h1 {
+        font-size: 1.8rem;
+      }
+      .workflow-block {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <video autoplay muted loop playsinline>
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750871928/jbftt2eiduwqdyx493ki.mp4" type="video/mp4">
+    Your browser does not support HTML5 video.
+  </video>
+  <div class="hero-overlay">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+    <h1>Unleash Your Inner Visionary with AI-Powered Creativity</h1>
+    <p>Drive your marketing strategy forward with real-time, data-backed AI activations built for bold CMOs and visionary enterprises.</p>
+    <button class="cta-btn" onclick="document.getElementById('founders').scrollIntoView({behavior:'smooth'})">Claim Founders Deal</button>
+  </div>
+</header>
+
+<main>
+  <section class="section section-light intro">
+    <p>
+      Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.
+    </p>
+  </section>
+
+  <section class="section section-dark">
+    <h2>Create Without Limits</h2>
+    <div class="benefits">
+      <div class="benefit">
+        <h3>AI-Driven Personalization</h3>
+        <p>Reach your audiences with unmatched precision—ad placements react to location, traffic, and even the weather.</p>
+      </div>
+      <div class="benefit">
+        <h3>Visual Campaign Builder</h3>
+        <p>Preview your ad creatives in real-time using our interactive AI-enhanced simulator, making iteration fast and data-driven.</p>
+      </div>
+      <div class="benefit">
+        <h3>Frictionless Onboarding</h3>
+        <p>No tedious demos. Start building your campaign from minute one and see real results within hours—not weeks.</p>
+      </div>
+      <div class="benefit">
+        <h3>Measurable Impact</h3>
+        <p>Quantify ROI instantly with dashboards optimized for CMOs—clear KPIs, visual analytics, and strategic clarity.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-light">
+    <h2>Before & After: Your Workflow Transformed</h2>
+    <div class="workflow">
+      <div class="workflow-block">
+        <h3>Before Victory Vision AI</h3>
+        <ul>
+          <li>🛑 Weeks of campaign planning</li>
+          <li>🛑 External agency dependency</li>
+          <li>🛑 Delayed data insights</li>
+          <li>🛑 One-size-fits-all media</li>
+        </ul>
+      </div>
+      <div class="workflow-block">
+        <h3>After Victory Vision AI</h3>
+        <ul>
+          <li>✅ Launch same day</li>
+          <li>✅ Fully in-house control</li>
+          <li>✅ Live analytics dashboards</li>
+          <li>✅ AI-optimized targeting</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark">
+    <h2>What Leaders Are Saying</h2>
+    <div class="carousel">
+      <div class="testimonial">
+        <p>"Finally a platform that moves as fast as my team. Victory Vision AI gave us the edge we needed to break through." </p>
+        <h4>— Sarah Klein, CMO, ArcadiaX</h4>
+      </div>
+      <div class="testimonial">
+        <p>"The ROI was immediate. We saved 40+ hours of planning and saw a 25% lift in engagement within a week."</p>
+        <h4>— Rajiv Menon, VP Marketing, PrismEdge</h4>
+      </div>
+      <div class="testimonial">
+        <p>"Personalized ads reacting to real-world data? It’s like having an AI strategist built into our team."</p>
+        <h4>— Lillian Quezada, CEO, ThermoVision</h4>
+      </div>
+    </div>
+  </section>
+
+  <section id="founders" class="founders-deal">
+    <h2>Founders Deal — Limited Time Offer</h2>
+    <p>Get lifetime access to Victory Vision AI’s enterprise suite for a fraction of future pricing. Act before it's gone.</p>
+    <div class="countdown">⏳ Offer expires in: 72:00:00</div>
+    <form class="signup-form">
+      <input type="email" placeholder="Enter your work email" required>
+      <button type="submit">Get Started Now</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  &copy; 2024 Victory Vision AI. All rights reserved.
+</footer>
+
+</body>
+</html>
+```
