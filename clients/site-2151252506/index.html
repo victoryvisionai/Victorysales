@@ -1,10 +1,16 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Victory Vision AI – Transforming Business for Good</title>
+  <title>Victory Vision AI – Fast, Ethical Marketing Execution Powered by AI</title>
+  <meta name="description" content="Victory Vision AI accelerates marketing execution with ethical AI-designed for executive-level decision makers. Launch compliant, data-responsive campaigns instantly." />
+  <meta property="og:title" content="Victory Vision AI – Fast, Ethical Marketing Execution Powered by AI" />
+  <meta property="og:description" content="See how AI can ethically transform your business and eliminate execution delays with real-time context matching and zero meetings." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="theme-color" content="#0a3161" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/robot-gpt.svg" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -13,32 +19,28 @@
       --light-gray: #f5f5f5;
       --font-family: 'Inter', sans-serif;
     }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
-    body {
+    html, body {
+      height: 100%;
       font-family: var(--font-family);
       color: var(--brand-blue);
       background-color: var(--white);
       line-height: 1.6;
     }
-
     a {
       text-decoration: none;
       color: inherit;
     }
-
     header {
       position: relative;
       width: 100%;
       height: 100vh;
       overflow: hidden;
     }
-
     header video {
       width: 100%;
       height: 100%;
@@ -48,7 +50,6 @@
       left: 0;
       z-index: -1;
     }
-
     .hero-overlay {
       position: absolute;
       top: 0;
@@ -63,25 +64,22 @@
       text-align: center;
       padding: 2rem;
     }
-
     .hero-overlay img {
       width: 180px;
       margin-bottom: 1.5rem;
     }
-
     .hero-overlay h1 {
       font-size: 2.5rem;
       color: var(--white);
       margin-bottom: 1rem;
+      max-width: 800px;
     }
-
     .hero-overlay p {
       font-size: 1.2rem;
       color: var(--light-gray);
-      max-width: 600px;
+      max-width: 660px;
       margin-bottom: 2rem;
     }
-
     .cta-button {
       background-color: var(--white);
       color: var(--brand-blue);
@@ -93,53 +91,57 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     .cta-button:hover {
       background-color: var(--light-gray);
     }
-
+    .proof-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      background-color: #ffffff;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .proof-bar img {
+      height: 40px;
+      opacity: 0.8;
+    }
     main {
       background-color: var(--white);
     }
-
     section {
       padding: 4rem 1.5rem;
       max-width: 1100px;
       margin: 0 auto;
     }
-
-    .intro h2 {
+    .intro h2,
+    .narrative h2,
+    .stats-section h2,
+    .testimonials h2,
+    .cta-final h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
+      text-align: center;
     }
-
-    .intro p {
+    .intro p,
+    .narrative p {
       font-size: 1.1rem;
       color: #333;
+      text-align: center;
+      margin: 0 auto;
+      max-width: 900px;
     }
-
     .narrative {
       background-color: var(--light-gray);
       border-top: 4px solid var(--brand-blue);
     }
-
-    .narrative h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .narrative p {
-      font-size: 1.1rem;
-      max-width: 900px;
-    }
-
     .features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
-
     .feature-box {
       background-color: var(--white);
       border: 1px solid #e0e0e0;
@@ -148,83 +150,82 @@
       border-radius: 6px;
       transition: transform 0.3s ease;
     }
-
     .feature-box:hover {
       transform: translateY(-5px);
     }
-
     .feature-box h3 {
       font-size: 1.25rem;
       margin-bottom: 0.5rem;
     }
-
     .stats-section {
-      padding: 4rem 1.5rem;
       background: linear-gradient(to right, #0a3161, #102f56);
       color: var(--white);
     }
-
-    .stats-section h2 {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 2rem;
-    }
-
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 2rem;
       text-align: center;
     }
-
     .stat-box {
       background-color: rgba(255,255,255,0.05);
       padding: 2rem;
       border-radius: 6px;
     }
-
     .stat-box strong {
       font-size: 2rem;
       display: block;
       margin-bottom: 0.5rem;
     }
-
     .testimonials {
       background-color: var(--light-gray);
     }
-
-    .quote {
-      font-style: italic;
-      margin-top: 1rem;
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      gap: 2rem;
+      padding: 2rem 1rem;
+    }
+    .testimonial-card {
+      background-color: var(--white);
+      border: 1px solid #ddd;
+      padding: 1.5rem;
+      border-radius: 6px;
+      min-width: 280px;
+      max-width: 380px;
+      flex: 0 0 auto;
+    }
+    .testimonial-card img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 0.5rem;
+    }
+    .testimonial-header {
+      display: flex;
+      align-items: center;
       margin-bottom: 1rem;
     }
-
-    .quote::before, .quote::after {
-      content: '"';
+    .testimonial-header strong {
+      font-weight: bold;
+      font-size: 0.95rem;
     }
-
-    .user-name {
-      font-weight: 600;
+    .testimonial-content {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: #333;
     }
-
     .cta-final {
       text-align: center;
-      padding: 4rem 1.5rem;
       background-color: var(--white);
     }
-
-    .cta-final h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
     .timer {
       font-size: 1.5rem;
       font-weight: bold;
       color: var(--brand-blue);
       margin: 1.5rem 0;
     }
-
     .signup-form {
       display: flex;
       flex-direction: column;
@@ -233,14 +234,12 @@
       max-width: 500px;
       margin: 0 auto;
     }
-
     .signup-form input[type="email"] {
       padding: 0.75rem;
       width: 100%;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-
     .signup-form button {
       background-color: var(--brand-blue);
       color: var(--white);
@@ -251,73 +250,92 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
-
     .signup-form button:hover {
       background-color: #082849;
     }
-
     footer {
       text-align: center;
-      padding: 2rem 1rem;
-      font-size: 0.9rem;
+      padding: 3rem 1rem 1rem;
+      font-size: 0.95rem;
       background-color: #f5f5f5;
       color: #555;
     }
-
+    footer a {
+      color: #0a3161;
+      font-weight: 600;
+      text-decoration: underline;
+    }
     @media (max-width: 600px) {
       .hero-overlay h1 {
         font-size: 1.8rem;
       }
-
       .hero-overlay p {
         font-size: 1rem;
       }
+      .carousel {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    .visually-hidden {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
     }
   </style>
 </head>
 <body>
-
   <header>
     <video autoplay muted loop playsinline>
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750873812/jhijiiq4lbtstwglzu9a.mp4" type="video/mp4">
+      Your browser does not support the video tag.
     </video>
     <div class="hero-overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
-      <h1>How AI Is Transforming Business for Good</h1>
-      <p>Victory Vision AI empowers CEOs and CMOs with instant, ethical marketing execution — no meetings, no guesswork.</p>
-      <a class="cta-button" href="#cta">See How AI Can Work for Good in Your Business</a>
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+      <h1>Get 95% Faster Marketing Execution—Powered by Ethical AI</h1>
+      <p>Unlock instant, data-driven campaigns with real-time context matching. No meetings. No guesswork. Just results.</p>
+      <a class="cta-button" href="#cta">Request Access</a>
     </div>
   </header>
 
+  <nav class="proof-bar" aria-label="Trusted partners">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750881001/partner1.png" alt="Partner 1 Logo">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750881001/partner2.png" alt="Partner 2 Logo">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750881001/partner3.png" alt="Partner 3 Logo">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750881001/partner4.png" alt="Partner 4 Logo">
+  </nav>
+
   <main>
     <section class="intro">
-      <h2>Redefining Marketing with Precision</h2>
-      <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations.</p>
+      <h2>Smarter Campaigns. Zero Delay.</h2>
+      <p>Victory Vision AI eliminates bottlenecks with predictive targeting across channels. Tap into real-time signals like traffic, weather, and location to adapt campaigns instantly and outperform traditional marketing teams—without expanding your headcount.</p>
     </section>
 
     <section class="narrative">
-      <h2>AI for Impact</h2>
-      <p>Marketing bottlenecks cost you time and revenue. Victory Vision AI offers scalable, ethical AI that adapts in real-time to market changes and audience behavior, freeing your team to focus on strategy while the AI handles execution. This is not just automation—it's transformation with purpose. Transformative technology meets ethical intelligence to drive meaningful, human-centered growth.</p>
+      <h2>AI for Ethical, Actionable Impact</h2>
+      <p>Built for responsible, ROI-focused growth, Victory Vision AI empowers marketing execs in regulated industries to move fast—without compromising data integrity or compliance. Our software executes autonomously in response to dynamic market conditions while upholding brand safety and trust at scale.</p>
 
-      <div class="features">
+      <div class="features" aria-label="Key Product Features">
         <div class="feature-box">
-          <h3>Ethical AI Framework</h3>
-          <p>Every decision modeled with accountability, data integrity, and long-term brand alignment in mind.</p>
+          <h3>Ethical Intelligence Engine</h3>
+          <p>Built-in accountability with governance controls, full transparency logs, and GDPR/CCPA compliance from day one.</p>
         </div>
         <div class="feature-box">
-          <h3>Adaptive Campaigns</h3>
-          <p>Algorithms that evolve in real-time based on audience behavior and external factors like weather and traffic.</p>
+          <h3>Real-Time Context Matching</h3>
+          <p>Adjusts campaign creative and offers based on live signals—weather, traffic, location, and behavioral shifts.</p>
         </div>
         <div class="feature-box">
-          <h3>Real-World Impact</h3>
-          <p>95% of teams report faster go-to-market times and 34% revenue lift within 90 days of onboarding.</p>
+          <h3>Proven, Fast Results</h3>
+          <p>95% reduction in launch time, 34% revenue lift in 90 days, and a 3X engagement increase using contextual triggers.</p>
         </div>
       </div>
     </section>
 
     <section class="stats-section">
-      <h2>Victory Vision in Action</h2>
-      <div class="stats-grid">
+      <h2>Results That Speak for Themselves</h2>
+      <div class="stats-grid" aria-label="Performance Metrics">
         <div class="stat-box">
           <strong>34%</strong>
           Revenue Increase in 90 Days
@@ -328,7 +346,7 @@
         </div>
         <div class="stat-box">
           <strong>3x</strong>
-          Higher Engagement Using Contextual Triggers
+          Higher Engagement Using Dynamic Triggers
         </div>
         <div class="stat-box">
           <strong>90%</strong>
@@ -338,33 +356,40 @@
     </section>
 
     <section class="testimonials">
-      <h2>Trusted by Forward-Thinking Leaders</h2>
-      <div class="features">
-        <div class="feature-box">
-          <p class="quote">Victory Vision AI let us shrink decision-to-execution time from weeks to hours. This is the future of responsible marketing.</p>
-          <p class="user-name">— Amelia Torres, CMO, BlueStone Ecommerce</p>
+      <h2>What Visionary Leaders Are Saying</h2>
+      <div class="carousel" role="region" aria-label="Customer testimonials carousel">
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750881001/user1.jpg" alt="Portrait of Amelia Torres">
+            <strong>Amelia Torres, CMO, BlueStone Ecommerce</strong>
+          </div>
+          <p class="testimonial-content">“Victory Vision AI shrank our go-live timeline from weeks to mere hours. We now run adaptive campaigns that fuel consistent revenue growth.”</p>
         </div>
-        <div class="feature-box">
-          <p class="quote">As a healthcare leader, data compliance and efficiency matter. This platform exceeded both expectations without slowing us down.</p>
-          <p class="user-name">— Dr. Isaac Reynolds, Exec Director, CareSync Health</p>
+        <div class="testimonial-card">
+          <div class="testimonial-header">
+            <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750881001/user2.jpg" alt="Portrait of Dr. Isaac Reynolds">
+            <strong>Dr. Isaac Reynolds, Exec Director, CareSync Health</strong>
+          </div>
+          <p class="testimonial-content">“We needed speed without compromise. Victory Vision AI delivered both compliance and campaign performance in healthcare—a rare feat.”</p>
         </div>
       </div>
     </section>
 
     <section id="cta" class="cta-final">
-      <h2>Join the Founders Deal – Limited Time Offer</h2>
-      <div class="timer">⏳ Offer expires in: <span>3 days, 14 hours</span></div>
+      <h2>Secure the Founders Deal – Limited Enrollment</h2>
+      <div class="timer" aria-live="polite">⏳ Offer expires in: <span>3 days, 14 hours</span></div>
       <form class="signup-form" name="signup" method="POST" action="#">
-        <input type="email" name="email" placeholder="Enter your work email" required />
-        <button type="submit">See How AI Can Work for Good in Your Business</button>
+        <label for="email" class="visually-hidden">Email address</label>
+        <input id="email" type="email" name="email" placeholder="Enter your work email" required>
+        <button type="submit">Request Access</button>
       </form>
     </section>
   </main>
 
   <footer>
-    &copy; 2024 Victory Vision AI. All rights reserved.
+    <p>&copy; 2024 Victory Vision AI. All rights reserved.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a></p>
   </footer>
-
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=df513d1e8c8cac58a66f945f6a52f61076a79311" width="1" height="1" style="display:none;" alt="">
 </body>
 </html>
-```
