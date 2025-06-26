@@ -1,10 +1,16 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision AI — Automate & Elevate Marketing</title>
+  <meta name="description" content="Victory Vision AI empowers digital billboard marketing through AI automation, saving executives time while maximizing campaign ROI, clarity, and control." />
+  <meta property="og:title" content="Victory Vision AI — Automate & Elevate Marketing" />
+  <meta property="og:description" content="Free your time. Automate marketing intelligently. Victory Vision AI delivers powerful billboard campaigns without meetings or complexity." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.ai" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/artificialintelligence.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
@@ -13,69 +19,65 @@
       --white: #ffffff;
       --offwhite: #f5f5f5;
       --accent: #1b4d89;
+      --gold-accent: #d4af37;
       --font-main: 'Inter', sans-serif;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: var(--font-main);
       background-color: var(--offwhite);
       color: #1a1a1a;
       -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
     }
-
     header {
       position: relative;
       height: 100vh;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      text-align: center;
     }
-
     header video {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      z-index: -2;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 49, 97, 0.5);
       z-index: -1;
     }
-
     header .overlay {
       position: relative;
-      text-align: center;
       color: var(--white);
       padding: 2rem;
       max-width: 900px;
+      margin: auto;
     }
-
     header .overlay img {
       height: 60px;
       margin-bottom: 1.5rem;
     }
-
-    header h1 {
+    h1 {
       font-size: 2.8rem;
       font-weight: 700;
       margin-bottom: 1rem;
     }
-
-    header p {
+    p {
       font-size: 1.2rem;
-      font-weight: 400;
       margin-bottom: 2rem;
     }
-
-    .cta-button {
-      background-color: var(--white);
+    a.cta-button {
+      background: var(--gold-accent);
       color: var(--primary);
       padding: 0.85rem 2rem;
       border-radius: 50px;
@@ -85,70 +87,60 @@
       transition: all 0.3s ease;
       display: inline-block;
     }
-
-    .cta-button:hover {
-      background-color: #e6e6e6;
+    a.cta-button:hover {
+      background-color: #c49a2a;
       transform: translateY(-2px);
     }
-
+    .sticky-cta {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .countdown-timer {
+      display: inline-block;
+      background: var(--gold-accent);
+      color: var(--white);
+      border-radius: 20px;
+      padding: 0.3rem 0.75rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
     main {
       overflow-x: hidden;
     }
-
     section {
       padding: 4rem 2rem;
       max-width: 1200px;
       margin: 0 auto;
     }
-
-    .intro {
+    .intro, .interactive-section {
       background: var(--white);
       text-align: center;
     }
-
-    .intro h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--primary);
+    .narrative {
+      background: var(--offwhite);
     }
-
-    .intro p {
+    .narrative h2, .intro h2, .interactive-title h2, .conversion h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .narrative p, .intro p {
       font-size: 1.1rem;
-      line-height: 1.6;
       color: #444;
       max-width: 850px;
       margin: 0 auto;
     }
-
-    .narrative {
-      background: var(--offwhite);
-    }
-
-    .narrative h2 {
-      font-size: 2rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
-    .narrative p {
-      font-size: 1.1rem;
-      color: #333;
-      max-width: 850px;
-      margin: 0 auto;
-      line-height: 1.8;
-      text-align: center;
-    }
-
     .keywords {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       margin-top: 2rem;
     }
-
     .keywords span {
-      background-color: var(--white);
+      background: var(--white);
       color: var(--primary);
       border: 1px solid var(--primary);
       border-radius: 20px;
@@ -156,102 +148,81 @@
       margin: 0.5rem;
       font-size: 0.9rem;
     }
-
     .interactive-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: var(--white);
-    }
-
-    .interactive-title {
       text-align: center;
+    }
+    .interactive-title {
       max-width: 850px;
-      margin-bottom: 2rem;
+      margin: 0 auto 2rem;
     }
-
-    .interactive-title h2 {
-      color: var(--primary);
-      font-size: 2rem;
-    }
-
-    .slider-container {
-      position: relative;
-      width: 100%;
-      max-width: 1000px;
-      height: 400px;
-      margin: 2rem auto;
-      overflow: hidden;
-      border-radius: 12px;
-      background-color: #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 500;
-      font-size: 1.2rem;
-      color: var(--primary);
-    }
-
-    .slider-text {
-      padding: 2rem;
-    }
-
-    .before-after {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      margin-top: 2rem;
-    }
-
-    .before, .after {
-      flex: 1;
-      min-width: 280px;
-      margin: 1rem;
+    .slider-toggle {
+      max-width: 800px;
+      margin: 0 auto;
       background: var(--offwhite);
+      border-radius: 10px;
       padding: 2rem;
-      border-radius: 8px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
-
-    .before h3, .after h3 {
-      color: var(--primary);
-      margin-bottom: 1rem;
+    .toggle-buttons {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
     }
-
+    .toggle-buttons button {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      margin: 0 0.5rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .toggle-buttons button.active,
+    .toggle-buttons button:hover {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    .toggle-content {
+      display: none;
+      font-size: 1rem;
+      color: #333;
+      text-align: left;
+    }
+    .toggle-content.active {
+      display: block;
+    }
+    .toggle-content ul {
+      list-style: none;
+      padding-left: 0;
+      text-align: left;
+    }
     .conversion {
       background: var(--primary);
       color: var(--white);
       text-align: center;
+      padding-bottom: 5rem;
     }
-
-    .conversion h2 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
     .conversion p {
       font-size: 1.1rem;
       margin-bottom: 2rem;
     }
-
     .form {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
     .form input[type="email"] {
       padding: 0.75rem 1rem;
       border: none;
       border-radius: 4px;
-      margin-right: 0;
       width: 90%;
       max-width: 400px;
       margin-bottom: 1rem;
     }
-
     .form button {
-      background: var(--white);
+      background: var(--gold-accent);
       color: var(--primary);
       border: none;
       padding: 0.75rem 2rem;
@@ -261,109 +232,148 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     .form button:hover {
-      background: #e2e2e2;
+      background: #c49a2a;
       transform: translateY(-2px);
     }
-
     footer {
       text-align: center;
-      padding: 2rem;
+      padding: 2rem 1rem;
       background: var(--offwhite);
       font-size: 0.9rem;
       color: #666;
     }
-
+    footer a {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 600;
+    }
     @media (max-width: 768px) {
-      header h1 {
+      h1 {
         font-size: 2rem;
       }
-
-      .slider-container {
-        height: 300px;
-      }
-
-      .before-after {
-        flex-direction: column;
+      .slider-toggle {
+        padding: 1.5rem;
       }
     }
   </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const buttons = document.querySelectorAll('.toggle-buttons button');
+      const contents = document.querySelectorAll('.toggle-content');
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const target = button.getAttribute('data-target');
+          contents.forEach(c => c.classList.remove('active'));
+          const targetEl = document.getElementById(target);
+          if (targetEl) {
+            targetEl.classList.add('active');
+          }
+          buttons.forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+        });
+      });
+
+      function countdown() {
+        const end = new Date();
+        end.setHours(end.getHours() + 24);
+        const elements = document.querySelectorAll('.countdown-timer');
+        function update() {
+          const now = new Date();
+          const diff = end - now;
+          if (diff <= 0) {
+            elements.forEach(el => el.innerText = "Deal expired.");
+            clearInterval(t);
+            return;
+          }
+          const h = String(Math.floor((diff / 3600000) % 24)).padStart(2, '0');
+          const m = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
+          const s = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+          const timeStr = `${h}h ${m}m ${s}s`;
+          elements.forEach(el => el.innerText = `Founders Deal – Ends In: ${timeStr}`);
+        }
+        update();
+        const t = setInterval(update, 1000);
+      }
+      countdown();
+    });
+  </script>
 </head>
 <body>
-
-<header>
-  <video autoplay muted loop playsinline>
-    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750913253/qcglo1qub0j3j58kibyu.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <div class="overlay">
-    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
-    <h1>Reclaim your time. Rediscover your life — with AI by your side.</h1>
-    <p>Victory Vision AI empowers forward-thinking executives to simplify, automate, and amplify their marketing — with zero friction.</p>
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750913253/qcglo1qub0j3j58kibyu.mp4" type="video/mp4">
+      <p>Your browser does not support the video tag.</p>
+    </video>
+    <div class="overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <h1>Reclaim your time. Rediscover your life — with AI by your side.</h1>
+      <p>Victory Vision AI empowers busy CEOs and CMOs to automate billboard marketing in minutes—no meetings, no complexity, just performance.</p>
+      <a href="#get-started" class="cta-button">Get My Time Back Now</a>
+      <div class="countdown-timer">Founders Deal – Ends In: Loading…</div>
+    </div>
+  </header>
+  <div class="sticky-cta">
     <a href="#get-started" class="cta-button">Get My Time Back Now</a>
   </div>
-</header>
-
-<main>
-  <section class="intro">
-    <h2>Victory Vision AI</h2>
-    <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
-  </section>
-
-  <section class="narrative">
-    <h2>Balance Restored</h2>
-    <p>Modern leadership is relentless. Between investor updates, growth metrics, and daily operations — time becomes the rarest commodity. Victory Vision AI exists to restore balance. Our automation helps leaders reclaim headspace, remove marketing complexity, and focus where it matters most — scaling the business, not managing traffic campaigns.</p>
-    <div class="keywords">
-      <span>AI simplifies marketing</span>
-      <span>Automation = freedom</span>
-      <span>Better customer insights</span>
-      <span>Work-life balance for CEOs</span>
-      <span>Data-backed decision-making</span>
-      <span>No meetings required</span>
-    </div>
-  </section>
-
-  <section class="interactive-section">
-    <div class="interactive-title">
-      <h2>Before & After: Chaos Transformed</h2>
-    </div>
-    <div class="before-after">
-      <div class="before">
-        <h3>Before Victory Vision AI</h3>
-        <ul>
-          <li>❌ Hours spent managing campaigns</li>
-          <li>❌ Unclear ROI from digital billboards</li>
-          <li>❌ Dependence on multiple vendors</li>
-          <li>❌ No scalability or segmentation</li>
-        </ul>
+  <main>
+    <section class="intro">
+      <h2>Victory Vision AI</h2>
+      <p>Victory Vision AI is the leading AI marketing engine that translates data into powerful, real-world ad campaigns. Our interface lets you automate and personalize digital billboard campaigns based on audience behaviors, location data, weather, and more—while providing crystal-clear attribution and ROI insights.</p>
+    </section>
+    <section class="narrative">
+      <h2>Designed for Executives Who Value Time</h2>
+      <p>You're busy scaling your business — let AI scale your marketing. Victory Vision AI removes the friction, giving you back hours and mental clarity while delivering sophisticated targeting and real-time performance. It’s time to focus on growth, not vendor meetings.</p>
+      <div class="keywords">
+        <span>AI simplifies marketing</span>
+        <span>Automation = freedom</span>
+        <span>Better customer insights</span>
+        <span>Work-life balance for CEOs</span>
+        <span>Data-backed decision-making</span>
+        <span>No meetings required</span>
       </div>
-      <div class="after">
-        <h3>After Victory Vision AI</h3>
-        <ul>
-          <li>✅ Fully automated AI-driven campaigns</li>
-          <li>✅ Real-time targeting by location & weather</li>
-          <li>✅ Clear analytics and attribution dashboards</li>
-          <li>✅ More time for strategy & leadership</li>
-        </ul>
+    </section>
+    <section class="interactive-section">
+      <div class="interactive-title">
+        <h2>Before & After: Chaos Transformed</h2>
       </div>
-    </div>
-  </section>
-
-  <section id="get-started" class="conversion">
-    <h2>Limited-Time Founders Deal</h2>
-    <p>Join other high-performing business leaders using AI to regain control, boost efficiency, and increase ROI. No meetings. No demos. Just precision results — immediately.</p>
-    <div class="form">
-      <input type="email" placeholder="Enter your business email" />
-      <button>Get My Time Back Now</button>
-    </div>
-  </section>
-</main>
-
-<footer>
-  &copy; 2024 Victory Vision AI. All rights reserved.
-</footer>
-
+      <div class="slider-toggle">
+        <div class="toggle-buttons">
+          <button class="active" data-target="before">Before</button>
+          <button data-target="after">After</button>
+        </div>
+        <div id="before" class="toggle-content active">
+          <ul>
+            <li>❌ Hours wasted coordinating ad vendors and creatives</li>
+            <li>❌ No way to optimize based on real-time traffic/weather</li>
+            <li>❌ Reporting is fragmented, incomplete, or delayed</li>
+            <li>❌ Limited geographic personalization</li>
+          </ul>
+        </div>
+        <div id="after" class="toggle-content">
+          <ul>
+            <li>✅ One-click campaign automation via AI</li>
+            <li>✅ Real-time adjustments based on weather, time & audience flow</li>
+            <li>✅ Interactive dashboard with full attribution & analytics</li>
+            <li>✅ Geo-aware messaging with performance-tested templates</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section id="get-started" class="conversion">
+      <h2>Limited-Time Founders Deal</h2>
+      <p>Apply AI to solve operational chaos. Sign up today and join hundreds of growth-driven leaders transforming their marketing while reclaiming their time.</p>
+      <form class="form" action="#" method="POST">
+        <label for="email" class="visually-hidden">Business email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your business email" aria-label="Business email" required>
+        <button type="submit">Get My Time Back Now</button>
+      </form>
+      <div class="countdown-timer" style="margin-top: 1rem;">Founders Deal – Ends In: Loading…</div>
+    </section>
+  </main>
+  <footer>
+    &copy; 2024 Victory Vision AI. Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a>
+  </footer>
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=ff8c1d4e8f90c29a5cf6fbb4024112cfeb8c3380" width="1" height="1" style="display:none;" alt="tracking pixel" />
 </body>
 </html>
-```
