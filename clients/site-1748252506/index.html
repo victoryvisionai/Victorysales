@@ -1,0 +1,369 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI — Automate & Elevate Marketing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a3161;
+      --white: #ffffff;
+      --offwhite: #f5f5f5;
+      --accent: #1b4d89;
+      --font-main: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--offwhite);
+      color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    header .overlay {
+      position: relative;
+      text-align: center;
+      color: var(--white);
+      padding: 2rem;
+      max-width: 900px;
+    }
+
+    header .overlay img {
+      height: 60px;
+      margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      background-color: var(--white);
+      color: var(--primary);
+      padding: 0.85rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .cta-button:hover {
+      background-color: #e6e6e6;
+      transform: translateY(-2px);
+    }
+
+    main {
+      overflow-x: hidden;
+    }
+
+    section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .intro {
+      background: var(--white);
+      text-align: center;
+    }
+
+    .intro h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #444;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .narrative {
+      background: var(--offwhite);
+    }
+
+    .narrative h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .narrative p {
+      font-size: 1.1rem;
+      color: #333;
+      max-width: 850px;
+      margin: 0 auto;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .keywords {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .keywords span {
+      background-color: var(--white);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .interactive-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: var(--white);
+    }
+
+    .interactive-title {
+      text-align: center;
+      max-width: 850px;
+      margin-bottom: 2rem;
+    }
+
+    .interactive-title h2 {
+      color: var(--primary);
+      font-size: 2rem;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      height: 400px;
+      margin: 2rem auto;
+      overflow: hidden;
+      border-radius: 12px;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 500;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .slider-text {
+      padding: 2rem;
+    }
+
+    .before-after {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+
+    .before, .after {
+      flex: 1;
+      min-width: 280px;
+      margin: 1rem;
+      background: var(--offwhite);
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .before h3, .after h3 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .conversion {
+      background: var(--primary);
+      color: var(--white);
+      text-align: center;
+    }
+
+    .conversion h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .conversion p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .form input[type="email"] {
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 4px;
+      margin-right: 0;
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 1rem;
+    }
+
+    .form button {
+      background: var(--white);
+      color: var(--primary);
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form button:hover {
+      background: #e2e2e2;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--offwhite);
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .slider-container {
+        height: 300px;
+      }
+
+      .before-after {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <video autoplay muted loop playsinline>
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750913253/qcglo1qub0j3j58kibyu.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="overlay">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+    <h1>Reclaim your time. Rediscover your life — with AI by your side.</h1>
+    <p>Victory Vision AI empowers forward-thinking executives to simplify, automate, and amplify their marketing — with zero friction.</p>
+    <a href="#get-started" class="cta-button">Get My Time Back Now</a>
+  </div>
+</header>
+
+<main>
+  <section class="intro">
+    <h2>Victory Vision AI</h2>
+    <p>Victory Vision AI is a pioneering platform at the intersection of media and technology, revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, we simplify the complexities of marketing campaigns, allowing brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior. Our goal is to maximize ROI for enterprises of all sizes, from mid-sized startups to established corporations. In a constantly evolving digital landscape, Victory Vision AI empowers clients with actionable insights and simplified execution, ensuring that impactful marketing campaigns resonate with audiences and drive substantial growth.</p>
+  </section>
+
+  <section class="narrative">
+    <h2>Balance Restored</h2>
+    <p>Modern leadership is relentless. Between investor updates, growth metrics, and daily operations — time becomes the rarest commodity. Victory Vision AI exists to restore balance. Our automation helps leaders reclaim headspace, remove marketing complexity, and focus where it matters most — scaling the business, not managing traffic campaigns.</p>
+    <div class="keywords">
+      <span>AI simplifies marketing</span>
+      <span>Automation = freedom</span>
+      <span>Better customer insights</span>
+      <span>Work-life balance for CEOs</span>
+      <span>Data-backed decision-making</span>
+      <span>No meetings required</span>
+    </div>
+  </section>
+
+  <section class="interactive-section">
+    <div class="interactive-title">
+      <h2>Before & After: Chaos Transformed</h2>
+    </div>
+    <div class="before-after">
+      <div class="before">
+        <h3>Before Victory Vision AI</h3>
+        <ul>
+          <li>❌ Hours spent managing campaigns</li>
+          <li>❌ Unclear ROI from digital billboards</li>
+          <li>❌ Dependence on multiple vendors</li>
+          <li>❌ No scalability or segmentation</li>
+        </ul>
+      </div>
+      <div class="after">
+        <h3>After Victory Vision AI</h3>
+        <ul>
+          <li>✅ Fully automated AI-driven campaigns</li>
+          <li>✅ Real-time targeting by location & weather</li>
+          <li>✅ Clear analytics and attribution dashboards</li>
+          <li>✅ More time for strategy & leadership</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="get-started" class="conversion">
+    <h2>Limited-Time Founders Deal</h2>
+    <p>Join other high-performing business leaders using AI to regain control, boost efficiency, and increase ROI. No meetings. No demos. Just precision results — immediately.</p>
+    <div class="form">
+      <input type="email" placeholder="Enter your business email" />
+      <button>Get My Time Back Now</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  &copy; 2024 Victory Vision AI. All rights reserved.
+</footer>
+
+</body>
+</html>
+```
