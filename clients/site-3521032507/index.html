@@ -1,0 +1,326 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Victory Vision AI – Your E-commerce Renaissance Starts with AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--white);
+      color: var(--primary);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(10,49,97,0.7), rgba(10,49,97,0.9));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--white);
+      padding: 0 1rem;
+    }
+
+    .overlay img.logo {
+      max-width: 150px;
+      margin-bottom: 1.5rem;
+    }
+
+    .overlay h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .overlay p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin-bottom: 2rem;
+    }
+
+    .cta-button {
+      background-color: var(--white);
+      color: var(--primary);
+      padding: 0.9rem 2rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .cta-button:hover {
+      background-color: var(--light);
+      transform: scale(1.05);
+    }
+
+    main {
+      background-color: var(--light);
+    }
+
+    section {
+      padding: 5rem 1.5rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    section p {
+      font-size: 1rem;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      text-align: center;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .video-showcase {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.1);
+    }
+
+    .testimonial-block {
+      background-color: var(--white);
+      border-left: 6px solid var(--primary);
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+    }
+
+    .testimonial-block strong {
+      display: block;
+      margin-top: 1rem;
+      color: #555;
+    }
+
+    .signup-block {
+      background: var(--primary);
+      color: var(--white);
+      padding: 4rem 1.5rem;
+      text-align: center;
+    }
+
+    .signup-block h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .signup-block form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 500px;
+      margin: 2rem auto 0;
+    }
+
+    .signup-block input[type="email"] {
+      padding: 0.75rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .signup-block button {
+      background: var(--white);
+      color: var(--primary);
+      font-weight: bold;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .signup-block button:hover {
+      background: var(--light);
+    }
+
+    footer {
+      background-color: #062242;
+      color: var(--light);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .overlay h1 {
+        font-size: 1.8rem;
+      }
+      .overlay p {
+        font-size: 1rem;
+      }
+      .cta-button {
+        padding: 0.7rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751572865/viral_campaign_final.mp4" autoplay muted loop playsinline></video>
+  <div class="overlay">
+    <img class="logo" src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+    <h1>Your E-commerce Renaissance Starts with AI</h1>
+    <p>Empowering mid-sized businesses with predictive analytics & automated marketing for real-time revenue growth.</p>
+    <a href="#signup" class="cta-button">Download the Growth Playbook</a>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2>What is Victory Vision AI?</h2>
+    <p>
+      Victory Vision AI is a pioneering leader at the intersection of media and technology, committed to revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI, we simplify complex marketing, empowering brands to optimize strategies in real-time with precision targeting using location, weather, traffic, and behavior data. Victory Vision equips clients with actionable insights and seamless execution—maximizing ROI across the e-commerce and retail landscape.
+    </p>
+  </section>
+
+  <section>
+    <h2>Your E-commerce Renaissance Starts Now</h2>
+    <p>
+      Executives today face overwhelming complexity in customer acquisition and campaign management. Victory Vision AI reshapes the playing field—giving you automated, predictive tools that cut through the noise and deliver what matters: growth. Say goodbye to guesswork and hello to real-time performance powered by AI.
+    </p>
+  </section>
+
+  <section>
+    <h2>See It in Action</h2>
+    <div class="video-showcase">
+      <iframe width="100%" height="500" src="https://www.youtube.com/embed/XmX_HpPuHE4" title="Unlocking E-commerce Success" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <section>
+    <h2>Smart Tools for Modern Marketers</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>AI-Driven Marketing</h3>
+        <p>Intuitively adjust campaigns based on real-time customer behavior and data signals.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Predictive Analytics</h3>
+        <p>Forecast customer behavior and sales patterns before they happen with confidence.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Automated Campaign Tools</h3>
+        <p>Set campaigns on autopilot with dynamic A/B testing, scheduling, and personalization.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Data-Driven Strategy</h3>
+        <p>Every marketing decision backed by deep insights—not opinions.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Customer Insight Engine</h3>
+        <p>Uncover the true journey and motivations of your buyers, from first click to lifetime value.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Scalable E-commerce Growth</h3>
+        <p>Win today and tomorrow. Victory Vision AI evolves with your growth trajectory.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Why CEOs & CMOs Are Choosing Innovation</h2>
+    <p>See how Victory Vision AI is transforming marketing teams into revenue engines at companies you trust.</p>
+    <div class="testimonial-block">
+      <p>"Victory Vision AI helped us cut campaign setup time by 62% and exceeded sales forecast by 28%. It’s a true game-changer."</p>
+      <strong>– Carla M., CMO at BrightPath Retail</strong>
+    </div>
+    <div class="testimonial-block">
+      <p>"Marketing with AI isn’t the future—it’s the now. Victory Vision delivers insights we never thought possible."</p>
+      <strong>– Stephen R., CEO of ModaHouse E-commerce</strong>
+    </div>
+  </section>
+
+  <section id="signup" class="signup-block">
+    <h2>Get Your Free Growth Playbook</h2>
+    <p>See the AI strategies industry leaders use to drive results. Download our actionable guide today.</p>
+    <form action="#" method="post">
+      <input type="email" name="email" placeholder="Enter your business email" required>
+      <button type="submit">Send Me the Playbook</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  &copy; 2024 Victory Vision AI. All rights reserved.
+</footer>
+
+</body>
+</html>
+```
