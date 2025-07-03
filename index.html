@@ -1,253 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Victory Vision AI - The complete marketing automation platform that generates viral campaigns, landing pages, and social media content. Transform your business with AI." />
-  <meta property="og:title" content="Victory Vision AI | Complete Marketing Automation Platform" />
-  <meta property="og:description" content="Generate viral campaigns, landing pages, and social media content with AI. Join 10,000+ businesses growing with Victory Vision." />
-  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
-  <meta property="og:url" content="https://www.victoryvision.app" />
-  <meta name="theme-color" content="#0a3161" />
-  <title>Victory Vision AI | Complete Marketing Automation Platform</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" href="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --primary: #0a3161;
-      --secondary: #1a4c80;
-      --accent: #bb133e;
-      --white: #ffffff;
-      --light: #f8f9fa;
-      --gray: #6c757d;
-      --dark: #212529;
-      --orange: #fd7e14;
-      --gradient: linear-gradient(135deg, #0a3161 0%, #1a4c80 100%);
-      --font-main: 'Inter', sans-serif;
-      --shadow: 0 10px 30px rgba(10, 49, 97, 0.1);
-      --shadow-lg: 0 20px 40px rgba(10, 49, 97, 0.15);
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      font-family: var(--font-main);
-      background-color: var(--white);
-      color: var(--dark);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    
-    /* Navigation */
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      z-index: 1000;
-      padding: 1rem 0;
-      border-bottom: 1px solid rgba(10, 49, 97, 0.1);
-    }
-    
-    .nav-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--primary);
-    }
-    
-    .logo img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
-    
-    .nav-links a {
-      color: var(--dark);
-      font-weight: 500;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-    
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-    
-    .btn-login {
-      background: var(--accent);
-      color: var(--white);
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-    
-    .btn-signup {
-      background: var(--primary);
-      color: var(--white);
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .btn-signup:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-    
-    /* Hero Section */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      background: var(--gradient);
-      color: var(--white);
-      overflow: hidden;
-    }
-    
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-      opacity: 0.3;
-    }
-    
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      margin-top: 80px;
-    }
-    
-    .hero-text h1 {
-      font-size: 3.5rem;
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-    }
-    
-    .hero-text .highlight {
-      color: var(--orange);
-    }
-    
-    .hero-text p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      opacity: 0.9;
-    }
-    
-    .hero-cta {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    
-    .email-form {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    
-    .email-form input {
-      flex: 1;
-      padding: 1rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      box-shadow: var(--shadow);
-    }
-    
-    .email-form button {
-      background: var(--accent);
-      color: var(--white);
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    
-    .email-form button:hover {
-      transform: scale(1.05);
-    }
-    
-    .social-proof {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-    
-    .social-proof .avatars {
-      display: flex;
-      margin-left: -10px;
-    }
-    
-    .social-proof .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid var(--white);
-      margin-left: -10px;
-      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
-    }
-    
-    .hero-visual {
-      position: relative;
-    }
-    
-    .hero-video {
-      width: 100%;
-      border-radius: 16px;
-      box-shadow: var(--shadow-lg);
-      transform: perspective(1000px) rotateY(-5deg);
-    }
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <meta name="description" content="Victory Vision AI - The complete marketing automation platform that generates viral campaigns, landing pages, and social media content. Transform your business with AI." />
+ <meta property="og:title" content="Victory Vision AI | Complete Marketing Automation Platform" />
+ <meta property="og:description" content="Generate viral campaigns, landing pages, and social media content with AI. Join 10,000+ businesses growing with Victory Vision." />
+ <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+ <meta property="og:url" content="https://www.victoryvision.app" />
+ <meta name="theme-color" content="#0a3161" />
+ <title>Victory Vision AI | Complete Marketing Automation Platform</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com" />
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+ <link rel="icon" href="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+ <style>
+   :root {
+     --primary: #0a3161;
+     --secondary: #1a4c80;
+     --accent: #bb133e;
+     --white: #ffffff;
+     --light: #f8f9fa;
+     --gray: #6c757d;
+     --dark: #212529;
+     --orange: #fd7e14;
+     --gradient: linear-gradient(135deg, #0a3161 0%, #1a4c80 100%);
+     --font-main: 'Inter', sans-serif;
+     --shadow: 0 10px 30px rgba(10, 49, 97, 0.1);
+     --shadow-lg: 0 20px 40px rgba(10, 49, 97, 0.15);
+   }
+   
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+   
+   body {
+     font-family: var(--font-main);
+     background-color: var(--white);
+     color: var(--dark);
+     line-height: 1.6;
+     overflow-x: hidden;
+   }
+   
+   .container {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 0 2rem;
+   }
+   
+   /* Navigation */
+   nav {
+     position: fixed;
+     top: 0;
+     width: 100%;
+     background: rgba(10, 49, 97, 0.95);
+     backdrop-filter: blur(10px);
+     z-index: 1000;
+     padding: 1rem 0;
+     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+   }
+   
+   .nav-content {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+   }
+   
+   .logo {
+     display: flex;
+     align-items: center;
+     gap: 0.75rem;
+     font-weight: 800;
+     font-size: 1.25rem;
+     color: var(--white);
+   }
+   
+   .logo img {
+     width: 40px;
+     height: 40px;
+     border-radius: 8px;
+   }
+   
+   .nav-links {
+     display: flex;
+     gap: 1.5rem;
+     align-items: center;
+   }
+   
+   .nav-links a {
+     color: var(--white);
+     font-weight: 500;
+     text-decoration: none;
+     transition: color 0.3s ease;
+   }
+   
+   .nav-links a:hover {
+     color: var(--orange);
+   }
+   
+   .btn-login {
+     background: var(--accent);
+     color: var(--white);
+     padding: 0.75rem 1.5rem;
+     border-radius: 8px;
+     font-weight: 600;
+     text-decoration: none;
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+   }
+   
+   .btn-login:hover {
+     transform: translateY(-2px);
+     box-shadow: var(--shadow);
+   }
+   
+   .btn-signup {
+     background: var(--orange);
+     color: var(--white);
+     padding: 0.75rem 1.5rem;
+     border-radius: 8px;
+     font-weight: 600;
+     text-decoration: none;
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+   }
+   
+   .btn-signup:hover {
+     transform: translateY(-2px);
+     box-shadow: var(--shadow);
+   }
+   
+   /* Hero Section */
+   .hero {
+     position: relative;
+     min-height: 100vh;
+     display: flex;
+     align-items: center;
+     color: var(--white);
+     overflow: hidden;
+   }
+   
+   .hero video {
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     z-index: -2;
+   }
+   
+   .hero::before {
+     content: '';
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     bottom: 0;
+     background: rgba(10, 49, 97, 0.8);
+     z-index: -1;
+   }
+   
+   .hero-content {
+     position: relative;
+     z-index: 2;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     text-align: center;
+     margin-top: 80px;
+     width: 100%;
+   }
+   
+   .hero-text h1 {
+     font-size: 4rem;
+     font-weight: 900;
+     line-height: 1.1;
+     margin-bottom: 1.5rem;
+     max-width: 900px;
+   }
+   
+   .hero-text .highlight {
+     color: var(--orange);
+   }
+   
+   .hero-text p {
+     font-size: 1.4rem;
+     margin-bottom: 2rem;
+     opacity: 0.9;
+     max-width: 700px;
+   }
+   
+   .hero-cta {
+     display: flex;
+     flex-direction: column;
+     gap: 1rem;
+     margin-bottom: 2rem;
+     width: 100%;
+     max-width: 500px;
+   }
+   
+   .email-form {
+     display: flex;
+     gap: 1rem;
+     margin-bottom: 1rem;
+   }
+   
+   .email-form input {
+     flex: 1;
+     padding: 1rem;
+     border: none;
+     border-radius: 8px;
+     font-size: 1rem;
+     box-shadow: var(--shadow);
+   }
+   
+   .email-form button {
+     background: var(--accent);
+     color: var(--white);
+     border: none;
+     padding: 1rem 2rem;
+     border-radius: 8px;
+     font-weight: 700;
+     cursor: pointer;
+     transition: transform 0.3s ease;
+   }
+   
+   .email-form button:hover {
+     transform: scale(1.05);
+   }
+   
+   .social-proof {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 1rem;
+     font-size: 0.9rem;
+     opacity: 0.8;
+   }
+   
+   .social-proof .avatars {
+     display: flex;
+     margin-left: -10px;
+   }
+   
+   .social-proof .avatar {
+     width: 32px;
+     height: 32px;
+     border-radius: 50%;
+     border: 2px solid var(--white);
+     margin-left: -10px;
+     background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+   }
     
     /* Trust Indicators */
     .trust-bar {
