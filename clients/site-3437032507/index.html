@@ -1,0 +1,314 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI — The Intelligent Revenue Platform</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --accent: #00b3ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--white);
+      color: var(--primary);
+      overflow-x: hidden;
+    }
+
+    header {
+      position: relative;
+      height: 100vh;
+      color: var(--white);
+      background-color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.65;
+    }
+
+    header .overlay {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+      max-width: 1200px;
+    }
+
+    header img.logo {
+      width: 150px;
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    header p {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-buttons a {
+      display: inline-block;
+      padding: 0.85rem 1.5rem;
+      font-weight: 600;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: 2px solid var(--white);
+    }
+
+    .primary-btn {
+      background-color: var(--white);
+      color: var(--primary);
+    }
+
+    .primary-btn:hover {
+      background-color: var(--accent);
+      color: var(--white);
+      border-color: var(--accent);
+    }
+
+    .secondary-btn {
+      background: transparent;
+      color: var(--white);
+    }
+
+    .secondary-btn:hover {
+      background: var(--white);
+      color: var(--primary);
+    }
+
+    section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      font-size: 1.125rem;
+      color: #555;
+      margin-bottom: 3rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature {
+      background: var(--light);
+      padding: 2rem;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature p {
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .video-section {
+      text-align: center;
+      background-color: var(--light);
+      padding: 5rem 2rem;
+    }
+
+    .video-section video {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 12px;
+      margin-top: 2rem;
+    }
+
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .testimonial {
+      padding: 2rem;
+      border-left: 4px solid var(--primary);
+      background: #fafafa;
+      border-radius: 8px;
+    }
+
+    .testimonial p {
+      font-style: italic;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial span {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    footer {
+      background: var(--primary);
+      color: var(--white);
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    footer .footer-logo {
+      width: 120px;
+      margin-bottom: 1rem;
+    }
+
+    footer p {
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+
+    @media (min-width: 768px) {
+      header h1 {
+        font-size: 4rem;
+      }
+
+      .cta-buttons a {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751558236/viral_campaign_final.mp4" type="video/mp4">
+    </video>
+    <div class="overlay">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" class="logo" alt="Victory Vision Logo">
+      <h1>Welcome to the Era of Intelligent Revenue</h1>
+      <p>Victory Vision AI unites the most advanced marketing and sales automation tools—seamlessly composable, radically no-code, enterprise-ready. Drive your growth engine at machine speed.</p>
+      <div class="cta-buttons">
+        <a href="#get-started" class="primary-btn">Build Your Growth Engine</a>
+        <a href="#overview" class="secondary-btn">See Victory Vision in Action</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="overview">
+      <h2 class="section-title">Unleash Autonomous Growth</h2>
+      <p class="section-subtitle">A unified AI platform purpose-built for marketers, founders, and revenue teams who want velocity without complexity.</p>
+      <div class="features">
+        <div class="feature">
+          <h3>Composable Architecture</h3>
+          <p>Integrate multiple AI services and tools under one platform. No-code. Fully flexible. Ready to adapt with your strategy.</p>
+        </div>
+        <div class="feature">
+          <h3>No-Code Automation</h3>
+          <p>Deploy intelligent workflows without writing a single line of code. Launch in minutes, not months.</p>
+        </div>
+        <div class="feature">
+          <h3>Seamless Multi-Vendor AI</h3>
+          <p>Victory Vision AI connects top-tier AI models from various vendors—so you’re always running with the best in class.</p>
+        </div>
+        <div class="feature">
+          <h3>Data-Led Intelligence</h3>
+          <p>Track, learn, and optimize in real time. Harness data dashboards built for decision-makers who need clarity, not chaos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="video-section" id="explainer">
+      <h2 class="section-title">What Is a Growth Machine?</h2>
+      <p class="section-subtitle">View how Victory Vision AI orchestrates automated growth across your entire funnel with elegance and speed.</p>
+      <video controls poster="https://via.placeholder.com/800x450.png?text=Victory+Vision+Explainer">
+        <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751558236/viral_campaign_final.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </section>
+
+    <section>
+      <h2 class="section-title">Trusted by Visionaries</h2>
+      <p class="section-subtitle">From agile startups to scaling enterprises, our users are building the future of AI-powered growth.</p>
+      <div class="testimonials">
+        <div class="testimonial">
+          <p>“Victory Vision unlocked what our internal teams couldn’t—true automation without the developer bottleneck. It’s a multiplier.”</p>
+          <span>— Julian N., CMO at ScaleGrid</span>
+        </div>
+        <div class="testimonial">
+          <p>“Competitive edge used to mean finding the next channel. Now it means building on Victory Vision.”</p>
+          <span>— Aisha K., Founder at Brandfire Labs</span>
+        </div>
+        <div class="testimonial">
+          <p>“The platform gave us composability, control, and clarity—in days. No tool has ever been this fast to ROI.”</p>
+          <span>— Dmitry V., VP Growth at NimbusIQ</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="get-started" style="text-align: center; background-color: var(--primary); color: var(--white); padding: 4rem 2rem;">
+      <h2 class="section-title">Ready to Build Yours?</h2>
+      <p class="section-subtitle" style="color: #ddd;">Start your AI journey with Victory Vision and launch your intelligent growth engine today.</p>
+      <div class="cta-buttons" style="justify-content: center; margin-top: 2rem;">
+        <a href="#" class="primary-btn">Get Started Now</a>
+        <a href="#explainer" class="secondary-btn">Watch the Demo</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision Logo" class="footer-logo" />
+    <p>&copy; 2024 Victory Vision AI. All rights reserved. | Intelligent Revenue Starts Here</p>
+  </footer>
+
+</body>
+</html>
+```
