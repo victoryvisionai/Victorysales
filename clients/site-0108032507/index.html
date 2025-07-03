@@ -1,0 +1,299 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Victory Vision AI | Automated Growth Engine for Visionaries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-blue: #0a3161;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --light-glow: rgba(255,255,255,0.08);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--brand-blue);
+      color: var(--white);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.5);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      z-index: 2;
+    }
+
+    nav img {
+      height: 50px;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav ul li {
+      list-style: none;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: var(--white);
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    nav ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      max-width: 800px;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      margin-top: 1rem;
+      max-width: 700px;
+      color: #dbe9ff;
+    }
+
+    .cta-button {
+      margin-top: 2rem;
+      padding: 0.9rem 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      background: var(--white);
+      color: var(--brand-blue);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .cta-button:hover {
+      background: #e1e1e1;
+    }
+
+    main {
+      background-color: var(--light);
+      color: var(--brand-blue);
+      padding: 5rem 2rem;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.125rem;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      color: #555;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .feature-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+      transition: var(--transition);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .review-quote {
+      margin-top: 4rem;
+      background-color: var(--brand-blue);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .review-quote p {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto;
+      font-style: italic;
+    }
+
+    .signup {
+      background-color: var(--white);
+      color: var(--brand-blue);
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .signup h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .signup p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      color: #444;
+    }
+
+    .signup .cta-button {
+      background-color: var(--brand-blue);
+      color: var(--white);
+    }
+
+    .signup .cta-button:hover {
+      background-color: #00244d;
+    }
+
+    footer {
+      padding: 2rem;
+      background-color: var(--brand-blue);
+      color: var(--white);
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      nav ul {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video autoplay muted loop>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751572865/viral_campaign_final.mp4" type="video/mp4">
+    </video>
+
+    <nav>
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#usecases">Use Cases</a></li>
+        <li><a href="#signup">Get Started</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero">
+      <h1>Transform AI Chaos Into Harmonized Revenue Flow</h1>
+      <p>Victory Vision AI is your intelligent co-pilot—automating, integrating, and amplifying business growth through no-code, AI-driven precision.</p>
+      <a href="#signup"><button class="cta-button">Request a Live Demo</button></a>
+    </div>
+  </header>
+
+  <main id="features">
+    <h2 class="section-title">Modular AI That Builds Smarter With You</h2>
+    <p class="section-subtitle">Victory Vision adapts to your momentum. Stop toggling tools—start accelerating with an orchestrated growth engine that learns and evolves as you do.</p>
+    
+    <div class="features">
+      <div class="feature-card">
+        <h3>No-Code Revenue Workflows</h3>
+        <p>Launch and optimize campaigns, funnels, and content without writing a single line of code. Drag, drop, and deploy AI modules in minutes.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Real-Time Creative Automation</h3>
+        <p>Generate ad creatives, video scripts and landing pages instantly—powered by context-aware AI that mimics your brand voice and style.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Adaptive Intelligence</h3>
+        <p>Victory Vision calibrates to performance data, adjusting your messaging, targeting, and A/B flows in real-time for compounding results.</p>
+      </div>
+    </div>
+
+    <div id="usecases" class="review-quote">
+      <p>“We replaced 7 automation tools and doubled our launch velocity with Victory Vision. It's not just smarter, it's more human.” – Elana Reyes, Creator & Founder</p>
+    </div>
+  </main>
+
+  <section class="signup" id="signup">
+    <h2>Ready to Build Growth Engines That Run Themselves?</h2>
+    <p>Join a movement where AI empowers, not overwhelms. Demo Victory Vision AI and start composing your path to revenue with speed and soul.</p>
+    <a href="#"><button class="cta-button">Schedule Your Demo</button></a>
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Victory Vision AI. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
+```
