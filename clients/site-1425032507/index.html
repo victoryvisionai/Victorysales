@@ -1,13 +1,18 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Victory Vision AI - Your E-commerce Renaissance Starts with AI. Discover the future of marketing powered by predictive analytics, automation, and real-time strategy.">
+  <meta name="description" content="Victory Vision AI - Empowering E-commerce Growth Through Intelligent Marketing. Discover AI-powered automation, predictive analytics, and real-time insights." />
+  <meta property="og:title" content="Victory Vision AI | Your E-commerce Renaissance Starts with AI" />
+  <meta property="og:description" content="Empowering e-commerce through AI: Predictive insights, automation, and real-time performance for measurable growth." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:url" content="https://victoryvision.ai" />
+  <meta name="theme-color" content="#0a3161" />
   <title>Victory Vision AI | Your E-commerce Renaissance Starts with AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4bb.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -17,26 +22,34 @@
       --gray: #d8dee9;
       --font-main: 'Inter', sans-serif;
     }
-
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+    body {
       font-family: var(--font-main);
       background-color: var(--white);
       color: var(--primary);
       line-height: 1.6;
       overflow-x: hidden;
     }
-
-    header, main, footer {
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    header, main, footer, section, nav, article, aside {
       width: 100%;
     }
-
     .container {
       max-width: 1200px;
-      margin: auto;
+      margin: 0 auto;
       padding: 2rem;
     }
-
     .hero {
       position: relative;
       width: 100%;
@@ -46,59 +59,80 @@
       align-items: center;
       justify-content: center;
       color: var(--white);
+      text-align: left;
     }
-
     .hero video {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       z-index: -1;
     }
-
     .hero-overlay {
-      text-align: center;
-      padding: 2rem;
-      background: rgba(10, 49, 97, 0.5);
-      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+      background: rgba(10, 49, 97, 0.65);
+      padding: 2rem 3rem;
       border-radius: 12px;
-      max-width: 600px;
+      max-width: 700px;
     }
-
+    .hero-content {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
     .hero-logo {
-      width: 120px;
-      margin: 0 auto 1.5rem;
+      width: 80px;
+      flex-shrink: 0;
     }
-
+    .hero-text {
+      flex-grow: 1;
+    }
     .hero h1 {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       font-weight: 900;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
     }
-
+    .hero p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+    .cta-button {
+      padding: 1rem 2rem;
+      background: var(--white);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: inline-block;
+    }
+    .cta-button:hover {
+      background: var(--gray);
+    }
     .section-title {
       font-size: 2rem;
       font-weight: 700;
       margin-bottom: 1rem;
     }
-
-    .intro, .features, .differentiators, .calculator, .cta {
-      padding: 4rem 0;
-    }
-
     .intro p {
       max-width: 800px;
       font-size: 1.1rem;
       margin-bottom: 2rem;
     }
-
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
     }
-
     .feature-card {
       background: var(--light);
       padding: 2rem;
@@ -106,23 +140,19 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
       transition: transform 0.3s ease;
     }
-
     .feature-card:hover {
       transform: translateY(-5px);
     }
-
     .feature-card h3 {
       font-size: 1.2rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
-
-    .differentiators .quotes {
+    .quotes {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2rem;
     }
-
     blockquote {
       background: var(--light);
       padding: 1.5rem;
@@ -130,31 +160,27 @@
       font-style: italic;
       border-radius: 8px;
     }
-
     cite {
       display: block;
       margin-top: 0.5rem;
       font-weight: bold;
       color: var(--primary);
     }
-
     .calculator {
       background: var(--light);
       border-radius: 12px;
       padding: 3rem 2rem;
       text-align: center;
     }
-
     .calculator input {
       padding: 1rem;
       font-size: 1rem;
       border: 1px solid var(--gray);
       border-radius: 8px;
-      width: calc(100% - 2rem);
-      margin: 1rem 0;
+      width: 100%;
       max-width: 400px;
+      margin: 1rem 0;
     }
-
     .calculator button {
       padding: 1rem 2rem;
       background: var(--primary);
@@ -165,27 +191,28 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .calculator button:hover {
       background: #082445;
     }
-
+    .demo video {
+      max-width: 100%;
+      border-radius: 12px;
+      margin-top: 2rem;
+      border: 1px solid var(--gray);
+    }
     .cta {
       text-align: center;
     }
-
     .cta h2 {
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }
-
     .cta form {
       margin-top: 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
     .cta input[type="email"] {
       padding: 1rem;
       font-size: 1rem;
@@ -195,7 +222,6 @@
       border-radius: 8px;
       margin-bottom: 1rem;
     }
-
     .cta button {
       padding: 1rem 2rem;
       background: var(--primary);
@@ -206,27 +232,33 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .cta button:hover {
       background: #082445;
     }
-
     footer {
       padding: 2rem;
       background: var(--primary);
       color: var(--white);
       text-align: center;
     }
-
     footer a {
       color: var(--light);
       margin: 0 0.5rem;
       text-decoration: none;
     }
-
     @media (max-width: 768px) {
       .hero h1 {
         font-size: 2rem;
+      }
+      .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .hero-logo {
+        width: 60px;
+      }
+      .hero-overlay {
+        padding: 1.5rem 2rem;
       }
     }
   </style>
@@ -234,58 +266,61 @@
 <body>
 
   <header class="hero">
-    <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751572865/viral_campaign_final.mp4" type="video/mp4">
+    <video autoplay muted loop playsinline aria-label="Background demo video of AI-powered marketing technology.">
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751572865/viral_campaign_final.mp4" type="video/mp4" />
+      Your browser does not support the background video.
     </video>
     <div class="hero-overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" class="hero-logo" />
-      <h1>Your E-commerce Renaissance Starts with AI</h1>
+      <div class="hero-content">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" class="hero-logo" />
+        <div class="hero-text">
+          <h1>Your E-commerce Renaissance Starts with AI</h1>
+          <p>Unleash predictive analytics, real-time insights, and automated campaigns engineered to scale revenue and reduce execution complexity.</p>
+          <a href="#demo" class="cta-button" aria-label="See It in Action">See It in Action</a>
+        </div>
+      </div>
     </div>
   </header>
 
   <main>
-    <section class="container intro">
-      <h2 class="section-title">What is Victory Vision AI?</h2>
-      <p>
-        Victory Vision AI is a pioneering leader at the intersection of media and technology, committed to revolutionizing how businesses engage with their audiences. By leveraging state-of-the-art AI technology, Victory Vision simplifies the complexities of marketing campaigns, empowering brands to optimize their strategies in real-time with precision targeting based on critical data points such as location, weather, traffic conditions, and audience behavior.
-      </p>
-      <p>
-        Our mission is to maximize ROI for enterprises of all sizes, from innovative mid-sized startups to established corporations. In an ever-evolving digital landscape, Victory Vision AI equips clients with actionable insights and simplified execution, ensuring impactful marketing campaigns resonate with audiences and drive substantial growth.
-      </p>
+    <section class="container intro" id="intro" aria-labelledby="intro-heading">
+      <h2 class="section-title" id="intro-heading">What is Victory Vision AI?</h2>
+      <p>Victory Vision AI is a next-gen marketing intelligence platform engineered to give mid-sized e-commerce and retail leaders a data advantage. Our AI-powered engine integrates predictive analytics, location and behavioral targeting, and campaign automation into an intuitive interface that drives faster decisions—and better results.</p>
+      <p>Whether you’re scaling brand reach, optimizing ROAS, or rethinking your MarTech stack, Victory Vision AI simplifies the execution of personalized, omnichannel campaigns using live performance data. The result: smarter strategies delivering measurable growth.</p>
     </section>
 
-    <section class="container features">
-      <h2 class="section-title">The Renaissance Opportunity</h2>
+    <section class="container features" id="features" aria-labelledby="features-heading">
+      <h2 class="section-title" id="features-heading">The Renaissance Opportunity</h2>
       <div class="features-grid">
         <div class="feature-card">
-          <h3>AI-Driven Marketing</h3>
-          <p>Unleash precision with automated targeting that adapts to live trends and user behavior.</p>
+          <h3>AI-Driven Campaign Orchestration</h3>
+          <p>Run dynamic campaigns with automated targeting that evolves in real time to mirror behavior, seasonality and market shifts.</p>
         </div>
         <div class="feature-card">
-          <h3>Predictive Analytics</h3>
-          <p>See around the corner with cutting-edge models forecasting engagement and ROI.</p>
+          <h3>Predictive Performance Modeling</h3>
+          <p>Anticipate outcomes with forecasting tools trained on billions of data points across verticals and channels.</p>
         </div>
         <div class="feature-card">
-          <h3>Automated Marketing Tools</h3>
-          <p>Streamline execution with time-saving campaign builders and data-powered decisioning.</p>
+          <h3>Workflow Automation</h3>
+          <p>Reduce manual hours with intelligent templates, auto-segmentation, and content deployment tools built to scale.</p>
         </div>
         <div class="feature-card">
-          <h3>Customer Insights</h3>
-          <p>Know exactly who your audience is and what motivates them, in real-time.</p>
+          <h3>Unified Customer Profiles</h3>
+          <p>Track and model behaviors across devices and locations for finely tuned personalization and increased engagement.</p>
         </div>
         <div class="feature-card">
-          <h3>Data-Driven Strategy</h3>
-          <p>Craft campaigns based on facts—not guesses—and iterate at speed.</p>
+          <h3>Real-Time Optimization</h3>
+          <p>Make mid-flight adjustments to copy, spend, or targeting based on live campaign metrics.</p>
         </div>
         <div class="feature-card">
-          <h3>E-commerce Growth</h3>
-          <p>Join the brands scaling revenue with smart, insight-led communications that convert.</p>
+          <h3>Revenue Intelligence</h3>
+          <p>Correlate every tactic to financial impact with full-funnel attribution, smart reporting, and ROI drivers.</p>
         </div>
       </div>
     </section>
 
-    <section class="container differentiators">
-      <h2 class="section-title">Why CEOs & CMOs Are Choosing Innovation</h2>
+    <section class="container differentiators" id="testimonials" aria-labelledby="testimonial-heading">
+      <h2 class="section-title" id="testimonial-heading">Why CEOs & CMOs Are Choosing Innovation</h2>
       <div class="quotes">
         <blockquote>
           “Victory Vision helped us double engagement while cutting ad spend 30% within 90 days. This is how modern marketing should feel.”
@@ -302,35 +337,47 @@
       </div>
     </section>
 
-    <section class="container calculator">
-      <h2 class="section-title">Forecast Your ROI</h2>
-      <p>See how much smarter your marketing could be. Enter your monthly ad spend:</p>
-      <input type="number" placeholder="$10,000" />
-      <button>Calculate Potential Lift</button>
+    <section class="container demo" id="demo" aria-labelledby="demo-heading">
+      <h2 class="section-title" id="demo-heading">See It in Action</h2>
+      <p>Watch how brands are using Victory Vision AI to transform complexity into clarity and scale outcomes with precision.</p>
+      <video controls poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" aria-label="Demonstration video of the Victory Vision AI platform">
+        <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751572865/viral_campaign_final.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
     </section>
 
-    <section class="container cta">
-      <h2 class="section-title">Start Your AI Journey Today</h2>
-      <p>Download our free Growth Playbook and unlock your next level of scalable, intelligent marketing strategy.</p>
-      <form>
-        <input type="email" placeholder="Your Email Address" required />
+    <section class="container calculator" id="calculator" aria-labelledby="calculator-heading">
+      <h2 class="section-title" id="calculator-heading">Forecast Your ROI</h2>
+      <p>Envision how Victory Vision AI can amplify your ad spend. Enter your budget to estimate performance impact.</p>
+      <label for="budget" class="visually-hidden">Enter your budget</label>
+      <input type="number" id="budget" placeholder="$10,000" aria-label="Enter your budget" />
+      <button type="button">Calculate Potential Lift</button>
+    </section>
+
+    <section class="container cta" id="cta" aria-labelledby="cta-heading">
+      <h2 class="section-title" id="cta-heading">Start Your AI Journey Today</h2>
+      <p>Download the free Growth Playbook and unlock an achievable roadmap to smarter, data-led marketing performance.</p>
+      <form aria-label="Email subscription form">
+        <input type="email" placeholder="Your Email Address" required aria-label="Your email address" />
         <button type="submit">Get the Growth Playbook</button>
       </form>
       <div style="margin-top:1.5rem;">
-        <a href="https://twitter.com/share?text=Start your marketing renaissance with AI!&url=https://victoryvision.ai" target="_blank">Share on Twitter</a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://victoryvision.ai" target="_blank">Share on LinkedIn</a>
+        <a href="https://twitter.com/share?text=Start your marketing renaissance with AI!&url=https://victoryvision.ai" target="_blank" rel="noopener noreferrer" aria-label="Share on Twitter">Share on Twitter</a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://victoryvision.ai" target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn">Share on LinkedIn</a>
       </div>
     </section>
   </main>
 
   <footer>
     <p>&copy; 2024 Victory Vision AI. All rights reserved.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a></p>
     <div>
-      <a href="#">Privacy Policy</a> |
-      <a href="#">Terms of Service</a>
+      <a href="#" aria-label="Privacy Policy">Privacy Policy</a> |
+      <a href="#" aria-label="Terms of Service">Terms of Service</a>
     </div>
   </footer>
 
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=be0fe129be3cd042d657e0b3d49cc294ff0e31dc" width="1" height="1" style="display:none;" alt="Tracking Pixel" />
+
 </body>
 </html>
-```
