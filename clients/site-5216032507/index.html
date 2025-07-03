@@ -1,13 +1,20 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Victory Vision AI — The Future of Growth Automation</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Victory Vision AI is the AI Revenue Engine for growth teams—automating ads, websites, outbound campaigns, and analytics in one no-code platform." />
+  <meta property="og:title" content="Victory Vision AI — AI Revenue Engine for Modern Growth" />
+  <meta property="og:description" content="Launch, analyze, and optimize revenue with Victory Vision AI. All-in-one growth automation, no dev team needed." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <title>Victory Vision AI — AI Revenue Engine for Modern Growth</title>
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4bb.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <style>
     * {
@@ -21,6 +28,13 @@
       background-color: #f5f5f5;
       color: #0a3161;
       scroll-behavior: smooth;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     header {
@@ -37,19 +51,17 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
+      z-index: -2;
     }
 
     .hero-overlay {
       background: rgba(10, 49, 97, 0.75);
-      width: 100%;
-      height: 100%;
       position: absolute;
       top: 0;
       left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
     }
 
     .hero-content {
@@ -57,7 +69,7 @@
       z-index: 2;
       text-align: center;
       color: #ffffff;
-      max-width: 800px;
+      max-width: 900px;
       padding: 2rem;
     }
 
@@ -79,6 +91,13 @@
       line-height: 1.6;
     }
 
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     .cta-button {
       background-color: #ffffff;
       color: #0a3161;
@@ -89,12 +108,18 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
+      text-decoration: none;
     }
 
     .cta-button:hover {
       background-color: #0a3161;
       color: #ffffff;
       transform: scale(1.04);
+    }
+
+    main {
+      display: block;
+      width: 100%;
     }
 
     section {
@@ -110,32 +135,32 @@
       color: #0a3161;
     }
 
-    .features-container {
+    .features-container, .use-cases-container, .testimonials-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
 
-    .feature-box {
+    .feature-box, .use-case-box, .testimonial-box {
       background-color: #f5f5f5;
       border-radius: 12px;
       padding: 2rem;
       transition: transform 0.4s ease;
     }
 
-    .feature-box:hover {
+    .feature-box:hover, .use-case-box:hover {
       transform: translateY(-5px);
     }
 
-    .feature-box h3 {
+    .feature-box h3, .use-case-box h3 {
       font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 1rem;
       color: #0a3161;
     }
 
-    .feature-box p {
+    .feature-box p, .use-case-box p {
       font-size: 1rem;
       line-height: 1.6;
       color: #333;
@@ -148,7 +173,7 @@
       gap: 2rem;
       align-items: center;
       margin-top: 2rem;
-      opacity: 0.8;
+      opacity: 0.9;
     }
 
     .integration-logos img {
@@ -156,14 +181,38 @@
       object-fit: contain;
     }
 
-    .testimonial {
-      max-width: 800px;
-      margin: 0 auto;
+    .testimonial-box {
       text-align: center;
       font-style: italic;
       font-size: 1.1rem;
       color: #0a3161;
-      margin-top: 3rem;
+    }
+
+    .testimonial-box strong {
+      display: block;
+      margin-top: 1rem;
+      font-style: normal;
+    }
+
+    .case-studies {
+      background-color: #eef2f8;
+    }
+
+    .cta-section {
+      background-color: #0a3161;
+      color: #ffffff;
+      text-align: center;
+      padding: 80px 5%;
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
     }
 
     footer {
@@ -182,11 +231,6 @@
     footer p {
       font-size: 1rem;
       margin-bottom: 1.5rem;
-    }
-
-    footer .cta-button {
-      background-color: #ffffff;
-      color: #0a3161;
     }
 
     .footer-links {
@@ -208,97 +252,3 @@
       text-decoration: underline;
       color: #f5f5f5;
     }
-
-    @media(max-width: 768px) {
-      .hero-content h1 {
-        font-size: 2.2rem;
-      }
-
-      .hero-content p {
-        font-size: 1rem;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <header>
-    <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751558236/viral_campaign_final.mp4" type="video/mp4">
-    </video>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo">
-      <h1>Unify Growth. Accelerate Revenue.</h1>
-      <p>Victory Vision AI empowers founders and marketers with a composable, no-code AI platform to orchestrate real-time campaigns, automate insights, and scale with intelligence. Welcome to the future of business growth.</p>
-      <a href="#main"><button class="cta-button">Explore the Platform</button></a>
-    </div>
-  </header>
-
-  <main id="main">
-    <section>
-      <h2 class="section-title">The Power of Composable Growth Intelligence</h2>
-      <div class="features-container">
-        <div class="feature-box">
-          <h3>Ad Creative Generation</h3>
-          <p>Use AI to craft high-performing ad assets tailored to your audience—across platforms, formats, and funnels.</p>
-        </div>
-        <div class="feature-box">
-          <h3>Outbound Automation</h3>
-          <p>Launch and optimize AI-powered email, messaging, and prospecting workflows without writing code.</p>
-        </div>
-        <div class="feature-box">
-          <h3>Dynamic Web UX</h3>
-          <p>Turn your website into a living asset—personalized layouts, real-time AI-driven copy, auto-testing, and more.</p>
-        </div>
-        <div class="feature-box">
-          <h3>No-Code Command Center</h3>
-          <p>Orchestrate all your AI tools—across vendors and APIs—in one streamlined, beautiful interface. Think Zapier meets AI-native marketing.</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="section-title">Integrated With the Best</h2>
-      <div class="integration-logos">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/OpenAI_Logo.svg" alt="OpenAI Logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/8/85/Meta_Platforms_Logo.svg" alt="Meta Logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Microsoft_logo.svg" alt="Microsoft Logo">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Google_AI_logo.svg" alt="Google AI Logo">
-      </div>
-
-      <div class="testimonial">
-        “Victory Vision AI makes traditional martech feel ancient. It’s the first system that actually thinks with me—not just for me. Total game changer.”
-        <br><br><strong>— Devin Marks, ScaleOps Founder</strong>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="section-title">Victory Begins With Vision</h2>
-      <div style="max-width: 700px; margin: 0 auto; text-align: center; font-size: 1.1rem; line-height: 1.7; color: #333;">
-        We believe AI isn’t just about automation—it’s about augmentation. Victory Vision AI is where marketing insight, business logic, and creative energy meet advanced technology, so you can build systems that adapt, scale, and inspire.
-        <br><br>
-        Whether you're a solo founder or an enterprise team, this is your invitation: join a global movement of intelligent builders redefining what’s possible in digital growth.
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <h2>Ready to Build Smarter?</h2>
-    <p>Join the innovators shaping the next wave of growth—AI-powered, human-centered, and composably yours.</p>
-    <a href="#"><button class="cta-button">Request Early Access</button></a>
-
-    <div class="footer-links">
-      <a href="#">Platform</a>
-      <a href="#">About</a>
-      <a href="#">Partners</a>
-      <a href="#">Careers</a>
-      <a href="#">Privacy</a>
-    </div>
-    <p style="margin-top: 2rem; font-size: 0.8rem;">&copy; 2024 Victory Vision AI. All rights reserved.</p>
-  </footer>
-
-</body>
-</html>
-```
