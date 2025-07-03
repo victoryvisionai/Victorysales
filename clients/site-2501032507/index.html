@@ -1,0 +1,310 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision AI – Where Intelligent Revenue Begins</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0a3161;
+      --secondary: #ffffff;
+      --bg-light: #f5f5f5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--secondary);
+      font-family: 'Inter', sans-serif;
+      color: var(--primary);
+      line-height: 1.6;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--secondary);
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      min-width: 100%;
+      min-height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .overlay {
+      background: rgba(10, 49, 97, 0.7);
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .nav {
+      width: 100%;
+      max-width: 1200px;
+      padding: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+      position: relative;
+    }
+
+    .nav img {
+      height: 48px;
+    }
+
+    .nav a {
+      color: var(--secondary);
+      text-decoration: none;
+      font-weight: 500;
+      margin-left: 2rem;
+      font-size: 1rem;
+    }
+
+    .hero {
+      max-width: 900px;
+      padding: 2rem;
+      z-index: 2;
+      position: relative;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      max-width: 700px;
+      margin-inline: auto;
+    }
+
+    .cta-btn {
+      padding: 1rem 2rem;
+      background: var(--secondary);
+      color: var(--primary);
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .cta-btn:hover {
+      background: #e0e0e0;
+      transform: translateY(-2px);
+    }
+
+    main {
+      background: var(--secondary);
+      padding: 6rem 2rem;
+    }
+
+    section {
+      max-width: 1100px;
+      margin: 0 auto 6rem auto;
+    }
+
+    section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--bg-light);
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .card p {
+      font-size: 1rem;
+    }
+
+    .founder {
+      text-align: center;
+      padding: 4rem 2rem;
+      background-color: var(--bg-light);
+      border-radius: 12px;
+    }
+
+    .founder h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .founder p {
+      max-width: 900px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    .testimonials {
+      text-align: center;
+    }
+
+    .testimonial {
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-final {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .cta-final h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      background: var(--primary);
+      color: var(--secondary);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .nav img {
+        height: 40px;
+      }
+
+      .nav a {
+        font-size: 0.9rem;
+        margin-left: 1rem;
+      }
+
+      section h2 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1751558236/viral_campaign_final.mp4" type="video/mp4" />
+    </video>
+    <div class="overlay"></div>
+    <div class="nav">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750369638/gugj5zixdkbvqn49knpr.jpg" alt="Victory Vision AI Logo" />
+      <nav>
+        <a href="#how">How It Works</a>
+        <a href="#founder">Our Vision</a>
+        <a href="#demo">Request Demo</a>
+      </nav>
+    </div>
+    <div class="hero">
+      <h1>Victory Vision AI</h1>
+      <p>The Intelligent Revenue Engine built for entrepreneurs, marketers, and enterprises ready to scale without limits. Automate, orchestrate, and adapt—every AI, one platform.</p>
+      <a href="#demo"><button class="cta-btn">Request Early Access</button></a>
+    </div>
+  </header>
+
+  <main>
+    <section id="how">
+      <h2>From Chaos to Clarity</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>No-Code Automation</h3>
+          <p>Launch intelligent workflows in minutes. No engineers. No friction. Just outcomes.</p>
+        </div>
+        <div class="card">
+          <h3>Integrates Every AI</h3>
+          <p>Victory Vision bridges your favorite AI vendors and tools into a seamless orchestration layer.</p>
+        </div>
+        <div class="card">
+          <h3>Real-Time Adaptability</h3>
+          <p>Dynamic pipelines that adjust and optimize as customer behavior shifts—without manual updates.</p>
+        </div>
+        <div class="card">
+          <h3>Speed to Revenue</h3>
+          <p>From setup to scale in days, not months. Built for immediate results and perpetual learning.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="founder" class="founder">
+      <h2>Our Why</h2>
+      <h3>From Vision to Velocity</h3>
+      <p>"I built Victory Vision AI to tame the chaos I saw in AI adoption. Too many platforms fragment success rather than fuel it. This platform is my response to years of complexity stalling business momentum. Every feature is a reflection of one belief: that technology should enable bold ambition, not bury it. Now, every entrepreneur and scaling business can tap into the future of revenue—fully automated, deeply personal, radically powerful."</p>
+    </section>
+
+    <section class="testimonials">
+      <h2>What Early Users Are Saying</h2>
+      <p class="testimonial">“Finally, a true AI command center. Victory Vision’s adaptability is unlike anything we’ve used before.”<br />— VP of Growth, SaaS Startup</p>
+      <p class="testimonial">“We integrated five AI tools in our stack—in a single day. Revenue automation just became real.”<br />— Digital Agency Founder</p>
+    </section>
+
+    <section id="demo" class="cta-final">
+      <h2>Ready to Join the Intelligent Revenue Era?</h2>
+      <p><button class="cta-btn">Request a Personalized Demo</button></p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Victory Vision AI. All rights reserved.
+  </footer>
+</body>
+</html>
+```
