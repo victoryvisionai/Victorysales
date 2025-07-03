@@ -1,0 +1,302 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L.A. Confidential HR Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #a50928;
+      --white: #ffffff;
+      --light: #f5f5f5;
+      --black: #1d1d1d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+    }
+
+    header {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .overlay {
+      background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(255,255,255,0.95));
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .navbar img {
+      height: 40px;
+    }
+
+    .nav-cta {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .nav-cta:hover {
+      background-color: #88081f;
+    }
+
+    .hero-content {
+      max-width: 720px;
+      margin: 10vh auto 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      color: var(--black);
+    }
+
+    .hero-content h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-button {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 1rem 2rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .hero-button:hover {
+      background-color: #88081f;
+    }
+
+    main {
+      background-color: var(--white);
+    }
+
+    .section {
+      padding: 5rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--primary);
+    }
+
+    .section p {
+      font-size: 1.125rem;
+      color: #333;
+      margin-bottom: 2rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature {
+      background-color: var(--light);
+      padding: 2rem;
+      border-radius: 8px;
+    }
+
+    .feature h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .feature p {
+      font-size: 1rem;
+      color: #444;
+    }
+
+    .testimonial {
+      background-color: var(--light);
+      padding: 3rem 2rem;
+      border-left: 6px solid var(--primary);
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      margin-top: 1rem;
+      font-style: normal;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .cta-section {
+      background-color: var(--primary);
+      color: var(--white);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta-section a {
+      background-color: var(--white);
+      color: var(--primary);
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .cta-section a:hover {
+      background-color: #f5f5f5;
+    }
+
+    footer {
+      padding: 2rem;
+      background-color: var(--light);
+      text-align: center;
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.25rem;
+      }
+
+      .section {
+        padding: 3rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1750619456/flaaysik7e1miiqjizrj.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="navbar">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential HR Solutions Logo" />
+      <a class="nav-cta" href="#consult">Request Consultation</a>
+    </div>
+    <div class="hero-content">
+      <h1>From Chaos to Clarity in HR</h1>
+      <p>Expert-driven solutions that streamline your hiring, workflows, compliance & culture.</p>
+      <a href="#consult">
+        <button class="hero-button">Start Transforming Your HR</button>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <h2>Why HR Leaders Trust Us</h2>
+      <p>Disorganized spreadsheets, inconsistent onboarding, and out-of-date policies lead to wasted time and increased risk. L.A. Confidential HR Solutions helps organizations shift from reactive to proactive — offering clarity, cohesion, and compliance at scale.</p>
+      <div class="features-grid">
+        <div class="feature">
+          <h3>Smart Hiring Systems</h3>
+          <p>Automate and optimize job postings, applicant tracking, and structured interviews for faster, better-fit hires.</p>
+        </div>
+        <div class="feature">
+          <h3>Seamless Onboarding</h3>
+          <p>Give new employees a confident, unified first impression with standardized yet flexible onboarding experiences.</p>
+        </div>
+        <div class="feature">
+          <h3>Training & Development</h3>
+          <p>Plan role-based training programs, track progress, and build upskilling into your culture.</p>
+        </div>
+        <div class="feature">
+          <h3>Policy & Documentation</h3>
+          <p>Create and manage accessible, legally confident handbooks, protocols, and internal policies.</p>
+        </div>
+        <div class="feature">
+          <h3>Compliance Assurance</h3>
+          <p>Stay aligned with evolving labor laws and workplace safety requirements — without stress.</p>
+        </div>
+        <div class="feature">
+          <h3>Team Cohesion</h3>
+          <p>Integrate HR into the fabric of your company culture and strengthen internal collaboration.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>What Our Clients Say</h2>
+      <div class="testimonial">
+        “Before L.A. Confidential, our HR was cobbled together with outdated templates and constant miscommunication. Now, it's a well-oiled machine. We onboarded 40 people in one quarter—flawlessly.”
+        <div class="testimonial-author">— Jamie Rivera, COO, Sparkline Ventures</div>
+      </div>
+    </section>
+
+    <section id="consult" class="cta-section">
+      <h2>Ready to Eliminate HR Chaos?</h2>
+      <p>Get a customized evaluation of your current HR systems and discover immediate improvement opportunities.</p>
+      <a href="mailto:contact@laconfidentialhr.com">Request Your Consultation</a>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 L.A. Confidential HR Solutions. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
