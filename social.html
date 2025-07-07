@@ -40,17 +40,35 @@
       align-items: center;
       gap: 10px;
     }
-    .navbar .logout-btn {
-      background: #BB133E;
+    .navbar .subscription-medallion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
       color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
       font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      position: relative;
+      border: none;
+      transition: all 0.3s ease;
     }
-    .navbar .logout-btn:hover {
-      background: #9e1034;
+    .subscription-medallion.bronze {
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+    }
+    .subscription-medallion.silver {
+      background: linear-gradient(45deg, #C0C0C0, #808080);
+    }
+    .subscription-medallion.gold {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+    }
+    .subscription-medallion:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
     .logo img {
       height: 60px;
@@ -88,6 +106,75 @@
       padding: 15px;
       margin: -20px -20px 20px -20px;
       border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .ai-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 15px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .ai-toggle-label {
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .toggle-switch.active {
+      background: #28a745;
+    }
+    .toggle-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .toggle-switch.active .toggle-slider {
+      transform: translateX(26px);
+    }
+    .credits-display {
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 8px 12px;
+      text-align: center;
+      min-width: 80px;
+    }
+    .credits-number {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: white;
+    }
+    .credits-label {
+      font-size: 0.7em;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .stats-section {
       display: grid;
@@ -115,7 +202,7 @@
     }
     .filter-section {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: 1fr 1fr auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
@@ -157,104 +244,84 @@
     button.secondary:hover {
       background: #5a6268;
     }
-    .social-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 20px;
-    }
-    .social-card {
+    .social-table {
+      width: 100%;
+      border-collapse: collapse;
       background: white;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .social-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-    .social-header {
+    .social-table th {
       background: linear-gradient(135deg, #0A3161, #1a4c80);
       color: white;
       padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: left;
+      font-weight: 600;
     }
-    .platform-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .social-table td {
+      padding: 15px;
+      border-bottom: 1px solid #dee2e6;
+      vertical-align: top;
     }
-    .platform-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-      display: flex;
+    .social-table tr {
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .social-table tr:hover {
+      background-color: #f8f9fa;
+    }
+    .social-table tr.expanded {
+      background-color: #e3f2fd;
+    }
+    .platform-badge {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 14px;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
       font-weight: bold;
+      text-transform: uppercase;
+      color: white;
     }
-    .platform-icon.twitter {
+    .platform-badge.twitter {
       background: #1DA1F2;
     }
-    .platform-icon.linkedin {
+    .platform-badge.linkedin {
       background: #0077B5;
     }
-    .platform-icon.instagram {
+    .platform-badge.instagram {
       background: #E4405F;
     }
-    .platform-icon.youtube {
+    .platform-badge.youtube {
       background: #FF0000;
     }
-    .platform-icon.facebook {
+    .platform-badge.facebook {
       background: #1877F2;
     }
-    .platform-icon.tiktok {
+    .platform-badge.tiktok {
       background: #000000;
     }
-    .platform-icon.default {
+    .platform-badge.default {
       background: #6c757d;
     }
-    .post-date {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-    .social-content {
-      padding: 15px;
-    }
     .post-title {
-      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 10px;
       color: #0A3161;
+      margin-bottom: 5px;
     }
-    .post-message {
-      font-size: 0.9rem;
-      color: #333;
-      line-height: 1.4;
-      margin-bottom: 15px;
+    .post-preview {
+      color: #666;
+      font-size: 0.9em;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .post-hashtags {
-      font-size: 0.8rem;
-      color: #1DA1F2;
-      margin-bottom: 15px;
-      font-weight: 500;
-    }
     .engagement-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
-      padding: 10px;
-      background: #f8f9fa;
-      border-radius: 4px;
+      display: flex;
+      gap: 15px;
     }
     .engagement-item {
       text-align: center;
@@ -262,38 +329,59 @@
     .engagement-number {
       font-weight: bold;
       color: #0A3161;
-      font-size: 1.1rem;
+      display: block;
     }
     .engagement-label {
-      font-size: 0.7rem;
+      font-size: 0.7em;
       color: #666;
       text-transform: uppercase;
     }
-    .post-meta {
+    .expanded-content {
+      display: none;
+      background: #f8f9fa;
+      border-top: 2px solid #0A3161;
+    }
+    .expanded-content.show {
+      display: table-row;
+    }
+    .expanded-details {
+      padding: 20px;
+      background: white;
+      margin: 10px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
+    .detail-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      font-size: 0.8rem;
-      color: #666;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
     }
-    .meta-item {
-      display: flex;
-      flex-direction: column;
+    .detail-item {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 3px solid #0A3161;
     }
-    .meta-label {
-      font-weight: 600;
+    .detail-label {
+      font-weight: bold;
       color: #0A3161;
+      margin-bottom: 5px;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .post-actions {
-      display: flex;
-      gap: 8px;
-      padding: 15px;
-      border-top: 1px solid #dee2e6;
+    .detail-value {
+      color: #333;
+      word-break: break-word;
     }
-    .btn-small {
-      padding: 8px 12px;
-      font-size: 12px;
-      flex: 1;
+    .post-url {
+      color: #0A3161;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .post-url:hover {
+      color: #083050;
     }
     .loading {
       text-align: center;
@@ -342,62 +430,27 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
-    .modal {
-      display: none;
+    .auth-loading {
       position: fixed;
-      z-index: 1000;
-      left: 0;
       top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.5);
-    }
-    .modal-content {
-      background-color: #fefefe;
-      margin: 5% auto;
-      padding: 0;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 800px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 20px;
-      border-radius: 8px 8px 0 0;
+      background: rgba(255, 255, 255, 0.9);
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
+      z-index: 9999;
+      flex-direction: column;
     }
-    .close {
-      color: white;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover {
-      opacity: 0.8;
-    }
-    .modal-body {
-      padding: 20px;
-    }
-    .field-group {
+    .auth-loading .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0A3161;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
       margin-bottom: 20px;
-    }
-    .field-label {
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 5px;
-    }
-    .field-value {
-      background: #f8f9fa;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #dee2e6;
-      white-space: pre-wrap;
     }
     footer {
       background: #0A3161;
@@ -423,23 +476,37 @@
       .filter-section {
         grid-template-columns: 1fr;
       }
-      .social-grid {
-        grid-template-columns: 1fr;
-      }
       .stats-section {
         grid-template-columns: repeat(2, 1fr);
       }
       .engagement-stats {
-        grid-template-columns: repeat(2, 1fr);
+        flex-direction: column;
+        gap: 8px;
       }
-      .modal-content {
-        width: 95%;
-        margin: 10% auto;
+      .social-table {
+        font-size: 0.9em;
+      }
+      .social-table th,
+      .social-table td {
+        padding: 10px 8px;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .header-controls {
+        flex-direction: column;
+        gap: 10px;
       }
     }
   </style>
 </head>
 <body>
+
+<!-- Authentication Loading Screen -->
+<div id="authLoading" class="auth-loading">
+  <div class="spinner"></div>
+  <p>Verifying authentication...</p>
+</div>
 
 <header class="navbar">
   <div class="logo">
@@ -453,6 +520,7 @@
       <li><a href="media">Media</a></li>
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
+      <li><a href="contacts">Contacts</a></li>
       <li><a href="ads">Ads</a></li>
       <li><a href="ai">🤖 AI</a></li>
       <li><a href="settings">⚙️</a></li>
@@ -460,7 +528,9 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
+    </div>
   </div>
 </header>
 
@@ -488,16 +558,24 @@
       <div class="stat-number" id="totalClicks">0</div>
       <div class="stat-label">Total Clicks</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-number" id="totalRevenue">$0</div>
-      <div class="stat-label">Revenue Generated</div>
-    </div>
   </section>
 
-  <!-- Filter Section -->
+  <!-- Control Section -->
   <section class="card">
     <div class="section-header">
-      <h3>📱 Social Media Posts</h3>
+      <h3>📱 Social Media Management</h3>
+      <div class="header-controls">
+        <div class="credits-display">
+          <div class="credits-number" id="socialCredits">Loading...</div>
+          <div class="credits-label">Social Credits</div>
+        </div>
+        <div class="ai-toggle-container">
+          <span class="ai-toggle-label">🤖 AI Auto Post</span>
+          <div class="toggle-switch" id="aiToggle" onclick="toggleAIPost()">
+            <div class="toggle-slider"></div>
+          </div>
+        </div>
+      </div>
     </div>
     
     <div class="filter-section">
@@ -522,26 +600,13 @@
     </div>
   </section>
 
-  <!-- Social Posts Grid -->
+  <!-- Social Posts Table -->
   <section id="socialContainer">
     <div class="loading">Loading your social media posts...</div>
   </section>
 
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
-</div>
-
-<!-- Post Details Modal -->
-<div id="socialModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="modalTitle">Post Details</h2>
-      <span class="close" onclick="closeModal()">&times;</span>
-    </div>
-    <div class="modal-body" id="modalBody">
-      <!-- Post details will be loaded here -->
-    </div>
-  </div>
 </div>
 
 <footer>
@@ -558,12 +623,22 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
+  // n8n endpoints
+  const ENDPOINTS = {
+    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    getSocial: 'https://victoryvision.app.n8n.cloud/webhook/social/get',
+    aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost'
+  };
+  
   let CUSTOMER_ID = null;
   let authToken = null;
+  let userCredits = { social_credits: 0 };
+  let aiPostEnabled = false;
 
-  // Simple state management
+  // State management
   let allSocialPosts = [];
   let filteredSocialPosts = [];
+  let expandedRows = new Set();
 
   // DOM elements
   const socialContainer = document.getElementById('socialContainer');
@@ -571,7 +646,7 @@
   const searchFilter = document.getElementById('searchFilter');
   const refreshSocialBtn = document.getElementById('refreshSocial');
   const clearFiltersBtn = document.getElementById('clearFilters');
-  const socialModal = document.getElementById('socialModal');
+  const aiToggle = document.getElementById('aiToggle');
 
   // Authentication
   async function checkAuthentication() {
@@ -598,44 +673,143 @@
   }
 
   function redirectToLogin() {
+    localStorage.removeItem('vv_session');
     window.location.href = 'login.html';
   }
 
   async function logout() {
     try {
       await supabaseClient.auth.signOut();
+      localStorage.removeItem('vv_session');
       redirectToLogin();
     } catch (e) {
       console.error('Logout error:', e);
+      localStorage.removeItem('vv_session');
       redirectToLogin();
+    }
+  }
+
+  // API call function
+  async function apiCall(endpoint, data = {}) {
+    try {
+      const url = endpoint.includes('/user/get') ? 
+        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+        endpoint;
+      
+      const requestOptions = {
+        method: endpoint.includes('/user/get') ? 'GET' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        }
+      };
+
+      if (!endpoint.includes('/user/get')) {
+        requestOptions.body = JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          ...data
+        });
+      }
+
+      const response = await fetch(url, requestOptions);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+    }
+  }
+
+  // Load user data and credits
+  async function loadUserData() {
+    try {
+      const response = await apiCall(ENDPOINTS.getUserData);
+      console.log('Raw response:', response);
+      
+      // Get the first element from the array (n8n returns array)
+      const userData = Array.isArray(response) ? response[0] : response;
+      console.log('User data:', userData);
+      
+      userCredits = {
+        social_credits: userData.social_credits || 0
+      };
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'bronze';
+      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      
+      // Update AI post status
+      aiPostEnabled = userData.ai_auto_post === true || userData.ai_auto_post === 'true';
+      updateAIToggleDisplay();
+      
+      updateCreditsDisplay();
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
+    }
+  }
+
+  // Update credits display
+  function updateCreditsDisplay() {
+    const socialCreditsElement = document.getElementById('socialCredits');
+    if (socialCreditsElement) {
+      socialCreditsElement.textContent = userCredits.social_credits;
+    }
+  }
+
+  // Update AI toggle display
+  function updateAIToggleDisplay() {
+    if (aiPostEnabled) {
+      aiToggle.classList.add('active');
+    } else {
+      aiToggle.classList.remove('active');
+    }
+  }
+
+  // Toggle AI auto post
+  async function toggleAIPost() {
+    try {
+      const newStatus = !aiPostEnabled;
+      
+      const result = await apiCall(ENDPOINTS.aiPost, {
+        ai_auto_post: newStatus
+      });
+      
+      if (result.success !== false) {
+        aiPostEnabled = newStatus;
+        updateAIToggleDisplay();
+        showStatus(`AI Auto Post ${newStatus ? 'enabled' : 'disabled'}!`);
+      } else {
+        throw new Error(result.message || 'Failed to update AI auto post setting');
+      }
+    } catch (error) {
+      console.error('Error toggling AI post:', error);
+      showStatus('Error updating AI auto post: ' + error.message, true);
     }
   }
 
   // Load social posts from n8n webhook
   async function loadSocialPosts() {
     try {
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/social/get', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID })
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log('Response from n8n:', data);
+      const response = await apiCall(ENDPOINTS.getSocial);
+      console.log('Response from n8n:', response);
       
       // Handle response from n8n webhook
-      if (data && Array.isArray(data)) {
-        allSocialPosts = data;
-      } else if (data && data.posts && Array.isArray(data.posts)) {
-        allSocialPosts = data.posts;
-      } else if (data && data.social && Array.isArray(data.social)) {
-        allSocialPosts = data.social;
+      if (response && Array.isArray(response)) {
+        allSocialPosts = response;
+      } else if (response && response.posts && Array.isArray(response.posts)) {
+        allSocialPosts = response.posts;
+      } else if (response && response.social && Array.isArray(response.social)) {
+        allSocialPosts = response.social;
       } else {
-        console.log('Unexpected response structure:', data);
+        console.log('Unexpected response structure:', response);
         allSocialPosts = [];
       }
 
@@ -657,13 +831,11 @@
     const totalEngagements = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.engagements) || 0), 0);
     const totalShares = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.shares) || 0), 0);
     const totalClicks = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.clicks) || 0), 0);
-    const totalRevenue = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.revenue) || 0), 0);
 
     document.getElementById('totalPosts').textContent = totalPosts.toLocaleString();
     document.getElementById('totalEngagements').textContent = totalEngagements.toLocaleString();
     document.getElementById('totalShares').textContent = totalShares.toLocaleString();
     document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
-    document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toLocaleString();
   }
 
   // Apply filters
@@ -694,7 +866,7 @@
       return true;
     });
 
-    renderSocialGrid();
+    renderSocialTable();
   }
 
   // Clear filters
@@ -704,8 +876,8 @@
     applyFilters();
   }
 
-  // Render social posts grid
-  function renderSocialGrid() {
+  // Render social posts table
+  function renderSocialTable() {
     if (filteredSocialPosts.length === 0) {
       if (allSocialPosts.length === 0) {
         showEmptyState();
@@ -715,23 +887,43 @@
       return;
     }
 
-    const grid = document.createElement('div');
-    grid.className = 'social-grid';
+    const table = document.createElement('table');
+    table.className = 'social-table';
 
-    filteredSocialPosts.forEach(post => {
-      const card = createSocialCard(post);
-      grid.appendChild(card);
+    // Table header
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Post</th>
+          <th>Engagement</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="socialTableBody">
+      </tbody>
+    `;
+
+    const tbody = table.querySelector('#socialTableBody');
+
+    filteredSocialPosts.forEach((post, index) => {
+      const row = createSocialRow(post, index);
+      tbody.appendChild(row);
+      
+      // Add expanded content row
+      const expandedRow = createExpandedRow(post, index);
+      tbody.appendChild(expandedRow);
     });
 
     socialContainer.innerHTML = '';
-    socialContainer.appendChild(grid);
+    socialContainer.appendChild(table);
   }
 
-  // Create social post card
-  function createSocialCard(post) {
-    const card = document.createElement('div');
-    card.className = 'social-card';
-    card.onclick = () => openSocialModal(post);
+  // Create social post table row
+  function createSocialRow(post, index) {
+    const row = document.createElement('tr');
+    row.onclick = () => toggleExpanded(index);
+    row.className = expandedRows.has(index) ? 'expanded' : '';
 
     let createdDate = 'Unknown';
     if (post.created_at) {
@@ -745,61 +937,118 @@
     const platform = (post.platform || 'default').toLowerCase();
     const platformIcon = getPlatformIcon(platform);
 
-    card.innerHTML = `
-      <div class="social-header">
-        <div class="platform-info">
-          <div class="platform-icon ${platform}">
-            ${platformIcon}
-          </div>
-          <div>
-            <div style="font-weight: 600;">${post.platform || 'Unknown Platform'}</div>
-            <div class="post-date">${createdDate}</div>
-          </div>
+    row.innerHTML = `
+      <td>
+        <div class="platform-badge ${platform}">
+          ${platformIcon} ${post.platform || 'Unknown'}
         </div>
-        <div class="post-date">${post.collection_id || ''}</div>
-      </div>
-      <div class="social-content">
-        <h3 class="post-title">${post.title || 'Untitled Post'}</h3>
-        <p class="post-message">${post.message || 'No message content'}</p>
-        ${post.hashtag ? `<div class="post-hashtags">${post.hashtag}</div>` : ''}
-        
+      </td>
+      <td>
+        <div class="post-title">${post.title || 'Untitled Post'}</div>
+        <div class="post-preview">${post.message || 'No message content'}</div>
+      </td>
+      <td>
         <div class="engagement-stats">
           <div class="engagement-item">
-            <div class="engagement-number">${post.engagements || 0}</div>
-            <div class="engagement-label">Engagements</div>
+            <span class="engagement-number">${post.engagements || 0}</span>
+            <span class="engagement-label">Likes</span>
           </div>
           <div class="engagement-item">
-            <div class="engagement-number">${post.shares || 0}</div>
-            <div class="engagement-label">Shares</div>
+            <span class="engagement-number">${post.shares || 0}</span>
+            <span class="engagement-label">Shares</span>
           </div>
           <div class="engagement-item">
-            <div class="engagement-number">${post.clicks || 0}</div>
-            <div class="engagement-label">Clicks</div>
-          </div>
-          <div class="engagement-item">
-            <div class="engagement-number">$${post.revenue || 0}</div>
-            <div class="engagement-label">Revenue</div>
+            <span class="engagement-number">${post.clicks || 0}</span>
+            <span class="engagement-label">Clicks</span>
           </div>
         </div>
-
-        <div class="post-meta">
-          <div class="meta-item">
-            <span class="meta-label">URL:</span>
-            ${post.URL ? `<a href="${post.URL}" target="_blank" style="color: #0A3161; text-decoration: none;">${post.URL.substring(0, 30)}...</a>` : 'N/A'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Keywords:</span>
-            ${post.key_words || 'None'}
-          </div>
-        </div>
-      </div>
-      <div class="post-actions">
-        <button onclick="event.stopPropagation(); viewPost('${post.URL}')" class="btn-small">View Post</button>
-        <button onclick="event.stopPropagation(); sharePost('${post.URL}')" class="btn-small secondary">Share</button>
-      </div>
+      </td>
+      <td>${createdDate}</td>
     `;
 
-    return card;
+    return row;
+  }
+
+  // Create expanded content row
+  function createExpandedRow(post, index) {
+    const expandedRow = document.createElement('tr');
+    expandedRow.className = `expanded-content ${expandedRows.has(index) ? 'show' : ''}`;
+    
+    expandedRow.innerHTML = `
+      <td colspan="4">
+        <div class="expanded-details">
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">${post.platform || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Title</div>
+              <div class="detail-value">${post.title || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Post URL</div>
+              <div class="detail-value">
+                ${post.URL ? `<span class="post-url" onclick="openPost('${post.URL}')">${post.URL}</span>` : 'N/A'}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Post ID</div>
+              <div class="detail-value">${post.post_id || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Hashtags</div>
+              <div class="detail-value">${post.hashtag || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Keywords</div>
+              <div class="detail-value">${post.key_words || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Collection ID</div>
+              <div class="detail-value">${post.collection_id || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Media URL</div>
+              <div class="detail-value">
+                ${post.media_URL ? `<span class="post-url" onclick="openPost('${post.media_URL}')">${post.media_URL}</span>` : 'N/A'}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Media ID</div>
+              <div class="detail-value">${post.media_id || 'N/A'}</div>
+            </div>
+          </div>
+          <div class="detail-item" style="margin-top: 15px;">
+            <div class="detail-label">Full Message</div>
+            <div class="detail-value">${post.message || 'N/A'}</div>
+          </div>
+          <div class="detail-item" style="margin-top: 15px;">
+            <div class="detail-label">Comments</div>
+            <div class="detail-value">${post.comments || 'N/A'}</div>
+          </div>
+        </div>
+      </td>
+    `;
+
+    return expandedRow;
+  }
+
+  // Toggle expanded row
+  function toggleExpanded(index) {
+    if (expandedRows.has(index)) {
+      expandedRows.delete(index);
+    } else {
+      expandedRows.add(index);
+    }
+    renderSocialTable();
+  }
+
+  // Open post URL
+  function openPost(url) {
+    if (url && url !== 'N/A') {
+      window.open(url, '_blank');
+    }
   }
 
   // Get platform icon
@@ -812,99 +1061,6 @@
       case 'facebook': return 'f';
       case 'tiktok': return '🎵';
       default: return '📱';
-    }
-  }
-
-  // Open social post modal
-  function openSocialModal(post) {
-    document.getElementById('modalTitle').textContent = post.title || 'Post Details';
-    
-    const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = `
-      <div class="field-group">
-        <div class="field-label">Platform</div>
-        <div class="field-value">${post.platform || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Title</div>
-        <div class="field-value">${post.title || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Message</div>
-        <div class="field-value">${post.message || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">URL</div>
-        <div class="field-value">${post.URL || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Hashtags</div>
-        <div class="field-value">${post.hashtag || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Keywords</div>
-        <div class="field-value">${post.key_words || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Comments</div>
-        <div class="field-value">${post.comments || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Engagements</div>
-        <div class="field-value">${post.engagements || '0'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Shares</div>
-        <div class="field-value">${post.shares || '0'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Clicks</div>
-        <div class="field-value">${post.clicks || '0'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Revenue</div>
-        <div class="field-value">${post.revenue || '0'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Collection ID</div>
-        <div class="field-value">${post.collection_id || 'N/A'}</div>
-      </div>
-      <div class="field-group">
-        <div class="field-label">Created</div>
-        <div class="field-value">${post.created_at ? new Date(post.created_at).toLocaleString() : 'N/A'}</div>
-      </div>
-    `;
-    
-    socialModal.style.display = 'block';
-  }
-
-  // Close modal
-  function closeModal() {
-    socialModal.style.display = 'none';
-  }
-
-  // View post in new tab
-  function viewPost(url) {
-    if (url && url !== 'N/A') {
-      window.open(url, '_blank');
-    } else {
-      showStatus('No URL available for this post', true);
-    }
-  }
-
-  // Share post
-  function sharePost(url) {
-    if (navigator.share && url && url !== 'N/A') {
-      navigator.share({
-        title: 'Victory Vision Social Post',
-        url: url
-      });
-    } else if (url && url !== 'N/A') {
-      navigator.clipboard.writeText(url).then(() => {
-        showStatus('URL copied to clipboard!');
-      });
-    } else {
-      showStatus('No URL available to share', true);
     }
   }
 
@@ -940,9 +1096,11 @@
   // Event listeners
   function setupEventListeners() {
     refreshSocialBtn.addEventListener('click', async () => {
+      await loadUserData();
       await loadSocialPosts();
       applyFilters();
     });
+    
     clearFiltersBtn.addEventListener('click', clearFilters);
 
     // Auto-apply filters on change
@@ -956,21 +1114,18 @@
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(applyFilters, 300);
     });
-
-    // Modal close events
-    window.addEventListener('click', (event) => {
-      if (event.target === socialModal) {
-        closeModal();
-      }
-    });
   }
 
   // Initialize page
   async function init() {
     try {
+      document.getElementById('authLoading').style.display = 'flex';
+      
       const isAuthenticated = await checkAuthentication();
       
       if (isAuthenticated) {
+        document.getElementById('authLoading').style.display = 'none';
+        await loadUserData();
         await loadSocialPosts();
         setupEventListeners();
         applyFilters();
@@ -980,11 +1135,46 @@
     } catch (error) {
       console.error('Error initializing page:', error);
       showStatus('Failed to load social media posts. Please refresh the page.', true);
+      document.getElementById('authLoading').style.display = 'none';
     }
   }
+
+  // Security checks - session validation every 5 minutes
+  setInterval(async function() {
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        console.log('Session expired, redirecting to login');
+        redirectToLogin();
+      }
+    } catch (e) {
+      console.error('Session check failed:', e);
+    }
+  }, 300000);
+
+  // Check auth when page becomes visible
+  document.addEventListener('visibilitychange', async function() {
+    if (!document.hidden) {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+          redirectToLogin();
+        } else {
+          authToken = session.access_token;
+        }
+      } catch (e) {
+        console.error('Visibility auth check failed:', e);
+      }
+    }
+  });
+
+  // Make functions globally available
+  window.toggleAIPost = toggleAIPost;
+  window.openPost = openPost;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
+
 </body>
 </html>
