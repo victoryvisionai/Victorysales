@@ -689,11 +689,11 @@
     }
   }
 
-  // FIXED API call function - handles both user/get and social/get as GET requests
+  // FIXED API call function - handles both user/get and socials/get as GET requests
   async function apiCall(endpoint, data = {}) {
     try {
-      // Check if this should be a GET request (both user/get and social/get)
-      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/social/get');
+      // Check if this should be a GET request (both user/get and socials/get)
+      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get');
       
       const url = isGetRequest ? 
         `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
