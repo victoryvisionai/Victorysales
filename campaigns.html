@@ -503,7 +503,36 @@
       Campaign creation takes up to 5 minutes. Your new campaign will appear below when ready.
     </p>
   </section>
-
+<!-- User Input Campaign Section -->
+  <section class="card">
+    <div class="section-header">
+      <h3>✍️ Create Campaign with Custom Topic</h3>
+    </div>
+    
+    <form id="customCampaignForm">
+      <div class="form-group">
+        <label for="campaignTopic">Campaign Topic or Description</label>
+        <textarea 
+          id="campaignTopic" 
+          placeholder="Describe your campaign topic in a sentence or up to 800 words..."
+          rows="6"
+          maxlength="800"
+          style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; resize: vertical; font-family: inherit;"
+        ></textarea>
+        <small style="display: block; margin-top: 5px; color: #666;">
+          <span id="charCount">0</span>/800 characters
+        </small>
+      </div>
+      
+      <button type="submit" id="submitCustomCampaign" class="create-campaign-btn" style="margin-top: 10px;">
+        🎯 Create Custom Campaign
+      </button>
+    </form>
+    
+    <p style="margin-top: 15px; color: #666; font-size: 0.9rem; text-align: center;">
+      Custom campaign creation takes up to 5 minutes. Your campaign will appear below when ready.
+    </p>
+  </section>
   <!-- Filter Section -->
   <section class="card">
     <div class="section-header">
@@ -1276,6 +1305,96 @@
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
+// Character counter for campaign topic
+  const campaignTopicTextarea = document.getElementById('campaignTopic');
+  const charCountSpan = document.getElementById('charCount');
+  
+  if (campaignTopicTextarea && charCountSpan) {
+    campaignTopicTextarea.addEventListener('input', function() {
+      const currentLength = this.value.length;
+      charCountSpan.textContent = currentLength;
+      
+      // Visual feedback for character limit
+      if (currentLength > 750) {
+        charCountSpan.style.color = '#dc3545';
+      } else if (currentLength > 600) {
+        charCountSpan.style.color = '#fd7e14';
+      } else {
+        charCountSpan.style.color = '#666';
+      }
+    });
+  }
+
+  // Custom campaign form submission
+  const customCampaignForm = document.getElementById('customCampaignForm');
+  const submitCustomCampaignBtn = document.getElementById('submitCustomCampaign');
+  
+  if (customCampaignForm) {
+    customCampaignForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const campaignTopic = sanitizeInput(campaignTopicTextarea.value.trim());
+      
+      if (!campaignTopic) {
+        showStatus('Please enter a campaign topic or description.', true);
+        return;
+      }
+      
+      if (campaignTopic.length > 800) {
+        showStatus('Campaign topic must be 800 characters or less.', true);
+        return;
+      }
+      
+      // Check credits
+      if (userCredits.campaign_credits <= 0) {
+        showStatus('Insufficient campaign credits. Please upgrade your subscription.', true);
+        return;
+      }
+      
+      try {
+        submitCustomCampaignBtn.disabled = true;
+        submitCustomCampaignBtn.textContent = '🔄 Creating Custom Campaign...';
+        
+        const response = await fetch('https://victoryvision.app.n8n.cloud/webhook-test/campaigns/user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Customer-ID': CUSTOMER_ID,
+            'Authorization': authToken ? `Bearer ${authToken}` : ''
+          },
+          body: JSON.stringify({
+            customer_id: CUSTOMER_ID,
+            campaign_topic: campaignTopic,
+            timestamp: new Date().toISOString()
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success !== false) {
+          showStatus('Custom campaign creation started! This will take up to 5 minutes. Refresh the page to see your new campaign.');
+          campaignTopicTextarea.value = '';
+          charCountSpan.textContent = '0';
+          // Refresh user data to update credits
+          await loadUserData();
+        } else {
+          throw new Error(result.message || 'Custom campaign creation failed');
+        }
+        
+      } catch (error) {
+        console.error('Error creating custom campaign:', error);
+        showStatus('Error creating custom campaign: ' + error.message, true);
+      } finally {
+        submitCustomCampaignBtn.disabled = false;
+        submitCustomCampaignBtn.textContent = '🎯 Create Custom Campaign';
+        updateCreditsDisplay(); // Reset button state based on credits
+      }
+    });
+  }
 </script>
 </body>
 </html>
