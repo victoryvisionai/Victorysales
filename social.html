@@ -626,7 +626,7 @@
   // n8n endpoints
   const ENDPOINTS = {
     getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
-    getSocial: 'https://victoryvision.app.n8n.cloud/webhook/socials/get',
+    getSocial: 'https://victoryvision.app.n8n.cloud/webhook/social/get',
     aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost'
   };
   
@@ -689,15 +689,18 @@
     }
   }
 
-  // API call function
+  // FIXED API call function - handles both user/get and social/get as GET requests
   async function apiCall(endpoint, data = {}) {
     try {
-      const url = endpoint.includes('/user/get') ? 
+      // Check if this should be a GET request (both user/get and social/get)
+      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/social/get');
+      
+      const url = isGetRequest ? 
         `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
         endpoint;
       
       const requestOptions = {
-        method: endpoint.includes('/user/get') ? 'GET' : 'POST',
+        method: isGetRequest ? 'GET' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Customer-ID': CUSTOMER_ID,
@@ -705,7 +708,8 @@
         }
       };
 
-      if (!endpoint.includes('/user/get')) {
+      // Only add body for POST requests
+      if (!isGetRequest) {
         requestOptions.body = JSON.stringify({
           customer_id: CUSTOMER_ID,
           ...data
@@ -795,7 +799,7 @@
     }
   }
 
-  // Load social posts from n8n webhook
+  // Load social posts from n8n webhook - NOW USES GET
   async function loadSocialPosts() {
     try {
       const response = await apiCall(ENDPOINTS.getSocial);
