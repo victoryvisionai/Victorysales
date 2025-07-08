@@ -647,20 +647,36 @@
     return emailRegex.test(email);
   }
 
+  // Check if profile is complete
+  function isProfileComplete() {
+    const companyName = document.getElementById('companyName').value;
+    const companyDescription = document.getElementById('companyDescription').value;
+    const productDescription = document.getElementById('productDescription').value;
+    
+    return companyName.trim() && companyDescription.trim() && productDescription.trim();
+  }
+
+  // Show or hide tour button based on profile completeness
+  function updateTourButtonVisibility() {
+    const tourButton = document.querySelector('button[onclick="startTour()"]');
+    if (tourButton) {
+      if (isProfileComplete()) {
+        tourButton.style.display = 'none';
+      } else {
+        tourButton.style.display = 'inline-block';
+      }
+    }
+  }
+
   // Intro.js tour functionality
   function startTour() {
     introJs().setOptions({
-      steps: [
-        {
-          intro: "Welcome to Victory Vision! Let's set up your company profile so our AI can create personalized viral marketing campaigns for you."
-        }
-      ],
       showProgress: true,
       showBullets: false,
       exitOnOverlayClick: false,
       nextLabel: 'Next →',
       prevLabel: '← Back',
-      doneLabel: 'Get Started!',
+      doneLabel: 'Complete Setup!',
       skipLabel: 'Skip Tour'
     }).start();
   }
@@ -669,6 +685,9 @@
   function checkIfNewUser() {
     const hasSeenTour = localStorage.getItem('vv_tour_completed');
     const companyName = document.getElementById('companyName').value;
+    
+    // Update tour button visibility
+    updateTourButtonVisibility();
     
     // Show tour if they haven't seen it AND profile is empty
     if (!hasSeenTour && !companyName.trim()) {
@@ -865,6 +884,11 @@
         // Add tour completion handler
         introJs().oncomplete(completeTour);
         introJs().onexit(completeTour);
+        
+        // Add event listeners to update tour button visibility when typing
+        document.getElementById('companyName').addEventListener('input', updateTourButtonVisibility);
+        document.getElementById('companyDescription').addEventListener('input', updateTourButtonVisibility);
+        document.getElementById('productDescription').addEventListener('input', updateTourButtonVisibility);
       } else {
         redirectToLogin();
       }
@@ -1111,6 +1135,9 @@
       } else {
         showStatus('No existing data found. Please fill out the forms.');
       }
+
+      // Update tour button visibility based on loaded data
+      updateTourButtonVisibility();
 
       // Check if new user should see tour
       checkIfNewUser();
