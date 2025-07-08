@@ -8,6 +8,8 @@
   <title>Victory Vision AI - Pages</title>
   <link rel="icon" href="data:image/x-icon;base64,">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -542,6 +544,34 @@
       text-decoration: none;
     }
     
+    /* Intro.js custom styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
+
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .introjs-button:hover {
+      background: #083050 !important;
+      border-color: #083050 !important;
+    }
+
+    .introjs-skipbutton {
+      background: #6c757d !important;
+      border-color: #6c757d !important;
+    }
+
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
+    
     /* Mobile responsive */
     @media (max-width: 768px) {
       .content {
@@ -604,6 +634,9 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
     <button id="subscriptionMedallion" class="subscription-medallion bronze" onclick="window.location.href='settings'">
       <span class="plan-name">Bronze</span>
     </button>
@@ -617,14 +650,14 @@
   </header>
 
   <!-- Create Page Section -->
-  <section class="card">
+  <section class="card" data-intro="Generate AI-powered landing pages from your video content. Select a video and our AI will create an optimized landing page with your content." data-step="1">
     <div class="section-header">
       <h3>📄 Create New Landing Page</h3>
     </div>
     
     <div class="form-group">
       <label for="headerVideoSelect">Select Header Video *</label>
-      <select id="headerVideoSelect" required>
+      <select id="headerVideoSelect" required data-intro="Choose a video from your media library to use as the header for your new landing page. If you don't see videos here, create some campaigns first." data-step="2">
         <option value="">Choose a video from your media library</option>
       </select>
       <small style="color: #666;">Select an existing video to use as the header for your landing page</small>
@@ -632,15 +665,15 @@
     
     <div class="form-group">
       <label for="pageTitle">Page Title</label>
-      <input type="text" id="pageTitle" placeholder="Enter page title (optional)">
+      <input type="text" id="pageTitle" placeholder="Enter page title (optional)" data-intro="Add a custom title for your landing page, or leave blank to auto-generate one based on your campaign." data-step="3">
     </div>
     
     <div class="form-group">
       <label for="pageDescription">Page Description</label>
-      <textarea id="pageDescription" placeholder="Enter page description (optional)" style="height: 80px;"></textarea>
+      <textarea id="pageDescription" placeholder="Enter page description (optional)" style="height: 80px;" data-intro="Provide additional context for your landing page content, or leave blank for AI-generated content." data-step="4"></textarea>
     </div>
     
-    <button id="createPageBtn" class="create-page-btn">
+    <button id="createPageBtn" class="create-page-btn" data-intro="Click here to generate your AI-powered landing page. The page will be optimized for conversions and include your video content." data-step="5">
       📄 Create Landing Page
     </button>
     
@@ -658,7 +691,7 @@
     <div class="filter-section">
       <div class="form-group">
         <label for="searchFilter">Search</label>
-        <input type="text" id="searchFilter" placeholder="Search pages...">
+        <input type="text" id="searchFilter" placeholder="Search pages..." data-intro="Search through your landing pages by title, description, or URL to quickly find specific pages." data-step="6">
       </div>
       <button id="refreshPages">🔄 Refresh</button>
       <button id="clearFilters" class="secondary">Clear Filters</button>
@@ -666,7 +699,7 @@
   </section>
 
   <!-- Pages Grid -->
-  <section id="pagesContainer">
+  <section id="pagesContainer" data-intro="Your created landing pages appear here. Click any page to view details, edit with AI assistance, track performance metrics, or manage settings." data-step="7">
     <div class="loading">Loading your landing pages...</div>
   </section>
 
@@ -701,6 +734,29 @@
     pagesRemove: 'https://victoryvision.app.n8n.cloud/webhook/pages/remove',
     mediaGet: 'https://victoryvision.app.n8n.cloud/webhook/media/get'
   };
+
+  // Tour completion tracking
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  // Check if tour has been completed for this page
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  // Start tour function
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
 
   // Rate limiting for security
   const rateLimiter = {
@@ -1288,7 +1344,7 @@
         </div>
         
         <!-- Edit Chat Interface -->
-        <div class="edit-chat-container">
+        <div class="edit-chat-container" data-intro="Use AI to edit your landing page by describing the changes you want. Our AI will understand your request and update the page accordingly." data-step="8">
           <label style="font-weight: bold; color: #0A3161; margin-bottom: 5px; display: block;">✏️ Edit Page with AI:</label>
           <textarea 
             class="edit-chat-input" 
@@ -1448,6 +1504,13 @@
         ]);
         setupEventListeners();
         applyFilters();
+        
+        // Auto-start tour for new users
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
       } else {
         redirectToLogin();
       }
@@ -1493,6 +1556,7 @@
   window.copyPageUrl = copyPageUrl;
   window.deletePage = deletePage;
   window.logout = logout;
+  window.startTour = startTour;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
