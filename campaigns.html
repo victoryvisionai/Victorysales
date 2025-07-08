@@ -7,6 +7,8 @@
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Campaigns</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
@@ -411,6 +413,34 @@
       margin-right: 15px;
       text-decoration: none;
     }
+
+    /* Intro.js custom styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
+
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .introjs-button:hover {
+      background: #083050 !important;
+      border-color: #083050 !important;
+    }
+
+    .introjs-skipbutton {
+      background: #6c757d !important;
+      border-color: #6c757d !important;
+    }
+
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
     
     /* Responsive */
     @media (max-width: 768px) {
@@ -483,6 +513,9 @@
     <div id="subscriptionMedallion" class="subscription-medallion bronze">
       <span class="plan-name">Bronze</span>
     </div>
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
   </div>
 </header>
 
@@ -494,14 +527,17 @@
 
   <!-- Create Campaign Section -->
   <section class="create-campaign-section">
-    <button id="createCampaignBtn" class="create-campaign-btn">
+    <button id="createCampaignBtn" class="create-campaign-btn" 
+            data-intro="Click here to create AI-powered campaigns based on your company profile and market research." 
+            data-step="1">
       🚀 Create New Campaign
     </button>
     <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
       Campaign creation takes up to 5 minutes. Your new campaign will appear below when ready.
     </p>
   </section>
-<!-- User Input Campaign Section -->
+
+  <!-- User Input Campaign Section -->
   <section class="card">
     <div class="section-header">
       <h3>✍️ Create Campaign with Custom Topic</h3>
@@ -516,6 +552,8 @@
           rows="6"
           maxlength="800"
           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; resize: vertical; font-family: inherit;"
+          data-intro="Or describe a specific campaign topic here. Our AI will research and create content around your idea." 
+          data-step="2"
         ></textarea>
         <small style="display: block; margin-top: 5px; color: #666;">
           <span id="charCount">0</span>/800 characters
@@ -531,6 +569,7 @@
       Custom campaign creation takes up to 5 minutes. Your campaign will appear below when ready.
     </p>
   </section>
+
   <!-- Filter Section -->
   <section class="card">
     <div class="section-header">
@@ -540,7 +579,9 @@
     <div class="filter-section">
       <div class="form-group">
         <label for="searchFilter">Search</label>
-        <input type="text" id="searchFilter" placeholder="Search campaigns...">
+        <input type="text" id="searchFilter" placeholder="Search campaigns..." 
+               data-intro="Use this search to quickly find specific campaigns by name or topic." 
+               data-step="4">
       </div>
       <button id="refreshCampaigns">🔄 Refresh</button>
       <button id="clearFilters" class="secondary">Clear Filters</button>
@@ -548,7 +589,9 @@
   </section>
 
   <!-- Campaigns Grid -->
-  <section id="campaignsContainer">
+  <section id="campaignsContainer" 
+           data-intro="Your created campaigns appear here. Click any campaign to view details, performance metrics, and generated content." 
+           data-step="3">
     <div class="loading">Loading your campaigns...</div>
   </section>
 
@@ -584,6 +627,47 @@
     link.rel = 'icon';
     link.href = 'data:,';
     document.head.appendChild(link);
+  }
+
+  // Tour completion tracking
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  // Check if tour has been completed for this page
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  // Check if campaigns exist to determine tour usefulness
+  function shouldShowTourButton() {
+    // Show tour button if user hasn't completed tour OR if no campaigns exist
+    return !hasCompletedTour() || allCampaigns.length === 0;
+  }
+
+  // Update tour button visibility
+  function updateTourButtonVisibility() {
+    const tourButton = document.getElementById('tourButton');
+    if (tourButton) {
+      if (shouldShowTourButton()) {
+        tourButton.style.display = 'inline-block';
+      } else {
+        tourButton.style.display = 'none';
+      }
+    }
+  }
+
+  // Intro.js tour functionality
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
   }
 
   // Supabase configuration for auth only
@@ -858,6 +942,9 @@
 
       console.log(`Loaded ${allCampaigns.length} campaigns`);
       filteredCampaigns = [...allCampaigns];
+      
+      // Update tour button visibility after loading campaigns
+      updateTourButtonVisibility();
       
     } catch (error) {
       console.error('Error loading campaigns:', error);
@@ -1212,6 +1299,9 @@
         await loadCampaigns();
         setupEventListeners();
         applyFilters();
+        
+        // Initial tour button visibility update
+        updateTourButtonVisibility();
       } else {
         redirectToLogin();
       }
@@ -1303,7 +1393,8 @@
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
-// Character counter for campaign topic
+
+  // Character counter for campaign topic
   const campaignTopicTextarea = document.getElementById('campaignTopic');
   const charCountSpan = document.getElementById('charCount');
   
