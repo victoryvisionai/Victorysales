@@ -75,6 +75,19 @@
     .subscription-medallion .plan-name {
       font-weight: bold;
     }
+    .navbar .sign-out-btn {
+      background: #bb133e;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      margin-left: 10px;
+    }
+    .navbar .sign-out-btn:hover {
+      background: #9e1034;
+    }
     .logo img {
       height: 60px;
       width: auto;
@@ -218,6 +231,32 @@
     }
     .upgrade-cta:hover {
       background: #218838;
+    }
+    .account-deletion {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px 0;
+      text-align: center;
+    }
+    .account-deletion h4 {
+      color: #dc3545;
+      margin-bottom: 10px;
+    }
+    .account-deletion p {
+      color: #666;
+      margin-bottom: 15px;
+      font-size: 0.9em;
+    }
+    .delete-account-link {
+      color: #dc3545;
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .delete-account-link:hover {
+      color: #c82333;
     }
     footer {
       background: #0A3161;
@@ -404,6 +443,9 @@
     <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
       📖 Take Tour
     </button>
+    <button onclick="signOut()" class="sign-out-btn" id="signOutButton">
+      Sign Out
+    </button>
     <div id="subscriptionMedallion" class="subscription-medallion bronze" data-intro="Your current subscription tier is shown here. Click to manage your billing and view credit usage across all Victory Vision features." data-step="1">
       <span class="plan-name" id="planName">Bronze</span>
     </div>
@@ -517,6 +559,15 @@
     </div>
   </div>
 
+  <!-- Account Deletion Section -->
+  <div class="account-deletion">
+    <h4>⚠️ Account Management</h4>
+    <p>Need to delete your account? This action is permanent and cannot be undone. All your data, campaigns, and media files will be permanently removed.</p>
+    <span class="delete-account-link" onclick="deleteAccount()">
+      If you would like to delete your account, click here
+    </span>
+  </div>
+
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
 </div>
@@ -547,7 +598,8 @@
     updateUser: 'https://victoryvision.app.n8n.cloud/webhook/user/update',
     getCheckout: 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
     oauthStatus: 'https://victoryvision.app.n8n.cloud/webhook/oauth/status',
-    oauthDisconnect: 'https://victoryvision.app.n8n.cloud/webhook/oauth/disconnect'
+    oauthDisconnect: 'https://victoryvision.app.n8n.cloud/webhook/oauth/disconnect',
+    deleteAccount: 'https://victoryvision.app.n8n.cloud/webhook/user/delete'
   };
   
   let CUSTOMER_ID = null;
@@ -610,6 +662,54 @@
   function redirectToLogin() {
     localStorage.removeItem('vv_session');
     window.location.href = 'login.html';
+  }
+
+  // Sign out function
+  async function signOut() {
+    if (confirm('Are you sure you want to sign out?')) {
+      try {
+        await supabaseClient.auth.signOut();
+        localStorage.removeItem('vv_session');
+        redirectToLogin();
+      } catch (e) {
+        console.error('Sign out error:', e);
+        localStorage.removeItem('vv_session');
+        redirectToLogin();
+      }
+    }
+  }
+
+  // Account deletion function
+  async function deleteAccount() {
+    if (confirm('⚠️ WARNING: This will permanently delete your account and all data. This action cannot be undone.\n\nAre you absolutely sure you want to delete your account?')) {
+      if (confirm('This is your final confirmation. Type "DELETE" in the next prompt to confirm.')) {
+        const confirmation = prompt('Please type "DELETE" to confirm account deletion:');
+        if (confirmation === 'DELETE') {
+          try {
+            showStatus('Deleting account... Please wait.', false);
+            
+            const response = await apiCall(N8N_ENDPOINTS.deleteAccount, {
+              confirmation: 'DELETE'
+            });
+            
+            if (response.success) {
+              showStatus('Account deleted successfully. Redirecting...', false);
+              setTimeout(() => {
+                localStorage.clear();
+                window.location.href = 'login.html';
+              }, 2000);
+            } else {
+              throw new Error(response.message || 'Account deletion failed');
+            }
+          } catch (error) {
+            console.error('Error deleting account:', error);
+            showStatus('Error deleting account: ' + error.message, true);
+          }
+        } else {
+          showStatus('Account deletion cancelled - confirmation text did not match.', true);
+        }
+      }
+    }
   }
 
   // Unified API call function
@@ -800,6 +900,31 @@
     }
   }
 
+  // Generate proper PKCE challenge for Twitter OAuth 2.0
+  function generatePKCE() {
+    const array = new Uint8Array(32);
+    crypto.getRandomValues(array);
+    const codeVerifier = btoa(String.fromCharCode.apply(null, array))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    
+    return codeVerifier;
+  }
+
+  async function sha256(plain) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(plain);
+    return window.crypto.subtle.digest('SHA-256', data);
+  }
+
+  function base64urlencode(a) {
+    return btoa(String.fromCharCode.apply(null, new Uint8Array(a)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+  }
+
   // OAuth connection functions
   function generateStateFromSession() {
     const raw = `${CUSTOMER_ID}:${Date.now()}`;
@@ -818,17 +943,28 @@
     window.location.href = authUrl;
   }
 
-  function connectTwitter() {
-    const state = generateStateFromSession();
-    const redirectUri = encodeURIComponent('https://victoryvision.app.n8n.cloud/webhook/oauth/twitter/callback');
-    const scope = encodeURIComponent('tweet.read tweet.write users.read follows.read follows.write');
-    
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${OAUTH_CLIENTS.twitter}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}&code_challenge=challenge&code_challenge_method=plain`;
-    
-    sessionStorage.setItem('oauth_state', state);
-    sessionStorage.setItem('oauth_platform', 'twitter');
-    
-    window.location.href = authUrl;
+  async function connectTwitter() {
+    try {
+      const state = generateStateFromSession();
+      const codeVerifier = generatePKCE();
+      const codeChallenge = base64urlencode(await sha256(codeVerifier));
+      
+      // Store these for the callback
+      sessionStorage.setItem('oauth_state', state);
+      sessionStorage.setItem('oauth_platform', 'twitter');
+      sessionStorage.setItem('code_verifier', codeVerifier);
+      
+      const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/twitter');
+      const scope = encodeURIComponent('tweet.read tweet.write users.read follows.read follows.write');
+      
+      const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${OAUTH_CLIENTS.twitter}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+      
+      console.log('Twitter OAuth URL:', authUrl);
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error('Error generating Twitter OAuth URL:', error);
+      showStatus('Error initiating Twitter connection: ' + error.message, true);
+    }
   }
 
   // Disconnect functions
