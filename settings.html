@@ -7,6 +7,8 @@
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Settings</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -186,6 +188,37 @@
       border-radius: 4px;
       margin: 10px 0;
     }
+    .trial-notice {
+      background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+      border: 1px solid #ffd93d;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .trial-notice h4 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+    .trial-notice p {
+      color: #856404;
+      margin-bottom: 15px;
+    }
+    .upgrade-cta {
+      background: #28a745;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .upgrade-cta:hover {
+      background: #218838;
+    }
     footer {
       background: #0A3161;
       color: #fff;
@@ -299,6 +332,34 @@
       color: #666;
     }
     
+    /* Intro.js custom styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
+
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .introjs-button:hover {
+      background: #083050 !important;
+      border-color: #083050 !important;
+    }
+
+    .introjs-skipbutton {
+      background: #6c757d !important;
+      border-color: #6c757d !important;
+    }
+
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
+    
     /* Mobile responsive */
     @media (max-width: 768px) {
       .content {
@@ -333,13 +394,17 @@
       <li><a href="media">Media</a></li>
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
+      <li><a href="contacts">Contacts</a></li>
       <li><a href="ads">Ads</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze" data-intro="Your current subscription tier is shown here. Click to manage your billing and view credit usage across all Victory Vision features." data-step="1">
       <span class="plan-name" id="planName">Bronze</span>
     </div>
   </div>
@@ -351,12 +416,21 @@
     <p class="page-subtitle">Manage your account integrations and billing preferences</p>
   </header>
   
-  <div class="card">
+  <!-- Trial Notice -->
+  <div class="trial-notice" data-intro="All new users start with Bronze tier access and a few free credits to try our AI-powered features. To unlock full potential, choose a subscription plan below!" data-step="2">
+    <h4>🌟 Welcome to Victory Vision!</h4>
+    <p>You're currently on the <strong>Bronze tier</strong> with starter credits. Upgrade today to access unlimited campaigns, more AI credits, and advanced features!</p>
+    <a href="#billing" class="upgrade-cta" onclick="document.getElementById('billing-section').scrollIntoView({behavior: 'smooth'})">
+      View Subscription Plans →
+    </a>
+  </div>
+  
+  <div class="card" data-intro="Connect your social media accounts to enable automated posting and engagement across multiple platforms. Start with LinkedIn for professional networking." data-step="3">
     <div class="section-header">
       <h3>🔗 Platform Integrations</h3>
     </div>
 
-    <div class="settings-group">
+    <div class="settings-group" data-intro="LinkedIn integration allows you to automatically post your AI-generated content, find leads, and track engagement. This is our most popular integration for B2B marketing." data-step="4">
       <h3>
         <span class="status-indicator status-disconnected" id="linkedin-status"></span>
         LinkedIn Integration
@@ -369,20 +443,7 @@
       </div>
     </div>
 
-    <div class="settings-group">
-      <h3>
-        <span class="status-indicator status-disconnected" id="instagram-status"></span>
-        Instagram Integration
-      </h3>
-      <p>Connect Instagram for automated posting and content management.</p>
-      <button onclick="connectInstagram()" id="connect-instagram">Connect Instagram</button>
-      <button class="danger" onclick="disconnectInstagram()" style="display: none;" id="disconnect-instagram">Disconnect</button>
-      <div class="connection-info" id="instagram-info" style="display: none;">
-        <strong>Connected as:</strong> <span id="instagram-profile"></span>
-      </div>
-    </div>
-
-    <div class="settings-group">
+    <div class="settings-group" data-intro="Twitter/X integration enables automatic posting of your campaigns and real-time engagement tracking. Perfect for reaching broader audiences and viral content distribution." data-step="5">
       <h3>
         <span class="status-indicator status-disconnected" id="twitter-status"></span>
         Twitter/X Integration
@@ -394,22 +455,9 @@
         <strong>Connected as:</strong> <span id="twitter-profile"></span>
       </div>
     </div>
-
-    <div class="settings-group">
-      <h3>
-        <span class="status-indicator status-disconnected" id="gmail-status"></span>
-        Gmail Integration
-      </h3>
-      <p>Connect Gmail for email automation and contact management.</p>
-      <button onclick="connectGmail()" id="connect-gmail">Connect Gmail</button>
-      <button class="danger" onclick="disconnectGmail()" style="display: none;" id="disconnect-gmail">Disconnect</button>
-      <div class="connection-info" id="gmail-info" style="display: none;">
-        <strong>Connected as:</strong> <span id="gmail-profile"></span>
-      </div>
-    </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="billing-section" data-intro="Manage your subscription and billing here. View your current plan details, usage statistics, and upgrade options to unlock more AI credits and features." data-step="6">
     <div class="section-header">
       <h3>💳 Billing & Subscription Management</h3>
     </div>
@@ -421,8 +469,8 @@
     </div>
 
     <h4>Available Plans</h4>
-    <div class="billing-section">
-      <div class="plan-card" id="bronzePlan">
+    <div class="billing-section" data-intro="Choose your subscription tier based on your marketing needs. Bronze is perfect for small businesses, Silver for growing companies, and Gold for enterprises requiring unlimited campaigns." data-step="7">
+      <div class="plan-card" id="bronzePlan" data-intro="Bronze Plan: Perfect for small businesses starting their AI marketing journey. Includes essential credits for testing our platform's capabilities." data-step="8">
         <h4>Bronze Plan</h4>
         <div class="plan-price">$99<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -436,7 +484,7 @@
         <button onclick="upgradeToPlan('bronze')" id="bronzeButton">Select Bronze</button>
       </div>
 
-      <div class="plan-card" id="silverPlan">
+      <div class="plan-card" id="silverPlan" data-intro="Silver Plan: Ideal for growing businesses that need more AI credits and advanced analytics. Most popular choice for marketing teams." data-step="9">
         <h4>Silver Plan</h4>
         <div class="plan-price">$299<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -451,7 +499,7 @@
         <button onclick="upgradeToPlan('silver')" id="silverButton">Select Silver</button>
       </div>
 
-      <div class="plan-card" id="goldPlan">
+      <div class="plan-card" id="goldPlan" data-intro="Gold Plan: Enterprise solution with unlimited campaigns and premium support. Perfect for large organizations with extensive marketing needs and custom requirements." data-step="10">
         <h4>Gold Plan</h4>
         <div class="plan-price">$799<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -490,9 +538,7 @@
   // OAuth Client IDs
   const OAUTH_CLIENTS = {
     linkedin: '86utfb95bpsrjk',
-    twitter: 'MzExUGVkUzRXTm9ObEM2bEZfelU6MTpjaQ',
-    gmail: '577539478739-nhpcaft3cuha4f26m0pkkl8u0m1u2ge8.apps.googleusercontent.com',
-    instagram: '' // Placeholder - needs actual Facebook App ID
+    twitter: 'MzExUGVkUzRXTm9ObEM2bEZfelU6MTpjaQ'
   };
   
   // n8n webhook endpoints
@@ -507,6 +553,29 @@
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
+
+  // Tour completion tracking
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  // Check if tour has been completed for this page
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  // Start tour function
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
 
   // Authentication functions
   async function checkAuthentication() {
@@ -664,42 +733,47 @@
     }
   }
 
-async function checkConnectionStatus() {
-  try {
-    const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
-    console.log('OAuth status response:', response);
-    
-    // Handle array response - each item is a separate OAuth record
-    const oauthArray = Array.isArray(response) ? response : [response];
-    
-    // Group by platform
-    const platformData = {};
-    oauthArray.forEach(item => {
-      if (item && item.platform && item.access_token) {
-        platformData[item.platform] = {
-          access_token: item.access_token,
-          profile_id: item.customer_id // Use customer_id as profile identifier
-        };
-      }
-    });
-    
-    console.log('Processed platform data:', platformData);
-    
-    // Update UI for each platform
-    updateConnectionStatus('linkedin', !!(platformData.linkedin), platformData.linkedin?.profile_id);
-    updateConnectionStatus('instagram', !!(platformData.instagram), platformData.instagram?.profile_id);
-    updateConnectionStatus('twitter', !!(platformData.twitter), platformData.twitter?.profile_id);
-    updateConnectionStatus('gmail', !!(platformData.gmail), platformData.gmail?.profile_id);
-    
-  } catch (error) {
-    console.error('Error checking connection status:', error);
-    // Set all to disconnected on error
-    updateConnectionStatus('linkedin', false);
-    updateConnectionStatus('instagram', false);
-    updateConnectionStatus('twitter', false);
-    updateConnectionStatus('gmail', false);
+  async function checkConnectionStatus() {
+    try {
+      const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
+      console.log('OAuth status response:', response);
+      
+      // Handle array response - each item is a separate OAuth record
+      const oauthArray = Array.isArray(response) ? response : [response];
+      
+      // Look for LinkedIn and Twitter connections specifically
+      let linkedinConnected = false;
+      let twitterConnected = false;
+      let linkedinProfile = null;
+      let twitterProfile = null;
+      
+      oauthArray.forEach(item => {
+        if (item && item.platform && item.access_token) {
+          if (item.platform.toLowerCase() === 'linkedin') {
+            linkedinConnected = true;
+            linkedinProfile = item.customer_id || item.profile_id;
+          } else if (item.platform.toLowerCase() === 'twitter') {
+            twitterConnected = true;
+            twitterProfile = item.customer_id || item.profile_id;
+          }
+        }
+      });
+      
+      console.log('LinkedIn connected:', linkedinConnected, 'Profile:', linkedinProfile);
+      console.log('Twitter connected:', twitterConnected, 'Profile:', twitterProfile);
+      
+      // Update UI for each platform
+      updateConnectionStatus('linkedin', linkedinConnected, linkedinProfile);
+      updateConnectionStatus('twitter', twitterConnected, twitterProfile);
+      
+    } catch (error) {
+      console.error('Error checking connection status:', error);
+      // Set all to disconnected on error
+      updateConnectionStatus('linkedin', false);
+      updateConnectionStatus('twitter', false);
+    }
   }
-}
+
   // Update connection status UI
   function updateConnectionStatus(platform, isConnected, profileInfo = null) {
     const statusIndicator = document.getElementById(`${platform}-status`);
@@ -744,55 +818,17 @@ async function checkConnectionStatus() {
     window.location.href = authUrl;
   }
 
-  function connectInstagram() {
-    if (!OAUTH_CLIENTS.instagram) {
-      showStatus('Instagram integration coming soon!', true);
-      return;
-    }
-    
-    const state = generateStateFromSession();
-    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
-    
-    const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${OAUTH_CLIENTS.instagram}&redirect_uri=${redirectUri}&state=${state}&scope=instagram_basic,instagram_content_publish,pages_show_list`;
-    
-    sessionStorage.setItem('oauth_state', state);
-    sessionStorage.setItem('oauth_platform', 'instagram');
-    
-    window.location.href = authUrl;
-  }
-
   function connectTwitter() {
     const state = generateStateFromSession();
-    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback');
-    const codeChallenge = generateCodeChallenge(); // Need to implement PKCE for Twitter
+    const redirectUri = encodeURIComponent('https://victoryvision.app.n8n.cloud/webhook/oauth/twitter/callback');
+    const scope = encodeURIComponent('tweet.read tweet.write users.read follows.read follows.write');
     
-    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${OAUTH_CLIENTS.twitter}&redirect_uri=${redirectUri}&scope=tweet.read%20tweet.write%20users.read%20follows.read%20follows.write&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${OAUTH_CLIENTS.twitter}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}&code_challenge=challenge&code_challenge_method=plain`;
     
     sessionStorage.setItem('oauth_state', state);
     sessionStorage.setItem('oauth_platform', 'twitter');
-    sessionStorage.setItem('code_verifier', codeChallenge); // Store for token exchange
     
     window.location.href = authUrl;
-  }
-
-  function connectGmail() {
-    const state = generateStateFromSession();
-    const redirectUri = encodeURIComponent('https://www.victoryvision.app/oauth-callback/');
-    const scope = encodeURIComponent('https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send');
-    
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${OAUTH_CLIENTS.gmail}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
-    
-    sessionStorage.setItem('oauth_state', state);
-    sessionStorage.setItem('oauth_platform', 'gmail');
-    
-    window.location.href = authUrl;
-  }
-
-  // Generate code challenge for Twitter PKCE
-  function generateCodeChallenge() {
-    const verifier = generateStateFromSession() + generateStateFromSession();
-    // In production, this should use SHA256 and base64url encoding
-    return verifier; // Simplified for example
   }
 
   // Disconnect functions
@@ -808,18 +844,6 @@ async function checkConnectionStatus() {
     }
   }
 
-  async function disconnectInstagram() {
-    if (confirm('Are you sure you want to disconnect Instagram?')) {
-      try {
-        await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform: 'instagram' });
-        updateConnectionStatus('instagram', false);
-        showStatus('Instagram disconnected successfully');
-      } catch (error) {
-        showStatus('Error disconnecting Instagram: ' + error.message, true);
-      }
-    }
-  }
-
   async function disconnectTwitter() {
     if (confirm('Are you sure you want to disconnect Twitter?')) {
       try {
@@ -828,18 +852,6 @@ async function checkConnectionStatus() {
         showStatus('Twitter disconnected successfully');
       } catch (error) {
         showStatus('Error disconnecting Twitter: ' + error.message, true);
-      }
-    }
-  }
-
-  async function disconnectGmail() {
-    if (confirm('Are you sure you want to disconnect Gmail?')) {
-      try {
-        await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform: 'gmail' });
-        updateConnectionStatus('gmail', false);
-        showStatus('Gmail disconnected successfully');
-      } catch (error) {
-        showStatus('Error disconnecting Gmail: ' + error.message, true);
       }
     }
   }
@@ -949,6 +961,13 @@ async function checkConnectionStatus() {
         await loadUserData();
         await checkConnectionStatus();
         handleOAuthCallback();
+        
+        // Auto-start tour for new users who haven't seen it
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
       } else {
         redirectToLogin();
       }
