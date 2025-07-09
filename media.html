@@ -7,6 +7,8 @@
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Media Library</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -316,13 +318,16 @@
     button.create-btn:hover {
       background: #218838;
     }
+    
+    /* Updated filter section to match the image */
     .filter-section {
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 200px 200px 200px 200px 1fr auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
     }
+    
     .media-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -591,6 +596,34 @@
       color: #083050;
     }
     
+    /* Intro.js custom styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
+
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .introjs-button:hover {
+      background: #083050 !important;
+      border-color: #083050 !important;
+    }
+
+    .introjs-skipbutton {
+      background: #6c757d !important;
+      border-color: #6c757d !important;
+    }
+
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
+    
     /* Responsive */
     @media (max-width: 1024px) {
       .creation-layout {
@@ -598,6 +631,9 @@
       }
       .preview-panel {
         min-height: 250px;
+      }
+      .filter-section {
+        grid-template-columns: 1fr 1fr;
       }
     }
     @media (max-width: 768px) {
@@ -645,6 +681,9 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
     <div id="subscriptionMedallion" class="subscription-medallion bronze">
       <span class="plan-name">Bronze</span>
     </div>
@@ -658,15 +697,12 @@
   </header>
 
   <!-- Creation Section -->
-  <section class="card">
+  <section class="card" data-intro="Switch between creating images or videos using AI. Toggle between different modes and types to access various creation tools." data-step="1">
     <div class="section-header">
       <h3 id="sectionTitle">🎨 AI Media Creation</h3>
       <div class="toggle-group">
-        <button id="createToggle" class="toggle-btn active">Create</button>
-        <button id="editToggle" class="toggle-btn">Edit</button>
-        <span style="margin: 0 10px;">|</span>
-        <button id="imageToggle" class="toggle-btn active">🎨 Images</button>
-        <button id="videoToggle" class="toggle-btn">🎬 Videos</button>
+        <button id="imageToggle" class="toggle-btn active" data-intro="Click here to switch to image generation mode. Create AI-powered images from text descriptions." data-step="2">🎨 Images</button>
+        <button id="videoToggle" class="toggle-btn" data-intro="Click here to switch to video generation mode. Create AI-powered videos from images and motion descriptions." data-step="3">🎬 Videos</button>
       </div>
     </div>
     
@@ -683,12 +719,12 @@
           <form id="imageForm">
             <div class="form-group">
               <label for="imageChat">Description *</label>
-              <textarea id="imageChat" required placeholder="Describe the image you want to create..."></textarea>
+              <textarea id="imageChat" required placeholder="Describe the image you want to create..." data-intro="Describe what you want to create in detail. Be specific about style, colors, composition, and mood for better AI results." data-step="4"></textarea>
             </div>
             
             <div class="form-group">
               <label for="imageUpload">Reference Image (Optional)</label>
-              <input type="file" id="imageUpload" accept="image/*">
+              <input type="file" id="imageUpload" accept="image/*" data-intro="Upload a reference image to guide the AI generation. This helps create images in a similar style or composition." data-step="5">
             </div>
             
             <div class="form-group">
@@ -711,13 +747,13 @@
           
           <form id="videoForm">
             <div class="form-group">
-              <label for="videoChat">Description *</label>
-              <textarea id="videoChat" required placeholder="Describe the video motion you want to create..."></textarea>
+              <label for="videoChat">Motion Description *</label>
+              <textarea id="videoChat" required placeholder="Describe the video motion you want to create..." data-intro="Describe the motion and animation you want in your video. Be specific about movement, camera angles, and visual effects." data-step="6"></textarea>
             </div>
             
             <div class="form-group">
               <label for="videoSourceImage">Source Image *</label>
-              <input type="file" id="videoSourceImage" accept="image/*">
+              <input type="file" id="videoSourceImage" accept="image/*" data-intro="Upload an image that will be animated into a video. Choose a high-quality image for best results." data-step="7">
               <small>Upload an image or select from existing images below</small>
             </div>
             
@@ -731,57 +767,14 @@
             <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
           </form>
         </div>
-
-        <!-- Edit Image Form -->
-        <div id="editImageForm" class="creation-form">
-          <form id="imageUpdateForm">
-            <div class="form-group">
-              <label for="updateImageChat">Modification Instructions *</label>
-              <textarea id="updateImageChat" required placeholder="Describe how you want to modify the image..."></textarea>
-            </div>
-            
-            <div class="form-group">
-              <label for="updateImageFile">New Image Upload (Optional)</label>
-              <input type="file" id="updateImageFile" accept="image/*">
-            </div>
-            
-            <div class="form-group">
-              <label>Or Select Existing Image</label>
-              <div id="updateImageReferenceList" class="reference-list">
-                Loading available images...
-              </div>
-            </div>
-            
-            <button type="submit" class="create-btn">✏️ Update Image</button>
-          </form>
-        </div>
-
-        <!-- Edit Video Form -->
-        <div id="editVideoForm" class="creation-form">
-          <form id="videoUpdateForm">
-            <div class="form-group">
-              <label for="updateVideoName">Video File Name *</label>
-              <select id="updateVideoName" required>
-                <option value="">Select video to update...</option>
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label for="updateVideoChat">Modification Instructions *</label>
-              <textarea id="updateVideoChat" required placeholder="Describe how you want to modify the video..."></textarea>
-            </div>
-            
-            <button type="submit" class="create-btn">✏️ Update Video</button>
-          </form>
-        </div>
       </div>
 
       <!-- Preview Panel -->
-      <div class="preview-panel" id="previewPanel">
+      <div class="preview-panel" id="previewPanel" data-intro="Generated content appears here for preview. You can see your images and videos immediately after creation." data-step="8">
         <div>
           <h4>📱 Preview</h4>
           <p>Generated content will appear here</p>
-          <small>Create or edit media to see a preview</small>
+          <small>Create media to see a preview</small>
         </div>
         
         <!-- Processing Overlay -->
@@ -796,21 +789,43 @@
   <!-- Filter Section -->
   <section class="card">
     <div class="section-header">
-      <h3>📁 My Media Files</h3>
+      <h3>📁 Filter Media Assets</h3>
     </div>
     
-    <div class="filter-section">
+    <div class="filter-section" data-intro="Use these filters to find specific media files quickly. Filter by type, campaign, date range, or search by keywords." data-step="9">
+      <div class="form-group">
+        <label for="fileTypeFilter">File Type</label>
+        <select id="fileTypeFilter">
+          <option value="">All Types</option>
+          <option value="image">Images</option>
+          <option value="video">Videos</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="campaignFilter">Campaign</label>
+        <select id="campaignFilter">
+          <option value="">All Campaigns</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="dateFromFilter">Date From</label>
+        <input type="date" id="dateFromFilter">
+      </div>
+      <div class="form-group">
+        <label for="dateToFilter">Date To</label>
+        <input type="date" id="dateToFilter">
+      </div>
       <div class="form-group">
         <label for="searchFilter">Search</label>
         <input type="text" id="searchFilter" placeholder="Search prompts, names...">
       </div>
-      <button id="refreshMedia">🔄 Refresh</button>
-      <button id="clearFilters" class="secondary">Clear Filters</button>
+      <button id="applyFilters">Apply Filters</button>
+      <button id="clearFilters" class="secondary">Clear</button>
     </div>
   </section>
 
   <!-- Media Grid -->
-  <section id="mediaContainer">
+  <section id="mediaContainer" data-intro="Your created media files appear here. Click any item to view details, download, or delete. Media is organized by creation date and type." data-step="10">
     <div class="loading">Loading your media library...</div>
   </section>
 
@@ -850,9 +865,8 @@
     getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
     getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
     createImage: 'https://victoryvision.app.n8n.cloud/webhook/images/create',
-    updateImage: 'https://victoryvision.app.n8n.cloud/webhook/images/update',
     createVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/create',
-    updateVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/update'
+    getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get'
   };
   
   let CUSTOMER_ID = null;
@@ -864,19 +878,45 @@
   let filteredMediaFiles = [];
   let imageFiles = [];
   let videoFiles = [];
+  let campaigns = [];
   let selectedImageReference = null;
   let selectedVideoReference = null;
-  let selectedUpdateImageReference = null;
   
   // UI state
-  let currentMode = 'create'; // 'create' or 'edit'
   let currentType = 'image'; // 'image' or 'video'
 
   // DOM elements
   const mediaContainer = document.getElementById('mediaContainer');
   const searchFilter = document.getElementById('searchFilter');
-  const refreshMediaBtn = document.getElementById('refreshMedia');
+  const fileTypeFilter = document.getElementById('fileTypeFilter');
+  const campaignFilter = document.getElementById('campaignFilter');
+  const dateFromFilter = document.getElementById('dateFromFilter');
+  const dateToFilter = document.getElementById('dateToFilter');
+  const applyFiltersBtn = document.getElementById('applyFilters');
   const clearFiltersBtn = document.getElementById('clearFilters');
+
+  // Tour completion tracking
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  // Check if tour has been completed for this page
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  // Start tour function
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
 
   // Authentication
   async function checkAuthentication() {
@@ -957,28 +997,9 @@
 
   // Toggle functions
   function setupToggles() {
-    const createToggle = document.getElementById('createToggle');
-    const editToggle = document.getElementById('editToggle');
     const imageToggle = document.getElementById('imageToggle');
     const videoToggle = document.getElementById('videoToggle');
     const sectionTitle = document.getElementById('sectionTitle');
-
-    // Mode toggles (Create/Edit)
-    createToggle.addEventListener('click', () => {
-      currentMode = 'create';
-      createToggle.classList.add('active');
-      editToggle.classList.remove('active');
-      updateFormVisibility();
-      updateSectionTitle();
-    });
-
-    editToggle.addEventListener('click', () => {
-      currentMode = 'edit';
-      editToggle.classList.add('active');
-      createToggle.classList.remove('active');
-      updateFormVisibility();
-      updateSectionTitle();
-    });
 
     // Type toggles (Image/Video)
     imageToggle.addEventListener('click', () => {
@@ -998,9 +1019,8 @@
     });
 
     function updateSectionTitle() {
-      const modeText = currentMode === 'create' ? 'Create' : 'Edit';
       const typeText = currentType === 'image' ? '🎨 Images' : '🎬 Videos';
-      sectionTitle.textContent = `${typeText} - ${modeText}`;
+      sectionTitle.textContent = `${typeText} - Create`;
     }
 
     function updateFormVisibility() {
@@ -1010,7 +1030,7 @@
       });
 
       // Show the correct form
-      const formId = `${currentMode}${currentType.charAt(0).toUpperCase() + currentType.slice(1)}Form`;
+      const formId = `create${currentType.charAt(0).toUpperCase() + currentType.slice(1)}Form`;
       const targetForm = document.getElementById(formId);
       if (targetForm) {
         targetForm.classList.add('active');
@@ -1051,9 +1071,6 @@
       // Get the first element from the array
       const userData = response[0];
       console.log('User data (first element):', userData);
-      console.log('Image credits from API:', userData.image_credits);
-      console.log('Video credits from API:', userData.video_credits);
-      console.log('Subscription plan from API:', userData.subscription_plan);
       
       userCredits = {
         image_credits: userData.image_credits || 0,
@@ -1072,6 +1089,28 @@
     } catch (error) {
       console.error('Error loading user data:', error);
       showStatus('Error loading user data: ' + error.message, true);
+    }
+  }
+
+  // Load campaigns for filter dropdown
+  async function loadCampaigns() {
+    try {
+      const data = await apiCall(ENDPOINTS.getCampaigns);
+      campaigns = Array.isArray(data) ? data : [];
+      
+      // Populate campaign filter dropdown
+      const dropdown = campaignFilter;
+      dropdown.innerHTML = '<option value="">All Campaigns</option>';
+      
+      campaigns.forEach(campaign => {
+        const option = document.createElement('option');
+        option.value = campaign.id;
+        option.textContent = campaign.name || `Campaign ${campaign.id.slice(0, 8)}`;
+        dropdown.appendChild(option);
+      });
+      
+    } catch (error) {
+      console.error('Error loading campaigns:', error);
     }
   }
 
@@ -1099,7 +1138,6 @@
       videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
       
       populateReferenceLists();
-      populateVideoUpdateDropdown();
       
     } catch (error) {
       console.error('Error loading media:', error);
@@ -1113,13 +1151,11 @@
   function populateReferenceLists() {
     const imageList = document.getElementById('imageReferenceList');
     const videoList = document.getElementById('videoReferenceList');
-    const updateImageList = document.getElementById('updateImageReferenceList');
     
     if (imageFiles.length === 0) {
       const noImagesMsg = '<div style="color: #999; text-align: center; padding: 10px;">No images available</div>';
       imageList.innerHTML = noImagesMsg;
       videoList.innerHTML = noImagesMsg;
-      updateImageList.innerHTML = noImagesMsg;
       return;
     }
     
@@ -1131,26 +1167,8 @@
       <div class="reference-item" onclick="selectImageReference('${file.name}', 'video')">${file.name}</div>
     `).join('');
     
-    const updateItems = imageFiles.map(file => `
-      <div class="reference-item" onclick="selectImageReference('${file.name}', 'update')">${file.name}</div>
-    `).join('');
-    
     imageList.innerHTML = imageItems;
     videoList.innerHTML = videoItems;
-    updateImageList.innerHTML = updateItems;
-  }
-
-  // Populate video update dropdown
-  function populateVideoUpdateDropdown() {
-    const dropdown = document.getElementById('updateVideoName');
-    dropdown.innerHTML = '<option value="">Select video to update...</option>';
-    
-    videoFiles.forEach(file => {
-      const option = document.createElement('option');
-      option.value = file.name;
-      option.textContent = file.name;
-      dropdown.appendChild(option);
-    });
   }
 
   // Select image reference
@@ -1166,14 +1184,6 @@
     } else if (type === 'video') {
       selectedVideoReference = fileName;
       document.querySelectorAll('#videoReferenceList .reference-item').forEach(item => {
-        item.classList.remove('selected');
-        if (item.textContent === fileName) {
-          item.classList.add('selected');
-        }
-      });
-    } else if (type === 'update') {
-      selectedUpdateImageReference = fileName;
-      document.querySelectorAll('#updateImageReferenceList .reference-item').forEach(item => {
         item.classList.remove('selected');
         if (item.textContent === fileName) {
           item.classList.add('selected');
@@ -1267,7 +1277,7 @@
         userCredits.image_credits--;
         updateCreditsDisplay();
         await loadMediaFiles();
-        renderMediaGrid();
+        applyFilters();
         showPreview(result.data);
         document.getElementById('imageForm').reset();
         selectedImageReference = null;
@@ -1280,46 +1290,6 @@
       hideProcessing();
       console.error('Error creating image:', error);
       showStatus('Error creating image: ' + error.message, true);
-    }
-  }
-
-  // Update image
-  async function updateImage(formData) {
-    try {
-      showStatus('Updating image... This may take a few moments.');
-      showProcessing('Updating image...');
-      
-      const payload = {
-        chat: formData.get('chat')
-      };
-
-      // Add new image file if provided
-      const imageFile = formData.get('image_file');
-      if (imageFile && imageFile.size > 0) {
-        payload.image_file = await fileToBase64(imageFile);
-      } else if (selectedUpdateImageReference) {
-        payload.existing_image = selectedUpdateImageReference;
-      }
-
-      const result = await apiCall(ENDPOINTS.updateImage, payload);
-
-      if (result.success !== false) {
-        hideProcessing();
-        showStatus('Image updated successfully!');
-        await loadMediaFiles();
-        renderMediaGrid();
-        showPreview(result.data);
-        document.getElementById('imageUpdateForm').reset();
-        selectedUpdateImageReference = null;
-        populateReferenceLists();
-      } else {
-        hideProcessing();
-        throw new Error(result.message || 'Image update failed');
-      }
-    } catch (error) {
-      hideProcessing();
-      console.error('Error updating image:', error);
-      showStatus('Error updating image: ' + error.message, true);
     }
   }
 
@@ -1369,34 +1339,36 @@
     }
   }
 
-  // Update video
-  async function updateVideo(formData) {
-    try {
-      showStatus('Updating video... This may take several minutes.');
-      showProcessing('Updating video...');
-      
-      const payload = {
-        campaigns_file_name: formData.get('video_name'),
-        chat: formData.get('chat')
-      };
-
-      const result = await apiCall(ENDPOINTS.updateVideo, payload);
-
-      hideProcessing();
-      showStatus('Video update started! The updated video will appear in your media library when ready.');
-      document.getElementById('videoUpdateForm').reset();
-    } catch (error) {
-      hideProcessing();
-      console.error('Error updating video:', error);
-      showStatus('Error updating video: ' + error.message, true);
-    }
-  }
-
   // Apply filters
   function applyFilters() {
     const searchTerm = searchFilter.value.toLowerCase();
+    const fileType = fileTypeFilter.value;
+    const campaignId = campaignFilter.value;
+    const dateFrom = dateFromFilter.value ? new Date(dateFromFilter.value) : null;
+    const dateTo = dateToFilter.value ? new Date(dateToFilter.value) : null;
 
     filteredMediaFiles = allMediaFiles.filter(file => {
+      // File type filter
+      if (fileType && !getFileType(file.file_type).includes(fileType)) {
+        return false;
+      }
+
+      // Campaign filter
+      if (campaignId && file.campaign_id !== campaignId) {
+        return false;
+      }
+
+      // Date filters
+      if (file.created_at) {
+        const fileDate = new Date(file.created_at);
+        if (dateFrom && fileDate < dateFrom) {
+          return false;
+        }
+        if (dateTo && fileDate > dateTo) {
+          return false;
+        }
+      }
+
       // Search filter
       if (searchTerm) {
         const searchableText = [
@@ -1418,6 +1390,10 @@
   // Clear filters
   function clearFilters() {
     searchFilter.value = '';
+    fileTypeFilter.value = '';
+    campaignFilter.value = '';
+    dateFromFilter.value = '';
+    dateToFilter.value = '';
     applyFilters();
   }
 
@@ -1600,37 +1576,6 @@
     return 'file';
   }
 
-  function formatFileSize(bytes) {
-    if (!bytes) return 'N/A';
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 Bytes';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-  }
-
-  function downloadFile(url, filename) {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename || 'download';
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  function shareFile(url) {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Victory Vision Media',
-        url: url
-      });
-    } else {
-      navigator.clipboard.writeText(url).then(() => {
-        showStatus('URL copied to clipboard!');
-      });
-    }
-  }
-
   function showEmptyState() {
     mediaContainer.innerHTML = `
       <div class="empty-state">
@@ -1683,32 +1628,14 @@
       await createVideo(formData);
     });
 
-    // Image update form
-    document.getElementById('imageUpdateForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('updateImageChat').value);
-      formData.append('image_file', document.getElementById('updateImageFile').files[0]);
-      await updateImage(formData);
-    });
-
-    // Video update form
-    document.getElementById('videoUpdateForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('video_name', document.getElementById('updateVideoName').value);
-      formData.append('chat', document.getElementById('updateVideoChat').value);
-      await updateVideo(formData);
-    });
-
     // Filter controls
-    refreshMediaBtn.addEventListener('click', async () => {
-      await loadMediaFiles();
-      await loadUserData();
-      applyFilters();
-    });
-
+    applyFiltersBtn.addEventListener('click', applyFilters);
     clearFiltersBtn.addEventListener('click', clearFilters);
+
+    // Auto-apply filters on change for some fields
+    [fileTypeFilter, campaignFilter, dateFromFilter, dateToFilter].forEach(element => {
+      element.addEventListener('change', applyFilters);
+    });
 
     // Debounced search
     let searchTimeout;
@@ -1727,10 +1654,20 @@
       
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
-        await loadUserData();
-        await loadMediaFiles();
+        await Promise.all([
+          loadUserData(),
+          loadCampaigns(),
+          loadMediaFiles()
+        ]);
         setupEventListeners();
         applyFilters();
+        
+        // Auto-start tour for new users
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
       } else {
         redirectToLogin();
       }
@@ -1754,8 +1691,11 @@
     }
   }, 300000);
 
-  // Make selectImageReference globally available
+  // Make functions globally available
   window.selectImageReference = selectImageReference;
+  window.closeModal = closeModal;
+  window.deleteFile = deleteFile;
+  window.startTour = startTour;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
