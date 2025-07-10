@@ -589,7 +589,7 @@
   // OAuth Client IDs
   const OAUTH_CLIENTS = {
     linkedin: '86utfb95bpsrjk',
-    twitter: 'MzExUGVkUzRXTm9ObEM2bEZfelU6MTpjaQ'
+    twitter: '311PedS4WNoNlC6lFz_U' // Decoded from Base64
   };
   
   // n8n webhook endpoints
@@ -933,7 +933,7 @@
   
   function connectLinkedIn() {
     const state = generateStateFromSession();
-    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
+    const redirectUri = encodeURIComponent('https://www.victoryvision.app/oauth-callback/');
     const scope = encodeURIComponent('openid profile email w_member_social r_organization_social rw_organization_admin w_organization_social');
     const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${OAUTH_CLIENTS.linkedin}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
     
@@ -949,13 +949,13 @@
       const codeVerifier = generatePKCE();
       const codeChallenge = base64urlencode(await sha256(codeVerifier));
       
-      // Store these for the callback
+      // Store these for the callback - use keys that match oauth-callback expectations
       sessionStorage.setItem('oauth_state', state);
       sessionStorage.setItem('oauth_platform', 'twitter');
       sessionStorage.setItem('code_verifier', codeVerifier);
       
-      const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/twitter');
-      const scope = encodeURIComponent('tweet.read tweet.write users.read follows.read follows.write');
+      const redirectUri = encodeURIComponent('https://www.victoryvision.app/oauth-callback/');
+      const scope = encodeURIComponent('tweet.read tweet.write users.read follows.read follows.write offline.access');
       
       const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${OAUTH_CLIENTS.twitter}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
       
