@@ -838,25 +838,19 @@
           if (item.platform.toLowerCase() === 'linkedin') {
             linkedinConnected = true;
             linkedinProfile = item.customer_id || item.profile_id;
-          } else if (item.platform.toLowerCase() === 'twitter') {
-            twitterConnected = true;
-            twitterProfile = item.customer_id || item.profile_id;
           }
         }
       });
       
       console.log('LinkedIn connected:', linkedinConnected, 'Profile:', linkedinProfile);
-      console.log('Twitter connected:', twitterConnected, 'Profile:', twitterProfile);
       
       // Update UI for each platform
       updateConnectionStatus('linkedin', linkedinConnected, linkedinProfile);
-      updateConnectionStatus('twitter', twitterConnected, twitterProfile);
       
     } catch (error) {
       console.error('Error checking connection status:', error);
       // Set all to disconnected on error
       updateConnectionStatus('linkedin', false);
-      updateConnectionStatus('twitter', false);
     }
   }
 
