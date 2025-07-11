@@ -183,6 +183,30 @@
       cursor: not-allowed;
       transform: none;
     }
+    .add-contact-section {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .csv-upload-area {
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      background: #f8f9fa;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+    }
+    .csv-upload-area:hover {
+      border-color: #0A3161;
+      background: #e3f2fd;
+    }
+    .csv-upload-area.dragover {
+      border-color: #28a745;
+      background: #d4edda;
+    }
     button {
       background: #0A3161;
       color: white;
@@ -475,6 +499,7 @@
       margin-top: 20px;
       padding-top: 20px;
       border-top: 2px solid #dee2e6;
+      flex-wrap: wrap;
     }
     footer {
       background: #0A3161;
@@ -546,6 +571,9 @@
       .modal-content {
         width: 98%;
         margin: 5% auto;
+      }
+      .add-contact-section {
+        flex-direction: column;
       }
     }
   </style>
@@ -626,6 +654,20 @@
     </div>
     
     <button id="generateBtn" class="generate-btn">🚀 Generate New Contacts</button>
+    
+    <!-- Add Contacts Section -->
+    <div class="add-contact-section">
+      <button onclick="showAddContactModal()" class="success">➕ Add Contact Manually</button>
+      <button onclick="document.getElementById('csvFileInput').click()" class="secondary">📁 Upload CSV</button>
+    </div>
+    
+    <!-- CSV Upload Area -->
+    <div class="csv-upload-area" id="csvUploadArea">
+      <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+      <p>📂 <strong>Drag & Drop CSV File Here</strong></p>
+      <p style="font-size: 0.85em; color: #666;">or click "Upload CSV" button above</p>
+      <p style="font-size: 0.8em; color: #888;">Expected columns: name, email, company, title, phone, linkedin</p>
+    </div>
   </section>
 
   <!-- Contacts Management Section -->
@@ -661,6 +703,14 @@
         <div class="workflow-item">
           <input type="checkbox" id="workflow_referral" value="referral">
           <label for="workflow_referral">🔗 Referral Program - Ask for referrals</label>
+        </div>
+        <div class="workflow-item">
+          <input type="checkbox" id="workflow_leadmagnet" value="leadmagnet">
+          <label for="workflow_leadmagnet">🧲 Lead Magnet - 90-day engagement sequence</label>
+        </div>
+        <div class="workflow-item">
+          <input type="checkbox" id="workflow_reengage" value="reengage">
+          <label for="workflow_reengage">🎪 Re-engage - Win back dormant leads</label>
         </div>
       </div>
     </div>
@@ -717,6 +767,8 @@
           <option value="demo">Demo Request</option>
           <option value="followup">Follow-up</option>
           <option value="referral">Referral</option>
+          <option value="leadmagnet">Lead Magnet</option>
+          <option value="reengage">Re-engage</option>
         </select>
       </div>
       <button id="refreshBtn">🔄 Refresh</button>
@@ -728,7 +780,8 @@
       <button id="selectAllBtn" class="secondary">Select All</button>
       <button id="deselectAllBtn" class="secondary">Deselect All</button>
       <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
-      <button id="aiOutreachBtn" class="success">🤖 AI Outreach Selected</button>
+      <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
+      <button id="generateAdBtn" class="success">🎬 Generate Ad & Email</button>
       <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
       <span id="selectedCount" style="margin-left: 10px; color: #666;">0 selected</span>
     </div>
@@ -770,6 +823,70 @@
   </div>
 </div>
 
+<!-- Add Contact Modal -->
+<div id="addContactModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>➕ Add New Contact</h2>
+      <span class="close" onclick="closeAddContactModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <form id="addContactForm">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label for="newContactName">Name *</label>
+            <input type="text" id="newContactName" required placeholder="John Smith">
+          </div>
+          <div class="form-group">
+            <label for="newContactEmail">Email *</label>
+            <input type="email" id="newContactEmail" required placeholder="john@company.com">
+          </div>
+          <div class="form-group">
+            <label for="newContactTitle">Title</label>
+            <input type="text" id="newContactTitle" placeholder="CEO">
+          </div>
+          <div class="form-group">
+            <label for="newContactCompany">Company</label>
+            <input type="text" id="newContactCompany" placeholder="Company Inc">
+          </div>
+          <div class="form-group">
+            <label for="newContactPhone">Phone</label>
+            <input type="tel" id="newContactPhone" placeholder="+1-555-0123">
+          </div>
+          <div class="form-group">
+            <label for="newContactLinkedin">LinkedIn URL</label>
+            <input type="url" id="newContactLinkedin" placeholder="https://linkedin.com/in/profile">
+          </div>
+          <div class="form-group">
+            <label for="newContactIndustry">Industry</label>
+            <input type="text" id="newContactIndustry" placeholder="Technology">
+          </div>
+          <div class="form-group">
+            <label for="newContactCity">City</label>
+            <input type="text" id="newContactCity" placeholder="San Francisco">
+          </div>
+          <div class="form-group">
+            <label for="newContactRevenue">Annual Revenue</label>
+            <input type="text" id="newContactRevenue" placeholder="$5M">
+          </div>
+          <div class="form-group">
+            <label for="newContactEmployees">Employee Count</label>
+            <input type="number" id="newContactEmployees" placeholder="50">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 15px;">
+          <label for="newContactNotes">Notes</label>
+          <textarea id="newContactNotes" placeholder="Additional information about this contact..."></textarea>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" onclick="closeAddContactModal()" class="secondary">Cancel</button>
+          <button type="submit" class="success">➕ Add Contact</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -789,14 +906,19 @@ const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
   generateContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/look',
+  addContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/add',
+  enrichContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/enrich',
+  uploadCSV: 'https://victoryvision.app.n8n.cloud/webhook/contacts/upload-csv',
+  generateAd: 'https://victoryvision.app.n8n.cloud/webhook/contacts/generate-ad',
   enrollFriends: 'https://victoryvision.app.n8n.cloud/webhook/outreach/friends',
-  enrollSignup: 'https://victoryvision.app.n8n.cloud/webhook/emails/signup'
+  enrollSignup: 'https://victoryvision.app.n8n.cloud/webhook/emails/signup',
+  removeContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/remove'
 };
 
 // Global variables
 let CUSTOMER_ID = null;
 let authToken = null;
-let userCredits = { contact_credits: 0 };
+let userCredits = { contact_credits: 0, video_credits: 0 };
 let allContacts = [];
 let filteredContacts = [];
 let selectedContacts = new Set();
@@ -953,14 +1075,15 @@ async function loadUserData() {
     console.log('User data:', userData);
     
     userCredits = {
-      contact_credits: userData.contact_credits || 0
+      contact_credits: userData.contact_credits || 0,
+      video_credits: userData.video_credits || 0
     };
     
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
-    const plan = userData.subscription_plan || 'bronze';
+    const plan = userData.subscription_plan || 'Bronze';
     medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
-    medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    medallion.querySelector('.plan-name').textContent = plan;
     
     updateCreditsDisplay();
   } catch (error) {
@@ -1006,10 +1129,10 @@ async function loadContacts() {
     
     allContacts = Array.isArray(data) ? data : (data.contacts || []);
     
-    // Add mock workflow status for demonstration
+    // FIX: Only add workflow status if it doesn't exist and handle null/empty values properly
     allContacts = allContacts.map(contact => ({
       ...contact,
-      workflow_status: contact.workflow_status || generateMockWorkflowStatus()
+      workflow_status: contact.workflow_status || null // Don't generate fake workflows
     }));
     
     filteredContacts = [...allContacts];
@@ -1027,21 +1150,6 @@ async function loadContacts() {
     filteredContacts = [];
     renderContactsTable();
   }
-}
-
-function generateMockWorkflowStatus() {
-  const workflows = ['friends', 'signup', 'nurture', 'demo'];
-  const activeCount = Math.floor(Math.random() * 3);
-  const activeWorkflows = [];
-  
-  for (let i = 0; i < activeCount; i++) {
-    const workflow = workflows[Math.floor(Math.random() * workflows.length)];
-    if (!activeWorkflows.includes(workflow)) {
-      activeWorkflows.push(workflow);
-    }
-  }
-  
-  return activeWorkflows.join(',');
 }
 
 // Generate new contacts
@@ -1107,6 +1215,300 @@ async function generateNewContacts() {
     generateBtn.disabled = false;
     generateBtn.textContent = '🚀 Generate New Contacts';
   }
+}
+
+// Add contact manually
+function showAddContactModal() {
+  document.getElementById('addContactModal').style.display = 'block';
+}
+
+function closeAddContactModal() {
+  document.getElementById('addContactModal').style.display = 'none';
+  document.getElementById('addContactForm').reset();
+}
+
+async function addContactManually(formData) {
+  try {
+    const contactData = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      title: formData.get('title'),
+      company: formData.get('company'),
+      phone_number: formData.get('phone'),
+      linkedin: formData.get('linkedin'),
+      industry: formData.get('industry'),
+      city: formData.get('city'),
+      annual_revenue: formData.get('revenue'),
+      employee_count: formData.get('employees'),
+      notes: formData.get('notes')
+    };
+
+    const result = await apiCall(ENDPOINTS.addContact, contactData);
+
+    if (result.success !== false) {
+      showStatus('Contact added successfully!', false);
+      closeAddContactModal();
+      await loadContacts();
+    } else {
+      throw new Error(result.message || 'Failed to add contact');
+    }
+
+  } catch (error) {
+    console.error('Error adding contact:', error);
+    showStatus('Error adding contact: ' + error.message, true);
+  }
+}
+
+// CSV Upload functionality
+function setupCSVUpload() {
+  const csvInput = document.getElementById('csvFileInput');
+  const uploadArea = document.getElementById('csvUploadArea');
+
+  csvInput.addEventListener('change', handleCSVFile);
+
+  // Drag and drop functionality
+  uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+  });
+
+  uploadArea.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+  });
+
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0 && files[0].name.endsWith('.csv')) {
+      handleCSVFile({ target: { files: files } });
+    } else {
+      showStatus('Please drop a CSV file', true);
+    }
+  });
+}
+
+async function handleCSVFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!file.name.endsWith('.csv')) {
+    showStatus('Please select a CSV file', true);
+    return;
+  }
+
+  try {
+    const csvText = await file.text();
+    const result = await apiCall(ENDPOINTS.uploadCSV, { 
+      csv_data: csvText,
+      filename: file.name
+    });
+
+    if (result.success !== false) {
+      showStatus(`CSV uploaded successfully! Processing ${result.count || 'multiple'} contacts.`, false);
+      await loadContacts();
+    } else {
+      throw new Error(result.message || 'CSV upload failed');
+    }
+
+  } catch (error) {
+    console.error('Error uploading CSV:', error);
+    showStatus('Error uploading CSV: ' + error.message, true);
+  }
+
+  // Clear the input
+  event.target.value = '';
+}
+
+// Enrich contacts
+async function enrichSelectedContacts() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select contacts to enrich', true);
+    return;
+  }
+
+  try {
+    const selectedContactsList = Array.from(selectedContacts).map(id => 
+      allContacts.find(c => c.id === id)
+    ).filter(c => c && c.email);
+
+    const result = await apiCall(ENDPOINTS.enrichContacts, {
+      contacts: selectedContactsList.map(c => ({ id: c.id, email: c.email, linkedin: c.linkedin }))
+    });
+
+    if (result.success !== false) {
+      showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
+      selectedContacts.clear();
+      updateSelectedCount();
+      setTimeout(() => loadContacts(), 5000); // Reload after 5 seconds
+    } else {
+      throw new Error(result.message || 'Contact enrichment failed');
+    }
+
+  } catch (error) {
+    console.error('Error enriching contacts:', error);
+    showStatus('Error enriching contacts: ' + error.message, true);
+  }
+}
+
+// Generate Ad & Email
+async function generateAdAndEmail() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select contacts for ad generation', true);
+    return;
+  }
+
+  if (userCredits.video_credits <= 0) {
+    showStatus('Insufficient video credits for ad generation', true);
+    return;
+  }
+
+  try {
+    const selectedContactsList = Array.from(selectedContacts).map(id => 
+      allContacts.find(c => c.id === id)
+    ).filter(c => c);
+
+    const result = await apiCall(ENDPOINTS.generateAd, {
+      contacts: selectedContactsList.map(c => ({ 
+        id: c.id, 
+        name: c.name, 
+        email: c.email, 
+        company: c.company,
+        industry: c.industry 
+      }))
+    });
+
+    if (result.success !== false) {
+      showStatus(`Ad & Email generation started for ${selectedContactsList.length} contacts! (-1 video credit)`, false);
+      userCredits.video_credits--; // Deduct credit
+      updateCreditsDisplay();
+      selectedContacts.clear();
+      updateSelectedCount();
+    } else {
+      throw new Error(result.message || 'Ad generation failed');
+    }
+
+  } catch (error) {
+    console.error('Error generating ad:', error);
+    showStatus('Error generating ad: ' + error.message, true);
+  }
+}
+
+// Show contact details modal - FIXED
+function showContactDetails(contactId, event) {
+  if (event && event.target.type === 'checkbox') {
+    return; // Don't open modal if clicking checkbox
+  }
+  if (event) event.stopPropagation();
+  
+  const contact = allContacts.find(c => c.id === contactId);
+  if (!contact) return;
+  
+  currentContact = contact;
+  document.getElementById('modalTitle').textContent = contact.name || 'Contact Details';
+  
+  const modalBody = document.getElementById('modalBody');
+  modalBody.innerHTML = `
+    <div class="contact-details">
+      ${Object.entries(contact).map(([key, value]) => {
+        if (!value || key === 'id' || value === 'null' || value === '') return '';
+        const label = availableColumns[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return renderDetailField(label, value, key === 'linkedin' || key === 'email');
+      }).join('')}
+    </div>
+    
+    <div class="modal-actions">
+      <button onclick="openMessagesPage()" class="success">💬 Send Personal Message</button>
+      <button onclick="enrichSingleContact()" class="success">🔍 Enrich Contact</button>
+      <button onclick="enrollSingleContact()" class="success">📧 Enroll in Workflow</button>
+      <button onclick="deleteContact('${contact.id}')" class="danger">🗑️ Delete Contact</button>
+    </div>
+  `;
+  
+  document.getElementById('contactModal').style.display = 'block';
+}
+
+function renderDetailField(label, value, isLink = false) {
+  if (!value || value === 'null' || value === '') return '';
+  
+  const displayValue = isLink && value.toString().startsWith('http') ? 
+    `<a href="${value}" target="_blank" style="color: #0A3161;">${value}</a>` : 
+    value;
+  
+  return `
+    <div class="detail-group">
+      <div class="detail-label">${label}</div>
+      <div class="detail-value">${displayValue}</div>
+    </div>
+  `;
+}
+
+function openMessagesPage() {
+  // Prepare data for messages page
+  const contactData = {
+    id: currentContact.id,
+    name: currentContact.name,
+    email: currentContact.email,
+    company: currentContact.company
+  };
+  
+  // Store in sessionStorage for messages page
+  sessionStorage.setItem('messageContact', JSON.stringify(contactData));
+  
+  // Navigate to messages page
+  window.location.href = 'messages.html';
+}
+
+function enrichSingleContact() {
+  // Close modal and select this contact for enrichment
+  closeModal();
+  selectedContacts.clear();
+  selectedContacts.add(currentContact.id);
+  updateSelectedCount();
+  renderContactsTable();
+  
+  // Trigger enrichment
+  enrichSelectedContacts();
+}
+
+function enrollSingleContact() {
+  // Close modal and select this contact
+  closeModal();
+  selectedContacts.clear();
+  selectedContacts.add(currentContact.id);
+  updateSelectedCount();
+  renderContactsTable();
+  
+  // Scroll to workflow section
+  document.querySelector('.workflow-section').scrollIntoView({ behavior: 'smooth' });
+  showStatus('Contact selected. Choose workflows above and click "Enroll in Workflows"', false);
+}
+
+async function deleteContact(contactId) {
+  if (!confirm('Are you sure you want to delete this contact?')) {
+    return;
+  }
+  
+  try {
+    await apiCall(ENDPOINTS.removeContact, {
+      contact_id: contactId
+    });
+    
+    showStatus('Contact deleted successfully!', false);
+    closeModal();
+    await loadContacts();
+    
+  } catch (error) {
+    console.error('Error deleting contact:', error);
+    showStatus('Error deleting contact: ' + error.message, true);
+  }
+}
+
+function closeModal() {
+  document.getElementById('contactModal').style.display = 'none';
+  currentContact = null;
 }
 
 // Column management
@@ -1254,6 +1656,7 @@ function formatCellValue(contact, column) {
     case 'annual_revenue':
       return `<span class="revenue-cell">${formatRevenue(value)}</span>`;
     case 'workflow_status':
+      // FIX: Properly handle workflow status - only show if there are actual workflows
       return formatWorkflowBadges(value);
     case 'linkedin':
       return value ? `<a href="${value}" target="_blank" style="color: #0A3161;">View</a>` : 'N/A';
@@ -1281,12 +1684,15 @@ function formatRevenue(revenue) {
 }
 
 function formatWorkflowBadges(workflows) {
-  if (!workflows) return 'None';
+  // FIX: Only show workflows if they actually exist
+  if (!workflows || workflows === 'null' || workflows === '') {
+    return '<span style="color: #999; font-style: italic;">None</span>';
+  }
   
   return workflows.split(',')
-    .filter(w => w.trim())
+    .filter(w => w.trim() && w.trim() !== 'null')
     .map(workflow => `<span class="workflow-badge active">${workflow.trim()}</span>`)
-    .join(' ');
+    .join(' ') || '<span style="color: #999; font-style: italic;">None</span>';
 }
 
 function formatTags(tags) {
@@ -1356,7 +1762,12 @@ async function enrollInWorkflows() {
     ).filter(c => c && c.email);
 
     for (const workflow of selectedWorkflows) {
-      const endpoint = workflow === 'friends' ? ENDPOINTS.enrollFriends : ENDPOINTS.enrollSignup;
+      let endpoint = ENDPOINTS.enrollSignup; // default
+      
+      // Route to appropriate endpoint based on workflow
+      if (workflow === 'friends') {
+        endpoint = ENDPOINTS.enrollFriends;
+      }
       
       for (const contact of selectedContactsList) {
         await apiCall(endpoint, {
@@ -1366,7 +1777,8 @@ async function enrollInWorkflows() {
         });
         
         // Update contact's workflow status
-        const currentWorkflows = contact.workflow_status ? contact.workflow_status.split(',') : [];
+        const currentWorkflows = contact.workflow_status ? 
+          contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
         if (!currentWorkflows.includes(workflow)) {
           currentWorkflows.push(workflow);
           contact.workflow_status = currentWorkflows.join(',');
@@ -1391,105 +1803,6 @@ async function enrollInWorkflows() {
 function getSelectedWorkflows() {
   return Array.from(document.querySelectorAll('#workflowList input[type="checkbox"]:checked'))
     .map(cb => cb.value);
-}
-
-// Show contact details modal
-async function showContactDetails(contactId, event) {
-  if (event) event.stopPropagation();
-  
-  const contact = allContacts.find(c => c.id === contactId);
-  if (!contact) return;
-  
-  currentContact = contact;
-  document.getElementById('modalTitle').textContent = contact.name || 'Contact Details';
-  
-  const modalBody = document.getElementById('modalBody');
-  modalBody.innerHTML = `
-    <div class="contact-details">
-      ${Object.entries(contact).map(([key, value]) => {
-        if (!value || key === 'id') return '';
-        const label = availableColumns[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        return renderDetailField(label, value, key === 'linkedin' || key === 'email');
-      }).join('')}
-    </div>
-    
-    <div class="modal-actions">
-      <button onclick="openMessagesPage()" class="success">💬 Send Personal Message</button>
-      <button onclick="enrollSingleContact()" class="success">📧 Enroll in Workflow</button>
-      <button onclick="deleteContact('${contact.id}')" class="danger">🗑️ Delete Contact</button>
-    </div>
-  `;
-  
-  document.getElementById('contactModal').style.display = 'block';
-}
-
-function renderDetailField(label, value, isLink = false) {
-  if (!value) return '';
-  
-  const displayValue = isLink && value.toString().startsWith('http') ? 
-    `<a href="${value}" target="_blank" style="color: #0A3161;">${value}</a>` : 
-    value;
-  
-  return `
-    <div class="detail-group">
-      <div class="detail-label">${label}</div>
-      <div class="detail-value">${displayValue}</div>
-    </div>
-  `;
-}
-
-function openMessagesPage() {
-  // Prepare data for messages page
-  const contactData = {
-    id: currentContact.id,
-    name: currentContact.name,
-    email: currentContact.email,
-    company: currentContact.company
-  };
-  
-  // Store in sessionStorage for messages page
-  sessionStorage.setItem('messageContact', JSON.stringify(contactData));
-  
-  // Navigate to messages page
-  window.location.href = 'messages.html';
-}
-
-function enrollSingleContact() {
-  // Close modal and select this contact
-  closeModal();
-  selectedContacts.clear();
-  selectedContacts.add(currentContact.id);
-  updateSelectedCount();
-  renderContactsTable();
-  
-  // Scroll to workflow section
-  document.querySelector('.workflow-section').scrollIntoView({ behavior: 'smooth' });
-  showStatus('Contact selected. Choose workflows above and click "Enroll in Workflows"', false);
-}
-
-async function deleteContact(contactId) {
-  if (!confirm('Are you sure you want to delete this contact?')) {
-    return;
-  }
-  
-  try {
-    await apiCall('https://victoryvision.app.n8n.cloud/webhook/contacts/remove', {
-      contact_id: contactId
-    });
-    
-    showStatus('Contact deleted successfully!', false);
-    closeModal();
-    await loadContacts();
-    
-  } catch (error) {
-    console.error('Error deleting contact:', error);
-    showStatus('Error deleting contact: ' + error.message, true);
-  }
-}
-
-function closeModal() {
-  document.getElementById('contactModal').style.display = 'none';
-  currentContact = null;
 }
 
 // Filters
@@ -1577,7 +1890,7 @@ function applyFilters() {
 
     // Workflow filter
     if (workflow) {
-      const contactWorkflows = (contact.workflow_status || '').split(',');
+      const contactWorkflows = (contact.workflow_status || '').split(',').filter(w => w.trim() && w !== 'null');
       if (!contactWorkflows.includes(workflow)) {
         return false;
       }
@@ -1612,7 +1925,7 @@ async function deleteSelectedContacts() {
 
   try {
     for (const contactId of selectedContacts) {
-      await apiCall('https://victoryvision.app.n8n.cloud/webhook/contacts/remove', {
+      await apiCall(ENDPOINTS.removeContact, {
         contact_id: contactId
       });
     }
@@ -1624,34 +1937,6 @@ async function deleteSelectedContacts() {
   } catch (error) {
     console.error('Error deleting contacts:', error);
     showStatus('Error deleting contacts', true);
-  }
-}
-
-// AI Outreach (legacy function)
-async function performAIOutreach() {
-  if (selectedContacts.size === 0) {
-    showStatus('Please select contacts for AI outreach', true);
-    return;
-  }
-
-  try {
-    const selectedContactsList = Array.from(selectedContacts).map(id => 
-      allContacts.find(c => c.id === id)
-    ).filter(c => c && c.email);
-
-    for (const contact of selectedContactsList) {
-      await apiCall('https://victoryvision.app.n8n.cloud/webhook/contacts/ai-email', {
-        email: contact.email
-      });
-    }
-    
-    showStatus(`AI outreach initiated for ${selectedContactsList.length} contacts`, false);
-    selectedContacts.clear();
-    updateSelectedCount();
-    
-  } catch (error) {
-    console.error('Error performing AI outreach:', error);
-    showStatus('Error performing AI outreach', true);
   }
 }
 
@@ -1672,13 +1957,21 @@ function setupEventListeners() {
   // Generate contacts
   document.getElementById('generateBtn').addEventListener('click', generateNewContacts);
   
+  // Add contact form
+  document.getElementById('addContactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    await addContactManually(formData);
+  });
+  
   // Bulk actions
   document.getElementById('refreshBtn').addEventListener('click', loadContacts);
   document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
   document.getElementById('selectAllBtn').addEventListener('click', selectAll);
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
   document.getElementById('enrollWorkflowsBtn').addEventListener('click', enrollInWorkflows);
-  document.getElementById('aiOutreachBtn').addEventListener('click', performAIOutreach);
+  document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
+  document.getElementById('generateAdBtn').addEventListener('click', generateAdAndEmail);
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContacts);
   
   // Filters with debouncing
@@ -1692,13 +1985,21 @@ function setupEventListeners() {
     document.getElementById(id).addEventListener('change', applyFilters);
   });
   
-  // Modal close
+  // Modal close events
   window.addEventListener('click', (event) => {
-    const modal = document.getElementById('contactModal');
-    if (event.target === modal) {
+    const contactModal = document.getElementById('contactModal');
+    const addContactModal = document.getElementById('addContactModal');
+    
+    if (event.target === contactModal) {
       closeModal();
     }
+    if (event.target === addContactModal) {
+      closeAddContactModal();
+    }
   });
+  
+  // Setup CSV upload
+  setupCSVUpload();
 }
 
 // Initialize page
@@ -1769,7 +2070,10 @@ window.showContactDetails = showContactDetails;
 window.toggleContactSelection = toggleContactSelection;
 window.sortBy = sortBy;
 window.closeModal = closeModal;
+window.showAddContactModal = showAddContactModal;
+window.closeAddContactModal = closeAddContactModal;
 window.openMessagesPage = openMessagesPage;
+window.enrichSingleContact = enrichSingleContact;
 window.enrollSingleContact = enrollSingleContact;
 window.deleteContact = deleteContact;
 window.startTour = startTour;
