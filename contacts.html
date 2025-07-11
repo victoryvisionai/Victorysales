@@ -1396,20 +1396,38 @@ async function generateAdAndEmail() {
   }
 }
 
-// Show contact details modal - FIXED
+// Show contact details modal - FIXED WITH DEBUGGING
 function showContactDetails(contactId, event) {
+  console.log('showContactDetails called with:', contactId, event);
+  
   if (event && event.target.type === 'checkbox') {
+    console.log('Checkbox clicked, not opening modal');
     return; // Don't open modal if clicking checkbox
   }
   if (event) event.stopPropagation();
   
   const contact = allContacts.find(c => c.id === contactId);
-  if (!contact) return;
+  console.log('Found contact:', contact);
+  
+  if (!contact) {
+    console.error('No contact found for ID:', contactId);
+    return;
+  }
   
   currentContact = contact;
-  document.getElementById('modalTitle').textContent = contact.name || 'Contact Details';
-  
+  const modalTitle = document.getElementById('modalTitle');
   const modalBody = document.getElementById('modalBody');
+  const modal = document.getElementById('contactModal');
+  
+  console.log('Modal elements:', { modalTitle, modalBody, modal });
+  
+  if (!modal) {
+    console.error('Modal not found in DOM');
+    return;
+  }
+  
+  modalTitle.textContent = contact.name || 'Contact Details';
+  
   modalBody.innerHTML = `
     <div class="contact-details">
       ${Object.entries(contact).map(([key, value]) => {
@@ -1427,7 +1445,9 @@ function showContactDetails(contactId, event) {
     </div>
   `;
   
-  document.getElementById('contactModal').style.display = 'block';
+  console.log('Setting modal display to block');
+  modal.style.display = 'block';
+  console.log('Modal display style after setting:', modal.style.display);
 }
 
 function renderDetailField(label, value, isLink = false) {
@@ -1506,8 +1526,32 @@ async function deleteContact(contactId) {
   }
 }
 
+// Debug function to test modal
+function debugModal() {
+  console.log('Testing modal...');
+  const modal = document.getElementById('contactModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  
+  console.log('Modal elements:', { modal, modalTitle, modalBody });
+  
+  if (modal) {
+    modalTitle.textContent = 'Debug Test Modal';
+    modalBody.innerHTML = '<p>This is a test modal to verify functionality.</p>';
+    modal.style.display = 'block';
+    console.log('Modal should now be visible');
+  } else {
+    console.error('Modal not found!');
+  }
+}
+
 function closeModal() {
-  document.getElementById('contactModal').style.display = 'none';
+  console.log('closeModal called');
+  const modal = document.getElementById('contactModal');
+  if (modal) {
+    modal.style.display = 'none';
+    console.log('Modal closed');
+  }
   currentContact = null;
 }
 
@@ -1629,7 +1673,7 @@ function renderContactsTable() {
 
   tbody.innerHTML = filteredContacts.map(contact => {
     let rowHTML = `
-      <tr data-contact-id="${contact.id}" onclick="showContactDetails('${contact.id}', event)">
+      <tr data-contact-id="${contact.id}" style="cursor: pointer;">
         <td class="checkbox-cell" onclick="event.stopPropagation()">
           <input type="checkbox" 
                  value="${contact.id}" 
@@ -1639,12 +1683,14 @@ function renderContactsTable() {
     `;
     
     visibleColumns.forEach(column => {
-      rowHTML += `<td>${formatCellValue(contact, column)}</td>`;
+      rowHTML += `<td onclick="showContactDetails('${contact.id}', event)">${formatCellValue(contact, column)}</td>`;
     });
     
     rowHTML += '</tr>';
     return rowHTML;
   }).join('');
+  
+  console.log('Rendered table with', filteredContacts.length, 'contacts');
 }
 
 function formatCellValue(contact, column) {
