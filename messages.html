@@ -1,66 +1,1502 @@
-<!-- Messages Page -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victory Vision AI - Messages</title>
-    <link rel="stylesheet" href="style.css">
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script defer src="scripts.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Manage your email communications and drafts."/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision AI - Messages</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .navbar {
+      background-color: #0A3161;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar nav ul li {
+      margin: 0 10px;
+    }
+    .navbar nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    .navbar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .subscription-medallion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      position: relative;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    .subscription-medallion.bronze {
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+    }
+    .subscription-medallion.silver {
+      background: linear-gradient(45deg, #C0C0C0, #808080);
+    }
+    .subscription-medallion.gold {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+    }
+    .subscription-medallion:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .subscription-medallion .plan-name {
+      font-weight: bold;
+    }
+    .logo img {
+      height: 60px;
+      width: auto;
+      max-height: 100px;
+    }
+    .content {
+      padding: 20px 4px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+    .page-header {
+      margin-bottom: 30px;
+    }
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 0.5rem;
+    }
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: #666;
+    }
+    .messages-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      height: calc(100vh - 200px);
+      min-height: 600px;
+    }
+    .email-list-panel {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .email-reading-panel {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .panel-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .panel-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0;
+    }
+    .filter-section {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-bottom: 1px solid #dee2e6;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      align-items: end;
+    }
+    .form-group {
+      margin: 0;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 3px;
+      font-weight: 500;
+      color: #333;
+      font-size: 12px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      box-sizing: border-box;
+    }
+    .form-group button {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background: #0A3161;
+      color: white;
+    }
+    .form-group button:hover {
+      background: #083050;
+    }
+    .form-group button.secondary {
+      background: #6c757d;
+    }
+    .form-group button.secondary:hover {
+      background: #5a6268;
+    }
+    .form-group button.success {
+      background: #28a745;
+    }
+    .form-group button.success:hover {
+      background: #218838;
+    }
+    .email-list {
+      flex: 1;
+      overflow-y: auto;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .email-item {
+      padding: 12px 20px;
+      border-bottom: 1px solid #f1f3f4;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      position: relative;
+    }
+    .email-item:hover {
+      background-color: #f8f9fa;
+    }
+    .email-item.selected {
+      background-color: #e3f2fd;
+      border-left: 4px solid #0A3161;
+    }
+    .email-item.unread {
+      background-color: #fff8e1;
+      font-weight: 600;
+    }
+    .email-item.draft {
+      background-color: #f3e5f5;
+      border-left: 4px solid #bb133e;
+    }
+    .email-item.replied {
+      background-color: #e8f5e8;
+    }
+    .email-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .email-from {
+      font-weight: 600;
+      color: #0A3161;
+      font-size: 14px;
+    }
+    .email-date {
+      font-size: 11px;
+      color: #666;
+    }
+    .email-subject {
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .email-preview {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .email-badges {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+    .badge.draft {
+      background: #bb133e;
+      color: white;
+    }
+    .badge.sent {
+      background: #28a745;
+      color: white;
+    }
+    .badge.replied {
+      background: #17a2b8;
+      color: white;
+    }
+    .badge.opened {
+      background: #ffc107;
+      color: #333;
+    }
+    .compose-section {
+      padding: 15px 20px;
+      border-top: 1px solid #dee2e6;
+      background: #f8f9fa;
+    }
+    .reading-pane {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .reading-pane.empty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #666;
+      font-size: 1.1rem;
+    }
+    .email-view {
+      display: none;
+    }
+    .email-view.active {
+      display: block;
+    }
+    .email-view-header {
+      border-bottom: 2px solid #dee2e6;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .email-view-subject {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 10px;
+    }
+    .email-view-meta {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .meta-label {
+      font-weight: 600;
+      color: #666;
+    }
+    .meta-value {
+      color: #333;
+    }
+    .email-view-body {
+      line-height: 1.6;
+      color: #333;
+      white-space: pre-wrap;
+      margin-bottom: 20px;
+    }
+    .email-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #dee2e6;
+    }
+    .email-actions button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .btn-primary {
+      background: #0A3161;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #083050;
+    }
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #218838;
+    }
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+    .btn-danger:hover {
+      background: #c82333;
+    }
+    .compose-form {
+      display: none;
+    }
+    .compose-form.active {
+      display: block;
+    }
+    .compose-form .form-group {
+      margin-bottom: 15px;
+    }
+    .compose-form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+      font-size: 14px;
+    }
+    .compose-form input,
+    .compose-form textarea,
+    .compose-form select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .compose-form textarea {
+      min-height: 200px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .compose-form .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .ai-assist-section {
+      background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      border: 1px solid #bb133e;
+    }
+    .ai-assist-section h4 {
+      margin: 0 0 10px 0;
+      color: #0A3161;
+      font-size: 14px;
+    }
+    .ai-assist-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+    .ai-assist-options button {
+      padding: 6px 10px;
+      font-size: 11px;
+      border: 1px solid #0A3161;
+      background: white;
+      color: #0A3161;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ai-assist-options button:hover {
+      background: #0A3161;
+      color: white;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #666;
+    }
+    .empty-state h3 {
+      color: #0A3161;
+      margin-bottom: 10px;
+    }
+    .status-message {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      max-width: 400px;
+      z-index: 1000;
+    }
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    footer {
+      background: #0A3161;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    footer a {
+      color: #fff;
+      margin-right: 15px;
+      text-decoration: none;
+    }
+    
+    /* Intro.js custom styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
 
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .introjs-button:hover {
+      background: #083050 !important;
+      border-color: #083050 !important;
+    }
+
+    .introjs-skipbutton {
+      background: #6c757d !important;
+      border-color: #6c757d !important;
+    }
+
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
+    
+    @media (max-width: 1024px) {
+      .messages-layout {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .email-reading-panel {
+        min-height: 400px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .content {
+        padding: 10px 5px;
+      }
+      .page-title {
+        font-size: 2rem;
+      }
+      .filter-section {
+        grid-template-columns: 1fr;
+      }
+      .email-actions {
+        flex-wrap: wrap;
+      }
+      .compose-form .form-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <header class="navbar">
-    <div class="logo">
-        <img src="logo.jpg" alt="Victory Vision Logo">
+  <div class="logo">
+    <img src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="contacts">Contacts</a></li>
+      <li><a href="ads">Ads</a></li>
+      <li><a href="settings">⚙️</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
     </div>
-    <nav>
-        <ul>
-            <li><a href="ai-opt">🤖</a></li>
-            <li><a href="dashboard">KPI's</a></li> 
-            <li><a href="images">Images</a></li>
-            <li><a href="videos">Videos</a></li>
-            <li><a href="pages">Pages</a></li>
-            <li><a href="ads">Ads</a></li>
-            <li><a href="leads">Leads</a></li>
-            <li><a href="social">Social</a></li>
-            <li><a href="messages">Messages</a></li>
-            <li><a href="settings">⚙️</a></li>
-        </ul>
-    </nav>
+  </div>
 </header>
 
 <div class="content">
-    <div class="card">
-        <h2>Messages (Email & SMS)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Sender</th>
-                    <th>Content</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Email</td>
-                    <td>client@company.com</td>
-                    <td>Interested in your AI solution</td>
-                    <td>2025-05-12</td>
-                </tr>
-                <tr>
-                    <td>SMS</td>
-                    <td>+123456789</td>
-                    <td>Schedule a call?</td>
-                    <td>2025-05-11</td>
-                </tr>
-            </tbody>
-        </table>
+  <header class="page-header">
+    <h1 class="page-title">Messages</h1>
+    <p class="page-subtitle">Manage your email communications and AI-powered outreach</p>
+  </header>
+
+  <div class="messages-layout">
+    <!-- Email List Panel -->
+    <div class="email-list-panel" data-intro="Your email inbox and drafts are displayed here. Filter, search, and organize your communications." data-step="1">
+      <div class="panel-header">
+        <h2 class="panel-title">📧 Email List</h2>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="showComposeForm()" class="btn-success">✏️ Compose</button>
+          <button onclick="refreshEmails()" class="btn-secondary">🔄 Refresh</button>
+        </div>
+      </div>
+      
+      <div class="filter-section" data-intro="Filter your emails by status, contact, date range, or search for specific content." data-step="2">
+        <div class="form-group">
+          <label for="statusFilter">Status</label>
+          <select id="statusFilter">
+            <option value="">All Emails</option>
+            <option value="draft">Drafts</option>
+            <option value="sent">Sent</option>
+            <option value="replied">Replied</option>
+            <option value="opened">Opened</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="contactFilter">Contact</label>
+          <input type="text" id="contactFilter" placeholder="Search contacts...">
+        </div>
+        <div class="form-group">
+          <label for="dateFromFilter">From Date</label>
+          <input type="date" id="dateFromFilter">
+        </div>
+        <div class="form-group">
+          <label for="dateToFilter">To Date</label>
+          <input type="date" id="dateToFilter">
+        </div>
+        <div class="form-group">
+          <button onclick="applyFilters()">Apply</button>
+        </div>
+        <div class="form-group">
+          <button onclick="clearFilters()" class="secondary">Clear</button>
+        </div>
+      </div>
+      
+      <div class="email-list" id="emailList" data-intro="Click any email to view its content in the reading pane on the right. Different colors indicate email status." data-step="3">
+        <div class="loading">Loading your emails...</div>
+      </div>
+      
+      <div class="compose-section">
+        <button onclick="generateAIEmails()" class="btn-success" style="width: 100%;">
+          🤖 Generate AI Email Campaign
+        </button>
+      </div>
     </div>
+
+    <!-- Email Reading/Composing Panel -->
+    <div class="email-reading-panel" data-intro="Read email content here or compose new messages. Use AI assistance to improve your emails." data-step="4">
+      <div class="panel-header">
+        <h2 class="panel-title" id="readingPaneTitle">📖 Reading Pane</h2>
+        <div id="readingPaneActions" style="display: none;">
+          <button onclick="replyToEmail()" class="btn-primary">↩️ Reply</button>
+          <button onclick="forwardEmail()" class="btn-secondary">➡️ Forward</button>
+        </div>
+      </div>
+      
+      <div class="reading-pane empty" id="readingPane">
+        <div>
+          <h3>📧 Select an email to read</h3>
+          <p>Choose an email from the list to view its content here</p>
+        </div>
+      </div>
+      
+      <!-- Email View Template -->
+      <div class="email-view" id="emailViewTemplate">
+        <div class="email-view-header">
+          <div class="email-view-subject" id="viewSubject"></div>
+          <div class="email-view-meta">
+            <span class="meta-label">From:</span>
+            <span class="meta-value" id="viewFrom"></span>
+            <span class="meta-label">To:</span>
+            <span class="meta-value" id="viewTo"></span>
+            <span class="meta-label">Date:</span>
+            <span class="meta-value" id="viewDate"></span>
+            <span class="meta-label">Thread:</span>
+            <span class="meta-value" id="viewThread"></span>
+          </div>
+        </div>
+        <div class="email-view-body" id="viewBody"></div>
+        <div class="email-actions">
+          <button onclick="replyToEmail()" class="btn-primary">↩️ Reply</button>
+          <button onclick="forwardEmail()" class="btn-secondary">➡️ Forward</button>
+          <button onclick="markAsRead()" class="btn-secondary">✓ Mark Read</button>
+          <button onclick="deleteEmail()" class="btn-danger">🗑️ Delete</button>
+        </div>
+      </div>
+      
+      <!-- Compose Form -->
+      <div class="compose-form" id="composeForm" data-intro="Compose new emails with AI assistance. Choose from different AI tones and styles to match your communication goals." data-step="5">
+        <div class="ai-assist-section">
+          <h4>🤖 AI Writing Assistant</h4>
+          <div class="ai-assist-options">
+            <button onclick="aiAssist('professional')">Professional</button>
+            <button onclick="aiAssist('friendly')">Friendly</button>
+            <button onclick="aiAssist('persuasive')">Persuasive</button>
+            <button onclick="aiAssist('follow-up')">Follow-up</button>
+            <button onclick="aiAssist('introduction')">Introduction</button>
+            <button onclick="aiAssist('thank-you')">Thank You</button>
+          </div>
+        </div>
+        
+        <form id="emailComposeForm">
+          <div class="form-group">
+            <label for="composeFrom">From</label>
+            <input type="email" id="composeFrom" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="composeTo">To *</label>
+            <input type="email" id="composeTo" required placeholder="recipient@email.com">
+          </div>
+          
+          <div class="form-group">
+            <label for="composeSubject">Subject *</label>
+            <input type="text" id="composeSubject" required placeholder="Email subject">
+          </div>
+          
+          <div class="form-group">
+            <label for="composeBody">Message *</label>
+            <textarea id="composeBody" required placeholder="Write your message here..."></textarea>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" onclick="saveDraft()" class="btn-secondary">💾 Save Draft</button>
+            <button type="button" onclick="scheduleEmail()" class="btn-secondary">⏰ Schedule</button>
+            <button type="submit" class="btn-success">📤 Send Email</button>
+            <button type="button" onclick="cancelCompose()" class="btn-secondary">❌ Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Messages -->
+  <div id="statusMessage" class="status-message"></div>
 </div>
+
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+// Supabase configuration
+const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// API endpoints - these will need to be created in n8n
+const ENDPOINTS = {
+  getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+  getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
+  sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
+  saveDraft: 'https://victoryvision.app.n8n.cloud/webhook/emails/draft',
+  deleteEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/delete',
+  markAsRead: 'https://victoryvision.app.n8n.cloud/webhook/emails/mark-read',
+  scheduleEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/schedule',
+  aiAssist: 'https://victoryvision.app.n8n.cloud/webhook/emails/ai-assist',
+  generateCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/generate-campaign',
+  getEmailThread: 'https://victoryvision.app.n8n.cloud/webhook/emails/thread'
+};
+
+// Global variables
+let CUSTOMER_ID = null;
+let authToken = null;
+let allEmails = [];
+let filteredEmails = [];
+let selectedEmail = null;
+let currentMode = 'view'; // 'view', 'compose', 'reply'
+let preloadedContact = null;
+
+// Rate limiting
+const rateLimiter = {
+  calls: [],
+  maxCalls: 30,
+  windowMs: 60000,
+  canMakeCall: function() {
+    const now = Date.now();
+    this.calls = this.calls.filter(time => time > (now - this.windowMs));
+    if (this.calls.length >= this.maxCalls) {
+      return false;
+    }
+    this.calls.push(now);
+    return true;
+  }
+};
+
+// Input sanitization
+function sanitizeInput(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim();
+}
+
+// Tour completion tracking
+function completeTour() {
+  localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+}
+
+function hasCompletedTour() {
+  return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+}
+
+function startTour() {
+  introJs().setOptions({
+    showProgress: true,
+    showBullets: false,
+    exitOnOverlayClick: false,
+    nextLabel: 'Next →',
+    prevLabel: '← Back',
+    doneLabel: 'Complete!',
+    skipLabel: 'Skip Tour'
+  }).oncomplete(completeTour).onexit(completeTour).start();
+}
+
+// Authentication
+async function checkAuthentication() {
+  try {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    
+    if (error) {
+      console.error('Auth error:', error);
+      return false;
+    }
+
+    if (session && session.user) {
+      CUSTOMER_ID = session.user.email;
+      authToken = session.access_token;
+      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+      return true;
+    }
+
+    return false;
+  } catch (e) {
+    console.error('Auth check error:', e);
+    return false;
+  }
+}
+
+function redirectToLogin() {
+  localStorage.removeItem('vv_session');
+  window.location.href = 'login.html';
+}
+
+// API call function with rate limiting and error handling
+async function apiCall(endpoint, data = {}) {
+  if (!rateLimiter.canMakeCall()) {
+    throw new Error('Rate limit exceeded. Please wait before making more requests.');
+  }
+
+  try {
+    const url = endpoint.includes('/user/get') ? 
+      `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+      endpoint;
+    
+    const requestOptions = {
+      method: endpoint.includes('/user/get') ? 'GET' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
+      }
+    };
+
+    if (!endpoint.includes('/user/get')) {
+      requestOptions.body = JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        ...data
+      });
+    }
+
+    const response = await fetch(url, requestOptions);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
+}
+
+async function loadUserData() {
+  try {
+    const response = await apiCall(ENDPOINTS.getUserData);
+    const userData = Array.isArray(response) ? response[0] : response;
+    
+    // Update subscription medallion
+    const medallion = document.getElementById('subscriptionMedallion');
+    const plan = userData.subscription_plan || 'bronze';
+    medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+    medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    
+    // Set compose from email
+    document.getElementById('composeFrom').value = CUSTOMER_ID;
+    
+  } catch (error) {
+    console.error('Error loading user data:', error);
+    showStatus('Error loading user data: ' + error.message, true);
+  }
+}
+
+// Load emails from API
+async function loadEmails() {
+  try {
+    console.log('Loading emails for customer:', CUSTOMER_ID);
+    
+    const data = await apiCall(ENDPOINTS.getEmails);
+    console.log('Emails data received:', data);
+    
+    allEmails = Array.isArray(data) ? data : (data.emails || []);
+    
+    // Sort by date (newest first)
+    allEmails.sort((a, b) => new Date(b.created_at || b.updated_at) - new Date(a.created_at || a.updated_at));
+    
+    filteredEmails = [...allEmails];
+    
+    console.log(`Loaded ${allEmails.length} emails`);
+    
+    renderEmailList();
+    showStatus(`Loaded ${allEmails.length} emails`, false);
+    
+  } catch (error) {
+    console.error('Error loading emails:', error);
+    showStatus('Error loading emails: ' + error.message, true);
+    allEmails = [];
+    filteredEmails = [];
+    renderEmailList();
+  }
+}
+
+// Render email list
+function renderEmailList() {
+  const emailList = document.getElementById('emailList');
+  
+  if (filteredEmails.length === 0) {
+    emailList.innerHTML = `
+      <div class="empty-state">
+        <h3>No emails found</h3>
+        <p>Start by composing a new email or check your filters.</p>
+      </div>
+    `;
+    return;
+  }
+
+  emailList.innerHTML = filteredEmails.map(email => {
+    const isSelected = selectedEmail && selectedEmail.id === email.id;
+    const isDraft = !email.email_body || email.draft_id;
+    const isUnread = !email.email_opened;
+    const hasReplied = email.has_replied || email.email_replied;
+    
+    return `
+      <div class="email-item ${isSelected ? 'selected' : ''} ${isDraft ? 'draft' : ''} ${isUnread ? 'unread' : ''} ${hasReplied ? 'replied' : ''}" 
+           onclick="selectEmail('${email.id}')">
+        <div class="email-header">
+          <div class="email-from">${email.from_email_address || email.to_email_address || 'Unknown'}</div>
+          <div class="email-date">${formatDate(email.created_at || email.updated_at)}</div>
+        </div>
+        <div class="email-subject">${email.email_subject || 'No Subject'}</div>
+        <div class="email-preview">${getEmailPreview(email)}</div>
+        <div class="email-badges">
+          ${isDraft ? '<span class="badge draft">DRAFT</span>' : ''}
+          ${email.email_body && !isDraft ? '<span class="badge sent">SENT</span>' : ''}
+          ${hasReplied ? '<span class="badge replied">REPLIED</span>' : ''}
+          ${email.email_opened ? '<span class="badge opened">OPENED</span>' : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getEmailPreview(email) {
+  const body = email.email_body || '';
+  return body.length > 150 ? body.substring(0, 150) + '...' : body;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return 'Unknown';
+  
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  
+  return date.toLocaleDateString();
+}
+
+// Select and display email
+async function selectEmail(emailId) {
+  const email = allEmails.find(e => e.id === emailId);
+  if (!email) return;
+  
+  selectedEmail = email;
+  
+  // Update UI
+  renderEmailList();
+  showEmailView(email);
+  
+  // Mark as read if not already
+  if (!email.email_opened) {
+    try {
+      await apiCall(ENDPOINTS.markAsRead, { email_id: emailId });
+      email.email_opened = true;
+      renderEmailList();
+    } catch (error) {
+      console.error('Error marking email as read:', error);
+    }
+  }
+}
+
+function showEmailView(email) {
+  const readingPane = document.getElementById('readingPane');
+  const emailView = document.getElementById('emailViewTemplate');
+  const composeForm = document.getElementById('composeForm');
+  const readingPaneTitle = document.getElementById('readingPaneTitle');
+  const readingPaneActions = document.getElementById('readingPaneActions');
+  
+  // Hide compose form and show email view
+  composeForm.classList.remove('active');
+  readingPane.classList.remove('empty');
+  emailView.classList.add('active');
+  readingPaneActions.style.display = 'flex';
+  
+  // Populate email details
+  document.getElementById('viewSubject').textContent = email.email_subject || 'No Subject';
+  document.getElementById('viewFrom').textContent = email.from_email_address || 'Unknown';
+  document.getElementById('viewTo').textContent = email.to_email_address || 'Unknown';
+  document.getElementById('viewDate').textContent = new Date(email.created_at || email.updated_at).toLocaleString();
+  document.getElementById('viewThread').textContent = email.google_thread || 'N/A';
+  document.getElementById('viewBody').textContent = email.email_body || 'No content';
+  
+  readingPaneTitle.textContent = '📖 Reading Email';
+  currentMode = 'view';
+}
+
+// Show compose form
+function showComposeForm(replyTo = null, forwardFrom = null) {
+  const readingPane = document.getElementById('readingPane');
+  const emailView = document.getElementById('emailViewTemplate');
+  const composeForm = document.getElementById('composeForm');
+  const readingPaneTitle = document.getElementById('readingPaneTitle');
+  const readingPaneActions = document.getElementById('readingPaneActions');
+  
+  // Hide email view and show compose form
+  emailView.classList.remove('active');
+  readingPane.classList.remove('empty');
+  composeForm.classList.add('active');
+  readingPaneActions.style.display = 'none';
+  
+  // Clear form
+  document.getElementById('emailComposeForm').reset();
+  document.getElementById('composeFrom').value = CUSTOMER_ID;
+  
+  if (replyTo) {
+    // Reply mode
+    document.getElementById('composeTo').value = replyTo.from_email_address || '';
+    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.email_subject || '');
+    document.getElementById('composeBody').value = `\n\n--- Original Message ---\nFrom: ${replyTo.from_email_address}\nDate: ${new Date(replyTo.created_at).toLocaleString()}\nSubject: ${replyTo.email_subject}\n\n${replyTo.email_body}`;
+    readingPaneTitle.textContent = '↩️ Reply to Email';
+    currentMode = 'reply';
+  } else if (forwardFrom) {
+    // Forward mode
+    document.getElementById('composeSubject').value = 'Fwd: ' + (forwardFrom.email_subject || '');
+    document.getElementById('composeBody').value = `\n\n--- Forwarded Message ---\nFrom: ${forwardFrom.from_email_address}\nTo: ${forwardFrom.to_email_address}\nDate: ${new Date(forwardFrom.created_at).toLocaleString()}\nSubject: ${forwardFrom.email_subject}\n\n${forwardFrom.email_body}`;
+    readingPaneTitle.textContent = '➡️ Forward Email';
+    currentMode = 'forward';
+  } else {
+    // New compose mode
+    readingPaneTitle.textContent = '✏️ Compose New Email';
+    currentMode = 'compose';
+    
+    // Check for preloaded contact from contacts page
+    if (preloadedContact) {
+      document.getElementById('composeTo').value = preloadedContact.email || '';
+      document.getElementById('composeSubject').value = `Following up from ${preloadedContact.company || 'our conversation'}`;
+      preloadedContact = null; // Clear after use
+    }
+  }
+}
+
+// Email actions
+function replyToEmail() {
+  if (selectedEmail) {
+    showComposeForm(selectedEmail);
+  }
+}
+
+function forwardEmail() {
+  if (selectedEmail) {
+    showComposeForm(null, selectedEmail);
+  }
+}
+
+async function markAsRead() {
+  if (selectedEmail && !selectedEmail.email_opened) {
+    try {
+      await apiCall(ENDPOINTS.markAsRead, { email_id: selectedEmail.id });
+      selectedEmail.email_opened = true;
+      renderEmailList();
+      showStatus('Email marked as read', false);
+    } catch (error) {
+      console.error('Error marking email as read:', error);
+      showStatus('Error marking email as read', true);
+    }
+  }
+}
+
+async function deleteEmail() {
+  if (!selectedEmail) return;
+  
+  if (!confirm('Are you sure you want to delete this email?')) {
+    return;
+  }
+  
+  try {
+    await apiCall(ENDPOINTS.deleteEmail, { email_id: selectedEmail.id });
+    
+    // Remove from local arrays
+    allEmails = allEmails.filter(e => e.id !== selectedEmail.id);
+    filteredEmails = filteredEmails.filter(e => e.id !== selectedEmail.id);
+    
+    selectedEmail = null;
+    renderEmailList();
+    showEmptyReadingPane();
+    showStatus('Email deleted successfully', false);
+    
+  } catch (error) {
+    console.error('Error deleting email:', error);
+    showStatus('Error deleting email', true);
+  }
+}
+
+function showEmptyReadingPane() {
+  const readingPane = document.getElementById('readingPane');
+  const emailView = document.getElementById('emailViewTemplate');
+  const composeForm = document.getElementById('composeForm');
+  const readingPaneTitle = document.getElementById('readingPaneTitle');
+  const readingPaneActions = document.getElementById('readingPaneActions');
+  
+  emailView.classList.remove('active');
+  composeForm.classList.remove('active');
+  readingPane.classList.add('empty');
+  readingPaneActions.style.display = 'none';
+  readingPaneTitle.textContent = '📖 Reading Pane';
+}
+
+// Compose form functions
+async function saveDraft() {
+  const formData = getComposeFormData();
+  if (!formData.subject && !formData.body) {
+    showStatus('Nothing to save', true);
+    return;
+  }
+  
+  try {
+    const result = await apiCall(ENDPOINTS.saveDraft, {
+      to_email: formData.to,
+      subject: formData.subject,
+      body: formData.body,
+      draft_id: selectedEmail?.draft_id || null
+    });
+    
+    showStatus('Draft saved successfully', false);
+    
+    // Reload emails to show the draft
+    await loadEmails();
+    
+  } catch (error) {
+    console.error('Error saving draft:', error);
+    showStatus('Error saving draft', true);
+  }
+}
+
+async function scheduleEmail() {
+  const formData = getComposeFormData();
+  if (!validateComposeForm(formData)) return;
+  
+  const scheduleTime = prompt('Enter schedule time (YYYY-MM-DD HH:MM):', 
+    new Date(Date.now() + 3600000).toISOString().slice(0, 16).replace('T', ' '));
+  
+  if (!scheduleTime) return;
+  
+  try {
+    await apiCall(ENDPOINTS.scheduleEmail, {
+      to_email: formData.to,
+      subject: formData.subject,
+      body: formData.body,
+      schedule_time: scheduleTime
+    });
+    
+    showStatus('Email scheduled successfully', false);
+    cancelCompose();
+    await loadEmails();
+    
+  } catch (error) {
+    console.error('Error scheduling email:', error);
+    showStatus('Error scheduling email', true);
+  }
+}
+
+async function sendEmail() {
+  const formData = getComposeFormData();
+  if (!validateComposeForm(formData)) return;
+  
+  try {
+    const result = await apiCall(ENDPOINTS.sendEmail, {
+      to_email: formData.to,
+      subject: formData.subject,
+      body: formData.body,
+      reply_to_id: currentMode === 'reply' ? selectedEmail?.id : null
+    });
+    
+    showStatus('Email sent successfully!', false);
+    cancelCompose();
+    await loadEmails();
+    
+  } catch (error) {
+    console.error('Error sending email:', error);
+    showStatus('Error sending email: ' + error.message, true);
+  }
+}
+
+function getComposeFormData() {
+  return {
+    to: sanitizeInput(document.getElementById('composeTo').value),
+    subject: sanitizeInput(document.getElementById('composeSubject').value),
+    body: sanitizeInput(document.getElementById('composeBody').value)
+  };
+}
+
+function validateComposeForm(formData) {
+  if (!formData.to) {
+    showStatus('Please enter recipient email', true);
+    return false;
+  }
+  if (!formData.subject) {
+    showStatus('Please enter email subject', true);
+    return false;
+  }
+  if (!formData.body) {
+    showStatus('Please enter email message', true);
+    return false;
+  }
+  
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.to)) {
+    showStatus('Please enter a valid email address', true);
+    return false;
+  }
+  
+  return true;
+}
+
+function cancelCompose() {
+  showEmptyReadingPane();
+  currentMode = 'view';
+}
+
+// AI Assistant functions
+async function aiAssist(tone) {
+  const currentBody = document.getElementById('composeBody').value;
+  const subject = document.getElementById('composeSubject').value;
+  const recipient = document.getElementById('composeTo').value;
+  
+  try {
+    showStatus('AI is generating content...', false);
+    
+    const result = await apiCall(ENDPOINTS.aiAssist, {
+      tone: tone,
+      current_body: currentBody,
+      subject: subject,
+      recipient: recipient,
+      context: currentMode
+    });
+    
+    if (result.content) {
+      document.getElementById('composeBody').value = result.content;
+      showStatus('AI content generated successfully!', false);
+    } else {
+      throw new Error('No content generated');
+    }
+    
+  } catch (error) {
+    console.error('Error with AI assist:', error);
+    showStatus('Error generating AI content', true);
+  }
+}
+
+async function generateAIEmails() {
+  try {
+    showStatus('Generating AI email campaign...', false);
+    
+    const result = await apiCall(ENDPOINTS.generateCampaign);
+    
+    showStatus('AI email campaign generated! Check your drafts.', false);
+    await loadEmails();
+    
+  } catch (error) {
+    console.error('Error generating AI campaign:', error);
+    showStatus('Error generating AI campaign', true);
+  }
+}
+
+// Refresh emails
+async function refreshEmails() {
+  await loadEmails();
+}
+
+// Filter functions
+function applyFilters() {
+  const status = document.getElementById('statusFilter').value;
+  const contact = sanitizeInput(document.getElementById('contactFilter').value.toLowerCase());
+  const dateFrom = document.getElementById('dateFromFilter').value;
+  const dateTo = document.getElementById('dateToFilter').value;
+
+  filteredEmails = allEmails.filter(email => {
+    // Status filter
+    if (status) {
+      switch (status) {
+        case 'draft':
+          if (email.email_body && !email.draft_id) return false;
+          break;
+        case 'sent':
+          if (!email.email_body || email.draft_id) return false;
+          break;
+        case 'replied':
+          if (!email.has_replied && !email.email_replied) return false;
+          break;
+        case 'opened':
+          if (!email.email_opened) return false;
+          break;
+      }
+    }
+
+    // Contact filter
+    if (contact) {
+      const searchableText = [
+        email.from_email_address || '',
+        email.to_email_address || '',
+        email.email_subject || '',
+        email.email_body || ''
+      ].join(' ').toLowerCase();
+      
+      if (!searchableText.includes(contact)) {
+        return false;
+      }
+    }
+
+    // Date filters
+    if (dateFrom || dateTo) {
+      const emailDate = new Date(email.created_at || email.updated_at);
+      if (dateFrom && emailDate < new Date(dateFrom)) {
+        return false;
+      }
+      if (dateTo && emailDate > new Date(dateTo + 'T23:59:59')) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  renderEmailList();
+}
+
+function clearFilters() {
+  document.getElementById('statusFilter').value = '';
+  document.getElementById('contactFilter').value = '';
+  document.getElementById('dateFromFilter').value = '';
+  document.getElementById('dateToFilter').value = '';
+  applyFilters();
+}
+
+// Status messages
+function showStatus(message, isError = false) {
+  const statusDiv = document.getElementById('statusMessage');
+  statusDiv.textContent = message;
+  statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+  statusDiv.style.display = 'block';
+  
+  setTimeout(() => {
+    statusDiv.style.display = 'none';
+  }, 5000);
+}
+
+// Event listeners
+function setupEventListeners() {
+  // Compose form submission
+  document.getElementById('emailComposeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await sendEmail();
+  });
+  
+  // Filter controls with debouncing
+  let filterTimeout;
+  document.getElementById('contactFilter').addEventListener('input', () => {
+    clearTimeout(filterTimeout);
+    filterTimeout = setTimeout(applyFilters, 300);
+  });
+  
+  ['statusFilter', 'dateFromFilter', 'dateToFilter'].forEach(id => {
+    document.getElementById(id).addEventListener('change', applyFilters);
+  });
+}
+
+// Initialize page
+async function init() {
+  try {
+    const isAuthenticated = await checkAuthentication();
+    console.log('Authentication status:', isAuthenticated);
+    
+    if (isAuthenticated) {
+      setupEventListeners();
+      
+      // Check for preloaded contact from contacts page
+      const contactData = sessionStorage.getItem('messageContact');
+      if (contactData) {
+        preloadedContact = JSON.parse(contactData);
+        sessionStorage.removeItem('messageContact');
+      }
+      
+      await Promise.all([
+        loadUserData(),
+        loadEmails()
+      ]);
+      
+      // Auto-start tour for new users
+      if (!hasCompletedTour()) {
+        setTimeout(() => {
+          startTour();
+        }, 1000);
+      }
+      
+      // Auto-show compose if preloaded contact
+      if (preloadedContact) {
+        setTimeout(() => {
+          showComposeForm();
+        }, 500);
+      }
+    } else {
+      console.log('Not authenticated, redirecting to login');
+      redirectToLogin();
+    }
+  } catch (error) {
+    console.error('Error initializing:', error);
+    showStatus('Failed to initialize. Please refresh.', true);
+  }
+}
+
+// Security checks - session validation every 5 minutes
+setInterval(async function() {
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      console.log('Session expired, redirecting to login');
+      redirectToLogin();
+    } else {
+      authToken = session.access_token;
+    }
+  } catch (e) {
+    console.error('Session check failed:', e);
+  }
+}, 300000);
+
+// Enhanced security - check on page visibility change
+document.addEventListener('visibilitychange', async function() {
+  if (!document.hidden) {
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        redirectToLogin();
+      } else {
+        authToken = session.access_token;
+      }
+    } catch (e) {
+      console.error('Visibility auth check failed:', e);
+    }
+  }
+});
+
+// Make functions globally available
+window.selectEmail = selectEmail;
+window.showComposeForm = showComposeForm;
+window.replyToEmail = replyToEmail;
+window.forwardEmail = forwardEmail;
+window.markAsRead = markAsRead;
+window.deleteEmail = deleteEmail;
+window.saveDraft = saveDraft;
+window.scheduleEmail = scheduleEmail;
+window.cancelCompose = cancelCompose;
+window.aiAssist = aiAssist;
+window.generateAIEmails = generateAIEmails;
+window.refreshEmails = refreshEmails;
+window.applyFilters = applyFilters;
+window.clearFilters = clearFilters;
+window.startTour = startTour;
+
+// Initialize when DOM loads
+document.addEventListener('DOMContentLoaded', init);
+</script>
 
 </body>
 </html>
