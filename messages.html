@@ -191,12 +191,15 @@
       overflow-y: auto;
       border-bottom: 1px solid #dee2e6;
     }
+    .email-thread {
+      border-bottom: 1px solid #f1f3f4;
+    }
     .email-item {
       padding: 12px 20px;
-      border-bottom: 1px solid #f1f3f4;
       cursor: pointer;
       transition: background-color 0.2s;
       position: relative;
+      border-left: 4px solid transparent;
     }
     .email-item:hover {
       background-color: #f8f9fa;
@@ -213,8 +216,14 @@
       background-color: #f3e5f5;
       border-left: 4px solid #bb133e;
     }
-    .email-item.replied {
+    .email-item.sent {
       background-color: #e8f5e8;
+    }
+    .email-item.inbound {
+      background-color: #f0f8ff;
+    }
+    .email-item.replied {
+      background-color: #f0f8f0;
     }
     .email-header {
       display: flex;
@@ -265,13 +274,22 @@
       background: #28a745;
       color: white;
     }
-    .badge.replied {
+    .badge.inbound {
       background: #17a2b8;
+      color: white;
+    }
+    .badge.replied {
+      background: #6f42c1;
       color: white;
     }
     .badge.opened {
       background: #ffc107;
       color: #333;
+    }
+    .thread-indicator {
+      font-size: 10px;
+      color: #666;
+      margin-left: 10px;
     }
     .compose-section {
       padding: 15px 20px;
@@ -471,6 +489,66 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .close {
+      color: white;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      opacity: 0.8;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .field-group {
+      margin-bottom: 20px;
+    }
+    .field-label {
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 5px;
+    }
+    .field-value {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+      white-space: pre-wrap;
+    }
+    
     footer {
       background: #0A3161;
       color: #fff;
@@ -595,13 +673,16 @@
             <option value="">All Emails</option>
             <option value="draft">Drafts</option>
             <option value="sent">Sent</option>
+            <option value="inbound">Received</option>
             <option value="replied">Replied</option>
             <option value="opened">Opened</option>
           </select>
         </div>
         <div class="form-group">
           <label for="contactFilter">Contact</label>
-          <input type="text" id="contactFilter" placeholder="Search contacts...">
+          <select id="contactFilter">
+            <option value="">All Contacts</option>
+          </select>
         </div>
         <div class="form-group">
           <label for="dateFromFilter">From Date</label>
@@ -658,8 +739,8 @@
             <span class="meta-value" id="viewTo"></span>
             <span class="meta-label">Date:</span>
             <span class="meta-value" id="viewDate"></span>
-            <span class="meta-label">Thread:</span>
-            <span class="meta-value" id="viewThread"></span>
+            <span class="meta-label">Status:</span>
+            <span class="meta-value" id="viewStatus"></span>
           </div>
         </div>
         <div class="email-view-body" id="viewBody"></div>
@@ -668,6 +749,7 @@
           <button onclick="forwardEmail()" class="btn-secondary">➡️ Forward</button>
           <button onclick="markAsRead()" class="btn-secondary">✓ Mark Read</button>
           <button onclick="deleteEmail()" class="btn-danger">🗑️ Delete</button>
+          <button onclick="openEmailModal()" class="btn-secondary">📋 Details</button>
         </div>
       </div>
       
@@ -693,7 +775,9 @@
           
           <div class="form-group">
             <label for="composeTo">To *</label>
-            <input type="email" id="composeTo" required placeholder="recipient@email.com">
+            <select id="composeTo" required>
+              <option value="">Select Contact</option>
+            </select>
           </div>
           
           <div class="form-group">
@@ -721,6 +805,19 @@
   <div id="statusMessage" class="status-message"></div>
 </div>
 
+<!-- Email Details Modal -->
+<div id="emailModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Email Details</h2>
+      <span class="close" onclick="closeEmailModal()">&times;</span>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <!-- Email details will be loaded here -->
+    </div>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -735,18 +832,18 @@ const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// API endpoints - these will need to be created in n8n
+// API endpoints
 const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
+  getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
   sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
   saveDraft: 'https://victoryvision.app.n8n.cloud/webhook/emails/draft',
   deleteEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/delete',
   markAsRead: 'https://victoryvision.app.n8n.cloud/webhook/emails/mark-read',
   scheduleEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/schedule',
   aiAssist: 'https://victoryvision.app.n8n.cloud/webhook/emails/ai-assist',
-  generateCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/generate-campaign',
-  getEmailThread: 'https://victoryvision.app.n8n.cloud/webhook/emails/thread'
+  generateCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/generate-campaign'
 };
 
 // Global variables
@@ -754,35 +851,11 @@ let CUSTOMER_ID = null;
 let authToken = null;
 let allEmails = [];
 let filteredEmails = [];
+let allContacts = [];
 let selectedEmail = null;
 let currentMode = 'view'; // 'view', 'compose', 'reply'
 let preloadedContact = null;
-
-// Rate limiting
-const rateLimiter = {
-  calls: [],
-  maxCalls: 30,
-  windowMs: 60000,
-  canMakeCall: function() {
-    const now = Date.now();
-    this.calls = this.calls.filter(time => time > (now - this.windowMs));
-    if (this.calls.length >= this.maxCalls) {
-      return false;
-    }
-    this.calls.push(now);
-    return true;
-  }
-};
-
-// Input sanitization
-function sanitizeInput(value) {
-  if (typeof value !== 'string') return value;
-  return value
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/javascript:/gi, '')
-    .replace(/on\w+\s*=/gi, '')
-    .trim();
-}
+let emailThreads = new Map(); // For grouping emails by thread
 
 // Tour completion tracking
 function completeTour() {
@@ -834,12 +907,8 @@ function redirectToLogin() {
   window.location.href = 'login.html';
 }
 
-// API call function with rate limiting and error handling
+// API call function
 async function apiCall(endpoint, data = {}) {
-  if (!rateLimiter.canMakeCall()) {
-    throw new Error('Rate limit exceeded. Please wait before making more requests.');
-  }
-
   try {
     const url = endpoint.includes('/user/get') ? 
       `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
@@ -894,7 +963,49 @@ async function loadUserData() {
   }
 }
 
-// Load emails from API
+// Load contacts for dropdown population
+async function loadContacts() {
+  try {
+    const data = await apiCall(ENDPOINTS.getContacts);
+    allContacts = Array.isArray(data) ? data : (data.contacts || []);
+    
+    populateContactDropdowns();
+    
+  } catch (error) {
+    console.error('Error loading contacts:', error);
+    allContacts = [];
+  }
+}
+
+// Populate contact dropdowns
+function populateContactDropdowns() {
+  const composeToSelect = document.getElementById('composeTo');
+  const contactFilterSelect = document.getElementById('contactFilter');
+  
+  // Clear existing options (except first)
+  composeToSelect.innerHTML = '<option value="">Select Contact</option>';
+  contactFilterSelect.innerHTML = '<option value="">All Contacts</option>';
+  
+  allContacts.forEach(contact => {
+    const displayName = contact.name && contact.email ? 
+      `${contact.name} <${contact.email}>` : 
+      (contact.email || contact.name || 'Unknown Contact');
+    
+    // Compose dropdown
+    const composeOption = document.createElement('option');
+    composeOption.value = contact.email || '';
+    composeOption.textContent = displayName;
+    composeToSelect.appendChild(composeOption);
+    
+    // Filter dropdown
+    const filterOption = document.createElement('option');
+    filterOption.value = contact.email || contact.name || '';
+    filterOption.textContent = displayName;
+    contactFilterSelect.appendChild(filterOption);
+  });
+}
+
+// Load emails from API and group by threads
 async function loadEmails() {
   try {
     console.log('Loading emails for customer:', CUSTOMER_ID);
@@ -904,14 +1015,24 @@ async function loadEmails() {
     
     allEmails = Array.isArray(data) ? data : (data.emails || []);
     
+    // Group emails by subject for threading
+    groupEmailsByThread();
+    
     // Sort by date (newest first)
-    allEmails.sort((a, b) => new Date(b.created_at || b.updated_at) - new Date(a.created_at || a.updated_at));
+    allEmails.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     
     filteredEmails = [...allEmails];
     
     console.log(`Loaded ${allEmails.length} emails`);
     
     renderEmailList();
+    
+    // Auto-select the most recent inbound email
+    const recentInbound = allEmails.find(email => email.inbound && !email.opened_at);
+    if (recentInbound) {
+      setTimeout(() => selectEmail(recentInbound.id), 500);
+    }
+    
     showStatus(`Loaded ${allEmails.length} emails`, false);
     
   } catch (error) {
@@ -923,7 +1044,22 @@ async function loadEmails() {
   }
 }
 
-// Render email list
+// Group emails by thread (similar subjects)
+function groupEmailsByThread() {
+  emailThreads.clear();
+  
+  allEmails.forEach(email => {
+    const cleanSubject = (email.subject || '').replace(/^(re:|fwd?:)\s*/i, '').trim().toLowerCase();
+    
+    if (!emailThreads.has(cleanSubject)) {
+      emailThreads.set(cleanSubject, []);
+    }
+    
+    emailThreads.get(cleanSubject).push(email);
+  });
+}
+
+// Render email list with threading
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
@@ -937,34 +1073,96 @@ function renderEmailList() {
     return;
   }
 
-  emailList.innerHTML = filteredEmails.map(email => {
-    const isSelected = selectedEmail && selectedEmail.id === email.id;
-    const isDraft = !email.email_body || email.draft_id;
-    const isUnread = !email.email_opened;
-    const hasReplied = email.has_replied || email.email_replied;
+  // Group filtered emails by thread
+  const threadGroups = new Map();
+  filteredEmails.forEach(email => {
+    const cleanSubject = (email.subject || '').replace(/^(re:|fwd?:)\s*/i, '').trim().toLowerCase();
+    if (!threadGroups.has(cleanSubject)) {
+      threadGroups.set(cleanSubject, []);
+    }
+    threadGroups.get(cleanSubject).push(email);
+  });
+
+  let html = '';
+  
+  threadGroups.forEach((emails, subject) => {
+    // Sort emails in thread by date
+    emails.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     
-    return `
-      <div class="email-item ${isSelected ? 'selected' : ''} ${isDraft ? 'draft' : ''} ${isUnread ? 'unread' : ''} ${hasReplied ? 'replied' : ''}" 
-           onclick="selectEmail('${email.id}')">
-        <div class="email-header">
-          <div class="email-from">${email.from_email_address || email.to_email_address || 'Unknown'}</div>
-          <div class="email-date">${formatDate(email.created_at || email.updated_at)}</div>
+    html += '<div class="email-thread">';
+    
+    emails.forEach((email, index) => {
+      const isSelected = selectedEmail && selectedEmail.id === email.id;
+      const emailClasses = getEmailClasses(email);
+      const threadIndicator = emails.length > 1 ? `<span class="thread-indicator">(${index + 1}/${emails.length})</span>` : '';
+      
+      html += `
+        <div class="email-item ${emailClasses} ${isSelected ? 'selected' : ''}" 
+             onclick="selectEmail('${email.id}')" 
+             data-email-id="${email.id}">
+          <div class="email-header">
+            <div class="email-from">${getEmailDisplayName(email)}${threadIndicator}</div>
+            <div class="email-date">${formatDate(email.created_at)}</div>
+          </div>
+          <div class="email-subject">${email.subject || 'No Subject'}</div>
+          <div class="email-preview">${getEmailPreview(email)}</div>
+          <div class="email-badges">
+            ${getEmailBadges(email)}
+          </div>
         </div>
-        <div class="email-subject">${email.email_subject || 'No Subject'}</div>
-        <div class="email-preview">${getEmailPreview(email)}</div>
-        <div class="email-badges">
-          ${isDraft ? '<span class="badge draft">DRAFT</span>' : ''}
-          ${email.email_body && !isDraft ? '<span class="badge sent">SENT</span>' : ''}
-          ${hasReplied ? '<span class="badge replied">REPLIED</span>' : ''}
-          ${email.email_opened ? '<span class="badge opened">OPENED</span>' : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
+      `;
+    });
+    
+    html += '</div>';
+  });
+
+  emailList.innerHTML = html;
+}
+
+function getEmailDisplayName(email) {
+  if (email.inbound) {
+    return email.from || 'Unknown Sender';
+  } else {
+    return email.to || 'Unknown Recipient';
+  }
+}
+
+function getEmailClasses(email) {
+  const classes = [];
+  
+  if (!email.opened_at) classes.push('unread');
+  if (email.inbound) classes.push('inbound');
+  if (!email.body || email.body.trim() === '') classes.push('draft');
+  if (email.body && !email.inbound) classes.push('sent');
+  if (email.replied_at) classes.push('replied');
+  
+  return classes.join(' ');
+}
+
+function getEmailBadges(email) {
+  const badges = [];
+  
+  if (!email.body || email.body.trim() === '') {
+    badges.push('<span class="badge draft">DRAFT</span>');
+  } else if (email.inbound) {
+    badges.push('<span class="badge inbound">RECEIVED</span>');
+  } else {
+    badges.push('<span class="badge sent">SENT</span>');
+  }
+  
+  if (email.replied_at) {
+    badges.push('<span class="badge replied">REPLIED</span>');
+  }
+  
+  if (email.opened_at) {
+    badges.push('<span class="badge opened">OPENED</span>');
+  }
+  
+  return badges.join('');
 }
 
 function getEmailPreview(email) {
-  const body = email.email_body || '';
+  const body = email.body || '';
   return body.length > 150 ? body.substring(0, 150) + '...' : body;
 }
 
@@ -995,10 +1193,10 @@ async function selectEmail(emailId) {
   showEmailView(email);
   
   // Mark as read if not already
-  if (!email.email_opened) {
+  if (!email.opened_at) {
     try {
       await apiCall(ENDPOINTS.markAsRead, { email_id: emailId });
-      email.email_opened = true;
+      email.opened_at = new Date().toISOString();
       renderEmailList();
     } catch (error) {
       console.error('Error marking email as read:', error);
@@ -1020,15 +1218,73 @@ function showEmailView(email) {
   readingPaneActions.style.display = 'flex';
   
   // Populate email details
-  document.getElementById('viewSubject').textContent = email.email_subject || 'No Subject';
-  document.getElementById('viewFrom').textContent = email.from_email_address || 'Unknown';
-  document.getElementById('viewTo').textContent = email.to_email_address || 'Unknown';
-  document.getElementById('viewDate').textContent = new Date(email.created_at || email.updated_at).toLocaleString();
-  document.getElementById('viewThread').textContent = email.google_thread || 'N/A';
-  document.getElementById('viewBody').textContent = email.email_body || 'No content';
+  document.getElementById('viewSubject').textContent = email.subject || 'No Subject';
+  document.getElementById('viewFrom').textContent = email.from || 'Unknown';
+  document.getElementById('viewTo').textContent = email.to || 'Unknown';
+  document.getElementById('viewDate').textContent = new Date(email.created_at).toLocaleString();
+  document.getElementById('viewStatus').textContent = getEmailStatus(email);
+  document.getElementById('viewBody').textContent = email.body || 'No content';
   
   readingPaneTitle.textContent = '📖 Reading Email';
   currentMode = 'view';
+}
+
+function getEmailStatus(email) {
+  if (!email.body || email.body.trim() === '') return 'Draft';
+  if (email.inbound) return 'Received';
+  if (email.replied_at) return 'Replied';
+  return 'Sent';
+}
+
+// Open email modal with detailed information
+function openEmailModal() {
+  if (!selectedEmail) return;
+  
+  const email = selectedEmail;
+  
+  document.getElementById('modalTitle').textContent = email.subject || 'Email Details';
+  
+  const modalBody = document.getElementById('modalBody');
+  modalBody.innerHTML = `
+    <div class="field-group">
+      <div class="field-label">Subject</div>
+      <div class="field-value">${email.subject || 'N/A'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">From</div>
+      <div class="field-value">${email.from || 'N/A'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">To</div>
+      <div class="field-value">${email.to || 'N/A'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Created</div>
+      <div class="field-value">${email.created_at ? new Date(email.created_at).toLocaleString() : 'N/A'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Opened</div>
+      <div class="field-value">${email.opened_at ? new Date(email.opened_at).toLocaleString() : 'Not opened'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Replied</div>
+      <div class="field-value">${email.replied_at ? new Date(email.replied_at).toLocaleString() : 'Not replied'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Type</div>
+      <div class="field-value">${email.inbound ? 'Inbound' : 'Outbound'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Body</div>
+      <div class="field-value">${email.body || 'No content'}</div>
+    </div>
+  `;
+  
+  document.getElementById('emailModal').style.display = 'block';
+}
+
+function closeEmailModal() {
+  document.getElementById('emailModal').style.display = 'none';
 }
 
 // Show compose form
@@ -1051,15 +1307,15 @@ function showComposeForm(replyTo = null, forwardFrom = null) {
   
   if (replyTo) {
     // Reply mode
-    document.getElementById('composeTo').value = replyTo.from_email_address || '';
-    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.email_subject || '');
-    document.getElementById('composeBody').value = `\n\n--- Original Message ---\nFrom: ${replyTo.from_email_address}\nDate: ${new Date(replyTo.created_at).toLocaleString()}\nSubject: ${replyTo.email_subject}\n\n${replyTo.email_body}`;
+    document.getElementById('composeTo').value = replyTo.from || '';
+    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.subject || '');
+    document.getElementById('composeBody').value = `\n\n--- Original Message ---\nFrom: ${replyTo.from}\nDate: ${new Date(replyTo.created_at).toLocaleString()}\nSubject: ${replyTo.subject}\n\n${replyTo.body}`;
     readingPaneTitle.textContent = '↩️ Reply to Email';
     currentMode = 'reply';
   } else if (forwardFrom) {
     // Forward mode
-    document.getElementById('composeSubject').value = 'Fwd: ' + (forwardFrom.email_subject || '');
-    document.getElementById('composeBody').value = `\n\n--- Forwarded Message ---\nFrom: ${forwardFrom.from_email_address}\nTo: ${forwardFrom.to_email_address}\nDate: ${new Date(forwardFrom.created_at).toLocaleString()}\nSubject: ${forwardFrom.email_subject}\n\n${forwardFrom.email_body}`;
+    document.getElementById('composeSubject').value = 'Fwd: ' + (forwardFrom.subject || '');
+    document.getElementById('composeBody').value = `\n\n--- Forwarded Message ---\nFrom: ${forwardFrom.from}\nTo: ${forwardFrom.to}\nDate: ${new Date(forwardFrom.created_at).toLocaleString()}\nSubject: ${forwardFrom.subject}\n\n${forwardFrom.body}`;
     readingPaneTitle.textContent = '➡️ Forward Email';
     currentMode = 'forward';
   } else {
@@ -1090,10 +1346,10 @@ function forwardEmail() {
 }
 
 async function markAsRead() {
-  if (selectedEmail && !selectedEmail.email_opened) {
+  if (selectedEmail && !selectedEmail.opened_at) {
     try {
       await apiCall(ENDPOINTS.markAsRead, { email_id: selectedEmail.id });
-      selectedEmail.email_opened = true;
+      selectedEmail.opened_at = new Date().toISOString();
       renderEmailList();
       showStatus('Email marked as read', false);
     } catch (error) {
@@ -1154,13 +1410,10 @@ async function saveDraft() {
     const result = await apiCall(ENDPOINTS.saveDraft, {
       to_email: formData.to,
       subject: formData.subject,
-      body: formData.body,
-      draft_id: selectedEmail?.draft_id || null
+      body: formData.body
     });
     
     showStatus('Draft saved successfully', false);
-    
-    // Reload emails to show the draft
     await loadEmails();
     
   } catch (error) {
@@ -1220,15 +1473,15 @@ async function sendEmail() {
 
 function getComposeFormData() {
   return {
-    to: sanitizeInput(document.getElementById('composeTo').value),
-    subject: sanitizeInput(document.getElementById('composeSubject').value),
-    body: sanitizeInput(document.getElementById('composeBody').value)
+    to: document.getElementById('composeTo').value,
+    subject: document.getElementById('composeSubject').value,
+    body: document.getElementById('composeBody').value
   };
 }
 
 function validateComposeForm(formData) {
   if (!formData.to) {
-    showStatus('Please enter recipient email', true);
+    showStatus('Please select a recipient', true);
     return false;
   }
   if (!formData.subject) {
@@ -1239,14 +1492,6 @@ function validateComposeForm(formData) {
     showStatus('Please enter email message', true);
     return false;
   }
-  
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(formData.to)) {
-    showStatus('Please enter a valid email address', true);
-    return false;
-  }
-  
   return true;
 }
 
@@ -1308,7 +1553,7 @@ async function refreshEmails() {
 // Filter functions
 function applyFilters() {
   const status = document.getElementById('statusFilter').value;
-  const contact = sanitizeInput(document.getElementById('contactFilter').value.toLowerCase());
+  const contact = document.getElementById('contactFilter').value.toLowerCase();
   const dateFrom = document.getElementById('dateFromFilter').value;
   const dateTo = document.getElementById('dateToFilter').value;
 
@@ -1317,16 +1562,19 @@ function applyFilters() {
     if (status) {
       switch (status) {
         case 'draft':
-          if (email.email_body && !email.draft_id) return false;
+          if (email.body && email.body.trim() !== '') return false;
           break;
         case 'sent':
-          if (!email.email_body || email.draft_id) return false;
+          if (!email.body || email.body.trim() === '' || email.inbound) return false;
+          break;
+        case 'inbound':
+          if (!email.inbound) return false;
           break;
         case 'replied':
-          if (!email.has_replied && !email.email_replied) return false;
+          if (!email.replied_at) return false;
           break;
         case 'opened':
-          if (!email.email_opened) return false;
+          if (!email.opened_at) return false;
           break;
       }
     }
@@ -1334,10 +1582,10 @@ function applyFilters() {
     // Contact filter
     if (contact) {
       const searchableText = [
-        email.from_email_address || '',
-        email.to_email_address || '',
-        email.email_subject || '',
-        email.email_body || ''
+        email.from || '',
+        email.to || '',
+        email.subject || '',
+        email.body || ''
       ].join(' ').toLowerCase();
       
       if (!searchableText.includes(contact)) {
@@ -1347,7 +1595,7 @@ function applyFilters() {
 
     // Date filters
     if (dateFrom || dateTo) {
-      const emailDate = new Date(email.created_at || email.updated_at);
+      const emailDate = new Date(email.created_at);
       if (dateFrom && emailDate < new Date(dateFrom)) {
         return false;
       }
@@ -1392,13 +1640,19 @@ function setupEventListeners() {
   
   // Filter controls with debouncing
   let filterTimeout;
-  document.getElementById('contactFilter').addEventListener('input', () => {
-    clearTimeout(filterTimeout);
-    filterTimeout = setTimeout(applyFilters, 300);
+  ['statusFilter', 'contactFilter', 'dateFromFilter', 'dateToFilter'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => {
+      clearTimeout(filterTimeout);
+      filterTimeout = setTimeout(applyFilters, 300);
+    });
   });
   
-  ['statusFilter', 'dateFromFilter', 'dateToFilter'].forEach(id => {
-    document.getElementById(id).addEventListener('change', applyFilters);
+  // Modal close on outside click
+  window.addEventListener('click', (event) => {
+    const modal = document.getElementById('emailModal');
+    if (event.target === modal) {
+      closeEmailModal();
+    }
   });
 }
 
@@ -1420,6 +1674,7 @@ async function init() {
       
       await Promise.all([
         loadUserData(),
+        loadContacts(),
         loadEmails()
       ]);
       
@@ -1484,6 +1739,8 @@ window.replyToEmail = replyToEmail;
 window.forwardEmail = forwardEmail;
 window.markAsRead = markAsRead;
 window.deleteEmail = deleteEmail;
+window.openEmailModal = openEmailModal;
+window.closeEmailModal = closeEmailModal;
 window.saveDraft = saveDraft;
 window.scheduleEmail = scheduleEmail;
 window.cancelCompose = cancelCompose;
