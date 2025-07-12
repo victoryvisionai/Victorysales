@@ -810,6 +810,7 @@
   // Authentication functions
   async function checkAuthentication() {
     try {
+      console.log('Checking authentication...');
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       
       if (error) {
@@ -823,13 +824,16 @@
         currentUser = {
           id: session.user.id,
           email: session.user.email,
-          customer_id: session.user.email
+          customer_id: session.user.email,
+          company_name: session.user.user_metadata?.company_name || ''
         };
         
+        console.log('Authentication successful for:', CUSTOMER_ID);
         document.getElementById('userEmail').textContent = CUSTOMER_ID;
         return true;
       }
 
+      console.log('No valid session found');
       return false;
     } catch (e) {
       console.error('Auth check error:', e);
@@ -929,8 +933,18 @@
   // Load user data and subscription info
   async function loadUserData() {
     try {
+      console.log('Loading user data for:', CUSTOMER_ID);
       const response = await apiCall(N8N_ENDPOINTS.getUserData);
-      const userData = response[0]; // n8n returns array
+      console.log('User data response:', response);
+      
+      // Handle both array and direct object responses
+      const userData = Array.isArray(response) ? response[0] : response;
+      
+      if (!userData) {
+        console.error('No user data received');
+        showStatus('Error loading user data - no data received', true);
+        return;
+      }
       
       console.log('User data loaded:', userData);
       
@@ -940,30 +954,48 @@
       const nextBilling = userData.next_billing_date;
       const currentDomain = userData.domain;
       
+      // Update currentUser object
+      currentUser.company_name = userData.company_name || '';
+      
       // Update subscription medallion - use exact plan value from API
       const medallion = document.getElementById('subscriptionMedallion');
-      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
-      medallion.querySelector('.plan-name').textContent = plan;
+      if (medallion) {
+        medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+        const planNameEl = medallion.querySelector('.plan-name');
+        if (planNameEl) {
+          planNameEl.textContent = plan;
+        }
+      }
       
       // Update plan info
-      document.getElementById('currentPlanName').textContent = `${plan} Plan`;
+      const currentPlanNameEl = document.getElementById('currentPlanName');
+      if (currentPlanNameEl) {
+        currentPlanNameEl.textContent = `${plan} Plan`;
+      }
       
       // Update status
-      if (status === 'trial') {
-        document.getElementById('subscriptionStatus').textContent = 'Free Trial Active';
-        document.getElementById('subscriptionStatus').style.color = '#28a745';
-      } else if (status === 'active') {
-        document.getElementById('subscriptionStatus').textContent = 'Active';
-        document.getElementById('subscriptionStatus').style.color = '#28a745';
-      } else {
-        document.getElementById('subscriptionStatus').textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        document.getElementById('subscriptionStatus').style.color = '#dc3545';
+      const statusEl = document.getElementById('subscriptionStatus');
+      if (statusEl) {
+        if (status === 'trial') {
+          statusEl.textContent = 'Free Trial Active';
+          statusEl.style.color = '#28a745';
+        } else if (status === 'active') {
+          statusEl.textContent = 'Active';
+          statusEl.style.color = '#28a745';
+        } else {
+          statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+          statusEl.style.color = '#dc3545';
+        }
       }
       
       // Show next billing date if available
       if (nextBilling && status === 'active') {
-        document.getElementById('nextBillingInfo').style.display = 'block';
-        document.getElementById('nextBillingDate').textContent = new Date(nextBilling).toLocaleDateString();
+        const billingInfo = document.getElementById('nextBillingInfo');
+        const billingDate = document.getElementById('nextBillingDate');
+        if (billingInfo && billingDate) {
+          billingInfo.style.display = 'block';
+          billingDate.textContent = new Date(nextBilling).toLocaleDateString();
+        }
       }
       
       // Update domain status
@@ -1006,8 +1038,16 @@
     document.getElementById('domainModal').style.display = 'block';
     
     // Pre-fill with company name if available
+    const searchInput = document.getElementById('domainSearchTerm');
     if (currentUser && currentUser.company_name) {
-      document.getElementById('domainSearchTerm').value = currentUser.company_name;
+      searchInput.value = currentUser.company_name;
+    } else {
+      // Try to get company name from user data
+      const userEmail = CUSTOMER_ID || '';
+      const domain = userEmail.split('@')[1];
+      if (domain && domain !== 'gmail.com' && domain !== 'yahoo.com' && domain !== 'outlook.com') {
+        searchInput.value = domain.split('.')[0];
+      }
     }
   }
 
@@ -1386,23 +1426,33 @@
   // Initialize page
   async function init() {
     try {
+      console.log('Initializing settings page...');
       document.getElementById('authLoading').style.display = 'flex';
       
       const isAuthenticated = await checkAuthentication();
+      console.log('Authentication result:', isAuthenticated);
       
       if (isAuthenticated) {
+        console.log('User authenticated, loading data...');
         document.getElementById('authLoading').style.display = 'none';
-        await loadUserData();
-        await checkConnectionStatus();
-        handleOAuthCallback();
         
-        // Auto-start tour for new users who haven't seen it
-        if (!hasCompletedTour()) {
-          setTimeout(() => {
-            startTour();
-          }, 1000);
+        try {
+          await loadUserData();
+          await checkConnectionStatus();
+          handleOAuthCallback();
+          
+          // Auto-start tour for new users who haven't seen it
+          if (!hasCompletedTour()) {
+            setTimeout(() => {
+              startTour();
+            }, 1000);
+          }
+        } catch (dataError) {
+          console.error('Error loading user data:', dataError);
+          showStatus('Error loading user data. Some features may not work properly.', true);
         }
       } else {
+        console.log('User not authenticated, redirecting to login...');
         redirectToLogin();
       }
     } catch (error) {
