@@ -1130,6 +1130,38 @@
     `).join('');
   }
 
+  function selectDomainByData(element) {
+    const domainName = element.getAttribute('data-domain-name');
+    const price = element.getAttribute('data-domain-price');
+    const isAvailable = element.getAttribute('data-domain-available') === 'true';
+    
+    if (!isAvailable) {
+      showStatus('This domain is not available for purchase', true);
+      return;
+    }
+    
+    // Validate parameters
+    if (!domainName || !price) {
+      showStatus('Invalid domain data', true);
+      return;
+    }
+    
+    // Remove previous selection
+    document.querySelectorAll('.domain-item').forEach(item => {
+      item.classList.remove('selected');
+    });
+    
+    // Add selection to clicked item
+    element.classList.add('selected');
+    
+    selectedDomain = {
+      name: domainName,
+      price: price
+    };
+    
+    document.getElementById('purchaseDomainBtn').style.display = 'inline-block';
+  }
+
   function selectDomain(domainName, price, isAvailable) {
     if (!isAvailable) {
       showStatus('This domain is not available for purchase', true);
