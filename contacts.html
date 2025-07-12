@@ -1154,10 +1154,18 @@ async function loadContacts() {
     
     allContacts = Array.isArray(data) ? data : (data.contacts || []);
     
+    // DEBUG: Log the first contact to see what fields are available
+    if (allContacts.length > 0) {
+      console.log('First contact structure:', allContacts[0]);
+      console.log('First contact keys:', Object.keys(allContacts[0]));
+    }
+    
     // FIX: Only add workflow status if it doesn't exist and handle null/empty values properly
-    allContacts = allContacts.map(contact => ({
+    allContacts = allContacts.map((contact, index) => ({
       ...contact,
-      workflow_status: contact.workflow_status || null // Don't generate fake workflows
+      workflow_status: contact.workflow_status || null,
+      // Ensure we have some kind of ID - use email as fallback if no id field
+      contact_id: contact.id || contact.contact_id || contact.email || `contact_${index}`
     }));
     
     filteredContacts = [...allContacts];
@@ -1449,11 +1457,23 @@ function showContactDetails(contactId, event) {
   }
   if (event) event.stopPropagation();
   
-  const contact = allContacts.find(c => c.id === contactId);
+  // Find contact using our contact_id field or fallback fields
+  const contact = allContacts.find(c => 
+    c.contact_id === contactId || 
+    c.id === contactId || 
+    c.email === contactId
+  );
+  
   console.log('Found contact:', contact);
   
   if (!contact) {
     console.error('No contact found for ID:', contactId);
+    console.log('Available contacts:', allContacts.map(c => ({
+      contact_id: c.contact_id,
+      id: c.id,
+      email: c.email,
+      name: c.name
+    })));
     return;
   }
   
@@ -1474,16 +1494,16 @@ function showContactDetails(contactId, event) {
   modalBody.innerHTML = `
     <div class="contact-details">
       ${Object.entries(contact).map(([key, value]) => {
-        if (!value || key === 'id' || value === 'null' || value === '') return '';
+        if (!value || key === 'id' || key === 'contact_id' || value === 'null' || value === '') return '';
         const label = availableColumns[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         return renderDetailField(label, value, key === 'linkedin' || key === 'email');
       }).join('')}
     </div>
     
     <div class="modal-actions">
-      <button onclick="editContact('${contact.id}')" class="success">✏️ Edit Contact</button>
-      <button onclick="deleteContact('${contact.id}')" class="danger">🗑️ Delete Contact</button>
-      <button onclick="sendEmail('${contact.id}')" style="background: #17a2b8;">📧 Email Contact</button>
+      <button onclick="editContact('${contactId}')" class="success">✏️ Edit Contact</button>
+      <button onclick="deleteContact('${contactId}')" class="danger">🗑️ Delete Contact</button>
+      <button onclick="sendEmail('${contactId}')" style="background: #17a2b8;">📧 Email Contact</button>
     </div>
   `;
   
@@ -1701,13 +1721,17 @@ function renderContactsTable() {
   }
 
   tbody.innerHTML = filteredContacts.map(contact => {
+    // Use the contact_id we created, or fallback to email
+    const contactId = contact.contact_id || contact.id || contact.email;
+    console.log('Rendering contact with ID:', contactId, 'from contact:', contact);
+    
     let rowHTML = `
-      <tr data-contact-id="${contact.id}">
+      <tr data-contact-id="${contactId}">
         <td class="checkbox-cell">
           <input type="checkbox" 
-                 value="${contact.id}" 
-                 ${selectedContacts.has(contact.id) ? 'checked' : ''}
-                 onchange="toggleContactSelection('${contact.id}')">
+                 value="${contactId}" 
+                 ${selectedContacts.has(contactId) ? 'checked' : ''}
+                 onchange="toggleContactSelection('${contactId}')">
         </td>
     `;
     
@@ -1721,18 +1745,22 @@ function renderContactsTable() {
   
   // IMPORTANT: Add click event listeners after rendering
   const rows = tbody.querySelectorAll('tr[data-contact-id]');
+  console.log('Found', rows.length, 'rows with data-contact-id');
+  
   rows.forEach(row => {
+    const contactId = row.getAttribute('data-contact-id');
+    console.log('Setting up click handler for row with contact ID:', contactId);
+    
     row.addEventListener('click', (event) => {
       // Don't trigger if clicking on checkbox or links
       if (event.target.type === 'checkbox' || event.target.tagName === 'A') {
         return;
       }
       
-      const contactId = row.getAttribute('data-contact-id');
-      console.log('Row clicked, contact ID:', contactId);
+      console.log('Row clicked, contact ID from attribute:', contactId);
       
-      if (!contactId) {
-        console.error('No contact ID found on row');
+      if (!contactId || contactId === 'undefined') {
+        console.error('No valid contact ID found on row');
         return;
       }
       
