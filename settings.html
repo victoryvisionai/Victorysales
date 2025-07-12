@@ -1070,6 +1070,28 @@
       document.getElementById('loadingDomains').style.display = 'block';
       document.getElementById('domainList').innerHTML = '';
       
+      // For testing purposes, create mock data until n8n webhook is ready
+      const mockDomains = [
+        { name: `${searchTerm.toLowerCase().replace(/\s+/g, '')}.com`, price: '12.99', available: true },
+        { name: `${searchTerm.toLowerCase().replace(/\s+/g, '')}.net`, price: '14.99', available: true },
+        { name: `${searchTerm.toLowerCase().replace(/\s+/g, '')}.org`, price: '16.99', available: false },
+        { name: `get${searchTerm.toLowerCase().replace(/\s+/g, '')}.com`, price: '12.99', available: true },
+        { name: `${searchTerm.toLowerCase().replace(/\s+/g, '')}pro.com`, price: '12.99', available: true }
+      ];
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      document.getElementById('loadingDomains').style.display = 'none';
+      
+      if (mockDomains && mockDomains.length > 0) {
+        displayDomainResults(mockDomains);
+      } else {
+        document.getElementById('domainList').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No available domains found. Try a different search term.</p>';
+      }
+      
+      /*
+      // Uncomment this when n8n webhook is ready:
       const response = await apiCall(N8N_ENDPOINTS.searchDomains, {
         search_term: searchTerm
       });
@@ -1081,6 +1103,7 @@
       } else {
         document.getElementById('domainList').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No available domains found. Try a different search term.</p>';
       }
+      */
       
     } catch (error) {
       console.error('Error searching domains:', error);
@@ -1113,13 +1136,21 @@
       return;
     }
     
+    // Validate parameters
+    if (!domainName || !price) {
+      showStatus('Invalid domain data', true);
+      return;
+    }
+    
     // Remove previous selection
     document.querySelectorAll('.domain-item').forEach(item => {
       item.classList.remove('selected');
     });
     
     // Add selection to clicked item
-    event.currentTarget.classList.add('selected');
+    if (event && event.currentTarget) {
+      event.currentTarget.classList.add('selected');
+    }
     
     selectedDomain = {
       name: domainName,
