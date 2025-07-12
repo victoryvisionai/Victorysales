@@ -371,6 +371,123 @@
       color: #666;
     }
     
+    /* Domain Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .close {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      opacity: 0.8;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .domain-list {
+      display: grid;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .domain-item {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .domain-item:hover {
+      border-color: #0A3161;
+      background: #f8f9ff;
+    }
+    .domain-item.selected {
+      border-color: #28a745;
+      background: #d4edda;
+    }
+    .domain-info {
+      flex: 1;
+    }
+    .domain-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 5px;
+    }
+    .domain-status {
+      font-size: 0.9em;
+      color: #666;
+    }
+    .domain-status.available {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .domain-status.taken {
+      color: #dc3545;
+    }
+    .domain-price {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #0A3161;
+    }
+    .domain-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+    .search-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .loading-domains {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .loading-domains .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #0A3161;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
     /* Intro.js custom styling */
     .introjs-tooltip {
       max-width: 350px;
@@ -410,6 +527,14 @@
       .billing-section {
         grid-template-columns: 1fr;
       }
+      .domain-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .domain-price {
+        align-self: flex-end;
+      }
     }
   </style>
 </head>
@@ -435,8 +560,6 @@
       <li><a href="social">Social</a></li>
       <li><a href="contacts">Contacts</a></li>
       <li><a href="ads">Ads</a></li>
-       <li><a href="contacts">Contacts</a></li>
-       <li><a href="messages">Messages</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
@@ -468,13 +591,38 @@
       View Subscription Plans →
     </a>
   </div>
+
+  <!-- Domain Management Section -->
+  <div class="card" data-intro="Manage your custom domain for professional email and hosting. This allows you to send emails from your own domain and host landing pages with your brand." data-step="3">
+    <div class="section-header">
+      <h3>🌐 Domain Management</h3>
+    </div>
+
+    <div class="settings-group">
+      <h3>
+        <span class="status-indicator status-disconnected" id="domain-status"></span>
+        Custom Domain
+      </h3>
+      <p>Get a custom domain for professional email and landing page hosting.</p>
+      <div id="current-domain-info" style="display: none;">
+        <div class="connection-info">
+          <strong>Current Domain:</strong> <span id="current-domain">Loading...</span><br>
+          <strong>Status:</strong> <span id="domain-setup-status">Active</span><br>
+          <strong>Email:</strong> Configured for Mailgun<br>
+          <strong>Hosting:</strong> Ready for landing pages
+        </div>
+      </div>
+      <button onclick="showDomainSearch()" id="search-domains" data-intro="Click here to search for available domains similar to your company name. You can then purchase and configure them automatically." data-step="4">🔍 Search Available Domains</button>
+      <button class="secondary" onclick="configureDNS()" style="display: none;" id="configure-dns">⚙️ Configure DNS</button>
+    </div>
+  </div>
   
-  <div class="card" data-intro="Connect your social media accounts to enable automated posting and engagement across multiple platforms. Start with LinkedIn for professional networking." data-step="3">
+  <div class="card" data-intro="Connect your social media accounts to enable automated posting and engagement across multiple platforms. Start with LinkedIn for professional networking." data-step="5">
     <div class="section-header">
       <h3>🔗 Platform Integrations</h3>
     </div>
 
-    <div class="settings-group" data-intro="LinkedIn integration allows you to automatically post your AI-generated content, find leads, and track engagement. This is our most popular integration for B2B marketing." data-step="4">
+    <div class="settings-group" data-intro="LinkedIn integration allows you to automatically post your AI-generated content, find leads, and track engagement. This is our most popular integration for B2B marketing." data-step="6">
       <h3>
         <span class="status-indicator status-disconnected" id="linkedin-status"></span>
         LinkedIn Integration
@@ -486,8 +634,9 @@
         <strong>Connected as:</strong> <span id="linkedin-profile"></span>
       </div>
     </div>
+  </div>
 
-  <div class="card" id="billing-section" data-intro="Manage your subscription and billing here. View your current plan details, usage statistics, and upgrade options to unlock more AI credits and features." data-step="6">
+  <div class="card" id="billing-section" data-intro="Manage your subscription and billing here. View your current plan details, usage statistics, and upgrade options to unlock more AI credits and features." data-step="7">
     <div class="section-header">
       <h3>💳 Billing & Subscription Management</h3>
     </div>
@@ -499,8 +648,8 @@
     </div>
 
     <h4>Available Plans</h4>
-    <div class="billing-section" data-intro="Choose your subscription tier based on your marketing needs. Bronze is perfect for small businesses, Silver for growing companies, and Gold for enterprises requiring unlimited campaigns." data-step="7">
-      <div class="plan-card" id="bronzePlan" data-intro="Bronze Plan: Perfect for small businesses starting their AI marketing journey. Includes essential credits for testing our platform's capabilities." data-step="8">
+    <div class="billing-section" data-intro="Choose your subscription tier based on your marketing needs. Bronze is perfect for small businesses, Silver for growing companies, and Gold for enterprises requiring unlimited campaigns." data-step="8">
+      <div class="plan-card" id="bronzePlan">
         <h4>Bronze Plan</h4>
         <div class="plan-price">$99<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -514,7 +663,7 @@
         <button onclick="upgradeToPlan('bronze')" id="bronzeButton">Select Bronze</button>
       </div>
 
-      <div class="plan-card" id="silverPlan" data-intro="Silver Plan: Ideal for growing businesses that need more AI credits and advanced analytics. Most popular choice for marketing teams." data-step="9">
+      <div class="plan-card" id="silverPlan">
         <h4>Silver Plan</h4>
         <div class="plan-price">$299<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -529,7 +678,7 @@
         <button onclick="upgradeToPlan('silver')" id="silverButton">Select Silver</button>
       </div>
 
-      <div class="plan-card" id="goldPlan" data-intro="Gold Plan: Enterprise solution with unlimited campaigns and premium support. Perfect for large organizations with extensive marketing needs and custom requirements." data-step="10">
+      <div class="plan-card" id="goldPlan">
         <h4>Gold Plan</h4>
         <div class="plan-price">$799<span style="font-size: 1rem; color: #666;">/month</span></div>
         <ul class="plan-features">
@@ -560,6 +709,44 @@
   <div id="statusMessage" class="status-message"></div>
 </div>
 
+<!-- Domain Search Modal -->
+<div id="domainModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>🌐 Domain Search & Purchase</h2>
+      <span class="close" onclick="closeDomainModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="search-section">
+        <h4>Search for Available Domains</h4>
+        <p>We'll search for domains similar to your company name. Select one to purchase and configure automatically.</p>
+        <div style="display: flex; gap: 10px; align-items: center; margin-top: 15px;">
+          <input type="text" id="domainSearchTerm" placeholder="Enter company name or keywords" style="flex: 1;">
+          <button onclick="searchDomains()" id="searchDomainsBtn">🔍 Search Domains</button>
+        </div>
+      </div>
+      
+      <div id="domainResults">
+        <div class="loading-domains" id="loadingDomains" style="display: none;">
+          <div class="spinner"></div>
+          <p>Searching for available domains...</p>
+        </div>
+        
+        <div id="domainList" class="domain-list">
+          <!-- Domain results will be populated here -->
+        </div>
+      </div>
+      
+      <div class="domain-actions">
+        <button class="secondary" onclick="closeDomainModal()">Cancel</button>
+        <button onclick="purchaseSelectedDomain()" id="purchaseDomainBtn" style="display: none;" class="success">
+          💳 Purchase Selected Domain
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -587,12 +774,15 @@
     getCheckout: 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
     oauthStatus: 'https://victoryvision.app.n8n.cloud/webhook/oauth/status',
     oauthDisconnect: 'https://victoryvision.app.n8n.cloud/webhook/oauth/disconnect',
-    deleteAccount: 'https://victoryvision.app.n8n.cloud/webhook/user/delete'
+    deleteAccount: 'https://victoryvision.app.n8n.cloud/webhook/user/delete',
+    searchDomains: 'https://victoryvision.app.n8n.cloud/webhook/domains/search',
+    purchaseDomain: 'https://victoryvision.app.n8n.cloud/webhook/domains/purchase'
   };
   
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
+  let selectedDomain = null;
 
   // Tour completion tracking
   function completeTour() {
@@ -748,6 +938,7 @@
       const plan = userData.subscription_plan || 'Bronze';
       const status = userData.subscription_status || 'trial';
       const nextBilling = userData.next_billing_date;
+      const currentDomain = userData.domain;
       
       // Update subscription medallion - use exact plan value from API
       const medallion = document.getElementById('subscriptionMedallion');
@@ -775,6 +966,13 @@
         document.getElementById('nextBillingDate').textContent = new Date(nextBilling).toLocaleDateString();
       }
       
+      // Update domain status
+      if (currentDomain) {
+        updateDomainStatus(true, currentDomain);
+      } else {
+        updateDomainStatus(false);
+      }
+      
       // Update plan cards based on current plan
       updatePlanCards(plan.toLowerCase());
       
@@ -782,6 +980,154 @@
       console.error('Error loading user data:', error);
       showStatus('Error loading user data: ' + error.message, true);
     }
+  }
+
+  // Update domain status
+  function updateDomainStatus(hasDomain, domainName = null) {
+    const statusIndicator = document.getElementById('domain-status');
+    const currentDomainInfo = document.getElementById('current-domain-info');
+    const currentDomainSpan = document.getElementById('current-domain');
+    const searchBtn = document.getElementById('search-domains');
+    
+    if (hasDomain && domainName) {
+      statusIndicator.className = 'status-indicator status-connected';
+      currentDomainInfo.style.display = 'block';
+      currentDomainSpan.textContent = domainName;
+      searchBtn.textContent = '🔄 Change Domain';
+    } else {
+      statusIndicator.className = 'status-indicator status-disconnected';
+      currentDomainInfo.style.display = 'none';
+      searchBtn.textContent = '🔍 Search Available Domains';
+    }
+  }
+
+  // Domain management functions
+  function showDomainSearch() {
+    document.getElementById('domainModal').style.display = 'block';
+    
+    // Pre-fill with company name if available
+    if (currentUser && currentUser.company_name) {
+      document.getElementById('domainSearchTerm').value = currentUser.company_name;
+    }
+  }
+
+  function closeDomainModal() {
+    document.getElementById('domainModal').style.display = 'none';
+    selectedDomain = null;
+    document.getElementById('domainList').innerHTML = '';
+    document.getElementById('purchaseDomainBtn').style.display = 'none';
+  }
+
+  async function searchDomains() {
+    const searchTerm = document.getElementById('domainSearchTerm').value.trim();
+    
+    if (!searchTerm) {
+      showStatus('Please enter a search term', true);
+      return;
+    }
+
+    try {
+      document.getElementById('loadingDomains').style.display = 'block';
+      document.getElementById('domainList').innerHTML = '';
+      
+      const response = await apiCall(N8N_ENDPOINTS.searchDomains, {
+        search_term: searchTerm
+      });
+      
+      document.getElementById('loadingDomains').style.display = 'none';
+      
+      if (response.domains && response.domains.length > 0) {
+        displayDomainResults(response.domains);
+      } else {
+        document.getElementById('domainList').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No available domains found. Try a different search term.</p>';
+      }
+      
+    } catch (error) {
+      console.error('Error searching domains:', error);
+      document.getElementById('loadingDomains').style.display = 'none';
+      showStatus('Error searching domains: ' + error.message, true);
+    }
+  }
+
+  function displayDomainResults(domains) {
+    const domainList = document.getElementById('domainList');
+    
+    domainList.innerHTML = domains.map(domain => `
+      <div class="domain-item" onclick="selectDomain('${domain.name}', '${domain.price}', ${domain.available})">
+        <div class="domain-info">
+          <div class="domain-name">${domain.name}</div>
+          <div class="domain-status ${domain.available ? 'available' : 'taken'}">
+            ${domain.available ? '✅ Available' : '❌ Not Available'}
+          </div>
+        </div>
+        <div class="domain-price">
+          ${domain.available ? ' + domain.price + '/year' : 'N/A'}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function selectDomain(domainName, price, isAvailable) {
+    if (!isAvailable) {
+      showStatus('This domain is not available for purchase', true);
+      return;
+    }
+    
+    // Remove previous selection
+    document.querySelectorAll('.domain-item').forEach(item => {
+      item.classList.remove('selected');
+    });
+    
+    // Add selection to clicked item
+    event.currentTarget.classList.add('selected');
+    
+    selectedDomain = {
+      name: domainName,
+      price: price
+    };
+    
+    document.getElementById('purchaseDomainBtn').style.display = 'inline-block';
+  }
+
+  async function purchaseSelectedDomain() {
+    if (!selectedDomain) {
+      showStatus('Please select a domain first', true);
+      return;
+    }
+    
+    if (!confirm(`Purchase ${selectedDomain.name} for ${selectedDomain.price}/year?\n\nThis domain will be automatically configured for email and hosting.`)) {
+      return;
+    }
+    
+    try {
+      showStatus('Processing domain purchase... This may take a few minutes.', false);
+      
+      const response = await apiCall(N8N_ENDPOINTS.purchaseDomain, {
+        domain_name: selectedDomain.name,
+        price: selectedDomain.price
+      });
+      
+      if (response.success) {
+        showStatus('Domain purchased successfully! DNS is being configured automatically.', false);
+        updateDomainStatus(true, selectedDomain.name);
+        closeDomainModal();
+        
+        // Reload user data to get updated domain info
+        setTimeout(() => {
+          loadUserData();
+        }, 2000);
+      } else {
+        throw new Error(response.message || 'Domain purchase failed');
+      }
+      
+    } catch (error) {
+      console.error('Error purchasing domain:', error);
+      showStatus('Error purchasing domain: ' + error.message, true);
+    }
+  }
+
+  function configureDNS() {
+    showStatus('DNS configuration is handled automatically. Your domain is ready for email and hosting!', false);
   }
 
   // Update plan cards based on current plan
@@ -831,9 +1177,7 @@
       
       // Look for LinkedIn and Twitter connections specifically
       let linkedinConnected = false;
-      let twitterConnected = false;
       let linkedinProfile = null;
-      let twitterProfile = null;
       
       oauthArray.forEach(item => {
         if (item && item.platform && item.access_token) {
@@ -925,30 +1269,6 @@
     window.location.href = authUrl;
   }
 
-  async function connectTwitter() {
-    try {
-      const state = generateStateFromSession();
-      const codeVerifier = generatePKCE();
-      const codeChallenge = base64urlencode(await sha256(codeVerifier));
-      
-      // Store these for the callback - use keys that match oauth-callback expectations
-      sessionStorage.setItem('oauth_state', state);
-      sessionStorage.setItem('oauth_platform', 'twitter');
-      sessionStorage.setItem('code_verifier', codeVerifier);
-      
-      const redirectUri = encodeURIComponent('https://www.victoryvision.app/oauth-callback/');
-      const scope = encodeURIComponent('tweet.read tweet.write users.read follows.read follows.write offline.access');
-      
-      const authUrl = `https://twitter.com/i/oauth2/authorize?response_type=code&client_id=${OAUTH_CLIENTS.twitter}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-      
-      console.log('Twitter OAuth URL:', authUrl);
-      window.location.href = authUrl;
-    } catch (error) {
-      console.error('Error generating Twitter OAuth URL:', error);
-      showStatus('Error initiating Twitter connection: ' + error.message, true);
-    }
-  }
-
   // Disconnect functions
   async function disconnectLinkedIn() {
     if (confirm('Are you sure you want to disconnect LinkedIn?')) {
@@ -958,18 +1278,6 @@
         showStatus('LinkedIn disconnected successfully');
       } catch (error) {
         showStatus('Error disconnecting LinkedIn: ' + error.message, true);
-      }
-    }
-  }
-
-  async function disconnectTwitter() {
-    if (confirm('Are you sure you want to disconnect Twitter?')) {
-      try {
-        await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform: 'twitter' });
-        updateConnectionStatus('twitter', false);
-        showStatus('Twitter disconnected successfully');
-      } catch (error) {
-        showStatus('Error disconnecting Twitter: ' + error.message, true);
       }
     }
   }
@@ -1064,6 +1372,14 @@
       setTimeout(() => {
         window.history.replaceState({}, document.title, window.location.pathname);
       }, 3000);
+    }
+  }
+
+  // Modal close on outside click
+  window.onclick = function(event) {
+    const domainModal = document.getElementById('domainModal');
+    if (event.target === domainModal) {
+      closeDomainModal();
     }
   }
 
