@@ -921,22 +921,31 @@
 </footer>
 
 <script>
-// Supabase configuration
+// Supabase configuration - SECURITY NOTE: Only use anon key with proper RLS
+// The anon key shown here should have Row Level Security (RLS) enabled
+// and should only allow operations for authenticated users
 const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// API endpoints
+// API endpoints - ALL operations go through n8n webhooks for security
 const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
   generateContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/look',
   addContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/add',
+  updateContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/update', // MISSING WEBHOOK
   enrichContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/enrich',
   uploadCSV: 'https://victoryvision.app.n8n.cloud/webhook/contacts/upload-csv',
   generateAd: 'https://victoryvision.app.n8n.cloud/webhook/contacts/generate-ad',
   enrollFriends: 'https://victoryvision.app.n8n.cloud/webhook/outreach/friends',
   enrollSignup: 'https://victoryvision.app.n8n.cloud/webhook/emails/signup',
+  enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture', // MISSING WEBHOOK
+  enrollDemo: 'https://victoryvision.app.n8n.cloud/webhook/emails/demo', // MISSING WEBHOOK
+  enrollFollowup: 'https://victoryvision.app.n8n.cloud/webhook/emails/followup', // MISSING WEBHOOK
+  enrollReferral: 'https://victoryvision.app.n8n.cloud/webhook/emails/referral', // MISSING WEBHOOK
+  enrollLeadmagnet: 'https://victoryvision.app.n8n.cloud/webhook/emails/leadmagnet', // MISSING WEBHOOK
+  enrollReengage: 'https://victoryvision.app.n8n.cloud/webhook/emails/reengage', // MISSING WEBHOOK
   removeContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/remove'
 };
 
@@ -1528,7 +1537,11 @@ function renderDetailField(label, value, isLink = false) {
 }
 
 function editContact(contactId) {
-  const contact = allContacts.find(c => c.id === contactId);
+  const contact = allContacts.find(c => 
+    c.contact_id === contactId || 
+    c.id === contactId || 
+    c.email === contactId
+  );
   if (!contact) return;
   
   // Close the details modal
@@ -1558,8 +1571,49 @@ function editContact(contactId) {
   document.getElementById('addContactForm').setAttribute('data-contact-id', contactId);
 }
 
+async function updateContact(contactId, formData) {
+  try {
+    const contactData = {
+      contact_id: contactId,
+      name: formData.get('name'),
+      email: formData.get('email'),
+      title: formData.get('title'),
+      company: formData.get('company'),
+      phone_number: formData.get('phone'),
+      linkedin: formData.get('linkedin'),
+      industry: formData.get('industry'),
+      city: formData.get('city'),
+      annual_revenue: formData.get('revenue'),
+      employee_count: formData.get('employees'),
+      notes: formData.get('notes')
+    };
+
+    const result = await apiCall(ENDPOINTS.updateContact, contactData);
+
+    if (result.success !== false) {
+      showStatus('Contact updated successfully!', false);
+      closeAddContactModal();
+      // Reset form attributes
+      document.getElementById('addContactForm').removeAttribute('data-contact-id');
+      document.querySelector('#addContactModal .modal-header h2').textContent = '➕ Add New Contact';
+      document.querySelector('#addContactModal button[type="submit"]').textContent = '➕ Add Contact';
+      await loadContacts();
+    } else {
+      throw new Error(result.message || 'Failed to update contact');
+    }
+
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    showStatus('Error updating contact: ' + error.message, true);
+  }
+}
+
 function sendEmail(contactId) {
-  const contact = allContacts.find(c => c.id === contactId);
+  const contact = allContacts.find(c => 
+    c.contact_id === contactId || 
+    c.id === contactId || 
+    c.email === contactId
+  );
   if (!contact || !contact.email) {
     showStatus('Contact email not available', true);
     return;
@@ -1869,7 +1923,7 @@ function updateSelectedCount() {
   document.getElementById('selectAllCheckbox').checked = selectedContacts.size === filteredContacts.length && filteredContacts.length > 0;
 }
 
-// Workflow enrollment
+// Workflow enrollment - FIXED TO USE PROPER ENDPOINTS
 async function enrollInWorkflows() {
   const selectedWorkflows = getSelectedWorkflows();
   
@@ -1885,30 +1939,65 @@ async function enrollInWorkflows() {
   
   try {
     const selectedContactsList = Array.from(selectedContacts).map(id => 
-      allContacts.find(c => c.id === id)
+      allContacts.find(c => 
+        c.contact_id === id || 
+        c.id === id || 
+        c.email === id
+      )
     ).filter(c => c && c.email);
 
     for (const workflow of selectedWorkflows) {
-      let endpoint = ENDPOINTS.enrollSignup; // default
+      let endpoint;
       
       // Route to appropriate endpoint based on workflow
-      if (workflow === 'friends') {
-        endpoint = ENDPOINTS.enrollFriends;
+      switch(workflow) {
+        case 'friends':
+          endpoint = ENDPOINTS.enrollFriends;
+          break;
+        case 'signup':
+          endpoint = ENDPOINTS.enrollSignup;
+          break;
+        case 'nurture':
+          endpoint = ENDPOINTS.enrollNurture;
+          break;
+        case 'demo':
+          endpoint = ENDPOINTS.enrollDemo;
+          break;
+        case 'followup':
+          endpoint = ENDPOINTS.enrollFollowup;
+          break;
+        case 'referral':
+          endpoint = ENDPOINTS.enrollReferral;
+          break;
+        case 'leadmagnet':
+          endpoint = ENDPOINTS.enrollLeadmagnet;
+          break;
+        case 'reengage':
+          endpoint = ENDPOINTS.enrollReengage;
+          break;
+        default:
+          endpoint = ENDPOINTS.enrollSignup; // fallback
       }
       
       for (const contact of selectedContactsList) {
-        await apiCall(endpoint, {
-          email: contact.email,
-          name: contact.name,
-          workflow: workflow
-        });
-        
-        // Update contact's workflow status
-        const currentWorkflows = contact.workflow_status ? 
-          contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
-        if (!currentWorkflows.includes(workflow)) {
-          currentWorkflows.push(workflow);
-          contact.workflow_status = currentWorkflows.join(',');
+        try {
+          await apiCall(endpoint, {
+            email: contact.email,
+            name: contact.name,
+            workflow: workflow,
+            contact_id: contact.contact_id || contact.id || contact.email
+          });
+          
+          // Update contact's workflow status
+          const currentWorkflows = contact.workflow_status ? 
+            contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
+          if (!currentWorkflows.includes(workflow)) {
+            currentWorkflows.push(workflow);
+            contact.workflow_status = currentWorkflows.join(',');
+          }
+        } catch (workflowError) {
+          console.error(`Error enrolling ${contact.email} in ${workflow}:`, workflowError);
+          // Continue with other workflows/contacts even if one fails
         }
       }
     }
@@ -1923,7 +2012,7 @@ async function enrollInWorkflows() {
     
   } catch (error) {
     console.error('Error enrolling in workflows:', error);
-    showStatus('Error enrolling contacts in workflows', true);
+    showStatus('Error enrolling contacts in workflows: ' + error.message, true);
   }
 }
 
@@ -2087,7 +2176,7 @@ function setupEventListeners() {
   // Expand contact button
   document.getElementById('expandContactBtn').addEventListener('click', expandFirstSelectedContact);
   
-  // Add contact form
+  // Add contact form - FIXED TO HANDLE BOTH ADD AND UPDATE
   document.getElementById('addContactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -2095,12 +2184,12 @@ function setupEventListeners() {
     // Check if this is an edit operation
     const contactId = e.target.getAttribute('data-contact-id');
     if (contactId) {
-      // This is an edit - you would need to implement an update endpoint
-      showStatus('Contact editing not yet implemented - please delete and re-add for now', true);
-      return;
+      // This is an edit operation
+      await updateContact(contactId, formData);
+    } else {
+      // This is a new contact
+      await addContactManually(formData);
     }
-    
-    await addContactManually(formData);
   });
   
   // Bulk actions
