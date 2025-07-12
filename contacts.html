@@ -1723,13 +1723,19 @@ function renderContactsTable() {
   const rows = tbody.querySelectorAll('tr[data-contact-id]');
   rows.forEach(row => {
     row.addEventListener('click', (event) => {
-      // Don't trigger if clicking on checkbox
-      if (event.target.type === 'checkbox') {
+      // Don't trigger if clicking on checkbox or links
+      if (event.target.type === 'checkbox' || event.target.tagName === 'A') {
         return;
       }
       
       const contactId = row.getAttribute('data-contact-id');
       console.log('Row clicked, contact ID:', contactId);
+      
+      if (!contactId) {
+        console.error('No contact ID found on row');
+        return;
+      }
+      
       showContactDetails(contactId, event);
     });
     
