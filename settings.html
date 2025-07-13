@@ -1058,6 +1058,7 @@
     document.getElementById('purchaseDomainBtn').style.display = 'none';
   }
 
+  // FIXED: Domain search function
   async function searchDomains() {
     const searchTerm = document.getElementById('domainSearchTerm').value.trim();
     
@@ -1070,15 +1071,30 @@
       document.getElementById('loadingDomains').style.display = 'block';
       document.getElementById('domainList').innerHTML = '';
       
-      // Real API call to n8n webhook
+      console.log('Searching domains for:', searchTerm);
+      
+      // API call to n8n webhook
       const response = await apiCall(N8N_ENDPOINTS.searchDomains, {
         search_term: searchTerm
       });
       
+      console.log('Domain search response:', response);
+      
       document.getElementById('loadingDomains').style.display = 'none';
       
-      if (response.domains && response.domains.length > 0) {
-        displayDomainResults(response.domains);
+      // Handle response - n8n returns array directly
+      let domains = [];
+      
+      if (Array.isArray(response)) {
+        domains = response.filter(domain => domain.available === true);
+      } else if (response.domains && Array.isArray(response.domains)) {
+        domains = response.domains.filter(domain => domain.available === true);
+      }
+      
+      console.log('Available domains found:', domains);
+      
+      if (domains.length > 0) {
+        displayDomainResults(domains);
       } else {
         document.getElementById('domainList').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No available domains found. Try a different search term.</p>';
       }
@@ -1090,62 +1106,53 @@
     }
   }
 
+  // FIXED: Display domain results
   function displayDomainResults(domains) {
     const domainList = document.getElementById('domainList');
     
-    domainList.innerHTML = domains.map(domain => `
-      <div class="domain-item" onclick="selectDomain('${domain.domain}', '40.00', ${domain.available})">
-        <div class="domain-info">
-          <div class="domain-name">${domain.domain}</div>
-          <div class="domain-status ${domain.available ? 'available' : 'taken'}">
-            ${domain.available ? '✅ Available' : '❌ Not Available'}
+    console.log('Displaying domains:', domains);
+    
+    domainList.innerHTML = domains.map(domain => {
+      // Use 'domain' field instead of 'name' field
+      const domainName = domain.domain;
+      const isAvailable = domain.available === true;
+      const status = domain.status || domain.recommendation || 'Available';
+      
+      if (!isAvailable) {
+        return '';
+      }
+      
+      return `
+        <div class="domain-item" onclick="selectDomain('${domainName}', '12.99', ${isAvailable})">
+          <div class="domain-info">
+            <div class="domain-name">${domainName}</div>
+            <div class="domain-status available">
+              ✅ ${status}
+            </div>
+          </div>
+          <div class="domain-price">
+            $12.99/year
           </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).filter(html => html !== '').join('');
+    
+    if (domainList.innerHTML === '') {
+      domainList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No available domains found in the results.</p>';
+    }
   }
 
-  function selectDomainByData(element) {
-    const domainName = element.getAttribute('data-domain-name');
-    const price = element.getAttribute('data-domain-price');
-    const isAvailable = element.getAttribute('data-domain-available') === 'true';
-    
-    if (!isAvailable) {
-      showStatus('This domain is not available for purchase', true);
-      return;
-    }
-    
-    // Validate parameters
-    if (!domainName || !price) {
-      showStatus('Invalid domain data', true);
-      return;
-    }
-    
-    // Remove previous selection
-    document.querySelectorAll('.domain-item').forEach(item => {
-      item.classList.remove('selected');
-    });
-    
-    // Add selection to clicked item
-    element.classList.add('selected');
-    
-    selectedDomain = {
-      name: domainName,
-      price: price
-    };
-    
-    document.getElementById('purchaseDomainBtn').style.display = 'inline-block';
-  }
-
+  // FIXED: Select domain function
   function selectDomain(domainName, price, isAvailable) {
+    console.log('Selecting domain:', domainName, price, isAvailable);
+    
     if (!isAvailable) {
       showStatus('This domain is not available for purchase', true);
       return;
     }
     
-    // Validate parameters
-    if (!domainName || !price) {
-      showStatus('Invalid domain data', true);
+    if (!domainName) {
+      showStatus('Invalid domain name', true);
       return;
     }
     
@@ -1164,6 +1171,8 @@
       price: price
     };
     
+    console.log('Selected domain object:', selectedDomain);
+    
     document.getElementById('purchaseDomainBtn').style.display = 'inline-block';
   }
 
@@ -1172,6 +1181,8 @@
       showStatus('Please select a domain first', true);
       return;
     }
+    
+    console.log('Purchasing domain:', selectedDomain);
     
     if (!confirm(`Purchase ${selectedDomain.name} for ${selectedDomain.price}/year?\n\nThis domain will be automatically configured for email and hosting.`)) {
       return;
@@ -1185,7 +1196,9 @@
         price: selectedDomain.price
       });
       
-      if (response.success) {
+      console.log('Purchase response:', response);
+      
+      if (response.success !== false) {
         showStatus('Domain purchased successfully! DNS is being configured automatically.', false);
         updateDomainStatus(true, selectedDomain.name);
         closeDomainModal();
@@ -1302,31 +1315,6 @@
         infoDiv.style.display = 'none';
       }
     }
-  }
-
-  // Generate proper PKCE challenge for Twitter OAuth 2.0
-  function generatePKCE() {
-    const array = new Uint8Array(32);
-    crypto.getRandomValues(array);
-    const codeVerifier = btoa(String.fromCharCode.apply(null, array))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
-    
-    return codeVerifier;
-  }
-
-  async function sha256(plain) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(plain);
-    return window.crypto.subtle.digest('SHA-256', data);
-  }
-
-  function base64urlencode(a) {
-    return btoa(String.fromCharCode.apply(null, new Uint8Array(a)))
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
   }
 
   // OAuth connection functions
