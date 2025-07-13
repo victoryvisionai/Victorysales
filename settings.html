@@ -1094,9 +1094,9 @@
     const domainList = document.getElementById('domainList');
     
     domainList.innerHTML = domains.map(domain => `
-      <div class="domain-item" onclick="selectDomain('${domain.name}', '${domain.price}', ${domain.available})">
+      <div class="domain-item" onclick="selectDomain('${domain.domain}', '40.00', ${domain.available})">
         <div class="domain-info">
-          <div class="domain-name">${domain.name}</div>
+          <div class="domain-name">${domain.domain}</div>
           <div class="domain-status ${domain.available ? 'available' : 'taken'}">
             ${domain.available ? '✅ Available' : '❌ Not Available'}
           </div>
