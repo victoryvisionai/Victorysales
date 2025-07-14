@@ -157,7 +157,17 @@
     }
     .form-group textarea {
       resize: vertical;
-      min-height: 100px;
+      min-height: 80px;
+    }
+    .form-group input[type="checkbox"] {
+      width: auto;
+      margin-right: 8px;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
     }
     .generate-btn {
       background: linear-gradient(135deg, #28a745, #20c997);
@@ -860,50 +870,106 @@
       <form id="addContactForm">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
           <div class="form-group">
-            <label for="newContactName">Name *</label>
-            <input type="text" id="newContactName" required placeholder="John Smith">
+            <label for="first_name">First Name *</label>
+            <input type="text" id="first_name" name="first_name" required placeholder="John">
           </div>
           <div class="form-group">
-            <label for="newContactEmail">Email *</label>
-            <input type="email" id="newContactEmail" required placeholder="john@company.com">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required placeholder="John Smith">
           </div>
           <div class="form-group">
-            <label for="newContactTitle">Title</label>
-            <input type="text" id="newContactTitle" placeholder="CEO">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required placeholder="john@company.com">
           </div>
           <div class="form-group">
-            <label for="newContactCompany">Company</label>
-            <input type="text" id="newContactCompany" placeholder="Company Inc">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" placeholder="CEO">
           </div>
           <div class="form-group">
-            <label for="newContactPhone">Phone</label>
-            <input type="tel" id="newContactPhone" placeholder="+1-555-0123">
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" placeholder="Company Inc">
           </div>
           <div class="form-group">
-            <label for="newContactLinkedin">LinkedIn URL</label>
-            <input type="url" id="newContactLinkedin" placeholder="https://linkedin.com/in/profile">
+            <label for="domain">Domain</label>
+            <input type="text" id="domain" name="domain" placeholder="company.com">
           </div>
           <div class="form-group">
-            <label for="newContactIndustry">Industry</label>
-            <input type="text" id="newContactIndustry" placeholder="Technology">
+            <label for="phone_number">Phone</label>
+            <input type="tel" id="phone_number" name="phone_number" placeholder="+1-555-0123">
           </div>
           <div class="form-group">
-            <label for="newContactCity">City</label>
-            <input type="text" id="newContactCity" placeholder="San Francisco">
+            <label for="linkedin">LinkedIn URL</label>
+            <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/profile">
           </div>
           <div class="form-group">
-            <label for="newContactRevenue">Annual Revenue</label>
-            <input type="text" id="newContactRevenue" placeholder="$5M">
+            <label for="industry">Industry</label>
+            <input type="text" id="industry" name="industry" placeholder="Technology">
           </div>
           <div class="form-group">
-            <label for="newContactEmployees">Employee Count</label>
-            <input type="number" id="newContactEmployees" placeholder="50">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="San Francisco">
+          </div>
+          <div class="form-group">
+            <label for="annual_revenue">Annual Revenue</label>
+            <input type="text" id="annual_revenue" name="annual_revenue" placeholder="$5M">
+          </div>
+          <div class="form-group">
+            <label for="employee_count">Employee Count</label>
+            <input type="number" id="employee_count" name="employee_count" placeholder="50">
           </div>
         </div>
-        <div class="form-group" style="margin-top: 15px;">
-          <label for="newContactNotes">Notes</label>
-          <textarea id="newContactNotes" placeholder="Additional information about this contact..."></textarea>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+          <div class="form-group">
+            <label for="personal_summary">Personal Summary</label>
+            <textarea id="personal_summary" name="personal_summary" placeholder="Brief personal background..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="company_summary">Company Summary</label>
+            <textarea id="company_summary" name="company_summary" placeholder="Company overview..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="personal_priorities">Personal Priorities</label>
+            <textarea id="personal_priorities" name="personal_priorities" placeholder="What matters to them personally..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="company_priorities">Company Priorities</label>
+            <textarea id="company_priorities" name="company_priorities" placeholder="Company goals and priorities..."></textarea>
+          </div>
         </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+          <div class="form-group">
+            <label for="tags">Tags</label>
+            <input type="text" id="tags" name="tags" placeholder="hot-lead, decision-maker, interested">
+          </div>
+          <div class="form-group">
+            <label for="workflow">Current Workflow</label>
+            <select id="workflow" name="workflow">
+              <option value="">None</option>
+              <option value="friends">Friend Outreach</option>
+              <option value="signup">Newsletter Signup</option>
+              <option value="nurture">Lead Nurture</option>
+              <option value="demo">Demo Request</option>
+              <option value="followup">Follow-up</option>
+              <option value="referral">Referral</option>
+              <option value="leadmagnet">Lead Magnet</option>
+              <option value="reengage">Re-engage</option>
+            </select>
+          </div>
+        </div>
+        
+        <div style="margin-top: 15px;">
+          <div class="checkbox-group">
+            <input type="checkbox" id="aiemail" name="aiemail">
+            <label for="aiemail">Enable AI Email Campaigns</label>
+          </div>
+          <div class="checkbox-group">
+            <input type="checkbox" id="newsletter" name="newsletter">
+            <label for="newsletter">Subscribe to Newsletter</label>
+          </div>
+        </div>
+        
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
           <button type="button" onclick="closeAddContactModal()" class="secondary">Cancel</button>
           <button type="submit" class="success">➕ Add Contact</button>
@@ -941,12 +1007,12 @@ const ENDPOINTS = {
   generateAd: 'https://victoryvision.app.n8n.cloud/webhook/contacts/generate-ad',
   enrollFriends: 'https://victoryvision.app.n8n.cloud/webhook/outreach/friends',
   enrollSignup: 'https://victoryvision.app.n8n.cloud/webhook/emails/signup',
-  enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture', // MISSING WEBHOOK
-  enrollDemo: 'https://victoryvision.app.n8n.cloud/webhook/emails/demo', // MISSING WEBHOOK
-  enrollFollowup: 'https://victoryvision.app.n8n.cloud/webhook/emails/followup', // MISSING WEBHOOK
-  enrollReferral: 'https://victoryvision.app.n8n.cloud/webhook/emails/referral', // MISSING WEBHOOK
-  enrollLeadmagnet: 'https://victoryvision.app.n8n.cloud/webhook/emails/leadmagnet', // MISSING WEBHOOK
-  enrollReengage: 'https://victoryvision.app.n8n.cloud/webhook/emails/reengage', // MISSING WEBHOOK
+  enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture',
+  enrollDemo: 'https://victoryvision.app.n8n.cloud/webhook/emails/demo',
+  enrollFollowup: 'https://victoryvision.app.n8n.cloud/webhook/emails/followup',
+  enrollReferral: 'https://victoryvision.app.n8n.cloud/webhook/emails/referral',
+  enrollLeadmagnet: 'https://victoryvision.app.n8n.cloud/webhook/emails/leadmagnet',
+  enrollReengage: 'https://victoryvision.app.n8n.cloud/webhook/emails/reengage',
   removeContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/remove'
 };
 
@@ -964,6 +1030,7 @@ let sortDirection = 'asc';
 // Available table columns with display names
 const availableColumns = {
   name: 'Name',
+  first_name: 'First Name',
   title: 'Title', 
   company: 'Company',
   domain: 'Domain',
@@ -978,7 +1045,13 @@ const availableColumns = {
   last_responded: 'Last Responded',
   last_emailed_date: 'Last Emailed',
   linkedin: 'LinkedIn',
-  tags: 'Tags'
+  tags: 'Tags',
+  personal_summary: 'Personal Summary',
+  company_summary: 'Company Summary',
+  personal_priorities: 'Personal Priorities',
+  company_priorities: 'Company Priorities',
+  aiemail: 'AI Email',
+  newsletter: 'Newsletter'
 };
 
 // Default visible columns
@@ -1268,23 +1341,31 @@ function showAddContactModal() {
 function closeAddContactModal() {
   document.getElementById('addContactModal').style.display = 'none';
   document.getElementById('addContactForm').reset();
+  // Reset form attributes
+  document.getElementById('addContactForm').removeAttribute('data-contact-id');
+  document.querySelector('#addContactModal .modal-header h2').textContent = '➕ Add New Contact';
+  document.querySelector('#addContactModal button[type="submit"]').textContent = '➕ Add Contact';
 }
 
+// FIXED: Use FormData properly with name attributes
 async function addContactManually(formData) {
   try {
-    const contactData = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      title: formData.get('title'),
-      company: formData.get('company'),
-      phone_number: formData.get('phone'),
-      linkedin: formData.get('linkedin'),
-      industry: formData.get('industry'),
-      city: formData.get('city'),
-      annual_revenue: formData.get('revenue'),
-      employee_count: formData.get('employees'),
-      notes: formData.get('notes')
-    };
+    // Extract all form data using the name attributes
+    const contactData = {};
+    for (let [key, value] of formData.entries()) {
+      // Handle checkboxes properly
+      if (key === 'aiemail' || key === 'newsletter') {
+        contactData[key] = true; // Checkbox is checked if it exists in FormData
+      } else {
+        contactData[key] = value;
+      }
+    }
+    
+    // Set checkbox defaults for unchecked boxes
+    if (!contactData.aiemail) contactData.aiemail = false;
+    if (!contactData.newsletter) contactData.newsletter = false;
+
+    console.log('Contact data being sent:', contactData);
 
     const result = await apiCall(ENDPOINTS.addContact, contactData);
 
@@ -1299,6 +1380,42 @@ async function addContactManually(formData) {
   } catch (error) {
     console.error('Error adding contact:', error);
     showStatus('Error adding contact: ' + error.message, true);
+  }
+}
+
+// FIXED: Use FormData properly for updates
+async function updateContact(contactId, formData) {
+  try {
+    // Extract all form data using the name attributes
+    const contactData = { contact_id: contactId };
+    for (let [key, value] of formData.entries()) {
+      // Handle checkboxes properly
+      if (key === 'aiemail' || key === 'newsletter') {
+        contactData[key] = true; // Checkbox is checked if it exists in FormData
+      } else {
+        contactData[key] = value;
+      }
+    }
+    
+    // Set checkbox defaults for unchecked boxes
+    if (!contactData.aiemail) contactData.aiemail = false;
+    if (!contactData.newsletter) contactData.newsletter = false;
+
+    console.log('Update contact data being sent:', contactData);
+
+    const result = await apiCall(ENDPOINTS.updateContact, contactData);
+
+    if (result.success !== false) {
+      showStatus('Contact updated successfully!', false);
+      closeAddContactModal();
+      await loadContacts();
+    } else {
+      throw new Error(result.message || 'Failed to update contact');
+    }
+
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    showStatus('Error updating contact: ' + error.message, true);
   }
 }
 
@@ -1551,18 +1668,27 @@ function editContact(contactId) {
   // Open add contact modal but populate with existing data
   showAddContactModal();
   
-  // Populate the form with existing contact data
-  document.getElementById('newContactName').value = contact.name || '';
-  document.getElementById('newContactEmail').value = contact.email || '';
-  document.getElementById('newContactTitle').value = contact.title || '';
-  document.getElementById('newContactCompany').value = contact.company || '';
-  document.getElementById('newContactPhone').value = contact.phone_number || '';
-  document.getElementById('newContactLinkedin').value = contact.linkedin || '';
-  document.getElementById('newContactIndustry').value = contact.industry || '';
-  document.getElementById('newContactCity').value = contact.city || '';
-  document.getElementById('newContactRevenue').value = contact.annual_revenue || '';
-  document.getElementById('newContactEmployees').value = contact.employee_count || '';
-  document.getElementById('newContactNotes').value = contact.notes || '';
+  // Populate the form with existing contact data using proper IDs
+  document.getElementById('first_name').value = contact.first_name || '';
+  document.getElementById('name').value = contact.name || '';
+  document.getElementById('email').value = contact.email || '';
+  document.getElementById('title').value = contact.title || '';
+  document.getElementById('company').value = contact.company || '';
+  document.getElementById('domain').value = contact.domain || '';
+  document.getElementById('phone_number').value = contact.phone_number || '';
+  document.getElementById('linkedin').value = contact.linkedin || '';
+  document.getElementById('industry').value = contact.industry || '';
+  document.getElementById('city').value = contact.city || '';
+  document.getElementById('annual_revenue').value = contact.annual_revenue || '';
+  document.getElementById('employee_count').value = contact.employee_count || '';
+  document.getElementById('personal_summary').value = contact.personal_summary || '';
+  document.getElementById('company_summary').value = contact.company_summary || '';
+  document.getElementById('personal_priorities').value = contact.personal_priorities || '';
+  document.getElementById('company_priorities').value = contact.company_priorities || '';
+  document.getElementById('tags').value = contact.tags || '';
+  document.getElementById('workflow').value = contact.workflow || '';
+  document.getElementById('aiemail').checked = contact.aiemail || false;
+  document.getElementById('newsletter').checked = contact.newsletter || false;
   
   // Change the modal title and button
   document.querySelector('#addContactModal .modal-header h2').textContent = '✏️ Edit Contact';
@@ -1570,43 +1696,6 @@ function editContact(contactId) {
   
   // Store the contact ID for updating
   document.getElementById('addContactForm').setAttribute('data-contact-id', contactId);
-}
-
-async function updateContact(contactId, formData) {
-  try {
-    const contactData = {
-      contact_id: contactId,
-      name: formData.get('name'),
-      email: formData.get('email'),
-      title: formData.get('title'),
-      company: formData.get('company'),
-      phone_number: formData.get('phone'),
-      linkedin: formData.get('linkedin'),
-      industry: formData.get('industry'),
-      city: formData.get('city'),
-      annual_revenue: formData.get('revenue'),
-      employee_count: formData.get('employees'),
-      notes: formData.get('notes')
-    };
-
-    const result = await apiCall(ENDPOINTS.updateContact, contactData);
-
-    if (result.success !== false) {
-      showStatus('Contact updated successfully!', false);
-      closeAddContactModal();
-      // Reset form attributes
-      document.getElementById('addContactForm').removeAttribute('data-contact-id');
-      document.querySelector('#addContactModal .modal-header h2').textContent = '➕ Add New Contact';
-      document.querySelector('#addContactModal button[type="submit"]').textContent = '➕ Add Contact';
-      await loadContacts();
-    } else {
-      throw new Error(result.message || 'Failed to update contact');
-    }
-
-  } catch (error) {
-    console.error('Error updating contact:', error);
-    showStatus('Error updating contact: ' + error.message, true);
-  }
 }
 
 function sendEmail(contactId) {
@@ -1849,6 +1938,9 @@ function formatCellValue(contact, column) {
       return formatDate(value);
     case 'tags':
       return formatTags(value);
+    case 'aiemail':
+    case 'newsletter':
+      return value ? '✅' : '❌';
     default:
       return value || 'N/A';
   }
