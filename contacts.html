@@ -1509,12 +1509,33 @@ async function enrichSelectedContacts() {
 
   try {
     const selectedContactsList = Array.from(selectedContacts).map(id => 
-      allContacts.find(c => c.id === id)
+      allContacts.find(c => 
+        c.contact_id === id || 
+        c.id === id || 
+        c.email === id
+      )
     ).filter(c => c && c.email);
 
-    const result = await apiCall(ENDPOINTS.enrichContacts, {
-      contacts: selectedContactsList.map(c => ({ id: c.id, email: c.email, linkedin: c.linkedin }))
-    });
+    console.log('Selected contacts for enrichment:', selectedContactsList);
+
+    if (selectedContactsList.length === 0) {
+      showStatus('No valid contacts selected for enrichment', true);
+      return;
+    }
+
+    const enrichmentData = {
+      contacts: selectedContactsList.map(c => ({ 
+        id: c.contact_id || c.id || c.email, 
+        email: c.email, 
+        linkedin: c.linkedin || '',
+        name: c.name || '',
+        company: c.company || ''
+      }))
+    };
+
+    console.log('Enrichment data being sent:', enrichmentData);
+
+    const result = await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
 
     if (result.success !== false) {
       showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
