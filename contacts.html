@@ -1500,7 +1500,7 @@ async function handleCSVFile(event) {
   event.target.value = '';
 }
 
-// Enrich contacts
+// Enrich contacts - SEND ONE AT A TIME
 async function enrichSelectedContacts() {
   if (selectedContacts.size === 0) {
     showStatus('Please select contacts to enrich', true);
@@ -1523,28 +1523,37 @@ async function enrichSelectedContacts() {
       return;
     }
 
-    const enrichmentData = {
-      contacts: selectedContactsList.map(c => ({ 
-        id: c.contact_id || c.id || c.email, 
-        email: c.email, 
-        linkedin: c.linkedin || '',
-        name: c.name || '',
-        company: c.company || ''
-      }))
-    };
+    // Send each contact individually like contacts/look does
+    let successCount = 0;
+    for (const contact of selectedContactsList) {
+      try {
+        const enrichmentData = {
+          contact: {
+            id: contact.contact_id || contact.id || contact.email,
+            email: contact.email,
+            linkedin: contact.linkedin || '',
+            name: contact.name || '',
+            company: contact.company || ''
+          }
+        };
 
-    console.log('Enrichment data being sent:', enrichmentData);
+        console.log('Enriching individual contact:', enrichmentData);
 
-    const result = await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
-
-    if (result.success !== false) {
-      showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
-      selectedContacts.clear();
-      updateSelectedCount();
-      setTimeout(() => loadContacts(), 5000); // Reload after 5 seconds
-    } else {
-      throw new Error(result.message || 'Contact enrichment failed');
+        const result = await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
+        
+        if (result.success !== false) {
+          successCount++;
+        }
+      } catch (contactError) {
+        console.error(`Error enriching ${contact.email}:`, contactError);
+        // Continue with next contact even if one fails
+      }
     }
+
+    showStatus(`Enrichment started for ${successCount} out of ${selectedContactsList.length} contacts!`, false);
+    selectedContacts.clear();
+    updateSelectedCount();
+    setTimeout(() => loadContacts(), 5000); // Reload after 5 seconds
 
   } catch (error) {
     console.error('Error enriching contacts:', error);
