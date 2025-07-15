@@ -40,17 +40,38 @@
       align-items: center;
       gap: 10px;
     }
-    .navbar .logout-btn {
-      background: #BB133E;
+    .subscription-medallion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
       color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
       font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      position: relative;
+      border: none;
+      transition: all 0.3s ease;
     }
-    .navbar .logout-btn:hover {
-      background: #9e1034;
+    .subscription-medallion.bronze {
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+    }
+    .subscription-medallion.silver {
+      background: linear-gradient(45deg, #C0C0C0, #808080);
+    }
+    .subscription-medallion.gold {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+    }
+    .subscription-medallion:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .subscription-medallion .plan-name {
+      font-weight: bold;
     }
     .logo img {
       height: 60px;
@@ -118,6 +139,68 @@
       height: 100px;
       resize: vertical;
     }
+    
+    /* Image Upload and Selection Styles */
+    .image-upload-section {
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .image-upload-section:hover {
+      border-color: #0A3161;
+      background: #e3f2fd;
+    }
+    .image-upload-section.dragover {
+      border-color: #28a745;
+      background: #d4edda;
+    }
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .image-thumbnail {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .image-thumbnail:hover {
+      border-color: #0A3161;
+    }
+    .image-thumbnail.selected {
+      border-color: #28a745;
+      box-shadow: 0 0 0 2px #28a745;
+    }
+    .image-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .upload-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 10px;
+    }
+    .upload-btn:hover {
+      background: #218838;
+    }
+    
     .billboard-preview {
       background: #1a1a1a;
       border-radius: 8px;
@@ -130,20 +213,39 @@
       flex-direction: column;
       color: white;
       border: 3px solid #333;
+      position: relative;
+      overflow: hidden;
+    }
+    .billboard-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+      z-index: 1;
     }
     .billboard-content {
       max-width: 100%;
+      position: relative;
+      z-index: 2;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 8px;
     }
     .billboard-headline {
       font-size: 2rem;
       font-weight: bold;
       margin-bottom: 15px;
       color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
     }
     .billboard-message {
       font-size: 1.2rem;
       line-height: 1.4;
       margin-bottom: 15px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     }
     .billboard-cta {
       font-size: 1rem;
@@ -153,6 +255,7 @@
       border-radius: 4px;
       display: inline-block;
       margin-top: 10px;
+      text-shadow: none;
     }
     .campaign-options {
       display: grid;
@@ -328,6 +431,23 @@
       align-items: center;
       justify-content: center;
       flex-direction: column;
+      position: relative;
+    }
+    .ad-preview img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.7;
+    }
+    .ad-preview-content {
+      position: relative;
+      z-index: 2;
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 6px;
     }
     .ad-info {
       padding: 15px;
@@ -363,6 +483,12 @@
       padding: 8px 12px;
       font-size: 12px;
       flex: 1;
+    }
+    .download-btn {
+      background: #17a2b8;
+    }
+    .download-btn:hover {
+      background: #138496;
     }
     .loading {
       text-align: center;
@@ -400,6 +526,11 @@
       border-radius: 4px;
       margin: 10px 0;
       display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      max-width: 400px;
+      z-index: 1000;
     }
     .status-success {
       background-color: #d4edda;
@@ -533,14 +664,15 @@
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
       <li><a href="ads">Ads</a></li>
-       <li><a href="contacts">Contacts</a></li>
-       <li><a href="messages">Messages</a></li>
+      <li><a href="contacts">Contacts</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
+    </div>
   </div>
 </header>
 
@@ -559,34 +691,56 @@
     <div class="billboard-creation">
       <div>
         <div class="form-group">
-          <label for="billboardHeadline">Headline</label>
-          <input type="text" id="billboardHeadline" placeholder="Enter compelling headline" maxlength="50">
+          <label for="billboardHeadline">Headline *</label>
+          <input type="text" id="billboardHeadline" placeholder="Enter compelling headline" maxlength="50" required>
         </div>
         
         <div class="form-group">
-          <label for="billboardMessage">Message</label>
-          <textarea id="billboardMessage" placeholder="Enter your marketing message" maxlength="150"></textarea>
+          <label for="billboardMessage">Message *</label>
+          <textarea id="billboardMessage" placeholder="Enter your marketing message" maxlength="150" required></textarea>
         </div>
         
         <div class="form-group">
-          <label for="billboardCTA">Call to Action</label>
-          <input type="text" id="billboardCTA" placeholder="Call Now! | Visit Us! | Get Started!" maxlength="25">
+          <label for="billboardCTA">Call to Action *</label>
+          <input type="text" id="billboardCTA" placeholder="Call Now! | Visit Us! | Get Started!" maxlength="25" required>
         </div>
         
         <div class="form-group">
-          <label for="billboardLocation">Location</label>
-          <select id="billboardLocation">
+          <label for="billboardLocation">Location *</label>
+          <select id="billboardLocation" required>
             <option value="">Select Location</option>
             <option value="baton-rouge">Baton Rouge, Louisiana</option>
             <option value="breaux-bridge">Breaux Bridge, Louisiana</option>
             <option value="both">Both Locations</option>
           </select>
         </div>
+
+        <!-- Image Upload and Selection Section -->
+        <div class="form-group">
+          <label>Background Image</label>
+          <div class="image-upload-section" id="imageUploadArea">
+            <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+            <p>📷 <strong>Upload New Image</strong></p>
+            <button type="button" class="upload-btn" onclick="document.getElementById('imageFileInput').click()">
+              Choose File
+            </button>
+            <p style="font-size: 0.85em; color: #666;">or drag & drop image here</p>
+          </div>
+          
+          <!-- Saved Images Gallery -->
+          <div id="savedImagesSection" style="display: none;">
+            <h4 style="margin: 15px 0 10px 0; color: #0A3161;">Your Saved Images</h4>
+            <div class="image-gallery" id="savedImagesGallery">
+              <!-- Saved images will be loaded here -->
+            </div>
+          </div>
+        </div>
       </div>
       
       <div>
         <h4 style="margin-bottom: 15px; color: #0A3161;">Live Preview</h4>
-        <div class="billboard-preview">
+        <div class="billboard-preview" id="billboardPreview">
+          <img id="billboardBackground" class="billboard-background" style="display: none;">
           <div class="billboard-content">
             <div class="billboard-headline" id="previewHeadline">Your Headline Here</div>
             <div class="billboard-message" id="previewMessage">Your marketing message will appear here</div>
@@ -604,7 +758,7 @@
     </div>
     
     <div class="campaign-options">
-      <div class="campaign-card" data-duration="3-month">
+      <div class="campaign-card" data-duration="3-month" data-price="12000">
         <div class="campaign-duration">3 Month Campaign</div>
         <div class="campaign-price">$12,000</div>
         <ul class="campaign-features">
@@ -616,7 +770,7 @@
         </ul>
       </div>
       
-      <div class="campaign-card" data-duration="6-month">
+      <div class="campaign-card" data-duration="6-month" data-price="20000">
         <div class="campaign-duration">6 Month Campaign</div>
         <div class="campaign-price">$20,000</div>
         <ul class="campaign-features">
@@ -628,7 +782,7 @@
         </ul>
       </div>
       
-      <div class="campaign-card" data-duration="full-year">
+      <div class="campaign-card" data-duration="full-year" data-price="35000">
         <div class="campaign-duration">Full Year Campaign</div>
         <div class="campaign-price">$35,000</div>
         <ul class="campaign-features">
@@ -658,7 +812,7 @@
       <button class="video-preview-btn" onclick="openVideoModal()">
         📹 Preview Fortune Cookie Video
       </button>
-      <button class="video-preview-btn" id="selectFortuneCookies">
+      <button class="video-preview-btn" id="selectFortuneCookies" data-type="fortune-cookie" data-price="15000">
         🥠 Select Fortune Cookie Campaign
       </button>
     </div>
@@ -722,7 +876,7 @@
 <!-- Video Modal -->
 <div id="videoModal" class="modal">
   <div class="video-modal-content">
-    <div style="background: #000; padding: 10px; border-radius: 8px 8px 0 0; display: flex; justify-content: between; align-items: center;">
+    <div style="background: #000; padding: 10px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
       <h3 style="color: white; margin: 0;">Fortune Cookie Video Preview</h3>
       <span class="close" onclick="closeVideoModal()" style="margin-left: auto;">&times;</span>
     </div>
@@ -746,14 +900,27 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
+  // n8n webhook endpoints
+  const N8N_ENDPOINTS = {
+    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    getAds: 'https://victoryvision.app.n8n.cloud/webhook/ads/get',
+    createAd: 'https://victoryvision.app.n8n.cloud/webhook/ads/create',
+    removeAd: 'https://victoryvision.app.n8n.cloud/webhook/ads/remove',
+    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+    uploadImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create'
+  };
+  
   let CUSTOMER_ID = null;
   let authToken = null;
+  let userCredits = {};
 
   // State management
   let allAds = [];
   let filteredAds = [];
   let selectedCampaignDuration = null;
   let selectedSpecialOffers = [];
+  let selectedImageUrl = null;
+  let savedImages = [];
 
   // DOM elements
   const adsContainer = document.getElementById('adsContainer');
@@ -765,13 +932,21 @@
   const adModal = document.getElementById('adModal');
   const videoModal = document.getElementById('videoModal');
 
-  // Billboard preview elements
+  // Billboard form elements
   const billboardHeadline = document.getElementById('billboardHeadline');
   const billboardMessage = document.getElementById('billboardMessage');
   const billboardCTA = document.getElementById('billboardCTA');
+  const billboardLocation = document.getElementById('billboardLocation');
   const previewHeadline = document.getElementById('previewHeadline');
   const previewMessage = document.getElementById('previewMessage');
   const previewCTA = document.getElementById('previewCTA');
+  const billboardBackground = document.getElementById('billboardBackground');
+
+  // Image upload elements
+  const imageFileInput = document.getElementById('imageFileInput');
+  const imageUploadArea = document.getElementById('imageUploadArea');
+  const savedImagesSection = document.getElementById('savedImagesSection');
+  const savedImagesGallery = document.getElementById('savedImagesGallery');
 
   // Authentication
   async function checkAuthentication() {
@@ -798,68 +973,687 @@
   }
 
   function redirectToLogin() {
+    localStorage.removeItem('vv_session');
     window.location.href = 'login.html';
   }
 
-  async function logout() {
+  // API call function
+  async function apiCall(endpoint, data = {}) {
     try {
-      await supabaseClient.auth.signOut();
-      redirectToLogin();
-    } catch (e) {
-      console.error('Logout error:', e);
-      redirectToLogin();
-    }
-  }
+      const url = endpoint.includes('/user/get') ? 
+        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+        endpoint;
+      
+      const requestOptions = {
+        method: endpoint.includes('/user/get') ? 'GET' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        }
+      };
 
-  // Load ads from n8n webhook
-  async function loadAds() {
-    try {
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/ads/get', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID })
-      });
+      if (!endpoint.includes('/user/get')) {
+        requestOptions.body = JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          ...data
+        });
+      }
 
+      const response = await fetch(url, requestOptions);
+      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      console.log('Response from n8n:', data);
-      
-      // Handle response from n8n webhook
-      if (data && Array.isArray(data)) {
-        allAds = data;
-      } else if (data && data.ads && Array.isArray(data.ads)) {
-        allAds = data.ads;
-      } else {
-        console.log('Unexpected response structure:', data);
-        allAds = [];
-      }
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+    }
+  }
 
+  // Load user data and update subscription medallion
+  async function loadUserData() {
+    try {
+      const response = await apiCall(N8N_ENDPOINTS.getUserData);
+      const userData = Array.isArray(response) ? response[0] : response;
+      
+      userCredits = {
+        image_credits: userData.image_credits || 0,
+        video_credits: userData.video_credits || 0
+      };
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'Bronze';
+      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+      medallion.querySelector('.plan-name').textContent = plan;
+      
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
+    }
+  }
+
+  // Load saved images
+  async function loadSavedImages() {
+    try {
+      const response = await apiCall(N8N_ENDPOINTS.getMedia);
+      const mediaData = Array.isArray(response) ? response : (response.files || []);
+      
+      // Filter for images only
+      savedImages = mediaData.filter(file => 
+        file.file_type && file.file_type.includes('image')
+      );
+      
+      if (savedImages.length > 0) {
+        savedImagesSection.style.display = 'block';
+        renderSavedImages();
+      }
+      
+    } catch (error) {
+      console.error('Error loading saved images:', error);
+    }
+  }
+
+  // Render saved images gallery
+  function renderSavedImages() {
+    savedImagesGallery.innerHTML = savedImages.map(image => `
+      <div class="image-thumbnail" onclick="selectImage('${image.URL}', this)">
+        <img src="${image.URL}" alt="${image.name || 'Saved image'}">
+      </div>
+    `).join('');
+  }
+
+  // Select an image for the billboard
+  function selectImage(imageUrl, element) {
+    // Remove previous selection
+    document.querySelectorAll('.image-thumbnail').forEach(thumb => {
+      thumb.classList.remove('selected');
+    });
+    
+    // Select current image
+    element.classList.add('selected');
+    selectedImageUrl = imageUrl;
+    
+    // Update preview
+    billboardBackground.src = imageUrl;
+    billboardBackground.style.display = 'block';
+    
+    showStatus('Image selected for billboard background');
+  }
+
+  // Handle image file upload
+  async function handleImageUpload(file) {
+    if (!file) return;
+    
+    if (!file.type.startsWith('image/')) {
+      showStatus('Please select an image file', true);
+      return;
+    }
+    
+    try {
+      showStatus('Uploading image...');
+      
+      // Convert file to base64 for upload
+      const base64Image = await fileToBase64(file);
+      
+      const result = await apiCall(N8N_ENDPOINTS.uploadImage, {
+        type: 'image',
+        prompt: 'Billboard background image',
+        image_data: base64Image,
+        filename: file.name
+      });
+      
+      if (result.success !== false) {
+        showStatus('Image uploaded successfully!');
+        selectedImageUrl = result.URL || result.url;
+        
+        // Update preview
+        billboardBackground.src = selectedImageUrl;
+        billboardBackground.style.display = 'block';
+        
+        // Reload saved images
+        await loadSavedImages();
+      } else {
+        throw new Error(result.message || 'Image upload failed');
+      }
+      
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      showStatus('Error uploading image: ' + error.message, true);
+    }
+  }
+
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  // Setup drag and drop for image upload
+  function setupImageUpload() {
+    imageFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleImageUpload(file);
+    });
+    
+    // Drag and drop functionality
+    imageUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      imageUploadArea.classList.add('dragover');
+    });
+    
+    imageUploadArea.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      imageUploadArea.classList.remove('dragover');
+    });
+    
+    imageUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      imageUploadArea.classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith('image/')) {
+        handleImageUpload(files[0]);
+      } else {
+        showStatus('Please drop an image file', true);
+      }
+    });
+  }
+
+  // Update billboard preview in real-time
+  function updateBillboardPreview() {
+    previewHeadline.textContent = billboardHeadline.value || 'Your Headline Here';
+    previewMessage.textContent = billboardMessage.value || 'Your marketing message will appear here';
+    previewCTA.textContent = billboardCTA.value || 'Call to Action';
+  }
+
+  // Setup campaign duration selection
+  function setupCampaignSelection() {
+    document.querySelectorAll('.campaign-card').forEach(card => {
+      card.addEventListener('click', () => {
+        // Remove previous selections
+        document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('selected'));
+        
+        // Select current card
+        card.classList.add('selected');
+        selectedCampaignDuration = {
+          duration: card.dataset.duration,
+          price: parseInt(card.dataset.price)
+        };
+        
+        showStatus(`Selected ${card.dataset.duration} campaign`);
+      });
+    });
+    
+    // Setup special offers
+    document.getElementById('selectFortuneCookies').addEventListener('click', () => {
+      const btn = document.getElementById('selectFortuneCookies');
+      if (btn.classList.contains('selected')) {
+        btn.classList.remove('selected');
+        btn.style.background = '#BB133E';
+        selectedSpecialOffers = selectedSpecialOffers.filter(offer => offer.type !== 'fortune-cookie');
+        showStatus('Fortune Cookie campaign deselected');
+      } else {
+        btn.classList.add('selected');
+        btn.style.background = '#28a745';
+        selectedSpecialOffers.push({
+          type: 'fortune-cookie',
+          price: parseInt(btn.dataset.price)
+        });
+        showStatus('Fortune Cookie campaign selected');
+      }
+    });
+  }
+
+  // Create advertisement campaign
+  async function createAdvertisement() {
+    try {
+      // Validate required fields
+      if (!billboardHeadline.value.trim()) {
+        showStatus('Please enter a headline', true);
+        billboardHeadline.focus();
+        return;
+      }
+      
+      if (!billboardMessage.value.trim()) {
+        showStatus('Please enter a message', true);
+        billboardMessage.focus();
+        return;
+      }
+      
+      if (!billboardCTA.value.trim()) {
+        showStatus('Please enter a call to action', true);
+        billboardCTA.focus();
+        return;
+      }
+      
+      if (!billboardLocation.value) {
+        showStatus('Please select a location', true);
+        billboardLocation.focus();
+        return;
+      }
+      
+      if (!selectedCampaignDuration && selectedSpecialOffers.length === 0) {
+        showStatus('Please select a campaign duration or special offer', true);
+        return;
+      }
+      
+      createAdBtn.disabled = true;
+      createAdBtn.textContent = '🔄 Creating Campaign...';
+      
+      // Prepare campaign data
+      const campaignData = {
+        ad_type: selectedSpecialOffers.some(offer => offer.type === 'fortune-cookie') ? 'fortune_cookie' : 'billboard',
+        headline: billboardHeadline.value.trim(),
+        message: billboardMessage.value.trim(),
+        call_to_action: billboardCTA.value.trim(),
+        location: billboardLocation.value,
+        background_image_url: selectedImageUrl || null,
+        duration: selectedCampaignDuration?.duration || null,
+        price: (selectedCampaignDuration?.price || 0) + selectedSpecialOffers.reduce((sum, offer) => sum + offer.price, 0),
+        special_offers: selectedSpecialOffers,
+        status: 'scheduled'
+      };
+      
+      console.log('Creating ad with data:', campaignData);
+      
+      const result = await apiCall(N8N_ENDPOINTS.createAd, campaignData);
+      
+      if (result.success !== false) {
+        showStatus('Advertisement campaign created successfully!');
+        
+        // Reset form
+        billboardHeadline.value = '';
+        billboardMessage.value = '';
+        billboardCTA.value = '';
+        billboardLocation.value = '';
+        selectedImageUrl = null;
+        selectedCampaignDuration = null;
+        selectedSpecialOffers = [];
+        
+        // Reset preview
+        updateBillboardPreview();
+        billboardBackground.style.display = 'none';
+        
+        // Reset selections
+        document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('selectFortuneCookies').classList.remove('selected');
+        document.getElementById('selectFortuneCookies').style.background = '#BB133E';
+        
+        // Reload ads
+        await loadAds();
+        
+      } else {
+        throw new Error(result.message || 'Campaign creation failed');
+      }
+      
+    } catch (error) {
+      console.error('Error creating advertisement:', error);
+      showStatus('Error creating campaign: ' + error.message, true);
+    } finally {
+      createAdBtn.disabled = false;
+      createAdBtn.textContent = '🚀 Create Advertisement Campaign';
+    }
+  }
+
+  // Load ads
+  async function loadAds() {
+    try {
+      const response = await apiCall(N8N_ENDPOINTS.getAds);
+      allAds = Array.isArray(response) ? response : (response.ads || []);
+      
       console.log(`Loaded ${allAds.length} advertising campaigns`);
       filteredAds = [...allAds];
+      renderAdsGrid();
       
     } catch (error) {
       console.error('Error loading ads:', error);
       allAds = [];
       filteredAds = [];
+      renderAdsGrid();
       showStatus('Error loading advertising campaigns: ' + error.message, true);
     }
   }
 
-  // Load billboards (if different from ads)
-  async function loadBillboards() {
-    try {
-      const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/billboards/get', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID })
-      });
+  // Apply filters
+  function applyFilters() {
+    const searchTerm = searchFilter.value.toLowerCase();
+    const status = statusFilter.value;
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    filteredAds = allAds.filter(ad => {
+      // Search filter
+      if (searchTerm) {
+        const searchableText = [
+          ad.headline || '',
+          ad.message || '',
+          ad.location || ''
+        ].join(' ').toLowerCase();
+        
+        if (!searchableText.includes(searchTerm)) {
+          return false;
+        }
       }
 
-      const data = await response.json();
-      console.log('Billboards
+      // Status filter
+      if (status && ad.status !== status) {
+        return false;
+      }
+
+      return true;
+    });
+
+    renderAdsGrid();
+  }
+
+  // Clear filters
+  function clearFilters() {
+    searchFilter.value = '';
+    statusFilter.value = '';
+    applyFilters();
+  }
+
+  // Render ads grid
+  function renderAdsGrid() {
+    if (filteredAds.length === 0) {
+      if (allAds.length === 0) {
+        showEmptyState();
+      } else {
+        showNoResultsState();
+      }
+      return;
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'ads-grid';
+
+    filteredAds.forEach(ad => {
+      const card = createAdCard(ad);
+      grid.appendChild(card);
+    });
+
+    adsContainer.innerHTML = '';
+    adsContainer.appendChild(grid);
+  }
+
+  // Create ad card
+  function createAdCard(ad) {
+    const card = document.createElement('div');
+    card.className = 'ad-card';
+
+    const createdDate = new Date(ad.created_at).toLocaleDateString();
+    const endDate = ad.end_date ? new Date(ad.end_date).toLocaleDateString() : 'TBD';
+
+    card.innerHTML = `
+      <div class="ad-preview">
+        ${ad.background_image_url ? `<img src="${ad.background_image_url}" alt="Background">` : ''}
+        <div class="ad-preview-content">
+          <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px;">${ad.headline || 'No Headline'}</div>
+          <div style="font-size: 0.9rem; margin-bottom: 8px;">${ad.message || 'No Message'}</div>
+          <div style="background: #BB133E; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;">
+            ${ad.call_to_action || 'No CTA'}
+          </div>
+        </div>
+      </div>
+      <div class="ad-info">
+        <h3 class="ad-title">${ad.ad_type === 'fortune_cookie' ? '🥠 ' : '📺 '}${ad.headline || 'Campaign'}</h3>
+        <div class="ad-meta">
+          <div class="meta-item">
+            <span class="meta-label">Location:</span>
+            ${ad.location || 'N/A'}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Status:</span>
+            ${ad.status || 'Unknown'}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Created:</span>
+            ${createdDate}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Duration:</span>
+            ${ad.duration || 'Custom'}
+          </div>
+        </div>
+      </div>
+      <div class="ad-actions">
+        <button onclick="showAdDetails('${ad.id}')" class="btn-small">View Details</button>
+        <button onclick="downloadAd('${ad.id}')" class="btn-small download-btn">📥 Download</button>
+        <button onclick="deleteAd('${ad.id}')" class="btn-small danger">🗑️ Delete</button>
+      </div>
+    `;
+
+    return card;
+  }
+
+  // Show ad details in modal
+  async function showAdDetails(adId) {
+    const ad = allAds.find(a => a.id === adId);
+    if (!ad) return;
+    
+    document.getElementById('modalTitle').textContent = ad.headline || 'Campaign Details';
+    
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+        <div>
+          <h4>Campaign Information</h4>
+          <p><strong>Type:</strong> ${ad.ad_type === 'fortune_cookie' ? 'Fortune Cookie' : 'Billboard'}</p>
+          <p><strong>Headline:</strong> ${ad.headline || 'N/A'}</p>
+          <p><strong>Message:</strong> ${ad.message || 'N/A'}</p>
+          <p><strong>Call to Action:</strong> ${ad.call_to_action || 'N/A'}</p>
+          <p><strong>Location:</strong> ${ad.location || 'N/A'}</p>
+          <p><strong>Duration:</strong> ${ad.duration || 'Custom'}</p>
+          <p><strong>Price:</strong> ${ad.price ? ad.price.toLocaleString() : 'N/A'}</p>
+          <p><strong>Status:</strong> ${ad.status || 'Unknown'}</p>
+        </div>
+        <div>
+          <h4>Preview</h4>
+          <div style="background: #1a1a1a; color: white; padding: 20px; border-radius: 8px; text-align: center; position: relative;">
+            ${ad.background_image_url ? `<img src="${ad.background_image_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">` : ''}
+            <div style="position: relative; z-index: 2; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 6px;">
+              <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">${ad.headline || 'No Headline'}</div>
+              <div style="margin-bottom: 10px;">${ad.message || 'No Message'}</div>
+              <div style="background: #BB133E; padding: 8px 16px; border-radius: 4px; display: inline-block;">
+                ${ad.call_to_action || 'No CTA'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    adModal.style.display = 'block';
+  }
+
+  // Download ad image
+  async function downloadAd(adId) {
+    const ad = allAds.find(a => a.id === adId);
+    if (!ad) return;
+    
+    try {
+      showStatus('Preparing download...');
+      
+      // If the ad has a design URL, download that
+      if (ad.design_url) {
+        const link = document.createElement('a');
+        link.href = ad.design_url;
+        link.download = `${ad.headline || 'campaign'}-design.jpg`;
+        link.target = '_blank';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showStatus('Download started!');
+      } else {
+        showStatus('No downloadable design available for this campaign', true);
+      }
+      
+    } catch (error) {
+      console.error('Error downloading ad:', error);
+      showStatus('Error downloading ad: ' + error.message, true);
+    }
+  }
+
+  // Delete ad
+  async function deleteAd(adId) {
+    if (!confirm('Are you sure you want to delete this advertising campaign?')) {
+      return;
+    }
+    
+    try {
+      await apiCall(N8N_ENDPOINTS.removeAd, { ad_id: adId });
+      showStatus('Campaign deleted successfully!');
+      await loadAds();
+    } catch (error) {
+      console.error('Error deleting ad:', error);
+      showStatus('Error deleting campaign: ' + error.message, true);
+    }
+  }
+
+  // Modal functions
+  function closeModal() {
+    adModal.style.display = 'none';
+  }
+
+  function openVideoModal() {
+    const videoUrl = 'https://player.cloudinary.com/embed/?cloud_name=dv94te4zt&public_id=fortune-cookie-preview&profile=cld-default';
+    document.getElementById('fortuneCookieVideo').src = videoUrl;
+    videoModal.style.display = 'block';
+  }
+
+  function closeVideoModal() {
+    document.getElementById('fortuneCookieVideo').src = '';
+    videoModal.style.display = 'none';
+  }
+
+  // Show empty state
+  function showEmptyState() {
+    adsContainer.innerHTML = `
+      <div class="empty-state">
+        <h3>No advertising campaigns yet</h3>
+        <p>Create your first billboard or fortune cookie campaign to get started.</p>
+      </div>
+    `;
+  }
+
+  // Show no results state
+  function showNoResultsState() {
+    adsContainer.innerHTML = `
+      <div class="empty-state">
+        <h3>No campaigns match your filters</h3>
+        <p>Try adjusting your search criteria or clearing the filters.</p>
+      </div>
+    `;
+  }
+
+  // Show status messages
+  function showStatus(message, isError = false) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+    statusDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 5000);
+  }
+  // Event listeners
+  function setupEventListeners() {
+    // Billboard preview updates
+    billboardHeadline.addEventListener('input', updateBillboardPreview);
+    billboardMessage.addEventListener('input', updateBillboardPreview);
+    billboardCTA.addEventListener('input', updateBillboardPreview);
+    
+    // Form submission
+    createAdBtn.addEventListener('click', createAdvertisement);
+    
+    // Filters
+    let searchTimeout;
+    searchFilter.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(applyFilters, 300);
+    });
+    
+    statusFilter.addEventListener('change', applyFilters);
+    refreshAdsBtn.addEventListener('click', loadAds);
+    clearFiltersBtn.addEventListener('click', clearFilters);
+    
+    // Modal close events
+    window.addEventListener('click', (event) => {
+      if (event.target === adModal) closeModal();
+      if (event.target === videoModal) closeVideoModal();
+    });
+    // Setup image upload
+    setupImageUpload();
+    // Setup campaign selection
+    setupCampaignSelection();
+  }
+  // Make functions globally available
+  window.showAdDetails = showAdDetails;
+  window.downloadAd = downloadAd;
+  window.deleteAd = deleteAd;
+  window.selectImage = selectImage;
+  window.closeModal = closeModal;
+  window.openVideoModal = openVideoModal;
+  window.closeVideoModal = closeVideoModal;
+
+  // Initialize page
+  async function init() {
+    try {
+      const isAuthenticated = await checkAuthentication();
+      
+      if (isAuthenticated) {
+        setupEventListeners();
+        
+        await Promise.all([
+          loadUserData(),
+          loadAds(),
+          loadSavedImages()
+        ]);
+        
+      } else {
+        redirectToLogin();
+      }
+    } catch (error) {
+      console.error('Error initializing page:', error);
+      showStatus('Failed to initialize. Please refresh the page.', true);
+    }
+  }
+  // Security checks
+  setInterval(async function() {
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        redirectToLogin();
+      } else {
+        authToken = session.access_token;
+      }
+    } catch (e) {
+      console.error('Session check failed:', e);
+    }
+  }, 300000);
+  document.addEventListener('visibilitychange', async function() {
+    if (!document.hidden) {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+          redirectToLogin();
+        } else {
+          authToken = session.access_token;
+        }
+      } catch (e) {
+        console.error('Visibility auth check failed:', e);
+      }
+    }
+  });
+  // Initialize when DOM loads
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
