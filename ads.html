@@ -1061,32 +1061,6 @@
   let selectedImageUrl = null;
   let savedImages = [];
 
-  // Rate limiting for security
-  const rateLimiter = {
-    calls: [],
-    maxCalls: 30,
-    windowMs: 60000,
-    canMakeCall: function() {
-      const now = Date.now();
-      this.calls = this.calls.filter(time => time > (now - this.windowMs));
-      if (this.calls.length >= this.maxCalls) {
-        return false;
-      }
-      this.calls.push(now);
-      return true;
-    }
-  };
-
-  // Input sanitization for security
-  function sanitizeInput(value) {
-    if (typeof value !== 'string') return value;
-    return value
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/javascript:/gi, '')
-      .replace(/on\w+\s*=/gi, '')
-      .trim();
-  }
-
   // DOM elements
   const adsContainer = document.getElementById('adsContainer');
   const searchFilter = document.getElementById('searchFilter');
@@ -1165,10 +1139,6 @@
 
   // API call function with enhanced security
   async function apiCall(endpoint, data = {}) {
-    if (!rateLimiter.canMakeCall()) {
-      throw new Error('Rate limit exceeded. Please wait before making more requests.');
-    }
-
     try {
       // Input validation
       if (!CUSTOMER_ID) {
@@ -1219,7 +1189,10 @@
     const sanitized = {};
     for (const [key, value] of Object.entries(data)) {
       if (typeof value === 'string') {
-        sanitized[key] = sanitizeInput(value);
+        sanitized[key] = value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                              .replace(/javascript:/gi, '')
+                              .replace(/on\w+\s*=/gi, '')
+                              .trim();
       } else {
         sanitized[key] = value;
       }
@@ -1647,6 +1620,52 @@
     card.className = 'ad-card';
 
     const createdDate = new Date(ad.created_at).toLocaleDateString();
+
+    card.innerHTML = `
+      <div class="ad-preview">
+        ${ad.design_url ? `<img src="${ad.design_url}" alt="Background">` : ''}
+        <div class="ad-preview-content">
+          <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px;">${ad.headline || 'No Headline'}</div>
+          <div style="font-size: 0.9rem; margin-bottom: 8px;">${ad.message || 'No Message'}</div>
+          <div style="background: #BB133E; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;">
+            ${ad.call_to_action || 'No CTA'}
+          </div>
+        </div>
+      </div>
+      <div class="ad-info">
+        <h3 class="ad-title">${ad.campaign_type === 'fortune-cookie' ? '🥠 ' : '📺 '}${ad.headline || 'Campaign'}</h3>
+        <div class="ad-meta">
+          <div class="meta-item">
+            <span class="meta-label">Location:</span>
+            ${ad.location || 'N/A'}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Status:</span>
+            ${ad.status || 'Unknown'}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Created:</span>
+            ${createdDate}
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Duration:</span>
+            ${ad.duration || 'Custom'}
+          </div>
+        </div>
+      </div>
+      <div class="ad-actions">
+        <button onclick="showAdDetails('${ad.id}')" class="btn-small">View Details</button>
+        <button onclick="downloadAd('${ad.id}')" class="btn-small download-btn">📥 Download</button>
+        <button onclick="deleteAd('${ad.id}')" class="btn-small danger">🗑️ Delete</button>
+      </div>
+    `;
+
+    return card;
+  }
+
+  // Show ad details in modal
+  async function showAdDetails(adId) {
+    const ad = allAds.find(a => a.id === adId);
     // Show ad details in modal
   async function showAdDetails(adId) {
     const ad = allAds.find(a => a.id === adId);
