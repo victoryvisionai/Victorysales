@@ -7,6 +7,8 @@
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Advertising</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -270,15 +272,11 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       border: 2px solid transparent;
       transition: all 0.3s ease;
-      cursor: pointer;
+      text-align: center;
     }
     .campaign-card:hover {
       border-color: #0A3161;
       transform: translateY(-2px);
-    }
-    .campaign-card.selected {
-      border-color: #28a745;
-      background: #f8fff9;
     }
     .campaign-duration {
       font-size: 1.5rem;
@@ -295,7 +293,7 @@
     .campaign-features {
       list-style: none;
       padding: 0;
-      margin: 0;
+      margin: 0 0 20px 0;
     }
     .campaign-features li {
       padding: 5px 0;
@@ -303,6 +301,30 @@
     }
     .campaign-features li:last-child {
       border-bottom: none;
+    }
+    .checkout-btn {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 100%;
+      margin-top: 15px;
+    }
+    .checkout-btn:hover {
+      background: linear-gradient(135deg, #218838, #1e7e34);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    .checkout-btn:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
     }
     .special-opportunities {
       margin-bottom: 30px;
@@ -347,14 +369,14 @@
     .video-preview-btn:hover {
       background: #9e1034;
     }
-    .create-ad-btn {
-      background: linear-gradient(135deg, #28a745, #20c997);
+    .download-billboard-btn {
+      background: linear-gradient(135deg, #17a2b8, #138496);
       color: white;
       border: none;
-      padding: 20px 40px;
+      padding: 15px 30px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       transition: all 0.3s ease;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -362,12 +384,12 @@
       margin: 20px auto;
       width: fit-content;
     }
-    .create-ad-btn:hover {
-      background: linear-gradient(135deg, #218838, #1e7e34);
+    .download-billboard-btn:hover {
+      background: linear-gradient(135deg, #138496, #117a8b);
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0,0,0,0.3);
     }
-    .create-ad-btn:disabled {
+    .download-billboard-btn:disabled {
       background: #6c757d;
       cursor: not-allowed;
       transform: none;
@@ -605,6 +627,84 @@
       width: 100%;
       height: 100%;
     }
+    .auth-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+    .auth-loading .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #0A3161;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    /* Thank you modal styles */
+    .thank-you-modal {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      padding: 40px;
+      text-align: center;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 10% auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .thank-you-modal h2 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+    }
+    .thank-you-modal p {
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+    .veteran-message {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #fff;
+    }
+    
+    /* Intro.js custom styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
+
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+
+    .introjs-button:hover {
+      background: #083050 !important;
+      border-color: #083050 !important;
+    }
+
+    .introjs-skipbutton {
+      background: #6c757d !important;
+      border-color: #6c757d !important;
+    }
+
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
+    
     footer {
       background: #0A3161;
       color: #fff;
@@ -651,6 +751,12 @@
 </head>
 <body>
 
+<!-- Authentication Loading Screen -->
+<div id="authLoading" class="auth-loading">
+  <div class="spinner"></div>
+  <p>Verifying authentication...</p>
+</div>
+
 <header class="navbar">
   <div class="logo">
     <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
@@ -663,14 +769,17 @@
       <li><a href="media">Media</a></li>
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
-      <li><a href="ads">Ads</a></li>
       <li><a href="contacts">Contacts</a></li>
+      <li><a href="ads">Ads</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze" data-intro="Your current subscription tier. Higher tiers unlock more advertising credits and premium features for billboard campaigns." data-step="1">
       <span class="plan-name">Bronze</span>
     </div>
   </div>
@@ -683,7 +792,7 @@
   </header>
 
   <!-- Billboard Creation Section -->
-  <section class="card">
+  <section class="card" data-intro="Design your billboard advertisement with live preview. Add your headline, message, and call-to-action, then choose from your AI-generated images or upload a new one." data-step="2">
     <div class="section-header">
       <h3>🏗️ Create Billboard Advertisement</h3>
     </div>
@@ -715,24 +824,23 @@
           </select>
         </div>
 
-        <!-- Image Upload and Selection Section -->
-        <div class="form-group">
+        <!-- Image Selection Section -->
+        <div class="form-group" data-intro="Choose a background image from your AI-generated media library, or upload a new image. Your existing campaign images appear here automatically." data-step="3">
           <label>Background Image</label>
+          <div class="form-group">
+            <label for="savedImageSelect">Choose from Your Media</label>
+            <select id="savedImageSelect">
+              <option value="">Select from your generated images...</option>
+            </select>
+          </div>
+          
           <div class="image-upload-section" id="imageUploadArea">
             <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
-            <p>📷 <strong>Upload New Image</strong></p>
+            <p>📷 <strong>Or Upload New Image</strong></p>
             <button type="button" class="upload-btn" onclick="document.getElementById('imageFileInput').click()">
               Choose File
             </button>
             <p style="font-size: 0.85em; color: #666;">or drag & drop image here</p>
-          </div>
-          
-          <!-- Saved Images Gallery -->
-          <div id="savedImagesSection" style="display: none;">
-            <h4 style="margin: 15px 0 10px 0; color: #0A3161;">Your Saved Images</h4>
-            <div class="image-gallery" id="savedImagesGallery">
-              <!-- Saved images will be loaded here -->
-            </div>
           </div>
         </div>
       </div>
@@ -747,18 +855,22 @@
             <div class="billboard-cta" id="previewCTA">Call to Action</div>
           </div>
         </div>
+        
+        <button id="downloadBillboardBtn" class="download-billboard-btn" data-intro="Download your finished billboard design as a high-quality PNG image to your computer. Perfect for printing or sharing with your team." data-step="4">
+          💾 Download Billboard Design
+        </button>
       </div>
     </div>
   </section>
 
   <!-- Campaign Duration Options -->
-  <section class="card">
+  <section class="card" data-intro="Choose your billboard campaign duration and instantly purchase through our secure Stripe checkout. A portion of all purchases supports combat veteran suicide prevention." data-step="5">
     <div class="section-header">
       <h3>📅 Campaign Duration & Pricing</h3>
     </div>
     
     <div class="campaign-options">
-      <div class="campaign-card" data-duration="3-month" data-price="12000">
+      <div class="campaign-card">
         <div class="campaign-duration">3 Month Campaign</div>
         <div class="campaign-price">$12,000</div>
         <ul class="campaign-features">
@@ -768,9 +880,12 @@
           <li>✅ Installation & maintenance</li>
           <li>✅ Performance analytics</li>
         </ul>
+        <button class="checkout-btn" onclick="purchaseCampaign('3-month')">
+          🛒 Purchase 3-Month Campaign
+        </button>
       </div>
       
-      <div class="campaign-card" data-duration="6-month" data-price="20000">
+      <div class="campaign-card">
         <div class="campaign-duration">6 Month Campaign</div>
         <div class="campaign-price">$20,000</div>
         <ul class="campaign-features">
@@ -780,9 +895,12 @@
           <li>✅ Extended analytics report</li>
           <li>✅ Priority customer support</li>
         </ul>
+        <button class="checkout-btn" onclick="purchaseCampaign('6-month')">
+          🛒 Purchase 6-Month Campaign
+        </button>
       </div>
       
-      <div class="campaign-card" data-duration="full-year" data-price="35000">
+      <div class="campaign-card">
         <div class="campaign-duration">Full Year Campaign</div>
         <div class="campaign-price">$35,000</div>
         <ul class="campaign-features">
@@ -792,12 +910,15 @@
           <li>✅ Comprehensive market analysis</li>
           <li>✅ Dedicated account manager</li>
         </ul>
+        <button class="checkout-btn" onclick="purchaseCampaign('12-month')">
+          🛒 Purchase Full Year Campaign
+        </button>
       </div>
     </div>
   </section>
 
   <!-- Special Advertising Opportunities -->
-  <section class="card special-opportunities">
+  <section class="card special-opportunities" data-intro="Our signature Fortune Cookie campaign creates memorable customer experiences with QR codes linking to personalized video messages." data-step="6">
     <div class="section-header">
       <h3>🌟 Special Advertising Opportunities</h3>
     </div>
@@ -812,21 +933,14 @@
       <button class="video-preview-btn" onclick="openVideoModal()">
         📹 Preview Fortune Cookie Video
       </button>
-      <button class="video-preview-btn" id="selectFortuneCookies" data-type="fortune-cookie" data-price="15000">
-        🥠 Select Fortune Cookie Campaign
+      <button class="checkout-btn" onclick="purchaseCampaign('fortune-cookie')" style="max-width: 300px; margin: 10px auto;">
+        🛒 Purchase Fortune Cookie Campaign
       </button>
     </div>
   </section>
 
-  <!-- Create Advertisement Button -->
-  <div style="text-align: center; margin: 30px 0;">
-    <button id="createAdBtn" class="create-ad-btn">
-      🚀 Create Advertisement Campaign
-    </button>
-  </div>
-
   <!-- Existing Ads Management -->
-  <section class="card">
+  <section class="card" data-intro="View and manage all your active advertising campaigns. Track performance, download designs, and manage your billboard portfolio." data-step="7">
     <div class="section-header">
       <h3>📊 Your Active Campaigns</h3>
     </div>
@@ -886,6 +1000,24 @@
   </div>
 </div>
 
+<!-- Thank You Modal -->
+<div id="thankYouModal" class="modal">
+  <div class="thank-you-modal">
+    <h2>🙏 Thank You for Your Purchase!</h2>
+    <p>Your advertising campaign order has been successfully processed. We'll be in touch within 24 hours to coordinate your billboard installation.</p>
+    
+    <div class="veteran-message">
+      <p><strong>🇺🇸 Supporting Our Veterans</strong></p>
+      <p>A percentage of all purchases goes to combat Veteran suicide prevention.</p>
+      <p>On behalf of all US Veterans, thank you for your support.</p>
+    </div>
+    
+    <button onclick="closeThankYouModal()" class="checkout-btn" style="max-width: 200px; margin: 20px auto 0;">
+      Continue
+    </button>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -907,7 +1039,16 @@
     createAd: 'https://victoryvision.app.n8n.cloud/webhook/ads/create',
     removeAd: 'https://victoryvision.app.n8n.cloud/webhook/ads/remove',
     getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
-    uploadImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create'
+    uploadImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create',
+    getCheckout: 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout'
+  };
+  
+  // Stripe Price IDs for advertising campaigns
+  const CAMPAIGN_PRICE_IDS = {
+    '3-month': 'price_1RlDFmDtO3GiFEcMG9wZLIAu',
+    '6-month': 'price_1RlDKoDtO3GiFEcM83XffYOv',
+    '12-month': 'price_1RlDLEDtO3GiFEcMIhQl9FXu',
+    'fortune-cookie': 'price_1RlDOWDtO3GiFEcMKhPeR9Jx'
   };
   
   let CUSTOMER_ID = null;
@@ -917,10 +1058,34 @@
   // State management
   let allAds = [];
   let filteredAds = [];
-  let selectedCampaignDuration = null;
-  let selectedSpecialOffers = [];
   let selectedImageUrl = null;
   let savedImages = [];
+
+  // Rate limiting for security
+  const rateLimiter = {
+    calls: [],
+    maxCalls: 30,
+    windowMs: 60000,
+    canMakeCall: function() {
+      const now = Date.now();
+      this.calls = this.calls.filter(time => time > (now - this.windowMs));
+      if (this.calls.length >= this.maxCalls) {
+        return false;
+      }
+      this.calls.push(now);
+      return true;
+    }
+  };
+
+  // Input sanitization for security
+  function sanitizeInput(value) {
+    if (typeof value !== 'string') return value;
+    return value
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, '')
+      .trim();
+  }
 
   // DOM elements
   const adsContainer = document.getElementById('adsContainer');
@@ -928,9 +1093,9 @@
   const statusFilter = document.getElementById('statusFilter');
   const refreshAdsBtn = document.getElementById('refreshAds');
   const clearFiltersBtn = document.getElementById('clearFilters');
-  const createAdBtn = document.getElementById('createAdBtn');
   const adModal = document.getElementById('adModal');
   const videoModal = document.getElementById('videoModal');
+  const thankYouModal = document.getElementById('thankYouModal');
 
   // Billboard form elements
   const billboardHeadline = document.getElementById('billboardHeadline');
@@ -941,12 +1106,33 @@
   const previewMessage = document.getElementById('previewMessage');
   const previewCTA = document.getElementById('previewCTA');
   const billboardBackground = document.getElementById('billboardBackground');
+  const savedImageSelect = document.getElementById('savedImageSelect');
+  const downloadBillboardBtn = document.getElementById('downloadBillboardBtn');
 
   // Image upload elements
   const imageFileInput = document.getElementById('imageFileInput');
   const imageUploadArea = document.getElementById('imageUploadArea');
-  const savedImagesSection = document.getElementById('savedImagesSection');
-  const savedImagesGallery = document.getElementById('savedImagesGallery');
+
+  // Tour completion tracking
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
 
   // Authentication
   async function checkAuthentication() {
@@ -977,9 +1163,21 @@
     window.location.href = 'login.html';
   }
 
-  // API call function
+  // API call function with enhanced security
   async function apiCall(endpoint, data = {}) {
+    if (!rateLimiter.canMakeCall()) {
+      throw new Error('Rate limit exceeded. Please wait before making more requests.');
+    }
+
     try {
+      // Input validation
+      if (!CUSTOMER_ID) {
+        throw new Error('User not authenticated');
+      }
+
+      // Sanitize data
+      const sanitizedData = sanitizeApiData(data);
+      
       const url = endpoint.includes('/user/get') ? 
         `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
         endpoint;
@@ -989,14 +1187,17 @@
         headers: {
           'Content-Type': 'application/json',
           'X-Customer-ID': CUSTOMER_ID,
-          'Authorization': authToken ? `Bearer ${authToken}` : ''
+          'Authorization': authToken ? `Bearer ${authToken}` : '',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Protection': '1'
         }
       };
 
       if (!endpoint.includes('/user/get')) {
         requestOptions.body = JSON.stringify({
           customer_id: CUSTOMER_ID,
-          ...data
+          timestamp: Date.now(),
+          ...sanitizedData
         });
       }
 
@@ -1011,6 +1212,19 @@
       console.error('API call failed:', error);
       throw error;
     }
+  }
+
+  // Input sanitization function
+  function sanitizeApiData(data) {
+    const sanitized = {};
+    for (const [key, value] of Object.entries(data)) {
+      if (typeof value === 'string') {
+        sanitized[key] = sanitizeInput(value);
+      } else {
+        sanitized[key] = value;
+      }
+    }
+    return sanitized;
   }
 
   // Load user data and update subscription medallion
@@ -1036,53 +1250,49 @@
     }
   }
 
-  // Load saved images
+  // Load saved images from campaign files
   async function loadSavedImages() {
     try {
       const response = await apiCall(N8N_ENDPOINTS.getMedia);
       const mediaData = Array.isArray(response) ? response : (response.files || []);
       
-      // Filter for images only
+      // Filter for PNG images only from campaigns_files
       savedImages = mediaData.filter(file => 
-        file.file_type && file.file_type.includes('image')
+        file.file_type && (
+          file.file_type.includes('image') || 
+          file.file_type.toLowerCase().includes('png')
+        ) && file.URL
       );
       
-      if (savedImages.length > 0) {
-        savedImagesSection.style.display = 'block';
-        renderSavedImages();
-      }
+      console.log(`Loaded ${savedImages.length} saved images`);
+      populateImageDropdown();
       
     } catch (error) {
       console.error('Error loading saved images:', error);
+      showStatus('Error loading saved images: ' + error.message, true);
     }
   }
 
-  // Render saved images gallery
-  function renderSavedImages() {
-    savedImagesGallery.innerHTML = savedImages.map(image => `
-      <div class="image-thumbnail" onclick="selectImage('${image.URL}', this)">
-        <img src="${image.URL}" alt="${image.name || 'Saved image'}">
-      </div>
-    `).join('');
+  // Populate image dropdown
+  function populateImageDropdown() {
+    savedImageSelect.innerHTML = '<option value="">Select from your generated images...</option>';
+    
+    savedImages.forEach(image => {
+      const option = document.createElement('option');
+      option.value = image.URL;
+      option.textContent = image.name || `Image from ${image.campaign_name || 'Campaign'}`;
+      savedImageSelect.appendChild(option);
+    });
   }
 
-  // Select an image for the billboard
-  function selectImage(imageUrl, element) {
-    // Remove previous selection
-    document.querySelectorAll('.image-thumbnail').forEach(thumb => {
-      thumb.classList.remove('selected');
-    });
-    
-    // Select current image
-    element.classList.add('selected');
-    selectedImageUrl = imageUrl;
-    
-    // Update preview
-    billboardBackground.src = imageUrl;
-    billboardBackground.style.display = 'block';
-    
-    showStatus('Image selected for billboard background');
-  }
+  // Handle image selection from dropdown
+  savedImageSelect.addEventListener('change', (e) => {
+    if (e.target.value) {
+      selectedImageUrl = e.target.value;
+      updateBillboardPreview();
+      showStatus('Image selected for billboard background');
+    }
+  });
 
   // Handle image file upload
   async function handleImageUpload(file) {
@@ -1090,6 +1300,12 @@
     
     if (!file.type.startsWith('image/')) {
       showStatus('Please select an image file', true);
+      return;
+    }
+    
+    // File size validation (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      showStatus('Image file too large. Please select a file under 10MB.', true);
       return;
     }
     
@@ -1109,10 +1325,7 @@
       if (result.success !== false) {
         showStatus('Image uploaded successfully!');
         selectedImageUrl = result.URL || result.url;
-        
-        // Update preview
-        billboardBackground.src = selectedImageUrl;
-        billboardBackground.style.display = 'block';
+        updateBillboardPreview();
         
         // Reload saved images
         await loadSavedImages();
@@ -1172,134 +1385,180 @@
     previewHeadline.textContent = billboardHeadline.value || 'Your Headline Here';
     previewMessage.textContent = billboardMessage.value || 'Your marketing message will appear here';
     previewCTA.textContent = billboardCTA.value || 'Call to Action';
-  }
-
-  // Setup campaign duration selection
-  function setupCampaignSelection() {
-    document.querySelectorAll('.campaign-card').forEach(card => {
-      card.addEventListener('click', () => {
-        // Remove previous selections
-        document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('selected'));
-        
-        // Select current card
-        card.classList.add('selected');
-        selectedCampaignDuration = {
-          duration: card.dataset.duration,
-          price: parseInt(card.dataset.price)
-        };
-        
-        showStatus(`Selected ${card.dataset.duration} campaign`);
-      });
-    });
     
-    // Setup special offers
-    document.getElementById('selectFortuneCookies').addEventListener('click', () => {
-      const btn = document.getElementById('selectFortuneCookies');
-      if (btn.classList.contains('selected')) {
-        btn.classList.remove('selected');
-        btn.style.background = '#BB133E';
-        selectedSpecialOffers = selectedSpecialOffers.filter(offer => offer.type !== 'fortune-cookie');
-        showStatus('Fortune Cookie campaign deselected');
-      } else {
-        btn.classList.add('selected');
-        btn.style.background = '#28a745';
-        selectedSpecialOffers.push({
-          type: 'fortune-cookie',
-          price: parseInt(btn.dataset.price)
-        });
-        showStatus('Fortune Cookie campaign selected');
-      }
-    });
+    // Update background image
+    if (selectedImageUrl) {
+      billboardBackground.src = selectedImageUrl;
+      billboardBackground.style.display = 'block';
+    } else {
+      billboardBackground.style.display = 'none';
+    }
   }
 
-  // Create advertisement campaign
-  async function createAdvertisement() {
+  // Download billboard design as PNG
+  async function downloadBillboardDesign() {
     try {
-      // Validate required fields
       if (!billboardHeadline.value.trim()) {
-        showStatus('Please enter a headline', true);
-        billboardHeadline.focus();
+        showStatus('Please add a headline before downloading', true);
         return;
       }
+
+      downloadBillboardBtn.disabled = true;
+      downloadBillboardBtn.textContent = '🔄 Generating...';
+
+      // Create canvas for billboard design
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
       
-      if (!billboardMessage.value.trim()) {
-        showStatus('Please enter a message', true);
-        billboardMessage.focus();
-        return;
+      // Billboard dimensions (typical 14x48 feet scaled to 1400x4800 pixels)
+      canvas.width = 1400;
+      canvas.height = 400;
+      
+      // Fill background
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw background image if selected
+      if (selectedImageUrl) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        await new Promise((resolve, reject) => {
+          img.onload = () => {
+            ctx.globalAlpha = 0.7;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1.0;
+            resolve();
+          };
+          img.onerror = reject;
+          img.src = selectedImageUrl;
+        });
       }
       
-      if (!billboardCTA.value.trim()) {
-        showStatus('Please enter a call to action', true);
-        billboardCTA.focus();
-        return;
-      }
+      // Add semi-transparent overlay for text readability
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       
-      if (!billboardLocation.value) {
-        showStatus('Please select a location', true);
-        billboardLocation.focus();
-        return;
-      }
+      // Text styling
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 2;
       
-      if (!selectedCampaignDuration && selectedSpecialOffers.length === 0) {
-        showStatus('Please select a campaign duration or special offer', true);
-        return;
-      }
+      // Draw headline
+      ctx.font = 'bold 72px Arial';
+      ctx.fillText(billboardHeadline.value || 'Your Headline Here', canvas.width / 2, 120);
       
-      createAdBtn.disabled = true;
-      createAdBtn.textContent = '🔄 Creating Campaign...';
+      // Draw message
+      ctx.font = '48px Arial';
+      const message = billboardMessage.value || 'Your marketing message will appear here';
+      wrapText(ctx, message, canvas.width / 2, 200, canvas.width - 100, 60);
       
-      // Prepare campaign data
-      const campaignData = {
-        ad_type: selectedSpecialOffers.some(offer => offer.type === 'fortune-cookie') ? 'fortune_cookie' : 'billboard',
-        headline: billboardHeadline.value.trim(),
-        message: billboardMessage.value.trim(),
-        call_to_action: billboardCTA.value.trim(),
-        location: billboardLocation.value,
-        background_image_url: selectedImageUrl || null,
-        duration: selectedCampaignDuration?.duration || null,
-        price: (selectedCampaignDuration?.price || 0) + selectedSpecialOffers.reduce((sum, offer) => sum + offer.price, 0),
-        special_offers: selectedSpecialOffers,
-        status: 'scheduled'
-      };
+      // Draw CTA button
+      const ctaText = billboardCTA.value || 'Call to Action';
+      const ctaWidth = 300;
+      const ctaHeight = 60;
+      const ctaX = (canvas.width - ctaWidth) / 2;
+      const ctaY = 300;
       
-      console.log('Creating ad with data:', campaignData);
+      // CTA background
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#BB133E';
+      ctx.fillRect(ctaX, ctaY, ctaWidth, ctaHeight);
       
-      const result = await apiCall(N8N_ENDPOINTS.createAd, campaignData);
+      // CTA text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 32px Arial';
+      ctx.fillText(ctaText, canvas.width / 2, ctaY + 40);
       
-      if (result.success !== false) {
-        showStatus('Advertisement campaign created successfully!');
+      // Download the canvas as PNG
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `billboard-design-${Date.now()}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
         
-        // Reset form
-        billboardHeadline.value = '';
-        billboardMessage.value = '';
-        billboardCTA.value = '';
-        billboardLocation.value = '';
-        selectedImageUrl = null;
-        selectedCampaignDuration = null;
-        selectedSpecialOffers = [];
-        
-        // Reset preview
-        updateBillboardPreview();
-        billboardBackground.style.display = 'none';
-        
-        // Reset selections
-        document.querySelectorAll('.campaign-card').forEach(c => c.classList.remove('selected'));
-        document.getElementById('selectFortuneCookies').classList.remove('selected');
-        document.getElementById('selectFortuneCookies').style.background = '#BB133E';
-        
-        // Reload ads
-        await loadAds();
-        
-      } else {
-        throw new Error(result.message || 'Campaign creation failed');
-      }
+        showStatus('Billboard design downloaded successfully!');
+      }, 'image/png');
       
     } catch (error) {
-      console.error('Error creating advertisement:', error);
-      showStatus('Error creating campaign: ' + error.message, true);
+      console.error('Error downloading billboard:', error);
+      showStatus('Error downloading billboard design: ' + error.message, true);
     } finally {
-      createAdBtn.disabled = false;
-      createAdBtn.textContent = '🚀 Create Advertisement Campaign';
+      downloadBillboardBtn.disabled = false;
+      downloadBillboardBtn.textContent = '💾 Download Billboard Design';
+    }
+  }
+
+  // Helper function to wrap text
+  function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    let currentY = y;
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = context.measureText(testLine);
+      const testWidth = metrics.width;
+      
+      if (testWidth > maxWidth && n > 0) {
+        context.fillText(line, x, currentY);
+        line = words[n] + ' ';
+        currentY += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    context.fillText(line, x, currentY);
+  }
+
+  // Stripe checkout for campaigns
+  async function purchaseCampaign(campaignType) {
+    try {
+      const priceId = CAMPAIGN_PRICE_IDS[campaignType];
+      if (!priceId) {
+        throw new Error('Invalid campaign type');
+      }
+
+      showStatus('Redirecting to secure checkout...', false);
+      
+      const response = await fetch(N8N_ENDPOINTS.getCheckout, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : '',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          price_id: priceId,
+          campaign_type: campaignType,
+          success_url: `${window.location.origin}/ads?success=true&campaign=${campaignType}`,
+          cancel_url: `${window.location.origin}/ads`
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success && result.checkout_url) {
+        window.location.href = result.checkout_url;
+      } else {
+        throw new Error(result.message || 'Failed to create checkout session');
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+      showStatus('Error creating checkout session: ' + error.message, true);
     }
   }
 
@@ -1388,116 +1647,85 @@
     card.className = 'ad-card';
 
     const createdDate = new Date(ad.created_at).toLocaleDateString();
-    const endDate = ad.end_date ? new Date(ad.end_date).toLocaleDateString() : 'TBD';
-
-    card.innerHTML = `
-      <div class="ad-preview">
-        ${ad.background_image_url ? `<img src="${ad.background_image_url}" alt="Background">` : ''}
-        <div class="ad-preview-content">
-          <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px;">${ad.headline || 'No Headline'}</div>
-          <div style="font-size: 0.9rem; margin-bottom: 8px;">${ad.message || 'No Message'}</div>
-          <div style="background: #BB133E; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;">
-            ${ad.call_to_action || 'No CTA'}
-          </div>
-        </div>
-      </div>
-      <div class="ad-info">
-        <h3 class="ad-title">${ad.ad_type === 'fortune_cookie' ? '🥠 ' : '📺 '}${ad.headline || 'Campaign'}</h3>
-        <div class="ad-meta">
-          <div class="meta-item">
-            <span class="meta-label">Location:</span>
-            ${ad.location || 'N/A'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Status:</span>
-            ${ad.status || 'Unknown'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Created:</span>
-            ${createdDate}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Duration:</span>
-            ${ad.duration || 'Custom'}
-          </div>
-        </div>
-      </div>
-      <div class="ad-actions">
-        <button onclick="showAdDetails('${ad.id}')" class="btn-small">View Details</button>
-        <button onclick="downloadAd('${ad.id}')" class="btn-small download-btn">📥 Download</button>
-        <button onclick="deleteAd('${ad.id}')" class="btn-small danger">🗑️ Delete</button>
-      </div>
-    `;
-
-    return card;
-  }
-
-  // Show ad details in modal
+    // Show ad details in modal
   async function showAdDetails(adId) {
     const ad = allAds.find(a => a.id === adId);
     if (!ad) return;
-    
-    document.getElementById('modalTitle').textContent = ad.headline || 'Campaign Details';
+
+    document.getElementById('modalTitle').textContent = ad.campaign_name || 'Campaign Details';
     
     const modalBody = document.getElementById('modalBody');
     modalBody.innerHTML = `
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
         <div>
-          <h4>Campaign Information</h4>
-          <p><strong>Type:</strong> ${ad.ad_type === 'fortune_cookie' ? 'Fortune Cookie' : 'Billboard'}</p>
-          <p><strong>Headline:</strong> ${ad.headline || 'N/A'}</p>
-          <p><strong>Message:</strong> ${ad.message || 'N/A'}</p>
-          <p><strong>Call to Action:</strong> ${ad.call_to_action || 'N/A'}</p>
-          <p><strong>Location:</strong> ${ad.location || 'N/A'}</p>
-          <p><strong>Duration:</strong> ${ad.duration || 'Custom'}</p>
-          <p><strong>Price:</strong> ${ad.price ? ad.price.toLocaleString() : 'N/A'}</p>
-          <p><strong>Status:</strong> ${ad.status || 'Unknown'}</p>
+          <h4 style="margin-bottom: 15px; color: #0A3161;">Campaign Information</h4>
+          <div style="margin-bottom: 10px;"><strong>Campaign Name:</strong> ${ad.campaign_name || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Type:</strong> ${ad.ad_type || 'Billboard'}</div>
+          <div style="margin-bottom: 10px;"><strong>Location:</strong> ${ad.location || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Duration:</strong> ${ad.duration || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Status:</strong> ${ad.status || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Price:</strong> $${ad.price || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Created:</strong> ${new Date(ad.created_at).toLocaleDateString()}</div>
+          ${ad.start_date ? `<div style="margin-bottom: 10px;"><strong>Start Date:</strong> ${new Date(ad.start_date).toLocaleDateString()}</div>` : ''}
+          ${ad.end_date ? `<div style="margin-bottom: 10px;"><strong>End Date:</strong> ${new Date(ad.end_date).toLocaleDateString()}</div>` : ''}
         </div>
+        
         <div>
-          <h4>Preview</h4>
-          <div style="background: #1a1a1a; color: white; padding: 20px; border-radius: 8px; text-align: center; position: relative;">
-            ${ad.background_image_url ? `<img src="${ad.background_image_url}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7;">` : ''}
-            <div style="position: relative; z-index: 2; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 6px;">
-              <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">${ad.headline || 'No Headline'}</div>
-              <div style="margin-bottom: 10px;">${ad.message || 'No Message'}</div>
-              <div style="background: #BB133E; padding: 8px 16px; border-radius: 4px; display: inline-block;">
-                ${ad.call_to_action || 'No CTA'}
-              </div>
-            </div>
-          </div>
+          <h4 style="margin-bottom: 15px; color: #0A3161;">Creative Content</h4>
+          <div style="margin-bottom: 10px;"><strong>Headline:</strong> ${ad.headline || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Message:</strong> ${ad.message || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Call to Action:</strong> ${ad.call_to_action || 'N/A'}</div>
+          ${ad.design_url ? `<div style="margin-bottom: 10px;"><strong>Design:</strong> <a href="${ad.design_url}" target="_blank" style="color: #0A3161;">View Design</a></div>` : ''}
         </div>
+      </div>
+      
+      <div style="display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 2px solid #dee2e6;">
+        <button onclick="downloadAd('${ad.id}')" class="success">📥 Download Design</button>
+        <button onclick="editAd('${ad.id}')">✏️ Edit Campaign</button>
+        <button onclick="deleteAd('${ad.id}')" class="danger">🗑️ Delete Campaign</button>
       </div>
     `;
     
-    adModal.style.display = 'block';
+    document.getElementById('adModal').style.display = 'block';
   }
 
-  // Download ad image
+  // Download ad design
   async function downloadAd(adId) {
     const ad = allAds.find(a => a.id === adId);
     if (!ad) return;
     
-    try {
-      showStatus('Preparing download...');
-      
-      // If the ad has a design URL, download that
-      if (ad.design_url) {
-        const link = document.createElement('a');
-        link.href = ad.design_url;
-        link.download = `${ad.headline || 'campaign'}-design.jpg`;
-        link.target = '_blank';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        showStatus('Download started!');
-      } else {
-        showStatus('No downloadable design available for this campaign', true);
-      }
-      
-    } catch (error) {
-      console.error('Error downloading ad:', error);
-      showStatus('Error downloading ad: ' + error.message, true);
+    if (ad.design_url) {
+      // If design URL exists, download it
+      const link = document.createElement('a');
+      link.href = ad.design_url;
+      link.download = `${ad.campaign_name || 'ad-design'}-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showStatus('Design downloaded successfully!');
+    } else {
+      showStatus('No design available for download', true);
     }
+  }
+
+  // Edit ad
+  function editAd(adId) {
+    const ad = allAds.find(a => a.id === adId);
+    if (!ad) return;
+    
+    // Pre-fill form with existing data
+    if (ad.headline) billboardHeadline.value = ad.headline;
+    if (ad.message) billboardMessage.value = ad.message;
+    if (ad.call_to_action) billboardCTA.value = ad.call_to_action;
+    if (ad.location) billboardLocation.value = ad.location;
+    if (ad.design_url) {
+      selectedImageUrl = ad.design_url;
+      updateBillboardPreview();
+    }
+    
+    closeModal();
+    document.querySelector('.billboard-creation').scrollIntoView({ behavior: 'smooth' });
+    showStatus('Ad data loaded into form. Make changes and download updated design.');
   }
 
   // Delete ad
@@ -1507,37 +1735,29 @@
     }
     
     try {
-      await apiCall(N8N_ENDPOINTS.removeAd, { ad_id: adId });
+      await apiCall(N8N_ENDPOINTS.removeAd, {
+        ad_id: adId
+      });
+      
       showStatus('Campaign deleted successfully!');
+      closeModal();
       await loadAds();
+      
     } catch (error) {
       console.error('Error deleting ad:', error);
       showStatus('Error deleting campaign: ' + error.message, true);
     }
   }
 
-  // Modal functions
-  function closeModal() {
-    adModal.style.display = 'none';
-  }
-
-  function openVideoModal() {
-    const videoUrl = 'https://player.cloudinary.com/embed/?cloud_name=dv94te4zt&public_id=fortune-cookie-preview&profile=cld-default';
-    document.getElementById('fortuneCookieVideo').src = videoUrl;
-    videoModal.style.display = 'block';
-  }
-
-  function closeVideoModal() {
-    document.getElementById('fortuneCookieVideo').src = '';
-    videoModal.style.display = 'none';
-  }
-
   // Show empty state
   function showEmptyState() {
     adsContainer.innerHTML = `
       <div class="empty-state">
-        <h3>No advertising campaigns yet</h3>
-        <p>Create your first billboard or fortune cookie campaign to get started.</p>
+        <h3>No Advertising Campaigns Yet</h3>
+        <p>Create your first billboard campaign above to get started!</p>
+        <button onclick="document.querySelector('.billboard-creation').scrollIntoView({behavior: 'smooth'})" style="margin-top: 15px;">
+          🚀 Create First Campaign
+        </button>
       </div>
     `;
   }
@@ -1546,13 +1766,56 @@
   function showNoResultsState() {
     adsContainer.innerHTML = `
       <div class="empty-state">
-        <h3>No campaigns match your filters</h3>
+        <h3>No Campaigns Match Your Filters</h3>
         <p>Try adjusting your search criteria or clearing the filters.</p>
+        <button onclick="clearFilters()" style="margin-top: 15px;">
+          Clear Filters
+        </button>
       </div>
     `;
   }
 
-  // Show status messages
+  // Open video modal
+  function openVideoModal() {
+    const iframe = document.getElementById('fortuneCookieVideo');
+    iframe.src = 'https://player.cloudinary.com/embed/?cloud_name=dv94te4zt&public_id=fortune-cookie-preview&profile=cld-default';
+    document.getElementById('videoModal').style.display = 'block';
+  }
+
+  // Close video modal
+  function closeVideoModal() {
+    const iframe = document.getElementById('fortuneCookieVideo');
+    iframe.src = '';
+    document.getElementById('videoModal').style.display = 'none';
+  }
+
+  // Close modal
+  function closeModal() {
+    document.getElementById('adModal').style.display = 'none';
+  }
+
+  // Close thank you modal
+  function closeThankYouModal() {
+    document.getElementById('thankYouModal').style.display = 'none';
+  }
+
+  // Check for success parameter
+  function checkForSuccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    const campaign = urlParams.get('campaign');
+    
+    if (success === 'true') {
+      document.getElementById('thankYouModal').style.display = 'block';
+      
+      // Clean URL after showing modal
+      setTimeout(() => {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }, 1000);
+    }
+  }
+
+  // Show status message
   function showStatus(message, isError = false) {
     const statusDiv = document.getElementById('statusMessage');
     statusDiv.textContent = message;
@@ -1563,17 +1826,18 @@
       statusDiv.style.display = 'none';
     }, 5000);
   }
-  // Event listeners
+
+  // Setup event listeners
   function setupEventListeners() {
-    // Billboard preview updates
+    // Billboard form real-time updates
     billboardHeadline.addEventListener('input', updateBillboardPreview);
     billboardMessage.addEventListener('input', updateBillboardPreview);
     billboardCTA.addEventListener('input', updateBillboardPreview);
     
-    // Form submission
-    createAdBtn.addEventListener('click', createAdvertisement);
+    // Download button
+    downloadBillboardBtn.addEventListener('click', downloadBillboardDesign);
     
-    // Filters
+    // Filter event listeners
     let searchTimeout;
     searchFilter.addEventListener('input', () => {
       clearTimeout(searchTimeout);
@@ -1586,22 +1850,17 @@
     
     // Modal close events
     window.addEventListener('click', (event) => {
-      if (event.target === adModal) closeModal();
-      if (event.target === videoModal) closeVideoModal();
+      if (event.target === adModal) {
+        closeModal();
+      }
+      if (event.target === videoModal) {
+        closeVideoModal();
+      }
+      if (event.target === thankYouModal) {
+        closeThankYouModal();
+      }
     });
-    // Setup image upload
-    setupImageUpload();
-    // Setup campaign selection
-    setupCampaignSelection();
   }
-  // Make functions globally available
-  window.showAdDetails = showAdDetails;
-  window.downloadAd = downloadAd;
-  window.deleteAd = deleteAd;
-  window.selectImage = selectImage;
-  window.closeModal = closeModal;
-  window.openVideoModal = openVideoModal;
-  window.closeVideoModal = closeVideoModal;
 
   // Initialize page
   async function init() {
@@ -1609,23 +1868,35 @@
       const isAuthenticated = await checkAuthentication();
       
       if (isAuthenticated) {
+        document.getElementById('authLoading').style.display = 'none';
+        
         setupEventListeners();
+        setupImageUpload();
         
         await Promise.all([
           loadUserData(),
-          loadAds(),
-          loadSavedImages()
+          loadSavedImages(),
+          loadAds()
         ]);
         
+        checkForSuccess();
+        
+        // Auto-start tour for new users
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
       } else {
         redirectToLogin();
       }
     } catch (error) {
-      console.error('Error initializing page:', error);
-      showStatus('Failed to initialize. Please refresh the page.', true);
+      console.error('Error initializing:', error);
+      showStatus('Failed to initialize. Please refresh.', true);
     }
   }
-  // Security checks
+
+  // Security checks - session validation every 5 minutes
   setInterval(async function() {
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1638,6 +1909,8 @@
       console.error('Session check failed:', e);
     }
   }, 300000);
+
+  // Enhanced security - check on page visibility change
   document.addEventListener('visibilitychange', async function() {
     if (!document.hidden) {
       try {
@@ -1652,8 +1925,22 @@
       }
     }
   });
+
+  // Make functions globally available
+  window.showAdDetails = showAdDetails;
+  window.downloadAd = downloadAd;
+  window.editAd = editAd;
+  window.deleteAd = deleteAd;
+  window.purchaseCampaign = purchaseCampaign;
+  window.openVideoModal = openVideoModal;
+  window.closeVideoModal = closeVideoModal;
+  window.closeModal = closeModal;
+  window.closeThankYouModal = closeThankYouModal;
+  window.startTour = startTour;
+
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
+
 </body>
 </html>
