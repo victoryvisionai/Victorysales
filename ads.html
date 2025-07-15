@@ -1666,9 +1666,6 @@
   // Show ad details in modal
   async function showAdDetails(adId) {
     const ad = allAds.find(a => a.id === adId);
-    // Show ad details in modal
-  async function showAdDetails(adId) {
-    const ad = allAds.find(a => a.id === adId);
     if (!ad) return;
 
     document.getElementById('modalTitle').textContent = ad.campaign_name || 'Campaign Details';
@@ -1884,34 +1881,46 @@
   // Initialize page
   async function init() {
     try {
+      console.log('Initializing ads page...');
+      document.getElementById('authLoading').style.display = 'flex';
+      
       const isAuthenticated = await checkAuthentication();
+      console.log('Authentication result:', isAuthenticated);
       
       if (isAuthenticated) {
+        console.log('User authenticated, loading data...');
         document.getElementById('authLoading').style.display = 'none';
         
         setupEventListeners();
         setupImageUpload();
         
-        await Promise.all([
-          loadUserData(),
-          loadSavedImages(),
-          loadAds()
-        ]);
-        
-        checkForSuccess();
-        
-        // Auto-start tour for new users
-        if (!hasCompletedTour()) {
-          setTimeout(() => {
-            startTour();
-          }, 1000);
+        try {
+          await Promise.all([
+            loadUserData(),
+            loadSavedImages(),
+            loadAds()
+          ]);
+          
+          checkForSuccess();
+          
+          // Auto-start tour for new users
+          if (!hasCompletedTour()) {
+            setTimeout(() => {
+              startTour();
+            }, 1000);
+          }
+        } catch (dataError) {
+          console.error('Error loading data:', dataError);
+          showStatus('Error loading data. Some features may not work properly.', true);
         }
       } else {
+        console.log('User not authenticated, redirecting to login...');
         redirectToLogin();
       }
     } catch (error) {
-      console.error('Error initializing:', error);
+      console.error('Error initializing page:', error);
       showStatus('Failed to initialize. Please refresh.', true);
+      document.getElementById('authLoading').style.display = 'none';
     }
   }
 
@@ -1956,6 +1965,7 @@
   window.closeModal = closeModal;
   window.closeThankYouModal = closeThankYouModal;
   window.startTour = startTour;
+  window.signOut = signOut;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
