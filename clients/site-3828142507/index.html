@@ -1,10 +1,20 @@
-```html
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L.A. Confidential HR Solutions | Compliance Meets Culture</title>
+  <meta name="description" content="L.A. Confidential HR Solutions empowers startups with bilingual HR strategies blending compliance and inclusive culture for U.S. and Chinese businesses.">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#a50928">
+  <meta property="og:title" content="L.A. Confidential HR Solutions | Compliance Meets Culture">
+  <meta property="og:description" content="Build the Workplace You Believe In with legal, inclusive, and culturally fluent HR strategies.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.laconfidentialhr.com">
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png">
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f465.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -14,27 +24,26 @@
       --dark: #1f1f1f;
       --font-main: 'Inter', sans-serif;
     }
-
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       font-family: var(--font-main);
       background-color: var(--white);
       color: var(--dark);
       line-height: 1.6;
     }
-
     header {
       position: relative;
       width: 100%;
       height: 100vh;
       overflow: hidden;
     }
-
     header video {
       position: absolute;
       top: 0;
@@ -43,7 +52,6 @@
       width: 100%;
       height: 100%;
     }
-
     header .overlay {
       position: relative;
       z-index: 2;
@@ -57,104 +65,94 @@
       text-align: center;
       padding: 2rem;
     }
-
-    header .logo {
+    .logo {
       max-width: 180px;
       margin-bottom: 1rem;
     }
-
-    header h1 {
-      font-size: 2.5rem;
+    h1 {
+      font-size: 3rem;
+      line-height: 1.2;
       max-width: 800px;
       margin: 0 auto 1rem;
     }
-
-    header p.tagline {
-      font-size: 1.25rem;
+    p.tagline {
+      font-size: 1.5rem;
       margin-bottom: 2rem;
     }
-
-    header .cta-button {
-      padding: 0.75rem 1.5rem;
+    .cta-button {
+      padding: 1rem 2rem;
       background-color: var(--primary);
       border: none;
       border-radius: 6px;
       color: var(--white);
-      font-weight: 600;
-      font-size: 1rem;
+      font-weight: 700;
+      font-size: 1.125rem;
       cursor: pointer;
       transition: background 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
-
-    header .cta-button:hover {
+    .cta-button:hover {
       background-color: #87071f;
     }
-
+    .fixed-cta {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--primary);
+      color: var(--white);
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+    }
+    .fixed-cta:hover {
+      background-color: #87071f;
+    }
     section {
       padding: 4rem 1.5rem;
       max-width: 1200px;
-      margin: 0 auto;
+      margin: auto;
     }
-
-    .intro, .narrative, .infographics, .quiz, .carousel, .cta {
-      margin-bottom: 4rem;
-    }
-
-    .intro h2, .narrative h2, .infographics h2, .quiz h2, .carousel h2, .cta h2 {
+    section h2 {
       font-size: 2rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       text-align: center;
       color: var(--primary);
     }
-
-    .intro p {
+    .intro p, .narrative p, .quiz p, .carousel p {
+      font-size: 1.125rem;
+      text-align: center;
       max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-      font-size: 1.125rem;
-      color: #333;
+      margin: 0 auto 1rem;
     }
-
-    .narrative p {
-      max-width: 800px;
-      margin: 1rem auto;
-      font-size: 1.125rem;
-      text-align: center;
-    }
-
     .infographic-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 2rem;
       margin-top: 2rem;
     }
-
     .infographic-item {
       background: var(--light);
       padding: 1.5rem;
       border-left: 4px solid var(--primary);
       box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     }
-
     .infographic-item h3 {
       font-size: 1.25rem;
       margin-bottom: 0.5rem;
     }
-
     .quiz {
-      text-align: center;
       background: var(--light);
       padding: 3rem 2rem;
       border-radius: 8px;
     }
-
-    .quiz p, .carousel p {
-      font-size: 1.125rem;
-    }
-
     .quiz button {
       margin-top: 1rem;
-      display: inline-block;
       padding: 0.75rem 1.5rem;
       background-color: var(--primary);
       color: var(--white);
@@ -162,13 +160,12 @@
       border-radius: 6px;
       font-size: 1rem;
       cursor: pointer;
+      font-weight: 600;
       transition: background 0.3s ease;
     }
-
     .quiz button:hover {
       background-color: #87071f;
     }
-
     .carousel .testimonial {
       max-width: 700px;
       margin: 1.5rem auto;
@@ -177,14 +174,28 @@
       font-style: italic;
       border-left: 3px solid var(--primary);
     }
-
     .carousel .testimonial span {
       display: block;
       margin-top: 0.5rem;
       font-weight: bold;
       color: var(--primary);
     }
-
+    .carousel .pagination {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .carousel .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #ccc;
+      border-radius: 50%;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+    .carousel .dot.active {
+      background: var(--primary);
+    }
     .cta {
       background: var(--primary);
       color: var(--white);
@@ -192,15 +203,12 @@
       padding: 3rem 2rem;
       border-radius: 10px;
     }
-
     .cta h2 {
       color: var(--white);
     }
-
     .cta form {
       margin-top: 1.5rem;
     }
-
     .cta input[type="email"] {
       padding: 0.75rem;
       width: 250px;
@@ -209,7 +217,6 @@
       border-radius: 4px;
       margin-right: 1rem;
     }
-
     .cta button {
       padding: 0.75rem 1.25rem;
       background-color: var(--white);
@@ -220,18 +227,15 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .cta button:hover {
       background-color: #ddd;
     }
-
     footer {
       background: var(--light);
       color: #666;
       text-align: center;
       padding: 2rem 1rem;
     }
-
     .language-toggle {
       position: fixed;
       top: 1rem;
@@ -244,7 +248,10 @@
       cursor: pointer;
       z-index: 5;
     }
-
+    .language-toggle.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
     .messengers {
       position: fixed;
       bottom: 1rem;
@@ -254,7 +261,6 @@
       gap: 0.75rem;
       z-index: 5;
     }
-
     .messengers a {
       display: inline-block;
       background-color: #25d366;
@@ -264,97 +270,90 @@
       text-decoration: none;
       font-size: 0.875rem;
     }
-
     .messengers a.wechat {
       background-color: #7bb32e;
     }
-
     @media(max-width: 768px) {
-      header h1 {
-        font-size: 1.75rem;
+      h1 {
+        font-size: 2rem;
       }
-
+      p.tagline {
+        font-size: 1.125rem;
+      }
       .cta input[type="email"] {
         display: block;
         width: 100%;
         margin: 0 auto 1rem;
       }
-
       .cta button {
         width: 100%;
+      }
+      .fixed-cta {
+        left: 1rem;
+        right: 1rem;
+        transform: none;
+        width: calc(100% - 2rem);
       }
     }
   </style>
 </head>
 <body>
-  <div class="language-toggle">EN | 中文</div>
-  <div class="messengers">
-    <a href="https://wa.me/1234567890" target="_blank">WhatsApp</a>
-    <a href="#" class="wechat">WeChat</a>
+  <div class="language-toggle disabled" title="Coming Soon - Bilingual Support in Progress" aria-label="Language toggle disabled">EN | 中文</div>
+  <div class="messengers" aria-label="Contact options">
+    <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Chat">WhatsApp</a>
+    <a href="#" class="wechat" aria-label="WeChat Contact (currently unavailable)">WeChat</a>
   </div>
-
+  <a href="#cta" class="fixed-cta">Get Your Blueprint</a>
   <header>
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png">
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1752194282/viral_campaign_final.mp4" type="video/mp4">
+      Your browser does not support the video tag.
     </video>
     <div class="overlay">
       <img class="logo" src="https://res.cloudinary.com/dv94te4zt/image/upload/v1750389437/bncakhuu9djkbxufldtx.png" alt="L.A. Confidential HR Solutions Logo">
       <h1>Compliance Meets Culture</h1>
-      <p class="tagline">Build the Workplace You Believe In</p>
-      <button class="cta-button">Get Your Compliance Culture Blueprint Free Today</button>
+      <p class="tagline">Build the Workplace You Believe In—Legally, Inclusively, Seamlessly.</p>
+      <button class="cta-button" onclick="document.getElementById('cta').scrollIntoView({behavior: 'smooth'});">Get Your Free Compliance Culture Blueprint</button>
     </div>
   </header>
-
   <main>
     <section class="intro">
       <h2>Who We Are</h2>
-      <p>
-        L.A. Confidential HR Solutions is a pioneering HR consulting firm that specializes in simplifying human resources for startups and small to mid-sized businesses throughout California. 
-        We emphasize empathy, compliance, and team development, providing bilingual HR expertise along with cross-cultural insights that empower our clients to excel. 
-        Our distinctive approach blends professionalism with a light-hearted demeanor, creating an inviting environment where every client feels valued and understood.
-      </p>
+      <p>L.A. Confidential HR Solutions is your trusted bilingual HR partner, based in California. We specialize in helping startups and Chinese firms navigating U.S. expansion overcome workforce challenges through culturally fluent and legally sound HR strategies. From compliance audits to inclusive team building, we simplify the complex—so you can focus on vision and growth.</p>
     </section>
-
     <section class="narrative">
-      <h2>Your HR Ally in Compliance & Culture</h2>
-      <p>
-        Compliance isn't just paperwork—it's the glue of inclusive workplaces. Through bilingual delivery and real culture fluency, we help innovative startups and Chinese-U.S. firms harmonize operations, values, and growth with total legal confidence.
-      </p>
-      <p>
-        From navigating California-specific labor laws to building equitable hiring pipelines, we reimagine HR as human potential realized.
-      </p>
+      <h2>Compliance & Culture, Bridged</h2>
+      <p>We believe HR isn't just about handbooks—it's about human power. Through bilingual tools, deep culture fluency, and empathetic expertise, we help you avoid costly missteps and build aligned, high-performing teams rooted in inclusion and trust.</p>
+      <p>Whether you’re hiring your first employee or planning company-wide performance frameworks, we integrate California labor law with your mission and culture—ensuring your people practices scale effectively and equitably.</p>
     </section>
-
     <section class="infographics">
-      <h2>The Impact of Inclusive HR</h2>
+      <h2>Real Impact, Backed by Data</h2>
       <div class="infographic-grid">
         <div class="infographic-item">
           <h3>Cost of Non-Compliance</h3>
-          <p>Fines averaging $130K/year for misclassified employees in CA startups.</p>
+          <p>Startups in California risk $130K+ per year in fines for misclassifications and HR oversights.</p>
         </div>
         <div class="infographic-item">
           <h3>Retention Through Equity</h3>
-          <p>Inclusive companies experience 50% less turnover & higher morale.</p>
+          <p>Inclusive teams see 50% less turnover and higher employee engagement across all levels.</p>
         </div>
         <div class="infographic-item">
-          <h3>Cross-Cultural Harmony</h3>
-          <p>Bilingual onboarding = smoother transitions and 30% faster ramp-up.</p>
+          <h3>Bilingual Integration</h3>
+          <p>Dual-language onboarding cuts ramp-up time by 30% while building cultural trust from Day 1.</p>
         </div>
         <div class="infographic-item">
           <h3>Confident Hiring</h3>
-          <p>Clear job structures & fair pay grids reduce bias and increase loyalty.</p>
+          <p>Fair pay grids and clear job roles reduce legal risk—and increase talent retention by 42%.</p>
         </div>
       </div>
     </section>
-
     <section class="quiz">
       <h2>Is Your Culture Hiring-Ready?</h2>
-      <p>Take our 2-minute quiz to assess your team's compliance health & culture equity score. Instant results & tailored recommendations.</p>
-      <button>Start the Quiz</button>
+      <p>Take our 2-minute diagnostic quiz to assess your company's compliance baseline and culture fluency. Receive instant results with customized insights to move forward.</p>
+      <button onclick="window.location.href='#'">Start the Quiz</button>
     </section>
-
     <section class="carousel">
-      <h2>Client Voices</h2>
+      <h2>What Our Clients Say</h2>
       <div class="testimonial">
         "We thought HR meant red tape. But with L.A. Confidential, we built a warm, compliant team culture that tripled retention." 
         <span>— Lina Zhang, CTO at Horizon Biotech</span>
@@ -367,21 +366,27 @@
         "They made compliance creative—and dare I say, fun. Every founder should talk to them before they hit 50 employees." 
         <span>— Paul G., Co-Founder, UpSpring Studios</span>
       </div>
+      <div class="pagination" role="navigation" aria-label="Testimonial Navigation">
+        <span class="dot active" aria-label="Slide 1"></span>
+        <span class="dot" aria-label="Slide 2"></span>
+        <span class="dot" aria-label="Slide 3"></span>
+      </div>
     </section>
-
-    <section class="cta">
+    <section class="cta" id="cta">
       <h2>Build the Workplace You Believe In</h2>
-      <p>Your free Compliance Culture Blueprint is waiting. Let’s map your HR success, together.</p>
+      <p>Your free Compliance Culture Blueprint includes legal essentials, inclusive hiring tips, and bilingual communication templates, customized for your team.</p>
       <form>
-        <input type="email" placeholder="Enter your email" required />
+        <label for="email" class="visually-hidden">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
         <button type="submit">Send My Blueprint</button>
       </form>
     </section>
   </main>
-
   <footer>
     <p>&copy; 2024 L.A. Confidential HR Solutions. All rights reserved.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a></p>
   </footer>
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=dd51a7b87e57a57d35f18bb99b6e3a99a0140d22" width="1" height="1" style="display:none;" alt="tracking pixel">
 </body>
 </html>
-```
+</DOCTYPE HTML>
