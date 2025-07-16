@@ -1725,7 +1725,7 @@ function editContact(contactId) {
   document.getElementById('workflow').value = contact.workflow || '';
   document.getElementById('aiemail').checked = contact.aiemail || false;
   document.getElementById('newsletter').checked = contact.newsletter || false;
-  
+  document.getElementById('tags').value = contact.tags || '';
   // Change the modal title and button
   document.querySelector('#addContactModal .modal-header h2').textContent = '✏️ Edit Contact';
   document.querySelector('#addContactModal button[type="submit"]').textContent = '💾 Update Contact';
