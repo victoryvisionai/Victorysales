@@ -802,6 +802,12 @@
           <option value="reengage">Re-engage</option>
         </select>
       </div>
+<div class="form-group">
+  <label for="tagsFilter">Tags</label>
+  <select id="tagsFilter">
+    <option value="">All Tags</option>
+  </select>
+</div>
       <button id="refreshBtn">🔄 Refresh</button>
       <button id="clearFiltersBtn" class="secondary">Clear Filters</button>
     </div>
@@ -2149,10 +2155,11 @@ function populateFilterOptions() {
   const industries = [...new Set(allContacts.map(c => c.industry).filter(Boolean))].sort();
   const cities = [...new Set(allContacts.map(c => c.city).filter(Boolean))].sort();
   const schools = [...new Set(allContacts.map(c => c.school_name).filter(Boolean))].sort();
-  
+  const tags = [...new Set(allContacts.flatMap(c => (c.tags || '').split(' ').filter(tag => tag.trim())))].sort();
   populateSelect('industryFilter', industries);
   populateSelect('cityFilter', cities);
   populateSelect('schoolFilter', schools);
+  populateSelect('tagsFilter', tags);
 }
 
 function populateSelect(selectId, options) {
@@ -2175,7 +2182,7 @@ function applyFilters() {
   const revenue = document.getElementById('revenueFilter').value;
   const school = document.getElementById('schoolFilter').value;
   const workflow = document.getElementById('workflowFilter').value;
-
+const tags = document.getElementById('tagsFilter').value;
   filteredContacts = allContacts.filter(contact => {
     // Search filter
     if (searchTerm) {
@@ -2234,7 +2241,13 @@ function applyFilters() {
         return false;
       }
     }
-
+// Tags filter
+if (tags) {
+  const contactTags = (contact.tags || '').split(' ').filter(t => t.trim());
+  if (!contactTags.includes(tags)) {
+    return false;
+  }
+}
     return true;
   });
 
