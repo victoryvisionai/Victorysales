@@ -1387,7 +1387,7 @@ async function addContactManually(formData) {
 async function updateContact(contactId, formData) {
   try {
     // Extract all form data using the name attributes
-    const contactData = { contact_id: contactId };
+    const contactData = {contact_id:contactId };
     for (let [key, value] of formData.entries()) {
       // Handle checkboxes properly
       if (key === 'aiemail' || key === 'newsletter') {
