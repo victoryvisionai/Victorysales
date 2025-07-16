@@ -723,7 +723,7 @@
     // Load user configuration
     async function loadUserConfig() {
         try {
-            const response = await fetch(`${VV_API_BASE}/users/get?customer_id=${encodeURIComponent(CUSTOMER_EMAIL)}`, {
+            const response = await fetch(`${VV_API_BASE}/user/get?customer_id=${encodeURIComponent(CUSTOMER_EMAIL)}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
