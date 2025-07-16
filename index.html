@@ -38,375 +38,6 @@
    }
    
    body
-<!-- Victory Vision Newsletter Popup Snippet -->
-<!-- This can be inserted ANYWHERE in any HTML page without breaking existing content -->
-<!-- Just paste this entire block anywhere between <body> and </body> tags -->
-
-<script>
-(function() {
-    'use strict';
-    
-    // Configuration - Replace CUSTOMER_EMAIL with actual user email
-    const CUSTOMER_EMAIL = 'user@example.com'; // This should be dynamically set per customer
-    const VV_API_BASE = 'https://victoryvision.app.n8n.cloud/webhook';
-    
-    // Global popup state
-    let popupShown = false;
-    let popupElement = null;
-    let userConfig = null;
-    
-    // Load user configuration
-    async function loadUserConfig() {
-        try {
-            const response = await fetch(`${VV_API_BASE}/users/get?customer_id=${encodeURIComponent(CUSTOMER_EMAIL)}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (!response.ok) throw new Error('Failed to load user config');
-            
-            const data = await response.json();
-            userConfig = Array.isArray(data) ? data[0] : data;
-            
-            return userConfig;
-        } catch (error) {
-            console.error('Error loading user config:', error);
-            // Fallback configuration
-            return {
-                company_name: 'Newsletter',
-                newsletter_title: 'Stay Updated',
-                newsletter_tagline: 'Get the latest news and updates delivered to your inbox'
-            };
-        }
-    }
-    
-    // Submit newsletter signup
-    async function submitNewsletterSignup(email, linkedin = '') {
-        try {
-            const response = await fetch(`${VV_API_BASE}/emails/newsletter-signup`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    customer_id: CUSTOMER_EMAIL,
-                    email: email,
-                    linkedin: linkedin,
-                    source_url: window.location.href,
-                    timestamp: new Date().toISOString()
-                })
-            });
-            
-            if (!response.ok) throw new Error('Signup failed');
-            
-            return await response.json();
-        } catch (error) {
-            console.error('Error submitting signup:', error);
-            throw error;
-        }
-    }
-    
-    // Create popup HTML
-    function createPopupHTML(config) {
-        return `
-            <div id="vv-newsletter-overlay-${Date.now()}" style="
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.6);
-                backdrop-filter: blur(4px);
-                z-index: 999999;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                animation: vv-fadeIn 0.3s ease-out;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            ">
-                <div style="
-                    background: rgba(255, 255, 255, 0.15);
-                    backdrop-filter: blur(20px);
-                    border: 1px solid rgba(255, 255, 255, 0.3);
-                    border-radius: 16px;
-                    padding: 40px;
-                    max-width: 480px;
-                    width: 90%;
-                    max-height: 90vh;
-                    overflow-y: auto;
-                    position: relative;
-                    text-align: center;
-                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-                    animation: vv-slideUp 0.4s ease-out;
-                ">
-                    <button onclick="this.closest('[id^=vv-newsletter-overlay]').remove()" style="
-                        position: absolute;
-                        top: 15px;
-                        right: 15px;
-                        background: none;
-                        border: none;
-                        font-size: 24px;
-                        cursor: pointer;
-                        color: #444;
-                        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-                        padding: 5px;
-                        line-height: 1;
-                        border-radius: 50%;
-                        width: 35px;
-                        height: 35px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        transition: all 0.2s ease;
-                    " onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='none'">×</button>
-                    
-                    <div style="margin-bottom: 8px;">
-                        <span style="
-                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                            color: white;
-                            padding: 6px 12px;
-                            border-radius: 20px;
-                            font-size: 12px;
-                            font-weight: 600;
-                            text-transform: uppercase;
-                            letter-spacing: 0.5px;
-                        ">Newsletter</span>
-                    </div>
-                    
-                    <h2 style="
-                        margin: 20px 0 10px 0;
-                        font-size: 28px;
-                        font-weight: 700;
-                        color: #222;
-                        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-                        line-height: 1.2;
-                    ">${config.newsletter_title || 'Stay Updated'}</h2>
-                    
-                    <p style="
-                        margin: 0 0 30px 0;
-                        font-size: 16px;
-                        color: #666;
-                        line-height: 1.5;
-                    ">${config.newsletter_tagline || 'Get the latest news and updates delivered to your inbox'}</p>
-                    
-                    <form onsubmit="return window.vvSubmitNewsletter(event, this)" style="text-align: left;">
-                        <div style="margin-bottom: 20px;">
-                            <label style="
-                                display: block;
-                                margin-bottom: 8px;
-                                font-weight: 600;
-                                color: #222;
-                                text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
-                                font-size: 14px;
-                            ">Email Address *</label>
-                            <input type="email" name="email" required style="
-                                width: 100%;
-                                padding: 14px 16px;
-                                border: 2px solid #e1e5e9;
-                                border-radius: 8px;
-                                font-size: 16px;
-                                box-sizing: border-box;
-                                transition: border-color 0.2s ease;
-                                background: rgba(255, 255, 255, 0.9);
-                            " placeholder="your.email@example.com" 
-                            onfocus="this.style.borderColor='#667eea'; this.style.outline='none'; this.style.background='rgba(255,255,255,0.9)'"
-                            onblur="this.style.borderColor='rgba(255,255,255,0.6)'; this.style.background='rgba(255,255,255,0.8)'">
-                        </div>
-                        
-                        <div style="margin-bottom: 25px;">
-                            <label style="
-                                display: block;
-                                margin-bottom: 8px;
-                                font-weight: 600;
-                                color: #333;
-                                font-size: 14px;
-                            ">LinkedIn Profile (Optional)</label>
-                            <input type="url" name="linkedin" style="
-                                width: 100%;
-                                padding: 14px 16px;
-                                border: 2px solid #e1e5e9;
-                                border-radius: 8px;
-                                font-size: 16px;
-                                box-sizing: border-box;
-                                transition: border-color 0.2s ease;
-                                background: rgba(255, 255, 255, 0.9);
-                            " placeholder="https://linkedin.com/in/yourprofile"
-                            onfocus="this.style.borderColor='#667eea'; this.style.outline='none'; this.style.background='rgba(255,255,255,0.9)'"
-                            onblur="this.style.borderColor='rgba(255,255,255,0.6)'; this.style.background='rgba(255,255,255,0.8)'">
-                        </div>
-                        
-                        <button type="submit" style="
-                            width: 100%;
-                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                            color: white;
-                            border: none;
-                            padding: 16px 24px;
-                            border-radius: 8px;
-                            font-size: 16px;
-                            font-weight: 600;
-                            cursor: pointer;
-                            transition: all 0.2s ease;
-                            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(102, 126, 234, 0.4)'"
-                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'">
-                            Join Newsletter
-                        </button>
-                    </form>
-                    
-                    <p style="
-                        margin: 20px 0 0 0;
-                        font-size: 12px;
-                        color: #999;
-                        text-align: center;
-                    ">Powered by <a href="https://victoryvision.app" target="_blank" style="color: #667eea; text-decoration: none;">Victory Vision</a></p>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Global form submission handler
-    window.vvSubmitNewsletter = async function(event, form) {
-        event.preventDefault();
-        
-        const formData = new FormData(form);
-        const email = formData.get('email');
-        const linkedin = formData.get('linkedin');
-        const submitBtn = form.querySelector('button[type="submit"]');
-        
-        if (!email) return false;
-        
-        // Update button state
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Joining...';
-        submitBtn.style.background = '#ccc';
-        
-        try {
-            await submitNewsletterSignup(email, linkedin);
-            
-            // Success state
-            submitBtn.textContent = '✓ Success!';
-            submitBtn.style.background = '#28a745';
-            
-            // Close popup after delay
-            setTimeout(() => {
-                form.closest('[id^="vv-newsletter-overlay"]').remove();
-            }, 2000);
-            
-        } catch (error) {
-            // Error state
-            submitBtn.textContent = 'Error - Try Again';
-            submitBtn.style.background = '#dc3545';
-            submitBtn.disabled = false;
-            
-            // Reset after delay
-            setTimeout(() => {
-                submitBtn.textContent = 'Join Newsletter';
-                submitBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-            }, 3000);
-        }
-        
-        return false;
-    };
-    
-    // Show the popup
-    async function showPopup() {
-        if (popupShown) return;
-        
-        // Load user config first
-        const config = await loadUserConfig();
-        
-        popupShown = true;
-        
-        // Create and insert popup
-        const popupHTML = createPopupHTML(config);
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = popupHTML;
-        
-        // Insert CSS if not already present
-        if (!document.getElementById('vv-popup-styles')) {
-            const style = document.createElement('style');
-            style.id = 'vv-popup-styles';
-            style.textContent = `
-                @keyframes vv-fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                
-                @keyframes vv-slideUp {
-                    from { transform: translateY(30px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-                
-                @media (max-width: 600px) {
-                    [id^="vv-newsletter-overlay"] > div {
-                        padding: 30px 25px !important;
-                        margin: 20px !important;
-                    }
-                    
-                    [id^="vv-newsletter-overlay"] h2 {
-                        font-size: 24px !important;
-                    }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        document.body.appendChild(tempDiv.firstElementChild);
-        
-        // Add ESC key handler
-        const escHandler = (e) => {
-            if (e.key === 'Escape') {
-                const overlay = document.querySelector('[id^="vv-newsletter-overlay"]');
-                if (overlay) overlay.remove();
-                document.removeEventListener('keydown', escHandler);
-            }
-        };
-        document.addEventListener('keydown', escHandler);
-        
-        // Click outside to close
-        setTimeout(() => {
-            const overlay = document.querySelector('[id^="vv-newsletter-overlay"]');
-            if (overlay) {
-                overlay.onclick = (e) => {
-                    if (e.target === overlay) overlay.remove();
-                };
-            }
-        }, 100);
-    }
-    
-    // Global function to manually trigger popup
-    window.showNewsletterPopup = function(delay = 0) {
-        if (delay > 0) {
-            setTimeout(showPopup, delay);
-        } else {
-            showPopup();
-        }
-    };
-    
-    // Auto-show popup after page load delay (15 seconds)
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(showPopup, 15000);
-        });
-    } else {
-        setTimeout(showPopup, 15000);
-    }
-    
-    // Exit intent detection (desktop only)
-    let exitIntentTriggered = false;
-    document.addEventListener('mouseleave', (e) => {
-        if (!exitIntentTriggered && e.clientY <= 0 && window.innerWidth > 768) {
-            exitIntentTriggered = true;
-            showPopup();
-        }
-    });
-    
-})();
-</script>
-
-<!-- End Victory Vision Newsletter Popup Snippet -->  
   {
      font-family: var(--font-main);
      background-color: var(--white);
@@ -1072,5 +703,374 @@
      });
    });
  </script>
+ <!-- Victory Vision Newsletter Popup Snippet -->
+<!-- This can be inserted ANYWHERE in any HTML page without breaking existing content -->
+<!-- Just paste this entire block anywhere between <body> and </body> tags -->
+
+<script>
+(function() {
+    'use strict';
+    
+    // Configuration - Replace CUSTOMER_EMAIL with actual user email
+    const CUSTOMER_EMAIL = 'user@example.com'; // This should be dynamically set per customer
+    const VV_API_BASE = 'https://victoryvision.app.n8n.cloud/webhook';
+    
+    // Global popup state
+    let popupShown = false;
+    let popupElement = null;
+    let userConfig = null;
+    
+    // Load user configuration
+    async function loadUserConfig() {
+        try {
+            const response = await fetch(`${VV_API_BASE}/users/get?customer_id=${encodeURIComponent(CUSTOMER_EMAIL)}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) throw new Error('Failed to load user config');
+            
+            const data = await response.json();
+            userConfig = Array.isArray(data) ? data[0] : data;
+            
+            return userConfig;
+        } catch (error) {
+            console.error('Error loading user config:', error);
+            // Fallback configuration
+            return {
+                company_name: 'Newsletter',
+                newsletter_title: 'Stay Updated',
+                newsletter_tagline: 'Get the latest news and updates delivered to your inbox'
+            };
+        }
+    }
+    
+    // Submit newsletter signup
+    async function submitNewsletterSignup(email, linkedin = '') {
+        try {
+            const response = await fetch(`${VV_API_BASE}/emails/newsletter-signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    customer_id: CUSTOMER_EMAIL,
+                    email: email,
+                    linkedin: linkedin,
+                    source_url: window.location.href,
+                    timestamp: new Date().toISOString()
+                })
+            });
+            
+            if (!response.ok) throw new Error('Signup failed');
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Error submitting signup:', error);
+            throw error;
+        }
+    }
+    
+    // Create popup HTML
+    function createPopupHTML(config) {
+        return `
+            <div id="vv-newsletter-overlay-${Date.now()}" style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+                z-index: 999999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: vv-fadeIn 0.3s ease-out;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            ">
+                <div style="
+                    background: rgba(255, 255, 255, 0.15);
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 16px;
+                    padding: 40px;
+                    max-width: 480px;
+                    width: 90%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    position: relative;
+                    text-align: center;
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+                    animation: vv-slideUp 0.4s ease-out;
+                ">
+                    <button onclick="this.closest('[id^=vv-newsletter-overlay]').remove()" style="
+                        position: absolute;
+                        top: 15px;
+                        right: 15px;
+                        background: none;
+                        border: none;
+                        font-size: 24px;
+                        cursor: pointer;
+                        color: #444;
+                        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+                        padding: 5px;
+                        line-height: 1;
+                        border-radius: 50%;
+                        width: 35px;
+                        height: 35px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='none'">×</button>
+                    
+                    <div style="margin-bottom: 8px;">
+                        <span style="
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            padding: 6px 12px;
+                            border-radius: 20px;
+                            font-size: 12px;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                        ">Newsletter</span>
+                    </div>
+                    
+                    <h2 style="
+                        margin: 20px 0 10px 0;
+                        font-size: 28px;
+                        font-weight: 700;
+                        color: #222;
+                        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+                        line-height: 1.2;
+                    ">${config.newsletter_title || 'Stay Updated'}</h2>
+                    
+                    <p style="
+                        margin: 0 0 30px 0;
+                        font-size: 16px;
+                        color: #666;
+                        line-height: 1.5;
+                    ">${config.newsletter_tagline || 'Get the latest news and updates delivered to your inbox'}</p>
+                    
+                    <form onsubmit="return window.vvSubmitNewsletter(event, this)" style="text-align: left;">
+                        <div style="margin-bottom: 20px;">
+                            <label style="
+                                display: block;
+                                margin-bottom: 8px;
+                                font-weight: 600;
+                                color: #222;
+                                text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+                                font-size: 14px;
+                            ">Email Address *</label>
+                            <input type="email" name="email" required style="
+                                width: 100%;
+                                padding: 14px 16px;
+                                border: 2px solid #e1e5e9;
+                                border-radius: 8px;
+                                font-size: 16px;
+                                box-sizing: border-box;
+                                transition: border-color 0.2s ease;
+                                background: rgba(255, 255, 255, 0.9);
+                            " placeholder="your.email@example.com" 
+                            onfocus="this.style.borderColor='#667eea'; this.style.outline='none'; this.style.background='rgba(255,255,255,0.9)'"
+                            onblur="this.style.borderColor='rgba(255,255,255,0.6)'; this.style.background='rgba(255,255,255,0.8)'">
+                        </div>
+                        
+                        <div style="margin-bottom: 25px;">
+                            <label style="
+                                display: block;
+                                margin-bottom: 8px;
+                                font-weight: 600;
+                                color: #333;
+                                font-size: 14px;
+                            ">LinkedIn Profile (Optional)</label>
+                            <input type="url" name="linkedin" style="
+                                width: 100%;
+                                padding: 14px 16px;
+                                border: 2px solid #e1e5e9;
+                                border-radius: 8px;
+                                font-size: 16px;
+                                box-sizing: border-box;
+                                transition: border-color 0.2s ease;
+                                background: rgba(255, 255, 255, 0.9);
+                            " placeholder="https://linkedin.com/in/yourprofile"
+                            onfocus="this.style.borderColor='#667eea'; this.style.outline='none'; this.style.background='rgba(255,255,255,0.9)'"
+                            onblur="this.style.borderColor='rgba(255,255,255,0.6)'; this.style.background='rgba(255,255,255,0.8)'">
+                        </div>
+                        
+                        <button type="submit" style="
+                            width: 100%;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            border: none;
+                            padding: 16px 24px;
+                            border-radius: 8px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(102, 126, 234, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)'">
+                            Join Newsletter
+                        </button>
+                    </form>
+                    
+                    <p style="
+                        margin: 20px 0 0 0;
+                        font-size: 12px;
+                        color: #999;
+                        text-align: center;
+                    ">Powered by <a href="https://victoryvision.app" target="_blank" style="color: #667eea; text-decoration: none;">Victory Vision</a></p>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Global form submission handler
+    window.vvSubmitNewsletter = async function(event, form) {
+        event.preventDefault();
+        
+        const formData = new FormData(form);
+        const email = formData.get('email');
+        const linkedin = formData.get('linkedin');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        if (!email) return false;
+        
+        // Update button state
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Joining...';
+        submitBtn.style.background = '#ccc';
+        
+        try {
+            await submitNewsletterSignup(email, linkedin);
+            
+            // Success state
+            submitBtn.textContent = '✓ Success!';
+            submitBtn.style.background = '#28a745';
+            
+            // Close popup after delay
+            setTimeout(() => {
+                form.closest('[id^="vv-newsletter-overlay"]').remove();
+            }, 2000);
+            
+        } catch (error) {
+            // Error state
+            submitBtn.textContent = 'Error - Try Again';
+            submitBtn.style.background = '#dc3545';
+            submitBtn.disabled = false;
+            
+            // Reset after delay
+            setTimeout(() => {
+                submitBtn.textContent = 'Join Newsletter';
+                submitBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }, 3000);
+        }
+        
+        return false;
+    };
+    
+    // Show the popup
+    async function showPopup() {
+        if (popupShown) return;
+        
+        // Load user config first
+        const config = await loadUserConfig();
+        
+        popupShown = true;
+        
+        // Create and insert popup
+        const popupHTML = createPopupHTML(config);
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = popupHTML;
+        
+        // Insert CSS if not already present
+        if (!document.getElementById('vv-popup-styles')) {
+            const style = document.createElement('style');
+            style.id = 'vv-popup-styles';
+            style.textContent = `
+                @keyframes vv-fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                
+                @keyframes vv-slideUp {
+                    from { transform: translateY(30px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                
+                @media (max-width: 600px) {
+                    [id^="vv-newsletter-overlay"] > div {
+                        padding: 30px 25px !important;
+                        margin: 20px !important;
+                    }
+                    
+                    [id^="vv-newsletter-overlay"] h2 {
+                        font-size: 24px !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(tempDiv.firstElementChild);
+        
+        // Add ESC key handler
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                const overlay = document.querySelector('[id^="vv-newsletter-overlay"]');
+                if (overlay) overlay.remove();
+                document.removeEventListener('keydown', escHandler);
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+        
+        // Click outside to close
+        setTimeout(() => {
+            const overlay = document.querySelector('[id^="vv-newsletter-overlay"]');
+            if (overlay) {
+                overlay.onclick = (e) => {
+                    if (e.target === overlay) overlay.remove();
+                };
+            }
+        }, 100);
+    }
+    
+    // Global function to manually trigger popup
+    window.showNewsletterPopup = function(delay = 0) {
+        if (delay > 0) {
+            setTimeout(showPopup, delay);
+        } else {
+            showPopup();
+        }
+    };
+    
+    // Auto-show popup after page load delay (15 seconds)
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(showPopup, 15000);
+        });
+    } else {
+        setTimeout(showPopup, 15000);
+    }
+    
+    // Exit intent detection (desktop only)
+    let exitIntentTriggered = false;
+    document.addEventListener('mouseleave', (e) => {
+        if (!exitIntentTriggered && e.clientY <= 0 && window.innerWidth > 768) {
+            exitIntentTriggered = true;
+            showPopup();
+        }
+    });
+    
+})();
+</script>
+
+<!-- End Victory Vision Newsletter Popup Snippet -->  
 </body>
 </html>
