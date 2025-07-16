@@ -160,35 +160,6 @@
       border-color: #28a745;
       background: #d4edda;
     }
-    .image-gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 10px;
-      margin-top: 15px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .image-thumbnail {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-    }
-    .image-thumbnail:hover {
-      border-color: #0A3161;
-    }
-    .image-thumbnail.selected {
-      border-color: #28a745;
-      box-shadow: 0 0 0 2px #28a745;
-    }
-    .image-thumbnail img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
     .upload-btn {
       background: #28a745;
       color: white;
@@ -779,6 +750,9 @@
     <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
       📖 Take Tour
     </button>
+    <button onclick="logout()" style="background: #bb133e; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="logoutButton">
+      Sign Out
+    </button>
     <div id="subscriptionMedallion" class="subscription-medallion bronze" data-intro="Your current subscription tier. Higher tiers unlock more advertising credits and premium features for billboard campaigns." data-step="1">
       <span class="plan-name">Bronze</span>
     </div>
@@ -870,21 +844,6 @@
     </div>
     
     <div class="campaign-options">
-      <div class="campaign-card">
-        <div class="campaign-duration">3 Month Campaign</div>
-        <div class="campaign-price">$12,000</div>
-        <ul class="campaign-features">
-          <li>✅ Prime billboard locations</li>
-          <li>✅ Both Baton Rouge & Breaux Bridge</li>
-          <li>✅ Professional design included</li>
-          <li>✅ Installation & maintenance</li>
-          <li>✅ Performance analytics</li>
-        </ul>
-        <button class="checkout-btn" onclick="purchaseCampaign('3-month')">
-          🛒 Purchase 3-Month Campaign
-        </button>
-      </div>
-      
       <div class="campaign-card">
         <div class="campaign-duration">6 Month Campaign</div>
         <div class="campaign-price">$20,000</div>
@@ -1111,6 +1070,7 @@
   // Authentication
   async function checkAuthentication() {
     try {
+      console.log('Checking authentication...');
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       
       if (error) {
@@ -1121,10 +1081,12 @@
       if (session && session.user) {
         CUSTOMER_ID = session.user.email;
         authToken = session.access_token;
+        console.log('Authentication successful for:', CUSTOMER_ID);
         document.getElementById('userEmail').textContent = CUSTOMER_ID;
         return true;
       }
 
+      console.log('No valid session found');
       return false;
     } catch (e) {
       console.error('Auth check error:', e);
@@ -1135,6 +1097,18 @@
   function redirectToLogin() {
     localStorage.removeItem('vv_session');
     window.location.href = 'login.html';
+  }
+
+  async function logout() {
+    try {
+      await supabaseClient.auth.signOut();
+      localStorage.removeItem('vv_session');
+      redirectToLogin();
+    } catch (e) {
+      console.error('Logout error:', e);
+      localStorage.removeItem('vv_session');
+      redirectToLogin();
+    }
   }
 
   // API call function with enhanced security
@@ -1680,7 +1654,7 @@
           <div style="margin-bottom: 10px;"><strong>Location:</strong> ${ad.location || 'N/A'}</div>
           <div style="margin-bottom: 10px;"><strong>Duration:</strong> ${ad.duration || 'N/A'}</div>
           <div style="margin-bottom: 10px;"><strong>Status:</strong> ${ad.status || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Price:</strong> $${ad.price || 'N/A'}</div>
+          <div style="margin-bottom: 10px;"><strong>Price:</strong> ${ad.price || 'N/A'}</div>
           <div style="margin-bottom: 10px;"><strong>Created:</strong> ${new Date(ad.created_at).toLocaleDateString()}</div>
           ${ad.start_date ? `<div style="margin-bottom: 10px;"><strong>Start Date:</strong> ${new Date(ad.start_date).toLocaleDateString()}</div>` : ''}
           ${ad.end_date ? `<div style="margin-bottom: 10px;"><strong>End Date:</strong> ${new Date(ad.end_date).toLocaleDateString()}</div>` : ''}
@@ -1965,7 +1939,7 @@
   window.closeModal = closeModal;
   window.closeThankYouModal = closeThankYouModal;
   window.startTour = startTour;
-  window.signOut = signOut;
+  window.logout = logout;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
