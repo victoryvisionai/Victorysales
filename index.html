@@ -37,8 +37,7 @@
      padding: 0;
    }
    
-   body
-  {
+   body {
      font-family: var(--font-main);
      background-color: var(--white);
      color: var(--dark);
@@ -258,6 +257,109 @@
      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
    }
    
+   /* Product Preview Section */
+   .product-preview {
+     padding: 5rem 0;
+     background: var(--light);
+   }
+   
+   .product-preview h2 {
+     text-align: center;
+     font-size: 3rem;
+     font-weight: 800;
+     margin-bottom: 1rem;
+     color: var(--primary);
+   }
+   
+   .product-preview p {
+     text-align: center;
+     font-size: 1.2rem;
+     color: var(--gray);
+     margin-bottom: 3rem;
+     max-width: 600px;
+     margin-left: auto;
+     margin-right: auto;
+   }
+   
+   .product-grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+     gap: 2rem;
+     margin-bottom: 3rem;
+   }
+   
+   .product-card {
+     background: var(--white);
+     border-radius: 16px;
+     overflow: hidden;
+     box-shadow: var(--shadow);
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+     position: relative;
+   }
+   
+   .product-card:hover {
+     transform: translateY(-10px);
+     box-shadow: var(--shadow-lg);
+   }
+   
+   .product-image {
+     width: 100%;
+     height: 200px;
+     object-fit: cover;
+     display: block;
+   }
+   
+   .product-card-content {
+     padding: 2rem;
+   }
+   
+   .product-card h3 {
+     font-size: 1.5rem;
+     font-weight: 700;
+     margin-bottom: 1rem;
+     color: var(--primary);
+   }
+   
+   .product-card p {
+     color: var(--gray);
+     line-height: 1.6;
+     margin-bottom: 1.5rem;
+   }
+   
+   .product-features {
+     list-style: none;
+     margin-bottom: 1.5rem;
+   }
+   
+   .product-features li {
+     display: flex;
+     align-items: center;
+     gap: 0.5rem;
+     margin-bottom: 0.5rem;
+     color: var(--gray);
+   }
+   
+   .product-features li::before {
+     content: "✓";
+     color: var(--accent);
+     font-weight: bold;
+   }
+   
+   .product-cta {
+     background: var(--gradient);
+     color: var(--white);
+     padding: 0.75rem 1.5rem;
+     border-radius: 8px;
+     text-decoration: none;
+     font-weight: 600;
+     display: inline-block;
+     transition: transform 0.3s ease;
+   }
+   
+   .product-cta:hover {
+     transform: scale(1.05);
+   }
+   
    /* Features Section */
    .features {
      padding: 5rem 0;
@@ -474,13 +576,18 @@
      
      .features h2,
      .testimonials h2,
-     .cta h2 {
+     .cta h2,
+     .product-preview h2 {
        font-size: 2rem;
      }
      
      .cta-buttons {
        flex-direction: column;
        align-items: center;
+     }
+     
+     .product-grid {
+       grid-template-columns: 1fr;
      }
    }
  </style>
@@ -531,6 +638,61 @@
              <div class="avatar"></div>
            </div>
            <span>Trusted by CEOs and marketing leaders</span>
+         </div>
+       </div>
+     </div>
+   </div>
+ </section>
+
+ <!-- Product Preview Section -->
+ <section class="product-preview">
+   <div class="container">
+     <h2>See Victory Vision In Action</h2>
+     <p>Experience the power of AI-driven marketing automation with our comprehensive platform suite</p>
+     
+     <div class="product-grid">
+       <div class="product-card">
+         <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1752860525/fuoweigll77ow1tmbuac.png" alt="Media Management Interface" class="product-image" />
+         <div class="product-card-content">
+           <h3>🎬 AI Media Creation</h3>
+           <p>Generate stunning videos and images with advanced AI technology. Create professional content in minutes, not hours.</p>
+           <ul class="product-features">
+             <li>Automated video generation</li>
+             <li>High-quality image creation</li>
+             <li>Brand-consistent content</li>
+             <li>Multiple format support</li>
+           </ul>
+           <a href="signup.html" class="product-cta">Try Media Creation</a>
+         </div>
+       </div>
+       
+       <div class="product-card">
+         <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1752860525/u1fgkr3yff9dna3apksd.png" alt="Contact Management System" class="product-image" />
+         <div class="product-card-content">
+           <h3>👥 Smart Contact Generation</h3>
+           <p>Find and engage high-quality prospects automatically. Our AI identifies your ideal customers and initiates conversations.</p>
+           <ul class="product-features">
+             <li>LinkedIn contact discovery</li>
+             <li>Automated outreach sequences</li>
+             <li>Lead qualification scoring</li>
+             <li>CRM integration</li>
+           </ul>
+           <a href="signup.html" class="product-cta">Start Finding Leads</a>
+         </div>
+       </div>
+       
+       <div class="product-card">
+         <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1752860525/u1fgkr3yff9dna3apksd.png" alt="Advertising Dashboard" class="product-image" />
+         <div class="product-card-content">
+           <h3>📺 Billboard Advertising</h3>
+           <p>Create and manage billboard campaigns with real-time performance tracking. Maximize your outdoor advertising ROI.</p>
+           <ul class="product-features">
+             <li>Custom billboard design</li>
+             <li>Strategic location targeting</li>
+             <li>Performance analytics</li>
+             <li>Campaign optimization</li>
+           </ul>
+           <a href="signup.html" class="product-cta">Launch Campaign</a>
          </div>
        </div>
      </div>
@@ -647,47 +809,83 @@
  </footer>
 
  <script>
-   // Email signup form
+   // Email signup form - FIXED
    document.getElementById('emailSignup').addEventListener('submit', async function(e) {
      e.preventDefault();
-     const email = e.target.querySelector('input[type="email"]').value;
-     const button = e.target.querySelector('button');
      
+     // Get form elements more reliably
+     const emailInput = e.target.querySelector('input[type="email"]');
+     const button = e.target.querySelector('button[type="submit"]');
+     
+     if (!emailInput || !button) {
+       console.error('Form elements not found');
+       return;
+     }
+     
+     const email = emailInput.value.trim();
+     
+     // Validate email before sending
+     if (!email || !isValidEmail(email)) {
+       alert('Please enter a valid email address');
+       return;
+     }
+     
+     // Update button state
+     const originalText = button.textContent;
      button.textContent = 'Signing Up...';
      button.disabled = true;
      
      try {
+       console.log('Sending email:', email); // Debug log
+       
        const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/email/signup', {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json',
          },
-         body: JSON.stringify({ email: email })
+         body: JSON.stringify({ 
+           email: email,
+           timestamp: Date.now()
+         })
        });
        
+       console.log('Response status:', response.status); // Debug log
+       
        if (response.ok) {
+         const responseData = await response.json();
+         console.log('Response data:', responseData); // Debug log
+         
          button.textContent = 'Success! Check Email';
          button.style.background = '#28a745';
-         e.target.querySelector('input').value = '';
+         emailInput.value = '';
          
          setTimeout(() => {
            window.location.href = 'signup.html';
          }, 2000);
        } else {
-         throw new Error('Signup failed');
+         const errorData = await response.text();
+         console.error('Server error:', errorData);
+         throw new Error(`Server responded with ${response.status}`);
        }
      } catch (error) {
+       console.error('Signup error:', error);
        button.textContent = 'Try Again';
        button.style.background = '#dc3545';
-       console.error('Error:', error);
+       
+       // Reset button after 3 seconds
+       setTimeout(() => {
+         button.textContent = originalText;
+         button.style.background = '';
+         button.disabled = false;
+       }, 3000);
      }
-     
-     setTimeout(() => {
-       button.disabled = false;
-       button.textContent = 'Start Free Trial';
-       button.style.background = '#bb133e';
-     }, 3000);
    });
+
+   // Email validation helper function
+   function isValidEmail(email) {
+     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+     return emailRegex.test(email);
+   }
 
    // Smooth scrolling for anchor links
    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
