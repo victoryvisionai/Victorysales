@@ -419,6 +419,12 @@
                  data-intro="Start by entering your company name. This will be used across all your campaigns." 
                  data-step="1">
         </div>
+            <div class="form-group">
+          <label for="userTitle">Title *</label>
+          <input type="text" id="userTitle" name="title" required 
+                 data-intro="Start by entering your company name. This will be used across all your campaigns." 
+                 data-step="1">
+        </div>
         <div class="form-group">
           <label for="industry">Industry</label>
           <select id="industry" name="industry">
@@ -651,11 +657,12 @@
 
   // Check if profile is complete
   function isProfileComplete() {
-    const companyName = document.getElementById('companyName').value;
+    const  = document.getElementById('companyName').value;
+    const  = document.getElementById('userTitle').value;    
     const companyDescription = document.getElementById('companyDescription').value;
     const productDescription = document.getElementById('productDescription').value;
     
-    return companyName.trim() && companyDescription.trim() && productDescription.trim();
+    return companyName.trim() && userTitle.trim() && companyDescription.trim() && productDescription.trim();
   }
 
   // Show or hide tour button based on profile completeness
@@ -889,6 +896,7 @@
         
         // Add event listeners to update tour button visibility when typing
         document.getElementById('companyName').addEventListener('input', updateTourButtonVisibility);
+        document.getElementById('userTitle').addEventListener('input', updateTourButtonVisibility);
         document.getElementById('companyDescription').addEventListener('input', updateTourButtonVisibility);
         document.getElementById('productDescription').addEventListener('input', updateTourButtonVisibility);
       } else {
@@ -1087,6 +1095,7 @@
         
         // Populate form fields with existing data
         document.getElementById('companyName').value = userData.company_name || '';
+        document.getElementById('userTitle').value = userData.company_name || '';
         document.getElementById('industry').value = userData.industry || '';
         document.getElementById('domain').value = userData.domain || '';
         document.getElementById('companyDescription').value = userData.company_description || '';
