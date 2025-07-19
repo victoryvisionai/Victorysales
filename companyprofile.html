@@ -318,6 +318,310 @@
       vertical-align: middle;
     }
 
+    /* Chat Widget Styles */
+    .vv-chat-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      font-family: Arial, sans-serif;
+    }
+
+    .vv-chat-toggle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      color: white;
+      font-size: 24px;
+    }
+
+    .vv-chat-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
+    .vv-chat-toggle.active {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    .vv-chat-container {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 350px;
+      height: 500px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+
+    .vv-chat-container.open {
+      display: flex;
+    }
+
+    .vv-chat-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .vv-chat-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .vv-chat-title {
+      flex: 1;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .vv-chat-subtitle {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .vv-chat-minimize {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 5px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .vv-chat-minimize:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .vv-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .vv-chat-message {
+      max-width: 80%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      animation: messageSlideIn 0.3s ease;
+    }
+
+    @keyframes messageSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .vv-chat-message.bot {
+      background: white;
+      border: 1px solid #e0e0e0;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .vv-chat-message.user {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .vv-chat-input-area {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .vv-chat-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 10px 15px;
+      font-size: 14px;
+      resize: none;
+      min-height: 20px;
+      max-height: 80px;
+      overflow-y: auto;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .vv-chat-input:focus {
+      border-color: #0A3161;
+    }
+
+    .vv-chat-send {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .vv-chat-send:hover:not(:disabled) {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #1a4c80, #0A3161);
+    }
+
+    .vv-chat-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .vv-chat-typing {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+      max-width: 80px;
+    }
+
+    .vv-chat-typing.show {
+      display: flex;
+    }
+
+    .vv-typing-dots {
+      display: flex;
+      gap: 3px;
+    }
+
+    .vv-typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0A3161;
+      animation: typingBounce 1.4s infinite ease-in-out both;
+    }
+
+    .vv-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .vv-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .vv-chat-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .vv-chat-quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .vv-quick-action {
+      background: #e3f2fd;
+      border: 1px solid #0A3161;
+      color: #0A3161;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vv-quick-action:hover {
+      background: #0A3161;
+      color: white;
+    }
+
+    .vv-notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #dc3545;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+      }
+    }
+
     /* Intro.js custom styling */
     .introjs-tooltip {
       max-width: 350px;
@@ -361,6 +665,16 @@
       .navbar nav ul {
         flex-wrap: wrap;
         justify-content: center;
+      }
+      .vv-chat-container {
+        width: 320px;
+        height: 450px;
+        bottom: 70px;
+        right: -10px;
+      }
+      .vv-chat-widget {
+        bottom: 15px;
+        right: 15px;
       }
     }
   </style>
@@ -419,12 +733,15 @@
                  data-intro="Start by entering your company name. This will be used across all your campaigns." 
                  data-step="1">
         </div>
-            <div class="form-group">
-          <label for="userTitle">Title *</label>
+        <div class="form-group">
+          <label for="userTitle">Your Title *</label>
           <input type="text" id="userTitle" name="title" required 
                  data-intro="Enter your job title or role within the company." 
-                 data-step="1">
+                 data-step="2">
         </div>
+      </div>
+
+      <div class="form-row">
         <div class="form-group">
           <label for="industry">Industry</label>
           <select id="industry" name="industry">
@@ -456,12 +773,16 @@
             <option value="wholesale-trade">Wholesale Trade</option>
           </select>
         </div>
+        <div class="form-group">
+          <label for="domain">Company Domain</label>
+          <input type="url" id="domain" name="domain" placeholder="https://www.yourcompany.com">
+        </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label for="logoUpload">Company Logo</label>
-          <div class="file-upload" data-intro="Upload your company logo. This will be automatically resized and used in your campaigns." data-step="2">
+          <div class="file-upload" data-intro="Upload your company logo. This will be automatically resized and used in your campaigns." data-step="3">
             <input type="file" id="logoUpload" name="logo_file" accept="image/*">
             <label for="logoUpload" class="file-upload-label">
               📁 Choose logo file (JPG, PNG, SVG)
@@ -471,8 +792,21 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="domain">Company Domain</label>
-          <input type="url" id="domain" name="domain" placeholder="https://www.yourcompany.com">
+          <label>Brand Color Palette</label>
+          <div class="color-palette">
+            <div class="color-input">
+              <input type="color" id="color1" name="brand_colors_1" value="#0A3161">
+              <input type="text" id="color1Text" placeholder="#0A3161">
+            </div>
+            <div class="color-input">
+              <input type="color" id="color2" name="brand_colors_2" value="#ffffff">
+              <input type="text" id="color2Text" placeholder="#ffffff">
+            </div>
+            <div class="color-input">
+              <input type="color" id="color3" name="brand_colors_3" value="#f5f5f5">
+              <input type="text" id="color3Text" placeholder="#f5f5f5">
+            </div>
+          </div>
         </div>
       </div>
 
@@ -481,7 +815,7 @@
         <textarea id="companyDescription" name="company_description" required 
                   placeholder="Describe your company, mission, and what makes you unique..." 
                   data-intro="Describe your company in detail. Our AI uses this to create targeted campaigns." 
-                  data-step="3"></textarea>
+                  data-step="4"></textarea>
       </div>
 
       <div class="form-group">
@@ -489,7 +823,7 @@
         <textarea id="productDescription" name="product_description" required 
                   placeholder="Describe your main product or service in detail..." 
                   data-intro="Explain your products or services. This helps our AI understand what to promote." 
-                  data-step="4"></textarea>
+                  data-step="5"></textarea>
       </div>
 
       <div class="form-group">
@@ -497,25 +831,7 @@
         <textarea id="icp" name="icp" 
                   placeholder="Describe your ideal customer (demographics, company size, industry, pain points, etc.)..." 
                   data-intro="Define your ideal customer profile. This helps target your campaigns to the right audience." 
-                  data-step="5"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Brand Color Palette</label>
-        <div class="color-palette">
-          <div class="color-input">
-            <input type="color" id="color1" name="brand_colors_1" value="#0A3161">
-            <input type="text" id="color1Text" placeholder="#0A3161">
-          </div>
-          <div class="color-input">
-            <input type="color" id="color2" name="brand_colors_2" value="#ffffff">
-            <input type="text" id="color2Text" placeholder="#ffffff">
-          </div>
-          <div class="color-input">
-            <input type="color" id="color3" name="brand_colors_3" value="#f5f5f5">
-            <input type="text" id="color3Text" placeholder="#f5f5f5">
-          </div>
-        </div>
+                  data-step="6"></textarea>
       </div>
     </form>
   </div>
@@ -545,7 +861,7 @@
             <textarea name="goal_description" required 
                       placeholder="What exactly do you want to achieve?" 
                       data-intro="Set a specific business goal. Our AI will create campaigns designed to achieve this goal." 
-                      data-step="6"></textarea>
+                      data-step="7"></textarea>
           </div>
           <div class="form-group">
             <label>How will you measure success? (Measurable) *</label>
@@ -570,7 +886,7 @@
     <div style="text-align: center; margin-top: 20px;">
       <button type="button" class="save-all-button" onclick="saveAllData()" 
               data-intro="Save your profile and goal. Once saved, you can start creating AI-powered campaigns!" 
-              data-step="7">
+              data-step="8">
         <span id="saveButtonText">💾 Save Company Profile & Goal</span>
         <span id="saveSpinner" class="spinner-inline" style="display: none;"></span>
       </button>
@@ -580,6 +896,57 @@
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
   <div id="loader" class="loader"></div>
+</div>
+
+<!-- Victory Vision Chat Widget -->
+<div class="vv-chat-widget" id="vvChatWidget">
+  <button class="vv-chat-toggle" id="vvChatToggle" title="Chat with Victory Vision AI">
+    <span id="vvToggleIcon">💬</span>
+    <div class="vv-notification-badge" id="vvNotificationBadge" style="display: none;">1</div>
+  </button>
+
+  <div class="vv-chat-container" id="vvChatContainer">
+    <div class="vv-chat-header">
+      <div class="vv-chat-avatar">🤖</div>
+      <div>
+        <div class="vv-chat-title">Victory Vision AI</div>
+        <div class="vv-chat-subtitle">How can I help you today?</div>
+      </div>
+      <button class="vv-chat-minimize" id="vvChatMinimize" title="Minimize chat">✕</button>
+    </div>
+
+    <div class="vv-chat-messages" id="vvChatMessages">
+      <div class="vv-chat-message bot">
+        👋 Hi! I'm your Victory Vision AI assistant. I can help you with:
+        <div class="vv-chat-quick-actions">
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('How do I create a campaign?')">Create Campaigns</button>
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('Help with my subscription')">Subscription Help</button>
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('How to generate videos?')">Video Generation</button>
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('Contact support')">Contact Support</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vv-chat-typing" id="vvChatTyping">
+      <span style="font-size: 12px; color: #666;">AI is typing</span>
+      <div class="vv-typing-dots">
+        <div class="vv-typing-dot"></div>
+        <div class="vv-typing-dot"></div>
+        <div class="vv-typing-dot"></div>
+      </div>
+    </div>
+
+    <div class="vv-chat-input-area">
+      <textarea 
+        class="vv-chat-input" 
+        id="vvChatInput" 
+        placeholder="Type your message here..."
+        rows="1"></textarea>
+      <button class="vv-chat-send" id="vvChatSend" title="Send message">➤</button>
+    </div>
+
+    <div class="vv-chat-error" id="vvChatError"></div>
+  </div>
 </div>
 
 <footer>
@@ -1010,7 +1377,7 @@
     });
   }
 
-  // Main save function - combines company and goal
+  // FIXED: Main save function - combines company and goal
   async function saveAllData() {
     const saveButton = document.querySelector('.save-all-button');
     const saveButtonText = document.getElementById('saveButtonText');
@@ -1027,7 +1394,7 @@
       const goalFormData = new FormData(goalForm);
       
       // Validate required fields
-      if (!formData.get('company_name') || !formData.get('company_description') || !formData.get('product_description')) {
+      if (!formData.get('company_name') || !formData.get('title') || !formData.get('company_description') || !formData.get('product_description')) {
         throw new Error('Please fill in all required fields');
       }
       
@@ -1049,9 +1416,10 @@
         };
       }
 
-      // Combine all data into single payload
+      // FIXED: Combine all data into single payload including title
       const allData = {
         company_name: sanitizeInput(formData.get('company_name')),
+        title: sanitizeInput(formData.get('title')), // FIXED: Added this line
         industry: sanitizeInput(formData.get('industry')),
         domain: sanitizeInput(formData.get('domain')),
         logo_URL: logoUrl,
@@ -1083,7 +1451,7 @@
     }
   }
 
-  // Load all data function
+  // FIXED: Load all data function
   async function loadAllData() {
     showLoader();
     
@@ -1093,9 +1461,9 @@
       
       if (userData && typeof userData === 'object' && userData.company_name !== undefined) {
         
-        // Populate form fields with existing data
+        // FIXED: Populate form fields with existing data including title
         document.getElementById('companyName').value = userData.company_name || '';
-        document.getElementById('userTitle').value = userData.title || '';
+        document.getElementById('userTitle').value = userData.title || ''; // FIXED: Added this line
         document.getElementById('industry').value = userData.industry || '';
         document.getElementById('domain').value = userData.domain || '';
         document.getElementById('companyDescription').value = userData.company_description || '';
@@ -1202,62 +1570,230 @@
     }
   });
 
-  // Prevent right-click in production
-  document.addEventListener('contextmenu', function(e) {
-    if (window.location.hostname === 'victoryvision.app') {
-      e.preventDefault();
+  // Victory Vision Chat Widget
+  class VictoryVisionChat {
+    constructor() {
+      this.isOpen = false;
+      this.isTyping = false;
+      this.apiEndpoint = 'https://victoryvision.app.n8n.cloud/webhook/chat/message';
+      this.customerId = null;
+      this.authToken = null;
+      this.conversationId = null;
+      this.messageCount = 0;
+      this.init();
     }
-  });
 
-  // Prevent F12 and other dev shortcuts in production
-  document.addEventListener('keydown', function(e) {
-    if (window.location.hostname === 'victoryvision.app') {
-      if (e.key === 'F12' || 
-          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-          (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-          (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
-      }
+    init() {
+      this.toggle = document.getElementById('vvChatToggle');
+      this.container = document.getElementById('vvChatContainer');
+      this.messages = document.getElementById('vvChatMessages');
+      this.input = document.getElementById('vvChatInput');
+      this.sendBtn = document.getElementById('vvChatSend');
+      this.minimize = document.getElementById('vvChatMinimize');
+      this.typing = document.getElementById('vvChatTyping');
+      this.error = document.getElementById('vvChatError');
+      this.notification = document.getElementById('vvNotificationBadge');
+      this.toggleIcon = document.getElementById('vvToggleIcon');
+
+      this.setupEventListeners();
+      this.getCustomerAuth();
+      this.conversationId = 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      this.setupAutoResize();
     }
-  });
 
-  // Content Security Policy enforcement
-  if (window.location.hostname === 'victoryvision.app') {
-    // Monitor for suspicious activity
-    const originalFetch = window.fetch;
-    window.fetch = function(...args) {
-      const url = args[0];
-      if (typeof url === 'string' && !url.startsWith('https://victoryvision.app') && !url.startsWith('https://nyyvsdkumxvuwimmucdb.supabase.co')) {
-        console.warn('Blocked suspicious fetch request to:', url);
-        return Promise.reject(new Error('Blocked external request'));
-      }
-      return originalFetch.apply(this, args);
-    };
-  }
-
-  // Prevent eval and other dangerous functions
-  window.eval = function() {
-    throw new Error('eval is disabled for security');
-  };
-
-  // Monitor for XSS attempts
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      mutation.addedNodes.forEach(function(node) {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const scripts = node.querySelectorAll ? node.querySelectorAll('script') : [];
-          if (scripts.length > 0) {
-            console.warn('Suspicious script injection detected');
-          }
+    setupEventListeners() {
+      this.toggle.addEventListener('click', () => this.toggleChat());
+      this.minimize.addEventListener('click', () => this.closeChat());
+      this.sendBtn.addEventListener('click', () => this.sendMessage());
+      this.input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          this.sendMessage();
         }
       });
-    });
-  });
-  
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+      this.input.addEventListener('input', () => {
+        this.sendBtn.disabled = !this.input.value.trim();
+      });
+    }
+
+    setupAutoResize() {
+      this.input.addEventListener('input', () => {
+        this.input.style.height = 'auto';
+        this.input.style.height = Math.min(this.input.scrollHeight, 80) + 'px';
+      });
+    }
+
+    getCustomerAuth() {
+      if (typeof supabaseClient !== 'undefined') {
+        supabaseClient.auth.getSession().then(({ data: { session } }) => {
+          if (session && session.user) {
+            this.customerId = session.user.email;
+            this.authToken = session.access_token;
+          }
+        });
+      }
+      if (typeof CUSTOMER_ID !== 'undefined') {
+        this.customerId = CUSTOMER_ID;
+      }
+      if (typeof authToken !== 'undefined') {
+        this.authToken = authToken;
+      }
+    }
+
+    toggleChat() {
+      if (this.isOpen) {
+        this.closeChat();
+      } else {
+        this.openChat();
+      }
+    }
+
+    openChat() {
+      this.isOpen = true;
+      this.container.classList.add('open');
+      this.toggle.classList.add('active');
+      this.toggleIcon.textContent = '✕';
+      this.input.focus();
+      this.hideNotification();
+      this.scrollToBottom();
+    }
+
+    closeChat() {
+      this.isOpen = false;
+      this.container.classList.remove('open');
+      this.toggle.classList.remove('active');
+      this.toggleIcon.textContent = '💬';
+      this.hideError();
+    }
+
+    async sendMessage() {
+      const message = this.input.value.trim();
+      if (!message || this.isTyping) return;
+
+      this.addMessage(message, 'user');
+      this.input.value = '';
+      this.input.style.height = 'auto';
+      this.sendBtn.disabled = true;
+      this.showTyping();
+
+      try {
+        const response = await this.callChatAPI(message);
+        this.hideTyping();
+        
+        if (response && response.reply) {
+          this.addMessage(response.reply, 'bot');
+        } else {
+          throw new Error('Invalid response format');
+        }
+      } catch (error) {
+        this.hideTyping();
+        console.error('Chat API error:', error);
+        this.addMessage("I'm sorry, I'm having trouble connecting right now. Please try again in a moment.", 'bot');
+        this.showError('Failed to send message. Please try again.');
+      }
+    }
+
+    async callChatAPI(message) {
+      const payload = {
+        message: message,
+        customer_id: this.customerId || 'anonymous',
+        conversation_id: this.conversationId,
+        timestamp: new Date().toISOString(),
+        page_url: window.location.href,
+        user_agent: navigator.userAgent
+      };
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': this.customerId || 'anonymous',
+        'X-Conversation-ID': this.conversationId
+      };
+
+      if (this.authToken) {
+        headers['Authorization'] = `Bearer ${this.authToken}`;
+      }
+
+      const response = await fetch(this.apiEndpoint, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    }
+
+    addMessage(text, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `vv-chat-message ${sender}`;
+      
+      const sanitizedText = this.sanitizeText(text);
+      messageDiv.innerHTML = sanitizedText;
+      
+      this.messages.appendChild(messageDiv);
+      this.scrollToBottom();
+      this.messageCount++;
+      setTimeout(() => this.scrollToBottom(), 100);
+    }
+
+    sanitizeText(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML.replace(/\n/g, '<br>');
+    }
+
+    showTyping() {
+      this.isTyping = true;
+      this.typing.classList.add('show');
+      this.scrollToBottom();
+    }
+
+    hideTyping() {
+      this.isTyping = false;
+      this.typing.classList.remove('show');
+    }
+
+    showError(message) {
+      this.error.textContent = message;
+      this.error.style.display = 'block';
+      setTimeout(() => this.hideError(), 5000);
+    }
+
+    hideError() {
+      this.error.style.display = 'none';
+    }
+
+    showNotification() {
+      this.notification.style.display = 'flex';
+    }
+
+    hideNotification() {
+      this.notification.style.display = 'none';
+    }
+
+    scrollToBottom() {
+      this.messages.scrollTop = this.messages.scrollHeight;
+    }
+
+    sendQuickMessage(message) {
+      this.input.value = message;
+      this.sendMessage();
+    }
+  }
+
+  // Initialize the chat widget
+  const VVChat = new VictoryVisionChat();
+  window.VVChat = VVChat;
+
+  // Auto-show notification after 10 seconds if not opened
+  setTimeout(() => {
+    if (!VVChat.isOpen && VVChat.messageCount === 0) {
+      VVChat.showNotification();
+    }
+  }, 10000);
 
 </script>
 </body>
