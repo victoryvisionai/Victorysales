@@ -7,8 +7,6 @@
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Company Profile</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
@@ -318,34 +316,6 @@
       vertical-align: middle;
     }
 
-    /* Intro.js custom styling */
-    .introjs-tooltip {
-      max-width: 350px;
-      font-size: 14px;
-    }
-
-    .introjs-button {
-      background: #0A3161 !important;
-      border: 1px solid #0A3161 !important;
-      color: white !important;
-      padding: 8px 15px !important;
-      border-radius: 4px !important;
-    }
-
-    .introjs-button:hover {
-      background: #083050 !important;
-      border-color: #083050 !important;
-    }
-
-    .introjs-skipbutton {
-      background: #6c757d !important;
-      border-color: #6c757d !important;
-    }
-
-    .introjs-progressbar {
-      background-color: #0A3161 !important;
-    }
-
     /* Mobile responsive */
     @media (max-width: 768px) {
       .content {
@@ -386,8 +356,6 @@
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>   
       <li><a href="ads">Ads</a></li>
-       <li><a href="contacts">Contacts</a></li>
-       <li><a href="messages">Messages</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
   </nav>
@@ -396,9 +364,6 @@
     <div id="subscriptionMedallion" class="subscription-medallion bronze">
       <span class="plan-name">Bronze</span>
     </div>
-    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;">
-      📖 Take Tour
-    </button>
   </div>
 </header>
 
@@ -415,15 +380,7 @@
       <div class="form-row">
         <div class="form-group">
           <label for="companyName">Company Name *</label>
-          <input type="text" id="companyName" name="company_name" required 
-                 data-intro="Start by entering your company name. This will be used across all your campaigns." 
-                 data-step="1">
-        </div>
-            <div class="form-group">
-          <label for="userTitle">Title *</label>
-          <input type="text" id="userTitle" name="title" required 
-                 data-intro="Start by entering your company name. This will be used across all your campaigns." 
-                 data-step="1">
+          <input type="text" id="companyName" name="company_name" required>
         </div>
         <div class="form-group">
           <label for="industry">Industry</label>
@@ -461,7 +418,7 @@
       <div class="form-row">
         <div class="form-group">
           <label for="logoUpload">Company Logo</label>
-          <div class="file-upload" data-intro="Upload your company logo. This will be automatically resized and used in your campaigns." data-step="2">
+          <div class="file-upload">
             <input type="file" id="logoUpload" name="logo_file" accept="image/*">
             <label for="logoUpload" class="file-upload-label">
               📁 Choose logo file (JPG, PNG, SVG)
@@ -478,26 +435,17 @@
 
       <div class="form-group">
         <label for="companyDescription">Company Description *</label>
-        <textarea id="companyDescription" name="company_description" required 
-                  placeholder="Describe your company, mission, and what makes you unique..." 
-                  data-intro="Describe your company in detail. Our AI uses this to create targeted campaigns." 
-                  data-step="3"></textarea>
+        <textarea id="companyDescription" name="company_description" required placeholder="Describe your company, mission, and what makes you unique..."></textarea>
       </div>
 
       <div class="form-group">
         <label for="productDescription">Product/Service Description *</label>
-        <textarea id="productDescription" name="product_description" required 
-                  placeholder="Describe your main product or service in detail..." 
-                  data-intro="Explain your products or services. This helps our AI understand what to promote." 
-                  data-step="4"></textarea>
+        <textarea id="productDescription" name="product_description" required placeholder="Describe your main product or service in detail..."></textarea>
       </div>
 
       <div class="form-group">
         <label for="icp">Ideal Customer Profile</label>
-        <textarea id="icp" name="icp" 
-                  placeholder="Describe your ideal customer (demographics, company size, industry, pain points, etc.)..." 
-                  data-intro="Define your ideal customer profile. This helps target your campaigns to the right audience." 
-                  data-step="5"></textarea>
+        <textarea id="icp" name="icp" placeholder="Describe your ideal customer (demographics, company size, industry, pain points, etc.)..."></textarea>
       </div>
 
       <div class="form-group">
@@ -542,10 +490,7 @@
         <form class="goal-form">
           <div class="form-group">
             <label>Goal Description (Specific) *</label>
-            <textarea name="goal_description" required 
-                      placeholder="What exactly do you want to achieve?" 
-                      data-intro="Set a specific business goal. Our AI will create campaigns designed to achieve this goal." 
-                      data-step="6"></textarea>
+            <textarea name="goal_description" required placeholder="What exactly do you want to achieve?"></textarea>
           </div>
           <div class="form-group">
             <label>How will you measure success? (Measurable) *</label>
@@ -568,9 +513,7 @@
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
-      <button type="button" class="save-all-button" onclick="saveAllData()" 
-              data-intro="Save your profile and goal. Once saved, you can start creating AI-powered campaigns!" 
-              data-step="7">
+      <button type="button" class="save-all-button" onclick="saveAllData()">
         <span id="saveButtonText">💾 Save Company Profile & Goal</span>
         <span id="saveSpinner" class="spinner-inline" style="display: none;"></span>
       </button>
@@ -653,62 +596,6 @@
   function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-  }
-
-  // Check if profile is complete
-  function isProfileComplete() {
-    const  = document.getElementById('companyName').value;
-    const  = document.getElementById('userTitle').value;    
-    const companyDescription = document.getElementById('companyDescription').value;
-    const productDescription = document.getElementById('productDescription').value;
-    
-    return companyName.trim() && userTitle.trim() && companyDescription.trim() && productDescription.trim();
-  }
-
-  // Show or hide tour button based on profile completeness
-  function updateTourButtonVisibility() {
-    const tourButton = document.querySelector('button[onclick="startTour()"]');
-    if (tourButton) {
-      if (isProfileComplete()) {
-        tourButton.style.display = 'none';
-      } else {
-        tourButton.style.display = 'inline-block';
-      }
-    }
-  }
-
-  // Intro.js tour functionality
-  function startTour() {
-    introJs().setOptions({
-      showProgress: true,
-      showBullets: false,
-      exitOnOverlayClick: false,
-      nextLabel: 'Next →',
-      prevLabel: '← Back',
-      doneLabel: 'Complete Setup!',
-      skipLabel: 'Skip Tour'
-    }).start();
-  }
-
-  // Check if user is new and should see tour
-  function checkIfNewUser() {
-    const hasSeenTour = localStorage.getItem('vv_tour_completed');
-    const companyName = document.getElementById('companyName').value;
-    
-    // Update tour button visibility
-    updateTourButtonVisibility();
-    
-    // Show tour if they haven't seen it AND profile is empty
-    if (!hasSeenTour && !companyName.trim()) {
-      setTimeout(() => {
-        startTour();
-      }, 1000); // Small delay to ensure page is fully loaded
-    }
-  }
-
-  // Mark tour as completed
-  function completeTour() {
-    localStorage.setItem('vv_tour_completed', 'true');
   }
 
   // Authentication and session management
@@ -889,16 +776,6 @@
         setupColorPickers();
         setupFileUpload();
         await loadAllData();
-        
-        // Add tour completion handler
-        introJs().oncomplete(completeTour);
-        introJs().onexit(completeTour);
-        
-        // Add event listeners to update tour button visibility when typing
-        document.getElementById('companyName').addEventListener('input', updateTourButtonVisibility);
-        document.getElementById('userTitle').addEventListener('input', updateTourButtonVisibility);
-        document.getElementById('companyDescription').addEventListener('input', updateTourButtonVisibility);
-        document.getElementById('productDescription').addEventListener('input', updateTourButtonVisibility);
       } else {
         redirectToLogin();
       }
@@ -1095,7 +972,6 @@
         
         // Populate form fields with existing data
         document.getElementById('companyName').value = userData.company_name || '';
-        document.getElementById('userTitle').value = userData.company_name || '';
         document.getElementById('industry').value = userData.industry || '';
         document.getElementById('domain').value = userData.domain || '';
         document.getElementById('companyDescription').value = userData.company_description || '';
@@ -1146,13 +1022,6 @@
       } else {
         showStatus('No existing data found. Please fill out the forms.');
       }
-
-      // Update tour button visibility based on loaded data
-      updateTourButtonVisibility();
-
-      // Check if new user should see tour
-      checkIfNewUser();
-      
     } catch (error) {
       console.error('Error loading data:', error);
       showStatus('Error loading data: ' + error.message, true);
