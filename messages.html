@@ -1810,8 +1810,7 @@ function formatDate(dateStr) {
   return date.toLocaleDateString();
 }
 
-// FIXED: Select and display email with proper draft handling
-async function selectEmail(emailId) {
+  async function selectEmail(emailId) {
   const email = allEmails.find(e => e.id === emailId);
   if (!email) return;
   
@@ -1833,8 +1832,6 @@ document.querySelectorAll('.email-item').forEach(item => {
   item.classList.remove('selected');
 });
 document.querySelector(`[onclick="selectEmail(${emailId})"]`).classList.add('selected');  
-  // Update UI
-  renderEmailList();
   showEmailView(email);
   
   // Mark as read if not already and not a draft
