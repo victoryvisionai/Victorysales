@@ -1492,7 +1492,7 @@ async function checkAuthentication() {
     if (session && session.user) {
       CUSTOMER_ID = session.user.email;
       authToken = session.access_token;
-      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+document.getElementById('composeFrom').value = userData.vv_email || userData.email || CUSTOMER_ID;
       return true;
     }
 
