@@ -1130,6 +1130,7 @@
     GET_USER: `${N8N_BASE_URL}/user/get`,
     UPDATE_USER: `${N8N_BASE_URL}/user/update`,
     UPLOAD_LOGO: `${N8N_BASE_URL}/user/logo`,
+    UPLOAD_PRODUCT: `${N8N_BASE_URL}/user/product-image`,
     NEWSLETTER_TITLE: `${N8N_BASE_URL}/newsletter/title`,
     USER_OFFER: `${N8N_BASE_URL}/user/offer`,
     USER_CALENDAR: `${N8N_BASE_URL}/user/calendar`
@@ -1611,7 +1612,7 @@
         
         try {
           const base64File = await fileToBase64(file);
-          const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
+          const uploadResult = await apiCall(ENDPOINTS.UPLOAD_PRODUCT, {
             logo_file: base64File,
             file_name: sanitizeInput(file.name),
             file_type: file.type,
