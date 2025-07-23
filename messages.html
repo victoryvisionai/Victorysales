@@ -156,23 +156,26 @@
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 6px 8px;
+      padding: 8px 10px;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 13px;
       box-sizing: border-box;
     }
     .form-group button {
-      padding: 6px 12px;
-      font-size: 12px;
-      border-radius: 4px;
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 6px;
       border: none;
       cursor: pointer;
       background: #0A3161;
       color: white;
+      font-weight: 500;
+      transition: all 0.2s;
     }
     .form-group button:hover {
       background: #083050;
+      transform: translateY(-1px);
     }
     .form-group button.secondary {
       background: #6c757d;
@@ -195,18 +198,20 @@
       border-bottom: 1px solid #f1f3f4;
     }
     .email-item {
-      padding: 12px 20px;
+      padding: 15px 20px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: all 0.2s;
       position: relative;
       border-left: 4px solid transparent;
     }
     .email-item:hover {
       background-color: #f8f9fa;
+      transform: translateX(2px);
     }
     .email-item.selected {
       background-color: #e3f2fd;
       border-left: 4px solid #0A3161;
+      box-shadow: inset 0 0 0 1px #0A3161;
     }
     .email-item.unread {
       background-color: #fff8e1;
@@ -229,7 +234,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .email-from {
       font-weight: 600;
@@ -243,7 +248,7 @@
     .email-subject {
       font-size: 13px;
       color: #333;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       font-weight: 500;
     }
     .email-preview {
@@ -258,12 +263,12 @@
     .email-badges {
       display: flex;
       gap: 4px;
-      margin-top: 6px;
+      margin-top: 8px;
     }
     .badge {
       font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
       font-weight: 500;
     }
     .badge.draft {
@@ -323,12 +328,12 @@
       font-size: 1.4rem;
       font-weight: bold;
       color: #0A3161;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
     .email-view-meta {
       display: grid;
       grid-template-columns: auto 1fr;
-      gap: 8px;
+      gap: 8px 15px;
       font-size: 13px;
     }
     .meta-label {
@@ -343,21 +348,59 @@
       color: #333;
       white-space: pre-wrap;
       margin-bottom: 20px;
+      min-height: 200px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+    }
+    .attachments-section {
+      margin: 15px 0;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+    }
+    .attachment-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+      margin: 5px 0;
+      border: 1px solid #e9ecef;
+    }
+    .attachment-icon {
+      font-size: 20px;
+    }
+    .attachment-info {
+      flex: 1;
+    }
+    .attachment-name {
+      font-weight: 500;
+      color: #0A3161;
+    }
+    .attachment-size {
+      font-size: 11px;
+      color: #666;
     }
     .email-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       margin-top: 20px;
       padding-top: 15px;
       border-top: 1px solid #dee2e6;
+      flex-wrap: wrap;
     }
     .email-actions button {
-      padding: 8px 16px;
+      padding: 12px 20px;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
+      transition: all 0.2s;
     }
     .btn-primary {
       background: #0A3161;
@@ -365,6 +408,7 @@
     }
     .btn-primary:hover {
       background: #083050;
+      transform: translateY(-1px);
     }
     .btn-success {
       background: #28a745;
@@ -372,6 +416,7 @@
     }
     .btn-success:hover {
       background: #218838;
+      transform: translateY(-1px);
     }
     .btn-secondary {
       background: #6c757d;
@@ -379,6 +424,7 @@
     }
     .btn-secondary:hover {
       background: #5a6268;
+      transform: translateY(-1px);
     }
     .btn-danger {
       background: #dc3545;
@@ -386,9 +432,11 @@
     }
     .btn-danger:hover {
       background: #c82333;
+      transform: translateY(-1px);
     }
     .compose-form {
       display: none;
+      padding: 20px;
     }
     .compose-form.active {
       display: block;
@@ -407,9 +455,9 @@
     .compose-form textarea,
     .compose-form select {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 14px;
       box-sizing: border-box;
     }
@@ -420,8 +468,101 @@
     }
     .compose-form .form-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+    .compose-form .form-actions button {
+      padding: 12px 20px;
+      font-size: 14px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .cc-bcc-section {
+      display: none;
+      margin-bottom: 15px;
+    }
+    .cc-bcc-section.active {
+      display: block;
+    }
+    .cc-bcc-toggle {
+      color: #0A3161;
+      cursor: pointer;
+      font-size: 12px;
+      text-decoration: underline;
+      margin-left: 10px;
+    }
+    .signature-section {
+      border-top: 1px solid #dee2e6;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+    .signature-preview {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+      white-space: pre-wrap;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .signature-edit-btn {
+      background: #17a2b8;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .signature-edit-btn:hover {
+      background: #138496;
+    }
+    .file-attachment-section {
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 15px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .file-attachment-section:hover {
+      border-color: #0A3161;
+      background: #e3f2fd;
+    }
+    .file-attachment-section.dragover {
+      border-color: #28a745;
+      background: #d4edda;
+    }
+    .attachment-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .attached-file {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid #dee2e6;
+      font-size: 12px;
+    }
+    .remove-attachment {
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 10px;
     }
     .ai-assist-section {
       background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
@@ -441,8 +582,8 @@
       gap: 8px;
     }
     .ai-assist-options button {
-      padding: 6px 10px;
-      font-size: 11px;
+      padding: 8px 12px;
+      font-size: 12px;
       border: 1px solid #0A3161;
       background: white;
       color: #0A3161;
@@ -469,8 +610,8 @@
       margin-bottom: 10px;
     }
     .status-message {
-      padding: 10px;
-      border-radius: 4px;
+      padding: 12px;
+      border-radius: 6px;
       margin: 10px 0;
       display: none;
       position: fixed;
@@ -478,6 +619,7 @@
       right: 20px;
       max-width: 400px;
       z-index: 1000;
+      font-weight: 500;
     }
     .status-success {
       background-color: #d4edda;
@@ -548,6 +690,310 @@
       border: 1px solid #dee2e6;
       white-space: pre-wrap;
     }
+
+    /* Chat Widget Styles */
+    .vv-chat-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      font-family: Arial, sans-serif;
+    }
+
+    .vv-chat-toggle {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      color: white;
+      font-size: 24px;
+    }
+
+    .vv-chat-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    }
+
+    .vv-chat-toggle.active {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    .vv-chat-container {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 350px;
+      height: 500px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e0e0e0;
+    }
+
+    .vv-chat-container.open {
+      display: flex;
+    }
+
+    .vv-chat-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .vv-chat-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .vv-chat-title {
+      flex: 1;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .vv-chat-subtitle {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .vv-chat-minimize {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 5px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .vv-chat-minimize:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .vv-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .vv-chat-message {
+      max-width: 80%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      animation: messageSlideIn 0.3s ease;
+    }
+
+    @keyframes messageSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .vv-chat-message.bot {
+      background: white;
+      border: 1px solid #e0e0e0;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .vv-chat-message.user {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .vv-chat-input-area {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+    }
+
+    .vv-chat-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 10px 15px;
+      font-size: 14px;
+      resize: none;
+      min-height: 20px;
+      max-height: 80px;
+      overflow-y: auto;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .vv-chat-input:focus {
+      border-color: #0A3161;
+    }
+
+    .vv-chat-send {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .vv-chat-send:hover:not(:disabled) {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #1a4c80, #0A3161);
+    }
+
+    .vv-chat-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .vv-chat-typing {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+      max-width: 80px;
+    }
+
+    .vv-chat-typing.show {
+      display: flex;
+    }
+
+    .vv-typing-dots {
+      display: flex;
+      gap: 3px;
+    }
+
+    .vv-typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0A3161;
+      animation: typingBounce 1.4s infinite ease-in-out both;
+    }
+
+    .vv-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .vv-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typingBounce {
+      0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .vv-chat-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .vv-chat-quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .vv-quick-action {
+      background: #e3f2fd;
+      border: 1px solid #0A3161;
+      color: #0A3161;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vv-quick-action:hover {
+      background: #0A3161;
+      color: white;
+    }
+
+    .vv-notification-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #dc3545;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+      }
+    }
     
     footer {
       background: #0A3161;
@@ -616,6 +1062,16 @@
       .compose-form .form-actions {
         flex-direction: column;
       }
+      .vv-chat-container {
+        width: 320px;
+        height: 450px;
+        bottom: 70px;
+        right: -10px;
+      }
+      .vv-chat-widget {
+        bottom: 15px;
+        right: 15px;
+      }
     }
   </style>
 </head>
@@ -634,7 +1090,7 @@
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
       <li><a href="contacts">Contacts</a></li>
-       <li><a href="messages">Messages</a></li>
+      <li><a href="messages">Messages</a></li>
       <li><a href="ads">Ads</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
@@ -662,8 +1118,8 @@
       <div class="panel-header">
         <h2 class="panel-title">📧 Email List</h2>
         <div style="display: flex; gap: 10px;">
-          <button onclick="showComposeForm()" class="btn-success">✏️ Compose</button>
-          <button onclick="refreshEmails()" class="btn-secondary">🔄 Refresh</button>
+          <button onclick="showComposeForm()" class="btn-success" style="padding: 10px 16px;">✏️ Compose</button>
+          <button onclick="refreshEmails()" class="btn-secondary" style="padding: 10px 16px;">🔄 Refresh</button>
         </div>
       </div>
       
@@ -706,7 +1162,7 @@
       </div>
       
       <div class="compose-section">
-        <button onclick="generateAIEmails()" class="btn-success" style="width: 100%;">
+        <button onclick="generateAIEmails()" class="btn-success" style="width: 100%; padding: 12px;">
           🤖 Generate AI Email Campaign
         </button>
       </div>
@@ -717,8 +1173,8 @@
       <div class="panel-header">
         <h2 class="panel-title" id="readingPaneTitle">📖 Reading Pane</h2>
         <div id="readingPaneActions" style="display: none;">
-          <button onclick="replyToEmail()" class="btn-primary">↩️ Reply</button>
-          <button onclick="forwardEmail()" class="btn-secondary">➡️ Forward</button>
+          <button onclick="replyToEmail()" class="btn-primary" style="padding: 10px 16px;">↩️ Reply</button>
+          <button onclick="forwardEmail()" class="btn-secondary" style="padding: 10px 16px;">➡️ Forward</button>
         </div>
       </div>
       
@@ -738,13 +1194,22 @@
             <span class="meta-value" id="viewFrom"></span>
             <span class="meta-label">To:</span>
             <span class="meta-value" id="viewTo"></span>
+            <span class="meta-label">CC:</span>
+            <span class="meta-value" id="viewCC"></span>
             <span class="meta-label">Date:</span>
             <span class="meta-value" id="viewDate"></span>
             <span class="meta-label">Status:</span>
             <span class="meta-value" id="viewStatus"></span>
           </div>
         </div>
+        
+        <div id="viewAttachments" class="attachments-section" style="display: none;">
+          <h4>📎 Attachments</h4>
+          <div id="attachmentsList"></div>
+        </div>
+        
         <div class="email-view-body" id="viewBody"></div>
+        
         <div class="email-actions">
           <button onclick="replyToEmail()" class="btn-primary">↩️ Reply</button>
           <button onclick="forwardEmail()" class="btn-secondary">➡️ Forward</button>
@@ -775,10 +1240,23 @@
           </div>
           
           <div class="form-group">
-            <label for="composeTo">To *</label>
+            <label for="composeTo">To *
+              <span class="cc-bcc-toggle" onclick="toggleCCBCC()">+ CC/BCC</span>
+            </label>
             <select id="composeTo" required>
               <option value="">Select Contact</option>
             </select>
+          </div>
+          
+          <div class="cc-bcc-section" id="ccBccSection">
+            <div class="form-group">
+              <label for="composeCC">CC</label>
+              <input type="email" id="composeCC" placeholder="cc@example.com">
+            </div>
+            <div class="form-group">
+              <label for="composeBCC">BCC</label>
+              <input type="email" id="composeBCC" placeholder="bcc@example.com">
+            </div>
           </div>
           
           <div class="form-group">
@@ -786,9 +1264,29 @@
             <input type="text" id="composeSubject" required placeholder="Email subject">
           </div>
           
+          <div class="file-attachment-section" id="fileAttachmentArea">
+            <p>📎 <strong>Attach Files</strong></p>
+            <button type="button" onclick="showFileSelector()" style="margin: 5px;">Choose from Media Library</button>
+            <button type="button" onclick="document.getElementById('fileInput').click()" style="margin: 5px;">Upload New File</button>
+            <input type="file" id="fileInput" multiple style="display: none;" onchange="handleFileUpload(event)">
+            <p style="font-size: 12px; color: #666; margin: 5px 0 0 0;">or drag & drop files here</p>
+            <div class="attachment-list" id="attachmentList"></div>
+          </div>
+          
           <div class="form-group">
             <label for="composeBody">Message *</label>
             <textarea id="composeBody" required placeholder="Write your message here..."></textarea>
+          </div>
+          
+          <div class="signature-section">
+            <label>Email Signature</label>
+            <div class="signature-preview" id="signaturePreview">
+              Best regards,<br>
+              Your Name<br>
+              Victory Vision<br>
+              email@victoryvision.com
+            </div>
+            <button type="button" class="signature-edit-btn" onclick="editSignature()">Edit Signature</button>
           </div>
           
           <div class="form-actions">
@@ -819,6 +1317,96 @@
   </div>
 </div>
 
+<!-- Signature Edit Modal -->
+<div id="signatureModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Edit Email Signature</h2>
+      <span class="close" onclick="closeSignatureModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="signatureText">Signature Text</label>
+        <textarea id="signatureText" rows="6" placeholder="Best regards,&#10;Your Name&#10;Victory Vision&#10;email@victoryvision.com"></textarea>
+      </div>
+      <div style="text-align: right; margin-top: 20px;">
+        <button onclick="closeSignatureModal()" class="btn-secondary">Cancel</button>
+        <button onclick="saveSignature()" class="btn-primary" style="margin-left: 10px;">Save Signature</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- File Selector Modal -->
+<div id="fileSelectorModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Select Files from Media Library</h2>
+      <span class="close" onclick="closeFileSelector()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div id="mediaFilesList" style="max-height: 400px; overflow-y: auto;">
+        <div class="loading">Loading media files...</div>
+      </div>
+      <div style="text-align: right; margin-top: 20px;">
+        <button onclick="closeFileSelector()" class="btn-secondary">Cancel</button>
+        <button onclick="attachSelectedFiles()" class="btn-primary" style="margin-left: 10px;">Attach Selected</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Victory Vision Chat Widget -->
+<div class="vv-chat-widget" id="vvChatWidget">
+  <button class="vv-chat-toggle" id="vvChatToggle" title="Chat with Victory Vision AI">
+    <span id="vvToggleIcon">💬</span>
+    <div class="vv-notification-badge" id="vvNotificationBadge" style="display: none;">1</div>
+  </button>
+
+  <div class="vv-chat-container" id="vvChatContainer">
+    <div class="vv-chat-header">
+      <div class="vv-chat-avatar">🤖</div>
+      <div>
+        <div class="vv-chat-title">Victory Vision AI</div>
+        <div class="vv-chat-subtitle">How can I help you today?</div>
+      </div>
+      <button class="vv-chat-minimize" id="vvChatMinimize" title="Minimize chat">✕</button>
+    </div>
+
+    <div class="vv-chat-messages" id="vvChatMessages">
+      <div class="vv-chat-message bot">
+        👋 Hi! I'm your Victory Vision AI assistant. I can help you with:
+        <div class="vv-chat-quick-actions">
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('How do I create email campaigns?')">Email Campaigns</button>
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('Help with email templates')">Email Templates</button>
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('How to track email performance?')">Email Analytics</button>
+          <button class="vv-quick-action" onclick="VVChat.sendQuickMessage('Contact support')">Contact Support</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vv-chat-typing" id="vvChatTyping">
+      <span style="font-size: 12px; color: #666;">AI is typing</span>
+      <div class="vv-typing-dots">
+        <div class="vv-typing-dot"></div>
+        <div class="vv-typing-dot"></div>
+        <div class="vv-typing-dot"></div>
+      </div>
+    </div>
+
+    <div class="vv-chat-input-area">
+      <textarea 
+        class="vv-chat-input" 
+        id="vvChatInput" 
+        placeholder="Type your message here..."
+        rows="1"></textarea>
+      <button class="vv-chat-send" id="vvChatSend" title="Send message">➤</button>
+    </div>
+
+    <div class="vv-chat-error" id="vvChatError"></div>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -837,14 +1425,18 @@ const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
+  getDraft: 'https://victoryvision.app.n8n.cloud/webhook/emails/get-draft',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
+  getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
   sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
   saveDraft: 'https://victoryvision.app.n8n.cloud/webhook/emails/draft',
   deleteEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/delete',
   markAsRead: 'https://victoryvision.app.n8n.cloud/webhook/emails/mark-read',
   scheduleEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/schedule',
   aiAssist: 'https://victoryvision.app.n8n.cloud/webhook/emails/ai-assist',
-  generateCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/generate-campaign'
+  generateCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/generate-campaign',
+  chatMessage: 'https://victoryvision.app.n8n.cloud/webhook/chat/message',
+  updateSignature: 'https://victoryvision.app.n8n.cloud/webhook/user/signature'
 };
 
 // Global variables
@@ -853,10 +1445,14 @@ let authToken = null;
 let allEmails = [];
 let filteredEmails = [];
 let allContacts = [];
+let allMediaFiles = [];
 let selectedEmail = null;
 let currentMode = 'view'; // 'view', 'compose', 'reply'
 let preloadedContact = null;
 let emailThreads = new Map(); // For grouping emails by thread
+let attachedFiles = [];
+let selectedMediaFiles = [];
+let userSignature = "Best regards,\nYour Name\nVictory Vision\nemail@victoryvision.com";
 
 // Tour completion tracking
 function completeTour() {
@@ -958,6 +1554,12 @@ async function loadUserData() {
     // Set compose from email
     document.getElementById('composeFrom').value = CUSTOMER_ID;
     
+    // Load user signature
+    if (userData.email_signature) {
+      userSignature = userData.email_signature;
+      updateSignatureDisplay();
+    }
+    
   } catch (error) {
     console.error('Error loading user data:', error);
     showStatus('Error loading user data: ' + error.message, true);
@@ -975,6 +1577,20 @@ async function loadContacts() {
   } catch (error) {
     console.error('Error loading contacts:', error);
     allContacts = [];
+  }
+}
+
+// Load media files for attachment selection
+async function loadMediaFiles() {
+  try {
+    const data = await apiCall(ENDPOINTS.getMedia);
+    allMediaFiles = Array.isArray(data) ? data : (data.files || []);
+    
+    console.log(`Loaded ${allMediaFiles.length} media files`);
+    
+  } catch (error) {
+    console.error('Error loading media files:', error);
+    allMediaFiles = [];
   }
 }
 
@@ -1016,6 +1632,14 @@ async function loadEmails() {
     
     allEmails = Array.isArray(data) ? data : (data.emails || []);
     
+    // Process emails to ensure proper structure
+    allEmails = allEmails.map(email => ({
+      ...email,
+      attachments: email.attachments || [],
+      cc: email.cc || '',
+      bcc: email.bcc || ''
+    }));
+    
     // Group emails by subject for threading
     groupEmailsByThread();
     
@@ -1028,10 +1652,10 @@ async function loadEmails() {
     
     renderEmailList();
     
-    // Auto-select the most recent inbound email
-    const recentInbound = allEmails.find(email => email.inbound && !email.opened_at);
-    if (recentInbound) {
-      setTimeout(() => selectEmail(recentInbound.id), 500);
+    // Auto-select the most recent unread email
+    const recentUnread = allEmails.find(email => !email.opened_at);
+    if (recentUnread) {
+      setTimeout(() => selectEmail(recentUnread.id), 500);
     }
     
     showStatus(`Loaded ${allEmails.length} emails`, false);
@@ -1060,7 +1684,7 @@ function groupEmailsByThread() {
   });
 }
 
-// Render email list with threading
+// Render email list with enhanced styling and threading
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
@@ -1123,6 +1747,8 @@ function renderEmailList() {
 function getEmailDisplayName(email) {
   if (email.inbound) {
     return email.from || 'Unknown Sender';
+  } else if (email.draft) {
+    return `Draft to: ${email.to || 'Unknown'}`;
   } else {
     return email.to || 'Unknown Recipient';
   }
@@ -1133,8 +1759,8 @@ function getEmailClasses(email) {
   
   if (!email.opened_at) classes.push('unread');
   if (email.inbound) classes.push('inbound');
-  if (!email.body || email.body.trim() === '') classes.push('draft');
-  if (email.body && !email.inbound) classes.push('sent');
+  if (email.draft || (!email.body || email.body.trim() === '')) classes.push('draft');
+  if (email.body && !email.inbound && !email.draft) classes.push('sent');
   if (email.replied_at) classes.push('replied');
   
   return classes.join(' ');
@@ -1143,7 +1769,7 @@ function getEmailClasses(email) {
 function getEmailBadges(email) {
   const badges = [];
   
-  if (!email.body || email.body.trim() === '') {
+  if (email.draft || (!email.body || email.body.trim() === '')) {
     badges.push('<span class="badge draft">DRAFT</span>');
   } else if (email.inbound) {
     badges.push('<span class="badge inbound">RECEIVED</span>');
@@ -1157,6 +1783,10 @@ function getEmailBadges(email) {
   
   if (email.opened_at) {
     badges.push('<span class="badge opened">OPENED</span>');
+  }
+  
+  if (email.attachments && email.attachments.length > 0) {
+    badges.push(`<span class="badge" style="background: #17a2b8; color: white;">📎 ${email.attachments.length}</span>`);
   }
   
   return badges.join('');
@@ -1175,17 +1805,29 @@ function formatDate(dateStr) {
   const diffTime = Math.abs(now - date);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   
-  if (diffDays === 0) return 'Today';
+  if (diffDays === 0) return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   if (diffDays === 1) return 'Yesterday';
   if (diffDays < 7) return `${diffDays} days ago`;
   
   return date.toLocaleDateString();
 }
 
-// Select and display email
+// FIXED: Select and display email with proper draft handling
 async function selectEmail(emailId) {
   const email = allEmails.find(e => e.id === emailId);
   if (!email) return;
+  
+  // If it's a draft, load the full draft content
+  if (email.draft || (!email.body || email.body.trim() === '')) {
+    try {
+      const draftData = await apiCall(ENDPOINTS.getDraft, { id: emailId });
+      if (draftData.success && draftData.draft) {
+        Object.assign(email, draftData.draft);
+      }
+    } catch (error) {
+      console.error('Error loading draft:', error);
+    }
+  }
   
   selectedEmail = email;
   
@@ -1193,8 +1835,8 @@ async function selectEmail(emailId) {
   renderEmailList();
   showEmailView(email);
   
-  // Mark as read if not already
-  if (!email.opened_at) {
+  // Mark as read if not already and not a draft
+  if (!email.opened_at && !email.draft && email.body && email.body.trim()) {
     try {
       await apiCall(ENDPOINTS.markAsRead, { email_id: emailId });
       email.opened_at = new Date().toISOString();
@@ -1205,12 +1847,19 @@ async function selectEmail(emailId) {
   }
 }
 
+// FIXED: Show email view with enhanced display
 function showEmailView(email) {
   const readingPane = document.getElementById('readingPane');
   const emailView = document.getElementById('emailViewTemplate');
   const composeForm = document.getElementById('composeForm');
   const readingPaneTitle = document.getElementById('readingPaneTitle');
   const readingPaneActions = document.getElementById('readingPaneActions');
+  
+  // If it's a draft, show compose form instead
+  if (email.draft || (!email.body || email.body.trim() === '')) {
+    showDraftForEditing(email);
+    return;
+  }
   
   // Hide compose form and show email view
   composeForm.classList.remove('active');
@@ -1222,16 +1871,57 @@ function showEmailView(email) {
   document.getElementById('viewSubject').textContent = email.subject || 'No Subject';
   document.getElementById('viewFrom').textContent = email.from || 'Unknown';
   document.getElementById('viewTo').textContent = email.to || 'Unknown';
+  document.getElementById('viewCC').textContent = email.cc || 'None';
   document.getElementById('viewDate').textContent = new Date(email.created_at).toLocaleString();
   document.getElementById('viewStatus').textContent = getEmailStatus(email);
   document.getElementById('viewBody').textContent = email.body || 'No content';
+  
+  // Show attachments if any
+  const attachmentsSection = document.getElementById('viewAttachments');
+  const attachmentsList = document.getElementById('attachmentsList');
+  
+  if (email.attachments && email.attachments.length > 0) {
+    attachmentsSection.style.display = 'block';
+    attachmentsList.innerHTML = email.attachments.map(attachment => `
+      <div class="attachment-item">
+        <span class="attachment-icon">📎</span>
+        <div class="attachment-info">
+          <div class="attachment-name">${attachment.name}</div>
+          <div class="attachment-size">${attachment.size || 'Unknown size'}</div>
+        </div>
+        <a href="${attachment.url}" target="_blank" style="margin-left: auto; padding: 5px 10px; background: #0A3161; color: white; text-decoration: none; border-radius: 4px; font-size: 12px;">Download</a>
+      </div>
+    `).join('');
+  } else {
+    attachmentsSection.style.display = 'none';
+  }
   
   readingPaneTitle.textContent = '📖 Reading Email';
   currentMode = 'view';
 }
 
+// Show draft for editing
+function showDraftForEditing(email) {
+  showComposeForm();
+  
+  // Populate form with draft data
+  document.getElementById('composeTo').value = email.to || '';
+  document.getElementById('composeCC').value = email.cc || '';
+  document.getElementById('composeBCC').value = email.bcc || '';
+  document.getElementById('composeSubject').value = email.subject || '';
+  document.getElementById('composeBody').value = email.body || '';
+  
+  // Show CC/BCC if they have values
+  if (email.cc || email.bcc) {
+    toggleCCBCC(true);
+  }
+  
+  document.getElementById('readingPaneTitle').textContent = '📝 Editing Draft';
+  currentMode = 'edit-draft';
+}
+
 function getEmailStatus(email) {
-  if (!email.body || email.body.trim() === '') return 'Draft';
+  if (email.draft || (!email.body || email.body.trim() === '')) return 'Draft';
   if (email.inbound) return 'Received';
   if (email.replied_at) return 'Replied';
   return 'Sent';
@@ -1260,6 +1950,14 @@ function openEmailModal() {
       <div class="field-value">${email.to || 'N/A'}</div>
     </div>
     <div class="field-group">
+      <div class="field-label">CC</div>
+      <div class="field-value">${email.cc || 'None'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">BCC</div>
+      <div class="field-value">${email.bcc || 'None'}</div>
+    </div>
+    <div class="field-group">
       <div class="field-label">Created</div>
       <div class="field-value">${email.created_at ? new Date(email.created_at).toLocaleString() : 'N/A'}</div>
     </div>
@@ -1273,7 +1971,11 @@ function openEmailModal() {
     </div>
     <div class="field-group">
       <div class="field-label">Type</div>
-      <div class="field-value">${email.inbound ? 'Inbound' : 'Outbound'}</div>
+      <div class="field-value">${email.inbound ? 'Inbound' : email.draft ? 'Draft' : 'Outbound'}</div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Attachments</div>
+      <div class="field-value">${email.attachments && email.attachments.length > 0 ? email.attachments.map(a => a.name).join(', ') : 'None'}</div>
     </div>
     <div class="field-group">
       <div class="field-label">Body</div>
@@ -1288,7 +1990,7 @@ function closeEmailModal() {
   document.getElementById('emailModal').style.display = 'none';
 }
 
-// Show compose form
+// Show compose form with enhanced features
 function showComposeForm(replyTo = null, forwardFrom = null) {
   const readingPane = document.getElementById('readingPane');
   const emailView = document.getElementById('emailViewTemplate');
@@ -1302,23 +2004,31 @@ function showComposeForm(replyTo = null, forwardFrom = null) {
   composeForm.classList.add('active');
   readingPaneActions.style.display = 'none';
   
-  // Clear form
+  // Clear form and attachments
   document.getElementById('emailComposeForm').reset();
   document.getElementById('composeFrom').value = CUSTOMER_ID;
+  attachedFiles = [];
+  updateAttachmentDisplay();
   
   if (replyTo) {
     // Reply mode
     document.getElementById('composeTo').value = replyTo.from || '';
-    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.subject || '');
+    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.subject || '').replace(/^re:\s*/i, '');
     document.getElementById('composeBody').value = `\n\n--- Original Message ---\nFrom: ${replyTo.from}\nDate: ${new Date(replyTo.created_at).toLocaleString()}\nSubject: ${replyTo.subject}\n\n${replyTo.body}`;
     readingPaneTitle.textContent = '↩️ Reply to Email';
     currentMode = 'reply';
   } else if (forwardFrom) {
     // Forward mode
-    document.getElementById('composeSubject').value = 'Fwd: ' + (forwardFrom.subject || '');
+    document.getElementById('composeSubject').value = 'Fwd: ' + (forwardFrom.subject || '').replace(/^fwd?:\s*/i, '');
     document.getElementById('composeBody').value = `\n\n--- Forwarded Message ---\nFrom: ${forwardFrom.from}\nTo: ${forwardFrom.to}\nDate: ${new Date(forwardFrom.created_at).toLocaleString()}\nSubject: ${forwardFrom.subject}\n\n${forwardFrom.body}`;
     readingPaneTitle.textContent = '➡️ Forward Email';
     currentMode = 'forward';
+    
+    // Copy attachments from original email
+    if (forwardFrom.attachments && forwardFrom.attachments.length > 0) {
+      attachedFiles = [...forwardFrom.attachments];
+      updateAttachmentDisplay();
+    }
   } else {
     // New compose mode
     readingPaneTitle.textContent = '✏️ Compose New Email';
@@ -1331,6 +2041,9 @@ function showComposeForm(replyTo = null, forwardFrom = null) {
       preloadedContact = null; // Clear after use
     }
   }
+  
+  // Add signature to email body
+  addSignatureToBody();
 }
 
 // Email actions
@@ -1347,7 +2060,7 @@ function forwardEmail() {
 }
 
 async function markAsRead() {
-  if (selectedEmail && !selectedEmail.opened_at) {
+  if (selectedEmail && !selectedEmail.opened_at && !selectedEmail.draft) {
     try {
       await apiCall(ENDPOINTS.markAsRead, { email_id: selectedEmail.id });
       selectedEmail.opened_at = new Date().toISOString();
@@ -1399,6 +2112,189 @@ function showEmptyReadingPane() {
   readingPaneTitle.textContent = '📖 Reading Pane';
 }
 
+// CC/BCC toggle functionality
+function toggleCCBCC(show = null) {
+  const ccBccSection = document.getElementById('ccBccSection');
+  const isVisible = ccBccSection.classList.contains('active');
+  
+  if (show === true || (show === null && !isVisible)) {
+    ccBccSection.classList.add('active');
+  } else if (show === false || (show === null && isVisible)) {
+    ccBccSection.classList.remove('active');
+    // Clear CC/BCC fields when hiding
+    document.getElementById('composeCC').value = '';
+    document.getElementById('composeBCC').value = '';
+  }
+}
+
+// File attachment functionality
+function showFileSelector() {
+  if (allMediaFiles.length === 0) {
+    loadMediaFiles().then(() => {
+      if (allMediaFiles.length === 0) {
+        showStatus('No media files found in your library', true);
+        return;
+      }
+      displayFileSelector();
+    });
+  } else {
+    displayFileSelector();
+  }
+}
+
+function displayFileSelector() {
+  const modal = document.getElementById('fileSelectorModal');
+  const filesList = document.getElementById('mediaFilesList');
+  
+  if (allMediaFiles.length === 0) {
+    filesList.innerHTML = '<div class="empty-state"><p>No files found in your media library</p></div>';
+  } else {
+    filesList.innerHTML = allMediaFiles.map(file => `
+      <div style="display: flex; align-items: center; padding: 10px; border: 1px solid #dee2e6; border-radius: 4px; margin: 5px 0;">
+        <input type="checkbox" value="${file.id}" data-name="${file.name}" data-url="${file.secure_url || file.URL}" style="margin-right: 10px;">
+        <div style="flex: 1;">
+          <strong>${file.name}</strong><br>
+          <small style="color: #666;">${file.file_type || 'Unknown type'} • ${file.file_size || 'Unknown size'}</small>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  modal.style.display = 'block';
+}
+
+function closeFileSelector() {
+  document.getElementById('fileSelectorModal').style.display = 'none';
+  // Clear selections
+  document.querySelectorAll('#mediaFilesList input[type="checkbox"]').forEach(cb => cb.checked = false);
+}
+
+function attachSelectedFiles() {
+  const selectedCheckboxes = document.querySelectorAll('#mediaFilesList input[type="checkbox"]:checked');
+  
+  selectedCheckboxes.forEach(checkbox => {
+    const file = {
+      name: checkbox.dataset.name,
+      url: checkbox.dataset.url,
+      type: 'media-library',
+      id: checkbox.value
+    };
+    
+    // Check if already attached
+    if (!attachedFiles.find(f => f.id === file.id)) {
+      attachedFiles.push(file);
+    }
+  });
+  
+  updateAttachmentDisplay();
+  closeFileSelector();
+  showStatus(`${selectedCheckboxes.length} files attached from media library`, false);
+}
+
+function handleFileUpload(event) {
+  const files = Array.from(event.target.files);
+  
+  files.forEach(file => {
+    const attachedFile = {
+      name: file.name,
+      file: file,
+      type: 'upload',
+      id: 'upload_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+    };
+    attachedFiles.push(attachedFile);
+  });
+  
+  updateAttachmentDisplay();
+  showStatus(`${files.length} files attached for upload`, false);
+  
+  // Clear the input
+  event.target.value = '';
+}
+
+function updateAttachmentDisplay() {
+  const attachmentList = document.getElementById('attachmentList');
+  
+  if (attachedFiles.length === 0) {
+    attachmentList.innerHTML = '';
+    return;
+  }
+  
+  attachmentList.innerHTML = attachedFiles.map((file, index) => `
+    <div class="attached-file">
+      <span>📎 ${file.name}</span>
+      <button class="remove-attachment" onclick="removeAttachment(${index})" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeAttachment(index) {
+  attachedFiles.splice(index, 1);
+  updateAttachmentDisplay();
+}
+
+// Setup drag and drop for file attachment area
+function setupFileAttachmentDragDrop() {
+  const fileArea = document.getElementById('fileAttachmentArea');
+  
+  fileArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    fileArea.classList.add('dragover');
+  });
+  
+  fileArea.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    fileArea.classList.remove('dragover');
+  });
+  
+  fileArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    fileArea.classList.remove('dragover');
+    
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      handleFileUpload({ target: { files: files } });
+    }
+  });
+}
+
+// Signature management
+function updateSignatureDisplay() {
+  document.getElementById('signaturePreview').innerHTML = userSignature.replace(/\n/g, '<br>');
+}
+
+function editSignature() {
+  document.getElementById('signatureText').value = userSignature;
+  document.getElementById('signatureModal').style.display = 'block';
+}
+
+function closeSignatureModal() {
+  document.getElementById('signatureModal').style.display = 'none';
+}
+
+async function saveSignature() {
+  const newSignature = document.getElementById('signatureText').value;
+  
+  try {
+    await apiCall(ENDPOINTS.updateSignature, { signature: newSignature });
+    userSignature = newSignature;
+    updateSignatureDisplay();
+    closeSignatureModal();
+    showStatus('Signature updated successfully', false);
+  } catch (error) {
+    console.error('Error saving signature:', error);
+    showStatus('Error saving signature', true);
+  }
+}
+
+function addSignatureToBody() {
+  const bodyTextarea = document.getElementById('composeBody');
+  const currentBody = bodyTextarea.value;
+  
+  if (!currentBody.includes(userSignature)) {
+    bodyTextarea.value = currentBody + '\n\n' + userSignature;
+  }
+}
+
 // Compose form functions
 async function saveDraft() {
   const formData = getComposeFormData();
@@ -1410,8 +2306,11 @@ async function saveDraft() {
   try {
     const result = await apiCall(ENDPOINTS.saveDraft, {
       to_email: formData.to,
+      cc_email: formData.cc,
+      bcc_email: formData.bcc,
       subject: formData.subject,
-      body: formData.body
+      body: formData.body,
+      attachments: await processAttachments()
     });
     
     showStatus('Draft saved successfully', false);
@@ -1435,9 +2334,12 @@ async function scheduleEmail() {
   try {
     await apiCall(ENDPOINTS.scheduleEmail, {
       to_email: formData.to,
+      cc_email: formData.cc,
+      bcc_email: formData.bcc,
       subject: formData.subject,
       body: formData.body,
-      schedule_time: scheduleTime
+      schedule_time: scheduleTime,
+      attachments: await processAttachments()
     });
     
     showStatus('Email scheduled successfully', false);
@@ -1457,9 +2359,13 @@ async function sendEmail() {
   try {
     const result = await apiCall(ENDPOINTS.sendEmail, {
       to_email: formData.to,
+      cc_email: formData.cc,
+      bcc_email: formData.bcc,
       subject: formData.subject,
       body: formData.body,
-      reply_to_id: currentMode === 'reply' ? selectedEmail?.id : null
+      attachments: await processAttachments(),
+      reply_to_id: currentMode === 'reply' ? selectedEmail?.id : null,
+      signature: userSignature
     });
     
     showStatus('Email sent successfully!', false);
@@ -1472,9 +2378,42 @@ async function sendEmail() {
   }
 }
 
+async function processAttachments() {
+  const processedAttachments = [];
+  
+  for (const file of attachedFiles) {
+    if (file.type === 'media-library') {
+      processedAttachments.push({
+        name: file.name,
+        url: file.url
+      });
+    } else if (file.type === 'upload') {
+      // Convert file to base64 for upload
+      const base64Data = await fileToBase64(file.file);
+      processedAttachments.push({
+        name: file.name,
+        data: base64Data
+      });
+    }
+  }
+  
+  return processedAttachments;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
 function getComposeFormData() {
   return {
     to: document.getElementById('composeTo').value,
+    cc: document.getElementById('composeCC').value,
+    bcc: document.getElementById('composeBCC').value,
     subject: document.getElementById('composeSubject').value,
     body: document.getElementById('composeBody').value
   };
@@ -1499,6 +2438,7 @@ function validateComposeForm(formData) {
 function cancelCompose() {
   showEmptyReadingPane();
   currentMode = 'view';
+  attachedFiles = [];
 }
 
 // AI Assistant functions
@@ -1534,24 +2474,19 @@ async function aiAssist(tone) {
 async function generateAIEmails() {
   try {
     showStatus('Generating AI email campaign...', false);
-    
     const result = await apiCall(ENDPOINTS.generateCampaign);
-    
     showStatus('AI email campaign generated! Check your drafts.', false);
     await loadEmails();
-    
   } catch (error) {
     console.error('Error generating AI campaign:', error);
     showStatus('Error generating AI campaign', true);
   }
 }
 
-// Refresh emails
 async function refreshEmails() {
   await loadEmails();
 }
 
-// Filter functions
 function applyFilters() {
   const status = document.getElementById('statusFilter').value;
   const contact = document.getElementById('contactFilter').value.toLowerCase();
@@ -1559,14 +2494,13 @@ function applyFilters() {
   const dateTo = document.getElementById('dateToFilter').value;
 
   filteredEmails = allEmails.filter(email => {
-    // Status filter
     if (status) {
       switch (status) {
         case 'draft':
-          if (email.body && email.body.trim() !== '') return false;
+          if (!email.draft && email.body && email.body.trim() !== '') return false;
           break;
         case 'sent':
-          if (!email.body || email.body.trim() === '' || email.inbound) return false;
+          if (email.draft || !email.body || email.body.trim() === '' || email.inbound) return false;
           break;
         case 'inbound':
           if (!email.inbound) return false;
@@ -1580,29 +2514,15 @@ function applyFilters() {
       }
     }
 
-    // Contact filter
     if (contact) {
-      const searchableText = [
-        email.from || '',
-        email.to || '',
-        email.subject || '',
-        email.body || ''
-      ].join(' ').toLowerCase();
-      
-      if (!searchableText.includes(contact)) {
-        return false;
-      }
+      const searchableText = [email.from || '', email.to || '', email.subject || '', email.body || ''].join(' ').toLowerCase();
+      if (!searchableText.includes(contact)) return false;
     }
 
-    // Date filters
     if (dateFrom || dateTo) {
       const emailDate = new Date(email.created_at);
-      if (dateFrom && emailDate < new Date(dateFrom)) {
-        return false;
-      }
-      if (dateTo && emailDate > new Date(dateTo + 'T23:59:59')) {
-        return false;
-      }
+      if (dateFrom && emailDate < new Date(dateFrom)) return false;
+      if (dateTo && emailDate > new Date(dateTo + 'T23:59:59')) return false;
     }
 
     return true;
@@ -1619,45 +2539,236 @@ function clearFilters() {
   applyFilters();
 }
 
-// Status messages
 function showStatus(message, isError = false) {
   const statusDiv = document.getElementById('statusMessage');
   statusDiv.textContent = message;
   statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
   statusDiv.style.display = 'block';
-  
-  setTimeout(() => {
-    statusDiv.style.display = 'none';
-  }, 5000);
+  setTimeout(() => statusDiv.style.display = 'none', 5000);
 }
 
-// Event listeners
 function setupEventListeners() {
-  // Compose form submission
   document.getElementById('emailComposeForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     await sendEmail();
   });
   
-  // Filter controls with debouncing
-  let filterTimeout;
   ['statusFilter', 'contactFilter', 'dateFromFilter', 'dateToFilter'].forEach(id => {
-    document.getElementById(id).addEventListener('change', () => {
-      clearTimeout(filterTimeout);
-      filterTimeout = setTimeout(applyFilters, 300);
+    document.getElementById(id).addEventListener('change', applyFilters);
+  });
+  
+  window.addEventListener('click', (event) => {
+    const modals = ['emailModal', 'signatureModal', 'fileSelectorModal'];
+    modals.forEach(modalId => {
+      const modal = document.getElementById(modalId);
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
     });
   });
   
-  // Modal close on outside click
-  window.addEventListener('click', (event) => {
-    const modal = document.getElementById('emailModal');
-    if (event.target === modal) {
-      closeEmailModal();
-    }
-  });
+  setupFileAttachmentDragDrop();
 }
 
-// Initialize page
+// Victory Vision Chat Widget
+class VictoryVisionChat {
+  constructor() {
+    this.isOpen = false;
+    this.isTyping = false;
+    this.apiEndpoint = ENDPOINTS.chatMessage;
+    this.customerId = null;
+    this.authToken = null;
+    this.conversationId = null;
+    this.messageCount = 0;
+    this.init();
+  }
+
+  init() {
+    this.toggle = document.getElementById('vvChatToggle');
+    this.container = document.getElementById('vvChatContainer');
+    this.messages = document.getElementById('vvChatMessages');
+    this.input = document.getElementById('vvChatInput');
+    this.sendBtn = document.getElementById('vvChatSend');
+    this.minimize = document.getElementById('vvChatMinimize');
+    this.typing = document.getElementById('vvChatTyping');
+    this.error = document.getElementById('vvChatError');
+    this.notification = document.getElementById('vvNotificationBadge');
+    this.toggleIcon = document.getElementById('vvToggleIcon');
+
+    this.setupEventListeners();
+    this.getCustomerAuth();
+    this.conversationId = 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    this.setupAutoResize();
+  }
+
+  setupEventListeners() {
+    this.toggle.addEventListener('click', () => this.toggleChat());
+    this.minimize.addEventListener('click', () => this.closeChat());
+    this.sendBtn.addEventListener('click', () => this.sendMessage());
+    this.input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        this.sendMessage();
+      }
+    });
+    this.input.addEventListener('input', () => {
+      this.sendBtn.disabled = !this.input.value.trim();
+    });
+  }
+
+  setupAutoResize() {
+    this.input.addEventListener('input', () => {
+      this.input.style.height = 'auto';
+      this.input.style.height = Math.min(this.input.scrollHeight, 80) + 'px';
+    });
+  }
+
+  getCustomerAuth() {
+    this.customerId = CUSTOMER_ID;
+    this.authToken = authToken;
+  }
+
+  toggleChat() {
+    if (this.isOpen) {
+      this.closeChat();
+    } else {
+      this.openChat();
+    }
+  }
+
+  openChat() {
+    this.isOpen = true;
+    this.container.classList.add('open');
+    this.toggle.classList.add('active');
+    this.toggleIcon.textContent = '✕';
+    this.input.focus();
+    this.hideNotification();
+    this.scrollToBottom();
+  }
+
+  closeChat() {
+    this.isOpen = false;
+    this.container.classList.remove('open');
+    this.toggle.classList.remove('active');
+    this.toggleIcon.textContent = '💬';
+    this.hideError();
+  }
+
+  async sendMessage() {
+    const message = this.input.value.trim();
+    if (!message || this.isTyping) return;
+
+    this.addMessage(message, 'user');
+    this.input.value = '';
+    this.input.style.height = 'auto';
+    this.sendBtn.disabled = true;
+    this.showTyping();
+
+    try {
+      const response = await this.callChatAPI(message);
+      this.hideTyping();
+      
+      if (response && response.reply) {
+        this.addMessage(response.reply, 'bot');
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (error) {
+      this.hideTyping();
+      console.error('Chat API error:', error);
+      this.addMessage("I'm sorry, I'm having trouble connecting right now. Please try again in a moment.", 'bot');
+      this.showError('Failed to send message. Please try again.');
+    }
+  }
+
+  async callChatAPI(message) {
+    const payload = {
+      message: message,
+      customer_id: this.customerId || 'anonymous',
+      conversation_id: this.conversationId,
+      timestamp: new Date().toISOString(),
+      page_url: window.location.href,
+      user_agent: navigator.userAgent
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Customer-ID': this.customerId || 'anonymous',
+      'X-Conversation-ID': this.conversationId
+    };
+
+    if (this.authToken) {
+      headers['Authorization'] = `Bearer ${this.authToken}`;
+    }
+
+    const response = await fetch(this.apiEndpoint, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.json();
+  }
+
+  addMessage(text, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `vv-chat-message ${sender}`;
+    messageDiv.innerHTML = this.sanitizeText(text);
+    this.messages.appendChild(messageDiv);
+    this.scrollToBottom();
+    this.messageCount++;
+    setTimeout(() => this.scrollToBottom(), 100);
+  }
+
+  sanitizeText(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML.replace(/\n/g, '<br>');
+  }
+
+  showTyping() {
+    this.isTyping = true;
+    this.typing.classList.add('show');
+    this.scrollToBottom();
+  }
+
+  hideTyping() {
+    this.isTyping = false;
+    this.typing.classList.remove('show');
+  }
+
+  showError(message) {
+    this.error.textContent = message;
+    this.error.style.display = 'block';
+    setTimeout(() => this.hideError(), 5000);
+  }
+
+  hideError() {
+    this.error.style.display = 'none';
+  }
+
+  showNotification() {
+    this.notification.style.display = 'flex';
+  }
+
+  hideNotification() {
+    this.notification.style.display = 'none';
+  }
+
+  scrollToBottom() {
+    this.messages.scrollTop = this.messages.scrollHeight;
+  }
+
+  sendQuickMessage(message) {
+    this.input.value = message;
+    this.sendMessage();
+  }
+}
+
 async function init() {
   try {
     const isAuthenticated = await checkAuthentication();
@@ -1666,7 +2777,6 @@ async function init() {
     if (isAuthenticated) {
       setupEventListeners();
       
-      // Check for preloaded contact from contacts page
       const contactData = sessionStorage.getItem('messageContact');
       if (contactData) {
         preloadedContact = JSON.parse(contactData);
@@ -1676,21 +2786,16 @@ async function init() {
       await Promise.all([
         loadUserData(),
         loadContacts(),
+        loadMediaFiles(),
         loadEmails()
       ]);
       
-      // Auto-start tour for new users
       if (!hasCompletedTour()) {
-        setTimeout(() => {
-          startTour();
-        }, 1000);
+        setTimeout(() => startTour(), 1000);
       }
       
-      // Auto-show compose if preloaded contact
       if (preloadedContact) {
-        setTimeout(() => {
-          showComposeForm();
-        }, 500);
+        setTimeout(() => showComposeForm(), 500);
       }
     } else {
       console.log('Not authenticated, redirecting to login');
@@ -1702,7 +2807,9 @@ async function init() {
   }
 }
 
-// Security checks - session validation every 5 minutes
+const VVChat = new VictoryVisionChat();
+window.VVChat = VVChat;
+
 setInterval(async function() {
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1717,7 +2824,6 @@ setInterval(async function() {
   }
 }, 300000);
 
-// Enhanced security - check on page visibility change
 document.addEventListener('visibilitychange', async function() {
   if (!document.hidden) {
     try {
@@ -1733,7 +2839,6 @@ document.addEventListener('visibilitychange', async function() {
   }
 });
 
-// Make functions globally available
 window.selectEmail = selectEmail;
 window.showComposeForm = showComposeForm;
 window.replyToEmail = replyToEmail;
@@ -1751,9 +2856,24 @@ window.refreshEmails = refreshEmails;
 window.applyFilters = applyFilters;
 window.clearFilters = clearFilters;
 window.startTour = startTour;
+window.toggleCCBCC = toggleCCBCC;
+window.showFileSelector = showFileSelector;
+window.closeFileSelector = closeFileSelector;
+window.attachSelectedFiles = attachSelectedFiles;
+window.handleFileUpload = handleFileUpload;
+window.removeAttachment = removeAttachment;
+window.editSignature = editSignature;
+window.closeSignatureModal = closeSignatureModal;
+window.saveSignature = saveSignature;
 
-// Initialize when DOM loads
 document.addEventListener('DOMContentLoaded', init);
+
+setTimeout(() => {
+  if (!VVChat.isOpen && VVChat.messageCount === 0) {
+    VVChat.showNotification();
+  }
+}, 10000);
+
 </script>
 
 </body>
