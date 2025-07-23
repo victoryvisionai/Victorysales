@@ -1547,6 +1547,7 @@ async function loadUserData() {
     const response = await apiCall(ENDPOINTS.getUserData);
     const userData = Array.isArray(response) ? response[0] : response;
     
+    
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
     const plan = userData.subscription_plan || 'bronze';
@@ -1557,8 +1558,8 @@ async function loadUserData() {
     document.getElementById('composeFrom').value = CUSTOMER_ID;
     
     // Load user signature
-    if (userData.email_signature) {
-      userSignature = userData.email_signature;
+    if (userData.signature) {
+      userSignature = userData.signature;
       updateSignatureDisplay();
     }
     
