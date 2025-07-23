@@ -305,6 +305,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 20px;
+      max-height: calc(100vh - 280px);
     }
     .reading-pane.empty {
       display: flex;
@@ -1190,8 +1191,6 @@
         <div class="email-view-header">
           <div class="email-view-subject" id="viewSubject"></div>
           <div class="email-view-meta">
-            <span class="meta-label">From:</span>
-            <span class="meta-value" id="viewFrom"></span>
             <span class="meta-label">To:</span>
             <span class="meta-value" id="viewTo"></span>
             <span class="meta-label">CC:</span>
@@ -1865,6 +1864,7 @@ function showEmailView(email) {
   composeForm.classList.remove('active');
   readingPane.classList.remove('empty');
   emailView.classList.add('active');
+  readingPane.style.display = 'block';
   readingPaneActions.style.display = 'flex';
   
   // Populate email details
