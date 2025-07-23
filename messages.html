@@ -1918,6 +1918,7 @@ function showDraftForEditing(email) {
   document.getElementById('composeBCC').value = email.bcc || '';
   document.getElementById('composeSubject').value = email.subject || '';
   document.getElementById('composeBody').value = email.body || '';
+  document.getElementById('composeBody').value += '\n\n' + userSignature;
   
   // Show CC/BCC if they have values
   if (email.cc || email.bcc) {
@@ -2039,6 +2040,7 @@ function showComposeForm(replyTo = null, forwardFrom = null) {
     }
   } else {
     // New compose mode
+    document.getElementById('composeBody').value = userSignature;
     readingPaneTitle.textContent = '✏️ Compose New Email';
     currentMode = 'compose';
     
