@@ -1836,8 +1836,8 @@ function formatDate(dateStr) {
 document.querySelectorAll('.email-item').forEach(item => {
   item.classList.remove('selected');
 });
-document.querySelector(`[onclick="selectEmail(${emailId})"]`).classList.add('selected');  
-  showEmailView(email);
+selectedEmail = email;
+    showEmailView(email);
   
   // Mark as read if not already and not a draft
   if (!email.opened_at && !email.draft && email.body && email.body.trim()) {
