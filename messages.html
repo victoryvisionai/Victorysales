@@ -1492,7 +1492,7 @@ async function checkAuthentication() {
     if (session && session.user) {
       CUSTOMER_ID = session.user.email;
       authToken = session.access_token;
-document.getElementById('composeFrom').value = userData.vv_email || userData.email || CUSTOMER_ID;
+document.getElementById('composeFrom').value = CUSTOMER_ID;
       return true;
     }
 
@@ -1556,8 +1556,8 @@ async function loadUserData() {
     medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
     medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
     
-    // Set compose from email
-    document.getElementById('composeFrom').value = CUSTOMER_ID;
+// Set compose from email
+document.getElementById('composeFrom').value = userData.vv_email || userData.email || CUSTOMER_ID;
     
     // Load user signature
     if (userData.signature) {
