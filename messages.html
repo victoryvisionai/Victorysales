@@ -1872,6 +1872,7 @@ function showEmailView(email) {
   
   // Populate email details
   document.getElementById('viewSubject').textContent = email.subject || 'No Subject';
+document.getElementById('viewFrom').textContent = email.from || 'Unknown';
   document.getElementById('viewTo').textContent = email.to || 'Unknown';
   document.getElementById('viewCC').textContent = email.cc || 'None';
   document.getElementById('viewDate').textContent = new Date(email.created_at).toLocaleString();
