@@ -1653,7 +1653,12 @@ async function loadEmails() {
     // Auto-select the most recent unread email
     const recentUnread = allEmails.find(email => !email.opened_at);
     if (recentUnread) {
-      setTimeout(() => selectEmail(recentUnread.id), 500);
+    setTimeout(() => {
+  const emailElement = document.querySelector(`[onclick="selectEmail(${recentUnread.id})"]`);
+  if (emailElement) {
+    selectEmail(recentUnread.id);
+  }
+}, 1000);
     }
     
     showStatus(`Loaded ${allEmails.length} emails`, false);
