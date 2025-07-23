@@ -1726,7 +1726,7 @@ function renderEmailList() {
       
       html += `
         <div class="email-item ${emailClasses} ${isSelected ? 'selected' : ''}" 
-             onclick="selectEmail('${email.id}')" 
+             onclick="selectEmail(${email.id})" 
              data-email-id="${email.id}">
           <div class="email-header">
             <div class="email-from">${getEmailDisplayName(email)}${threadIndicator}</div>
