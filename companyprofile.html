@@ -123,6 +123,16 @@
       grid-template-columns: 1fr 1fr;
       gap: 15px;
     }
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+    }
+    .form-row-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 15px;
+    }
     button {
       background: #0A3161;
       color: white;
@@ -306,6 +316,18 @@
       border-radius: 4px;
       padding: 5px;
     }
+    .product-preview {
+      margin-top: 10px;
+      max-width: 150px;
+      max-height: 80px;
+    }
+    .product-preview img {
+      max-width: 100%;
+      max-height: 80px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+    }
     .spinner-inline {
       display: inline-block;
       width: 16px;
@@ -316,6 +338,34 @@
       animation: spin 1s linear infinite;
       margin-left: 10px;
       vertical-align: middle;
+    }
+    .product-images-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .ai-enhanced-field {
+      position: relative;
+    }
+    .ai-enhance-button {
+      position: absolute;
+      right: 10px;
+      top: 35px;
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      z-index: 1;
+    }
+    .ai-enhance-button:hover {
+      background: #218838;
+    }
+    .ai-enhance-button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
     }
 
     /* Chat Widget Styles */
@@ -655,7 +705,7 @@
       .content {
         padding: 10px 5px;
       }
-      .form-row {
+      .form-row, .form-row-3, .form-row-4 {
         grid-template-columns: 1fr;
       }
       .navbar {
@@ -675,6 +725,9 @@
       .vv-chat-widget {
         bottom: 15px;
         right: 15px;
+      }
+      .product-images-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -836,6 +889,106 @@
     </form>
   </div>
 
+  <!-- Newsletter & Marketing Section -->
+  <div class="card">
+    <div class="section-header">
+      <h3>Newsletter & Marketing Information</h3>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group ai-enhanced-field">
+        <label for="newsletterTitle">Newsletter Title *</label>
+        <input type="text" id="newsletterTitle" name="newsletter_title" required 
+               placeholder="Enter your newsletter title..." 
+               data-intro="Create a compelling newsletter title for your campaigns." 
+               data-step="7">
+        <button type="button" class="ai-enhance-button" onclick="enhanceNewsletterTitle()" id="enhanceNewsletterBtn">
+          🤖 AI Enhance
+        </button>
+      </div>
+      <div class="form-group">
+        <label for="newsletterTagline">Newsletter Tagline (Optional)</label>
+        <input type="text" id="newsletterTagline" name="newsletter_tagline" 
+               placeholder="Enter your newsletter tagline...">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group ai-enhanced-field">
+        <label for="offer">Special Offer/Value Proposition</label>
+        <textarea id="offer" name="offer" 
+                  placeholder="Describe your special offer or unique value proposition..." 
+                  data-intro="Define your special offer that will be polished by AI for maximum impact." 
+                  data-step="8"></textarea>
+        <button type="button" class="ai-enhance-button" onclick="enhanceOffer()" id="enhanceOfferBtn">
+          🤖 AI Polish
+        </button>
+      </div>
+      <div class="form-group">
+        <label for="calendar">Calendar/Booking Link</label>
+        <input type="url" id="calendar" name="calendar" 
+               placeholder="https://calendly.com/yourlink or your booking URL..." 
+               data-intro="Add your calendar booking link for lead conversion." 
+               data-step="9">
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Images Section -->
+  <div class="card">
+    <div class="section-header">
+      <h3>Product Images</h3>
+      <p style="margin: 5px 0 0 0; opacity: 0.9;">Upload up to 4 product images for your campaigns</p>
+    </div>
+
+    <div class="product-images-grid">
+      <div class="form-group">
+        <label for="productImage1">Product Image 1</label>
+        <div class="file-upload">
+          <input type="file" id="productImage1" name="product_image_1" accept="image/*">
+          <label for="productImage1" class="file-upload-label">
+            📸 Choose product image 1
+          </label>
+          <div id="productImage1FileName" class="file-name"></div>
+          <div id="productImage1Preview" class="product-preview"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="productImage2">Product Image 2</label>
+        <div class="file-upload">
+          <input type="file" id="productImage2" name="product_image_2" accept="image/*">
+          <label for="productImage2" class="file-upload-label">
+            📸 Choose product image 2
+          </label>
+          <div id="productImage2FileName" class="file-name"></div>
+          <div id="productImage2Preview" class="product-preview"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="productImage3">Product Image 3</label>
+        <div class="file-upload">
+          <input type="file" id="productImage3" name="product_image_3" accept="image/*">
+          <label for="productImage3" class="file-upload-label">
+            📸 Choose product image 3
+          </label>
+          <div id="productImage3FileName" class="file-name"></div>
+          <div id="productImage3Preview" class="product-preview"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="productImage4">Product Image 4</label>
+        <div class="file-upload">
+          <input type="file" id="productImage4" name="product_image_4" accept="image/*">
+          <label for="productImage4" class="file-upload-label">
+            📸 Choose product image 4
+          </label>
+          <div id="productImage4FileName" class="file-name"></div>
+          <div id="productImage4Preview" class="product-preview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Goal Management Section -->
   <div class="card">
     <div class="section-header">
@@ -861,7 +1014,7 @@
             <textarea name="goal_description" required 
                       placeholder="What exactly do you want to achieve?" 
                       data-intro="Set a specific business goal. Our AI will create campaigns designed to achieve this goal." 
-                      data-step="7"></textarea>
+                      data-step="10"></textarea>
           </div>
           <div class="form-group">
             <label>How will you measure success? (Measurable) *</label>
@@ -886,7 +1039,7 @@
     <div style="text-align: center; margin-top: 20px;">
       <button type="button" class="save-all-button" onclick="saveAllData()" 
               data-intro="Save your profile and goal. Once saved, you can start creating AI-powered campaigns!" 
-              data-step="8">
+              data-step="11">
         <span id="saveButtonText">💾 Save Company Profile & Goal</span>
         <span id="saveSpinner" class="spinner-inline" style="display: none;"></span>
       </button>
@@ -976,13 +1129,22 @@
   const ENDPOINTS = {
     GET_USER: `${N8N_BASE_URL}/user/get`,
     UPDATE_USER: `${N8N_BASE_URL}/user/update`,
-    UPLOAD_LOGO: `${N8N_BASE_URL}/user/logo`
+    UPLOAD_LOGO: `${N8N_BASE_URL}/user/logo`,
+    NEWSLETTER_TITLE: `${N8N_BASE_URL}/newsletter/title`,
+    USER_OFFER: `${N8N_BASE_URL}/user/offer`,
+    USER_CALENDAR: `${N8N_BASE_URL}/user/calendar`
   };
   
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
   let uploadedLogoFile = null;
+  let uploadedProductImages = {
+    product_image_1: null,
+    product_image_2: null,
+    product_image_3: null,
+    product_image_4: null
+  };
 
   // Rate limiting for API calls
   const rateLimiter = {
@@ -1028,8 +1190,9 @@
     const userTitle = document.getElementById('userTitle').value;    
     const companyDescription = document.getElementById('companyDescription').value;
     const productDescription = document.getElementById('productDescription').value;
+    const newsletterTitle = document.getElementById('newsletterTitle').value;
     
-    return companyName.trim() && userTitle.trim() && companyDescription.trim() && productDescription.trim();
+    return companyName.trim() && userTitle.trim() && companyDescription.trim() && productDescription.trim() && newsletterTitle.trim();
   }
 
   // Show or hide tour button based on profile completeness
@@ -1244,6 +1407,71 @@
     planName.textContent = safePlan;
   }
 
+  // AI Enhancement Functions
+  async function enhanceNewsletterTitle() {
+    const titleInput = document.getElementById('newsletterTitle');
+    const enhanceBtn = document.getElementById('enhanceNewsletterBtn');
+    
+    if (!titleInput.value.trim()) {
+      showStatus('Please enter a newsletter title first', true);
+      return;
+    }
+
+    enhanceBtn.disabled = true;
+    enhanceBtn.innerHTML = '🔄 Enhancing...';
+
+    try {
+      const result = await apiCall(ENDPOINTS.NEWSLETTER_TITLE, {
+        newsletter_title: titleInput.value.trim()
+      });
+
+      if (result.enhanced_title) {
+        titleInput.value = result.enhanced_title;
+        showStatus('Newsletter title enhanced successfully!');
+      } else {
+        throw new Error('No enhanced title returned');
+      }
+    } catch (error) {
+      console.error('Error enhancing newsletter title:', error);
+      showStatus('Failed to enhance newsletter title: ' + error.message, true);
+    } finally {
+      enhanceBtn.disabled = false;
+      enhanceBtn.innerHTML = '🤖 AI Enhance';
+    }
+  }
+
+  async function enhanceOffer() {
+    const offerInput = document.getElementById('offer');
+    const enhanceBtn = document.getElementById('enhanceOfferBtn');
+    
+    if (!offerInput.value.trim()) {
+      showStatus('Please enter an offer first', true);
+      return;
+    }
+
+    enhanceBtn.disabled = true;
+    enhanceBtn.innerHTML = '🔄 Polishing...';
+
+    try {
+      const result = await apiCall(ENDPOINTS.USER_OFFER, {
+        offer: offerInput.value.trim()
+      });
+
+      if (result.polished_offer) {
+        offerInput.value = result.polished_offer;
+        showStatus('Offer polished successfully!');
+      } else {
+        throw new Error('No polished offer returned');
+      }
+    } catch (error) {
+      console.error('Error polishing offer:', error);
+      showStatus('Failed to polish offer: ' + error.message, true);
+    } finally {
+      enhanceBtn.disabled = false;
+      enhanceBtn.innerHTML = '🤖 AI Polish';
+    }
+  }
+
   // Initialize page
   document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('authLoading').style.display = 'flex';
@@ -1254,7 +1482,7 @@
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
         setupColorPickers();
-        setupFileUpload();
+        setupFileUploads();
         await loadAllData();
         
         // Add tour completion handler
@@ -1266,6 +1494,7 @@
         document.getElementById('userTitle').addEventListener('input', updateTourButtonVisibility);
         document.getElementById('companyDescription').addEventListener('input', updateTourButtonVisibility);
         document.getElementById('productDescription').addEventListener('input', updateTourButtonVisibility);
+        document.getElementById('newsletterTitle').addEventListener('input', updateTourButtonVisibility);
       } else {
         redirectToLogin();
       }
@@ -1294,10 +1523,20 @@
     });
   }
 
-  function setupFileUpload() {
-    const fileInput = document.getElementById('logoUpload');
-    const fileName = document.getElementById('logoFileName');
-    const logoPreview = document.getElementById('logoPreview');
+  function setupFileUploads() {
+    // Logo upload
+    setupSingleFileUpload('logoUpload', 'logoFileName', 'logoPreview', ENDPOINTS.UPLOAD_LOGO, 'logo_URL');
+    
+    // Product image uploads
+    ['1', '2', '3', '4'].forEach(num => {
+      setupProductImageUpload(num);
+    });
+  }
+
+  function setupSingleFileUpload(inputId, fileNameId, previewId, endpoint, responseKey) {
+    const fileInput = document.getElementById(inputId);
+    const fileName = document.getElementById(fileNameId);
+    const preview = document.getElementById(previewId);
     
     fileInput.addEventListener('change', async function() {
       if (this.files && this.files[0]) {
@@ -1317,33 +1556,88 @@
         fileName.textContent = `Uploading: ${file.name}...`;
         
         try {
-          const base64Logo = await fileToBase64(file);
-          const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
-            logo_file: base64Logo,
+          const base64File = await fileToBase64(file);
+          const uploadResult = await apiCall(endpoint, {
+            logo_file: base64File,
             file_name: sanitizeInput(file.name),
             file_type: file.type
           }, 'POST');
           
-          const logoUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
+          const fileUrl = uploadResult[responseKey] || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
           
-          if (logoUrl) {
+          if (fileUrl) {
             fileName.textContent = `✓ Uploaded: ${file.name}`;
-            logoPreview.innerHTML = `<img src="${logoUrl}" alt="Uploaded logo">`;
-            showStatus('Logo uploaded successfully!');
-            uploadedLogoFile = { url: logoUrl };
+            preview.innerHTML = `<img src="${fileUrl}" alt="Uploaded file">`;
+            showStatus('File uploaded successfully!');
+            if (inputId === 'logoUpload') {
+              uploadedLogoFile = { url: fileUrl };
+            }
           } else {
             throw new Error('Upload failed - no URL returned');
           }
         } catch (error) {
-          console.error('Logo upload failed:', error);
+          console.error('File upload failed:', error);
           fileName.textContent = `❌ Upload failed: ${file.name}`;
-          showStatus('Logo upload failed: ' + error.message, true);
-          uploadedLogoFile = null;
+          showStatus('File upload failed: ' + error.message, true);
+          if (inputId === 'logoUpload') {
+            uploadedLogoFile = null;
+          }
+        }
+      }
+    });
+  }
+
+  function setupProductImageUpload(num) {
+    const fileInput = document.getElementById(`productImage${num}`);
+    const fileName = document.getElementById(`productImage${num}FileName`);
+    const preview = document.getElementById(`productImage${num}Preview`);
+    
+    fileInput.addEventListener('change', async function() {
+      if (this.files && this.files[0]) {
+        const file = this.files[0];
+        
+        // Validate file
+        if (!file.type.startsWith('image/')) {
+          showStatus('Please select a valid image file', true);
+          return;
+        }
+        
+        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+          showStatus('File size must be less than 5MB', true);
+          return;
+        }
+        
+        fileName.textContent = `Uploading: ${file.name}...`;
+        
+        try {
+          const base64File = await fileToBase64(file);
+          const uploadResult = await apiCall(ENDPOINTS.UPLOAD_LOGO, {
+            logo_file: base64File,
+            file_name: sanitizeInput(file.name),
+            file_type: file.type,
+            field_type: `product_image_${num}`
+          }, 'POST');
+          
+          const fileUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
+          
+          if (fileUrl) {
+            fileName.textContent = `✓ Uploaded: ${file.name}`;
+            preview.innerHTML = `<img src="${fileUrl}" alt="Product image ${num}">`;
+            showStatus(`Product image ${num} uploaded successfully!`);
+            uploadedProductImages[`product_image_${num}`] = { url: fileUrl };
+          } else {
+            throw new Error('Upload failed - no URL returned');
+          }
+        } catch (error) {
+          console.error(`Product image ${num} upload failed:`, error);
+          fileName.textContent = `❌ Upload failed: ${file.name}`;
+          showStatus(`Product image ${num} upload failed: ` + error.message, true);
+          uploadedProductImages[`product_image_${num}`] = null;
         }
       } else {
-        uploadedLogoFile = null;
+        uploadedProductImages[`product_image_${num}`] = null;
         fileName.textContent = '';
-        logoPreview.innerHTML = '';
+        preview.innerHTML = '';
       }
     });
   }
@@ -1394,7 +1688,7 @@
       const goalFormData = new FormData(goalForm);
       
       // Validate required fields
-      if (!formData.get('company_name') || !formData.get('title') || !formData.get('company_description') || !formData.get('product_description')) {
+      if (!formData.get('company_name') || !formData.get('title') || !formData.get('company_description') || !formData.get('product_description') || !document.getElementById('newsletterTitle').value.trim()) {
         throw new Error('Please fill in all required fields');
       }
       
@@ -1402,6 +1696,14 @@
       let logoUrl = '';
       if (uploadedLogoFile && uploadedLogoFile.url) {
         logoUrl = uploadedLogoFile.url;
+      }
+      
+      // Get product image URLs
+      const productImageUrls = {};
+      for (let i = 1; i <= 4; i++) {
+        if (uploadedProductImages[`product_image_${i}`] && uploadedProductImages[`product_image_${i}`].url) {
+          productImageUrls[`product_image_${i}`] = uploadedProductImages[`product_image_${i}`].url;
+        }
       }
       
       // Collect goal data only if description is provided
@@ -1416,10 +1718,10 @@
         };
       }
 
-      // FIXED: Combine all data into single payload including title
+      // FIXED: Combine all data into single payload including new fields
       const allData = {
         company_name: sanitizeInput(formData.get('company_name')),
-        title: sanitizeInput(formData.get('title')), // FIXED: Added this line
+        title: sanitizeInput(formData.get('title')),
         industry: sanitizeInput(formData.get('industry')),
         domain: sanitizeInput(formData.get('domain')),
         logo_URL: logoUrl,
@@ -1429,6 +1731,11 @@
         brand_colors: sanitizeInput(formData.get('brand_colors_1')) + ',' + 
                      sanitizeInput(formData.get('brand_colors_2')) + ',' + 
                      sanitizeInput(formData.get('brand_colors_3')),
+        newsletter_title: sanitizeInput(document.getElementById('newsletterTitle').value),
+        newsletter_tagline: sanitizeInput(document.getElementById('newsletterTagline').value),
+        offer: sanitizeInput(document.getElementById('offer').value),
+        calendar: sanitizeInput(document.getElementById('calendar').value),
+        ...productImageUrls,
         goal: goalData
       };
 
@@ -1461,14 +1768,20 @@
       
       if (userData && typeof userData === 'object' && userData.company_name !== undefined) {
         
-        // FIXED: Populate form fields with existing data including title
+        // FIXED: Populate form fields with existing data including new fields
         document.getElementById('companyName').value = userData.company_name || '';
-        document.getElementById('userTitle').value = userData.title || ''; // FIXED: Added this line
+        document.getElementById('userTitle').value = userData.title || '';
         document.getElementById('industry').value = userData.industry || '';
         document.getElementById('domain').value = userData.domain || '';
         document.getElementById('companyDescription').value = userData.company_description || '';
         document.getElementById('productDescription').value = userData.product_description || userData.product_descriptions || '';
         document.getElementById('icp').value = userData.icp || '';
+        
+        // New fields
+        document.getElementById('newsletterTitle').value = userData.newsletter_title || '';
+        document.getElementById('newsletterTagline').value = userData.newsletter_tagline || '';
+        document.getElementById('offer').value = userData.offer || '';
+        document.getElementById('calendar').value = userData.calendar || '';
         
         // Handle brand colors
         if (userData.brand_colors) {
@@ -1491,6 +1804,17 @@
         if (userData.logo_URL) {
           document.getElementById('logoPreview').innerHTML = `<img src="${userData.logo_URL}" alt="Company logo">`;
           document.getElementById('logoFileName').textContent = 'Current logo uploaded';
+          uploadedLogoFile = { url: userData.logo_URL };
+        }
+        
+        // Show existing product images if available
+        for (let i = 1; i <= 4; i++) {
+          const productImageUrl = userData[`product_image_${i}`];
+          if (productImageUrl) {
+            document.getElementById(`productImage${i}Preview`).innerHTML = `<img src="${productImageUrl}" alt="Product image ${i}">`;
+            document.getElementById(`productImage${i}FileName`).textContent = `Current product image ${i} uploaded`;
+            uploadedProductImages[`product_image_${i}`] = { url: productImageUrl };
+          }
         }
       }
 
