@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up - Victory Vision Outdoor, LLC</title>
+  <title>Sign Up - Victory Vision</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -95,6 +95,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-bottom: 10px;
     }
     button:hover:not(:disabled) {
       background-color: #BB133E;
@@ -105,19 +106,28 @@
     }
     .google-btn {
       background-color: #DB4437;
-      margin-top: 10px;
     }
     .error {
       color: #BB133E;
       font-size: 14px;
       display: none;
       margin-bottom: 10px;
+      text-align: left;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #fee;
+      border: 1px solid #fcc;
     }
     .success {
       color: #28a745;
       font-size: 14px;
       display: none;
       margin-bottom: 10px;
+      text-align: left;
+      padding: 10px;
+      border-radius: 4px;
+      background-color: #efe;
+      border: 1px solid #cfc;
     }
     .loading {
       display: inline-block;
@@ -127,6 +137,16 @@
       border-radius: 50%;
       border-top-color: transparent;
       animation: spin 1s ease-in-out infinite;
+    }
+    .debug-info {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #666;
+      text-align: left;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      display: none;
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
@@ -181,6 +201,11 @@
       Already have an account?
       <a href="login.html" style="color: #0A3161; text-decoration: underline;">Log in instead</a>
     </p>
+
+    <div class="debug-info" id="debugInfo">
+      <strong>Debug Information:</strong><br>
+      <span id="debugText"></span>
+    </div>
   </div>
 
   <script>
@@ -207,6 +232,8 @@
     const errorText = document.getElementById("errorText");
     const successText = document.getElementById("successText");
     const signupBtn = document.getElementById("signupBtn");
+    const debugInfo = document.getElementById("debugInfo");
+    const debugText = document.getElementById("debugText");
 
     // Input sanitization
     function sanitizeInput(input) {
@@ -234,24 +261,96 @@
       return Object.values(requirements).every(Boolean);
     }
 
-    // Show error message
-    function showError(message) {
-      errorText.textContent = message;
+    // Show error message with debug info
+    function showError(message, debugDetails = null) {
+      errorText.innerHTML = message;
       errorText.style.display = 'block';
       successText.style.display = 'none';
+      
+      if (debugDetails) {
+        debugText.innerHTML = `Error: ${JSON.stringify(debugDetails, null, 2)}`;
+        debugInfo.style.display = 'block';
+      }
+      
       setTimeout(() => {
         errorText.style.display = 'none';
-      }, 8000);
+        debugInfo.style.display = 'none';
+      }, 10000);
     }
 
     // Show success message
     function showSuccess(message) {
-      successText.textContent = message;
+      successText.innerHTML = message;
       successText.style.display = 'block';
       errorText.style.display = 'none';
+      debugInfo.style.display = 'none';
     }
 
-    // Email signup
+    // Test Supabase connection
+    async function testSupabaseConnection() {
+      try {
+        console.log('Testing Supabase connection...');
+        const { data, error } = await supabaseClient.auth.getSession();
+        console.log('Supabase connection test result:', { data, error });
+        return !error;
+      } catch (e) {
+        console.error('Supabase connection test failed:', e);
+        return false;
+      }
+    }
+
+    // Create user in database after signup
+    async function createUserRecord(user) {
+      try {
+        console.log('Creating user record in database...');
+        
+        // First check if user already exists
+        const { data: existingUser } = await supabaseClient
+          .from('users')
+          .select('*')
+          .eq('email', user.email)
+          .single();
+
+        if (existingUser) {
+          console.log('User already exists in database');
+          return true;
+        }
+
+        // Create new user record
+        const { data, error } = await supabaseClient
+          .from('users')
+          .insert([
+            {
+              id: user.id,
+              email: user.email,
+              created_at: new Date().toISOString(),
+              subscription_plan: 'Bronze',
+              subscription_status: 'trial',
+              video_credits: 3,
+              image_credits: 5,
+              contact_credits: 25,
+              campaign_credits: 2,
+              social_credits: 10
+            }
+          ])
+          .select();
+
+        if (error) {
+          console.error('Database insert error:', error);
+          // Don't fail signup if database insert fails - user is already created in auth
+          return true;
+        }
+
+        console.log('User record created successfully:', data);
+        return true;
+      } catch (error) {
+        console.error('Error creating user record:', error);
+        // Don't fail signup if database operations fail
+        return true;
+      }
+    }
+
+    // Email signup with enhanced error handling
     async function emailSignup(event) {
       event.preventDefault();
       
@@ -300,28 +399,64 @@
         signupBtn.disabled = true;
         signupBtn.innerHTML = '<span class="loading"></span> Creating Account...';
 
+        // Test connection first
+        const connectionOk = await testSupabaseConnection();
+        if (!connectionOk) {
+          throw new Error('Unable to connect to authentication service');
+        }
+
+        console.log('Attempting signup with Supabase...');
         const { data, error } = await supabaseClient.auth.signUp({
           email: cleanEmail,
           password: cleanPassword,
           options: {
-            emailRedirectTo: `${currentDomain}/companyprofile.html`
+            emailRedirectTo: `${currentDomain}/companyprofile.html`,
+            data: {
+              signup_source: 'victory_vision_web',
+              timestamp: new Date().toISOString()
+            }
           }
         });
 
+        console.log('Supabase signup response:', { data, error });
+
         if (error) {
-          throw error;
+          console.error('Supabase signup error:', error);
+          
+          // Handle specific error types
+          if (error.message.includes('User already registered')) {
+            showError('An account with this email already exists. <a href="login.html">Try logging in instead</a>.');
+          } else if (error.message.includes('Database error')) {
+            showError('There was a database issue. Please try again in a few moments.', error);
+          } else if (error.message.includes('Invalid email')) {
+            showError('Please enter a valid email address.');
+          } else if (error.message.includes('Password')) {
+            showError('Password does not meet requirements. Please try a stronger password.');
+          } else {
+            showError(`Signup failed: ${error.message}`, error);
+          }
+          return;
         }
 
-        if (data.user && !data.user.email_confirmed_at) {
-          showSuccess("Please check your email to verify your account before logging in.");
-          // Clear form
-          document.getElementById('signupForm').reset();
-          signupAttempts = 0; // Reset on success
-        } else if (data.user) {
-          showSuccess("Account created successfully! Redirecting...");
-          setTimeout(() => {
-            window.location.href = 'companyprofile.html';
-          }, 2000);
+        if (data.user) {
+          console.log('User created successfully:', data.user);
+          
+          // Try to create user record in database
+          await createUserRecord(data.user);
+          
+          if (!data.user.email_confirmed_at) {
+            showSuccess(`Account created successfully! Please check your email (${cleanEmail}) to verify your account before logging in.`);
+            // Clear form
+            document.getElementById('signupForm').reset();
+            signupAttempts = 0; // Reset on success
+          } else {
+            showSuccess("Account created and verified! Redirecting...");
+            setTimeout(() => {
+              window.location.href = 'companyprofile.html';
+            }, 2000);
+          }
+        } else {
+          throw new Error('No user data received from signup');
         }
 
       } catch (error) {
@@ -330,14 +465,14 @@
           lockoutStart = Date.now();
         }
         console.error('Signup error:', error);
-        showError(error.message || 'Failed to create account. Please try again.');
+        showError(error.message || 'Failed to create account. Please try again.', error);
       } finally {
         signupBtn.disabled = false;
         signupBtn.textContent = 'Sign Up';
       }
     }
 
-    // Google OAuth signup
+    // Google OAuth signup with better error handling
     async function googleSignup() {
       if (!checkbox.checked) {
         showError("Please agree to the legal terms before continuing.");
@@ -348,21 +483,27 @@
         googleBtn.disabled = true;
         googleBtn.innerHTML = '<span class="loading"></span> Connecting...';
 
-        const { error } = await supabaseClient.auth.signInWithOAuth({
+        const { data, error } = await supabaseClient.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: `${currentDomain}/companyprofile.html`
+            redirectTo: `${currentDomain}/companyprofile.html`,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent'
+            }
           }
         });
 
         if (error) {
+          console.error('Google signup error:', error);
           throw error;
         }
 
         // Success will be handled by redirect
+        console.log('Google OAuth initiated successfully');
       } catch (error) {
         console.error('Google signup error:', error);
-        showError('Google signup failed. Please try again.');
+        showError('Google signup failed. Please try again or use email signup.', error);
         googleBtn.disabled = !checkbox.checked;
         googleBtn.textContent = 'Continue with Google';
       }
@@ -387,8 +528,16 @@
     // Check if user is already logged in
     document.addEventListener('DOMContentLoaded', async function() {
       try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+        console.log('Checking existing session...');
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        
+        if (error) {
+          console.error('Session check error:', error);
+          return;
+        }
+        
         if (session) {
+          console.log('User already logged in, redirecting...');
           window.location.href = 'companyprofile.html';
         }
       } catch (e) {
@@ -415,6 +564,12 @@
           emailSignup(e);
         }
       }
+    });
+
+    // Initialize page
+    console.log('Victory Vision Signup page loaded');
+    testSupabaseConnection().then(result => {
+      console.log('Initial connection test:', result ? 'SUCCESS' : 'FAILED');
     });
   </script>
 </body>
