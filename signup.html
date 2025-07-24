@@ -3,133 +3,260 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up - Victory Vision</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Create your Victory Vision account and start automating your marketing campaigns."/>
+  <title>Victory Vision AI - Sign Up</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body {
-      font-family: 'Montserrat', sans-serif;
+    * {
       margin: 0;
-      background-color: #fff;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #0A3161 0%, #1a4c80 100%);
       min-height: 100vh;
+      display: flex;
+      align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    .logo {
-      position: absolute;
-      top: 30px;
-      width: 160px;
-    }
-    .logo img {
-      width: 25%;
-      height: auto;
-    }
-    .container {
+    
+    .signup-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
       width: 100%;
-      max-width: 400px;
-      padding: 30px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 480px;
+      overflow: hidden;
+    }
+    
+    .signup-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 40px 30px 30px;
       text-align: center;
     }
-    h1 {
-      color: #0A3161;
-      margin-bottom: 24px;
+    
+    .logo {
+      margin-bottom: 20px;
     }
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
+    
+    .logo img {
+      height: 60px;
+      width: auto;
+    }
+    
+    .signup-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .signup-header p {
       font-size: 16px;
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      box-sizing: border-box;
+      opacity: 0.9;
     }
+    
+    .signup-form {
+      padding: 40px 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #0A3161;
+      box-shadow: 0 0 0 3px rgba(10, 49, 97, 0.1);
+    }
+    
+    .form-group input.error {
+      border-color: #dc3545;
+    }
+    
     .password-requirements {
-      text-align: left;
+      margin-top: 8px;
       font-size: 12px;
       color: #666;
-      margin-bottom: 10px;
     }
-    .password-requirements ul {
-      margin: 5px 0;
-      padding-left: 20px;
+    
+    .requirement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
     }
-    .password-requirements li {
-      margin: 2px 0;
-    }
-    .password-requirements li.met {
+    
+    .requirement.valid {
       color: #28a745;
     }
-    .checkbox-container {
+    
+    .requirement.invalid {
+      color: #dc3545;
+    }
+    
+    .requirement::before {
+      content: "✓";
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    
+    .requirement.invalid::before {
+      content: "✗";
+    }
+    
+    .checkbox-group {
       display: flex;
       align-items: flex-start;
-      text-align: left;
-      margin: 10px 0 20px;
+      margin-bottom: 25px;
     }
-    .checkbox-container input {
-      margin-right: 10px;
-      margin-top: 3px;
+    
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 12px;
+      margin-top: 2px;
+      transform: scale(1.2);
     }
-    .links {
-      font-size: 14px;
+    
+    .checkbox-group label {
+      font-size: 13px;
+      line-height: 1.4;
+      color: #555;
+      margin-bottom: 0;
     }
-    .links a {
+    
+    .checkbox-group a {
       color: #0A3161;
+      text-decoration: none;
+    }
+    
+    .checkbox-group a:hover {
       text-decoration: underline;
     }
-    button {
+    
+    .signup-button {
       width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      background-color: #0A3161;
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
       color: white;
       border: none;
-      border-radius: 4px;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
-      margin-bottom: 10px;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
     }
-    button:hover:not(:disabled) {
-      background-color: #BB133E;
+    
+    .signup-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(10, 49, 97, 0.3);
     }
-    button:disabled {
-      background-color: #aaa;
+    
+    .signup-button:disabled {
+      opacity: 0.6;
       cursor: not-allowed;
     }
-    .google-btn {
-      background-color: #DB4437;
+    
+    .google-button {
+      width: 100%;
+      background: #dc4e41;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
     }
-    .error {
-      color: #BB133E;
+    
+    .google-button:hover {
+      background: #c23321;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(220, 78, 65, 0.3);
+    }
+    
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+      color: #666;
+    }
+    
+    .divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e1e5e9;
+    }
+    
+    .divider span {
+      background: white;
+      padding: 0 15px;
+    }
+    
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .login-link a {
+      color: #0A3161;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+    
+    .status-message {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
       font-size: 14px;
       display: none;
-      margin-bottom: 10px;
-      text-align: left;
-      padding: 10px;
-      border-radius: 4px;
-      background-color: #fee;
-      border: 1px solid #fcc;
     }
-    .success {
-      color: #28a745;
-      font-size: 14px;
-      display: none;
-      margin-bottom: 10px;
-      text-align: left;
-      padding: 10px;
-      border-radius: 4px;
-      background-color: #efe;
-      border: 1px solid #cfc;
+    
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
     }
-    .loading {
+    
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .spinner {
       display: inline-block;
       width: 16px;
       height: 16px;
@@ -137,112 +264,123 @@
       border-radius: 50%;
       border-top-color: transparent;
       animation: spin 1s ease-in-out infinite;
+      margin-left: 8px;
     }
-    .debug-info {
-      margin-top: 20px;
-      font-size: 12px;
-      color: #666;
-      text-align: left;
-      padding: 10px;
-      background-color: #f0f0f0;
-      border-radius: 4px;
-      display: none;
-    }
+    
     @keyframes spin {
       to { transform: rotate(360deg); }
+    }
+    
+    .debug-info {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 12px;
+      color: #6c757d;
+      display: none;
+    }
+    
+    @media (max-width: 480px) {
+      .signup-container {
+        margin: 10px;
+      }
+      
+      .signup-header {
+        padding: 30px 20px 20px;
+      }
+      
+      .signup-form {
+        padding: 30px 20px;
+      }
     }
   </style>
 </head>
 <body>
-
-  <div class="logo">
-    <img src="logo.jpg" alt="Victory Vision Logo"
-         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%2264%22><rect width=%22160%22 height=%2264%22 fill=%22%230A3161%22 /><text x=%2280%22 y=%2240%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22>Victory Vision</text></svg>'" />
-  </div>
-
-  <div class="container">
-    <h1>Create Your Account</h1>
+  <div class="signup-container">
+    <div class="signup-header">
+      <div class="logo">
+        <img src="logo.jpg" alt="Victory Vision Logo"
+             onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><rect width=%2260%22 height=%2260%22 fill=%22%23ffffff%22 /><text x=%2215%22 y=%2235%22 font-size=%2220%22 fill=%22%230A3161%22>VV</text></svg>'"/>
+      </div>
+      <h1>Create Your Account</h1>
+      <p>Start your AI marketing automation journey</p>
+    </div>
     
-    <div class="error" id="errorText"></div>
-    <div class="success" id="successText"></div>
-    
-    <form id="signupForm">
-      <input type="email" id="email" placeholder="Enter your email" required />
-      <input type="password" id="password" placeholder="Create a password" required />
+    <div class="signup-form">
+      <div id="statusMessage" class="status-message"></div>
       
-      <div class="password-requirements">
-        <strong>Password requirements:</strong>
-        <ul id="passwordRequirements">
-          <li id="req-length">At least 8 characters</li>
-          <li id="req-uppercase">One uppercase letter</li>
-          <li id="req-lowercase">One lowercase letter</li>
-          <li id="req-number">One number</li>
-          <li id="req-special">One special character</li>
-        </ul>
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input type="password" id="password" name="password" required autocomplete="new-password">
+          <div class="password-requirements">
+            <div class="requirement" id="lengthReq">At least 8 characters</div>
+            <div class="requirement" id="uppercaseReq">One uppercase letter</div>
+            <div class="requirement" id="lowercaseReq">One lowercase letter</div>
+            <div class="requirement" id="numberReq">One number</div>
+            <div class="requirement" id="specialReq">One special character</div>
+          </div>
+        </div>
+        
+        <div class="checkbox-group">
+          <input type="checkbox" id="agree" name="agree" required>
+          <label for="agree">
+            I agree to the <a href="terms.html" target="_blank">Terms of Service</a>, 
+            <a href="privacy.html" target="_blank">Privacy Policy</a> and 
+            <a href="eula.html" target="_blank">EULA</a>
+          </label>
+        </div>
+        
+        <button type="submit" class="signup-button" id="signupBtn">
+          <span id="signupText">Sign Up</span>
+          <span id="signupSpinner" class="spinner" style="display: none;"></span>
+        </button>
+      </form>
+      
+      <div class="divider">
+        <span>or</span>
       </div>
-
-      <div class="checkbox-container">
-        <input type="checkbox" id="termsCheckbox" required />
-        <label class="links">
-          I agree to the
-          <a href="terms.html" target="_blank">Terms</a>,
-          <a href="privacy.html" target="_blank">Privacy</a>,
-          and
-          <a href="#" target="_blank">EULA</a>.
-        </label>
+      
+      <button type="button" class="google-button" id="googleBtn">
+        Continue with Google
+      </button>
+      
+      <div class="login-link">
+        Already have an account? <a href="login.html">Log in instead</a>
       </div>
-
-      <button type="submit" id="signupBtn">Sign Up</button>
-    </form>
-
-    <button class="google-btn" id="googleBtn" disabled>Continue with Google</button>
-    
-    <p style="margin-top: 20px; font-size: 14px;">
-      Already have an account?
-      <a href="login.html" style="color: #0A3161; text-decoration: underline;">Log in instead</a>
-    </p>
-
-    <div class="debug-info" id="debugInfo">
-      <strong>Debug Information:</strong><br>
-      <span id="debugText"></span>
+      
+      <div id="debugInfo" class="debug-info"></div>
     </div>
   </div>
 
   <script>
-    // Supabase configuration
+    // Prevent favicon error
+    if (!document.querySelector('link[rel="icon"]')) {
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      link.href = 'data:,';
+      document.head.appendChild(link);
+    }
+
+    // Supabase configuration - Same as companyprofile.html
     const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Email signup endpoint
+    const EMAIL_SIGNUP_ENDPOINT = 'https://victoryvision.app.n8n.cloud/webhook/email/signup';
     
-    // Security: Rate limiting
-    let signupAttempts = 0;
-    const maxAttempts = 3;
-    const lockoutTime = 600000; // 10 minutes
-    let lockoutStart = 0;
-    
-    // Get current domain for redirects
-    const currentDomain = window.location.hostname === 'localhost' ? 
-        'http://localhost:3000' : 'https://victoryvision.app';
+    let isSigningUp = false;
 
-    // DOM elements
-    const checkbox = document.getElementById("termsCheckbox");
-    const googleBtn = document.getElementById("googleBtn");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const errorText = document.getElementById("errorText");
-    const successText = document.getElementById("successText");
-    const signupBtn = document.getElementById("signupBtn");
-    const debugInfo = document.getElementById("debugInfo");
-    const debugText = document.getElementById("debugText");
-
-    // Input sanitization
-    function sanitizeInput(input) {
-      if (typeof input !== 'string') return input;
-      return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').trim();
-    }
-
-    // Password strength checker
-    function checkPasswordStrength(password) {
+    // Password validation
+    function validatePassword(password) {
       const requirements = {
         length: password.length >= 8,
         uppercase: /[A-Z]/.test(password),
@@ -251,325 +389,230 @@
         special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
       };
       
-      // Update requirements list
-      document.getElementById('req-length').className = requirements.length ? 'met' : '';
-      document.getElementById('req-uppercase').className = requirements.uppercase ? 'met' : '';
-      document.getElementById('req-lowercase').className = requirements.lowercase ? 'met' : '';
-      document.getElementById('req-number').className = requirements.number ? 'met' : '';
-      document.getElementById('req-special').className = requirements.special ? 'met' : '';
+      // Update UI indicators
+      document.getElementById('lengthReq').className = `requirement ${requirements.length ? 'valid' : 'invalid'}`;
+      document.getElementById('uppercaseReq').className = `requirement ${requirements.uppercase ? 'valid' : 'invalid'}`;
+      document.getElementById('lowercaseReq').className = `requirement ${requirements.lowercase ? 'valid' : 'invalid'}`;
+      document.getElementById('numberReq').className = `requirement ${requirements.number ? 'valid' : 'invalid'}`;
+      document.getElementById('specialReq').className = `requirement ${requirements.special ? 'valid' : 'invalid'}`;
       
-      return Object.values(requirements).every(Boolean);
+      return Object.values(requirements).every(req => req);
     }
 
-    // Show error message with debug info
-    function showError(message, debugDetails = null) {
-      errorText.innerHTML = message;
-      errorText.style.display = 'block';
-      successText.style.display = 'none';
-      
-      if (debugDetails) {
-        debugText.innerHTML = `Error: ${JSON.stringify(debugDetails, null, 2)}`;
-        debugInfo.style.display = 'block';
-      }
-      
-      setTimeout(() => {
-        errorText.style.display = 'none';
-        debugInfo.style.display = 'none';
-      }, 10000);
+    // Input sanitization
+    function sanitizeInput(value) {
+      if (typeof value !== 'string') return value;
+      return value
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+\s*=/gi, '')
+        .trim();
     }
 
-    // Show success message
-    function showSuccess(message) {
-      successText.innerHTML = message;
-      successText.style.display = 'block';
-      errorText.style.display = 'none';
-      debugInfo.style.display = 'none';
-    }
-
-    // Test Supabase connection
-    async function testSupabaseConnection() {
-      try {
-        console.log('Testing Supabase connection...');
-        const { data, error } = await supabaseClient.auth.getSession();
-        console.log('Supabase connection test result:', { data, error });
-        return !error;
-      } catch (e) {
-        console.error('Supabase connection test failed:', e);
-        return false;
+    // Show status message
+    function showStatus(message, isError = false) {
+      const statusDiv = document.getElementById('statusMessage');
+      statusDiv.textContent = sanitizeInput(message);
+      statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+      statusDiv.style.display = 'block';
+      
+      // Auto-hide success messages
+      if (!isError) {
+        setTimeout(() => {
+          statusDiv.style.display = 'none';
+        }, 5000);
       }
     }
 
-    // Create user in database after signup
-    async function createUserRecord(user) {
+    // Show debug info
+    function showDebugInfo(info) {
+      const debugDiv = document.getElementById('debugInfo');
+      debugDiv.innerHTML = `Debug Information:<br>${JSON.stringify(info, null, 2).replace(/\n/g, '<br>')}`;
+      debugDiv.style.display = 'block';
+    }
+
+    // Email signup via n8n webhook
+    async function signupUserEmail(email) {
       try {
-        console.log('Creating user record in database...');
+        const response = await fetch(EMAIL_SIGNUP_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            source: 'signup_page',
+            timestamp: new Date().toISOString()
+          })
+        });
+
+        const result = await response.json();
+        console.log('Email signup response:', result);
         
-        // First check if user already exists
-        const { data: existingUser } = await supabaseClient
-          .from('users')
-          .select('*')
-          .eq('email', user.email)
-          .single();
-
-        if (existingUser) {
-          console.log('User already exists in database');
-          return true;
-        }
-
-        // Create new user record
-        const { data, error } = await supabaseClient
-          .from('users')
-          .insert([
-            {
-              id: user.id,
-              email: user.email,
-              created_at: new Date().toISOString(),
-              subscription_plan: 'Bronze',
-              subscription_status: 'trial',
-              video_credits: 3,
-              image_credits: 5,
-              contact_credits: 25,
-              campaign_credits: 2,
-              social_credits: 10
-            }
-          ])
-          .select();
-
-        if (error) {
-          console.error('Database insert error:', error);
-          // Don't fail signup if database insert fails - user is already created in auth
-          return true;
-        }
-
-        console.log('User record created successfully:', data);
-        return true;
+        return result;
       } catch (error) {
-        console.error('Error creating user record:', error);
-        // Don't fail signup if database operations fail
-        return true;
+        console.error('Email signup error:', error);
+        throw error;
       }
     }
 
-    // Email signup with enhanced error handling
-    async function emailSignup(event) {
-      event.preventDefault();
-      
-      // Rate limiting check
-      if (signupAttempts >= maxAttempts) {
-        const timeLeft = Math.ceil((lockoutTime - (Date.now() - lockoutStart)) / 60000);
-        if (timeLeft > 0) {
-          showError(`Too many attempts. Try again in ${timeLeft} minutes.`);
-          return;
-        } else {
-          signupAttempts = 0; // Reset after lockout period
-        }
-      }
-
-      if (!checkbox.checked) {
-        showError("Please agree to the legal terms before continuing.");
-        return;
-      }
-
-      const email = emailInput.value;
-      const password = passwordInput.value;
-
-      if (!email || !password) {
-        showError("Please fill in all fields.");
-        return;
-      }
-
-      // Input sanitization
-      const cleanEmail = sanitizeInput(email);
-      const cleanPassword = password.trim();
-
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(cleanEmail)) {
-        showError("Please enter a valid email address.");
-        return;
-      }
-
-      // Password validation
-      if (!checkPasswordStrength(cleanPassword)) {
-        showError("Password must meet all requirements.");
-        return;
-      }
-
+    // Main signup function
+    async function handleSignup(email, password) {
       try {
-        signupBtn.disabled = true;
-        signupBtn.innerHTML = '<span class="loading"></span> Creating Account...';
-
-        // Test connection first
-        const connectionOk = await testSupabaseConnection();
-        if (!connectionOk) {
-          throw new Error('Unable to connect to authentication service');
-        }
-
-        console.log('Attempting signup with Supabase...');
-        const { data, error } = await supabaseClient.auth.signUp({
-          email: cleanEmail,
-          password: cleanPassword,
+        console.log('Starting signup process for:', email);
+        
+        // Step 1: Create Supabase auth user
+        const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
           options: {
-            emailRedirectTo: `${currentDomain}/companyprofile.html`,
-            data: {
-              signup_source: 'victory_vision_web',
-              timestamp: new Date().toISOString()
-            }
+            emailRedirectTo: `${window.location.origin}/companyprofile.html`
           }
         });
 
-        console.log('Supabase signup response:', { data, error });
+        console.log('Supabase auth result:', { authData, authError });
 
-        if (error) {
-          console.error('Supabase signup error:', error);
-          
-          // Handle specific error types
-          if (error.message.includes('User already registered')) {
-            showError('An account with this email already exists. <a href="login.html">Try logging in instead</a>.');
-          } else if (error.message.includes('Database error')) {
-            showError('There was a database issue. Please try again in a few moments.', error);
-          } else if (error.message.includes('Invalid email')) {
-            showError('Please enter a valid email address.');
-          } else if (error.message.includes('Password')) {
-            showError('Password does not meet requirements. Please try a stronger password.');
-          } else {
-            showError(`Signup failed: ${error.message}`, error);
-          }
-          return;
+        if (authError) {
+          throw new Error(`Authentication error: ${authError.message}`);
         }
 
-        if (data.user) {
-          console.log('User created successfully:', data.user);
-          
-          // Try to create user record in database
-          await createUserRecord(data.user);
-          
-          if (!data.user.email_confirmed_at) {
-            showSuccess(`Account created successfully! Please check your email (${cleanEmail}) to verify your account before logging in.`);
-            // Clear form
-            document.getElementById('signupForm').reset();
-            signupAttempts = 0; // Reset on success
-          } else {
-            showSuccess("Account created and verified! Redirecting...");
+        // Step 2: Sign up email via n8n webhook
+        try {
+          await signupUserEmail(email);
+          console.log('Email signup completed');
+        } catch (webhookError) {
+          console.warn('Email signup webhook failed, but auth succeeded:', webhookError);
+          // Don't fail the entire signup if email webhook fails
+        }
+
+        // Step 3: Handle success
+        if (authData.user) {
+          if (authData.user.email_confirmed_at) {
+            // User is confirmed, redirect immediately
+            showStatus('Account created successfully! Redirecting...', false);
             setTimeout(() => {
               window.location.href = 'companyprofile.html';
             }, 2000);
+          } else {
+            // User needs to confirm email
+            showStatus(`Account created! Please check your email (${email}) to confirm your account before logging in.`, false);
           }
         } else {
-          throw new Error('No user data received from signup');
+          throw new Error('No user data returned from signup');
         }
 
       } catch (error) {
-        signupAttempts++;
-        if (signupAttempts >= maxAttempts) {
-          lockoutStart = Date.now();
-        }
         console.error('Signup error:', error);
-        showError(error.message || 'Failed to create account. Please try again.', error);
-      } finally {
-        signupBtn.disabled = false;
-        signupBtn.textContent = 'Sign Up';
+        
+        // Show specific error messages
+        let errorMessage = 'Signup failed. Please try again.';
+        
+        if (error.message.includes('already registered')) {
+          errorMessage = 'This email is already registered. Try logging in instead.';
+        } else if (error.message.includes('invalid email')) {
+          errorMessage = 'Please enter a valid email address.';
+        } else if (error.message.includes('Password')) {
+          errorMessage = 'Password must meet all requirements.';
+        } else if (error.message.includes('rate limit')) {
+          errorMessage = 'Too many signup attempts. Please wait before trying again.';
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        showStatus(errorMessage, true);
+        showDebugInfo({
+          error: error.message,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent
+        });
       }
     }
 
-    // Google OAuth signup with better error handling
-    async function googleSignup() {
-      if (!checkbox.checked) {
-        showError("Please agree to the legal terms before continuing.");
-        return;
-      }
-
+    // Google signup
+    async function handleGoogleSignup() {
       try {
-        googleBtn.disabled = true;
-        googleBtn.innerHTML = '<span class="loading"></span> Connecting...';
-
         const { data, error } = await supabaseClient.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: `${currentDomain}/companyprofile.html`,
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'consent'
-            }
+            redirectTo: `${window.location.origin}/companyprofile.html`
           }
         });
 
         if (error) {
-          console.error('Google signup error:', error);
           throw error;
         }
-
-        // Success will be handled by redirect
-        console.log('Google OAuth initiated successfully');
       } catch (error) {
         console.error('Google signup error:', error);
-        showError('Google signup failed. Please try again or use email signup.', error);
-        googleBtn.disabled = !checkbox.checked;
-        googleBtn.textContent = 'Continue with Google';
+        showStatus('Google signup failed: ' + error.message, true);
       }
     }
 
-    // Enable Google button only when checkbox is checked
-    checkbox.addEventListener("change", () => {
-      googleBtn.disabled = !checkbox.checked;
-    });
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('signupForm');
+      const passwordInput = document.getElementById('password');
+      const signupBtn = document.getElementById('signupBtn');
+      const signupText = document.getElementById('signupText');
+      const signupSpinner = document.getElementById('signupSpinner');
+      const googleBtn = document.getElementById('googleBtn');
 
-    // Password strength checking
-    passwordInput.addEventListener('input', (e) => {
-      checkPasswordStrength(e.target.value);
-    });
+      // Password validation on input
+      passwordInput.addEventListener('input', function() {
+        validatePassword(this.value);
+      });
 
-    // Form submission
-    document.getElementById("signupForm").addEventListener("submit", emailSignup);
-
-    // Google button click
-    googleBtn.addEventListener("click", googleSignup);
-
-    // Check if user is already logged in
-    document.addEventListener('DOMContentLoaded', async function() {
-      try {
-        console.log('Checking existing session...');
-        const { data: { session }, error } = await supabaseClient.auth.getSession();
+      // Form submission
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
         
-        if (error) {
-          console.error('Session check error:', error);
+        if (isSigningUp) return;
+
+        const email = sanitizeInput(document.getElementById('email').value);
+        const password = document.getElementById('password').value;
+        const agree = document.getElementById('agree').checked;
+
+        // Validation
+        if (!email || !password) {
+          showStatus('Please fill in all required fields.', true);
           return;
         }
-        
+
+        if (!agree) {
+          showStatus('Please agree to the terms and conditions.', true);
+          return;
+        }
+
+        if (!validatePassword(password)) {
+          showStatus('Password must meet all requirements.', true);
+          return;
+        }
+
+        // Show loading state
+        isSigningUp = true;
+        signupBtn.disabled = true;
+        signupText.style.display = 'none';
+        signupSpinner.style.display = 'inline-block';
+
+        try {
+          await handleSignup(email, password);
+        } finally {
+          // Reset loading state
+          isSigningUp = false;
+          signupBtn.disabled = false;
+          signupText.style.display = 'inline';
+          signupSpinner.style.display = 'none';
+        }
+      });
+
+      // Google signup
+      googleBtn.addEventListener('click', handleGoogleSignup);
+
+      // Check if user is already logged in
+      supabaseClient.auth.getSession().then(({ data: { session } }) => {
         if (session) {
-          console.log('User already logged in, redirecting...');
           window.location.href = 'companyprofile.html';
         }
-      } catch (e) {
-        console.error('Session check error:', e);
-      }
-    });
-
-    // Security: Clear form data on page unload
-    window.addEventListener('beforeunload', function() {
-      emailInput.value = '';
-      passwordInput.value = '';
-    });
-
-    // Keyboard navigation
-    emailInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        passwordInput.focus();
-      }
-    });
-
-    passwordInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        if (checkbox.checked) {
-          emailSignup(e);
-        }
-      }
-    });
-
-    // Initialize page
-    console.log('Victory Vision Signup page loaded');
-    testSupabaseConnection().then(result => {
-      console.log('Initial connection test:', result ? 'SUCCESS' : 'FAILED');
+      });
     });
   </script>
 </body>
