@@ -1622,8 +1622,7 @@
             field_type: `product_image_${num}`
           }, 'POST');
           
-          const fileUrl = uploadResult.logo_URL || uploadResult.url || uploadResult.URL || uploadResult.logo_url;
-          
+       const fileUrl = uploadResult.URL;
           if (fileUrl) {
             fileName.textContent = `✓ Uploaded: ${file.name}`;
             preview.innerHTML = `<img src="${fileUrl}" alt="Product image ${num}">`;
