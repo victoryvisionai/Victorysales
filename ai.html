@@ -11,13 +11,6 @@
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
-  <script>
-if (typeof Chart === 'undefined') {
-  const script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
-  document.head.appendChild(script);
-}
-</script>
   <style>
     * {
       margin: 0;
@@ -27,7 +20,7 @@ if (typeof Chart === 'undefined') {
 
     body {
       font-family: Arial, sans-serif;
-     background: #ffffff;
+      background: #ffffff;
       min-height: 100vh;
       color: #333;
     }
@@ -722,8 +715,8 @@ if (typeof Chart === 'undefined') {
   const ENDPOINTS = {
     getContacts: `${N8N_BASE_URL}/contacts/get`,
     getCampaigns: `${N8N_BASE_URL}/campaigns/get`,
-    getEmailOpens: `${N8N_BASE_URL}/emails/analytics`,
-    getAIAdvice: `${N8N_BASE_URL}/user/advice`,
+    getEmailOpens: `${N8N_BASE_URL}/email/analytics`,
+    getAIAdvice: `${N8N_BASE_URL}/ai/advice`,
     getUser: `${N8N_BASE_URL}/user/get`
   };
   
@@ -847,8 +840,8 @@ if (typeof Chart === 'undefined') {
       let url = endpoint;
       let body = null;
 
-if (method === 'GET') {
-      url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
+      if (method === 'GET' || endpoint.includes('/get')) {
+        url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
         method = 'GET';
       } else {
         headers['Content-Type'] = 'application/json';
@@ -959,9 +952,9 @@ if (method === 'GET') {
       showStatus('Loading analytics data...', false);
 
       // Load all data in parallel
-   const [contacts, campaigns, emailAnalytics] = await Promise.all([
-  apiCall(ENDPOINTS.getContacts, null, 'POST').catch(() => ({ contacts: [] })),
-        apiCall(ENDPOINTS.getCampaigns, null, 'POST').catch(() => ({ campaigns: [] })),
+      const [contacts, campaigns, emailAnalytics] = await Promise.all([
+        apiCall(ENDPOINTS.getContacts, null, 'GET').catch(() => ({ contacts: [] })),
+        apiCall(ENDPOINTS.getCampaigns, null, 'GET').catch(() => ({ campaigns: [] })),
         apiCall(ENDPOINTS.getEmailOpens, null, 'GET').catch(() => null)
       ]);
 
@@ -1111,7 +1104,7 @@ if (method === 'GET') {
   // Create charts
   function createCharts(contacts, campaigns, emailData) {
     createRevenueChart(contacts);
-createActivityChart(campaigns, emailData)
+    createActivityChart(campaigns, emailData);
     createEmailMetricsChart(emailData);
     createAcquisitionChart(contacts);
   }
@@ -1205,23 +1198,23 @@ createActivityChart(campaigns, emailData)
   }
 
   // Create activity chart
-function createActivityChart(campaigns, emailData) {
+  function createActivityChart(campaigns, emailData) {
     const ctx = document.getElementById('activityChart').getContext('2d');
     
     // Process data for last 4 weeks
     const weeks = [];
-    const emailData = [];
+    const emailDataWeekly = [];
     const socialData = [];
     
-   for (let i = 3; i >= 0; i--) {
-  weeks.push(`Week ${4-i}`);
-  
-  // Use real email data
-  const totalEmails = emailData?.total_emails_sent || 0;
-  const weeklyEmails = Math.floor(totalEmails / 4);
-  emailData.push(weeklyEmails);
-  socialData.push(Math.floor((campaigns?.campaigns?.length || 0) * 5 / 4));
-}
+    for (let i = 3; i >= 0; i--) {
+      weeks.push(`Week ${4-i}`);
+      
+      // Use real email data
+      const totalEmails = emailData?.total_emails_sent || 0;
+      const weeklyEmails = Math.floor(totalEmails / 4);
+      emailDataWeekly.push(weeklyEmails);
+      socialData.push(Math.floor((campaigns?.campaigns?.length || 0) * 5 / 4));
+    }
 
     new Chart(ctx, {
       type: 'bar',
@@ -1229,7 +1222,7 @@ function createActivityChart(campaigns, emailData) {
         labels: weeks,
         datasets: [{
           label: 'Emails Sent',
-          data: emailData,
+          data: emailDataWeekly,
           backgroundColor: 'rgba(102, 126, 234, 0.8)',
           borderColor: '#667eea',
           borderWidth: 1
