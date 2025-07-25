@@ -712,8 +712,8 @@
       <h4 style="margin: 0 0 15px 0; color: #0A3161;">📧 Available Email Workflows</h4>
       <div class="workflow-list" id="workflowList">
         <div class="workflow-item">
-          <input type="checkbox" id="workflow_friends" value="friends">
-          <label for="workflow_friends">🤝 Friend Outreach - Personal networking approach</label>
+          <input type="checkbox" id="workflow_ads" value="ads">
+          <label for="workflow_ads"> Ad Outreach - Share hyper personalized ads</label>
         </div>
         <div class="workflow-item">
           <input type="checkbox" id="workflow_signup" value="signup">
@@ -792,7 +792,7 @@
         <label for="workflowFilter">Workflow</label>
         <select id="workflowFilter">
           <option value="">All Workflows</option>
-          <option value="friends">Friend Outreach</option>
+          <option value="ads">Ad Outreach</option>
           <option value="signup">Newsletter Signup</option>
           <option value="nurture">Lead Nurture</option>
           <option value="demo">Demo Request</option>
@@ -960,7 +960,7 @@
             <label for="workflow">Current Workflow</label>
             <select id="workflow" name="workflow">
               <option value="">None</option>
-              <option value="friends">Friend Outreach</option>
+              <option value="ads">Ad Outreach</option>
               <option value="signup">Newsletter Signup</option>
               <option value="nurture">Lead Nurture</option>
               <option value="demo">Demo Request</option>
@@ -1018,7 +1018,7 @@ const ENDPOINTS = {
   enrichContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/enrich',
   uploadCSV: 'https://victoryvision.app.n8n.cloud/webhook/contacts/upload-csv',
   generateAd: 'https://victoryvision.app.n8n.cloud/webhook/contacts/generate-ad',
-  enrollFriends: 'https://victoryvision.app.n8n.cloud/webhook/outreach/friends',
+  enrollAds: 'https://victoryvision.app.n8n.cloud/webhook/emails/ad-campaign',
   enrollSignup: 'https://victoryvision.app.n8n.cloud/webhook/emails/newsletter',
   enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture',
   enrollDemo: 'https://victoryvision.app.n8n.cloud/webhook/emails/demo',
@@ -2088,8 +2088,8 @@ async function enrollInWorkflows() {
       
       // Route to appropriate endpoint based on workflow
       switch(workflow) {
-        case 'friends':
-          endpoint = ENDPOINTS.enrollFriends;
+        case 'ads':
+          endpoint = ENDPOINTS.enrollAds;
           break;
         case 'signup':
           endpoint = ENDPOINTS.enrollSignup;
