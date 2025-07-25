@@ -954,7 +954,7 @@ if (method === 'GET') {
       // Load all data in parallel
    const [contacts, campaigns, emailAnalytics] = await Promise.all([
   apiCall(ENDPOINTS.getContacts, null, 'POST').catch(() => ({ contacts: [] })),
-        apiCall(ENDPOINTS.getCampaigns, null, 'GET').catch(() => ({ campaigns: [] })),
+        apiCall(ENDPOINTS.getCampaigns, null, 'POST').catch(() => ({ campaigns: [] })),
         apiCall(ENDPOINTS.getEmailOpens, null, 'GET').catch(() => null)
       ]);
 
