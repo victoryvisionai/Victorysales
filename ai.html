@@ -840,8 +840,8 @@
       let url = endpoint;
       let body = null;
 
-      if (method === 'GET' || endpoint.includes('/get')) {
-        url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
+if (method === 'GET') {
+      url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
         method = 'GET';
       } else {
         headers['Content-Type'] = 'application/json';
@@ -952,8 +952,8 @@
       showStatus('Loading analytics data...', false);
 
       // Load all data in parallel
-      const [contacts, campaigns, emailAnalytics] = await Promise.all([
-        apiCall(ENDPOINTS.getContacts, null, 'GET').catch(() => ({ contacts: [] })),
+   const [contacts, campaigns, emailAnalytics] = await Promise.all([
+  apiCall(ENDPOINTS.getContacts, null, 'POST').catch(() => ({ contacts: [] })),
         apiCall(ENDPOINTS.getCampaigns, null, 'GET').catch(() => ({ campaigns: [] })),
         apiCall(ENDPOINTS.getEmailOpens, null, 'GET').catch(() => null)
       ]);
