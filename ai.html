@@ -883,8 +883,22 @@ if (method === 'GET') {
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
 
-      const result = await response.json();
-      return result;
+     const responseText = await response.text();
+console.log('API endpoint called:', endpoint);
+console.log('Response text:', responseText);
+
+if (!responseText) {
+  console.error('Empty response from:', endpoint);
+  return {};
+}
+
+try {
+  const result = JSON.parse(responseText);
+  return result;
+} catch (e) {
+  console.error('Invalid JSON from:', endpoint, 'Response:', responseText);
+  return {};
+}
     } catch (error) {
       console.error('API call failed:', error);
       
@@ -1165,11 +1179,21 @@ if (method === 'GET') {
         }]
       },
       options: {
-        responsive: true,
-        interaction: {
-          mode: 'index',
-          intersect: false,
-        },
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: {
+    mode: 'index',
+    intersect: false,
+  },
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: {
+        usePointStyle: true,
+        padding: 20
+      }
+    }
+  },
         scales: {
           x: {
             display: true,
@@ -1241,9 +1265,19 @@ if (method === 'GET') {
           borderWidth: 1
         }]
       },
-      options: {
-        responsive: true,
-        scales: {
+     options: {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: {
+        usePointStyle: true,
+        padding: 20
+      }
+    }
+  },
+  scales: {
           y: {
             beginAtZero: true,
             title: {
@@ -1338,9 +1372,19 @@ if (method === 'GET') {
           tension: 0.4
         }]
       },
-      options: {
-        responsive: true,
-        scales: {
+     options: {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: {
+        usePointStyle: true,
+        padding: 20
+      }
+    }
+  },
+  scales: {
           y: {
             beginAtZero: true,
             title: {
