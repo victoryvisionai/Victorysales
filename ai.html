@@ -1210,7 +1210,7 @@ if (method === 'GET') {
     
     // Process data for last 4 weeks
     const weeks = [];
-    const emailData = [];
+    const emailDataArray = [];
     const socialData = [];
     
     for (let i = 3; i >= 0; i--) {
@@ -1219,7 +1219,7 @@ if (method === 'GET') {
       weeks.push(`Week ${4-i}`);
       
       // Simulate weekly activity data
-      emailData.push(Math.floor(Math.random() * 50) + 20);
+      emailDataArray.push(Math.floor(Math.random() * 50) + 20);
       socialData.push(Math.floor(Math.random() * 25) + 10);
     }
 
@@ -1229,7 +1229,7 @@ if (method === 'GET') {
         labels: weeks,
         datasets: [{
           label: 'Emails Sent',
-          data: emailData,
+          data: emailDataArray,
           backgroundColor: 'rgba(102, 126, 234, 0.8)',
           borderColor: '#667eea',
           borderWidth: 1
