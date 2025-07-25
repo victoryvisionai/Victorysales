@@ -1111,7 +1111,7 @@ if (method === 'GET') {
   // Create charts
   function createCharts(contacts, campaigns, emailData) {
     createRevenueChart(contacts);
-    createActivityChart(campaigns);
+    createActivityChart(campaigns, emailData);
     createEmailMetricsChart(emailData);
     createAcquisitionChart(contacts);
   }
@@ -1205,7 +1205,7 @@ if (method === 'GET') {
   }
 
   // Create activity chart
-  function createActivityChart(campaigns) {
+  function createActivityChart(campaigns, emailData) {
     const ctx = document.getElementById('activityChart').getContext('2d');
     
     // Process data for last 4 weeks
