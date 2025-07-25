@@ -11,6 +11,13 @@
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+  <script>
+if (typeof Chart === 'undefined') {
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
+  document.head.appendChild(script);
+}
+</script>
   <style>
     * {
       margin: 0;
@@ -20,7 +27,7 @@
 
     body {
       font-family: Arial, sans-serif;
-      background: #ffffff;
+     background: #ffffff;
       min-height: 100vh;
       color: #333;
     }
@@ -715,8 +722,8 @@
   const ENDPOINTS = {
     getContacts: `${N8N_BASE_URL}/contacts/get`,
     getCampaigns: `${N8N_BASE_URL}/campaigns/get`,
-    getEmailOpens: `${N8N_BASE_URL}/email/analytics`,
-    getAIAdvice: `${N8N_BASE_URL}/ai/advice`,
+    getEmailOpens: `${N8N_BASE_URL}/emails/analytics`,
+    getAIAdvice: `${N8N_BASE_URL}/user/advice`,
     getUser: `${N8N_BASE_URL}/user/get`
   };
   
@@ -840,8 +847,8 @@
       let url = endpoint;
       let body = null;
 
-      if (method === 'GET' || endpoint.includes('/get')) {
-        url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
+if (method === 'GET') {
+      url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
         method = 'GET';
       } else {
         headers['Content-Type'] = 'application/json';
@@ -952,9 +959,9 @@
       showStatus('Loading analytics data...', false);
 
       // Load all data in parallel
-      const [contacts, campaigns, emailAnalytics] = await Promise.all([
-        apiCall(ENDPOINTS.getContacts, null, 'GET').catch(() => ({ contacts: [] })),
-        apiCall(ENDPOINTS.getCampaigns, null, 'GET').catch(() => ({ campaigns: [] })),
+   const [contacts, campaigns, emailAnalytics] = await Promise.all([
+  apiCall(ENDPOINTS.getContacts, null, 'POST').catch(() => ({ contacts: [] })),
+        apiCall(ENDPOINTS.getCampaigns, null, 'POST').catch(() => ({ campaigns: [] })),
         apiCall(ENDPOINTS.getEmailOpens, null, 'GET').catch(() => null)
       ]);
 
@@ -1104,7 +1111,7 @@
   // Create charts
   function createCharts(contacts, campaigns, emailData) {
     createRevenueChart(contacts);
-    createActivityChart(campaigns, emailData);
+createActivityChart(campaigns, emailData)
     createEmailMetricsChart(emailData);
     createAcquisitionChart(contacts);
   }
@@ -1198,31 +1205,23 @@
   }
 
   // Create activity chart
-  function createActivityChart(campaigns, emailData) {
+function createActivityChart(campaigns, emailData) {
     const ctx = document.getElementById('activityChart').getContext('2d');
     
-    // Use real email data if available
-    const totalEmails = emailData?.total_emails_sent || 0;
-    const totalSocial = campaigns?.campaigns?.length * 5 || 0;
-    
-    // Process data for last 4 weeks using real data
+    // Process data for last 4 weeks
     const weeks = [];
-    const emailDataWeekly = [];
-    const socialDataWeekly = [];
+    const emailData = [];
+    const socialData = [];
     
-    for (let i = 3; i >= 0; i--) {
-      weeks.push(`Week ${4-i}`);
-      
-      // Distribute email data across weeks (if we have recipients, use their data)
-      if (emailData?.recipients && emailData.recipients.length > 0) {
-        const weeklyEmails = Math.floor(totalEmails / 4) + (i === 0 ? totalEmails % 4 : 0);
-        emailDataWeekly.push(weeklyEmails);
-      } else {
-        emailDataWeekly.push(Math.floor(totalEmails / 4));
-      }
-      
-      socialDataWeekly.push(Math.floor(totalSocial / 4));
-    }
+   for (let i = 3; i >= 0; i--) {
+  weeks.push(`Week ${4-i}`);
+  
+  // Use real email data
+  const totalEmails = emailData?.total_emails_sent || 0;
+  const weeklyEmails = Math.floor(totalEmails / 4);
+  emailData.push(weeklyEmails);
+  socialData.push(Math.floor((campaigns?.campaigns?.length || 0) * 5 / 4));
+}
 
     new Chart(ctx, {
       type: 'bar',
@@ -1230,13 +1229,13 @@
         labels: weeks,
         datasets: [{
           label: 'Emails Sent',
-          data: emailDataWeekly,
+          data: emailData,
           backgroundColor: 'rgba(102, 126, 234, 0.8)',
           borderColor: '#667eea',
           borderWidth: 1
         }, {
           label: 'Social Posts',
-          data: socialDataWeekly,
+          data: socialData,
           backgroundColor: 'rgba(118, 75, 162, 0.8)',
           borderColor: '#764ba2',
           borderWidth: 1
