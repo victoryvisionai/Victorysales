@@ -883,22 +883,8 @@ if (method === 'GET') {
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
 
-     const responseText = await response.text();
-console.log('API endpoint called:', endpoint);
-console.log('Response text:', responseText);
-
-if (!responseText) {
-  console.error('Empty response from:', endpoint);
-  return {};
-}
-
-try {
-  const result = JSON.parse(responseText);
-  return result;
-} catch (e) {
-  console.error('Invalid JSON from:', endpoint, 'Response:', responseText);
-  return {};
-}
+      const result = await response.json();
+      return result;
     } catch (error) {
       console.error('API call failed:', error);
       
@@ -1179,21 +1165,11 @@ try {
         }]
       },
       options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  interaction: {
-    mode: 'index',
-    intersect: false,
-  },
-  plugins: {
-    legend: {
-      position: 'top',
-      labels: {
-        usePointStyle: true,
-        padding: 20
-      }
-    }
-  },
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
         scales: {
           x: {
             display: true,
@@ -1265,19 +1241,9 @@ try {
           borderWidth: 1
         }]
       },
-     options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'top',
-      labels: {
-        usePointStyle: true,
-        padding: 20
-      }
-    }
-  },
-  scales: {
+      options: {
+        responsive: true,
+        scales: {
           y: {
             beginAtZero: true,
             title: {
@@ -1372,19 +1338,9 @@ try {
           tension: 0.4
         }]
       },
-     options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      position: 'top',
-      labels: {
-        usePointStyle: true,
-        padding: 20
-      }
-    }
-  },
-  scales: {
+      options: {
+        responsive: true,
+        scales: {
           y: {
             beginAtZero: true,
             title: {
