@@ -1530,8 +1530,7 @@ async function enrichSelectedContacts() {
         c.email === id || 
         c.linkedin === id
       )
-    ).filter(c => c && c.email);
-
+    ).filter(c => c && (c.email || c.linkedin));
     console.log('Selected contacts for enrichment:', selectedContactsList);
 
     if (selectedContactsList.length === 0) {
