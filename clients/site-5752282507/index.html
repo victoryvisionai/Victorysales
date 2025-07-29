@@ -1,0 +1,424 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iron Emergency Services | Where Leadership Meets Readiness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --dark-blue: #0a3161;
+        --white: #ffffff;
+        --light-gray: #f5f5f5;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--white);
+        color: var(--dark-blue);
+        line-height: 1.6;
+      }
+
+      header {
+        position: relative;
+        width: 100%;
+        height: 90vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      header video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      .overlay {
+        background: linear-gradient(to bottom, rgba(10,49,97,0.7), rgba(10,49,97,0.9));
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      .hero-content {
+        z-index: 1;
+        text-align: center;
+        padding: 2rem;
+        color: var(--white);
+      }
+
+      .hero-content img {
+        width: 120px;
+        margin-bottom: 1rem;
+      }
+
+      .hero-content h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hero-content p {
+        font-size: 1.25rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      main {
+        background-color: var(--light-gray);
+      }
+
+      section {
+        padding: 4rem 1.5rem;
+        max-width: 1080px;
+        margin: auto;
+      }
+
+      .intro-text {
+        text-align: center;
+      }
+
+      .intro-text h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--dark-blue);
+      }
+
+      .intro-text p {
+        font-size: 1.1rem;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .core-benefits {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .benefit {
+        background-color: var(--white);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+      }
+
+      .benefit:hover {
+        transform: translateY(-5px);
+      }
+
+      .benefit h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .benefit p {
+        font-size: 1rem;
+        color: #555;
+      }
+
+      .explainer-video {
+        text-align: center;
+      }
+
+      .explainer-video iframe {
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 16 / 9;
+        border-radius: 12px;
+        margin-top: 1rem;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      }
+
+      .diagnostic-quiz {
+        text-align: center;
+        margin-top: 3rem;
+      }
+
+      .diagnostic-quiz h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .diagnostic-quiz form {
+        display: grid;
+        gap: 1rem;
+        max-width: 500px;
+        margin: auto;
+      }
+
+      .diagnostic-quiz label {
+        text-align: left;
+        font-weight: 600;
+      }
+
+      .diagnostic-quiz select,
+      .diagnostic-quiz input[type="text"] {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+      }
+
+      .diagnostic-quiz button {
+        background-color: var(--dark-blue);
+        color: var(--white);
+        padding: 0.9rem 1.5rem;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .diagnostic-quiz button:hover {
+        background-color: #062543;
+      }
+
+      .testimonials {
+        background: var(--white);
+        border-top: 1px solid #ccc;
+        text-align: center;
+        padding: 4rem 1rem;
+      }
+
+      .testimonial {
+        max-width: 700px;
+        margin: 2rem auto;
+        font-style: italic;
+        color: #333;
+      }
+
+      .testimonial span {
+        display: block;
+        margin-top: 1rem;
+        font-weight: bold;
+        color: var(--dark-blue);
+      }
+
+      .download-checklist {
+        text-align: center;
+        margin-top: 4rem;
+      }
+
+      .download-checklist a {
+        display: inline-block;
+        background-color: var(--dark-blue);
+        color: var(--white);
+        padding: 1rem 2rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: background-color 0.3s ease;
+      }
+
+      .download-checklist a:hover {
+        background-color: #062543;
+      }
+
+      .call-to-action {
+        background-color: var(--dark-blue);
+        color: var(--white);
+        padding: 4rem 1.5rem;
+        text-align: center;
+      }
+
+      .call-to-action h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .call-to-action p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+
+      .cta-form {
+        display: grid;
+        gap: 1rem;
+        max-width: 500px;
+        margin: auto;
+      }
+
+      .cta-form input,
+      .cta-form textarea {
+        padding: 0.75rem;
+        width: 100%;
+        border-radius: 5px;
+        border: none;
+        font-size: 1rem;
+      }
+
+      .cta-form button {
+        background-color: #ffffff;
+        color: var(--dark-blue);
+        padding: 0.9rem;
+        font-weight: 700;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background 0.3s ease;
+      }
+
+      .cta-form button:hover {
+        background-color: #f5f5f5;
+      }
+
+      footer {
+        background-color: #fff;
+        text-align: center;
+        padding: 2rem 1.5rem;
+        color: #777;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 600px) {
+        .hero-content h1 { font-size: 2rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <video autoplay muted loop playsinline>
+        <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1753760875/viral_campaign_final_afb53135a388e49c.mp4" type="video/mp4" />
+      </video>
+      <div class="overlay"></div>
+      <div class="hero-content">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753759774/p3c3bx1jnhdwnritff7y.jpg" alt="Iron Emergency Services Logo" />
+        <h1>Where Leadership Meets Readiness</h1>
+        <p>Empowering Southeastern organizations with continuity, strategy, and resilience before, during, and after disaster strikes.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro-text">
+        <h2>Strategic Readiness for a Changing World</h2>
+        <p>
+          Iron Emergency Services is a premier consulting firm specializing in comprehensive disaster preparedness and business continuity solutions. We offer a unique family of services designed to empower organizations before, during, and after disasters, ensuring operational resilience and rapid recovery. With a focus on collaboration, we work closely with businesses to tailor strategies that not only mitigate risk but also enhance operational efficiency. Our extensive experience and commitment to supporting local and regional governments make us the trusted partner in navigating the complexities of emergency management.
+        </p>
+      </section>
+
+      <section>
+        <div class="core-benefits">
+          <div class="benefit">
+            <h3>Continuity as Competitive Edge</h3>
+            <p>Don’t just survive disruption—leverage strategic foresight to gain market leadership with uninterrupted operations.</p>
+          </div>
+          <div class="benefit">
+            <h3>Resilient Leadership</h3>
+            <p>We equip executives with the clarity and systems needed to act confidently when uncertainty arrives.</p>
+          </div>
+          <div class="benefit">
+            <h3>Readiness as ROI</h3>
+            <p>Every dollar you prepare multiplies in avoided costs, reputational protection, and operational efficiency.</p>
+          </div>
+          <div class="benefit">
+            <h3>Community Stability</h3>
+            <p>Your readiness extends beyond the boardroom—fortify local infrastructure through coordinated preparedness.</p>
+          </div>
+          <div class="benefit">
+            <h3>Disruption-Proof Operations</h3>
+            <p>Tailored continuity planning ensures your services remain stable, no matter the disruption ahead.</p>
+          </div>
+          <div class="benefit">
+            <h3>Strategic Foresight</h3>
+            <p>Forecast risk. Align teams. Build durable, compliant, trusted systems for critical moments.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="explainer-video">
+        <h2>45 Seconds to See the Value</h2>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Explainer Video" frameborder="0" allowfullscreen></iframe>
+      </section>
+
+      <section class="diagnostic-quiz">
+        <h3>How Ready Is Your Organization?</h3>
+        <form>
+          <label for="industry">1. What industry does your organization serve?</label>
+          <select id="industry" required>
+            <option value="">Select</option>
+            <option>Public Sector</option>
+            <option>Healthcare</option>
+            <option>Education</option>
+            <option>Logistics</option>
+            <option>Other</option>
+          </select>
+
+          <label for="staff-size">2. How many full-time employees?</label>
+          <select id="staff-size" required>
+            <option value="">Select</option>
+            <option>&lt; 50</option>
+            <option>50–250</option>
+            <option>250–1,000</option>
+            <option>1,000–5,000</option>
+          </select>
+
+          <label for="responsibility">3. Who is responsible for emergency planning?</label>
+          <input type="text" id="responsibility" placeholder="e.g., Director of Ops, Facilities, HR" required />
+
+          <button type="submit">Get My Readiness Profile</button>
+        </form>
+      </section>
+
+      <section class="testimonials">
+        <h2>Trusted by Regional Leaders</h2>
+        <div class="testimonial">
+          “Iron Emergency Services didn't just help us write a plan—they transformed how our leadership team thinks about operational integrity. Now we're ahead of compliance and proudly resilient.”
+          <span>— Operations Lead, Tri-Co Municipal Health</span>
+        </div>
+        <div class="testimonial">
+          “Our agency saved over $200K in reactive costs last year alone thanks to the continuity framework Iron implemented. Their team feels like an extension of ours.”
+          <span>— Deputy Director, Midstate Transit Authority</span>
+        </div>
+      </section>
+
+      <section class="download-checklist">
+        <h2>Free: Region-Specific Readiness Checklist</h2>
+        <p>Designed for executive teams, tailored for Southeast risks. Share internally and start strategic conversations today.</p>
+        <a href="#">Download My Checklist</a>
+      </section>
+    </main>
+
+    <section class="call-to-action">
+      <h2>Book a 30-Minute Executive Strategy Call</h2>
+      <p>This is not a sales pitch. It’s a consultative briefing tailored to your organization's current state and strategic goals.</p>
+      <form class="cta-form">
+        <input type="text" placeholder="Full Name" required />
+        <input type="email" placeholder="Email Address" required />
+        <textarea rows="4" placeholder="Organization & role (optional)"></textarea>
+        <button type="submit">Reserve My Call</button>
+      </form>
+    </section>
+
+    <footer>
+      &copy; 2024 Iron Emergency Services. All rights reserved.
+    </footer>
+  </body>
+</html>
+```
