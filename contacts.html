@@ -725,24 +725,12 @@
           <label for="workflow_nurture">🌱 Lead Nurture - Educational content sequence</label>
         </div>
         <div class="workflow-item">
-          <input type="checkbox" id="workflow_demo" value="demo">
-          <label for="workflow_demo">🎯 Demo Request - Product demonstration</label>
+          <input type="checkbox" id="workflow_meeting" value="meeting">
+          <label for="workflow_demo">📅 Schedule Meeting Request </label>
         </div>
         <div class="workflow-item">
           <input type="checkbox" id="workflow_followup" value="followup">
           <label for="workflow_followup">🔄 Follow-up Sequence - Re-engage prospects</label>
-        </div>
-        <div class="workflow-item">
-          <input type="checkbox" id="workflow_referral" value="referral">
-          <label for="workflow_referral">🔗 Referral Program - Ask for referrals</label>
-        </div>
-        <div class="workflow-item">
-          <input type="checkbox" id="workflow_leadmagnet" value="leadmagnet">
-          <label for="workflow_leadmagnet">🧲 Lead Magnet - 90-day engagement sequence</label>
-        </div>
-        <div class="workflow-item">
-          <input type="checkbox" id="workflow_reengage" value="reengage">
-          <label for="workflow_reengage">🎪 Re-engage - Win back dormant leads</label>
         </div>
       </div>
     </div>
@@ -1009,7 +997,7 @@ const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// API endpoints - ALL operations go through n8n webhooks for security
+// API endpoints - ALL operations go through n8n s for security
 const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
@@ -1022,11 +1010,8 @@ const ENDPOINTS = {
   enrollAds: 'https://victoryvision.app.n8n.cloud/webhook/emails/ad-campaign',
   enrollSignup: 'https://victoryvision.app.n8n.cloud/webhook/emails/newsletter',
   enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture',
-  enrollDemo: 'https://victoryvision.app.n8n.cloud/webhook/emails/demo',
+  enrollMeeting: 'https://victoryvision.app.n8n.cloud/webhook/emails/meeting',
   enrollFollowup: 'https://victoryvision.app.n8n.cloud/webhook/emails/followup',
-  enrollReferral: 'https://victoryvision.app.n8n.cloud/webhook/emails/referral',
-  enrollLeadmagnet: 'https://victoryvision.app.n8n.cloud/webhook/emails/leadmagnet',
-  enrollReengage: 'https://victoryvision.app.n8n.cloud/webhook/emails/reengage',
   removeContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/remove'
 };
 
