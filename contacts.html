@@ -130,11 +130,12 @@
       color: #666;
       margin-top: 2px;
     }
-    .linkedin-inputs {
+    .linkedin-input-section {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: 1fr 150px;
       gap: 15px;
       margin-bottom: 20px;
+      align-items: end;
     }
     .form-group {
       margin-bottom: 15px;
@@ -144,6 +145,7 @@
       margin-bottom: 5px;
       font-weight: bold;
       color: #333;
+      position: relative;
     }
     .form-group input,
     .form-group select,
@@ -200,23 +202,6 @@
       margin-bottom: 20px;
       flex-wrap: wrap;
     }
-    .csv-upload-area {
-      border: 2px dashed #dee2e6;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      background: #f8f9fa;
-      margin-top: 15px;
-      transition: all 0.3s ease;
-    }
-    .csv-upload-area:hover {
-      border-color: #0A3161;
-      background: #e3f2fd;
-    }
-    .csv-upload-area.dragover {
-      border-color: #28a745;
-      background: #d4edda;
-    }
     button {
       background: #0A3161;
       color: white;
@@ -251,7 +236,7 @@
     /* Updated filter section to match media page design */
     .filter-section {
       display: grid;
-      grid-template-columns: 200px 200px 200px 200px 200px 200px auto auto;
+      grid-template-columns: 200px 200px 200px 200px 200px 200px 200px 200px auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
@@ -349,7 +334,7 @@
     .contacts-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 1400px;
+      min-width: 1600px;
     }
     .contacts-table th,
     .contacts-table td {
@@ -536,6 +521,65 @@
       text-decoration: none;
     }
     
+    /* Help icon styles */
+    .help-icon {
+      position: relative;
+      display: inline-block;
+      margin-left: 5px;
+      cursor: pointer;
+      color: #6c757d;
+      font-size: 14px;
+      user-select: none;
+    }
+    
+    .help-tooltip {
+      visibility: hidden;
+      width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 6px;
+      padding: 10px;
+      position: absolute;
+      z-index: 1001;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -125px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .help-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+    
+    .help-icon:hover .help-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Date filter styles */
+    .date-filter-group {
+      display: flex;
+      gap: 5px;
+      align-items: end;
+    }
+    
+    .date-filter-group input[type="date"] {
+      width: 130px;
+      font-size: 12px;
+      padding: 6px;
+    }
+    
     /* Intro.js custom styling */
     .introjs-tooltip {
       max-width: 350px;
@@ -588,7 +632,7 @@
       .page-title {
         font-size: 2rem;
       }
-      .linkedin-inputs {
+      .linkedin-input-section {
         grid-template-columns: 1fr;
       }
       .filter-section {
@@ -648,7 +692,7 @@
   </header>
 
   <!-- Lead Generation Section -->
-  <section class="card" data-intro="Generate new contacts by entering LinkedIn profile URLs of your ideal customers. Our AI will find similar prospects that match your target profile." data-step="1">
+  <section class="card" data-intro="Generate new contacts by entering a LinkedIn profile URL of your ideal customer. Our AI will find similar prospects that match your target profile." data-step="1">
     <div class="section-header">
       <h3>🎯 Generate New Contacts</h3>
     </div>
@@ -659,29 +703,33 @@
     </div>
     
     <p style="margin-bottom: 20px; color: #666;">
-      Enter up to 5 LinkedIn profile URLs of your ideal customers. Our AI will find similar prospects that are a perfect fit for your business.
+      Enter a LinkedIn profile URL of your ideal customer and specify how many similar contacts you want to generate.
     </p>
     
-    <div class="linkedin-inputs" data-intro="Paste LinkedIn profile URLs here. Our AI will analyze these profiles to find similar contacts in your target market." data-step="2">
+    <div class="linkedin-input-section" data-intro="Paste a LinkedIn profile URL here and select how many contacts to generate. Our AI will analyze this profile to find similar contacts in your target market." data-step="2">
       <div class="form-group">
-        <label for="linkedin1">LinkedIn Profile URL 1</label>
+        <label for="linkedin1">
+          LinkedIn Profile URL
+          <span class="help-icon">❓
+            <span class="help-tooltip">Enter the LinkedIn URL of someone who represents your ideal customer. Our AI will analyze their profile to find similar prospects.</span>
+          </span>
+        </label>
         <input type="url" id="linkedin1" placeholder="https://linkedin.com/in/profile-name">
       </div>
       <div class="form-group">
-        <label for="linkedin2">LinkedIn Profile URL 2</label>
-        <input type="url" id="linkedin2" placeholder="https://linkedin.com/in/profile-name">
-      </div>
-      <div class="form-group">
-        <label for="linkedin3">LinkedIn Profile URL 3</label>
-        <input type="url" id="linkedin3" placeholder="https://linkedin.com/in/profile-name">
-      </div>
-      <div class="form-group">
-        <label for="linkedin4">LinkedIn Profile URL 4</label>
-        <input type="url" id="linkedin4" placeholder="https://linkedin.com/in/profile-name">
-      </div>
-      <div class="form-group">
-        <label for="linkedin5">LinkedIn Profile URL 5</label>
-        <input type="url" id="linkedin5" placeholder="https://linkedin.com/in/profile-name">
+        <label for="leadCount">
+          Number of Leads
+          <span class="help-icon">❓
+            <span class="help-tooltip">Choose how many similar contacts you want to generate (1-20). Each contact uses 1 credit from your account.</span>
+          </span>
+        </label>
+        <select id="leadCount">
+          <option value="1">1 Lead</option>
+          <option value="5" selected>5 Leads</option>
+          <option value="10">10 Leads</option>
+          <option value="15">15 Leads</option>
+          <option value="20">20 Leads</option>
+        </select>
       </div>
     </div>
     
@@ -693,13 +741,7 @@
       <button onclick="document.getElementById('csvFileInput').click()" class="secondary">📁 Upload CSV</button>
     </div>
     
-    <!-- CSV Upload Area -->
-    <div class="csv-upload-area" id="csvUploadArea">
-      <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-      <p>📂 <strong>Drag & Drop CSV File Here</strong></p>
-      <p style="font-size: 0.85em; color: #666;">or click "Upload CSV" button above</p>
-      <p style="font-size: 0.8em; color: #888;">Expected columns: name, email, company, title, phone, linkedin</p>
-    </div>
+    <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
   </section>
 
   <!-- Contacts Management Section -->
@@ -714,7 +756,7 @@
       <div class="workflow-list" id="workflowList">
         <div class="workflow-item">
           <input type="checkbox" id="workflow_ads" value="ads">
-          <label for="workflow_ads"> Ad Outreach - Share hyper personalized ads</label>
+          <label for="workflow_ads">📺 Ad Outreach - Share hyper personalized ads</label>
         </div>
         <div class="workflow-item">
           <input type="checkbox" id="workflow_signup" value="signup">
@@ -726,7 +768,7 @@
         </div>
         <div class="workflow-item">
           <input type="checkbox" id="workflow_meeting" value="meeting">
-          <label for="workflow_demo">📅 Schedule Meeting Request </label>
+          <label for="workflow_meeting">📅 Schedule Meeting Request</label>
         </div>
         <div class="workflow-item">
           <input type="checkbox" id="workflow_followup" value="followup">
@@ -744,7 +786,7 @@
     </div>
     
     <!-- Filter Section -->
-    <div class="filter-section" data-intro="Filter your contacts by industry, location, revenue, and more. Use these filters to segment your audience for targeted outreach." data-step="5">
+    <div class="filter-section" data-intro="Filter your contacts by industry, location, revenue, dates and more. Use these filters to segment your audience for targeted outreach." data-step="5">
       <div class="form-group">
         <label for="searchFilter">Search</label>
         <input type="text" id="searchFilter" placeholder="Search contacts...">
@@ -784,31 +826,47 @@
           <option value="ads">Ad Outreach</option>
           <option value="signup">Newsletter Signup</option>
           <option value="nurture">Lead Nurture</option>
-          <option value="demo">Demo Request</option>
+          <option value="meeting">Meeting Request</option>
           <option value="followup">Follow-up</option>
-          <option value="referral">Referral</option>
-          <option value="leadmagnet">Lead Magnet</option>
-          <option value="reengage">Re-engage</option>
         </select>
       </div>
-<div class="form-group">
-  <label for="tagsFilter">Tags</label>
-  <select id="tagsFilter">
-    <option value="">All Tags</option>
-  </select>
-</div>
+      <div class="form-group">
+        <label for="tagsFilter">Tags</label>
+        <select id="tagsFilter">
+          <option value="">All Tags</option>
+        </select>
+      </div>
+      <div class="date-filter-group">
+        <div class="form-group">
+          <label for="lastEmailedFrom">Last Emailed From</label>
+          <input type="date" id="lastEmailedFrom">
+        </div>
+        <div class="form-group">
+          <label for="lastEmailedTo">To</label>
+          <input type="date" id="lastEmailedTo">
+        </div>
+      </div>
+      <div class="date-filter-group">
+        <div class="form-group">
+          <label for="lastRespondedFrom">Last Responded From</label>
+          <input type="date" id="lastRespondedFrom">
+        </div>
+        <div class="form-group">
+          <label for="lastRespondedTo">To</label>
+          <input type="date" id="lastRespondedTo">
+        </div>
+      </div>
       <button id="refreshBtn">🔄 Refresh</button>
       <button id="clearFiltersBtn" class="secondary">Clear Filters</button>
     </div>
 
     <!-- Bulk Actions -->
-    <div class="bulk-actions" data-intro="Select multiple contacts and perform bulk actions like enrolling in workflows, sending messages, or deleting contacts." data-step="6">
+    <div class="bulk-actions" data-intro="Select multiple contacts and perform bulk actions like enrolling in workflows, enriching data, or deleting contacts." data-step="6">
       <div class="bulk-actions-left">
         <button id="selectAllBtn" class="secondary">Select All</button>
         <button id="deselectAllBtn" class="secondary">Deselect All</button>
         <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
         <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
-        <button id="generateAdBtn" class="success">🎬 Generate Ad & Email</button>
         <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
         <span id="selectedCount" style="margin-left: 10px; color: #666;">0 selected</span>
       </div>
@@ -865,98 +923,187 @@
       <form id="addContactForm">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
           <div class="form-group">
-            <label for="first_name">First Name *</label>
-            <input type="text" id="first_name" name="first_name" placeholder="John">
-          </div>
-          <div class="form-group">
-            <label for="name">Full Name *</label>
+            <label for="name">
+              Full Name *
+              <span class="help-icon">❓
+                <span class="help-tooltip">Enter the contact's full name as it appears on their LinkedIn profile or business card.</span>
+              </span>
+            </label>
             <input type="text" id="name" name="name" required placeholder="John Smith">
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">
+              Email
+              <span class="help-icon">❓
+                <span class="help-tooltip">Primary business email address for this contact. This will be used for email campaigns.</span>
+              </span>
+            </label>
             <input type="email" id="email" name="email" placeholder="john@company.com">
           </div>
           <div class="form-group">
-            <label for="title">Title</label>
+            <label for="title">
+              Title
+              <span class="help-icon">❓
+                <span class="help-tooltip">Job title or position within their company (e.g., CEO, Marketing Director, VP Sales).</span>
+              </span>
+            </label>
             <input type="text" id="title" name="title" placeholder="CEO">
           </div>
           <div class="form-group">
-            <label for="company">Company</label>
+            <label for="company">
+              Company
+              <span class="help-icon">❓
+                <span class="help-tooltip">Name of the company where this contact works.</span>
+              </span>
+            </label>
             <input type="text" id="company" name="company" placeholder="Company Inc">
           </div>
           <div class="form-group">
-            <label for="domain">Domain</label>
+            <label for="domain">
+              Domain
+              <span class="help-icon">❓
+                <span class="help-tooltip">Company website domain (e.g., company.com). Used for company research and email verification.</span>
+              </span>
+            </label>
             <input type="text" id="domain" name="domain" placeholder="company.com">
           </div>
           <div class="form-group">
-            <label for="phone_number">Phone</label>
+            <label for="phone_number">
+              Phone
+              <span class="help-icon">❓
+                <span class="help-tooltip">Business phone number including country code if international.</span>
+              </span>
+            </label>
             <input type="tel" id="phone_number" name="phone_number" placeholder="+1-555-0123">
           </div>
           <div class="form-group">
-            <label for="linkedin">LinkedIn URL</label>
+            <label for="linkedin">
+              LinkedIn URL
+              <span class="help-icon">❓
+                <span class="help-tooltip">Full LinkedIn profile URL. Used for additional research and personalization.</span>
+              </span>
+            </label>
             <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/profile">
           </div>
           <div class="form-group">
-            <label for="industry">Industry</label>
+            <label for="industry">
+              Industry
+              <span class="help-icon">❓
+                <span class="help-tooltip">The industry or sector this contact's company operates in (e.g., Technology, Healthcare, Finance).</span>
+              </span>
+            </label>
             <input type="text" id="industry" name="industry" placeholder="Technology">
           </div>
           <div class="form-group">
-            <label for="city">City</label>
+            <label for="city">
+              City
+              <span class="help-icon">❓
+                <span class="help-tooltip">Primary city where this contact is located or works.</span>
+              </span>
+            </label>
             <input type="text" id="city" name="city" placeholder="San Francisco">
           </div>
           <div class="form-group">
-            <label for="annual_revenue">Annual Revenue</label>
+            <label for="annual_revenue">
+              Annual Revenue
+              <span class="help-icon">❓
+                <span class="help-tooltip">Estimated annual revenue of the contact's company. Use format like $5M, $10.5M, or $1.2B.</span>
+              </span>
+            </label>
             <input type="text" id="annual_revenue" name="annual_revenue" placeholder="$5M">
           </div>
           <div class="form-group">
-            <label for="employee_count">Employee Count</label>
+            <label for="employee_count">
+              Employee Count
+              <span class="help-icon">❓
+                <span class="help-tooltip">Approximate number of employees at the contact's company.</span>
+              </span>
+            </label>
             <input type="number" id="employee_count" name="employee_count" placeholder="50">
+          </div>
+          <div class="form-group">
+            <label for="client_won_date">
+              Client Won Date
+              <span class="help-icon">❓
+                <span class="help-tooltip">Date when this contact became a client (if applicable). Leave blank for prospects.</span>
+              </span>
+            </label>
+            <input type="date" id="client_won_date" name="client_won_date">
           </div>
         </div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
           <div class="form-group">
-            <label for="conversation_summary">Conversation Summary</label>
+            <label for="conversation_summary">
+              Conversation Summary
+              <span class="help-icon">❓
+                <span class="help-tooltip">Summary of all previous conversations, meetings, and interactions with this contact.</span>
+              </span>
+            </label>
             <textarea id="conversation_summary" name="conversation_summary" placeholder="Summary of all communication..."></textarea>
           </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
           <div class="form-group">
-            <label for="personal_summary">Personal Summary</label>
+            <label for="personal_summary">
+              Personal Summary
+              <span class="help-icon">❓
+                <span class="help-tooltip">Personal background, interests, family details, hobbies, or other personal information about the contact.</span>
+              </span>
+            </label>
             <textarea id="personal_summary" name="personal_summary" placeholder="Brief personal background..."></textarea>
           </div>
-
-          
           <div class="form-group">
-            <label for="company_summary">Company Summary</label>
+            <label for="company_summary">
+              Company Summary
+              <span class="help-icon">❓
+                <span class="help-tooltip">Overview of the contact's company, their business model, recent news, or company challenges.</span>
+              </span>
+            </label>
             <textarea id="company_summary" name="company_summary" placeholder="Company overview..."></textarea>
           </div>
           <div class="form-group">
-            <label for="personal_priorities">Personal Priorities</label>
+            <label for="personal_priorities">
+              Personal Priorities
+              <span class="help-icon">❓
+                <span class="help-tooltip">What matters to this contact personally - career goals, personal challenges, or individual motivations.</span>
+              </span>
+            </label>
             <textarea id="personal_priorities" name="personal_priorities" placeholder="What matters to them personally..."></textarea>
           </div>
           <div class="form-group">
-            <label for="company_priorities">Company Priorities</label>
+            <label for="company_priorities">
+              Company Priorities
+              <span class="help-icon">❓
+                <span class="help-tooltip">Current company goals, initiatives, challenges, or strategic priorities this contact is focused on.</span>
+              </span>
+            </label>
             <textarea id="company_priorities" name="company_priorities" placeholder="Company goals and priorities..."></textarea>
           </div>
         </div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
           <div class="form-group">
-            <label for="tags">Tags</label>
+            <label for="tags">
+              Tags
+              <span class="help-icon">❓
+                <span class="help-tooltip">Comma-separated tags for organizing contacts (e.g., hot-lead, decision-maker, interested).</span>
+              </span>
+            </label>
             <input type="text" id="tags" name="tags" placeholder="hot-lead, decision-maker, interested">
           </div>
           <div class="form-group">
-            <label for="workflow">Current Workflow</label>
+            <label for="workflow">
+              Current Workflow
+              <span class="help-icon">❓
+                <span class="help-tooltip">Select which automated email workflow this contact should be enrolled in.</span>
+              </span>
+            </label>
             <select id="workflow" name="workflow">
               <option value="">None</option>
               <option value="ads">Ad Outreach</option>
               <option value="signup">Newsletter Signup</option>
               <option value="nurture">Lead Nurture</option>
-              <option value="demo">Demo Request</option>
+              <option value="meeting">Meeting Request</option>
               <option value="followup">Follow-up</option>
-              <option value="referral">Referral</option>
-              <option value="leadmagnet">Lead Magnet</option>
-              <option value="reengage">Re-engage</option>
             </select>
           </div>
         </div>
@@ -964,11 +1111,21 @@
         <div style="margin-top: 15px;">
           <div class="checkbox-group">
             <input type="checkbox" id="aiemail" name="aiemail">
-            <label for="aiemail">Enable AI Email Campaigns</label>
+            <label for="aiemail">
+              Enable AI Email Campaigns
+              <span class="help-icon">❓
+                <span class="help-tooltip">Allow AI to automatically generate and send personalized email campaigns to this contact.</span>
+              </span>
+            </label>
           </div>
           <div class="checkbox-group">
             <input type="checkbox" id="newsletter" name="newsletter">
-            <label for="newsletter">Subscribe to Newsletter</label>
+            <label for="newsletter">
+              Subscribe to Newsletter
+              <span class="help-icon">❓
+                <span class="help-tooltip">Add this contact to your company newsletter mailing list.</span>
+              </span>
+            </label>
           </div>
         </div>
         
@@ -991,13 +1148,11 @@
 
 <script>
 // Supabase configuration - SECURITY NOTE: Only use anon key with proper RLS
-// The anon key shown here should have Row Level Security (RLS) enabled
-// and should only allow operations for authenticated users
 const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM7MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// API endpoints - ALL operations go through n8n s for security
+// API endpoints - ALL operations go through n8n for security
 const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
@@ -1006,7 +1161,6 @@ const ENDPOINTS = {
   updateContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/update',
   enrichContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/enrich',
   uploadCSV: 'https://victoryvision.app.n8n.cloud/webhook/contacts/upload-csv',
-  generateAd: 'https://victoryvision.app.n8n.cloud/webhook/contacts/generate-ad',
   enrollAds: 'https://victoryvision.app.n8n.cloud/webhook/emails/ad-campaign',
   enrollSignup: 'https://victoryvision.app.n8n.cloud/webhook/emails/newsletter',
   enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture',
@@ -1029,7 +1183,6 @@ let sortDirection = 'asc';
 // Available table columns with display names
 const availableColumns = {
   name: 'Name',
-  first_name: 'First Name',
   title: 'Title', 
   company: 'Company',
   domain: 'Domain',
@@ -1050,12 +1203,13 @@ const availableColumns = {
   company_summary: 'Company Summary',
   personal_priorities: 'Personal Priorities',
   company_priorities: 'Company Priorities',
+  client_won_date: 'Client Won Date',
   aiemail: 'AI Email',
   newsletter: 'Newsletter'
 };
 
-// Default visible columns
-let visibleColumns = ['name', 'title', 'company', 'email', 'industry', 'annual_revenue', 'city', 'workflow_status'];
+// Default visible columns - include last_responded and last_emailed_date by default
+let visibleColumns = ['name', 'title', 'company', 'email', 'industry', 'annual_revenue', 'city', 'last_responded', 'last_emailed_date', 'workflow_status'];
 
 // Rate limiting
 const rateLimiter = {
@@ -1155,7 +1309,7 @@ async function apiCall(endpoint, data = {}) {
 
     if (!endpoint.includes('/user/get')) {
       requestOptions.body = JSON.stringify({
-        customer_id:CUSTOMER_ID,
+        customer_id: CUSTOMER_ID,
         ...data
       });
     }
@@ -1178,7 +1332,6 @@ async function loadUserData() {
     const response = await apiCall(ENDPOINTS.getUserData);
     console.log('Raw user response:', response);
     
-    // Get the first element from the array (n8n returns array)
     const userData = Array.isArray(response) ? response[0] : response;
     console.log('User data:', userData);
     
@@ -1237,17 +1390,14 @@ async function loadContacts() {
     
     allContacts = Array.isArray(data) ? data : (data.contacts || []);
     
-    // DEBUG: Log the first contact to see what fields are available
     if (allContacts.length > 0) {
       console.log('First contact structure:', allContacts[0]);
       console.log('First contact keys:', Object.keys(allContacts[0]));
     }
     
-    // FIX: Only add workflow status if it doesn't exist and handle null/empty values properly
     allContacts = allContacts.map((contact, index) => ({
       ...contact,
       workflow_status: contact.workflow_status || null,
-      // Ensure we have some kind of ID - use email as fallback if no id field
       contact_id: contact.id || contact.contact_id || contact.email || `contact_${index}`
     }));
     
@@ -1268,7 +1418,7 @@ async function loadContacts() {
   }
 }
 
-// Generate new contacts
+// Generate new contacts - UPDATED to use lead count and single input
 async function generateNewContacts() {
   console.log('Generate button clicked');
   const generateBtn = document.getElementById('generateBtn');
@@ -1281,39 +1431,37 @@ async function generateNewContacts() {
     generateBtn.disabled = true;
     generateBtn.textContent = '🔄 Generating Contacts...';
     
-    const linkedinUrls = [];
-    for (let i = 1; i <= 5; i++) {
-      const urlInput = document.getElementById(`linkedin${i}`);
-      if (urlInput && urlInput.value) {
-        const url = sanitizeInput(urlInput.value.trim());
-        if (url) linkedinUrls.push(url);
-      }
+    const linkedinUrl = document.getElementById('linkedin1').value.trim();
+    const leadCount = parseInt(document.getElementById('leadCount').value) || 5;
+
+    console.log('LinkedIn URL:', linkedinUrl);
+    console.log('Lead count:', leadCount);
+
+    if (!linkedinUrl) {
+      throw new Error('Please enter a LinkedIn URL');
     }
 
-    console.log('LinkedIn URLs collected:', linkedinUrls);
-
-    if (linkedinUrls.length === 0) {
-      throw new Error('Please enter at least one LinkedIn URL');
+    if (userCredits.contact_credits < leadCount) {
+      throw new Error(`Insufficient credits. You need ${leadCount} credits but only have ${userCredits.contact_credits}.`);
     }
 
     console.log('Sending request to contacts/look');
     
     const result = await apiCall(ENDPOINTS.generateContacts, { 
-      linkedin_urls: linkedinUrls
+      linkedin_urls: [linkedinUrl],
+      lead_count: leadCount
     });
 
     if (result.success !== false) {
-      showStatus('Successfully generating contacts! They will appear shortly.', false);
+      showStatus(`Successfully generating ${leadCount} contacts! They will appear shortly.`, false);
       
       // Deduct credits
-      userCredits.contact_credits--;
+      userCredits.contact_credits -= leadCount;
       updateCreditsDisplay();
       
       // Clear inputs
-      for (let i = 1; i <= 5; i++) {
-        const input = document.getElementById(`linkedin${i}`);
-        if (input) input.value = '';
-      }
+      document.getElementById('linkedin1').value = '';
+      document.getElementById('leadCount').value = '5';
       
       // Reload contacts after a delay
       setTimeout(() => {
@@ -1339,83 +1487,49 @@ function showAddContactModal() {
 }
 
 function closeAddContactModal() {
-  document.getElementById('addContactModal').style.display = 'none';
+  const modal = document.getElementById('addContactModal');
+  modal.style.display = 'none';
   document.getElementById('addContactForm').reset();
-  // Reset form attributes
   document.getElementById('addContactForm').removeAttribute('data-contact-id');
   document.querySelector('#addContactModal .modal-header h2').textContent = '➕ Add New Contact';
   document.querySelector('#addContactModal button[type="submit"]').textContent = '➕ Add Contact';
 }
 
-// FIXED: Use FormData properly with name attributes
-async function addContactManually(formData) {
+// Handle form submission for both add and update
+async function handleContactForm(formData, isUpdate = false, contactId = null) {
   try {
-    // Extract all form data using the name attributes
     const contactData = {};
     for (let [key, value] of formData.entries()) {
-      // Handle checkboxes properly
       if (key === 'aiemail' || key === 'newsletter') {
-        contactData[key] = true; // Checkbox is checked if it exists in FormData
+        contactData[key] = true;
       } else {
         contactData[key] = value;
       }
     }
     
-    // Set checkbox defaults for unchecked boxes
     if (!contactData.aiemail) contactData.aiemail = false;
     if (!contactData.newsletter) contactData.newsletter = false;
+
+    if (isUpdate) {
+      contactData.contact_id = contactId;
+    }
 
     console.log('Contact data being sent:', contactData);
 
-    const result = await apiCall(ENDPOINTS.addContact, contactData);
+    const endpoint = isUpdate ? ENDPOINTS.updateContact : ENDPOINTS.addContact;
+    const result = await apiCall(endpoint, contactData);
 
     if (result.success !== false) {
-      showStatus('Contact added successfully!', false);
+      showStatus(`Contact ${isUpdate ? 'updated' : 'added'} successfully!`, false);
       closeAddContactModal();
       await loadContacts();
     } else {
-      throw new Error(result.message || 'Failed to add contact');
+      throw new Error(result.message || `Failed to ${isUpdate ? 'update' : 'add'} contact`);
     }
 
   } catch (error) {
-    console.error('Error adding contact:', error);
-    showStatus('Error adding contact: ' + error.message, true);
-  }
-}
-
-// FIXED: Use FormData properly for updates
-async function updateContact(contactId, formData) {
-  try {
-    // Extract all form data using the name attributes
-    const contactData = {contact_id:contactId };
-    for (let [key, value] of formData.entries()) {
-      // Handle checkboxes properly
-      if (key === 'aiemail' || key === 'newsletter') {
-        contactData[key] = true; // Checkbox is checked if it exists in FormData
-      } else {
-        contactData[key] = value;
-      }
-    }
-    
-    // Set checkbox defaults for unchecked boxes
-    if (!contactData.aiemail) contactData.aiemail = false;
-    if (!contactData.newsletter) contactData.newsletter = false;
-
-    console.log('Update contact data being sent:', contactData);
-
-    const result = await apiCall(ENDPOINTS.updateContact, contactData);
-
-    if (result.success !== false) {
-      showStatus('Contact updated successfully!', false);
-      closeAddContactModal();
-      await loadContacts();
-    } else {
-      throw new Error(result.message || 'Failed to update contact');
-    }
-
-  } catch (error) {
-    console.error('Error updating contact:', error);
-    showStatus('Error updating contact: ' + error.message, true);
+    console.error(`Error ${isUpdate ? 'updating' : 'adding'} contact:`, error);
+    showStatus(`Error ${isUpdate ? 'updating' : 'adding'} contact: ` + error.message, true);
   }
 }
 
@@ -1426,7 +1540,6 @@ function expandFirstSelectedContact() {
     return;
   }
   
-  // Get the first selected contact
   const firstSelectedId = Array.from(selectedContacts)[0];
   const contact = allContacts.find(c => c.id === firstSelectedId);
   
@@ -1440,32 +1553,7 @@ function expandFirstSelectedContact() {
 // CSV Upload functionality
 function setupCSVUpload() {
   const csvInput = document.getElementById('csvFileInput');
-  const uploadArea = document.getElementById('csvUploadArea');
-
   csvInput.addEventListener('change', handleCSVFile);
-
-  // Drag and drop functionality
-  uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
-  });
-
-  uploadArea.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-  });
-
-  uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    
-    const files = e.dataTransfer.files;
-    if (files.length > 0 && files[0].name.endsWith('.csv')) {
-      handleCSVFile({ target: { files: files } });
-    } else {
-      showStatus('Please drop a CSV file', true);
-    }
-  });
 }
 
 async function handleCSVFile(event) {
@@ -1496,11 +1584,10 @@ async function handleCSVFile(event) {
     showStatus('Error uploading CSV: ' + error.message, true);
   }
 
-  // Clear the input
   event.target.value = '';
 }
 
-// Enrich contacts - SEND ONE AT A TIME
+// Enrich contacts - FIXED to prevent webhook firing extra times
 async function enrichSelectedContacts() {
   if (selectedContacts.size === 0) {
     showStatus('Please select contacts to enrich', true);
@@ -1516,44 +1603,35 @@ async function enrichSelectedContacts() {
         c.linkedin === id
       )
     ).filter(c => c && (c.email || c.linkedin));
-    console.log('Selected contacts for enrichment:', selectedContactsList);
 
     if (selectedContactsList.length === 0) {
       showStatus('No valid contacts selected for enrichment', true);
       return;
     }
 
-    // Send each contact individually like contacts/look does
-    let successCount = 0;
-    for (const contact of selectedContactsList) {
-      try {
-        const enrichmentData = {
-          contact: {
-            id: contact.contact_id || contact.id || contact.email,
-            email: contact.email,
-            linkedin: contact.linkedin || '',
-            name: contact.name || '',
-            company: contact.company || ''
-          }
-        };
+    // Send all contacts in a single request to prevent multiple webhook calls
+    const enrichmentData = {
+      contacts: selectedContactsList.map(contact => ({
+        id: contact.contact_id || contact.id || contact.email,
+        email: contact.email,
+        linkedin: contact.linkedin || '',
+        name: contact.name || '',
+        company: contact.company || ''
+      }))
+    };
 
-        console.log('Enriching individual contact:', enrichmentData);
+    console.log('Enriching contacts:', enrichmentData);
 
-        const result = await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
-        
-        if (result.success !== false) {
-          successCount++;
-        }
-      } catch (contactError) {
-        console.error(`Error enriching ${contact.email}:`, contactError);
-        // Continue with next contact even if one fails
-      }
+    const result = await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
+    
+    if (result.success !== false) {
+      showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
+      selectedContacts.clear();
+      updateSelectedCount();
+      setTimeout(() => loadContacts(), 5000);
+    } else {
+      throw new Error(result.message || 'Enrichment failed');
     }
-
-    showStatus(`Enrichment started for ${successCount} out of ${selectedContactsList.length} contacts!`, false);
-    selectedContacts.clear();
-    updateSelectedCount();
-    setTimeout(() => loadContacts(), 5000); // Reload after 5 seconds
 
   } catch (error) {
     console.error('Error enriching contacts:', error);
@@ -1561,60 +1639,16 @@ async function enrichSelectedContacts() {
   }
 }
 
-// Generate Ad & Email
-async function generateAdAndEmail() {
-  if (selectedContacts.size === 0) {
-    showStatus('Please select contacts for ad generation', true);
-    return;
-  }
-
-  if (userCredits.video_credits <= 0) {
-    showStatus('Insufficient video credits for ad generation', true);
-    return;
-  }
-
-  try {
-    const selectedContactsList = Array.from(selectedContacts).map(id => 
-      allContacts.find(c => c.id === id)
-    ).filter(c => c);
-
-    const result = await apiCall(ENDPOINTS.generateAd, {
-      contacts: selectedContactsList.map(c => ({ 
-        id: c.id, 
-        name: c.name, 
-        email: c.email, 
-        company: c.company,
-        industry: c.industry 
-      }))
-    });
-
-    if (result.success !== false) {
-      showStatus(`Ad & Email generation started for ${selectedContactsList.length} contacts! (-1 video credit)`, false);
-      userCredits.video_credits--; // Deduct credit
-      updateCreditsDisplay();
-      selectedContacts.clear();
-      updateSelectedCount();
-    } else {
-      throw new Error(result.message || 'Ad generation failed');
-    }
-
-  } catch (error) {
-    console.error('Error generating ad:', error);
-    showStatus('Error generating ad: ' + error.message, true);
-  }
-}
-
-// Show contact details modal - FIXED WITH IMPROVED EVENT HANDLING
+// Show contact details modal - FIXED with improved modal and tracking
 function showContactDetails(contactId, event) {
   console.log('showContactDetails called with:', contactId, event);
   
   if (event && event.target.type === 'checkbox') {
     console.log('Checkbox clicked, not opening modal');
-    return; // Don't open modal if clicking checkbox
+    return;
   }
   if (event) event.stopPropagation();
   
-  // Find contact using our contact_id field or fallback fields
   const contact = allContacts.find(c => 
     c.contact_id === contactId || 
     c.id === contactId || 
@@ -1625,12 +1659,6 @@ function showContactDetails(contactId, event) {
   
   if (!contact) {
     console.error('No contact found for ID:', contactId);
-    console.log('Available contacts:', allContacts.map(c => ({
-      contact_id: c.contact_id,
-      id: c.id,
-      email: c.email,
-      name: c.name
-    })));
     return;
   }
   
@@ -1638,13 +1666,6 @@ function showContactDetails(contactId, event) {
   const modalTitle = document.getElementById('modalTitle');
   const modalBody = document.getElementById('modalBody');
   const modal = document.getElementById('contactModal');
-  
-  console.log('Modal elements:', { modalTitle, modalBody, modal });
-  
-  if (!modal) {
-    console.error('Modal not found in DOM');
-    return;
-  }
   
   modalTitle.textContent = contact.name || 'Contact Details';
   
@@ -1658,15 +1679,13 @@ function showContactDetails(contactId, event) {
     </div>
     
     <div class="modal-actions">
+      <button onclick="sendEmailToContact('${contact.email || ''}')" class="success" style="background: #17a2b8;">✉️ Send Email</button>
       <button onclick="editContact('${contactId}')" class="success">✏️ Edit Contact</button>
       <button onclick="deleteContact('${contactId}')" class="danger">🗑️ Delete Contact</button>
-      <button onclick="sendEmail('${contactId}')" style="background: #17a2b8;">📧 Email Contact</button>
     </div>
   `;
   
-  console.log('Setting modal display to block');
   modal.style.display = 'block';
-  console.log('Modal display style after setting:', modal.style.display);
 }
 
 function renderDetailField(label, value, isLink = false) {
@@ -1684,6 +1703,24 @@ function renderDetailField(label, value, isLink = false) {
   `;
 }
 
+// FIXED: Email button redirects to messages page with compose open
+function sendEmailToContact(email) {
+  if (!email) {
+    showStatus('Contact email not available', true);
+    return;
+  }
+  
+  // Store contact info for messages page
+  sessionStorage.setItem('composeToEmail', email);
+  if (currentContact) {
+    sessionStorage.setItem('composeToName', currentContact.name || '');
+  }
+  
+  // Redirect to messages page
+  window.location.href = '/messages';
+  closeModal();
+}
+
 function editContact(contactId) {
   const contact = allContacts.find(c => 
     c.contact_id === contactId || 
@@ -1692,14 +1729,10 @@ function editContact(contactId) {
   );
   if (!contact) return;
   
-  // Close the details modal
   closeModal();
-  
-  // Open add contact modal but populate with existing data
   showAddContactModal();
   
-  // Populate the form with existing contact data using proper IDs
-  document.getElementById('first_name').value = contact.first_name || '';
+  // Populate form with existing data (excluding first_name)
   document.getElementById('name').value = contact.name || '';
   document.getElementById('email').value = contact.email || '';
   document.getElementById('title').value = contact.title || '';
@@ -1711,6 +1744,8 @@ function editContact(contactId) {
   document.getElementById('city').value = contact.city || '';
   document.getElementById('annual_revenue').value = contact.annual_revenue || '';
   document.getElementById('employee_count').value = contact.employee_count || '';
+  document.getElementById('client_won_date').value = contact.client_won_date || '';
+  document.getElementById('conversation_summary').value = contact.conversation_summary || '';
   document.getElementById('personal_summary').value = contact.personal_summary || '';
   document.getElementById('company_summary').value = contact.company_summary || '';
   document.getElementById('personal_priorities').value = contact.personal_priorities || '';
@@ -1719,33 +1754,13 @@ function editContact(contactId) {
   document.getElementById('workflow').value = contact.workflow || '';
   document.getElementById('aiemail').checked = contact.aiemail || false;
   document.getElementById('newsletter').checked = contact.newsletter || false;
-  document.getElementById('tags').value = contact.tags || '';
-  // Change the modal title and button
+  
+  // Change modal title and button
   document.querySelector('#addContactModal .modal-header h2').textContent = '✏️ Edit Contact';
   document.querySelector('#addContactModal button[type="submit"]').textContent = '💾 Update Contact';
   
-  // Store the contact ID for updating
+  // Store contact ID for updating
   document.getElementById('addContactForm').setAttribute('data-contact-id', contactId);
-}
-
-function sendEmail(contactId) {
-  const contact = allContacts.find(c => 
-    c.contact_id === contactId || 
-    c.id === contactId || 
-    c.email === contactId
-  );
-  if (!contact || !contact.email) {
-    showStatus('Contact email not available', true);
-    return;
-  }
-  
-  // Open email client with contact email
-  const subject = encodeURIComponent(`Follow up from ${CUSTOMER_ID.split('@')[0]}`);
-  const body = encodeURIComponent(`Hi ${contact.name || 'there'},\n\nI hope this email finds you well.\n\nBest regards,\n${CUSTOMER_ID.split('@')[0]}`);
-  const mailtoLink = `mailto:${contact.email}?subject=${subject}&body=${body}`;
-  
-  window.open(mailtoLink);
-  closeModal();
 }
 
 async function deleteContact(contactId) {
@@ -1768,12 +1783,11 @@ async function deleteContact(contactId) {
   }
 }
 
+// FIXED: Modal only closes on Cancel, X, or Esc key
 function closeModal() {
-  console.log('closeModal called');
   const modal = document.getElementById('contactModal');
   if (modal) {
     modal.style.display = 'none';
-    console.log('Modal closed');
   }
   currentContact = null;
 }
@@ -1791,7 +1805,6 @@ function initializeColumnSelector() {
     `;
     columnList.appendChild(item);
     
-    // Add event listener
     item.querySelector('input').addEventListener('change', updateVisibleColumns);
   });
 }
@@ -1802,7 +1815,6 @@ function updateVisibleColumns() {
     .filter(cb => cb.checked)
     .map(cb => cb.value);
   
-  // Always include name column
   if (!visibleColumns.includes('name')) {
     visibleColumns.unshift('name');
   }
@@ -1832,7 +1844,6 @@ function renderTableHeader() {
   
   header.innerHTML = headerHTML;
   
-  // Re-attach select all checkbox listener
   document.getElementById('selectAllCheckbox').addEventListener('change', (e) => {
     if (e.target.checked) selectAll();
     else deselectAll();
@@ -1858,10 +1869,12 @@ function sortBy(field) {
     let aVal = a[field] || '';
     let bVal = b[field] || '';
     
-    // Handle numeric fields
     if (field === 'annual_revenue' || field === 'employee_count') {
       aVal = parseFloat(aVal.toString().replace(/[^0-9.]/g, '')) || 0;
       bVal = parseFloat(bVal.toString().replace(/[^0-9.]/g, '')) || 0;
+    } else if (field === 'last_responded' || field === 'last_emailed_date' || field === 'client_won_date') {
+      aVal = aVal ? new Date(aVal).getTime() : 0;
+      bVal = bVal ? new Date(bVal).getTime() : 0;
     } else {
       aVal = aVal.toString().toLowerCase();
       bVal = bVal.toString().toLowerCase();
@@ -1878,7 +1891,7 @@ function sortBy(field) {
   renderContactsTable();
 }
 
-// Render contacts table - FIXED TO PROPERLY BIND CLICK EVENTS
+// Render contacts table
 function renderContactsTable() {
   const tbody = document.getElementById('contactsTableBody');
   
@@ -1895,9 +1908,7 @@ function renderContactsTable() {
   }
 
   tbody.innerHTML = filteredContacts.map(contact => {
-    // Use the contact_id we created, or fallback to email
     const contactId = contact.contact_id || contact.id || contact.email;
-    console.log('Rendering contact with ID:', contactId, 'from contact:', contact);
     
     let rowHTML = `
       <tr data-contact-id="${contactId}">
@@ -1917,21 +1928,16 @@ function renderContactsTable() {
     return rowHTML;
   }).join('');
   
-  // IMPORTANT: Add click event listeners after rendering
+  // Add click event listeners after rendering
   const rows = tbody.querySelectorAll('tr[data-contact-id]');
-  console.log('Found', rows.length, 'rows with data-contact-id');
   
   rows.forEach(row => {
     const contactId = row.getAttribute('data-contact-id');
-    console.log('Setting up click handler for row with contact ID:', contactId);
     
     row.addEventListener('click', (event) => {
-      // Don't trigger if clicking on checkbox or links
       if (event.target.type === 'checkbox' || event.target.tagName === 'A') {
         return;
       }
-      
-      console.log('Row clicked, contact ID from attribute:', contactId);
       
       if (!contactId || contactId === 'undefined') {
         console.error('No valid contact ID found on row');
@@ -1941,11 +1947,8 @@ function renderContactsTable() {
       showContactDetails(contactId, event);
     });
     
-    // Add hover effect
     row.style.cursor = 'pointer';
   });
-  
-  console.log('Rendered table with', filteredContacts.length, 'contacts and bound click events');
 }
 
 function formatCellValue(contact, column) {
@@ -1957,7 +1960,6 @@ function formatCellValue(contact, column) {
     case 'annual_revenue':
       return `<span class="revenue-cell">${formatRevenue(value)}</span>`;
     case 'workflow_status':
-      // FIX: Properly handle workflow status - only show if there are actual workflows
       return formatWorkflowBadges(value);
     case 'linkedin':
       return value ? `<a href="${value}" target="_blank" style="color: #0A3161;" onclick="event.stopPropagation();">View</a>` : 'N/A';
@@ -1965,6 +1967,7 @@ function formatCellValue(contact, column) {
       return value ? `<a href="mailto:${value}" style="color: #0A3161;" onclick="event.stopPropagation();">${value}</a>` : 'N/A';
     case 'last_responded':
     case 'last_emailed_date':
+    case 'client_won_date':
       return formatDate(value);
     case 'tags':
       return formatTags(value);
@@ -1988,7 +1991,6 @@ function formatRevenue(revenue) {
 }
 
 function formatWorkflowBadges(workflows) {
-  // FIX: Only show workflows if they actually exist
   if (!workflows || workflows === 'null' || workflows === '') {
     return '<span style="color: #999; font-style: italic;">None</span>';
   }
@@ -2030,7 +2032,7 @@ function toggleContactSelection(contactId) {
 }
 
 function selectAll() {
-  filteredContacts.forEach(contact => selectedContacts.add(contact.id));
+  filteredContacts.forEach(contact => selectedContacts.add(contact.contact_id || contact.id || contact.email));
   renderContactsTable();
   updateSelectedCount();
 }
@@ -2046,7 +2048,7 @@ function updateSelectedCount() {
   document.getElementById('selectAllCheckbox').checked = selectedContacts.size === filteredContacts.length && filteredContacts.length > 0;
 }
 
-// Workflow enrollment - FIXED TO USE PROPER ENDPOINTS
+// Workflow enrollment
 async function enrollInWorkflows() {
   const selectedWorkflows = getSelectedWorkflows();
   
@@ -2072,7 +2074,6 @@ async function enrollInWorkflows() {
     for (const workflow of selectedWorkflows) {
       let endpoint;
       
-      // Route to appropriate endpoint based on workflow
       switch(workflow) {
         case 'ads':
           endpoint = ENDPOINTS.enrollAds;
@@ -2089,17 +2090,8 @@ async function enrollInWorkflows() {
         case 'followup':
           endpoint = ENDPOINTS.enrollFollowup;
           break;
-        case 'referral':
-          endpoint = ENDPOINTS.enrollReferral;
-          break;
-        case 'leadmagnet':
-          endpoint = ENDPOINTS.enrollLeadmagnet;
-          break;
-        case 'reengage':
-          endpoint = ENDPOINTS.enrollReengage;
-          break;
         default:
-          endpoint = ENDPOINTS.enrollSignup; // fallback
+          endpoint = ENDPOINTS.enrollSignup;
       }
       
       for (const contact of selectedContactsList) {
@@ -2118,9 +2110,12 @@ async function enrollInWorkflows() {
             currentWorkflows.push(workflow);
             contact.workflow_status = currentWorkflows.join(',');
           }
+          
+          // Update last emailed date for tracking
+          contact.last_emailed_date = new Date().toISOString();
+          
         } catch (workflowError) {
           console.error(`Error enrolling ${contact.email} in ${workflow}:`, workflowError);
-          // Continue with other workflows/contacts even if one fails
         }
       }
     }
@@ -2130,7 +2125,6 @@ async function enrollInWorkflows() {
     updateSelectedCount();
     renderContactsTable();
     
-    // Clear workflow selections
     document.querySelectorAll('#workflowList input[type="checkbox"]').forEach(cb => cb.checked = false);
     
   } catch (error) {
@@ -2144,12 +2138,13 @@ function getSelectedWorkflows() {
     .map(cb => cb.value);
 }
 
-// Filters
+// ENHANCED Filters with date filtering
 function populateFilterOptions() {
   const industries = [...new Set(allContacts.map(c => c.industry).filter(Boolean))].sort();
   const cities = [...new Set(allContacts.map(c => c.city).filter(Boolean))].sort();
   const schools = [...new Set(allContacts.map(c => c.school_name).filter(Boolean))].sort();
-  const tags = [...new Set(allContacts.flatMap(c => (c.tags || '').split(' ').filter(tag => tag.trim())))].sort();
+  const tags = [...new Set(allContacts.flatMap(c => (c.tags || '').split(',').filter(tag => tag.trim())))].sort();
+  
   populateSelect('industryFilter', industries);
   populateSelect('cityFilter', cities);
   populateSelect('schoolFilter', schools);
@@ -2176,7 +2171,12 @@ function applyFilters() {
   const revenue = document.getElementById('revenueFilter').value;
   const school = document.getElementById('schoolFilter').value;
   const workflow = document.getElementById('workflowFilter').value;
-const tags = document.getElementById('tagsFilter').value;
+  const tags = document.getElementById('tagsFilter').value;
+  const lastEmailedFrom = document.getElementById('lastEmailedFrom').value;
+  const lastEmailedTo = document.getElementById('lastEmailedTo').value;
+  const lastRespondedFrom = document.getElementById('lastRespondedFrom').value;
+  const lastRespondedTo = document.getElementById('lastRespondedTo').value;
+  
   filteredContacts = allContacts.filter(contact => {
     // Search filter
     if (searchTerm) {
@@ -2235,13 +2235,32 @@ const tags = document.getElementById('tagsFilter').value;
         return false;
       }
     }
-// Tags filter
-if (tags) {
-  const contactTags = (contact.tags || '').split(' ').filter(t => t.trim());
-  if (!contactTags.includes(tags)) {
-    return false;
-  }
-}
+
+    // Tags filter
+    if (tags) {
+      const contactTags = (contact.tags || '').split(',').filter(t => t.trim());
+      if (!contactTags.includes(tags)) {
+        return false;
+      }
+    }
+
+    // Date filters
+    if (lastEmailedFrom || lastEmailedTo) {
+      const emailDate = contact.last_emailed_date ? new Date(contact.last_emailed_date) : null;
+      if (!emailDate) return false;
+      
+      if (lastEmailedFrom && emailDate < new Date(lastEmailedFrom)) return false;
+      if (lastEmailedTo && emailDate > new Date(lastEmailedTo + 'T23:59:59')) return false;
+    }
+
+    if (lastRespondedFrom || lastRespondedTo) {
+      const respondDate = contact.last_responded ? new Date(contact.last_responded) : null;
+      if (!respondDate) return false;
+      
+      if (lastRespondedFrom && respondDate < new Date(lastRespondedFrom)) return false;
+      if (lastRespondedTo && respondDate > new Date(lastRespondedTo + 'T23:59:59')) return false;
+    }
+
     return true;
   });
 
@@ -2256,6 +2275,10 @@ function clearFilters() {
   document.getElementById('schoolFilter').value = '';
   document.getElementById('workflowFilter').value = '';
   document.getElementById('tagsFilter').value = '';
+  document.getElementById('lastEmailedFrom').value = '';
+  document.getElementById('lastEmailedTo').value = '';
+  document.getElementById('lastRespondedFrom').value = '';
+  document.getElementById('lastRespondedTo').value = '';
   applyFilters();
 }
 
@@ -2307,19 +2330,16 @@ function setupEventListeners() {
   // Expand contact button
   document.getElementById('expandContactBtn').addEventListener('click', expandFirstSelectedContact);
   
-  // Add contact form - FIXED TO HANDLE BOTH ADD AND UPDATE
+  // Add contact form - handles both add and update
   document.getElementById('addContactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     
-    // Check if this is an edit operation
     const contactId = e.target.getAttribute('data-contact-id');
     if (contactId) {
-      // This is an edit operation
-      await updateContact(contactId, formData);
+      await handleContactForm(formData, true, contactId);
     } else {
-      // This is a new contact
-      await addContactManually(formData);
+      await handleContactForm(formData, false);
     }
   });
   
@@ -2330,7 +2350,6 @@ function setupEventListeners() {
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
   document.getElementById('enrollWorkflowsBtn').addEventListener('click', enrollInWorkflows);
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
-  document.getElementById('generateAdBtn').addEventListener('click', generateAdAndEmail);
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContacts);
   
   // Filters with debouncing
@@ -2340,19 +2359,15 @@ function setupEventListeners() {
     searchTimeout = setTimeout(applyFilters, 300);
   });
   
-  ['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'workflowFilter','tagsFilter'].forEach(id => {
+  ['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'workflowFilter', 'tagsFilter',
+   'lastEmailedFrom', 'lastEmailedTo', 'lastRespondedFrom', 'lastRespondedTo'].forEach(id => {
     document.getElementById(id).addEventListener('change', applyFilters);
   });
   
-  // Modal close events
-  window.addEventListener('click', (event) => {
-    const contactModal = document.getElementById('contactModal');
-    const addContactModal = document.getElementById('addContactModal');
-    
-    if (event.target === contactModal) {
+  // FIXED: Modal close only on specific actions
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
       closeModal();
-    }
-    if (event.target === addContactModal) {
       closeAddContactModal();
     }
   });
@@ -2365,7 +2380,6 @@ function setupEventListeners() {
 async function init() {
   try {
     const isAuthenticated = await checkAuthentication();
-    console.log('Authentication status:', isAuthenticated);
     
     if (isAuthenticated) {
       initializeColumnSelector();
@@ -2377,14 +2391,12 @@ async function init() {
         loadContacts()
       ]);
       
-      // Auto-start tour for new users
       if (!hasCompletedTour()) {
         setTimeout(() => {
           startTour();
         }, 1000);
       }
     } else {
-      console.log('Not authenticated, redirecting to login');
       redirectToLogin();
     }
   } catch (error) {
@@ -2393,12 +2405,11 @@ async function init() {
   }
 }
 
-// Security checks - session validation every 5 minutes
+// Security checks
 setInterval(async function() {
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
-      console.log('Session expired, redirecting to login');
       redirectToLogin();
     } else {
       authToken = session.access_token;
@@ -2408,7 +2419,6 @@ setInterval(async function() {
   }
 }, 300000);
 
-// Enhanced security - check on page visibility change
 document.addEventListener('visibilitychange', async function() {
   if (!document.hidden) {
     try {
@@ -2433,7 +2443,7 @@ window.showAddContactModal = showAddContactModal;
 window.closeAddContactModal = closeAddContactModal;
 window.editContact = editContact;
 window.deleteContact = deleteContact;
-window.sendEmail = sendEmail;
+window.sendEmailToContact = sendEmailToContact;
 window.startTour = startTour;
 window.expandFirstSelectedContact = expandFirstSelectedContact;
 
