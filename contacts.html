@@ -236,7 +236,7 @@
     /* Updated filter section to match media page design */
     .filter-section {
       display: grid;
-      grid-template-columns: 200px 200px 200px 200px 200px 200px 200px 200px auto auto;
+      grid-template-columns: 200px 200px 200px 200px 200px 200px auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
@@ -835,26 +835,6 @@
         <select id="tagsFilter">
           <option value="">All Tags</option>
         </select>
-      </div>
-      <div class="date-filter-group">
-        <div class="form-group">
-          <label for="lastEmailedFrom">Last Emailed From</label>
-          <input type="date" id="lastEmailedFrom">
-        </div>
-        <div class="form-group">
-          <label for="lastEmailedTo">To</label>
-          <input type="date" id="lastEmailedTo">
-        </div>
-      </div>
-      <div class="date-filter-group">
-        <div class="form-group">
-          <label for="lastRespondedFrom">Last Responded From</label>
-          <input type="date" id="lastRespondedFrom">
-        </div>
-        <div class="form-group">
-          <label for="lastRespondedTo">To</label>
-          <input type="date" id="lastRespondedTo">
-        </div>
       </div>
       <button id="refreshBtn">🔄 Refresh</button>
       <button id="clearFiltersBtn" class="secondary">Clear Filters</button>
@@ -2172,10 +2152,6 @@ function applyFilters() {
   const school = document.getElementById('schoolFilter').value;
   const workflow = document.getElementById('workflowFilter').value;
   const tags = document.getElementById('tagsFilter').value;
-  const lastEmailedFrom = document.getElementById('lastEmailedFrom').value;
-  const lastEmailedTo = document.getElementById('lastEmailedTo').value;
-  const lastRespondedFrom = document.getElementById('lastRespondedFrom').value;
-  const lastRespondedTo = document.getElementById('lastRespondedTo').value;
   
   filteredContacts = allContacts.filter(contact => {
     // Search filter
@@ -2244,23 +2220,6 @@ function applyFilters() {
       }
     }
 
-    // Date filters
-    if (lastEmailedFrom || lastEmailedTo) {
-      const emailDate = contact.last_emailed_date ? new Date(contact.last_emailed_date) : null;
-      if (!emailDate) return false;
-      
-      if (lastEmailedFrom && emailDate < new Date(lastEmailedFrom)) return false;
-      if (lastEmailedTo && emailDate > new Date(lastEmailedTo + 'T23:59:59')) return false;
-    }
-
-    if (lastRespondedFrom || lastRespondedTo) {
-      const respondDate = contact.last_responded ? new Date(contact.last_responded) : null;
-      if (!respondDate) return false;
-      
-      if (lastRespondedFrom && respondDate < new Date(lastRespondedFrom)) return false;
-      if (lastRespondedTo && respondDate > new Date(lastRespondedTo + 'T23:59:59')) return false;
-    }
-
     return true;
   });
 
@@ -2275,10 +2234,6 @@ function clearFilters() {
   document.getElementById('schoolFilter').value = '';
   document.getElementById('workflowFilter').value = '';
   document.getElementById('tagsFilter').value = '';
-  document.getElementById('lastEmailedFrom').value = '';
-  document.getElementById('lastEmailedTo').value = '';
-  document.getElementById('lastRespondedFrom').value = '';
-  document.getElementById('lastRespondedTo').value = '';
   applyFilters();
 }
 
