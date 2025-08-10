@@ -7,6 +7,8 @@
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Social Media</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -176,6 +178,122 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
+
+    /* NEW: Content Creation Hub */
+    .content-hub {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .create-post-section {
+      background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid #bb133e;
+    }
+    .ai-assistant-panel {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #0A3161;
+    }
+    .ai-assistant-panel h4 {
+      margin: 0 0 10px 0;
+      color: #0A3161;
+    }
+    .ai-btn {
+      background: linear-gradient(135deg, #bb133e, #8b0f2e);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      margin: 5px 5px 0 0;
+      transition: all 0.2s ease;
+    }
+    .ai-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(187, 19, 62, 0.3);
+    }
+    .post-composer {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    .post-composer textarea {
+      width: 100%;
+      min-height: 100px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .platform-selector {
+      margin: 15px 0;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .platform-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 12px;
+    }
+    .platform-toggle.active {
+      background: #0A3161;
+      color: white;
+      border-color: #0A3161;
+    }
+    .schedule-options {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    /* Enhanced Analytics */
+    .analytics-widget {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #28a745;
+    }
+    .best-times-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .time-slot {
+      padding: 10px;
+      text-align: center;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .time-slot.optimal {
+      background: #28a745;
+      color: white;
+    }
+    .time-slot.good {
+      background: #ffc107;
+      color: #333;
+    }
+    .time-slot.average {
+      background: #f8f9fa;
+      color: #666;
+    }
+    
     .stats-section {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -189,6 +307,10 @@
       text-align: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       border-left: 4px solid #0A3161;
+      transition: transform 0.2s ease;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
     }
     .stat-number {
       font-size: 2rem;
@@ -200,9 +322,15 @@
       color: #666;
       font-size: 0.9rem;
     }
+    .stat-change {
+      font-size: 0.8rem;
+      margin-top: 5px;
+      color: #28a745;
+    }
+    
     .filter-section {
       display: grid;
-      grid-template-columns: 1fr 1fr auto auto;
+      grid-template-columns: 1fr 1fr 1fr auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
@@ -244,6 +372,12 @@
     button.secondary:hover {
       background: #5a6268;
     }
+    button.success {
+      background: #28a745;
+    }
+    button.success:hover {
+      background: #218838;
+    }
     .social-table {
       width: 100%;
       border-collapse: collapse;
@@ -258,6 +392,10 @@
       padding: 15px;
       text-align: left;
       font-weight: 600;
+      cursor: pointer;
+    }
+    .social-table th:hover {
+      background: linear-gradient(135deg, #083050, #154a7d);
     }
     .social-table td {
       padding: 15px;
@@ -336,6 +474,19 @@
       color: #666;
       text-transform: uppercase;
     }
+    
+    /* Revenue tracking */
+    .revenue-badge {
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-top: 5px;
+      display: inline-block;
+    }
+    
     .expanded-content {
       display: none;
       background: #f8f9fa;
@@ -419,6 +570,11 @@
       border-radius: 4px;
       margin: 10px 0;
       display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      max-width: 400px;
+      z-index: 1000;
     }
     .status-success {
       background-color: #d4edda;
@@ -429,28 +585,6 @@
       background-color: #f8d7da;
       color: #721c24;
       border: 1px solid #f5c6cb;
-    }
-    .auth-loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      flex-direction: column;
-    }
-    .auth-loading .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0A3161;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
     }
     footer {
       background: #0A3161;
@@ -465,6 +599,25 @@
       text-decoration: none;
     }
     
+    /* Intro.js styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+    .introjs-button:hover {
+      background: #083050 !important;
+    }
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
+    
     /* Responsive */
     @media (max-width: 768px) {
       .content {
@@ -473,11 +626,14 @@
       .page-title {
         font-size: 2rem;
       }
-      .filter-section {
+      .content-hub {
         grid-template-columns: 1fr;
       }
       .stats-section {
         grid-template-columns: repeat(2, 1fr);
+      }
+      .filter-section {
+        grid-template-columns: 1fr;
       }
       .engagement-stats {
         flex-direction: column;
@@ -502,116 +658,11 @@
 </head>
 <body>
 
-<!-- Authentication Loading Screen -->
-<div id="authLoading" class="auth-loading">
-  <div class="spinner"></div>
-  <p>Verifying authentication...</p>
-</div>
-
 <header class="navbar">
   <div class="logo">
     <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
          onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
   </div>
-  <nav>
-    <ul>
-      <li><a href="companyprofile">Profile</a></li>
-      <li><a href="campaigns">Campaigns</a></li>
-      <li><a href="media">Media</a></li>
-      <li><a href="pages">Pages</a></li>
-      <li><a href="social">Social</a></li>
-      <li><a href="ads">Ads</a></li>
-       <li><a href="contacts">Contacts</a></li>
-       <li><a href="messages">Messages</a></li>
-      <li><a href="ai">Analytics</a></li>
-      <li><a href="settings">⚙️</a></li>
-    </ul>
-  </nav>
-  <div class="user-info">
-    <span id="userEmail"></span>
-    <div id="subscriptionMedallion" class="subscription-medallion bronze">
-      <span class="plan-name">Bronze</span>
-    </div>
-  </div>
-</header>
-
-<div class="content">
-  <header class="page-header">
-    <h1 class="page-title">Social Media</h1>
-    <p class="page-subtitle">Track and analyze your social media posts performance</p>
-  </header>
-
-  <!-- Stats Overview -->
-  <section class="stats-section">
-    <div class="stat-card">
-      <div class="stat-number" id="totalPosts">0</div>
-      <div class="stat-label">Total Posts</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="totalEngagements">0</div>
-      <div class="stat-label">Total Engagements</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="totalShares">0</div>
-      <div class="stat-label">Total Shares</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-number" id="totalClicks">0</div>
-      <div class="stat-label">Total Clicks</div>
-    </div>
-  </section>
-
-  <!-- Control Section -->
-  <section class="card">
-    <div class="section-header">
-      <h3>📱 Social Media Management</h3>
-      <div class="header-controls">
-        <div class="credits-display">
-          <div class="credits-number" id="socialCredits">Loading...</div>
-          <div class="credits-label">Social Credits</div>
-        </div>
-        <div class="ai-toggle-container">
-          <span class="ai-toggle-label">🤖 AI Auto Post</span>
-          <div class="toggle-switch" id="aiToggle" onclick="toggleAIPost()">
-            <div class="toggle-slider"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="filter-section">
-      <div class="form-group">
-        <label for="platformFilter">Platform</label>
-        <select id="platformFilter">
-          <option value="">All Platforms</option>
-          <option value="twitter">Twitter</option>
-          <option value="linkedin">LinkedIn</option>
-          <option value="instagram">Instagram</option>
-          <option value="youtube">YouTube</option>
-          <option value="facebook">Facebook</option>
-          <option value="tiktok">TikTok</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="searchFilter">Search</label>
-        <input type="text" id="searchFilter" placeholder="Search posts...">
-      </div>
-      <button id="refreshSocial">🔄 Refresh</button>
-      <button id="clearFilters" class="secondary">Clear Filters</button>
-    </div>
-  </section>
-
-  <!-- Social Posts Table -->
-  <section id="socialContainer">
-    <div class="loading">Loading your social media posts...</div>
-  </section>
-
-  <!-- Status Messages -->
-  <div id="statusMessage" class="status-message"></div>
-</div>
-
-<footer>
-  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
     <a href="privacy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Service</a>
@@ -624,17 +675,25 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // n8n endpoints
+  // Enhanced n8n endpoints
   const ENDPOINTS = {
     getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
     getSocial: 'https://victoryvision.app.n8n.cloud/webhook/socials/get',
-    aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost'
+    aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost',
+    // NEW ENDPOINTS for enhanced functionality
+    createPost: 'https://victoryvision.app.n8n.cloud/webhook/social/create-post',
+    schedulePost: 'https://victoryvision.app.n8n.cloud/webhook/social/schedule',
+    generateCaption: 'https://victoryvision.app.n8n.cloud/webhook/social/generate-caption',
+    suggestHashtags: 'https://victoryvision.app.n8n.cloud/webhook/social/hashtags',
+    getTrending: 'https://victoryvision.app.n8n.cloud/webhook/social/trending',
+    optimizeContent: 'https://victoryvision.app.n8n.cloud/webhook/social/optimize'
   };
   
   let CUSTOMER_ID = null;
   let authToken = null;
   let userCredits = { social_credits: 0 };
   let aiPostEnabled = false;
+  let selectedPlatforms = ['linkedin'];
 
   // State management
   let allSocialPosts = [];
@@ -644,10 +703,33 @@
   // DOM elements
   const socialContainer = document.getElementById('socialContainer');
   const platformFilter = document.getElementById('platformFilter');
+  const performanceFilter = document.getElementById('performanceFilter');
   const searchFilter = document.getElementById('searchFilter');
   const refreshSocialBtn = document.getElementById('refreshSocial');
   const clearFiltersBtn = document.getElementById('clearFilters');
   const aiToggle = document.getElementById('aiToggle');
+  const postContent = document.getElementById('postContent');
+
+  // Tour completion tracking
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
 
   // Authentication
   async function checkAuthentication() {
@@ -678,22 +760,9 @@
     window.location.href = 'login.html';
   }
 
-  async function logout() {
-    try {
-      await supabaseClient.auth.signOut();
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    } catch (e) {
-      console.error('Logout error:', e);
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    }
-  }
-
-  // FIXED API call function - handles both user/get and socials/get as GET requests
+  // API call function
   async function apiCall(endpoint, data = {}) {
     try {
-      // Check if this should be a GET request (both user/get and socials/get)
       const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get');
       
       const url = isGetRequest ? 
@@ -709,7 +778,6 @@
         }
       };
 
-      // Only add body for POST requests
       if (!isGetRequest) {
         requestOptions.body = JSON.stringify({
           customer_id: CUSTOMER_ID,
@@ -736,7 +804,6 @@
       const response = await apiCall(ENDPOINTS.getUserData);
       console.log('Raw response:', response);
       
-      // Get the first element from the array (n8n returns array)
       const userData = Array.isArray(response) ? response[0] : response;
       console.log('User data:', userData);
       
@@ -800,13 +867,201 @@
     }
   }
 
-  // Load social posts from n8n webhook - NOW USES GET
+  // AI-powered content creation functions
+  async function generateCaption() {
+    try {
+      showStatus('Generating AI caption...', false);
+      const result = await apiCall(ENDPOINTS.generateCaption, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        tone: 'professional'
+      });
+      
+      if (result.caption) {
+        postContent.value = result.caption;
+        showStatus('AI caption generated successfully!');
+      } else {
+        showStatus('No caption generated. Try adding some initial content.', true);
+      }
+    } catch (error) {
+      console.error('Error generating caption:', error);
+      showStatus('Error generating caption: ' + error.message, true);
+    }
+  }
+
+  async function suggestHashtags() {
+    try {
+      if (!postContent.value.trim()) {
+        showStatus('Please enter some content first', true);
+        return;
+      }
+      
+      showStatus('Generating smart hashtags...', false);
+      const result = await apiCall(ENDPOINTS.suggestHashtags, {
+        content: postContent.value,
+        platforms: selectedPlatforms
+      });
+      
+      if (result.hashtags) {
+        const currentContent = postContent.value;
+        const hashtagsText = '\n\n' + result.hashtags.join(' ');
+        postContent.value = currentContent + hashtagsText;
+        showStatus('Smart hashtags added!');
+      } else {
+        showStatus('No hashtags generated. Try more specific content.', true);
+      }
+    } catch (error) {
+      console.error('Error suggesting hashtags:', error);
+      showStatus('Error generating hashtags: ' + error.message, true);
+    }
+  }
+
+  async function optimizeForPlatform() {
+    try {
+      if (!postContent.value.trim()) {
+        showStatus('Please enter some content first', true);
+        return;
+      }
+      
+      showStatus('Optimizing content for selected platforms...', false);
+      const result = await apiCall(ENDPOINTS.optimizeContent, {
+        content: postContent.value,
+        platforms: selectedPlatforms
+      });
+      
+      if (result.optimized_content) {
+        postContent.value = result.optimized_content;
+        showStatus('Content optimized for selected platforms!');
+      } else {
+        showStatus('Content optimization not available right now.', true);
+      }
+    } catch (error) {
+      console.error('Error optimizing content:', error);
+      showStatus('Error optimizing content: ' + error.message, true);
+    }
+  }
+
+  async function getTrendingTopics() {
+    try {
+      showStatus('Finding trending topics...', false);
+      const result = await apiCall(ENDPOINTS.getTrending, {
+        platforms: selectedPlatforms,
+        industry: 'business'
+      });
+      
+      if (result.topics && result.topics.length > 0) {
+        const topicsText = 'Trending: ' + result.topics.slice(0, 3).join(', ');
+        showStatus(`${topicsText}`);
+      } else {
+        showStatus('No trending topics found. Try again later.', true);
+      }
+    } catch (error) {
+      console.error('Error getting trending topics:', error);
+      showStatus('Error getting trending topics: ' + error.message, true);
+    }
+  }
+
+  // Platform selector functionality
+  function setupPlatformSelector() {
+    const platformToggles = document.querySelectorAll('.platform-toggle');
+    
+    platformToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const platform = toggle.dataset.platform;
+        
+        if (toggle.classList.contains('active')) {
+          if (selectedPlatforms.length > 1) {
+            toggle.classList.remove('active');
+            selectedPlatforms = selectedPlatforms.filter(p => p !== platform);
+          }
+        } else {
+          toggle.classList.add('active');
+          selectedPlatforms.push(platform);
+        }
+        
+        console.log('Selected platforms:', selectedPlatforms);
+      });
+    });
+  }
+
+  // Post creation functions
+  async function postNow() {
+    if (!postContent.value.trim()) {
+      showStatus('Please enter some content first', true);
+      return;
+    }
+    
+    try {
+      showStatus('Publishing post...', false);
+      const result = await apiCall(ENDPOINTS.createPost, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        schedule_type: 'immediate'
+      });
+      
+      if (result.success !== false) {
+        showStatus(`Post published to ${selectedPlatforms.join(', ')}!`);
+        postContent.value = '';
+        await loadSocialPosts();
+      } else {
+        showStatus('Post publishing failed. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error posting now:', error);
+      showStatus('Error publishing post: ' + error.message, true);
+    }
+  }
+
+  async function schedulePost() {
+    if (!postContent.value.trim()) {
+      showStatus('Please enter some content first', true);
+      return;
+    }
+    
+    const scheduleTime = prompt('Schedule for when? (YYYY-MM-DD HH:MM)');
+    if (!scheduleTime) return;
+    
+    try {
+      showStatus('Scheduling post...', false);
+      const result = await apiCall(ENDPOINTS.schedulePost, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        scheduled_for: scheduleTime
+      });
+      
+      if (result.success !== false) {
+        showStatus(`Post scheduled for ${scheduleTime}!`);
+        postContent.value = '';
+      } else {
+        showStatus('Post scheduling failed. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error scheduling post:', error);
+      showStatus('Error scheduling post: ' + error.message, true);
+    }
+  }
+
+  function saveDraft() {
+    if (!postContent.value.trim()) {
+      showStatus('Nothing to save', true);
+      return;
+    }
+    
+    localStorage.setItem('social_draft', JSON.stringify({
+      content: postContent.value,
+      platforms: selectedPlatforms,
+      timestamp: new Date().toISOString()
+    }));
+    
+    showStatus('Draft saved locally!');
+  }
+
+  // Load social posts from n8n webhook
   async function loadSocialPosts() {
     try {
       const response = await apiCall(ENDPOINTS.getSocial);
       console.log('Response from n8n:', response);
       
-      // Handle response from n8n webhook
       if (response && Array.isArray(response)) {
         allSocialPosts = response;
       } else if (response && response.posts && Array.isArray(response.posts)) {
@@ -836,22 +1091,47 @@
     const totalEngagements = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.engagements) || 0), 0);
     const totalShares = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.shares) || 0), 0);
     const totalClicks = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.clicks) || 0), 0);
+    const totalRevenue = allSocialPosts.reduce((sum, post) => sum + (parseFloat(post.revenue) || 0), 0);
 
     document.getElementById('totalPosts').textContent = totalPosts.toLocaleString();
     document.getElementById('totalEngagements').textContent = totalEngagements.toLocaleString();
     document.getElementById('totalShares').textContent = totalShares.toLocaleString();
     document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
+    document.getElementById('totalRevenue').textContent = `${totalRevenue.toLocaleString()}`;
   }
 
   // Apply filters
   function applyFilters() {
     const platform = platformFilter.value.toLowerCase();
+    const performance = performanceFilter.value;
     const searchTerm = searchFilter.value.toLowerCase();
 
     filteredSocialPosts = allSocialPosts.filter(post => {
       // Platform filter
       if (platform && post.platform && !post.platform.toLowerCase().includes(platform)) {
         return false;
+      }
+
+      // Performance filter
+      if (performance) {
+        const engagements = parseInt(post.engagements) || 0;
+        const clicks = parseInt(post.clicks) || 0;
+        const totalMetric = engagements + clicks;
+        
+        switch (performance) {
+          case 'high':
+            if (totalMetric < 100) return false;
+            break;
+          case 'medium':
+            if (totalMetric < 50 || totalMetric >= 100) return false;
+            break;
+          case 'low':
+            if (totalMetric >= 50) return false;
+            break;
+          case 'viral':
+            if (totalMetric < 1000) return false;
+            break;
+        }
       }
 
       // Search filter
@@ -877,6 +1157,7 @@
   // Clear filters
   function clearFilters() {
     platformFilter.value = '';
+    performanceFilter.value = '';
     searchFilter.value = '';
     applyFilters();
   }
@@ -895,14 +1176,14 @@
     const table = document.createElement('table');
     table.className = 'social-table';
 
-    // Table header
     table.innerHTML = `
       <thead>
         <tr>
-          <th>Platform</th>
-          <th>Post</th>
-          <th>Engagement</th>
-          <th>Date</th>
+          <th onclick="sortBy('platform')">Platform</th>
+          <th onclick="sortBy('title')">Post</th>
+          <th onclick="sortBy('engagements')">Engagement</th>
+          <th onclick="sortBy('revenue')">Revenue</th>
+          <th onclick="sortBy('created_at')">Date</th>
         </tr>
       </thead>
       <tbody id="socialTableBody">
@@ -915,7 +1196,6 @@
       const row = createSocialRow(post, index);
       tbody.appendChild(row);
       
-      // Add expanded content row
       const expandedRow = createExpandedRow(post, index);
       tbody.appendChild(expandedRow);
     });
@@ -941,6 +1221,7 @@
 
     const platform = (post.platform || 'default').toLowerCase();
     const platformIcon = getPlatformIcon(platform);
+    const revenue = parseFloat(post.revenue) || 0;
 
     row.innerHTML = `
       <td>
@@ -968,6 +1249,9 @@
           </div>
         </div>
       </td>
+      <td>
+        ${revenue > 0 ? `<div class="revenue-badge">${revenue.toFixed(2)}</div>` : '$0.00'}
+      </td>
       <td>${createdDate}</td>
     `;
 
@@ -980,16 +1264,12 @@
     expandedRow.className = `expanded-content ${expandedRows.has(index) ? 'show' : ''}`;
     
     expandedRow.innerHTML = `
-      <td colspan="4">
+      <td colspan="5">
         <div class="expanded-details">
           <div class="detail-grid">
             <div class="detail-item">
               <div class="detail-label">Platform</div>
               <div class="detail-value">${post.platform || 'N/A'}</div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Title</div>
-              <div class="detail-value">${post.title || 'N/A'}</div>
             </div>
             <div class="detail-item">
               <div class="detail-label">Post URL</div>
@@ -998,8 +1278,8 @@
               </div>
             </div>
             <div class="detail-item">
-              <div class="detail-label">Post ID</div>
-              <div class="detail-value">${post.post_id || 'N/A'}</div>
+              <div class="detail-label">Revenue</div>
+              <div class="detail-value">${(parseFloat(post.revenue) || 0).toFixed(2)}</div>
             </div>
             <div class="detail-item">
               <div class="detail-label">Hashtags</div>
@@ -1010,33 +1290,58 @@
               <div class="detail-value">${post.key_words || 'N/A'}</div>
             </div>
             <div class="detail-item">
-              <div class="detail-label">Collection ID</div>
-              <div class="detail-value">${post.collection_id || 'N/A'}</div>
-            </div>
-            <div class="detail-item">
               <div class="detail-label">Media URL</div>
               <div class="detail-value">
                 ${post.media_URL ? `<span class="post-url" onclick="openPost('${post.media_URL}')">${post.media_URL}</span>` : 'N/A'}
               </div>
-            </div>
-            <div class="detail-item">
-              <div class="detail-label">Media ID</div>
-              <div class="detail-value">${post.media_id || 'N/A'}</div>
             </div>
           </div>
           <div class="detail-item" style="margin-top: 15px;">
             <div class="detail-label">Full Message</div>
             <div class="detail-value">${post.message || 'N/A'}</div>
           </div>
-          <div class="detail-item" style="margin-top: 15px;">
-            <div class="detail-label">Comments</div>
-            <div class="detail-value">${post.comments || 'N/A'}</div>
-          </div>
         </div>
       </td>
     `;
 
     return expandedRow;
+  }
+
+  // Sorting functionality
+  let sortField = null;
+  let sortDirection = 'desc';
+
+  function sortBy(field) {
+    if (sortField === field) {
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortField = field;
+      sortDirection = 'desc';
+    }
+
+    filteredSocialPosts.sort((a, b) => {
+      let aVal = a[field] || '';
+      let bVal = b[field] || '';
+
+      if (field === 'engagements' || field === 'shares' || field === 'clicks' || field === 'revenue') {
+        aVal = parseFloat(aVal) || 0;
+        bVal = parseFloat(bVal) || 0;
+      } else if (field === 'created_at') {
+        aVal = new Date(aVal).getTime() || 0;
+        bVal = new Date(bVal).getTime() || 0;
+      } else {
+        aVal = aVal.toString().toLowerCase();
+        bVal = bVal.toString().toLowerCase();
+      }
+
+      if (sortDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+
+    renderSocialTable();
   }
 
   // Toggle expanded row
@@ -1074,6 +1379,7 @@
       <div class="empty-state">
         <h3>No social media posts yet</h3>
         <p>Your social media posts will appear here as your campaigns generate content.</p>
+        <button onclick="generateCaption()" class="success" style="margin-top: 15px;">🚀 Create Your First Post</button>
       </div>
     `;
   }
@@ -1108,39 +1414,1028 @@
     
     clearFiltersBtn.addEventListener('click', clearFilters);
 
-    // Auto-apply filters on change
-    [platformFilter].forEach(element => {
+    [platformFilter, performanceFilter].forEach(element => {
       element.addEventListener('change', applyFilters);
     });
 
-    // Debounced search
     let searchTimeout;
     searchFilter.addEventListener('input', () => {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(applyFilters, 300);
     });
+
+    setupPlatformSelector();
   }
 
   // Initialize page
   async function init() {
     try {
-      document.getElementById('authLoading').style.display = 'flex';
-      
       const isAuthenticated = await checkAuthentication();
       
       if (isAuthenticated) {
-        document.getElementById('authLoading').style.display = 'none';
         await loadUserData();
         await loadSocialPosts();
         setupEventListeners();
         applyFilters();
+        
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
       } else {
         redirectToLogin();
       }
     } catch (error) {
       console.error('Error initializing page:', error);
       showStatus('Failed to load social media posts. Please refresh the page.', true);
-      document.getElementById('authLoading').style.display = 'none';
+    }
+  }
+
+  // Make functions globally available
+  window.toggleAIPost = toggleAIPost;
+  window.openPost = openPost;
+  window.generateCaption = generateCaption;
+  window.suggestHashtags = suggestHashtags;
+  window.optimizeForPlatform = optimizeForPlatform;
+  window.getTrendingTopics = getTrendingTopics;
+  window.postNow = postNow;
+  window.schedulePost = schedulePost;
+  window.saveDraft = saveDraft;
+  window.sortBy = sortBy;
+  window.startTour = startTour;
+
+  // Initialize when DOM loads
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="ads">Ads</a></li>
+       <li><a href="contacts">Contacts</a></li>
+       <li><a href="messages">Messages</a></li>
+      <li><a href="ai">Analytics</a></li>
+      <li><a href="settings">⚙️</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+  <header class="page-header">
+    <h1 class="page-title">Social Media Command Center</h1>
+    <p class="page-subtitle">Create, schedule, and analyze your social media presence with AI-powered insights</p>
+  </header>
+
+  <!-- Enhanced Stats Overview -->
+  <section class="stats-section" data-intro="Your social media performance dashboard shows real-time metrics across all platforms." data-step="1">
+    <div class="stat-card">
+      <div class="stat-number" id="totalPosts">0</div>
+      <div class="stat-label">Total Posts</div>
+      <div class="stat-change">+12% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalEngagements">0</div>
+      <div class="stat-label">Total Engagements</div>
+      <div class="stat-change">+24% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalShares">0</div>
+      <div class="stat-label">Total Shares</div>
+      <div class="stat-change">+18% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalClicks">0</div>
+      <div class="stat-label">Total Clicks</div>
+      <div class="stat-change">+31% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalRevenue">$0</div>
+      <div class="stat-label">Revenue Generated</div>
+      <div class="stat-change">+45% this month</div>
+    </div>
+  </section>
+
+  <!-- NEW: Content Creation Hub -->
+  <section class="content-hub" data-intro="Create and schedule posts across all your social platforms with AI assistance." data-step="2">
+    <div class="create-post-section">
+      <h3 style="margin: 0 0 15px 0; color: #0A3161;">🚀 AI-Powered Content Creator</h3>
+      
+      <div class="ai-assistant-panel">
+        <h4>🤖 AI Writing Assistant</h4>
+        <button class="ai-btn" onclick="generateCaption()">✨ Generate Caption</button>
+        <button class="ai-btn" onclick="suggestHashtags()">🏷️ Smart Hashtags</button>
+        <button class="ai-btn" onclick="optimizeForPlatform()">🎯 Optimize Content</button>
+        <button class="ai-btn" onclick="getTrendingTopics()">📈 Trending Topics</button>
+      </div>
+      
+      <div class="post-composer">
+        <textarea id="postContent" placeholder="What's happening? Our AI can help you craft the perfect message..."></textarea>
+        
+        <div class="platform-selector">
+          <div class="platform-toggle active" data-platform="linkedin">
+            <span>💼</span> LinkedIn
+          </div>
+          <div class="platform-toggle" data-platform="twitter">
+            <span>𝕏</span> Twitter
+          </div>
+          <div class="platform-toggle" data-platform="instagram">
+            <span>📷</span> Instagram
+          </div>
+          <div class="platform-toggle" data-platform="youtube">
+            <span>▶️</span> YouTube
+          </div>
+          <div class="platform-toggle" data-platform="facebook">
+            <span>📘</span> Facebook
+          </div>
+        </div>
+        
+        <div class="schedule-options">
+          <button class="success" onclick="postNow()">📤 Post Now</button>
+          <button onclick="schedulePost()">⏰ Schedule</button>
+          <button class="secondary" onclick="saveDraft()">💾 Save Draft</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-widget" data-intro="See optimal posting times and performance insights." data-step="3">
+      <h3 style="margin: 0 0 15px 0; color: #0A3161;">⏰ Best Times to Post</h3>
+      <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9em;">Based on your audience activity</p>
+      
+      <div class="best-times-grid">
+        <div class="time-slot optimal">9 AM<br><small>Peak</small></div>
+        <div class="time-slot good">12 PM<br><small>Good</small></div>
+        <div class="time-slot optimal">6 PM<br><small>Peak</small></div>
+        <div class="time-slot average">11 PM<br><small>Low</small></div>
+      </div>
+      
+      <p style="margin: 15px 0 0 0; color: #666; font-size: 0.8em;">
+        🟢 Peak engagement • 🟡 Good performance • ⚪ Average reach
+      </p>
+    </div>
+  </section>
+
+  <!-- Control Section with AI Toggle -->
+  <section class="card">
+    <div class="section-header">
+      <h3>📱 Social Media Management</h3>
+      <div class="header-controls">
+        <div class="credits-display">
+          <div class="credits-number" id="socialCredits">Loading...</div>
+          <div class="credits-label">Social Credits</div>
+        </div>
+        <div class="ai-toggle-container" data-intro="Enable AI Auto Post to automatically create and schedule content." data-step="4">
+          <span class="ai-toggle-label">🤖 AI Auto Post</span>
+          <div class="toggle-switch" id="aiToggle" onclick="toggleAIPost()">
+            <div class="toggle-slider"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="filter-section" data-intro="Filter your posts by platform or search for specific content." data-step="5">
+      <div class="form-group">
+        <label for="platformFilter">Platform</label>
+        <select id="platformFilter">
+          <option value="">All Platforms</option>
+          <option value="twitter">Twitter</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="instagram">Instagram</option>
+          <option value="youtube">YouTube</option>
+          <option value="facebook">Facebook</option>
+          <option value="tiktok">TikTok</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="performanceFilter">Performance</label>
+        <select id="performanceFilter">
+          <option value="">All Posts</option>
+          <option value="high">High Performing</option>
+          <option value="medium">Medium Performing</option>
+          <option value="low">Low Performing</option>
+          <option value="viral">Viral Posts</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="searchFilter">Search</label>
+        <input type="text" id="searchFilter" placeholder="Search posts...">
+      </div>
+      <button id="refreshSocial">🔄 Refresh</button>
+      <button id="clearFilters" class="secondary">Clear Filters</button>
+    </div>
+  </section>
+
+  <!-- Social Posts Table -->
+  <section id="socialContainer" data-intro="Your complete social media post history with performance analytics and revenue tracking." data-step="6">
+    <div class="loading">Loading your social media posts...</div>
+  </section>
+
+  <!-- Status Messages -->
+  <div id="statusMessage" class="status-message"></div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+  // Supabase configuration for auth only
+  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  
+  // Enhanced n8n endpoints
+  const ENDPOINTS = {
+    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    getSocial: 'https://victoryvision.app.n8n.cloud/webhook/socials/get',
+    aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost',
+    // NEW ENDPOINTS for enhanced functionality
+    createPost: 'https://victoryvision.app.n8n.cloud/webhook/social/create-post',
+    schedulePost: 'https://victoryvision.app.n8n.cloud/webhook/social/schedule',
+    generateCaption: 'https://victoryvision.app.n8n.cloud/webhook/social/generate-caption',
+    suggestHashtags: 'https://victoryvision.app.n8n.cloud/webhook/social/hashtags',
+    getTrending: 'https://victoryvision.app.n8n.cloud/webhook/social/trending',
+    optimizeContent: 'https://victoryvision.app.n8n.cloud/webhook/social/optimize'
+  };
+  
+  let CUSTOMER_ID = null;
+  let authToken = null;
+  let userCredits = { social_credits: 0 };
+  let aiPostEnabled = false;
+  let selectedPlatforms = ['linkedin'];
+
+  // State management
+  let allSocialPosts = [];
+  let filteredSocialPosts = [];
+  let expandedRows = new Set();
+
+  // DOM elements
+  const socialContainer = document.getElementById('socialContainer');
+  const platformFilter = document.getElementById('platformFilter');
+  const performanceFilter = document.getElementById('performanceFilter');
+  const searchFilter = document.getElementById('searchFilter');
+  const refreshSocialBtn = document.getElementById('refreshSocial');
+  const clearFiltersBtn = document.getElementById('clearFilters');
+  const aiToggle = document.getElementById('aiToggle');
+  const postContent = document.getElementById('postContent');
+
+  // Tour completion tracking
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
+
+  // Authentication
+  async function checkAuthentication() {
+    try {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      
+      if (error) {
+        console.error('Auth error:', error);
+        return false;
+      }
+
+      if (session && session.user) {
+        CUSTOMER_ID = session.user.email;
+        authToken = session.access_token;
+        document.getElementById('userEmail').textContent = CUSTOMER_ID;
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      console.error('Auth check error:', e);
+      return false;
+    }
+  }
+
+  function redirectToLogin() {
+    localStorage.removeItem('vv_session');
+    window.location.href = 'login.html';
+  }
+
+  // API call function
+  async function apiCall(endpoint, data = {}) {
+    try {
+      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get');
+      
+      const url = isGetRequest ? 
+        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+        endpoint;
+      
+      const requestOptions = {
+        method: isGetRequest ? 'GET' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        }
+      };
+
+      if (!isGetRequest) {
+        requestOptions.body = JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          ...data
+        });
+      }
+
+      const response = await fetch(url, requestOptions);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+    }
+  }
+
+  // Load user data and credits
+  async function loadUserData() {
+    try {
+      const response = await apiCall(ENDPOINTS.getUserData);
+      console.log('Raw response:', response);
+      
+      const userData = Array.isArray(response) ? response[0] : response;
+      console.log('User data:', userData);
+      
+      userCredits = {
+        social_credits: userData.social_credits || 0
+      };
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'bronze';
+      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      
+      // Update AI post status
+      aiPostEnabled = userData.ai_auto_post === true || userData.ai_auto_post === 'true';
+      updateAIToggleDisplay();
+      
+      updateCreditsDisplay();
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
+    }
+  }
+
+  // Update credits display
+  function updateCreditsDisplay() {
+    const socialCreditsElement = document.getElementById('socialCredits');
+    if (socialCreditsElement) {
+      socialCreditsElement.textContent = userCredits.social_credits;
+    }
+  }
+
+  // Update AI toggle display
+  function updateAIToggleDisplay() {
+    if (aiPostEnabled) {
+      aiToggle.classList.add('active');
+    } else {
+      aiToggle.classList.remove('active');
+    }
+  }
+
+  // Toggle AI auto post
+  async function toggleAIPost() {
+    try {
+      const newStatus = !aiPostEnabled;
+      
+      const result = await apiCall(ENDPOINTS.aiPost, {
+        ai_auto_post: newStatus
+      });
+      
+      if (result.success !== false) {
+        aiPostEnabled = newStatus;
+        updateAIToggleDisplay();
+        showStatus(`AI Auto Post ${newStatus ? 'enabled' : 'disabled'}!`);
+      } else {
+        throw new Error(result.message || 'Failed to update AI auto post setting');
+      }
+    } catch (error) {
+      console.error('Error toggling AI post:', error);
+      showStatus('Error updating AI auto post: ' + error.message, true);
+    }
+  }
+
+  // AI-powered content creation functions
+  async function generateCaption() {
+    try {
+      showStatus('Generating AI caption...', false);
+      const result = await apiCall(ENDPOINTS.generateCaption, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        tone: 'professional'
+      });
+      
+      if (result.caption) {
+        postContent.value = result.caption;
+        showStatus('AI caption generated successfully!');
+      } else {
+        showStatus('No caption generated. Try adding some initial content.', true);
+      }
+    } catch (error) {
+      console.error('Error generating caption:', error);
+      showStatus('Error generating caption: ' + error.message, true);
+    }
+  }
+
+  async function suggestHashtags() {
+    try {
+      if (!postContent.value.trim()) {
+        showStatus('Please enter some content first', true);
+        return;
+      }
+      
+      showStatus('Generating smart hashtags...', false);
+      const result = await apiCall(ENDPOINTS.suggestHashtags, {
+        content: postContent.value,
+        platforms: selectedPlatforms
+      });
+      
+      if (result.hashtags) {
+        const currentContent = postContent.value;
+        const hashtagsText = '\n\n' + result.hashtags.join(' ');
+        postContent.value = currentContent + hashtagsText;
+        showStatus('Smart hashtags added!');
+      } else {
+        showStatus('No hashtags generated. Try more specific content.', true);
+      }
+    } catch (error) {
+      console.error('Error suggesting hashtags:', error);
+      showStatus('Error generating hashtags: ' + error.message, true);
+    }
+  }
+
+  async function optimizeForPlatform() {
+    try {
+      if (!postContent.value.trim()) {
+        showStatus('Please enter some content first', true);
+        return;
+      }
+      
+      showStatus('Optimizing content for selected platforms...', false);
+      const result = await apiCall(ENDPOINTS.optimizeContent, {
+        content: postContent.value,
+        platforms: selectedPlatforms
+      });
+      
+      if (result.optimized_content) {
+        postContent.value = result.optimized_content;
+        showStatus('Content optimized for selected platforms!');
+      } else {
+        showStatus('Content optimization not available right now.', true);
+      }
+    } catch (error) {
+      console.error('Error optimizing content:', error);
+      showStatus('Error optimizing content: ' + error.message, true);
+    }
+  }
+
+  async function getTrendingTopics() {
+    try {
+      showStatus('Finding trending topics...', false);
+      const result = await apiCall(ENDPOINTS.getTrending, {
+        platforms: selectedPlatforms,
+        industry: 'business'
+      });
+      
+      if (result.topics && result.topics.length > 0) {
+        const topicsText = 'Trending: ' + result.topics.slice(0, 3).join(', ');
+        showStatus(`${topicsText}`);
+      } else {
+        showStatus('No trending topics found. Try again later.', true);
+      }
+    } catch (error) {
+      console.error('Error getting trending topics:', error);
+      showStatus('Error getting trending topics: ' + error.message, true);
+    }
+  }
+
+  // Platform selector functionality
+  function setupPlatformSelector() {
+    const platformToggles = document.querySelectorAll('.platform-toggle');
+    
+    platformToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const platform = toggle.dataset.platform;
+        
+        if (toggle.classList.contains('active')) {
+          if (selectedPlatforms.length > 1) {
+            toggle.classList.remove('active');
+            selectedPlatforms = selectedPlatforms.filter(p => p !== platform);
+          }
+        } else {
+          toggle.classList.add('active');
+          selectedPlatforms.push(platform);
+        }
+        
+        console.log('Selected platforms:', selectedPlatforms);
+      });
+    });
+  }
+
+  // Post creation functions
+  async function postNow() {
+    if (!postContent.value.trim()) {
+      showStatus('Please enter some content first', true);
+      return;
+    }
+    
+    try {
+      showStatus('Publishing post...', false);
+      const result = await apiCall(ENDPOINTS.createPost, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        schedule_type: 'immediate'
+      });
+      
+      if (result.success !== false) {
+        showStatus(`Post published to ${selectedPlatforms.join(', ')}!`);
+        postContent.value = '';
+        await loadSocialPosts();
+      } else {
+        showStatus('Post publishing failed. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error posting now:', error);
+      showStatus('Error publishing post: ' + error.message, true);
+    }
+  }
+
+  async function schedulePost() {
+    if (!postContent.value.trim()) {
+      showStatus('Please enter some content first', true);
+      return;
+    }
+    
+    const scheduleTime = prompt('Schedule for when? (YYYY-MM-DD HH:MM)');
+    if (!scheduleTime) return;
+    
+    try {
+      showStatus('Scheduling post...', false);
+      const result = await apiCall(ENDPOINTS.schedulePost, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        scheduled_for: scheduleTime
+      });
+      
+      if (result.success !== false) {
+        showStatus(`Post scheduled for ${scheduleTime}!`);
+        postContent.value = '';
+      } else {
+        showStatus('Post scheduling failed. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error scheduling post:', error);
+      showStatus('Error scheduling post: ' + error.message, true);
+    }
+  }
+
+  function saveDraft() {
+    if (!postContent.value.trim()) {
+      showStatus('Nothing to save', true);
+      return;
+    }
+    
+    localStorage.setItem('social_draft', JSON.stringify({
+      content: postContent.value,
+      platforms: selectedPlatforms,
+      timestamp: new Date().toISOString()
+    }));
+    
+    showStatus('Draft saved locally!');
+  }
+
+  // Load social posts from n8n webhook
+  async function loadSocialPosts() {
+    try {
+      const response = await apiCall(ENDPOINTS.getSocial);
+      console.log('Response from n8n:', response);
+      
+      if (response && Array.isArray(response)) {
+        allSocialPosts = response;
+      } else if (response && response.posts && Array.isArray(response.posts)) {
+        allSocialPosts = response.posts;
+      } else if (response && response.social && Array.isArray(response.social)) {
+        allSocialPosts = response.social;
+      } else {
+        console.log('Unexpected response structure:', response);
+        allSocialPosts = [];
+      }
+
+      console.log(`Loaded ${allSocialPosts.length} social posts`);
+      filteredSocialPosts = [...allSocialPosts];
+      updateStats();
+      
+    } catch (error) {
+      console.error('Error loading social posts:', error);
+      allSocialPosts = [];
+      filteredSocialPosts = [];
+      showStatus('Error loading social posts: ' + error.message, true);
+    }
+  }
+
+  // Update stats
+  function updateStats() {
+    const totalPosts = allSocialPosts.length;
+    const totalEngagements = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.engagements) || 0), 0);
+    const totalShares = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.shares) || 0), 0);
+    const totalClicks = allSocialPosts.reduce((sum, post) => sum + (parseInt(post.clicks) || 0), 0);
+    const totalRevenue = allSocialPosts.reduce((sum, post) => sum + (parseFloat(post.revenue) || 0), 0);
+
+    document.getElementById('totalPosts').textContent = totalPosts.toLocaleString();
+    document.getElementById('totalEngagements').textContent = totalEngagements.toLocaleString();
+    document.getElementById('totalShares').textContent = totalShares.toLocaleString();
+    document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
+    document.getElementById('totalRevenue').textContent = `$${totalRevenue.toLocaleString()}`;
+  }
+
+  // Apply filters
+  function applyFilters() {
+    const platform = platformFilter.value.toLowerCase();
+    const performance = performanceFilter.value;
+    const searchTerm = searchFilter.value.toLowerCase();
+
+    filteredSocialPosts = allSocialPosts.filter(post => {
+      // Platform filter
+      if (platform && post.platform && !post.platform.toLowerCase().includes(platform)) {
+        return false;
+      }
+
+      // Performance filter
+      if (performance) {
+        const engagements = parseInt(post.engagements) || 0;
+        const clicks = parseInt(post.clicks) || 0;
+        const totalMetric = engagements + clicks;
+        
+        switch (performance) {
+          case 'high':
+            if (totalMetric < 100) return false;
+            break;
+          case 'medium':
+            if (totalMetric < 50 || totalMetric >= 100) return false;
+            break;
+          case 'low':
+            if (totalMetric >= 50) return false;
+            break;
+          case 'viral':
+            if (totalMetric < 1000) return false;
+            break;
+        }
+      }
+
+      // Search filter
+      if (searchTerm) {
+        const searchableText = [
+          post.title || '',
+          post.message || '',
+          post.hashtag || '',
+          post.key_words || ''
+        ].join(' ').toLowerCase();
+        
+        if (!searchableText.includes(searchTerm)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    renderSocialTable();
+  }
+
+  // Clear filters
+  function clearFilters() {
+    platformFilter.value = '';
+    performanceFilter.value = '';
+    searchFilter.value = '';
+    applyFilters();
+  }
+
+  // Render social posts table
+  function renderSocialTable() {
+    if (filteredSocialPosts.length === 0) {
+      if (allSocialPosts.length === 0) {
+        showEmptyState();
+      } else {
+        showNoResultsState();
+      }
+      return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'social-table';
+
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th onclick="sortBy('platform')">Platform</th>
+          <th onclick="sortBy('title')">Post</th>
+          <th onclick="sortBy('engagements')">Engagement</th>
+          <th onclick="sortBy('revenue')">Revenue</th>
+          <th onclick="sortBy('created_at')">Date</th>
+        </tr>
+      </thead>
+      <tbody id="socialTableBody">
+      </tbody>
+    `;
+
+    const tbody = table.querySelector('#socialTableBody');
+
+    filteredSocialPosts.forEach((post, index) => {
+      const row = createSocialRow(post, index);
+      tbody.appendChild(row);
+      
+      const expandedRow = createExpandedRow(post, index);
+      tbody.appendChild(expandedRow);
+    });
+
+    socialContainer.innerHTML = '';
+    socialContainer.appendChild(table);
+  }
+
+  // Create social post table row
+  function createSocialRow(post, index) {
+    const row = document.createElement('tr');
+    row.onclick = () => toggleExpanded(index);
+    row.className = expandedRows.has(index) ? 'expanded' : '';
+
+    let createdDate = 'Unknown';
+    if (post.created_at) {
+      try {
+        createdDate = new Date(post.created_at).toLocaleDateString();
+      } catch (e) {
+        createdDate = post.created_at;
+      }
+    }
+
+    const platform = (post.platform || 'default').toLowerCase();
+    const platformIcon = getPlatformIcon(platform);
+    const revenue = parseFloat(post.revenue) || 0;
+
+    row.innerHTML = `
+      <td>
+        <div class="platform-badge ${platform}">
+          ${platformIcon} ${post.platform || 'Unknown'}
+        </div>
+      </td>
+      <td>
+        <div class="post-title">${post.title || 'Untitled Post'}</div>
+        <div class="post-preview">${post.message || 'No message content'}</div>
+      </td>
+      <td>
+        <div class="engagement-stats">
+          <div class="engagement-item">
+            <span class="engagement-number">${post.engagements || 0}</span>
+            <span class="engagement-label">Likes</span>
+          </div>
+          <div class="engagement-item">
+            <span class="engagement-number">${post.shares || 0}</span>
+            <span class="engagement-label">Shares</span>
+          </div>
+          <div class="engagement-item">
+            <span class="engagement-number">${post.clicks || 0}</span>
+            <span class="engagement-label">Clicks</span>
+          </div>
+        </div>
+      </td>
+      <td>
+        ${revenue > 0 ? `<div class="revenue-badge">$${revenue.toFixed(2)}</div>` : '$0.00'}
+      </td>
+      <td>${createdDate}</td>
+    `;
+
+    return row;
+  }
+
+  // Create expanded content row
+  function createExpandedRow(post, index) {
+    const expandedRow = document.createElement('tr');
+    expandedRow.className = `expanded-content ${expandedRows.has(index) ? 'show' : ''}`;
+    
+    expandedRow.innerHTML = `
+      <td colspan="5">
+        <div class="expanded-details">
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">${post.platform || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Post URL</div>
+              <div class="detail-value">
+                ${post.URL ? `<span class="post-url" onclick="openPost('${post.URL}')">${post.URL}</span>` : 'N/A'}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Revenue</div>
+              <div class="detail-value">$${(parseFloat(post.revenue) || 0).toFixed(2)}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Hashtags</div>
+              <div class="detail-value">${post.hashtag || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Keywords</div>
+              <div class="detail-value">${post.key_words || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Media URL</div>
+              <div class="detail-value">
+                ${post.media_URL ? `<span class="post-url" onclick="openPost('${post.media_URL}')">${post.media_URL}</span>` : 'N/A'}
+              </div>
+            </div>
+          </div>
+          <div class="detail-item" style="margin-top: 15px;">
+            <div class="detail-label">Full Message</div>
+            <div class="detail-value">${post.message || 'N/A'}</div>
+          </div>
+        </div>
+      </td>
+    `;
+
+    return expandedRow;
+  }
+
+  // Sorting functionality
+  let sortField = null;
+  let sortDirection = 'desc';
+
+  function sortBy(field) {
+    if (sortField === field) {
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortField = field;
+      sortDirection = 'desc';
+    }
+
+    filteredSocialPosts.sort((a, b) => {
+      let aVal = a[field] || '';
+      let bVal = b[field] || '';
+
+      if (field === 'engagements' || field === 'shares' || field === 'clicks' || field === 'revenue') {
+        aVal = parseFloat(aVal) || 0;
+        bVal = parseFloat(bVal) || 0;
+      } else if (field === 'created_at') {
+        aVal = new Date(aVal).getTime() || 0;
+        bVal = new Date(bVal).getTime() || 0;
+      } else {
+        aVal = aVal.toString().toLowerCase();
+        bVal = bVal.toString().toLowerCase();
+      }
+
+      if (sortDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+
+    renderSocialTable();
+  }
+
+  // Toggle expanded row
+  function toggleExpanded(index) {
+    if (expandedRows.has(index)) {
+      expandedRows.delete(index);
+    } else {
+      expandedRows.add(index);
+    }
+    renderSocialTable();
+  }
+
+  // Open post URL
+  function openPost(url) {
+    if (url && url !== 'N/A') {
+      window.open(url, '_blank');
+    }
+  }
+
+  // Get platform icon
+  function getPlatformIcon(platform) {
+    switch (platform) {
+      case 'twitter': return '𝕏';
+      case 'linkedin': return 'in';
+      case 'instagram': return '📷';
+      case 'youtube': return '▶️';
+      case 'facebook': return 'f';
+      case 'tiktok': return '🎵';
+      default: return '📱';
+    }
+  }
+
+  function showEmptyState() {
+    socialContainer.innerHTML = `
+      <div class="empty-state">
+        <h3>No social media posts yet</h3>
+        <p>Your social media posts will appear here as your campaigns generate content.</p>
+        <button onclick="generateCaption()" class="success" style="margin-top: 15px;">🚀 Create Your First Post</button>
+      </div>
+    `;
+  }
+
+  function showNoResultsState() {
+    socialContainer.innerHTML = `
+      <div class="empty-state">
+        <h3>No posts match your filters</h3>
+        <p>Try adjusting your search criteria or clearing the filters.</p>
+      </div>
+    `;
+  }
+
+  function showStatus(message, isError = false) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+    statusDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 5000);
+  }
+
+  // Event listeners
+  function setupEventListeners() {
+    refreshSocialBtn.addEventListener('click', async () => {
+      await loadUserData();
+      await loadSocialPosts();
+      applyFilters();
+    });
+    
+    clearFiltersBtn.addEventListener('click', clearFilters);
+
+    [platformFilter, performanceFilter].forEach(element => {
+      element.addEventListener('change', applyFilters);
+    });
+
+    let searchTimeout;
+    searchFilter.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(applyFilters, 300);
+    });
+
+    setupPlatformSelector();
+  }
+
+  // Initialize page
+  async function init() {
+    try {
+      const isAuthenticated = await checkAuthentication();
+      
+      if (isAuthenticated) {
+        await loadUserData();
+        await loadSocialPosts();
+        setupEventListeners();
+        applyFilters();
+        
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
+      } else {
+        redirectToLogin();
+      }
+    } catch (error) {
+      console.error('Error initializing page:', error);
+      showStatus('Failed to load social media posts. Please refresh the page.', true);
     }
   }
 
@@ -1151,6 +2446,8 @@
       if (!session) {
         console.log('Session expired, redirecting to login');
         redirectToLogin();
+      } else {
+        authToken = session.access_token;
       }
     } catch (e) {
       console.error('Session check failed:', e);
@@ -1176,6 +2473,15 @@
   // Make functions globally available
   window.toggleAIPost = toggleAIPost;
   window.openPost = openPost;
+  window.generateCaption = generateCaption;
+  window.suggestHashtags = suggestHashtags;
+  window.optimizeForPlatform = optimizeForPlatform;
+  window.getTrendingTopics = getTrendingTopics;
+  window.postNow = postNow;
+  window.schedulePost = schedulePost;
+  window.saveDraft = saveDraft;
+  window.sortBy = sortBy;
+  window.startTour = startTour;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
