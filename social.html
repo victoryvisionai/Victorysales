@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -663,6 +666,186 @@
     <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
          onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
   </div>
+  <nav>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="ads">Ads</a></li>
+       <li><a href="contacts">Contacts</a></li>
+       <li><a href="messages">Messages</a></li>
+      <li><a href="ai">Analytics</a></li>
+      <li><a href="settings">⚙️</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      📖 Take Tour
+    </button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+  <header class="page-header">
+    <h1 class="page-title">Social Media Command Center</h1>
+    <p class="page-subtitle">Create, schedule, and analyze your social media presence with AI-powered insights</p>
+  </header>
+
+  <!-- Enhanced Stats Overview -->
+  <section class="stats-section" data-intro="Your social media performance dashboard shows real-time metrics across all platforms." data-step="1">
+    <div class="stat-card">
+      <div class="stat-number" id="totalPosts">0</div>
+      <div class="stat-label">Total Posts</div>
+      <div class="stat-change">+12% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalEngagements">0</div>
+      <div class="stat-label">Total Engagements</div>
+      <div class="stat-change">+24% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalShares">0</div>
+      <div class="stat-label">Total Shares</div>
+      <div class="stat-change">+18% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalClicks">0</div>
+      <div class="stat-label">Total Clicks</div>
+      <div class="stat-change">+31% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="totalRevenue">$0</div>
+      <div class="stat-label">Revenue Generated</div>
+      <div class="stat-change">+45% this month</div>
+    </div>
+  </section>
+
+  <!-- NEW: Content Creation Hub -->
+  <section class="content-hub" data-intro="Create and schedule posts across all your social platforms with AI assistance." data-step="2">
+    <div class="create-post-section">
+      <h3 style="margin: 0 0 15px 0; color: #0A3161;">🚀 AI-Powered Content Creator</h3>
+      
+      <div class="ai-assistant-panel">
+        <h4>🤖 AI Writing Assistant</h4>
+        <button class="ai-btn" onclick="generateCaption()">✨ Generate Caption</button>
+        <button class="ai-btn" onclick="suggestHashtags()">🏷️ Smart Hashtags</button>
+        <button class="ai-btn" onclick="optimizeForPlatform()">🎯 Optimize Content</button>
+        <button class="ai-btn" onclick="getTrendingTopics()">📈 Trending Topics</button>
+      </div>
+      
+      <div class="post-composer">
+        <textarea id="postContent" placeholder="What's happening? Our AI can help you craft the perfect message..."></textarea>
+        
+        <div class="platform-selector">
+          <div class="platform-toggle active" data-platform="linkedin">
+            <span>💼</span> LinkedIn
+          </div>
+          <div class="platform-toggle" data-platform="twitter">
+            <span>𝕏</span> Twitter
+          </div>
+          <div class="platform-toggle" data-platform="instagram">
+            <span>📷</span> Instagram
+          </div>
+          <div class="platform-toggle" data-platform="youtube">
+            <span>▶️</span> YouTube
+          </div>
+          <div class="platform-toggle" data-platform="facebook">
+            <span>📘</span> Facebook
+          </div>
+        </div>
+        
+        <div class="schedule-options">
+          <button class="success" onclick="postNow()">📤 Post Now</button>
+          <button onclick="schedulePost()">⏰ Schedule</button>
+          <button class="secondary" onclick="saveDraft()">💾 Save Draft</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-widget" data-intro="See optimal posting times and performance insights." data-step="3">
+      <h3 style="margin: 0 0 15px 0; color: #0A3161;">⏰ Best Times to Post</h3>
+      <p style="margin: 0 0 10px 0; color: #666; font-size: 0.9em;">Based on your audience activity</p>
+      
+      <div class="best-times-grid">
+        <div class="time-slot optimal">9 AM<br><small>Peak</small></div>
+        <div class="time-slot good">12 PM<br><small>Good</small></div>
+        <div class="time-slot optimal">6 PM<br><small>Peak</small></div>
+        <div class="time-slot average">11 PM<br><small>Low</small></div>
+      </div>
+      
+      <p style="margin: 15px 0 0 0; color: #666; font-size: 0.8em;">
+        🟢 Peak engagement • 🟡 Good performance • ⚪ Average reach
+      </p>
+    </div>
+  </section>
+
+  <!-- Control Section with AI Toggle -->
+  <section class="card">
+    <div class="section-header">
+      <h3>📱 Social Media Management</h3>
+      <div class="header-controls">
+        <div class="credits-display">
+          <div class="credits-number" id="socialCredits">Loading...</div>
+          <div class="credits-label">Social Credits</div>
+        </div>
+        <div class="ai-toggle-container" data-intro="Enable AI Auto Post to automatically create and schedule content." data-step="4">
+          <span class="ai-toggle-label">🤖 AI Auto Post</span>
+          <div class="toggle-switch" id="aiToggle" onclick="toggleAIPost()">
+            <div class="toggle-slider"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="filter-section" data-intro="Filter your posts by platform or search for specific content." data-step="5">
+      <div class="form-group">
+        <label for="platformFilter">Platform</label>
+        <select id="platformFilter">
+          <option value="">All Platforms</option>
+          <option value="twitter">Twitter</option>
+          <option value="linkedin">LinkedIn</option>
+          <option value="instagram">Instagram</option>
+          <option value="youtube">YouTube</option>
+          <option value="facebook">Facebook</option>
+          <option value="tiktok">TikTok</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="performanceFilter">Performance</label>
+        <select id="performanceFilter">
+          <option value="">All Posts</option>
+          <option value="high">High Performing</option>
+          <option value="medium">Medium Performing</option>
+          <option value="low">Low Performing</option>
+          <option value="viral">Viral Posts</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="searchFilter">Search</label>
+        <input type="text" id="searchFilter" placeholder="Search posts...">
+      </div>
+      <button id="refreshSocial">🔄 Refresh</button>
+      <button id="clearFilters" class="secondary">Clear Filters</button>
+    </div>
+  </section>
+
+  <!-- Social Posts Table -->
+  <section id="socialContainer" data-intro="Your complete social media post history with performance analytics and revenue tracking." data-step="6">
+    <div class="loading">Loading your social media posts...</div>
+  </section>
+
+  <!-- Status Messages -->
+  <div id="statusMessage" class="status-message"></div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
     <a href="privacy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Service</a>
