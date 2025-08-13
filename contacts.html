@@ -1573,7 +1573,6 @@ async function enrichSelectedContacts() {
     showStatus('Please select contacts to enrich', true);
     return;
   }
-
   try {
     const selectedContactsList = Array.from(selectedContacts).map(id => 
       allContacts.find(c => 
@@ -1583,42 +1582,36 @@ async function enrichSelectedContacts() {
         c.linkedin === id
       )
     ).filter(c => c && (c.email || c.linkedin));
-
     if (selectedContactsList.length === 0) {
       showStatus('No valid contacts selected for enrichment', true);
       return;
     }
-
-    // Send all contacts in a single request to prevent multiple webhook calls
-    const enrichmentData = {
-      contacts: selectedContactsList.map(contact => ({
-        id: contact.contact_id || contact.id || contact.email,
-        email: contact.email,
-        linkedin: contact.linkedin || '',
-        name: contact.name || '',
-        company: contact.company || ''
-      }))
-    };
-
-    console.log('Enriching contacts:', enrichmentData);
-
-    const result = await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
     
-    if (result.success !== false) {
-      showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
-      selectedContacts.clear();
-      updateSelectedCount();
-      setTimeout(() => loadContacts(), 5000);
-    } else {
-      throw new Error(result.message || 'Enrichment failed');
+    // Send each contact individually
+    for (const contact of selectedContactsList) {
+      const enrichmentData = {
+        contact: {
+          id: contact.contact_id || contact.id || contact.email,
+          email: contact.email,
+          linkedin: contact.linkedin || '',
+          name: contact.name || '',
+          company: contact.company || ''
+        }
+      };
+      console.log('Enriching contact:', enrichmentData);
+      await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
     }
-
+    
+    showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
+    selectedContacts.clear();
+    updateSelectedCount();
+    setTimeout(() => loadContacts(), 5000);
+    
   } catch (error) {
     console.error('Error enriching contacts:', error);
     showStatus('Error enriching contacts: ' + error.message, true);
   }
 }
-
 // Show contact details modal - FIXED with improved modal and tracking
 function showContactDetails(contactId, event) {
   console.log('showContactDetails called with:', contactId, event);
