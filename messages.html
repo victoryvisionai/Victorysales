@@ -91,13 +91,22 @@
       width: auto;
     }
 
-    /* Main Layout - Updated proportions */
+    /* Main Layout - Fixed proportions for inbox */
     .main-container {
       display: grid;
       grid-template-columns: 280px 420px 1fr;
       height: calc(100vh - 70px);
       background: white;
       overflow: hidden;
+    }
+
+    /* Sent folder gets different layout */
+    .main-container.sent-view {
+      grid-template-columns: 280px 1fr;
+    }
+
+    .main-container.sent-view .email-list-panel {
+      display: none;
     }
 
     /* Left Sidebar */
@@ -1400,7 +1409,7 @@ const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
-  getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/files/campaign/get',
+  getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
   sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
   saveDraft: 'https://victoryvision.app.n8n.cloud/webhook/emails/draft',
   deleteEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/delete',
@@ -1478,12 +1487,12 @@ function redirectToLogin() {
 // API calls - preserved
 async function apiCall(endpoint, data = {}) {
   try {
-    const url = endpoint.includes('/user/get') || endpoint.includes('/files/campaign/get') ? 
+    const url = endpoint.includes('/user/get') || endpoint.includes('/media/get') ? 
       `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
       endpoint;
     
     const requestOptions = {
-      method: endpoint.includes('/user/get') || endpoint.includes('/files/campaign/get') ? 'GET' : 'POST',
+      method: endpoint.includes('/user/get') || endpoint.includes('/media/get') ? 'GET' : 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Customer-ID': CUSTOMER_ID,
@@ -1491,7 +1500,7 @@ async function apiCall(endpoint, data = {}) {
       }
     };
 
-    if (!endpoint.includes('/user/get') && !endpoint.includes('/files/campaign/get')) {
+    if (!endpoint.includes('/user/get') && !endpoint.includes('/media/get')) {
       requestOptions.body = JSON.stringify({
         customer_id: CUSTOMER_ID,
         ...data
@@ -1552,7 +1561,7 @@ async function loadContacts() {
 // Load campaign files for attachments
 async function loadCampaignFiles() {
   try {
-    const data = await apiCall(ENDPOINTS.getCampaignFiles);
+    const data = await apiCall(ENDPOINTS.getMedia);
     campaignFiles = Array.isArray(data) ? data : (data.files || []);
     console.log(`Loaded ${campaignFiles.length} campaign files`);
   } catch (error) {
@@ -1588,7 +1597,7 @@ async function loadEmails() {
   }
 }
 
-// Generate contact tags instead of domain tags
+// Generate contact tags from tags field only
 function generateContactTags() {
   const contactTags = new Set();
   
@@ -1599,18 +1608,12 @@ function generateContactTags() {
         if (tag.trim()) contactTags.add(tag.trim());
       });
     }
-    
-    // Add other filterable attributes
-    if (contact.industry) contactTags.add(contact.industry);
-    if (contact.company) contactTags.add(contact.company);
-    if (contact.city) contactTags.add(contact.city);
-    if (contact.type) contactTags.add(contact.type);
   });
   
   const filterTags = document.getElementById('filterTags');
   filterTags.innerHTML = '';
   
-  // Add contact tags (limit to 12 for space)
+  // Add only actual contact tags (limit to 12 for space)
   [...contactTags].slice(0, 12).forEach(tag => {
     const tagEl = document.createElement('div');
     tagEl.className = 'filter-tag';
@@ -1635,6 +1638,18 @@ function updateFolderCounts() {
 // Filter emails by folder
 function filterEmailsByFolder(folder) {
   currentFolder = folder;
+  
+  // Update layout based on folder
+  const mainContainer = document.querySelector('.main-container');
+  const emailListPanel = document.querySelector('.email-list-panel');
+  
+  if (folder === 'sent' || folder === 'drafts') {
+    mainContainer.classList.add('sent-view');
+    emailListPanel.style.display = 'none';
+  } else {
+    mainContainer.classList.remove('sent-view');
+    emailListPanel.style.display = 'flex';
+  }
   
   // Update active folder
   document.querySelectorAll('.folder-item').forEach(item => {
@@ -1670,13 +1685,13 @@ function filterByTag(tag) {
   tagElement.classList.toggle('active');
   
   if (tagElement.classList.contains('active')) {
-    // Find contacts with this tag
+    // Find contacts with this exact tag
     const contactsWithTag = allContacts.filter(contact => {
-      return (contact.tags && contact.tags.includes(tag)) ||
-             contact.industry === tag ||
-             contact.company === tag ||
-             contact.city === tag ||
-             contact.type === tag;
+      if (contact.tags) {
+        const tags = Array.isArray(contact.tags) ? contact.tags : contact.tags.split(',');
+        return tags.some(t => t.trim() === tag);
+      }
+      return false;
     });
     
     const contactEmails = contactsWithTag.map(c => c.email).filter(Boolean);
@@ -1990,20 +2005,24 @@ function handleFileUpload(event) {
   const files = Array.from(event.target.files);
   
   files.forEach(file => {
-    // Create a temporary URL for the file
-    const fileUrl = URL.createObjectURL(file);
-    
-    attachedFiles.push({
-      id: 'temp_' + Date.now() + '_' + Math.random(),
-      name: file.name,
-      url: fileUrl,
-      size: file.size,
-      type: 'upload',
-      file: file // Store the actual file for upload
-    });
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Data = e.target.result.split(',')[1]; // Remove data:type;base64, prefix
+      
+      attachedFiles.push({
+        id: 'upload_' + Date.now() + '_' + Math.random(),
+        name: file.name,
+        size: file.size,
+        type: 'upload',
+        base64: base64Data,
+        mimeType: file.type
+      });
+      
+      updateAttachmentDisplay();
+    };
+    reader.readAsDataURL(file);
   });
   
-  updateAttachmentDisplay();
   event.target.value = ''; // Reset input
 }
 
@@ -2025,13 +2044,6 @@ function updateAttachmentDisplay() {
 }
 
 function removeAttachment(index) {
-  const file = attachedFiles[index];
-  
-  // Revoke object URL if it's an uploaded file
-  if (file.type === 'upload' && file.url.startsWith('blob:')) {
-    URL.revokeObjectURL(file.url);
-  }
-  
   attachedFiles.splice(index, 1);
   updateAttachmentDisplay();
 }
@@ -2233,20 +2245,37 @@ async function sendEmail() {
   }
   
   try {
-    await apiCall(ENDPOINTS.sendEmail, {
+    const emailData = {
       to_email: recipients,
       cc_email: document.getElementById('composeCC').value,
       bcc_email: document.getElementById('composeBCC').value,
       subject: subject,
       body: body,
       campaign: 'Direct Message',
-      signature: userSignature,
-      attachments: attachedFiles.map(file => ({
-        name: file.name,
-        url: file.url,
-        size: file.size
-      }))
-    });
+      signature: userSignature
+    };
+
+    // Add attachments with proper format
+    if (attachedFiles.length > 0) {
+      emailData.attachments = attachedFiles.map(file => {
+        if (file.type === 'upload') {
+          return {
+            name: file.name,
+            base64: file.base64,
+            mimeType: file.mimeType,
+            size: file.size
+          };
+        } else {
+          return {
+            name: file.name,
+            url: file.url || file.URL,
+            size: file.size || file.file_size
+          };
+        }
+      });
+    }
+
+    await apiCall(ENDPOINTS.sendEmail, emailData);
     
     showStatus('Email sent successfully!', false);
     cancelCompose();
@@ -2268,18 +2297,35 @@ async function saveDraft() {
   }
   
   try {
-    await apiCall(ENDPOINTS.saveDraft, {
+    const draftData = {
       to_email: recipients,
       cc_email: document.getElementById('composeCC').value,
       bcc_email: document.getElementById('composeBCC').value,
       subject: subject,
-      body: body,
-      attachments: attachedFiles.map(file => ({
-        name: file.name,
-        url: file.url,
-        size: file.size
-      }))
-    });
+      body: body
+    };
+
+    // Add attachments with proper format
+    if (attachedFiles.length > 0) {
+      draftData.attachments = attachedFiles.map(file => {
+        if (file.type === 'upload') {
+          return {
+            name: file.name,
+            base64: file.base64,
+            mimeType: file.mimeType,
+            size: file.size
+          };
+        } else {
+          return {
+            name: file.name,
+            url: file.url || file.URL,
+            size: file.size || file.file_size
+          };
+        }
+      });
+    }
+
+    await apiCall(ENDPOINTS.saveDraft, draftData);
     
     showStatus('Draft saved successfully', false);
     await loadEmails();
@@ -2294,12 +2340,7 @@ function cancelCompose() {
   document.getElementById('emptyState').style.display = 'flex';
   document.getElementById('emailView').style.display = 'none';
   
-  // Clean up uploaded file URLs
-  attachedFiles.forEach(file => {
-    if (file.type === 'upload' && file.url.startsWith('blob:')) {
-      URL.revokeObjectURL(file.url);
-    }
-  });
+  // Clear attachments array
   attachedFiles = [];
 }
 
