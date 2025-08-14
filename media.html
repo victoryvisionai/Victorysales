@@ -3,517 +3,938 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Create and manage your generated media files."/>
+  <meta name="description" content="Enhanced email communications - Victory Vision"/>
   <meta name="author" content="Victory Vision"/>
-  <title>Victory Vision AI - Media Library</title>
+  <title>Victory Vision - Messages</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f5f5f5;
+      box-sizing: border-box;
     }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f3f2f1;
+      height: 100vh;
+      overflow: hidden;
+    }
+
     .navbar {
       background-color: #0A3161;
       color: white;
-      padding: 15px;
+      padding: 12px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      z-index: 1000;
     }
+
     .navbar nav ul {
       display: flex;
       list-style: none;
       margin: 0;
       padding: 0;
     }
+
     .navbar nav ul li {
-      margin: 0 10px;
+      margin: 0 15px;
     }
+
     .navbar nav ul li a {
       color: white;
       text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
     }
+
+    .navbar nav ul li a:hover,
+    .navbar nav ul li a.active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
     .navbar .user-info {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
     }
-    .navbar .subscription-medallion {
+
+    .subscription-medallion {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: linear-gradient(45deg, #CD7F32, #A0522D);
       color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
+      padding: 6px 12px;
+      border-radius: 16px;
       font-weight: bold;
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      position: relative;
-      border: none;
-      transition: all 0.3s ease;
+      letter-spacing: 0.5px;
     }
-    .subscription-medallion.bronze {
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-    }
+
     .subscription-medallion.silver {
       background: linear-gradient(45deg, #C0C0C0, #808080);
     }
+
     .subscription-medallion.gold {
       background: linear-gradient(45deg, #FFD700, #FFA500);
     }
-    .subscription-medallion:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
+
     .logo img {
-      height: 60px;
+      height: 45px;
       width: auto;
-      max-height: 100px;
     }
-    .content {
-      padding: 20px 4px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .page-header {
-      margin-bottom: 30px;
-    }
-    .page-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 0.5rem;
-    }
-    .page-subtitle {
-      font-size: 1.1rem;
-      color: #666;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .section-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 15px;
-      margin: -20px -20px 20px -20px;
-      border-radius: 8px 8px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .toggle-group {
-      display: flex;
-      gap: 10px;
-    }
-    .toggle-btn {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-    .toggle-btn.active {
-      background: white;
-      color: #0A3161;
-      border-color: white;
-    }
-    .toggle-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-    .toggle-btn.active:hover {
-      background: white;
-    }
-    .creation-layout {
+
+    /* Main Layout - Fixed proportions for inbox */
+    .main-container {
       display: grid;
-      grid-template-columns: 1fr 400px;
-      gap: 30px;
-      margin-bottom: 30px;
+      grid-template-columns: 280px 420px 1fr;
+      height: calc(100vh - 70px);
+      background: white;
+      overflow: hidden;
     }
-    .creation-form {
+
+    /* Sent folder gets different layout */
+    .main-container.sent-view {
+      grid-template-columns: 280px 1fr;
+    }
+
+    .main-container.sent-view .email-list-panel {
       display: none;
     }
-    .creation-form.active {
-      display: block;
-    }
-    .preview-panel {
-      position: relative;
-      background: #f8f9fa;
-      border: 2px dashed #dee2e6;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      color: #666;
-      min-height: 400px;
+
+    /* Left Sidebar */
+    .sidebar {
+      background: #faf9f8;
+      border-right: 1px solid #edebe9;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
     }
-    .processing-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.95);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      z-index: 100;
-      border-radius: 8px;
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #edebe9;
     }
-    .processing-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0A3161;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 15px;
-    }
-    .processing-text {
-      color: #0A3161;
-      font-weight: bold;
-      text-align: center;
-    }
-    .preview-content {
-      max-width: 100%;
-      max-height: 350px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .preview-content img,
-    .preview-content video {
-      max-width: 100%;
-      max-height: 350px;
-      border-radius: 8px;
-    }
-    .preview-info {
-      margin-top: 15px;
-      padding: 10px;
-      background: white;
-      border-radius: 6px;
-      text-align: left;
+
+    .compose-btn {
       width: 100%;
-    }
-    .preview-title {
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 5px;
-    }
-    .preview-description {
-      font-size: 0.9em;
-      color: #666;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
-    }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    .form-group textarea {
-      height: 100px;
-      resize: vertical;
-    }
-    .reference-list {
-      max-height: 120px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 8px;
-      background: #f8f9fa;
-      font-size: 12px;
-    }
-    .reference-item {
-      padding: 4px 8px;
-      cursor: pointer;
-      color: #0A3161;
-      border-radius: 3px;
-      margin-bottom: 2px;
-    }
-    .reference-item:hover {
-      background: #e9ecef;
-    }
-    .reference-item.selected {
-      background: #0A3161;
-      color: white;
-    }
-    .credits-display {
-      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-      border: 1px solid #dee2e6;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-    .credits-number {
-      font-size: 1.4em;
-      font-weight: bold;
-      color: #0A3161;
-    }
-    .credits-label {
-      font-size: 0.85em;
-      color: #666;
-      margin-top: 2px;
-    }
-    button {
-      background: #0A3161;
+      background: #0078d4;
       color: white;
       border: none;
       padding: 12px 20px;
       border-radius: 4px;
-      cursor: pointer;
       font-size: 14px;
-      margin: 5px 5px 0 0;
-    }
-    button:hover {
-      background: #083050;
-    }
-    button:disabled {
-      background: #B3B3B3;
-      cursor: not-allowed;
-    }
-    button.secondary {
-      background: #6c757d;
-    }
-    button.secondary:hover {
-      background: #5a6268;
-    }
-    button.create-btn {
-      background: #28a745;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 15px 30px;
-      width: 100%;
-    }
-    button.create-btn:hover {
-      background: #218838;
-    }
-    
-    /* Updated filter section to match the image */
-    .filter-section {
-      display: grid;
-      grid-template-columns: 200px 200px 200px 200px 1fr auto auto;
-      gap: 15px;
-      align-items: end;
-      margin-bottom: 20px;
-    }
-    
-    .media-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    .media-card {
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-    }
-    .media-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-    .media-preview {
-      position: relative;
-      aspect-ratio: 16/9;
-      overflow: hidden;
-      background: #f8f9fa;
-    }
-    .media-preview img,
-    .media-preview video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .media-type-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .media-type-badge.video {
-      background: linear-gradient(45deg, #0A3161, #1a4c80);
-    }
-    .media-type-badge.image {
-      background: linear-gradient(45deg, #28a745, #20c997);
-    }
-    .media-info {
-      padding: 15px;
-    }
-    .media-title {
-      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 8px;
-      color: #0A3161;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
     }
-    .media-description {
-      font-size: 0.85rem;
-      color: #777;
-      line-height: 1.4;
-      margin-bottom: 15px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+
+    .compose-btn:hover {
+      background: #106ebe;
     }
-    .media-meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+
+    .folder-nav {
+      flex: 1;
+      padding: 10px 0;
+    }
+
+    .folder-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 20px;
+      cursor: pointer;
+      color: #323130;
+      font-size: 14px;
+      transition: background 0.2s;
       gap: 10px;
-      margin-bottom: 15px;
-      font-size: 0.8rem;
-      color: #666;
     }
-    .meta-item {
+
+    .folder-item:hover {
+      background: #f3f2f1;
+    }
+
+    .folder-item.active {
+      background: #deecf9;
+      color: #0078d4;
+      border-right: 3px solid #0078d4;
+    }
+
+    .folder-icon {
+      width: 16px;
+      text-align: center;
+    }
+
+    .folder-count {
+      margin-left: auto;
+      background: #0078d4;
+      color: white;
+      border-radius: 10px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Email List Panel */
+    .email-list-panel {
+      background: white;
+      border-right: 1px solid #edebe9;
       display: flex;
       flex-direction: column;
     }
-    .meta-label {
-      font-weight: 600;
-      color: #0A3161;
+
+    .email-list-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #edebe9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .media-actions {
+
+    .email-list-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #323130;
+    }
+
+    .email-actions {
       display: flex;
       gap: 8px;
     }
-    .btn-small {
-      padding: 8px 12px;
-      font-size: 12px;
-      flex: 1;
-    }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      font-size: 1.1rem;
-      color: #666;
-    }
-    .loading::before {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #ddd;
-      border-top: 2px solid #0A3161;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 0.5rem;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #666;
-    }
-    .empty-state h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      color: #0A3161;
-    }
-    .status-message {
-      padding: 10px;
+
+    .action-btn {
+      background: none;
+      border: 1px solid #d1d1d1;
+      padding: 6px 12px;
       border-radius: 4px;
-      margin: 10px 0;
-      display: none;
+      cursor: pointer;
+      font-size: 12px;
+      color: #323130;
+      transition: all 0.2s;
     }
-    .status-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
+
+    .action-btn:hover {
+      background: #f3f2f1;
+      border-color: #c8c6c4;
     }
-    .status-error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
+
+    .search-filters {
+      padding: 10px 20px;
+      border-bottom: 1px solid #edebe9;
+      background: #faf9f8;
     }
-    .auth-loading {
-      position: fixed;
-      top: 0;
-      left: 0;
+
+    .search-box {
       width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+      padding: 8px 12px;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: #0078d4;
+    }
+
+    .filter-tags {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .filter-tag {
+      background: #deecf9;
+      color: #0078d4;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      cursor: pointer;
+      border: 1px solid #c7e0f4;
+      transition: all 0.2s;
+    }
+
+    .filter-tag:hover {
+      background: #c7e0f4;
+    }
+
+    .filter-tag.active {
+      background: #0078d4;
+      color: white;
+    }
+
+    /* Email List - Fixed vertical stacking */
+    .email-list {
+      flex: 1;
+      overflow-y: auto;
+      max-height: calc(100vh - 300px);
+      display: flex;
       flex-direction: column;
     }
-    .auth-loading .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0A3161;
+
+    .email-item {
+      display: flex;
+      padding: 12px 20px;
+      border-bottom: 1px solid #f3f2f1;
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+      width: 100%;
+    }
+
+    .email-item:hover {
+      background: #f9f9f9;
+    }
+
+    .email-item.selected {
+      background: #deecf9;
+      border-left: 3px solid #0078d4;
+    }
+
+    .email-item.unread {
+      background: #fff;
+      font-weight: 600;
+    }
+
+    .email-item.unread::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: #0078d4;
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
     }
-    footer {
-      background: #0A3161;
-      color: #fff;
-      text-align: center;
-      padding: 15px;
+
+    .email-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #0078d4;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 12px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .email-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .email-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .email-sender {
+      font-size: 14px;
+      color: #323130;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .email-time {
+      font-size: 12px;
+      color: #605e5c;
+      flex-shrink: 0;
+    }
+
+    .email-subject {
+      font-size: 13px;
+      color: #323130;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .email-preview {
+      font-size: 12px;
+      color: #605e5c;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .email-flags {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .flag {
+      width: 12px;
+      height: 12px;
+      font-size: 10px;
+    }
+
+    /* Reading Pane - Expanded width */
+    .reading-pane {
+      background: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      max-height: calc(100vh - 70px);
+    }
+
+    .reading-header {
+      padding: 20px 30px;
+      border-bottom: 1px solid #edebe9;
+      background: #faf9f8;
+    }
+
+    .reading-actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .reading-btn {
+      background: white;
+      border: 1px solid #d1d1d1;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #323130;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .reading-btn:hover {
+      background: #f3f2f1;
+    }
+
+    .reading-btn.primary {
+      background: #0078d4;
+      color: white;
+      border-color: #0078d4;
+    }
+
+    .reading-btn.primary:hover {
+      background: #106ebe;
+    }
+
+    .email-subject-display {
+      font-size: 20px;
+      font-weight: 600;
+      color: #323130;
+      margin-bottom: 10px;
+    }
+
+    .email-meta {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr;
+      gap: 8px 15px;
+      font-size: 13px;
+    }
+
+    .meta-label {
+      color: #605e5c;
+      font-weight: 500;
+    }
+
+    .meta-value {
+      color: #323130;
+    }
+
+    .email-body-container {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .email-body {
+      line-height: 1.6;
+      color: #323130;
+      white-space: pre-wrap;
+      font-size: 14px;
+      min-height: 200px;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 6px;
+      border: 1px solid #e9ecef;
+    }
+
+    .email-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+
+    .attachments-section {
       margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #edebe9;
     }
-    footer a {
-      color: #fff;
-      margin-right: 15px;
+
+    .attachments-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: #323130;
+      margin-bottom: 10px;
+    }
+
+    .attachment-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      margin: 5px 0;
+      border: 1px solid #e9ecef;
+      font-size: 13px;
+      color: #605e5c;
+    }
+
+    .attachment-icon {
+      width: 16px;
+      margin-right: 8px;
+    }
+
+    .attachment-name {
+      color: #0078d4;
       text-decoration: none;
+      flex: 1;
+      cursor: pointer;
     }
-    
-    /* Modal styles */
+
+    .attachment-name:hover {
+      text-decoration: underline;
+    }
+
+    .attachment-size {
+      font-size: 11px;
+      color: #8a8886;
+      margin-left: 8px;
+    }
+
+    /* Compose Form */
+    .compose-form {
+      background: white;
+      height: 100%;
+      display: none;
+      flex-direction: column;
+    }
+
+    .compose-form.active {
+      display: flex;
+    }
+
+    .compose-header {
+      padding: 20px 30px;
+      border-bottom: 1px solid #edebe9;
+      background: #faf9f8;
+    }
+
+    .compose-actions {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .template-section {
+      margin-bottom: 15px;
+    }
+
+    .template-selector {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .template-btn {
+      background: #deecf9;
+      color: #0078d4;
+      border: 1px solid #c7e0f4;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .template-btn:hover {
+      background: #c7e0f4;
+    }
+
+    .ai-assist-section {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .ai-btn {
+      background: linear-gradient(135deg, #bb133e, #8b0a2e);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .ai-btn:hover {
+      background: linear-gradient(135deg, #8b0a2e, #bb133e);
+    }
+
+    .compose-fields {
+      padding: 0 30px;
+      border-bottom: 1px solid #edebe9;
+    }
+
+    .compose-field {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f2f1;
+    }
+
+    .field-label {
+      width: 80px;
+      font-size: 14px;
+      color: #605e5c;
+      font-weight: 500;
+    }
+
+    .field-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #323130;
+      padding: 4px 8px;
+    }
+
+    .field-input:focus {
+      background: #f9f9f9;
+      border-radius: 2px;
+    }
+
+    .to-input-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+
+    .email-tag {
+      background: #deecf9;
+      color: #0078d4;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .remove-tag {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Enhanced Email Suggestions */
+    .email-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      display: none;
+    }
+
+    .suggestion-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-bottom: 1px solid #f3f2f1;
+      transition: background 0.2s;
+    }
+
+    .suggestion-item:hover,
+    .suggestion-item.highlighted {
+      background: #f3f2f1;
+    }
+
+    .suggestion-name {
+      font-weight: 500;
+      color: #323130;
+    }
+
+    .suggestion-email {
+      font-size: 12px;
+      color: #605e5c;
+    }
+
+    .suggestion-meta {
+      font-size: 11px;
+      color: #8a8886;
+    }
+
+    .compose-body-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .compose-body {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 30px;
+      font-size: 14px;
+      font-family: inherit;
+      line-height: 1.6;
+      resize: none;
+    }
+
+    /* File Attachment Section */
+    .attachment-section {
+      padding: 15px 30px;
+      border-bottom: 1px solid #edebe9;
+      background: #faf9f8;
+    }
+
+    .attachment-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .attachment-btn {
+      background: #0078d4;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .attachment-btn:hover {
+      background: #106ebe;
+    }
+
+    .attachment-btn.secondary {
+      background: #6c757d;
+    }
+
+    .attachment-btn.secondary:hover {
+      background: #5a6268;
+    }
+
+    .attached-files {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .attached-file {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #323130;
+    }
+
+    .remove-attachment {
+      cursor: pointer;
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    /* File Browser Modal */
+    .file-browser-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+    }
+
+    .file-browser-content {
+      background: white;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .file-browser-header {
+      background: #faf9f8;
+      padding: 20px 24px;
+      border-bottom: 1px solid #edebe9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .file-browser-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #323130;
+    }
+
+    .file-browser-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #605e5c;
+      padding: 4px;
+    }
+
+    .file-browser-body {
+      padding: 24px;
+    }
+
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .file-card {
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .file-card:hover {
+      border-color: #0078d4;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .file-card.selected {
+      border-color: #0078d4;
+      background: #deecf9;
+    }
+
+    .file-preview {
+      width: 100%;
+      height: 80px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 24px;
+      color: #6c757d;
+    }
+
+    .file-info {
+      text-align: center;
+    }
+
+    .file-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #323130;
+      margin-bottom: 2px;
+      word-break: break-word;
+    }
+
+    .file-size {
+      font-size: 10px;
+      color: #8a8886;
+    }
+
+    /* Empty State */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #605e5c;
+      text-align: center;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #323130;
+    }
+
+    .empty-subtitle {
+      font-size: 14px;
+    }
+
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: 2000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      background: rgba(0,0,0,0.4);
     }
 
     .modal-content {
-      background-color: white;
+      background: white;
       margin: 5% auto;
       padding: 0;
       border-radius: 8px;
@@ -521,151 +942,181 @@
       max-width: 600px;
       max-height: 80vh;
       overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
     }
 
     .modal-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 20px;
-      border-radius: 8px 8px 0 0;
+      background: #faf9f8;
+      padding: 20px 24px;
+      border-bottom: 1px solid #edebe9;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .modal-body {
-      padding: 20px;
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #323130;
     }
 
-    .modal-image {
-      width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-
-    .modal-video {
-      width: 100%;
-      max-height: 300px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
-
-    .close {
-      color: white;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
+    .modal-close {
       background: none;
       border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #605e5c;
+      padding: 4px;
     }
 
-    .close:hover {
-      opacity: 0.7;
+    .modal-body {
+      padding: 24px;
     }
 
-    .modal-field {
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
+    .form-group {
+      margin-bottom: 16px;
     }
 
-    .modal-field:last-child {
-      border-bottom: none;
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #323130;
     }
 
-    .modal-label {
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 5px;
+    .form-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      font-size: 14px;
     }
 
-    .modal-value {
-      color: #333;
-      word-break: break-all;
+    .form-textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
     }
 
-    .modal-link {
-      color: #0A3161;
-      text-decoration: underline;
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #edebe9;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #323130;
+      border: 1px solid #d1d1d1;
+      padding: 8px 16px;
+      border-radius: 4px;
       cursor: pointer;
     }
 
-    .modal-link:hover {
-      color: #083050;
+    .btn-primary {
+      background: #0078d4;
+      color: white;
+      border: 1px solid #0078d4;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
     }
-    
-    /* Intro.js custom styling */
+
+    /* Status Messages */
+    .status-message {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      max-width: 400px;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      z-index: 3000;
+      display: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .status-success {
+      background: #dff6dd;
+      color: #107c10;
+      border: 1px solid #92c5f7;
+    }
+
+    .status-error {
+      background: #fde7e9;
+      color: #a80000;
+      border: 1px solid #fdb9c3;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 250px 1fr;
+      }
+      
+      .email-list-panel {
+        display: none;
+      }
+      
+      .email-list-panel.show-mobile {
+        display: flex;
+      }
+      
+      .reading-pane {
+        display: none;
+      }
+      
+      .reading-pane.show-mobile {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        display: none;
+      }
+    }
+
+    /* Intro.js Styling */
     .introjs-tooltip {
       max-width: 350px;
       font-size: 14px;
     }
 
     .introjs-button {
-      background: #0A3161 !important;
-      border: 1px solid #0A3161 !important;
+      background: #0078d4 !important;
+      border: 1px solid #0078d4 !important;
       color: white !important;
       padding: 8px 15px !important;
       border-radius: 4px !important;
     }
 
-    .introjs-button:hover {
-      background: #083050 !important;
-      border-color: #083050 !important;
-    }
-
     .introjs-skipbutton {
-      background: #6c757d !important;
-      border-color: #6c757d !important;
+      background: #605e5c !important;
+      border-color: #605e5c !important;
     }
 
     .introjs-progressbar {
-      background-color: #0A3161 !important;
-    }
-    
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .creation-layout {
-        grid-template-columns: 1fr;
-      }
-      .preview-panel {
-        min-height: 250px;
-      }
-      .filter-section {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    @media (max-width: 768px) {
-      .content {
-        padding: 10px 5px;
-      }
-      .page-title {
-        font-size: 2rem;
-      }
-      .filter-section {
-        grid-template-columns: 1fr;
-      }
-      .media-grid {
-        grid-template-columns: 1fr;
-      }
-      .toggle-group {
-        flex-wrap: wrap;
-      }
+      background-color: #0078d4 !important;
     }
   </style>
 </head>
 <body>
 
-<!-- Authentication Loading Screen -->
-<div id="authLoading" class="auth-loading">
-  <div class="spinner"></div>
-  <p>Verifying authentication...</p>
-</div>
-
 <header class="navbar">
   <div class="logo">
-    <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
+    <img src="logo.jpg" alt="Victory Vision Logo"
          onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
   </div>
   <nav>
@@ -675,9 +1126,9 @@
       <li><a href="media">Media</a></li>
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
+      <li><a href="contacts">Contacts</a></li>
+      <li><a href="messages" class="active">Messages</a></li>
       <li><a href="ads">Ads</a></li>
-       <li><a href="contacts">Contacts</a></li>
-       <li><a href="messages">Messages</a></li>
       <li><a href="ai">Analytics</a></li>
       <li><a href="settings">⚙️</a></li>
     </ul>
@@ -685,1024 +1136,1442 @@
   <div class="user-info">
     <span id="userEmail"></span>
     <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
-      📖 Take Tour
+      📖 Tour
     </button>
-    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+    <div id="subscriptionMedallion" class="subscription-medallion">
       <span class="plan-name">Bronze</span>
     </div>
   </div>
 </header>
 
-<div class="content">
-  <header class="page-header">
-    <h1 class="page-title">Media Library</h1>
-    <p class="page-subtitle">Create and manage your AI-generated images and videos</p>
-  </header>
-
-  <!-- Creation Section -->
-  <section class="card" data-intro="Switch between creating images or videos using AI. Toggle between different modes and types to access various creation tools." data-step="1">
-    <div class="section-header">
-      <h3 id="sectionTitle">🎨 AI Media Creation</h3>
-      <div class="toggle-group">
-        <button id="imageToggle" class="toggle-btn active" data-intro="Click here to switch to image generation mode. Create AI-powered images from text descriptions." data-step="2">🎨 Images</button>
-        <button id="videoToggle" class="toggle-btn" data-intro="Click here to switch to video generation mode. Create AI-powered videos from images and motion descriptions." data-step="3">🎬 Videos</button>
-      </div>
+<div class="main-container">
+  <!-- Left Sidebar -->
+  <div class="sidebar" data-intro="Navigate between your email folders. Inbox shows only received emails by default." data-step="1">
+    <div class="sidebar-header">
+      <button class="compose-btn" onclick="showCompose()">
+        ✏️ New Message
+      </button>
     </div>
     
-    <div class="creation-layout">
-      <!-- Forms Panel -->
-      <div class="forms-panel">
-        <!-- Create Image Form -->
-        <div id="createImageForm" class="creation-form active">
-          <div class="credits-display">
-            <div class="credits-number" id="imageCredits">Loading...</div>
-            <div class="credits-label">Image Credits Remaining</div>
-          </div>
-          
-          <form id="imageForm">
-            <div class="form-group">
-              <label for="imageChat">Description *</label>
-              <textarea id="imageChat" required placeholder="Describe the image you want to create..." data-intro="Describe what you want to create in detail. Be specific about style, colors, composition, and mood for better AI results." data-step="4"></textarea>
-            </div>
-            
-            <div class="form-group">
-              <label for="imageUpload">Reference Image (Optional)</label>
-              <input type="file" id="imageUpload" accept="image/*" data-intro="Upload a reference image to guide the AI generation. This helps create images in a similar style or composition." data-step="5">
-            </div>
-            
-            <div class="form-group">
-              <label>Existing Images (Click to reference)</label>
-              <div id="imageReferenceList" class="reference-list">
-                Loading available images...
-              </div>
-            </div>
-            
-            <button type="submit" class="create-btn" id="imageCreateBtn">🎨 Create Image</button>
-          </form>
-        </div>
-
-        <!-- Create Video Form -->
-        <div id="createVideoForm" class="creation-form">
-          <div class="credits-display">
-            <div class="credits-number" id="videoCredits">Loading...</div>
-            <div class="credits-label">Video Credits Remaining</div>
-          </div>
-          
-          <form id="videoForm">
-            <div class="form-group">
-              <label for="videoChat">Motion Description *</label>
-              <textarea id="videoChat" required placeholder="Describe the video motion you want to create..." data-intro="Describe the motion and animation you want in your video. Be specific about movement, camera angles, and visual effects." data-step="6"></textarea>
-            </div>
-            
-            <div class="form-group">
-              <label for="videoSourceImage">Source Image *</label>
-              <input type="file" id="videoSourceImage" accept="image/*" data-intro="Upload an image that will be animated into a video. Choose a high-quality image for best results." data-step="7">
-              <small>Upload an image or select from existing images below</small>
-            </div>
-            
-            <div class="form-group">
-              <label>Existing Images (Click to select)</label>
-              <div id="videoReferenceList" class="reference-list">
-                Loading available images...
-              </div>
-            </div>
-            
-            <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
-          </form>
-        </div>
+    <div class="folder-nav">
+      <div class="folder-item active" onclick="selectFolder('inbox')" data-folder="inbox">
+        <span class="folder-icon">📥</span>
+        <span>Inbox</span>
+        <span class="folder-count" id="inboxCount">0</span>
       </div>
+      <div class="folder-item" onclick="selectFolder('sent')" data-folder="sent">
+        <span class="folder-icon">📤</span>
+        <span>Sent Items</span>
+        <span class="folder-count" id="sentCount">0</span>
+      </div>
+      <div class="folder-item" onclick="selectFolder('drafts')" data-folder="drafts">
+        <span class="folder-icon">📝</span>
+        <span>Drafts</span>
+        <span class="folder-count" id="draftsCount">0</span>
+      </div>
+      <div class="folder-item" onclick="selectFolder('all')" data-folder="all">
+        <span class="folder-icon">📁</span>
+        <span>All Mail</span>
+        <span class="folder-count" id="allCount">0</span>
+      </div>
+    </div>
+  </div>
 
-      <!-- Preview Panel -->
-      <div class="preview-panel" id="previewPanel" data-intro="Generated content appears here for preview. You can see your images and videos immediately after creation." data-step="8">
-        <div>
-          <h4>📱 Preview</h4>
-          <p>Generated content will appear here</p>
-          <small>Create media to see a preview</small>
+  <!-- Email List Panel -->
+  <div class="email-list-panel" data-intro="Your emails are displayed here. Blue dot indicates unread messages." data-step="2">
+    <div class="email-list-header">
+      <h1 class="email-list-title" id="folderTitle">Inbox</h1>
+      <div class="email-actions">
+        <button class="action-btn" onclick="refreshEmails()">🔄</button>
+        <button class="action-btn" onclick="markAllRead()">✓ All</button>
+      </div>
+    </div>
+
+    <div class="search-filters" data-intro="Search emails and filter by contact tags for quick access to specific conversations." data-step="3">
+      <input type="text" class="search-box" id="emailSearch" placeholder="Search emails..." onkeyup="searchEmails()">
+      <div class="filter-tags" id="filterTags">
+        <!-- Dynamic contact tags will be populated here -->
+      </div>
+    </div>
+
+    <div class="email-list" id="emailList">
+      <div style="text-align: center; padding: 40px; color: #605e5c;">
+        Loading emails...
+      </div>
+    </div>
+  </div>
+
+  <!-- Reading Pane -->
+  <div class="reading-pane" id="readingPane" data-intro="Read and respond to emails here. Use the action buttons to reply, forward, or manage messages." data-step="4">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📧</div>
+      <div class="empty-title">Select an email to read</div>
+      <div class="empty-subtitle">Choose a message from your inbox to view it here</div>
+    </div>
+
+    <!-- Email View -->
+    <div id="emailView" style="display: none; height: 100%; flex-direction: column;">
+      <div class="reading-header">
+        <div class="reading-actions">
+          <button class="reading-btn primary" onclick="replyToEmail()">
+            ↩️ Reply
+          </button>
+          <button class="reading-btn" onclick="forwardEmail()">
+            ➡️ Forward
+          </button>
+          <button class="reading-btn" onclick="deleteCurrentEmail()">
+            🗑️ Delete
+          </button>
+          <button class="reading-btn" onclick="markAsRead()">
+            ✓ Mark Read
+          </button>
         </div>
         
-        <!-- Processing Overlay -->
-        <div id="processingOverlay" class="processing-overlay">
-          <div class="processing-spinner"></div>
-          <div class="processing-text" id="processingText">Processing...</div>
+        <div class="email-subject-display" id="emailSubject"></div>
+        
+        <div class="email-meta">
+          <span class="meta-label">To:</span>
+          <span class="meta-value" id="emailTo"></span>
+          <span class="meta-label">Date:</span>
+          <span class="meta-value" id="emailDate"></span>
+          <span class="meta-label">Opened:</span>
+          <span class="meta-value" id="emailOpened"></span>
+          <span class="meta-label">Clicked:</span>
+          <span class="meta-value" id="emailClicked"></span>
+        </div>
+      </div>
+
+      <div class="email-body-container">
+        <div class="email-body" id="emailBody"></div>
+        
+        <div class="attachments-section" id="attachmentsSection" style="display: none;">
+          <div class="attachments-header">📎 Attachments</div>
+          <div id="attachmentsList"></div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Filter Section -->
-  <section class="card">
-    <div class="section-header">
-      <h3>📁 Filter Media Assets</h3>
-    </div>
-    
-    <div class="filter-section" data-intro="Use these filters to find specific media files quickly. Filter by type, campaign, date range, or search by keywords." data-step="9">
-      <div class="form-group">
-        <label for="fileTypeFilter">File Type</label>
-        <select id="fileTypeFilter">
-          <option value="">All Types</option>
-          <option value="image">Images</option>
-          <option value="video">Videos</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="campaignFilter">Campaign</label>
-        <select id="campaignFilter">
-          <option value="">All Campaigns</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="dateFromFilter">Date From</label>
-        <input type="date" id="dateFromFilter">
-      </div>
-      <div class="form-group">
-        <label for="dateToFilter">Date To</label>
-        <input type="date" id="dateToFilter">
-      </div>
-      <div class="form-group">
-        <label for="searchFilter">Search</label>
-        <input type="text" id="searchFilter" placeholder="Search prompts, names...">
-      </div>
-      <button id="applyFilters">Apply Filters</button>
-      <button id="clearFilters" class="secondary">Clear</button>
-    </div>
-  </section>
+    <!-- Compose Form -->
+    <div class="compose-form" id="composeForm" data-intro="Compose new emails with templates, AI assistance, and file attachments for professional communication." data-step="5">
+      <div class="compose-header">
+        <div class="compose-actions">
+          <button class="reading-btn primary" onclick="sendEmail()">📤 Send</button>
+          <button class="reading-btn" onclick="saveDraft()">💾 Save Draft</button>
+          <button class="reading-btn" onclick="cancelCompose()">❌ Cancel</button>
+        </div>
 
-  <!-- Media Grid -->
-  <section id="mediaContainer" data-intro="Your created media files appear here. Click any item to view details, download, or delete. Media is organized by creation date and type." data-step="10">
-    <div class="loading">Loading your media library...</div>
-  </section>
+        <div class="template-section">
+          <div class="template-selector">
+            <span style="font-size: 13px; color: #605e5c; margin-right: 10px;">Templates:</span>
+            <button class="template-btn" onclick="loadTemplate('template1')">Professional</button>
+            <button class="template-btn" onclick="loadTemplate('template2')">Follow-up</button>
+            <button class="template-btn" onclick="loadTemplate('custom')">Custom</button>
+          </div>
+        </div>
 
-  <!-- Status Messages -->
-  <div id="statusMessage" class="status-message"></div>
-</div>
+        <div class="ai-assist-section">
+          <span style="font-size: 13px; color: #605e5c; margin-right: 10px;">AI Assist:</span>
+          <button class="ai-btn" onclick="aiAssist('professional')">Professional</button>
+          <button class="ai-btn" onclick="aiAssist('friendly')">Friendly</button>
+          <button class="ai-btn" onclick="aiAssist('persuasive')">Persuasive</button>
+        </div>
+      </div>
 
-<footer>
-  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
-  <nav>
-    <a href="privacy.html">Privacy Policy</a>
-    <a href="terms.html">Terms of Service</a>
-  </nav>
-</footer>
+      <div class="compose-fields">
+        <div class="compose-field">
+          <span class="field-label">From:</span>
+          <input type="email" class="field-input" id="composeFrom" readonly>
+        </div>
+        <div class="compose-field">
+          <span class="field-label">To:</span>
+          <div class="to-input-container">
+            <div id="selectedEmails"></div>
+            <input type="text" class="field-input" id="composeToInput" placeholder="Enter email addresses..." 
+                   onkeyup="handleEmailInput(event)" oninput="showEmailSuggestions()" autocomplete="off">
+            <div class="email-suggestions" id="emailSuggestions"></div>
+          </div>
+        </div>
+        <div class="compose-field" id="ccField" style="display: none;">
+          <span class="field-label">CC:</span>
+          <input type="email" class="field-input" id="composeCC" placeholder="CC recipients...">
+        </div>
+        <div class="compose-field" id="bccField" style="display: none;">
+          <span class="field-label">BCC:</span>
+          <input type="email" class="field-input" id="composeBCC" placeholder="BCC recipients...">
+        </div>
+        <div class="compose-field">
+          <span class="field-label">Subject:</span>
+          <input type="text" class="field-input" id="composeSubject" placeholder="Email subject...">
+        </div>
+      </div>
 
-<!-- Modal -->
-<div id="mediaModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modalTitle">Media Details</h3>
-      <button class="close" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-body" id="modalBody">
-      <!-- Content will be inserted here -->
+      <!-- File Attachment Section -->
+      <div class="attachment-section" data-intro="Attach files from your media library or upload new files to include with your emails." data-step="6">
+        <div class="attachment-controls">
+          <button class="attachment-btn" onclick="openFileBrowser()">📁 Browse Files</button>
+          <button class="attachment-btn secondary" onclick="uploadNewFile()">📤 Upload New</button>
+          <input type="file" id="fileUploadInput" style="display: none;" multiple onchange="handleFileUpload(event)">
+        </div>
+        <div class="attached-files" id="attachedFiles">
+          <!-- Attached files will appear here -->
+        </div>
+      </div>
+
+      <div class="compose-body-container">
+        <textarea class="compose-body" id="composeBody" placeholder="Write your message here..."></textarea>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- File Browser Modal -->
+<div id="fileBrowserModal" class="file-browser-modal">
+  <div class="file-browser-content">
+    <div class="file-browser-header">
+      <h2 class="file-browser-title">Select Files to Attach</h2>
+      <button class="file-browser-close" onclick="closeFileBrowser()">×</button>
+    </div>
+    <div class="file-browser-body">
+      <div class="file-grid" id="fileGrid">
+        <!-- Campaign files will be loaded here -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeFileBrowser()">Cancel</button>
+      <button class="btn-primary" onclick="attachSelectedFiles()">Attach Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- Signature Modal -->
+<div id="signatureModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Edit Email Signature</h2>
+      <button class="modal-close" onclick="closeSignatureModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Signature Text</label>
+        <textarea class="form-textarea" id="signatureText" rows="6" placeholder="Best regards,&#10;Your Name&#10;Your Company&#10;email@company.com"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSignatureModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveSignature()">Save Signature</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template Management Modal -->
+<div id="templateModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Manage Email Templates</h2>
+      <button class="modal-close" onclick="closeTemplateModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Template Name</label>
+        <select class="form-input" id="templateSelect" onchange="loadSelectedTemplate()">
+          <option value="">Select template...</option>
+          <option value="template1">Professional Template</option>
+          <option value="template2">Follow-up Template</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <input type="text" class="form-input" id="templateSubject" placeholder="Template subject...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Body</label>
+        <textarea class="form-textarea" id="templateBody" rows="8" placeholder="Template content..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeTemplateModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveTemplate()">Save Template</button>
+    </div>
+  </div>
+</div>
+
+<!-- Status Message -->
+<div id="statusMessage" class="status-message"></div>
+
 <script>
-  // Supabase configuration for auth only
-  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
-  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-  
-  // n8n endpoints
-  const ENDPOINTS = {
-    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
-    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
-    createImage: 'https://victoryvision.app.n8n.cloud/webhook/images/create',
-    createVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/create',
-    getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get'
-  };
-  
-  let CUSTOMER_ID = null;
-  let authToken = null;
-  let userCredits = { image_credits: 0, video_credits: 0 };
+// Supabase configuration
+const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // State management
-  let allMediaFiles = [];
-  let filteredMediaFiles = [];
-  let imageFiles = [];
-  let videoFiles = [];
-  let campaigns = [];
-  let selectedImageReference = null;
-  let selectedVideoReference = null;
-  
-  // UI state
-  let currentType = 'image'; // 'image' or 'video'
+// API endpoints - preserved from original
+const ENDPOINTS = {
+  getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+  getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
+  getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
+  getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+  sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
+  saveDraft: 'https://victoryvision.app.n8n.cloud/webhook/emails/draft',
+  deleteEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/delete',
+  markAsRead: 'https://victoryvision.app.n8n.cloud/webhook/emails/mark-read',
+  aiAssist: 'https://victoryvision.app.n8n.cloud/webhook/emails/ai-assist',
+  updateSignature: 'https://victoryvision.app.n8n.cloud/webhook/user/signature',
+  updateTemplate: 'https://victoryvision.app.n8n.cloud/webhook/user/template'
+};
 
-  // DOM elements
-  const mediaContainer = document.getElementById('mediaContainer');
-  const searchFilter = document.getElementById('searchFilter');
-  const fileTypeFilter = document.getElementById('fileTypeFilter');
-  const campaignFilter = document.getElementById('campaignFilter');
-  const dateFromFilter = document.getElementById('dateFromFilter');
-  const dateToFilter = document.getElementById('dateToFilter');
-  const applyFiltersBtn = document.getElementById('applyFilters');
-  const clearFiltersBtn = document.getElementById('clearFilters');
+// Global variables
+let CUSTOMER_ID = null;
+let authToken = null;
+let allEmails = [];
+let filteredEmails = [];
+let allContacts = [];
+let campaignFiles = [];
+let selectedEmail = null;
+let currentFolder = 'inbox';
+let userSignature = '';
+let userTemplates = { template1: '', template2: '' };
+let selectedEmailAddresses = [];
+let attachedFiles = [];
+let selectedFiles = [];
+let userData = null;
+let suggestionIndex = -1;
 
-  // Tour completion tracking
-  function completeTour() {
-    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
-  }
-
-  // Check if tour has been completed for this page
-  function hasCompletedTour() {
-    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
-  }
-
-  // Start tour function
-  function startTour() {
-    introJs().setOptions({
-      showProgress: true,
-      showBullets: false,
-      exitOnOverlayClick: false,
-      nextLabel: 'Next →',
-      prevLabel: '← Back',
-      doneLabel: 'Complete!',
-      skipLabel: 'Skip Tour'
-    }).oncomplete(completeTour).onexit(completeTour).start();
-  }
-
-  // Authentication
-  async function checkAuthentication() {
-    try {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      
-      if (error) {
-        console.error('Auth error:', error);
-        return false;
+// Initialize
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    const isAuthenticated = await checkAuthentication();
+    if (isAuthenticated) {
+      await Promise.all([
+        loadUserData(),
+        loadContacts(),
+        loadEmails(),
+        loadCampaignFiles()
+      ]);
+      setupEventListeners();
+      if (!hasCompletedTour()) {
+        setTimeout(() => startTour(), 1000);
       }
-
-      if (session && session.user) {
-        CUSTOMER_ID = session.user.email;
-        authToken = session.access_token;
-        document.getElementById('userEmail').textContent = CUSTOMER_ID;
-        return true;
-      }
-
-      return false;
-    } catch (e) {
-      console.error('Auth check error:', e);
-      return false;
-    }
-  }
-
-  function redirectToLogin() {
-    localStorage.removeItem('vv_session');
-    window.location.href = 'login.html';
-  }
-
-  async function logout() {
-    try {
-      await supabaseClient.auth.signOut();
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    } catch (e) {
-      console.error('Logout error:', e);
-      localStorage.removeItem('vv_session');
+    } else {
       redirectToLogin();
     }
+  } catch (error) {
+    console.error('Initialization failed:', error);
+    showStatus('Failed to initialize. Please refresh the page.', true);
   }
+});
 
-  // API call function
-  async function apiCall(endpoint, data = {}) {
-    try {
-      const url = endpoint.includes('/user/get') ? 
-        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
-        endpoint;
-      
-      const requestOptions = {
-        method: endpoint.includes('/user/get') ? 'GET' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Customer-ID': CUSTOMER_ID,
-          'Authorization': authToken ? `Bearer ${authToken}` : ''
-        }
-      };
+// Authentication - preserved
+async function checkAuthentication() {
+  try {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (error) throw error;
+    
+    if (session?.user) {
+      CUSTOMER_ID = session.user.email;
+      authToken = session.access_token;
+      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.error('Auth error:', e);
+    return false;
+  }
+}
 
-      if (!endpoint.includes('/user/get')) {
-        requestOptions.body = JSON.stringify({
-          customer_id: CUSTOMER_ID,
-          ...data
-        });
+function redirectToLogin() {
+  localStorage.removeItem('vv_session');
+  window.location.href = 'login.html';
+}
+
+// API calls - preserved
+async function apiCall(endpoint, data = {}) {
+  try {
+    const url = endpoint.includes('/user/get') || endpoint.includes('/media/get') ? 
+      `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+      endpoint;
+    
+    const requestOptions = {
+      method: endpoint.includes('/user/get') || endpoint.includes('/media/get') ? 'GET' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
       }
+    };
 
-      const response = await fetch(url, requestOptions);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('API call failed:', error);
-      throw error;
-    }
-  }
-
-  // Toggle functions
-  function setupToggles() {
-    const imageToggle = document.getElementById('imageToggle');
-    const videoToggle = document.getElementById('videoToggle');
-    const sectionTitle = document.getElementById('sectionTitle');
-
-    // Type toggles (Image/Video)
-    imageToggle.addEventListener('click', () => {
-      currentType = 'image';
-      imageToggle.classList.add('active');
-      videoToggle.classList.remove('active');
-      updateFormVisibility();
-      updateSectionTitle();
-    });
-
-    videoToggle.addEventListener('click', () => {
-      currentType = 'video';
-      videoToggle.classList.add('active');
-      imageToggle.classList.remove('active');
-      updateFormVisibility();
-      updateSectionTitle();
-    });
-
-    function updateSectionTitle() {
-      const typeText = currentType === 'image' ? '🎨 Images' : '🎬 Videos';
-      sectionTitle.textContent = `${typeText} - Create`;
-    }
-
-    function updateFormVisibility() {
-      // Hide all forms
-      document.querySelectorAll('.creation-form').forEach(form => {
-        form.classList.remove('active');
-      });
-
-      // Show the correct form
-      const formId = `create${currentType.charAt(0).toUpperCase() + currentType.slice(1)}Form`;
-      const targetForm = document.getElementById(formId);
-      if (targetForm) {
-        targetForm.classList.add('active');
-      }
-    }
-  }
-
-  // Update credits display
-  function updateCreditsDisplay() {
-    console.log('updateCreditsDisplay called with:', userCredits);
-    const imageCreditsElement = document.getElementById('imageCredits');
-    const videoCreditsElement = document.getElementById('videoCredits');
-    
-    if (imageCreditsElement) {
-      imageCreditsElement.textContent = userCredits.image_credits;
-    }
-    if (videoCreditsElement) {
-      videoCreditsElement.textContent = userCredits.video_credits;
-    }
-    
-    // Enable/disable buttons based on credits
-    const imageBtn = document.getElementById('imageCreateBtn');
-    const videoBtn = document.getElementById('videoCreateBtn');
-    
-    if (imageBtn) {
-      imageBtn.disabled = userCredits.image_credits <= 0;
-    }
-    if (videoBtn) {
-      videoBtn.disabled = userCredits.video_credits <= 0;
-    }
-  }
-
-  async function loadUserData() {
-    try {
-      const response = await apiCall(ENDPOINTS.getUserData);
-      console.log('Raw response:', response);
-      
-      // Get the first element from the array
-      const userData = response[0];
-      console.log('User data (first element):', userData);
-      
-      userCredits = {
-        image_credits: userData.image_credits || 0,
-        video_credits: userData.video_credits || 0
-      };
-      
-      console.log('userCredits after assignment:', userCredits);
-      
-      // Update subscription medallion
-      const medallion = document.getElementById('subscriptionMedallion');
-      const plan = userData.subscription_plan || 'bronze';
-      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
-      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-      
-      updateCreditsDisplay();
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      showStatus('Error loading user data: ' + error.message, true);
-    }
-  }
-
-  // Load campaigns for filter dropdown
-  async function loadCampaigns() {
-    try {
-      const data = await apiCall(ENDPOINTS.getCampaigns);
-      campaigns = Array.isArray(data) ? data : [];
-      
-      // Populate campaign filter dropdown
-      const dropdown = campaignFilter;
-      dropdown.innerHTML = '<option value="">All Campaigns</option>';
-      
-      campaigns.forEach(campaign => {
-        const option = document.createElement('option');
-        option.value = campaign.id;
-        option.textContent = campaign.name || `Campaign ${campaign.id.slice(0, 8)}`;
-        dropdown.appendChild(option);
-      });
-      
-    } catch (error) {
-      console.error('Error loading campaigns:', error);
-    }
-  }
-
-  // Load media files from n8n webhook
-  async function loadMediaFiles() {
-    try {
-      const data = await apiCall(ENDPOINTS.getMedia);
-      console.log('Response from n8n:', data);
-      
-      // Handle response from n8n webhook
-      if (data && Array.isArray(data)) {
-        allMediaFiles = data;
-      } else if (data && data.media && Array.isArray(data.media)) {
-        allMediaFiles = data.media;
-      } else {
-        console.log('Unexpected response structure:', data);
-        allMediaFiles = [];
-      }
-
-      console.log(`Loaded ${allMediaFiles.length} media files`);
-      filteredMediaFiles = [...allMediaFiles];
-      
-      // Separate images and videos
-      imageFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'image');
-      videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
-      
-      populateReferenceLists();
-      
-    } catch (error) {
-      console.error('Error loading media:', error);
-      allMediaFiles = [];
-      filteredMediaFiles = [];
-      showStatus('Error loading media files: ' + error.message, true);
-    }
-  }
-
-  // Populate reference lists
-  function populateReferenceLists() {
-    const imageList = document.getElementById('imageReferenceList');
-    const videoList = document.getElementById('videoReferenceList');
-    
-    if (imageFiles.length === 0) {
-      const noImagesMsg = '<div style="color: #999; text-align: center; padding: 10px;">No images available</div>';
-      imageList.innerHTML = noImagesMsg;
-      videoList.innerHTML = noImagesMsg;
-      return;
-    }
-    
-    const imageItems = imageFiles.map(file => `
-      <div class="reference-item" onclick="selectImageReference('${file.name}', 'image')">${file.name}</div>
-    `).join('');
-    
-    const videoItems = imageFiles.map(file => `
-      <div class="reference-item" onclick="selectImageReference('${file.name}', 'video')">${file.name}</div>
-    `).join('');
-    
-    imageList.innerHTML = imageItems;
-    videoList.innerHTML = videoItems;
-  }
-
-  // Select image reference
-  function selectImageReference(fileName, type) {
-    if (type === 'image') {
-      selectedImageReference = fileName;
-      document.querySelectorAll('#imageReferenceList .reference-item').forEach(item => {
-        item.classList.remove('selected');
-        if (item.textContent === fileName) {
-          item.classList.add('selected');
-        }
-      });
-    } else if (type === 'video') {
-      selectedVideoReference = fileName;
-      document.querySelectorAll('#videoReferenceList .reference-item').forEach(item => {
-        item.classList.remove('selected');
-        if (item.textContent === fileName) {
-          item.classList.add('selected');
-        }
+    if (!endpoint.includes('/user/get') && !endpoint.includes('/media/get')) {
+      requestOptions.body = JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        ...data
       });
     }
-  }
 
-  // Show/Hide Processing functions
-  function showProcessing(message = 'Processing...') {
-    const overlay = document.getElementById('processingOverlay');
-    const text = document.getElementById('processingText');
-    text.textContent = message;
-    overlay.style.display = 'flex';
+    const response = await fetch(url, requestOptions);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
   }
+}
 
-  function hideProcessing() {
-    const overlay = document.getElementById('processingOverlay');
-    overlay.style.display = 'none';
-  }
-
-  // Show preview in right panel
-  function showPreview(mediaData) {
-    const previewPanel = document.getElementById('previewPanel');
+// Load user data and set up signature - preserved with enhancements
+async function loadUserData() {
+  try {
+    const response = await apiCall(ENDPOINTS.getUserData);
+    userData = Array.isArray(response) ? response[0] : response;
     
-    if (!mediaData || !mediaData.URL) {
-      return;
-    }
-
-    const isVideo = mediaData.file_type && mediaData.file_type.includes('video');
+    // Update subscription medallion
+    const medallion = document.getElementById('subscriptionMedallion');
+    const plan = userData.subscription_plan || 'Bronze';
+    medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+    medallion.querySelector('.plan-name').textContent = plan;
     
-    previewPanel.innerHTML = `
-      <div class="preview-content">
-        ${isVideo ? 
-          `<video controls style="max-width: 100%; max-height: 350px; border-radius: 8px;">
-            <source src="${mediaData.URL}" type="${mediaData.mime_type}">
-          </video>` :
-          `<img src="${mediaData.URL}" alt="Generated content" class="preview-content">`
-        }
-      </div>
-      <div class="preview-info">
-        <div class="preview-title">${mediaData.name || 'Generated Content'}</div>
-        <div class="preview-description">${mediaData.prompt || mediaData.chat || 'No description'}</div>
-      </div>
-      
-      <!-- Processing Overlay -->
-      <div id="processingOverlay" class="processing-overlay">
-        <div class="processing-spinner"></div>
-        <div class="processing-text" id="processingText">Processing...</div>
-      </div>
-    `;
+    // Set compose from email to vv_email
+    const fromEmail = userData.vv_email || userData.email || CUSTOMER_ID;
+    document.getElementById('composeFrom').value = fromEmail;
+    
+    // Load signature with company name and user name
+    const defaultSignature = `Best regards,\n${userData.name || 'Your Name'}\n${userData.company || 'Your Company'}\n${fromEmail}`;
+    userSignature = userData.signature || defaultSignature;
+    
+    // Load templates
+    userTemplates.template1 = userData.template1 || 'Subject: Professional Inquiry\n\nDear [Name],\n\nI hope this email finds you well. I am reaching out regarding [topic].\n\n[Your message here]\n\nI look forward to hearing from you.\n\n' + userSignature;
+    userTemplates.template2 = userData.template2 || 'Subject: Following Up\n\nHi [Name],\n\nI wanted to follow up on our previous conversation about [topic].\n\n[Additional details]\n\nPlease let me know your thoughts.\n\n' + userSignature;
+    
+  } catch (error) {
+    console.error('Error loading user data:', error);
   }
+}
 
-  // Convert file to base64
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
+// Load contacts for email suggestions
+async function loadContacts() {
+  try {
+    const data = await apiCall(ENDPOINTS.getContacts);
+    allContacts = Array.isArray(data) ? data : (data.contacts || []);
+    console.log(`Loaded ${allContacts.length} contacts`);
+    generateContactTags();
+  } catch (error) {
+    console.error('Error loading contacts:', error);
+    allContacts = [];
   }
+}
 
-  // Create image
-  async function createImage(formData) {
-    try {
-      if (userCredits.image_credits <= 0) {
-        throw new Error('Insufficient image credits');
-      }
-
-      showStatus('Creating image... This may take a few moments.');
-      showProcessing('Creating image...');
-      
-      const payload = {
-        chat: formData.get('chat')
-      };
-
-      // Add reference image if provided
-      const referenceImage = formData.get('reference_image');
-      if (referenceImage && referenceImage.size > 0) {
-        payload.image_file = await fileToBase64(referenceImage);
-      } else if (selectedImageReference) {
-        payload.existing_image = selectedImageReference;
-      }
-
-      const result = await apiCall(ENDPOINTS.createImage, payload);
-
-      if (result.success !== false) {
-        hideProcessing();
-        showStatus('Image created successfully!');
-        userCredits.image_credits--;
-        updateCreditsDisplay();
-        await loadMediaFiles();
-        applyFilters();
-        showPreview(result.data);
-        document.getElementById('imageForm').reset();
-        selectedImageReference = null;
-        populateReferenceLists();
-      } else {
-        hideProcessing();
-        throw new Error(result.message || 'Image creation failed');
-      }
-    } catch (error) {
-      hideProcessing();
-      console.error('Error creating image:', error);
-      showStatus('Error creating image: ' + error.message, true);
-    }
+// Load campaign files for attachments
+async function loadCampaignFiles() {
+  try {
+    const data = await apiCall(ENDPOINTS.getMedia);
+    campaignFiles = Array.isArray(data) ? data : (data.files || []);
+    console.log(`Loaded ${campaignFiles.length} campaign files`);
+  } catch (error) {
+    console.error('Error loading campaign files:', error);
+    campaignFiles = [];
   }
+}
 
-  // Create video
-  async function createVideo(formData) {
-    try {
-      if (userCredits.video_credits <= 0) {
-        throw new Error('Insufficient video credits');
-      }
-
-      showStatus('Creating video... This may take several minutes.');
-      showProcessing('Creating video...');
-      
-      const payload = {
-        chat: formData.get('chat')
-      };
-
-      // Add source image - required
-      const sourceImage = formData.get('source_image');
-      if (sourceImage && sourceImage.size > 0) {
-        payload.image_file = await fileToBase64(sourceImage);
-      } else if (selectedVideoReference) {
-        payload.existing_image = selectedVideoReference;
-      } else {
-        hideProcessing();
-        throw new Error('Source image is required for video creation');
-      }
-
-      const result = await apiCall(ENDPOINTS.createVideo, payload);
-
-      if (result.success !== false) {
-        hideProcessing();
-        showStatus('Video creation started! It will appear in your media library when ready.');
-        userCredits.video_credits--;
-        updateCreditsDisplay();
-        document.getElementById('videoForm').reset();
-        selectedVideoReference = null;
-        populateReferenceLists();
-      } else {
-        hideProcessing();
-        throw new Error(result.message || 'Video creation failed');
-      }
-    } catch (error) {
-      hideProcessing();
-      console.error('Error creating video:', error);
-      showStatus('Error creating video: ' + error.message, true);
-    }
-  }
-
-  // Apply filters
-  function applyFilters() {
-    const searchTerm = searchFilter.value.toLowerCase();
-    const fileType = fileTypeFilter.value;
-    const campaignId = campaignFilter.value;
-    const dateFrom = dateFromFilter.value ? new Date(dateFromFilter.value) : null;
-    const dateTo = dateToFilter.value ? new Date(dateToFilter.value) : null;
-
-    filteredMediaFiles = allMediaFiles.filter(file => {
-      // File type filter
-      if (fileType && !getFileType(file.file_type).includes(fileType)) {
-        return false;
-      }
-
-      // Campaign filter
-      if (campaignId && file.campaign_id !== campaignId) {
-        return false;
-      }
-
-      // Date filters
-      if (file.created_at) {
-        const fileDate = new Date(file.created_at);
-        if (dateFrom && fileDate < dateFrom) {
-          return false;
-        }
-        if (dateTo && fileDate > dateTo) {
-          return false;
-        }
-      }
-
-      // Search filter
-      if (searchTerm) {
-        const searchableText = [
-          file.name || '',
-          file.prompt || ''
-        ].join(' ').toLowerCase();
-        
-        if (!searchableText.includes(searchTerm)) {
-          return false;
-        }
-      }
-
+// Load emails - preserved with enhancements
+async function loadEmails() {
+  try {
+    const data = await apiCall(ENDPOINTS.getEmails);
+    allEmails = Array.isArray(data) ? data : (data.emails || []);
+    
+    // Process emails and clean up sent drafts
+    allEmails = allEmails.filter(email => {
+      // Remove drafts that have been sent (have both draft=true and sent_at)
+      if (email.draft && email.sent_at) return false;
       return true;
     });
-
-    renderMediaGrid();
+    
+    // Sort by date
+    allEmails.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    updateFolderCounts();
+    filterEmailsByFolder(currentFolder);
+    
+    console.log(`Loaded ${allEmails.length} emails`);
+  } catch (error) {
+    console.error('Error loading emails:', error);
+    allEmails = [];
+    renderEmailList();
   }
+}
 
-  // Clear filters
-  function clearFilters() {
-    searchFilter.value = '';
-    fileTypeFilter.value = '';
-    campaignFilter.value = '';
-    dateFromFilter.value = '';
-    dateToFilter.value = '';
-    applyFilters();
+// Generate contact tags from tags field only
+function generateContactTags() {
+  const contactTags = new Set();
+  
+  allContacts.forEach(contact => {
+    if (contact.tags) {
+      const tags = Array.isArray(contact.tags) ? contact.tags : contact.tags.split(',');
+      tags.forEach(tag => {
+        if (tag.trim()) contactTags.add(tag.trim());
+      });
+    }
+  });
+  
+  const filterTags = document.getElementById('filterTags');
+  filterTags.innerHTML = '';
+  
+  // Add only actual contact tags (limit to 12 for space)
+  [...contactTags].slice(0, 12).forEach(tag => {
+    const tagEl = document.createElement('div');
+    tagEl.className = 'filter-tag';
+    tagEl.textContent = tag;
+    tagEl.onclick = () => filterByTag(tag);
+    filterTags.appendChild(tagEl);
+  });
+}
+
+// Update folder counts
+function updateFolderCounts() {
+  const inboxEmails = allEmails.filter(email => email.inbound && !email.opened_at);
+  const sentEmails = allEmails.filter(email => !email.inbound && !email.draft && email.body);
+  const draftEmails = allEmails.filter(email => email.draft || (!email.body || email.body.trim() === ''));
+  
+  document.getElementById('inboxCount').textContent = inboxEmails.length;
+  document.getElementById('sentCount').textContent = sentEmails.length;
+  document.getElementById('draftsCount').textContent = draftEmails.length;
+  document.getElementById('allCount').textContent = allEmails.length;
+}
+
+// Filter emails by folder
+function filterEmailsByFolder(folder) {
+  currentFolder = folder;
+  
+  // Update layout based on folder
+  const mainContainer = document.querySelector('.main-container');
+  const emailListPanel = document.querySelector('.email-list-panel');
+  
+  if (folder === 'sent' || folder === 'drafts') {
+    mainContainer.classList.add('sent-view');
+    emailListPanel.style.display = 'none';
+  } else {
+    mainContainer.classList.remove('sent-view');
+    emailListPanel.style.display = 'flex';
   }
+  
+  // Update active folder
+  document.querySelectorAll('.folder-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  document.querySelector(`[data-folder="${folder}"]`).classList.add('active');
+  
+  switch (folder) {
+    case 'inbox':
+      filteredEmails = allEmails.filter(email => email.inbound);
+      document.getElementById('folderTitle').textContent = 'Inbox';
+      break;
+    case 'sent':
+      filteredEmails = allEmails.filter(email => !email.inbound && !email.draft && email.body);
+      document.getElementById('folderTitle').textContent = 'Sent Items';
+      break;
+    case 'drafts':
+      filteredEmails = allEmails.filter(email => email.draft || (!email.body || email.body.trim() === ''));
+      document.getElementById('folderTitle').textContent = 'Drafts';
+      break;
+    case 'all':
+      filteredEmails = [...allEmails];
+      document.getElementById('folderTitle').textContent = 'All Mail';
+      break;
+  }
+  
+  renderEmailList();
+}
 
-  // Render media grid
-  function renderMediaGrid() {
-    if (filteredMediaFiles.length === 0) {
-      if (allMediaFiles.length === 0) {
-        showEmptyState();
-      } else {
-        showNoResultsState();
+// Filter emails by tag
+function filterByTag(tag) {
+  const tagElement = event.target;
+  tagElement.classList.toggle('active');
+  
+  if (tagElement.classList.contains('active')) {
+    // Find contacts with this exact tag
+    const contactsWithTag = allContacts.filter(contact => {
+      if (contact.tags) {
+        const tags = Array.isArray(contact.tags) ? contact.tags : contact.tags.split(',');
+        return tags.some(t => t.trim() === tag);
       }
-      return;
-    }
-
-    const grid = document.createElement('div');
-    grid.className = 'media-grid';
-
-    filteredMediaFiles.forEach(file => {
-      const card = createMediaCard(file);
-      grid.appendChild(card);
+      return false;
     });
-
-    mediaContainer.innerHTML = '';
-    mediaContainer.appendChild(grid);
-  }
-
-  // Create media card with modal functionality
-  function createMediaCard(file) {
-    const card = document.createElement('div');
-    card.className = 'media-card';
-    card.style.cursor = 'pointer';
-    card.onclick = () => openModal(file);
-
-    const fileType = getFileType(file.file_type);
-    const previewUrl = file.URL;
     
-    let createdDate = 'Unknown';
-    if (file.created_at) {
-      try {
-        createdDate = new Date(file.created_at).toLocaleDateString();
-      } catch (e) {
-        createdDate = file.created_at;
-      }
-    }
+    const contactEmails = contactsWithTag.map(c => c.email).filter(Boolean);
+    
+    filteredEmails = filteredEmails.filter(email => {
+      return contactEmails.includes(email.from) || contactEmails.includes(email.to);
+    });
+  } else {
+    filterEmailsByFolder(currentFolder);
+  }
+  
+  renderEmailList();
+}
 
-    card.innerHTML = `
-      <div class="media-preview">
-        ${renderMediaPreview(file, previewUrl)}
-        ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
+// Render email list - Fixed to ensure vertical stacking
+function renderEmailList() {
+  const emailList = document.getElementById('emailList');
+  
+  if (filteredEmails.length === 0) {
+    emailList.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #605e5c;">
+        <div style="font-size: 24px; margin-bottom: 10px;">🔭</div>
+        <div>No emails in this folder</div>
       </div>
-      <div class="media-info">
-        <h3 class="media-title">${file.name || 'Untitled'}</h3>
-        <p class="media-description">${file.prompt || 'No description available'}</p>
-        <div class="media-meta">
-          <div class="meta-item">
-            <span class="meta-label">Created:</span>
-            ${createdDate}
+    `;
+    return;
+  }
+  
+  emailList.innerHTML = filteredEmails.map(email => {
+    const isSelected = selectedEmail && selectedEmail.id === email.id;
+    const isUnread = !email.opened_at && email.inbound;
+    const sender = email.inbound ? (email.from || 'Unknown') : (email.to || 'Unknown');
+    const senderInitial = sender.charAt(0).toUpperCase();
+    
+    return `
+      <div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" 
+           onclick="selectEmail(${email.id})">
+        <div class="email-avatar">${senderInitial}</div>
+        <div class="email-content">
+          <div class="email-header-row">
+            <div class="email-sender">${sender}</div>
+            <div class="email-time">${formatDate(email.created_at)}</div>
           </div>
-          <div class="meta-item">
-            <span class="meta-label">Size:</span>
-            ${file.file_size || 'N/A'}
-          </div>
+          <div class="email-subject">${email.subject || 'No Subject'}</div>
+          <div class="email-preview">${getEmailPreview(email.body)}</div>
         </div>
+        ${email.attachments && email.attachments.length > 0 ? '<div class="flag">📎</div>' : ''}
+        ${email.replied_at ? '<div class="flag">↩️</div>' : ''}
       </div>
     `;
-    return card;
-  }
+  }).join('');
+}
 
-  // Render media preview
-  function renderMediaPreview(file, previewUrl) {
-    const fileType = getFileType(file.file_type);
-    
-    if (fileType === 'video' && file.URL) {
-      return `<video controls preload="metadata" style="background: #000;">
-        <source src="${file.URL}" type="${file.mime_type}">
-        Your browser does not support the video tag.
-      </video>`;
-    } else if (fileType === 'image' && previewUrl) {
-      return `<img src="${previewUrl}" alt="${file.name}" loading="lazy" 
-               onerror="this.parentElement.innerHTML='<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;color:#999;&quot;>📷</div>'">`;
-    } else {
-      return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">
-        ${fileType === 'video' ? '🎬' : '📷'}
-      </div>`;
-    }
-  }
-
-  // Modal functions
-  function openModal(file) {
-    const modal = document.getElementById('mediaModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalBody = document.getElementById('modalBody');
-    
-    modalTitle.textContent = file.name || 'Untitled';
-    
-    const fileType = getFileType(file.file_type);
-    const mediaPreview = fileType === 'video' ? 
-      `<video controls class="modal-video"><source src="${file.URL}" type="${file.mime_type}"></video>` :
-      `<img src="${file.URL}" alt="${file.name}" class="modal-image">`;
-    
-    modalBody.innerHTML = `
-      ${mediaPreview}
-      
-      <div class="modal-field">
-        <div class="modal-label">Name:</div>
-        <div class="modal-value">${file.name || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">URL:</div>
-        <div class="modal-value">
-          <span class="modal-link" onclick="window.open('${file.URL}', '_blank')">${file.URL}</span>
-        </div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">Campaign Name:</div>
-        <div class="modal-value">${file.campaign_name || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">File Type:</div>
-        <div class="modal-value">${file.file_type || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">File Size:</div>
-        <div class="modal-value">${file.file_size || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">Prompt:</div>
-        <div class="modal-value">${file.prompt || 'N/A'}</div>
-      </div>
-      
-      <div style="margin-top: 20px;">
-        <button onclick="deleteFile('${file.id}', '${fileType}')" style="background: #dc3545;">Delete File</button>
-      </div>
-    `;
-    
-    modal.style.display = 'block';
-  }
-
-  function closeModal() {
-    document.getElementById('mediaModal').style.display = 'none';
-  }
-
-  function deleteFile(fileId, fileType) {
-    if (confirm('Are you sure you want to delete this file?')) {
-      const endpoint = fileType === 'video' ? 
-        'https://victoryvision.app.n8n.cloud/webhook/videos/remove' :
-        'https://victoryvision.app.n8n.cloud/webhook/images/remove';
-      
-      apiCall(endpoint, { id: fileId })
-        .then(() => {
-          showStatus('File deleted successfully!');
-          closeModal();
-          loadMediaFiles();
-          applyFilters();
-        })
-        .catch(error => {
-          showStatus('Error deleting file: ' + error.message, true);
-        });
-    }
-  }
-
-  // Close modal when clicking outside
-  window.onclick = function(event) {
-    const modal = document.getElementById('mediaModal');
-    if (event.target === modal) {
-      closeModal();
-    }
-  }
-
-  // Utility functions
-  function getFileType(fileType) {
-    if (!fileType) return 'unknown';
-    if (fileType.toLowerCase().includes('video') || fileType.toLowerCase().includes('mp4')) return 'video';
-    if (fileType.toLowerCase().includes('image') || fileType.toLowerCase().includes('jpeg') || fileType.toLowerCase().includes('jpg') || fileType.toLowerCase().includes('png')) return 'image';
-    return 'file';
-  }
-
-  function showEmptyState() {
-    mediaContainer.innerHTML = `
-      <div class="empty-state">
-        <h3>No media files yet</h3>
-        <p>Create your first AI-generated image or video using the tools above.</p>
-      </div>
-    `;
-  }
-
-  function showNoResultsState() {
-    mediaContainer.innerHTML = `
-      <div class="empty-state">
-        <h3>No media files match your filters</h3>
-        <p>Try adjusting your search criteria or clearing the filters.</p>
-      </div>
-    `;
-  }
-
-  function showStatus(message, isError = false) {
-    const statusDiv = document.getElementById('statusMessage');
-    statusDiv.textContent = message;
-    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
-    statusDiv.style.display = 'block';
-    
-    setTimeout(() => {
-      statusDiv.style.display = 'none';
-    }, 5000);
-  }
-
-  // Event listeners
-  function setupEventListeners() {
-    // Setup toggles
-    setupToggles();
-
-    // Image creation form
-    document.getElementById('imageForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('imageChat').value);
-      formData.append('reference_image', document.getElementById('imageUpload').files[0]);
-      await createImage(formData);
-    });
-
-    // Video creation form
-    document.getElementById('videoForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('videoChat').value);
-      formData.append('source_image', document.getElementById('videoSourceImage').files[0]);
-      await createVideo(formData);
-    });
-
-    // Filter controls
-    applyFiltersBtn.addEventListener('click', applyFilters);
-    clearFiltersBtn.addEventListener('click', clearFilters);
-
-    // Auto-apply filters on change for some fields
-    [fileTypeFilter, campaignFilter, dateFromFilter, dateToFilter].forEach(element => {
-      element.addEventListener('change', applyFilters);
-    });
-
-    // Debounced search
-    let searchTimeout;
-    searchFilter.addEventListener('input', () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(applyFilters, 300);
-    });
-  }
-
-  // Initialize page
-  async function init() {
+// Select and display email
+async function selectEmail(emailId) {
+  const email = allEmails.find(e => e.id === emailId);
+  if (!email) return;
+  
+  selectedEmail = email;
+  
+  // Update selection in list
+  document.querySelectorAll('.email-item').forEach(item => {
+    item.classList.remove('selected');
+  });
+  event.target.closest('.email-item').classList.add('selected');
+  
+  // Show email view
+  showEmailView(email);
+  
+  // Mark as read if unread
+  if (!email.opened_at && email.inbound) {
     try {
-      document.getElementById('authLoading').style.display = 'flex';
-      
-      const isAuthenticated = await checkAuthentication();
-      
-      if (isAuthenticated) {
-        document.getElementById('authLoading').style.display = 'none';
-        await Promise.all([
-          loadUserData(),
-          loadCampaigns(),
-          loadMediaFiles()
-        ]);
-        setupEventListeners();
-        applyFilters();
-        
-        // Auto-start tour for new users
-        if (!hasCompletedTour()) {
-          setTimeout(() => {
-            startTour();
-          }, 1000);
-        }
-      } else {
-        redirectToLogin();
-      }
+      await apiCall(ENDPOINTS.markAsRead, { email_id: emailId });
+      email.opened_at = new Date().toISOString();
+      updateFolderCounts();
+      renderEmailList();
     } catch (error) {
-      console.error('Error initializing page:', error);
-      showStatus('Failed to load media library. Please refresh the page.', true);
-      document.getElementById('authLoading').style.display = 'none';
+      console.error('Error marking as read:', error);
     }
   }
+}
 
-  // Security checks
-  setInterval(async function() {
-    try {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        console.log('Session expired, redirecting to login');
-        redirectToLogin();
+// Show email in reading pane - Enhanced with opened/clicked tracking
+function showEmailView(email) {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('emailView').style.display = 'flex';
+  document.getElementById('composeForm').classList.remove('active');
+  
+  // Populate email details
+  document.getElementById('emailSubject').textContent = email.subject || 'No Subject';
+  document.getElementById('emailTo').textContent = email.to || 'Unknown';
+  document.getElementById('emailDate').textContent = new Date(email.created_at).toLocaleString();
+  
+  // Enhanced tracking display
+  document.getElementById('emailOpened').textContent = email.opened_at ? 
+    new Date(email.opened_at).toLocaleString() : 'Not opened';
+  document.getElementById('emailClicked').textContent = email.clicked_at ? 
+    new Date(email.clicked_at).toLocaleString() : 'No clicks';
+  
+  // Handle email body with images
+  const emailBody = document.getElementById('emailBody');
+  let bodyContent = email.body || 'No content';
+  
+  // Simple image detection and embedding
+  const imageRegex = /(https?:\/\/[^\s]+\.(jpg|jpeg|png|gif|bmp|webp))/gi;
+  bodyContent = bodyContent.replace(imageRegex, '<img src="$1" alt="Email Image" style="max-width: 100%; height: auto; margin: 10px 0; border-radius: 4px;">');
+  
+  emailBody.innerHTML = bodyContent;
+  
+  // Handle attachments
+  const attachmentsSection = document.getElementById('attachmentsSection');
+  const attachmentsList = document.getElementById('attachmentsList');
+  
+  if (email.attachments && email.attachments.length > 0) {
+    attachmentsSection.style.display = 'block';
+    attachmentsList.innerHTML = email.attachments.map(attachment => `
+      <div class="attachment-item">
+        <span class="attachment-icon">📎</span>
+        <a href="${attachment.url}" class="attachment-name" target="_blank">${attachment.name}</a>
+        <span class="attachment-size">${attachment.size || ''}</span>
+      </div>
+    `).join('');
+  } else {
+    attachmentsSection.style.display = 'none';
+  }
+}
+
+// Enhanced email suggestions with keyboard navigation
+function showEmailSuggestions() {
+  const input = document.getElementById('composeToInput');
+  const suggestions = document.getElementById('emailSuggestions');
+  const query = input.value.toLowerCase().trim();
+  
+  if (query.length < 3) {
+    suggestions.style.display = 'none';
+    suggestionIndex = -1;
+    return;
+  }
+  
+  const matches = allContacts.filter(contact => 
+    (contact.email && contact.email.toLowerCase().includes(query)) ||
+    (contact.name && contact.name.toLowerCase().includes(query)) ||
+    (contact.company && contact.company.toLowerCase().includes(query))
+  ).slice(0, 10);
+  
+  if (matches.length === 0) {
+    suggestions.style.display = 'none';
+    suggestionIndex = -1;
+    return;
+  }
+  
+  suggestions.innerHTML = matches.map((contact, index) => `
+    <div class="suggestion-item" data-index="${index}" onclick="selectEmailSuggestion('${contact.email}', '${contact.name || ''}')">
+      <div class="suggestion-name">${contact.name || contact.email}</div>
+      <div class="suggestion-email">${contact.email}</div>
+      <div class="suggestion-meta">${contact.company || ''} ${contact.title ? '• ' + contact.title : ''}</div>
+    </div>
+  `).join('');
+  
+  suggestions.style.display = 'block';
+  suggestionIndex = -1;
+}
+
+function handleEmailInput(event) {
+  const suggestions = document.getElementById('emailSuggestions');
+  const items = suggestions.querySelectorAll('.suggestion-item');
+  
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    suggestionIndex = Math.min(suggestionIndex + 1, items.length - 1);
+    updateSuggestionHighlight(items);
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    suggestionIndex = Math.max(suggestionIndex - 1, -1);
+    updateSuggestionHighlight(items);
+  } else if (event.key === 'Enter') {
+    event.preventDefault();
+    if (suggestionIndex >= 0 && items[suggestionIndex]) {
+      const email = items[suggestionIndex].querySelector('.suggestion-email').textContent;
+      const name = items[suggestionIndex].querySelector('.suggestion-name').textContent;
+      selectEmailSuggestion(email, name);
+    } else {
+      const email = event.target.value.trim();
+      if (email && isValidEmail(email)) {
+        selectedEmailAddresses.push(email);
+        updateSelectedEmails();
+        event.target.value = '';
+        suggestions.style.display = 'none';
       }
-    } catch (e) {
-      console.error('Session check failed:', e);
     }
-  }, 300000);
+  } else if (event.key === 'Escape') {
+    suggestions.style.display = 'none';
+    suggestionIndex = -1;
+  } else if (event.key === ',' || event.key === 'Tab') {
+    event.preventDefault();
+    const email = event.target.value.trim();
+    if (email && isValidEmail(email)) {
+      selectedEmailAddresses.push(email);
+      updateSelectedEmails();
+      event.target.value = '';
+      suggestions.style.display = 'none';
+    }
+  }
+}
 
-  // Make functions globally available
-  window.selectImageReference = selectImageReference;
-  window.closeModal = closeModal;
-  window.deleteFile = deleteFile;
-  window.startTour = startTour;
+function updateSuggestionHighlight(items) {
+  items.forEach((item, index) => {
+    item.classList.toggle('highlighted', index === suggestionIndex);
+  });
+}
 
-  // Initialize when DOM loads
-  document.addEventListener('DOMContentLoaded', init);
+function selectEmailSuggestion(email, name) {
+  selectedEmailAddresses.push(email);
+  updateSelectedEmails();
+  document.getElementById('composeToInput').value = '';
+  document.getElementById('emailSuggestions').style.display = 'none';
+  suggestionIndex = -1;
+}
+
+function updateSelectedEmails() {
+  const container = document.getElementById('selectedEmails');
+  container.innerHTML = selectedEmailAddresses.map((email, index) => `
+    <div class="email-tag">
+      ${email}
+      <span class="remove-tag" onclick="removeEmailAddress(${index})">×</span>
+    </div>
+  `).join('');
+}
+
+function removeEmailAddress(index) {
+  selectedEmailAddresses.splice(index, 1);
+  updateSelectedEmails();
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// File attachment functions
+function openFileBrowser() {
+  const modal = document.getElementById('fileBrowserModal');
+  const fileGrid = document.getElementById('fileGrid');
+  
+  if (campaignFiles.length === 0) {
+    fileGrid.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #605e5c; grid-column: 1 / -1;">
+        <div style="font-size: 24px; margin-bottom: 10px;">📁</div>
+        <div>No files available</div>
+        <div style="font-size: 12px; margin-top: 5px;">Upload files through the Media page first</div>
+      </div>
+    `;
+  } else {
+    fileGrid.innerHTML = campaignFiles.map(file => `
+      <div class="file-card" data-file-id="${file.id}" onclick="toggleFileSelection(${file.id})">
+        <div class="file-preview">
+          ${getFileIcon(file.file_type || file.mime_type)}
+        </div>
+        <div class="file-info">
+          <div class="file-name">${file.name}</div>
+          <div class="file-size">${formatFileSize(file.file_size)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  selectedFiles = [];
+  modal.style.display = 'block';
+}
+
+function closeFileBrowser() {
+  document.getElementById('fileBrowserModal').style.display = 'none';
+  selectedFiles = [];
+}
+
+function toggleFileSelection(fileId) {
+  const fileCard = document.querySelector(`[data-file-id="${fileId}"]`);
+  const index = selectedFiles.indexOf(fileId);
+  
+  if (index > -1) {
+    selectedFiles.splice(index, 1);
+    fileCard.classList.remove('selected');
+  } else {
+    selectedFiles.push(fileId);
+    fileCard.classList.add('selected');
+  }
+}
+
+function attachSelectedFiles() {
+  selectedFiles.forEach(fileId => {
+    const file = campaignFiles.find(f => f.id === fileId);
+    if (file && !attachedFiles.find(af => af.id === fileId)) {
+      attachedFiles.push({
+        id: file.id,
+        name: file.name,
+        url: file.URL,
+        size: file.file_size,
+        type: 'campaign'
+      });
+    }
+  });
+  
+  updateAttachmentDisplay();
+  closeFileBrowser();
+}
+
+function uploadNewFile() {
+  document.getElementById('fileUploadInput').click();
+}
+
+function handleFileUpload(event) {
+  const files = Array.from(event.target.files);
+  
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Data = e.target.result.split(',')[1]; // Remove data:type;base64, prefix
+      
+      attachedFiles.push({
+        id: 'upload_' + Date.now() + '_' + Math.random(),
+        name: file.name,
+        size: file.size,
+        type: 'upload',
+        base64: base64Data,
+        mimeType: file.type
+      });
+      
+      updateAttachmentDisplay();
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  event.target.value = ''; // Reset input
+}
+
+function updateAttachmentDisplay() {
+  const container = document.getElementById('attachedFiles');
+  
+  if (attachedFiles.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+  
+  container.innerHTML = attachedFiles.map((file, index) => `
+    <div class="attached-file">
+      ${getFileIcon(file.type)}
+      <span>${file.name}</span>
+      <span class="remove-attachment" onclick="removeAttachment(${index})">×</span>
+    </div>
+  `).join('');
+}
+
+function removeAttachment(index) {
+  attachedFiles.splice(index, 1);
+  updateAttachmentDisplay();
+}
+
+function getFileIcon(fileType) {
+  if (!fileType) return '📄';
+  
+  const type = fileType.toLowerCase();
+  if (type.includes('image')) return '🖼️';
+  if (type.includes('video')) return '🎥';
+  if (type.includes('audio')) return '🎵';
+  if (type.includes('pdf')) return '📕';
+  if (type.includes('doc') || type.includes('word')) return '📘';
+  if (type.includes('sheet') || type.includes('excel')) return '📗';
+  if (type.includes('presentation') || type.includes('powerpoint')) return '📙';
+  if (type.includes('zip') || type.includes('rar')) return '🗜️';
+  return '📄';
+}
+
+function formatFileSize(bytes) {
+  if (!bytes) return 'Unknown size';
+  
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+}
+
+// Show compose form
+function showCompose(replyTo = null, forward = null) {
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('emailView').style.display = 'none';
+  document.getElementById('composeForm').classList.add('active');
+  
+  // Clear form
+  document.getElementById('composeToInput').value = '';
+  document.getElementById('composeCC').value = '';
+  document.getElementById('composeBCC').value = '';
+  document.getElementById('composeSubject').value = '';
+  document.getElementById('composeBody').value = '';
+  selectedEmailAddresses = [];
+  attachedFiles = [];
+  updateSelectedEmails();
+  updateAttachmentDisplay();
+  
+  if (replyTo) {
+    // Reply mode
+    selectedEmailAddresses = [replyTo.from];
+    updateSelectedEmails();
+    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.subject || '').replace(/^re:\s*/i, '');
+    document.getElementById('composeBody').value = `\n\n--- Original Message ---\nFrom: ${replyTo.from}\nDate: ${new Date(replyTo.created_at).toLocaleString()}\nSubject: ${replyTo.subject}\n\n${replyTo.body}`;
+  } else if (forward) {
+    // Forward mode
+    document.getElementById('composeSubject').value = 'Fwd: ' + (forward.subject || '').replace(/^fwd?:\s*/i, '');
+    document.getElementById('composeBody').value = `\n\n--- Forwarded Message ---\nFrom: ${forward.from}\nTo: ${forward.to}\nDate: ${new Date(forward.created_at).toLocaleString()}\nSubject: ${forward.subject}\n\n${forward.body}`;
+  }
+  
+  // Add signature
+  addSignatureToBody();
+}
+
+// Template functions
+function loadTemplate(templateName) {
+  if (templateName === 'custom') {
+    openTemplateModal();
+    return;
+  }
+  
+  const template = userTemplates[templateName];
+  if (template) {
+    const lines = template.split('\n');
+    const subjectLine = lines.find(line => line.startsWith('Subject:'));
+    const bodyLines = lines.filter(line => !line.startsWith('Subject:'));
+    
+    if (subjectLine) {
+      document.getElementById('composeSubject').value = subjectLine.replace('Subject:', '').trim();
+    }
+    document.getElementById('composeBody').value = bodyLines.join('\n').trim();
+  }
+}
+
+function openTemplateModal() {
+  document.getElementById('templateModal').style.display = 'block';
+}
+
+function closeTemplateModal() {
+  document.getElementById('templateModal').style.display = 'none';
+}
+
+function loadSelectedTemplate() {
+  const templateName = document.getElementById('templateSelect').value;
+  if (templateName && userTemplates[templateName]) {
+    const template = userTemplates[templateName];
+    const lines = template.split('\n');
+    const subjectLine = lines.find(line => line.startsWith('Subject:'));
+    const bodyLines = lines.filter(line => !line.startsWith('Subject:'));
+    
+    document.getElementById('templateSubject').value = subjectLine ? subjectLine.replace('Subject:', '').trim() : '';
+    document.getElementById('templateBody').value = bodyLines.join('\n').trim();
+  }
+}
+
+async function saveTemplate() {
+  const templateName = document.getElementById('templateSelect').value;
+  const subject = document.getElementById('templateSubject').value;
+  const body = document.getElementById('templateBody').value;
+  
+  if (!templateName || !subject || !body) {
+    showStatus('Please fill in all template fields', true);
+    return;
+  }
+  
+  const templateContent = `Subject: ${subject}\n${body}`;
+  
+  try {
+    await apiCall(ENDPOINTS.updateTemplate, { 
+      template_name: templateName,
+      template_content: templateContent 
+    });
+    
+    userTemplates[templateName] = templateContent;
+    showStatus('Template saved successfully', false);
+    closeTemplateModal();
+  } catch (error) {
+    console.error('Error saving template:', error);
+    showStatus('Error saving template', true);
+  }
+}
+
+// AI assistance
+async function aiAssist(tone) {
+  const currentBody = document.getElementById('composeBody').value;
+  const subject = document.getElementById('composeSubject').value;
+  const recipients = selectedEmailAddresses.join(', ');
+  
+  try {
+    showStatus('AI is generating content...', false);
+    
+    const result = await apiCall(ENDPOINTS.aiAssist, {
+      tone: tone,
+      current_body: currentBody,
+      subject: subject,
+      recipients: recipients
+    });
+    
+    if (result.content) {
+      document.getElementById('composeBody').value = result.content;
+      showStatus('AI content generated successfully!', false);
+    } else {
+      throw new Error('No content generated');
+    }
+  } catch (error) {
+    console.error('Error with AI assist:', error);
+    showStatus('Error generating AI content', true);
+  }
+}
+
+// Signature functions
+function addSignatureToBody() {
+  const bodyTextarea = document.getElementById('composeBody');
+  const currentBody = bodyTextarea.value;
+  
+  if (userSignature && !currentBody.includes(userSignature)) {
+    bodyTextarea.value = currentBody + '\n\n' + userSignature;
+  }
+}
+
+function openSignatureModal() {
+  document.getElementById('signatureText').value = userSignature;
+  document.getElementById('signatureModal').style.display = 'block';
+}
+
+function closeSignatureModal() {
+  document.getElementById('signatureModal').style.display = 'none';
+}
+
+async function saveSignature() {
+  const newSignature = document.getElementById('signatureText').value;
+  
+  try {
+    await apiCall(ENDPOINTS.updateSignature, { signature: newSignature });
+    userSignature = newSignature;
+    showStatus('Signature updated successfully', false);
+    closeSignatureModal();
+  } catch (error) {
+    console.error('Error saving signature:', error);
+    showStatus('Error saving signature', true);
+  }
+}
+
+// Email actions
+async function sendEmail() {
+  const recipients = selectedEmailAddresses.join(', ');
+  const subject = document.getElementById('composeSubject').value;
+  const body = document.getElementById('composeBody').value;
+  
+  if (!recipients || !subject || !body) {
+    showStatus('Please fill in all required fields', true);
+    return;
+  }
+  
+  try {
+    const emailData = {
+      to_email: recipients,
+      cc_email: document.getElementById('composeCC').value,
+      bcc_email: document.getElementById('composeBCC').value,
+      subject: subject,
+      body: body,
+      campaign: 'Direct Message',
+      signature: userSignature
+    };
+
+    // Add attachments with proper format
+    if (attachedFiles.length > 0) {
+      emailData.attachments = attachedFiles.map(file => {
+        if (file.type === 'upload') {
+          return {
+            name: file.name,
+            base64: file.base64,
+            mimeType: file.mimeType,
+            size: file.size
+          };
+        } else {
+          return {
+            name: file.name,
+            url: file.url || file.URL,
+            size: file.size || file.file_size
+          };
+        }
+      });
+    }
+
+    await apiCall(ENDPOINTS.sendEmail, emailData);
+    
+    showStatus('Email sent successfully!', false);
+    cancelCompose();
+    await loadEmails();
+  } catch (error) {
+    console.error('Error sending email:', error);
+    showStatus('Error sending email: ' + error.message, true);
+  }
+}
+
+async function saveDraft() {
+  const recipients = selectedEmailAddresses.join(', ');
+  const subject = document.getElementById('composeSubject').value;
+  const body = document.getElementById('composeBody').value;
+  
+  if (!recipients && !subject && !body) {
+    showStatus('Nothing to save', true);
+    return;
+  }
+  
+  try {
+    const draftData = {
+      to_email: recipients,
+      cc_email: document.getElementById('composeCC').value,
+      bcc_email: document.getElementById('composeBCC').value,
+      subject: subject,
+      body: body
+    };
+
+    // Add attachments with proper format
+    if (attachedFiles.length > 0) {
+      draftData.attachments = attachedFiles.map(file => {
+        if (file.type === 'upload') {
+          return {
+            name: file.name,
+            base64: file.base64,
+            mimeType: file.mimeType,
+            size: file.size
+          };
+        } else {
+          return {
+            name: file.name,
+            url: file.url || file.URL,
+            size: file.size || file.file_size
+          };
+        }
+      });
+    }
+
+    await apiCall(ENDPOINTS.saveDraft, draftData);
+    
+    showStatus('Draft saved successfully', false);
+    await loadEmails();
+  } catch (error) {
+    console.error('Error saving draft:', error);
+    showStatus('Error saving draft', true);
+  }
+}
+
+function cancelCompose() {
+  document.getElementById('composeForm').classList.remove('active');
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('emailView').style.display = 'none';
+  
+  // Clear attachments array
+  attachedFiles = [];
+}
+
+function replyToEmail() {
+  if (selectedEmail) {
+    showCompose(selectedEmail);
+  }
+}
+
+function forwardEmail() {
+  if (selectedEmail) {
+    showCompose(null, selectedEmail);
+  }
+}
+
+async function deleteCurrentEmail() {
+  if (!selectedEmail) return;
+  
+  if (!confirm('Are you sure you want to delete this email?')) return;
+  
+  try {
+    await apiCall(ENDPOINTS.deleteEmail, { email_id: selectedEmail.id });
+    
+    // Remove from local arrays
+    allEmails = allEmails.filter(e => e.id !== selectedEmail.id);
+    filteredEmails = filteredEmails.filter(e => e.id !== selectedEmail.id);
+    
+    selectedEmail = null;
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('emailView').style.display = 'none';
+    
+    updateFolderCounts();
+    renderEmailList();
+    showStatus('Email deleted successfully', false);
+  } catch (error) {
+    console.error('Error deleting email:', error);
+    showStatus('Error deleting email', true);
+  }
+}
+
+async function markAsRead() {
+  if (selectedEmail && !selectedEmail.opened_at) {
+    try {
+      await apiCall(ENDPOINTS.markAsRead, { email_id: selectedEmail.id });
+      selectedEmail.opened_at = new Date().toISOString();
+      updateFolderCounts();
+      renderEmailList();
+      showStatus('Email marked as read', false);
+    } catch (error) {
+      console.error('Error marking as read:', error);
+      showStatus('Error marking email as read', true);
+    }
+  }
+}
+
+async function markAllRead() {
+  const unreadEmails = filteredEmails.filter(email => !email.opened_at && email.inbound);
+  
+  if (unreadEmails.length === 0) {
+    showStatus('No unread emails to mark', false);
+    return;
+  }
+  
+  if (!confirm(`Mark ${unreadEmails.length} emails as read?`)) return;
+  
+  try {
+    for (const email of unreadEmails) {
+      await apiCall(ENDPOINTS.markAsRead, { email_id: email.id });
+      email.opened_at = new Date().toISOString();
+    }
+    
+    updateFolderCounts();
+    renderEmailList();
+    showStatus(`${unreadEmails.length} emails marked as read`, false);
+  } catch (error) {
+    console.error('Error marking emails as read:', error);
+    showStatus('Error marking emails as read', true);
+  }
+}
+
+async function refreshEmails() {
+  await loadEmails();
+  showStatus('Emails refreshed', false);
+}
+
+// Search functionality
+function searchEmails() {
+  const query = document.getElementById('emailSearch').value.toLowerCase();
+  
+  if (!query) {
+    filterEmailsByFolder(currentFolder);
+    return;
+  }
+  
+  filteredEmails = filteredEmails.filter(email => {
+    const searchText = `${email.from || ''} ${email.to || ''} ${email.subject || ''} ${email.body || ''}`.toLowerCase();
+    return searchText.includes(query);
+  });
+  
+  renderEmailList();
+}
+
+// Utility functions
+function formatDate(dateStr) {
+  if (!dateStr) return 'Unknown';
+  
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  if (diffDays === 0) return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  
+  return date.toLocaleDateString();
+}
+
+function getEmailPreview(body) {
+  if (!body) return 'No content';
+  return body.length > 100 ? body.substring(0, 100) + '...' : body;
+}
+
+function showStatus(message, isError = false) {
+  const statusDiv = document.getElementById('statusMessage');
+  statusDiv.textContent = message;
+  statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+  statusDiv.style.display = 'block';
+  setTimeout(() => statusDiv.style.display = 'none', 5000);
+}
+
+// Event listeners
+function setupEventListeners() {
+  // Close modals when clicking outside
+  window.addEventListener('click', (event) => {
+    const modals = ['signatureModal', 'templateModal', 'fileBrowserModal'];
+    modals.forEach(modalId => {
+      const modal = document.getElementById(modalId);
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+  });
+  
+  // Hide email suggestions when clicking outside
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('#composeToInput') && !event.target.closest('#emailSuggestions')) {
+      document.getElementById('emailSuggestions').style.display = 'none';
+      suggestionIndex = -1;
+    }
+  });
+  
+  // Handle CC/BCC toggle
+  document.getElementById('composeToInput').addEventListener('focus', () => {
+    document.getElementById('ccField').style.display = 'flex';
+    document.getElementById('bccField').style.display = 'flex';
+  });
+}
+
+// Tour functionality
+function startTour() {
+  introJs().setOptions({
+    showProgress: true,
+    showBullets: false,
+    exitOnOverlayClick: false,
+    nextLabel: 'Next →',
+    prevLabel: '← Back',
+    doneLabel: 'Complete!',
+    skipLabel: 'Skip Tour'
+  }).oncomplete(completeTour).onexit(completeTour).start();
+}
+
+function completeTour() {
+  localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+}
+
+function hasCompletedTour() {
+  return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+}
+
+// Global functions for onclick handlers
+window.selectFolder = filterEmailsByFolder;
+window.selectEmail = selectEmail;
+window.showCompose = showCompose;
+window.sendEmail = sendEmail;
+window.saveDraft = saveDraft;
+window.cancelCompose = cancelCompose;
+window.replyToEmail = replyToEmail;
+window.forwardEmail = forwardEmail;
+window.deleteCurrentEmail = deleteCurrentEmail;
+window.markAsRead = markAsRead;
+window.markAllRead = markAllRead;
+window.refreshEmails = refreshEmails;
+window.searchEmails = searchEmails;
+window.filterByTag = filterByTag;
+window.loadTemplate = loadTemplate;
+window.openTemplateModal = openTemplateModal;
+window.closeTemplateModal = closeTemplateModal;
+window.loadSelectedTemplate = loadSelectedTemplate;
+window.saveTemplate = saveTemplate;
+window.aiAssist = aiAssist;
+window.openSignatureModal = openSignatureModal;
+window.closeSignatureModal = closeSignatureModal;
+window.saveSignature = saveSignature;
+window.handleEmailInput = handleEmailInput;
+window.showEmailSuggestions = showEmailSuggestions;
+window.selectEmailSuggestion = selectEmailSuggestion;
+window.removeEmailAddress = removeEmailAddress;
+window.openFileBrowser = openFileBrowser;
+window.closeFileBrowser = closeFileBrowser;
+window.toggleFileSelection = toggleFileSelection;
+window.attachSelectedFiles = attachSelectedFiles;
+window.uploadNewFile = uploadNewFile;
+window.handleFileUpload = handleFileUpload;
+window.removeAttachment = removeAttachment;
+window.startTour = startTour;
+
+// Session management
+setInterval(async function() {
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      redirectToLogin();
+    } else {
+      authToken = session.access_token;
+    }
+  } catch (e) {
+    console.error('Session check failed:', e);
+  }
+}, 300000);
+
 </script>
-
 </body>
 </html>
