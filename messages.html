@@ -272,23 +272,27 @@
       color: white;
     }
 
-    /* Email List - Fixed vertical stacking */
+    /* Email List - Forced vertical stacking */
     .email-list {
       flex: 1;
       overflow-y: auto;
       max-height: calc(100vh - 300px);
-      display: flex;
-      flex-direction: column;
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100%;
     }
 
     .email-item {
-      display: flex;
+      display: flex !important;
+      flex-direction: row !important;
       padding: 12px 20px;
       border-bottom: 1px solid #f3f2f1;
       cursor: pointer;
       transition: background 0.2s;
       position: relative;
       width: 100%;
+      min-height: 60px;
+      box-sizing: border-box;
     }
 
     .email-item:hover {
@@ -1484,15 +1488,15 @@ function redirectToLogin() {
   window.location.href = 'login.html';
 }
 
-// API calls - preserved
+// API calls - fixed media endpoint method
 async function apiCall(endpoint, data = {}) {
   try {
-    const url = endpoint.includes('/user/get') || endpoint.includes('/media/get') ? 
+    const url = endpoint.includes('/user/get') ? 
       `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
       endpoint;
     
     const requestOptions = {
-      method: endpoint.includes('/user/get') || endpoint.includes('/media/get') ? 'GET' : 'POST',
+      method: endpoint.includes('/user/get') ? 'GET' : 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Customer-ID': CUSTOMER_ID,
@@ -1500,7 +1504,7 @@ async function apiCall(endpoint, data = {}) {
       }
     };
 
-    if (!endpoint.includes('/user/get') && !endpoint.includes('/media/get')) {
+    if (!endpoint.includes('/user/get')) {
       requestOptions.body = JSON.stringify({
         customer_id: CUSTOMER_ID,
         ...data
@@ -1635,7 +1639,7 @@ function updateFolderCounts() {
   document.getElementById('allCount').textContent = allEmails.length;
 }
 
-// Filter emails by folder
+// Filter emails by folder - Fixed sent folder display
 function filterEmailsByFolder(folder) {
   currentFolder = folder;
   
@@ -1646,6 +1650,10 @@ function filterEmailsByFolder(folder) {
   if (folder === 'sent' || folder === 'drafts') {
     mainContainer.classList.add('sent-view');
     emailListPanel.style.display = 'none';
+    // Clear any selected email display for sent/drafts
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('emailView').style.display = 'none';
+    document.getElementById('composeForm').classList.remove('active');
   } else {
     mainContainer.classList.remove('sent-view');
     emailListPanel.style.display = 'flex';
@@ -1677,6 +1685,11 @@ function filterEmailsByFolder(folder) {
   }
   
   renderEmailList();
+  
+  // For sent/drafts, show empty state initially
+  if (folder === 'sent' || folder === 'drafts') {
+    document.getElementById('emptyState').style.display = 'flex';
+  }
 }
 
 // Filter emails by tag
@@ -1706,19 +1719,24 @@ function filterByTag(tag) {
   renderEmailList();
 }
 
-// Render email list - Fixed to ensure vertical stacking
+// Render email list - Enhanced to prevent side-by-side stacking
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
   if (filteredEmails.length === 0) {
     emailList.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: #605e5c;">
+      <div style="text-align: center; padding: 40px; color: #605e5c; width: 100%;">
         <div style="font-size: 24px; margin-bottom: 10px;">🔭</div>
         <div>No emails in this folder</div>
       </div>
     `;
     return;
   }
+  
+  // Force container to be flex column
+  emailList.style.display = 'flex';
+  emailList.style.flexDirection = 'column';
+  emailList.style.width = '100%';
   
   emailList.innerHTML = filteredEmails.map(email => {
     const isSelected = selectedEmail && selectedEmail.id === email.id;
@@ -1728,9 +1746,9 @@ function renderEmailList() {
     
     return `
       <div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" 
-           onclick="selectEmail(${email.id})">
+           onclick="selectEmail(${email.id})" style="display: flex !important; flex-direction: row !important; width: 100% !important;">
         <div class="email-avatar">${senderInitial}</div>
-        <div class="email-content">
+        <div class="email-content" style="flex: 1; min-width: 0;">
           <div class="email-header-row">
             <div class="email-sender">${sender}</div>
             <div class="email-time">${formatDate(email.created_at)}</div>
@@ -1745,18 +1763,23 @@ function renderEmailList() {
   }).join('');
 }
 
-// Select and display email
+// Select and display email - Fixed for sent folder
 async function selectEmail(emailId) {
   const email = allEmails.find(e => e.id === emailId);
   if (!email) return;
   
   selectedEmail = email;
   
-  // Update selection in list
+  // Update selection in list (handle both inbox and sent views)
   document.querySelectorAll('.email-item').forEach(item => {
     item.classList.remove('selected');
   });
-  event.target.closest('.email-item').classList.add('selected');
+  
+  // Find the clicked email item
+  const clickedItem = document.querySelector(`[onclick="selectEmail(${emailId})"]`);
+  if (clickedItem) {
+    clickedItem.classList.add('selected');
+  }
   
   // Show email view
   showEmailView(email);
