@@ -1186,7 +1186,7 @@
   // API call function
   async function apiCall(endpoint, data = {}) {
     try {
-      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get') || endpoint.includes('/media/get');
+      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get');
       
       const url = isGetRequest ? 
         `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
