@@ -1731,17 +1731,6 @@ function renderEmailList() {
     emailDiv.setAttribute('data-index', index);
     emailDiv.onclick = () => selectEmail(email.id);
     
-    // Add visible border and ID for debugging
-    emailDiv.style.cssText = `
-      display: block !important;
-      width: 100% !important;
-      padding: 12px !important;
-      border: 2px solid ${index < 10 ? 'green' : 'red'} !important;
-      margin-bottom: 2px !important;
-      background: ${index % 2 === 0 ? '#f9f9f9' : 'white'} !important;
-      box-sizing: border-box !important;
-    `;
-    
     emailDiv.innerHTML = `
       <div style="margin-bottom: 4px;"><strong>${sender}</strong> - ${formatDate(email.created_at)}</div>
       <div style="margin-bottom: 2px;">${email.subject || 'No Subject'}</div>
