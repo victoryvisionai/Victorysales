@@ -885,6 +885,10 @@
   let userCredits = { social_credits: 0 };
   let aiPostEnabled = false;
   let selectedPlatforms = ['linkedin'];
+  let attachedFiles = [];
+  let selectedFiles = [];
+  let campaignFiles = [];
+
 
   // State management
   let allSocialPosts = [];
@@ -1018,7 +1022,18 @@
       showStatus('Error loading user data: ' + error.message, true);
     }
   }
-
+/ Load campaign files for attachments
+  async function loadCampaignFiles() {
+    try {
+      const data = await apiCall(ENDPOINTS.getMedia);
+      campaignFiles = Array.isArray(data) ? data : (data.files || []);
+      console.log(`Loaded ${campaignFiles.length} campaign files`);
+    } catch (error) {
+      console.error('Error loading campaign files:', error);
+      campaignFiles = [];
+    }
+  }
+      
   // Update credits display
   function updateCreditsDisplay() {
     const socialCreditsElement = document.getElementById('socialCredits');
