@@ -91,27 +91,13 @@
       width: auto;
     }
 
-    /* Main Layout - Fixed proportions for inbox */
+    /* Main Layout - Simplified and standardized */
     .main-container {
       display: grid;
       grid-template-columns: 280px 420px 1fr;
       height: calc(100vh - 70px);
       background: white;
       overflow: hidden;
-    }
-
-    /* Sent folder gets different layout - Fixed */
-    .main-container.sent-view {
-      grid-template-columns: 280px 1fr;
-    }
-
-    .main-container.sent-view .email-list-panel {
-      display: flex !important;
-      grid-column: 2;
-    }
-
-    .main-container.sent-view .reading-pane {
-      grid-column: 2;
     }
 
     /* Left Sidebar */
@@ -277,42 +263,22 @@
       color: white;
     }
 
-    /* Email List - Force strict vertical layout */
+    /* Email List - Simple vertical layout */
     .email-list {
       flex: 1;
       overflow-y: auto;
-      overflow-x: hidden !important;
+      overflow-x: hidden;
       max-height: calc(100vh - 300px);
-      display: block !important;
-      width: 100%;
-      white-space: normal !important;
-    }
-
-    .email-list > * {
-      display: block !important;
-      width: 100% !important;
-      clear: both !important;
     }
 
     .email-item {
-      display: block !important;
+      display: flex;
       padding: 12px 20px;
       border-bottom: 1px solid #f3f2f1;
       cursor: pointer;
       transition: background 0.2s;
       position: relative;
-      width: 100% !important;
-      min-height: 60px;
-      max-width: 100%;
-      box-sizing: border-box;
-      overflow: hidden;
-      clear: both !important;
-      float: none !important;
-    }
-
-    .email-item > * {
-      display: inline-block;
-      vertical-align: top;
+      align-items: flex-start;
     }
 
     .email-item:hover {
