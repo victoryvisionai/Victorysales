@@ -263,17 +263,22 @@
       color: white;
     }
 
-    /* Email List - Ultra simple */
+    /* Email List - Simple vertical layout */
     .email-list {
+      flex: 1;
       overflow-y: auto;
+      overflow-x: hidden;
       max-height: calc(100vh - 300px);
     }
 
     .email-item {
+      display: flex;
       padding: 12px 20px;
       border-bottom: 1px solid #f3f2f1;
       cursor: pointer;
-      background: white;
+      transition: background 0.2s;
+      position: relative;
+      align-items: flex-start;
     }
 
     .email-item:hover {
@@ -317,17 +322,49 @@
       flex-shrink: 0;
     }
 
-    .email-item:hover {
-      background: #f9f9f9;
+    .email-content {
+      flex: 1;
+      min-width: 0;
     }
 
-    .email-item.selected {
-      background: #deecf9;
-      border-left: 3px solid #0078d4;
+    .email-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
     }
 
-    .email-item.unread {
-      font-weight: 600;
+    .email-sender {
+      font-size: 14px;
+      color: #323130;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .email-time {
+      font-size: 12px;
+      color: #605e5c;
+      flex-shrink: 0;
+    }
+
+    .email-subject {
+      font-size: 13px;
+      color: #323130;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .email-preview {
+      font-size: 12px;
+      color: #605e5c;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .email-flags {
@@ -1524,20 +1561,26 @@ async function loadCampaignFiles() {
   }
 }
 
-// Load emails - Simple sorting by created_at only
+// Load emails - preserved with enhancements
 async function loadEmails() {
   try {
     const data = await apiCall(ENDPOINTS.getEmails);
     allEmails = Array.isArray(data) ? data : (data.emails || []);
     
-    // Simple sort by created_at only - no filtering or grouping
-    allEmails.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    // Process emails and clean up sent drafts
+    allEmails = allEmails.filter(email => {
+      // Remove drafts that have been sent (have both draft=true and sent_at)
+      if (email.draft && email.sent_at) return false;
+      return true;
+    });
     
-    console.log(`Loaded ${allEmails.length} individual emails`);
-    console.log('First 5 emails:', allEmails.slice(0, 5));
+    // Sort by date
+    allEmails.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     
     updateFolderCounts();
     filterEmailsByFolder(currentFolder);
+    
+    console.log(`Loaded ${allEmails.length} emails`);
   } catch (error) {
     console.error('Error loading emails:', error);
     allEmails = [];
@@ -1583,22 +1626,27 @@ function updateFolderCounts() {
   document.getElementById('allCount').textContent = allEmails.length;
 }
 
-// Filter emails by folder - No grouping or special processing
+// Filter emails by folder - Fixed sent folder to show email list
 function filterEmailsByFolder(folder) {
   currentFolder = folder;
   
-  // Always use the same 3-column layout
+  // Update layout based on folder
   const mainContainer = document.querySelector('.main-container');
   const emailListPanel = document.querySelector('.email-list-panel');
+  const readingPane = document.querySelector('.reading-pane');
   
-  // Remove any special classes
-  mainContainer.classList.remove('sent-view');
-  emailListPanel.style.display = 'flex';
-  
-  // Reset reading pane to empty state
-  document.getElementById('emptyState').style.display = 'flex';
-  document.getElementById('emailView').style.display = 'none';
-  document.getElementById('composeForm').classList.remove('active');
+  if (folder === 'sent' || folder === 'drafts') {
+    mainContainer.classList.add('sent-view');
+    // Show email list panel for sent/drafts
+    emailListPanel.style.display = 'flex';
+    // Reset reading pane
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('emailView').style.display = 'none';
+    document.getElementById('composeForm').classList.remove('active');
+  } else {
+    mainContainer.classList.remove('sent-view');
+    emailListPanel.style.display = 'flex';
+  }
   
   // Update active folder
   document.querySelectorAll('.folder-item').forEach(item => {
@@ -1606,27 +1654,25 @@ function filterEmailsByFolder(folder) {
   });
   document.querySelector(`[data-folder="${folder}"]`).classList.add('active');
   
-  // Simple filtering - no processing or grouping
   switch (folder) {
     case 'inbox':
-      filteredEmails = allEmails.filter(email => email.inbound === true);
+      filteredEmails = allEmails.filter(email => email.inbound);
       document.getElementById('folderTitle').textContent = 'Inbox';
       break;
     case 'sent':
-      filteredEmails = allEmails.filter(email => email.inbound === false);
+      filteredEmails = allEmails.filter(email => !email.inbound && !email.draft && email.body);
       document.getElementById('folderTitle').textContent = 'Sent Items';
       break;
     case 'drafts':
-      filteredEmails = allEmails.filter(email => email.draft === true);
+      filteredEmails = allEmails.filter(email => email.draft || (!email.body || email.body.trim() === ''));
       document.getElementById('folderTitle').textContent = 'Drafts';
       break;
     case 'all':
-      filteredEmails = [...allEmails]; // Copy all emails without any filtering
+      filteredEmails = [...allEmails];
       document.getElementById('folderTitle').textContent = 'All Mail';
       break;
   }
   
-  console.log(`Filtered to ${filteredEmails.length} emails for folder: ${folder}`);
   renderEmailList();
 }
 
@@ -1657,7 +1703,6 @@ function filterByTag(tag) {
   renderEmailList();
 }
 
-// Version 1: Debug version to find the fusion issue
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
@@ -1698,7 +1743,6 @@ function renderEmailList() {
     `;
     
     emailDiv.innerHTML = `
-      <div style="font-weight: bold; color: black;">EMAIL #${index + 1} - ID: ${email.id}</div>
       <div style="margin-bottom: 4px;"><strong>${sender}</strong> - ${formatDate(email.created_at)}</div>
       <div style="margin-bottom: 2px;">${email.subject || 'No Subject'}</div>
       <div style="color: #605e5c; font-size: 12px;">${getEmailPreview(email.body)}</div>
@@ -1713,7 +1757,7 @@ function renderEmailList() {
   console.log(`DEBUG: Final DOM check - ${emailList.children.length} elements in container`);
 }
 
-// Select and display email - Fixed for sent folder
+// Select and display email 
 async function selectEmail(emailId) {
   const email = allEmails.find(e => e.id === emailId);
   if (!email) return;
