@@ -1524,26 +1524,20 @@ async function loadCampaignFiles() {
   }
 }
 
-// Load emails - preserved with enhancements
+// Load emails - Simple sorting by created_at only
 async function loadEmails() {
   try {
     const data = await apiCall(ENDPOINTS.getEmails);
     allEmails = Array.isArray(data) ? data : (data.emails || []);
     
-    // Process emails and clean up sent drafts
-    allEmails = allEmails.filter(email => {
-      // Remove drafts that have been sent (have both draft=true and sent_at)
-      if (email.draft && email.sent_at) return false;
-      return true;
-    });
-    
-    // Sort by date
+    // Simple sort by created_at only - no filtering or grouping
     allEmails.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    console.log(`Loaded ${allEmails.length} individual emails`);
+    console.log('First 5 emails:', allEmails.slice(0, 5));
     
     updateFolderCounts();
     filterEmailsByFolder(currentFolder);
-    
-    console.log(`Loaded ${allEmails.length} emails`);
   } catch (error) {
     console.error('Error loading emails:', error);
     allEmails = [];
@@ -1589,7 +1583,7 @@ function updateFolderCounts() {
   document.getElementById('allCount').textContent = allEmails.length;
 }
 
-// Filter emails by folder - Simplified to use same layout for all
+// Filter emails by folder - No grouping or special processing
 function filterEmailsByFolder(folder) {
   currentFolder = folder;
   
@@ -1612,25 +1606,27 @@ function filterEmailsByFolder(folder) {
   });
   document.querySelector(`[data-folder="${folder}"]`).classList.add('active');
   
+  // Simple filtering - no processing or grouping
   switch (folder) {
     case 'inbox':
-      filteredEmails = allEmails.filter(email => email.inbound);
+      filteredEmails = allEmails.filter(email => email.inbound === true);
       document.getElementById('folderTitle').textContent = 'Inbox';
       break;
     case 'sent':
-      filteredEmails = allEmails.filter(email => !email.inbound && !email.draft && email.body);
+      filteredEmails = allEmails.filter(email => email.inbound === false);
       document.getElementById('folderTitle').textContent = 'Sent Items';
       break;
     case 'drafts':
-      filteredEmails = allEmails.filter(email => email.draft || (!email.body || email.body.trim() === ''));
+      filteredEmails = allEmails.filter(email => email.draft === true);
       document.getElementById('folderTitle').textContent = 'Drafts';
       break;
     case 'all':
-      filteredEmails = [...allEmails];
+      filteredEmails = [...allEmails]; // Copy all emails without any filtering
       document.getElementById('folderTitle').textContent = 'All Mail';
       break;
   }
   
+  console.log(`Filtered to ${filteredEmails.length} emails for folder: ${folder}`);
   renderEmailList();
 }
 
@@ -1661,9 +1657,11 @@ function filterByTag(tag) {
   renderEmailList();
 }
 
-// Render email list - Dead simple approach
+// Render email list - Show each email individually 
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
+  
+  console.log(`Rendering ${filteredEmails.length} emails for folder: ${currentFolder}`);
   
   if (filteredEmails.length === 0) {
     emailList.innerHTML = `<div style="padding: 40px; text-align: center; color: #605e5c;">No emails in this folder</div>`;
@@ -1671,22 +1669,25 @@ function renderEmailList() {
   }
   
   let html = '';
-  for (let i = 0; i < filteredEmails.length; i++) {
-    const email = filteredEmails[i];
+  
+  // Process each email individually - no grouping or merging
+  filteredEmails.forEach((email, index) => {
     const isSelected = selectedEmail && selectedEmail.id === email.id;
     const isUnread = !email.opened_at && email.inbound;
     const sender = email.inbound ? (email.from || 'Unknown') : (email.to || 'Unknown');
     const subject = email.subject || 'No Subject';
     const preview = email.body ? (email.body.length > 50 ? email.body.substring(0, 50) + '...' : email.body) : 'No content';
     
-    html += `<div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" onclick="selectEmail(${email.id})">`;
-    html += `<div style="font-size: 14px; margin-bottom: 4px;">${sender} - ${formatDate(email.created_at)}</div>`;
-    html += `<div style="font-size: 13px; margin-bottom: 2px;">${subject}</div>`;
+    html += `<div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" onclick="selectEmail(${email.id})" data-email-id="${email.id}">`;
+    html += `<div style="font-size: 14px; margin-bottom: 4px;"><strong>${sender}</strong> - ${formatDate(email.created_at)}</div>`;
+    html += `<div style="font-size: 13px; margin-bottom: 2px; color: #323130;"><strong>${subject}</strong></div>`;
     html += `<div style="font-size: 12px; color: #605e5c;">${preview}</div>`;
+    html += `<div style="font-size: 10px; color: #8a8886; margin-top: 4px;">ID: ${email.id} | Server ID: ${email.server_id || 'none'}</div>`;
     html += `</div>`;
-  }
+  });
   
   emailList.innerHTML = html;
+  console.log(`Rendered ${filteredEmails.length} individual email items`);
 }
 
 // Select and display email - Fixed for sent folder
