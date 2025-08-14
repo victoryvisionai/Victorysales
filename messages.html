@@ -263,22 +263,17 @@
       color: white;
     }
 
-    /* Email List - Simple vertical layout */
+    /* Email List - Ultra simple */
     .email-list {
-      flex: 1;
       overflow-y: auto;
-      overflow-x: hidden;
       max-height: calc(100vh - 300px);
     }
 
     .email-item {
-      display: flex;
       padding: 12px 20px;
       border-bottom: 1px solid #f3f2f1;
       cursor: pointer;
-      transition: background 0.2s;
-      position: relative;
-      align-items: flex-start;
+      background: white;
     }
 
     .email-item:hover {
@@ -322,49 +317,17 @@
       flex-shrink: 0;
     }
 
-    .email-content {
-      flex: 1;
-      min-width: 0;
+    .email-item:hover {
+      background: #f9f9f9;
     }
 
-    .email-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
+    .email-item.selected {
+      background: #deecf9;
+      border-left: 3px solid #0078d4;
     }
 
-    .email-sender {
-      font-size: 14px;
-      color: #323130;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .email-time {
-      font-size: 12px;
-      color: #605e5c;
-      flex-shrink: 0;
-    }
-
-    .email-subject {
-      font-size: 13px;
-      color: #323130;
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .email-preview {
-      font-size: 12px;
-      color: #605e5c;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    .email-item.unread {
+      font-weight: 600;
     }
 
     .email-flags {
@@ -1561,26 +1524,20 @@ async function loadCampaignFiles() {
   }
 }
 
-// Load emails - preserved with enhancements
+// Load emails - Simple sorting by created_at only
 async function loadEmails() {
   try {
     const data = await apiCall(ENDPOINTS.getEmails);
     allEmails = Array.isArray(data) ? data : (data.emails || []);
     
-    // Process emails and clean up sent drafts
-    allEmails = allEmails.filter(email => {
-      // Remove drafts that have been sent (have both draft=true and sent_at)
-      if (email.draft && email.sent_at) return false;
-      return true;
-    });
-    
-    // Sort by date
+    // Simple sort by created_at only - no filtering or grouping
     allEmails.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    console.log(`Loaded ${allEmails.length} individual emails`);
+    console.log('First 5 emails:', allEmails.slice(0, 5));
     
     updateFolderCounts();
     filterEmailsByFolder(currentFolder);
-    
-    console.log(`Loaded ${allEmails.length} emails`);
   } catch (error) {
     console.error('Error loading emails:', error);
     allEmails = [];
@@ -1626,27 +1583,22 @@ function updateFolderCounts() {
   document.getElementById('allCount').textContent = allEmails.length;
 }
 
-// Filter emails by folder - Fixed sent folder to show email list
+// Filter emails by folder - No grouping or special processing
 function filterEmailsByFolder(folder) {
   currentFolder = folder;
   
-  // Update layout based on folder
+  // Always use the same 3-column layout
   const mainContainer = document.querySelector('.main-container');
   const emailListPanel = document.querySelector('.email-list-panel');
-  const readingPane = document.querySelector('.reading-pane');
   
-  if (folder === 'sent' || folder === 'drafts') {
-    mainContainer.classList.add('sent-view');
-    // Show email list panel for sent/drafts
-    emailListPanel.style.display = 'flex';
-    // Reset reading pane
-    document.getElementById('emptyState').style.display = 'flex';
-    document.getElementById('emailView').style.display = 'none';
-    document.getElementById('composeForm').classList.remove('active');
-  } else {
-    mainContainer.classList.remove('sent-view');
-    emailListPanel.style.display = 'flex';
-  }
+  // Remove any special classes
+  mainContainer.classList.remove('sent-view');
+  emailListPanel.style.display = 'flex';
+  
+  // Reset reading pane to empty state
+  document.getElementById('emptyState').style.display = 'flex';
+  document.getElementById('emailView').style.display = 'none';
+  document.getElementById('composeForm').classList.remove('active');
   
   // Update active folder
   document.querySelectorAll('.folder-item').forEach(item => {
@@ -1654,25 +1606,27 @@ function filterEmailsByFolder(folder) {
   });
   document.querySelector(`[data-folder="${folder}"]`).classList.add('active');
   
+  // Simple filtering - no processing or grouping
   switch (folder) {
     case 'inbox':
-      filteredEmails = allEmails.filter(email => email.inbound);
+      filteredEmails = allEmails.filter(email => email.inbound === true);
       document.getElementById('folderTitle').textContent = 'Inbox';
       break;
     case 'sent':
-      filteredEmails = allEmails.filter(email => !email.inbound && !email.draft && email.body);
+      filteredEmails = allEmails.filter(email => email.inbound === false);
       document.getElementById('folderTitle').textContent = 'Sent Items';
       break;
     case 'drafts':
-      filteredEmails = allEmails.filter(email => email.draft || (!email.body || email.body.trim() === ''));
+      filteredEmails = allEmails.filter(email => email.draft === true);
       document.getElementById('folderTitle').textContent = 'Drafts';
       break;
     case 'all':
-      filteredEmails = [...allEmails];
+      filteredEmails = [...allEmails]; // Copy all emails without any filtering
       document.getElementById('folderTitle').textContent = 'All Mail';
       break;
   }
   
+  console.log(`Filtered to ${filteredEmails.length} emails for folder: ${folder}`);
   renderEmailList();
 }
 
@@ -1703,53 +1657,43 @@ function filterByTag(tag) {
   renderEmailList();
 }
 
-// Render email list - Block layout to prevent floating
+// Version 1: No floats, pure block layout
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
   if (filteredEmails.length === 0) {
-    emailList.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: #605e5c; width: 100%; display: block;">
-        <div style="font-size: 24px; margin-bottom: 10px;">🔭</div>
-        <div>No emails in this folder</div>
-      </div>
-    `;
+    emailList.innerHTML = `<div style="padding: 40px; text-align: center;">No emails</div>`;
     return;
   }
   
-  // Force container to use block layout
   emailList.style.display = 'block';
   emailList.style.width = '100%';
-  emailList.style.overflowX = 'hidden';
-  emailList.style.overflowY = 'auto';
   
-  const emailItems = filteredEmails.map(email => {
+  let html = '';
+  filteredEmails.forEach(email => {
     const isSelected = selectedEmail && selectedEmail.id === email.id;
     const isUnread = !email.opened_at && email.inbound;
     const sender = email.inbound ? (email.from || 'Unknown') : (email.to || 'Unknown');
-    const senderInitial = sender.charAt(0).toUpperCase();
     
-    return `
-      <div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" 
-           onclick="selectEmail(${email.id})" 
-           style="display: block !important; width: 100% !important; clear: both !important; float: none !important;">
-        <div class="email-avatar" style="display: inline-block; vertical-align: top; margin-right: 12px;">${senderInitial}</div>
-        <div class="email-content" style="display: inline-block; vertical-align: top; width: calc(100% - 60px);">
-          <div class="email-header-row" style="display: block; margin-bottom: 4px;">
-            <span class="email-sender" style="display: inline-block; max-width: 70%;">${sender}</span>
-            <span class="email-time" style="margin-left: auto;">${formatDate(email.created_at)}</span>
-          </div>
-          <div class="email-subject" style="display: block; margin-bottom: 2px;">${email.subject || 'No Subject'}</div>
-          <div class="email-preview" style="display: block;">${getEmailPreview(email.body)}</div>
-        </div>
-      </div>
-    `;
+    html += `<div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" 
+                  onclick="selectEmail(${email.id})" 
+                  style="display: block; width: 100%; padding: 12px; border-bottom: 1px solid #f3f2f1; box-sizing: border-box;">
+               <div style="display: block; margin-bottom: 4px;">
+                 <strong>${sender}</strong> - ${formatDate(email.created_at)}
+               </div>
+               <div style="display: block; margin-bottom: 2px;">
+                 ${email.subject || 'No Subject'}
+               </div>
+               <div style="display: block; color: #605e5c; font-size: 12px;">
+                 ${getEmailPreview(email.body)}
+               </div>
+             </div>`;
   });
   
-  emailList.innerHTML = emailItems.join('');
+  emailList.innerHTML = html;
 }
 
-// Select and display email 
+// Select and display email - Fixed for sent folder
 async function selectEmail(emailId) {
   const email = allEmails.find(e => e.id === emailId);
   if (!email) return;
