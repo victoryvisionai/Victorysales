@@ -179,7 +179,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* NEW: Content Creation Hub */
+    /* Content Creation Hub */
     .content-hub {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -260,7 +260,62 @@
       gap: 10px;
       margin-top: 15px;
     }
-    
+
+    /* Media Upload Section */
+    .media-upload-section {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-left: 4px solid #28a745;
+    }
+    .upload-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .upload-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    .upload-btn:hover {
+      background: #218838;
+    }
+    .upload-btn.secondary {
+      background: #6c757d;
+    }
+    .upload-btn.secondary:hover {
+      background: #5a6268;
+    }
+    .attached-media {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .attached-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #323130;
+    }
+    .remove-media {
+      cursor: pointer;
+      color: #dc3545;
+      font-weight: bold;
+    }
+
     /* Enhanced Analytics */
     .analytics-widget {
       background: white;
@@ -321,11 +376,6 @@
     .stat-label {
       color: #666;
       font-size: 0.9rem;
-    }
-    .stat-change {
-      font-size: 0.8rem;
-      margin-top: 5px;
-      color: #28a745;
     }
     
     .filter-section {
@@ -486,6 +536,33 @@
       margin-top: 5px;
       display: inline-block;
     }
+
+    /* Media Display */
+    .post-media {
+      margin-top: 10px;
+      max-width: 200px;
+    }
+    .post-media img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .post-media video {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .media-placeholder {
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9em;
+    }
     
     .expanded-content {
       display: none;
@@ -534,6 +611,140 @@
     .post-url:hover {
       color: #083050;
     }
+
+    /* File Browser Modal */
+    .file-browser-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+    }
+    .file-browser-content {
+      background: white;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .file-browser-header {
+      background: #faf9f8;
+      padding: 20px 24px;
+      border-bottom: 1px solid #edebe9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .file-browser-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #323130;
+    }
+    .file-browser-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #605e5c;
+      padding: 4px;
+    }
+    .file-browser-body {
+      padding: 24px;
+    }
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .file-card {
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .file-card:hover {
+      border-color: #0A3161;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .file-card.selected {
+      border-color: #0A3161;
+      background: #e3f2fd;
+      box-shadow: 0 0 0 2px #0A3161;
+    }
+    .file-preview {
+      width: 100%;
+      height: 100px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .file-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .file-preview video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .file-icon {
+      font-size: 32px;
+      color: #6c757d;
+    }
+    .file-info {
+      text-align: center;
+    }
+    .file-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #323130;
+      margin-bottom: 2px;
+      word-break: break-word;
+    }
+    .file-size {
+      font-size: 10px;
+      color: #8a8886;
+    }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #edebe9;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .btn-secondary {
+      background: white;
+      color: #323130;
+      border: 1px solid #d1d1d1;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: #0A3161;
+      color: white;
+      border: 1px solid #0A3161;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
     .loading {
       text-align: center;
       padding: 3rem;
@@ -699,32 +910,27 @@
     <div class="stat-card">
       <div class="stat-number" id="totalPosts">0</div>
       <div class="stat-label">Total Posts</div>
-      <div class="stat-change">+12% this month</div>
     </div>
     <div class="stat-card">
       <div class="stat-number" id="totalEngagements">0</div>
       <div class="stat-label">Total Engagements</div>
-      <div class="stat-change">+24% this month</div>
     </div>
     <div class="stat-card">
       <div class="stat-number" id="totalShares">0</div>
       <div class="stat-label">Total Shares</div>
-      <div class="stat-change">+18% this month</div>
     </div>
     <div class="stat-card">
       <div class="stat-number" id="totalClicks">0</div>
       <div class="stat-label">Total Clicks</div>
-      <div class="stat-change">+31% this month</div>
     </div>
     <div class="stat-card">
       <div class="stat-number" id="totalRevenue">$0</div>
       <div class="stat-label">Revenue Generated</div>
-      <div class="stat-change">+45% this month</div>
     </div>
   </section>
 
-  <!-- NEW: Content Creation Hub -->
-  <section class="content-hub" data-intro="Create and schedule posts across all your social platforms with AI assistance." data-step="2">
+  <!-- Enhanced Content Creation Hub -->
+  <section class="content-hub" data-intro="Create and schedule posts across all your social platforms with AI assistance and media uploads." data-step="2">
     <div class="create-post-section">
       <h3 style="margin: 0 0 15px 0; color: #0A3161;">🚀 AI-Powered Content Creator</h3>
       
@@ -734,6 +940,19 @@
         <button class="ai-btn" onclick="suggestHashtags()">🏷️ Smart Hashtags</button>
         <button class="ai-btn" onclick="optimizeForPlatform()">🎯 Optimize Content</button>
         <button class="ai-btn" onclick="getTrendingTopics()">📈 Trending Topics</button>
+      </div>
+
+      <!-- Media Upload Section -->
+      <div class="media-upload-section">
+        <h4>📁 Media & Files</h4>
+        <div class="upload-controls">
+          <button class="upload-btn" onclick="openFileBrowser()">📂 Browse Media</button>
+          <button class="upload-btn secondary" onclick="uploadNewFile()">📤 Upload New</button>
+          <input type="file" id="fileUploadInput" style="display: none;" multiple accept="image/*,video/*" onchange="handleFileUpload(event)">
+        </div>
+        <div class="attached-media" id="attachedMedia">
+          <!-- Attached media will appear here -->
+        </div>
       </div>
       
       <div class="post-composer">
@@ -756,18 +975,6 @@
             <span>📘</span> Facebook
           </div>
         </div>
-
-        <!-- File Attachment Section -->
-        <div class="attachment-section">
-          <div class="attachment-controls">
-            <button class="attachment-btn" onclick="openFileBrowser()">📁 Browse Files</button>
-            <button class="attachment-btn secondary" onclick="uploadNewFile()">📤 Upload New</button>
-            <input type="file" id="fileUploadInput" style="display: none;" multiple onchange="handleFileUpload(event)">
-          </div>
-          <div class="attached-files" id="attachedFiles">
-            <!-- Attached files will appear here -->
-          </div>
-        </div>        
         
         <div class="schedule-options">
           <button class="success" onclick="postNow()">📤 Post Now</button>
@@ -852,6 +1059,26 @@
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
 </div>
+
+<!-- File Browser Modal -->
+<div id="fileBrowserModal" class="file-browser-modal">
+  <div class="file-browser-content">
+    <div class="file-browser-header">
+      <h2 class="file-browser-title">Select Media to Attach</h2>
+      <button class="file-browser-close" onclick="closeFileBrowser()">×</button>
+    </div>
+    <div class="file-browser-body">
+      <div class="file-grid" id="fileGrid">
+        <!-- Campaign files will be loaded here -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeFileBrowser()">Cancel</button>
+      <button class="btn-primary" onclick="attachSelectedFiles()">Attach Selected</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -860,7 +1087,7 @@
   </nav>
 </footer>
 
-    <script>
+<script>
   // Supabase configuration for auth only
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
@@ -870,14 +1097,16 @@
   const ENDPOINTS = {
     getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
     getSocial: 'https://victoryvision.app.n8n.cloud/webhook/socials/get',
+    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
     aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost',
-    // NEW ENDPOINTS for enhanced functionality
+    // Enhanced endpoints for media functionality
     createPost: 'https://victoryvision.app.n8n.cloud/webhook/social/create-post',
     schedulePost: 'https://victoryvision.app.n8n.cloud/webhook/social/schedule',
     generateCaption: 'https://victoryvision.app.n8n.cloud/webhook/social/generate-caption',
     suggestHashtags: 'https://victoryvision.app.n8n.cloud/webhook/social/hashtags',
     getTrending: 'https://victoryvision.app.n8n.cloud/webhook/social/trending',
-    optimizeContent: 'https://victoryvision.app.n8n.cloud/webhook/social/optimize'
+    optimizeContent: 'https://victoryvision.app.n8n.cloud/webhook/social/optimize',
+    uploadMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/upload'
   };
   
   let CUSTOMER_ID = null;
@@ -885,15 +1114,14 @@
   let userCredits = { social_credits: 0 };
   let aiPostEnabled = false;
   let selectedPlatforms = ['linkedin'];
-  let attachedFiles = [];
-  let selectedFiles = [];
-  let campaignFiles = [];
-
 
   // State management
   let allSocialPosts = [];
   let filteredSocialPosts = [];
   let expandedRows = new Set();
+  let campaignFiles = [];
+  let attachedFiles = [];
+  let selectedFiles = [];
 
   // DOM elements
   const socialContainer = document.getElementById('socialContainer');
@@ -958,7 +1186,7 @@
   // API call function
   async function apiCall(endpoint, data = {}) {
     try {
-      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get');
+      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get') || endpoint.includes('/media/get');
       
       const url = isGetRequest ? 
         `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
@@ -1022,7 +1250,8 @@
       showStatus('Error loading user data: ' + error.message, true);
     }
   }
-/ Load campaign files for attachments
+
+  // Load campaign files for media browser
   async function loadCampaignFiles() {
     try {
       const data = await apiCall(ENDPOINTS.getMedia);
@@ -1033,7 +1262,7 @@
       campaignFiles = [];
     }
   }
-      
+
   // Update credits display
   function updateCreditsDisplay() {
     const socialCreditsElement = document.getElementById('socialCredits');
@@ -1072,7 +1301,8 @@
       showStatus('Error updating AI auto post: ' + error.message, true);
     }
   }
- // File attachment functions
+
+  // File attachment functions
   function openFileBrowser() {
     const modal = document.getElementById('fileBrowserModal');
     const fileGrid = document.getElementById('fileGrid');
@@ -1086,17 +1316,24 @@
         </div>
       `;
     } else {
-      fileGrid.innerHTML = campaignFiles.map(file => `
-        <div class="file-card" data-file-id="${file.id}" onclick="toggleFileSelection('${file.id}')">
-          <div class="file-preview">
-            ${getFileIconFromMimeType(file.mime_type)}
+      fileGrid.innerHTML = campaignFiles.map(file => {
+        const isImage = file.mime_type && file.mime_type.includes('image');
+        const isVideo = file.mime_type && file.mime_type.includes('video');
+        
+        return `
+          <div class="file-card" data-file-id="${file.id}" onclick="toggleFileSelection('${file.id}')">
+            <div class="file-preview">
+              ${isImage ? `<img src="${file.URL}" alt="${file.name}" loading="lazy">` :
+                isVideo ? `<video src="${file.URL}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` :
+                `<div class="file-icon">${getFileIconFromMimeType(file.mime_type)}</div>`}
+            </div>
+            <div class="file-info">
+              <div class="file-name">${file.name}</div>
+              <div class="file-size">${formatFileSize(file.file_size)}</div>
+            </div>
           </div>
-          <div class="file-info">
-            <div class="file-name">${file.name}</div>
-            <div class="file-size">${formatFileSize(file.file_size)}</div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
     
     selectedFiles = [];
@@ -1119,6 +1356,8 @@
       selectedFiles.push(fileId);
       fileCard.classList.add('selected');
     }
+    
+    console.log('Selected files:', selectedFiles);
   }
 
   function attachSelectedFiles() {
@@ -1130,7 +1369,8 @@
           name: file.name,
           url: file.URL,
           size: file.file_size,
-          type: 'media'
+          type: 'media',
+          mimeType: file.mime_type
         });
       }
     });
@@ -1149,7 +1389,7 @@
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = function(e) {
-        const base64Data = e.target.result.split(',')[1];
+        const base64Data = e.target.result.split(',')[1]; // Remove data:type;base64, prefix
         
         attachedFiles.push({
           id: 'upload_' + Date.now() + '_' + Math.random(),
@@ -1157,7 +1397,8 @@
           size: file.size,
           type: 'upload',
           base64: base64Data,
-          mimeType: file.type
+          mimeType: file.type,
+          url: e.target.result // For preview
         });
         
         updateAttachmentDisplay();
@@ -1165,24 +1406,29 @@
       reader.readAsDataURL(file);
     });
     
-    event.target.value = '';
+    event.target.value = ''; // Reset input
   }
 
   function updateAttachmentDisplay() {
-    const container = document.getElementById('attachedFiles');
+    const container = document.getElementById('attachedMedia');
     
     if (attachedFiles.length === 0) {
       container.innerHTML = '';
       return;
     }
     
-    container.innerHTML = attachedFiles.map((file, index) => `
-      <div class="attached-file">
-        ${getFileIconFromMimeType(file.mimeType || file.mime_type)}
-        <span>${file.name}</span>
-        <span class="remove-attachment" onclick="removeAttachment(${index})">×</span>
-      </div>
-    `).join('');
+    container.innerHTML = attachedFiles.map((file, index) => {
+      const isImage = file.mimeType && file.mimeType.includes('image');
+      const isVideo = file.mimeType && file.mimeType.includes('video');
+      
+      return `
+        <div class="attached-item">
+          ${isImage ? '🖼️' : isVideo ? '🎥' : getFileIconFromMimeType(file.mimeType)}
+          <span>${file.name}</span>
+          <span class="remove-media" onclick="removeAttachment(${index})">×</span>
+        </div>
+      `;
+    }).join('');
   }
 
   function removeAttachment(index) {
@@ -1213,7 +1459,6 @@
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
 
-      
   // AI-powered content creation functions
   async function generateCaption() {
     try {
@@ -1343,12 +1588,15 @@
       const result = await apiCall(ENDPOINTS.createPost, {
         content: postContent.value,
         platforms: selectedPlatforms,
-        schedule_type: 'immediate'
+        schedule_type: 'immediate',
+        attachments: attachedFiles
       });
       
       if (result.success !== false) {
         showStatus(`Post published to ${selectedPlatforms.join(', ')}!`);
         postContent.value = '';
+        attachedFiles = [];
+        updateAttachmentDisplay();
         await loadSocialPosts();
       } else {
         showStatus('Post publishing failed. Try again.', true);
@@ -1373,12 +1621,15 @@
       const result = await apiCall(ENDPOINTS.schedulePost, {
         content: postContent.value,
         platforms: selectedPlatforms,
-        scheduled_for: scheduleTime
+        scheduled_for: scheduleTime,
+        attachments: attachedFiles
       });
       
       if (result.success !== false) {
         showStatus(`Post scheduled for ${scheduleTime}!`);
         postContent.value = '';
+        attachedFiles = [];
+        updateAttachmentDisplay();
       } else {
         showStatus('Post scheduling failed. Try again.', true);
       }
@@ -1397,6 +1648,7 @@
     localStorage.setItem('social_draft', JSON.stringify({
       content: postContent.value,
       platforms: selectedPlatforms,
+      attachments: attachedFiles,
       timestamp: new Date().toISOString()
     }));
     
@@ -1444,7 +1696,7 @@
     document.getElementById('totalEngagements').textContent = totalEngagements.toLocaleString();
     document.getElementById('totalShares').textContent = totalShares.toLocaleString();
     document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
-    document.getElementById('totalRevenue').textContent = `$${totalRevenue.toLocaleString()}`;
+    document.getElementById('totalRevenue').textContent = `${totalRevenue.toLocaleString()}`;
   }
 
   // Apply filters
@@ -1570,6 +1822,22 @@
     const platformIcon = getPlatformIcon(platform);
     const revenue = parseFloat(post.revenue) || 0;
 
+    // Create media display
+    let mediaDisplay = '';
+    if (post.media_URL || post.URL) {
+      const mediaUrl = post.media_URL || post.URL;
+      const isImage = mediaUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i);
+      const isVideo = mediaUrl.match(/\.(mp4|webm|mov|avi)(\?|$)/i);
+      
+      if (isImage) {
+        mediaDisplay = `<div class="post-media"><img src="${mediaUrl}" alt="Post media" loading="lazy"></div>`;
+      } else if (isVideo) {
+        mediaDisplay = `<div class="post-media"><video src="${mediaUrl}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video></div>`;
+      } else {
+        mediaDisplay = '<div class="media-placeholder">📎 Media attached</div>';
+      }
+    }
+
     row.innerHTML = `
       <td>
         <div class="platform-badge ${platform}">
@@ -1579,6 +1847,7 @@
       <td>
         <div class="post-title">${post.title || 'Untitled Post'}</div>
         <div class="post-preview">${post.message || 'No message content'}</div>
+        ${mediaDisplay}
       </td>
       <td>
         <div class="engagement-stats">
@@ -1597,7 +1866,7 @@
         </div>
       </td>
       <td>
-        ${revenue > 0 ? `<div class="revenue-badge">$${revenue.toFixed(2)}</div>` : '$0.00'}
+        ${revenue > 0 ? `<div class="revenue-badge">${revenue.toFixed(2)}</div>` : '$0.00'}
       </td>
       <td>${createdDate}</td>
     `;
@@ -1626,7 +1895,7 @@
             </div>
             <div class="detail-item">
               <div class="detail-label">Revenue</div>
-              <div class="detail-value">$${(parseFloat(post.revenue) || 0).toFixed(2)}</div>
+              <div class="detail-value">${(parseFloat(post.revenue) || 0).toFixed(2)}</div>
             </div>
             <div class="detail-item">
               <div class="detail-label">Hashtags</div>
@@ -1772,6 +2041,14 @@
     });
 
     setupPlatformSelector();
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (event) => {
+      const modal = document.getElementById('fileBrowserModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
   }
 
   // Initialize page
@@ -1780,8 +2057,11 @@
       const isAuthenticated = await checkAuthentication();
       
       if (isAuthenticated) {
-        await loadUserData();
-        await loadSocialPosts();
+        await Promise.all([
+          loadUserData(),
+          loadCampaignFiles(),
+          loadSocialPosts()
+        ]);
         setupEventListeners();
         applyFilters();
         
@@ -1842,10 +2122,17 @@
   window.saveDraft = saveDraft;
   window.sortBy = sortBy;
   window.startTour = startTour;
+  window.openFileBrowser = openFileBrowser;
+  window.closeFileBrowser = closeFileBrowser;
+  window.toggleFileSelection = toggleFileSelection;
+  window.attachSelectedFiles = attachSelectedFiles;
+  window.uploadNewFile = uploadNewFile;
+  window.handleFileUpload = handleFileUpload;
+  window.removeAttachment = removeAttachment;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
 
 </body>
-</html>
+</html>g
