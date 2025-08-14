@@ -756,6 +756,18 @@
             <span>📘</span> Facebook
           </div>
         </div>
+
+        <!-- File Attachment Section -->
+        <div class="attachment-section">
+          <div class="attachment-controls">
+            <button class="attachment-btn" onclick="openFileBrowser()">📁 Browse Files</button>
+            <button class="attachment-btn secondary" onclick="uploadNewFile()">📤 Upload New</button>
+            <input type="file" id="fileUploadInput" style="display: none;" multiple onchange="handleFileUpload(event)">
+          </div>
+          <div class="attached-files" id="attachedFiles">
+            <!-- Attached files will appear here -->
+          </div>
+        </div>        
         
         <div class="schedule-options">
           <button class="success" onclick="postNow()">📤 Post Now</button>
