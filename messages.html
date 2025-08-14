@@ -277,32 +277,42 @@
       color: white;
     }
 
-    /* Email List - Force vertical with overflow fix */
+    /* Email List - Force strict vertical layout */
     .email-list {
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden !important;
       max-height: calc(100vh - 300px);
-      display: flex !important;
-      flex-direction: column !important;
+      display: block !important;
       width: 100%;
-      white-space: nowrap;
+      white-space: normal !important;
+    }
+
+    .email-list > * {
+      display: block !important;
+      width: 100% !important;
+      clear: both !important;
     }
 
     .email-item {
-      display: flex !important;
-      flex-direction: row !important;
-      flex-wrap: nowrap !important;
+      display: block !important;
       padding: 12px 20px;
       border-bottom: 1px solid #f3f2f1;
       cursor: pointer;
       transition: background 0.2s;
       position: relative;
-      width: 100%;
+      width: 100% !important;
       min-height: 60px;
       max-width: 100%;
       box-sizing: border-box;
       overflow: hidden;
+      clear: both !important;
+      float: none !important;
+    }
+
+    .email-item > * {
+      display: inline-block;
+      vertical-align: top;
     }
 
     .email-item:hover {
@@ -1727,7 +1737,7 @@ function filterByTag(tag) {
   renderEmailList();
 }
 
-// Render email list - Fixed horizontal overflow
+// Render email list - Block layout to prevent floating
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
@@ -1741,9 +1751,8 @@ function renderEmailList() {
     return;
   }
   
-  // Force container properties to prevent horizontal layout
-  emailList.style.display = 'flex';
-  emailList.style.flexDirection = 'column';
+  // Force container to use block layout
+  emailList.style.display = 'block';
   emailList.style.width = '100%';
   emailList.style.overflowX = 'hidden';
   emailList.style.overflowY = 'auto';
@@ -1757,19 +1766,15 @@ function renderEmailList() {
     return `
       <div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" 
            onclick="selectEmail(${email.id})" 
-           style="display: flex !important; flex-direction: row !important; width: 100% !important; flex-wrap: nowrap !important; max-width: 100% !important; overflow: hidden;">
-        <div class="email-avatar" style="flex-shrink: 0;">${senderInitial}</div>
-        <div class="email-content" style="flex: 1; min-width: 0; overflow: hidden;">
-          <div class="email-header-row" style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="email-sender" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${sender}</div>
-            <div class="email-time" style="flex-shrink: 0; margin-left: 10px;">${formatDate(email.created_at)}</div>
+           style="display: block !important; width: 100% !important; clear: both !important; float: none !important;">
+        <div class="email-avatar" style="display: inline-block; vertical-align: top; margin-right: 12px;">${senderInitial}</div>
+        <div class="email-content" style="display: inline-block; vertical-align: top; width: calc(100% - 60px);">
+          <div class="email-header-row" style="display: block; margin-bottom: 4px;">
+            <span class="email-sender" style="display: inline-block; max-width: 70%;">${sender}</span>
+            <span class="email-time" style="float: right;">${formatDate(email.created_at)}</span>
           </div>
-          <div class="email-subject" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${email.subject || 'No Subject'}</div>
-          <div class="email-preview" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${getEmailPreview(email.body)}</div>
-        </div>
-        <div style="flex-shrink: 0; display: flex; gap: 4px;">
-          ${email.attachments && email.attachments.length > 0 ? '<div class="flag">📎</div>' : ''}
-          ${email.replied_at ? '<div class="flag">↩️</div>' : ''}
+          <div class="email-subject" style="display: block; margin-bottom: 2px;">${email.subject || 'No Subject'}</div>
+          <div class="email-preview" style="display: block;">${getEmailPreview(email.body)}</div>
         </div>
       </div>
     `;
