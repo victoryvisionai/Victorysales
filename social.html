@@ -1057,7 +1057,148 @@
       showStatus('Error updating AI auto post: ' + error.message, true);
     }
   }
+ // File attachment functions
+  function openFileBrowser() {
+    const modal = document.getElementById('fileBrowserModal');
+    const fileGrid = document.getElementById('fileGrid');
+    
+    if (campaignFiles.length === 0) {
+      fileGrid.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: #605e5c; grid-column: 1 / -1;">
+          <div style="font-size: 24px; margin-bottom: 10px;">📁</div>
+          <div>No files available</div>
+          <div style="font-size: 12px; margin-top: 5px;">Upload files through the Media page first</div>
+        </div>
+      `;
+    } else {
+      fileGrid.innerHTML = campaignFiles.map(file => `
+        <div class="file-card" data-file-id="${file.id}" onclick="toggleFileSelection('${file.id}')">
+          <div class="file-preview">
+            ${getFileIconFromMimeType(file.mime_type)}
+          </div>
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-size">${formatFileSize(file.file_size)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    selectedFiles = [];
+    modal.style.display = 'block';
+  }
 
+  function closeFileBrowser() {
+    document.getElementById('fileBrowserModal').style.display = 'none';
+    selectedFiles = [];
+  }
+
+  function toggleFileSelection(fileId) {
+    const fileCard = document.querySelector(`[data-file-id="${fileId}"]`);
+    const index = selectedFiles.indexOf(fileId);
+    
+    if (index > -1) {
+      selectedFiles.splice(index, 1);
+      fileCard.classList.remove('selected');
+    } else {
+      selectedFiles.push(fileId);
+      fileCard.classList.add('selected');
+    }
+  }
+
+  function attachSelectedFiles() {
+    selectedFiles.forEach(fileId => {
+      const file = campaignFiles.find(f => f.id === fileId);
+      if (file && !attachedFiles.find(af => af.id === fileId)) {
+        attachedFiles.push({
+          id: file.id,
+          name: file.name,
+          url: file.URL,
+          size: file.file_size,
+          type: 'media'
+        });
+      }
+    });
+    
+    updateAttachmentDisplay();
+    closeFileBrowser();
+  }
+
+  function uploadNewFile() {
+    document.getElementById('fileUploadInput').click();
+  }
+
+  function handleFileUpload(event) {
+    const files = Array.from(event.target.files);
+    
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Data = e.target.result.split(',')[1];
+        
+        attachedFiles.push({
+          id: 'upload_' + Date.now() + '_' + Math.random(),
+          name: file.name,
+          size: file.size,
+          type: 'upload',
+          base64: base64Data,
+          mimeType: file.type
+        });
+        
+        updateAttachmentDisplay();
+      };
+      reader.readAsDataURL(file);
+    });
+    
+    event.target.value = '';
+  }
+
+  function updateAttachmentDisplay() {
+    const container = document.getElementById('attachedFiles');
+    
+    if (attachedFiles.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+    
+    container.innerHTML = attachedFiles.map((file, index) => `
+      <div class="attached-file">
+        ${getFileIconFromMimeType(file.mimeType || file.mime_type)}
+        <span>${file.name}</span>
+        <span class="remove-attachment" onclick="removeAttachment(${index})">×</span>
+      </div>
+    `).join('');
+  }
+
+  function removeAttachment(index) {
+    attachedFiles.splice(index, 1);
+    updateAttachmentDisplay();
+  }
+
+  function getFileIconFromMimeType(mimeType) {
+    if (!mimeType) return '📄';
+    
+    const type = mimeType.toLowerCase();
+    if (type.includes('image')) return '🖼️';
+    if (type.includes('video')) return '🎥';
+    if (type.includes('audio')) return '🎵';
+    if (type.includes('pdf')) return '📕';
+    if (type.includes('doc') || type.includes('word')) return '📘';
+    if (type.includes('sheet') || type.includes('excel')) return '📗';
+    if (type.includes('presentation') || type.includes('powerpoint')) return '📙';
+    if (type.includes('zip') || type.includes('rar')) return '🗜️';
+    return '📄';
+  }
+
+  function formatFileSize(bytes) {
+    if (!bytes) return 'Unknown size';
+    
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+  }
+
+      
   // AI-powered content creation functions
   async function generateCaption() {
     try {
