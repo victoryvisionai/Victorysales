@@ -1737,7 +1737,7 @@ function renderEmailList() {
         <div class="email-content" style="display: inline-block; vertical-align: top; width: calc(100% - 60px);">
           <div class="email-header-row" style="display: block; margin-bottom: 4px;">
             <span class="email-sender" style="display: inline-block; max-width: 70%;">${sender}</span>
-            <span class="email-time" style="float: right;">${formatDate(email.created_at)}</span>
+            <span class="email-time" style="margin-left: auto;">${formatDate(email.created_at)}</span>
           </div>
           <div class="email-subject" style="display: block; margin-bottom: 2px;">${email.subject || 'No Subject'}</div>
           <div class="email-preview" style="display: block;">${getEmailPreview(email.body)}</div>
@@ -1749,7 +1749,7 @@ function renderEmailList() {
   emailList.innerHTML = emailItems.join('');
 }
 
-// Select and display email - Fixed for sent folder
+// Select and display email 
 async function selectEmail(emailId) {
   const email = allEmails.find(e => e.id === emailId);
   if (!email) return;
