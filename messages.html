@@ -100,13 +100,18 @@
       overflow: hidden;
     }
 
-    /* Sent folder gets different layout */
+    /* Sent folder gets different layout - Fixed */
     .main-container.sent-view {
       grid-template-columns: 280px 1fr;
     }
 
     .main-container.sent-view .email-list-panel {
-      display: none;
+      display: flex !important;
+      grid-column: 2;
+    }
+
+    .main-container.sent-view .reading-pane {
+      grid-column: 2;
     }
 
     /* Left Sidebar */
@@ -272,19 +277,22 @@
       color: white;
     }
 
-    /* Email List - Forced vertical stacking */
+    /* Email List - Force vertical with overflow fix */
     .email-list {
       flex: 1;
       overflow-y: auto;
+      overflow-x: hidden !important;
       max-height: calc(100vh - 300px);
       display: flex !important;
       flex-direction: column !important;
       width: 100%;
+      white-space: nowrap;
     }
 
     .email-item {
       display: flex !important;
       flex-direction: row !important;
+      flex-wrap: nowrap !important;
       padding: 12px 20px;
       border-bottom: 1px solid #f3f2f1;
       cursor: pointer;
@@ -292,7 +300,9 @@
       position: relative;
       width: 100%;
       min-height: 60px;
+      max-width: 100%;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     .email-item:hover {
@@ -865,6 +875,7 @@
     .file-card.selected {
       border-color: #0078d4;
       background: #deecf9;
+      box-shadow: 0 0 0 2px #0078d4;
     }
 
     .file-preview {
@@ -1639,19 +1650,21 @@ function updateFolderCounts() {
   document.getElementById('allCount').textContent = allEmails.length;
 }
 
-// Filter emails by folder - Fixed sent folder display
+// Filter emails by folder - Fixed sent folder to show email list
 function filterEmailsByFolder(folder) {
   currentFolder = folder;
   
   // Update layout based on folder
   const mainContainer = document.querySelector('.main-container');
   const emailListPanel = document.querySelector('.email-list-panel');
+  const readingPane = document.querySelector('.reading-pane');
   
   if (folder === 'sent' || folder === 'drafts') {
     mainContainer.classList.add('sent-view');
-    emailListPanel.style.display = 'none';
-    // Clear any selected email display for sent/drafts
-    document.getElementById('emptyState').style.display = 'none';
+    // Show email list panel for sent/drafts
+    emailListPanel.style.display = 'flex';
+    // Reset reading pane
+    document.getElementById('emptyState').style.display = 'flex';
     document.getElementById('emailView').style.display = 'none';
     document.getElementById('composeForm').classList.remove('active');
   } else {
@@ -1685,11 +1698,6 @@ function filterEmailsByFolder(folder) {
   }
   
   renderEmailList();
-  
-  // For sent/drafts, show empty state initially
-  if (folder === 'sent' || folder === 'drafts') {
-    document.getElementById('emptyState').style.display = 'flex';
-  }
 }
 
 // Filter emails by tag
@@ -1719,13 +1727,13 @@ function filterByTag(tag) {
   renderEmailList();
 }
 
-// Render email list - Enhanced to prevent side-by-side stacking
+// Render email list - Fixed horizontal overflow
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
   if (filteredEmails.length === 0) {
     emailList.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: #605e5c; width: 100%;">
+      <div style="text-align: center; padding: 40px; color: #605e5c; width: 100%; display: block;">
         <div style="font-size: 24px; margin-bottom: 10px;">🔭</div>
         <div>No emails in this folder</div>
       </div>
@@ -1733,12 +1741,14 @@ function renderEmailList() {
     return;
   }
   
-  // Force container to be flex column
+  // Force container properties to prevent horizontal layout
   emailList.style.display = 'flex';
   emailList.style.flexDirection = 'column';
   emailList.style.width = '100%';
+  emailList.style.overflowX = 'hidden';
+  emailList.style.overflowY = 'auto';
   
-  emailList.innerHTML = filteredEmails.map(email => {
+  const emailItems = filteredEmails.map(email => {
     const isSelected = selectedEmail && selectedEmail.id === email.id;
     const isUnread = !email.opened_at && email.inbound;
     const sender = email.inbound ? (email.from || 'Unknown') : (email.to || 'Unknown');
@@ -1746,21 +1756,26 @@ function renderEmailList() {
     
     return `
       <div class="email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}" 
-           onclick="selectEmail(${email.id})" style="display: flex !important; flex-direction: row !important; width: 100% !important;">
-        <div class="email-avatar">${senderInitial}</div>
-        <div class="email-content" style="flex: 1; min-width: 0;">
-          <div class="email-header-row">
-            <div class="email-sender">${sender}</div>
-            <div class="email-time">${formatDate(email.created_at)}</div>
+           onclick="selectEmail(${email.id})" 
+           style="display: flex !important; flex-direction: row !important; width: 100% !important; flex-wrap: nowrap !important; max-width: 100% !important; overflow: hidden;">
+        <div class="email-avatar" style="flex-shrink: 0;">${senderInitial}</div>
+        <div class="email-content" style="flex: 1; min-width: 0; overflow: hidden;">
+          <div class="email-header-row" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="email-sender" style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${sender}</div>
+            <div class="email-time" style="flex-shrink: 0; margin-left: 10px;">${formatDate(email.created_at)}</div>
           </div>
-          <div class="email-subject">${email.subject || 'No Subject'}</div>
-          <div class="email-preview">${getEmailPreview(email.body)}</div>
+          <div class="email-subject" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${email.subject || 'No Subject'}</div>
+          <div class="email-preview" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${getEmailPreview(email.body)}</div>
         </div>
-        ${email.attachments && email.attachments.length > 0 ? '<div class="flag">📎</div>' : ''}
-        ${email.replied_at ? '<div class="flag">↩️</div>' : ''}
+        <div style="flex-shrink: 0; display: flex; gap: 4px;">
+          ${email.attachments && email.attachments.length > 0 ? '<div class="flag">📎</div>' : ''}
+          ${email.replied_at ? '<div class="flag">↩️</div>' : ''}
+        </div>
       </div>
     `;
-  }).join('');
+  });
+  
+  emailList.innerHTML = emailItems.join('');
 }
 
 // Select and display email - Fixed for sent folder
@@ -1968,9 +1983,9 @@ function openFileBrowser() {
     `;
   } else {
     fileGrid.innerHTML = campaignFiles.map(file => `
-      <div class="file-card" data-file-id="${file.id}" onclick="toggleFileSelection(${file.id})">
+      <div class="file-card" data-file-id="${file.id}" onclick="toggleFileSelection('${file.id}')">
         <div class="file-preview">
-          ${getFileIcon(file.file_type || file.mime_type)}
+          ${getFileIconFromMimeType(file.mime_type)}
         </div>
         <div class="file-info">
           <div class="file-name">${file.name}</div>
@@ -2000,6 +2015,8 @@ function toggleFileSelection(fileId) {
     selectedFiles.push(fileId);
     fileCard.classList.add('selected');
   }
+  
+  console.log('Selected files:', selectedFiles);
 }
 
 function attachSelectedFiles() {
@@ -2011,7 +2028,7 @@ function attachSelectedFiles() {
         name: file.name,
         url: file.URL,
         size: file.file_size,
-        type: 'campaign'
+        type: 'media'
       });
     }
   });
@@ -2059,7 +2076,7 @@ function updateAttachmentDisplay() {
   
   container.innerHTML = attachedFiles.map((file, index) => `
     <div class="attached-file">
-      ${getFileIcon(file.type)}
+      ${getFileIconFromMimeType(file.mimeType || file.mime_type)}
       <span>${file.name}</span>
       <span class="remove-attachment" onclick="removeAttachment(${index})">×</span>
     </div>
@@ -2071,10 +2088,10 @@ function removeAttachment(index) {
   updateAttachmentDisplay();
 }
 
-function getFileIcon(fileType) {
-  if (!fileType) return '📄';
+function getFileIconFromMimeType(mimeType) {
+  if (!mimeType) return '📄';
   
-  const type = fileType.toLowerCase();
+  const type = mimeType.toLowerCase();
   if (type.includes('image')) return '🖼️';
   if (type.includes('video')) return '🎥';
   if (type.includes('audio')) return '🎵';
@@ -2256,7 +2273,7 @@ async function saveSignature() {
   }
 }
 
-// Email actions
+// Email actions - Fixed attachment handling for webhook
 async function sendEmail() {
   const recipients = selectedEmailAddresses.join(', ');
   const subject = document.getElementById('composeSubject').value;
@@ -2278,10 +2295,11 @@ async function sendEmail() {
       signature: userSignature
     };
 
-    // Add attachments with proper format
+    // Add attachments with proper format for webhook
     if (attachedFiles.length > 0) {
       emailData.attachments = attachedFiles.map(file => {
         if (file.type === 'upload') {
+          // For uploaded files, send base64
           return {
             name: file.name,
             base64: file.base64,
@@ -2289,6 +2307,7 @@ async function sendEmail() {
             size: file.size
           };
         } else {
+          // For media files, send name and URL
           return {
             name: file.name,
             url: file.url || file.URL,
@@ -2328,10 +2347,11 @@ async function saveDraft() {
       body: body
     };
 
-    // Add attachments with proper format
+    // Add attachments with proper format for webhook
     if (attachedFiles.length > 0) {
       draftData.attachments = attachedFiles.map(file => {
         if (file.type === 'upload') {
+          // For uploaded files, send base64
           return {
             name: file.name,
             base64: file.base64,
@@ -2339,6 +2359,7 @@ async function saveDraft() {
             size: file.size
           };
         } else {
+          // For media files, send name and URL
           return {
             name: file.name,
             url: file.url || file.URL,
