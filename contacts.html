@@ -1598,7 +1598,7 @@ async function enrichSelectedContacts() {
         }
       };
       console.log('Enriching contact:', enrichmentData);
-      await apiCall(ENDPOINTS.enrichContacts, enrichmentData);
+    await apiCall(ENDPOINTS.enrichContacts, enrichmentData).catch(err => ({ success: false, message: err.message }));
     }
     
     showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
