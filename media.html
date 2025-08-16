@@ -1301,19 +1301,20 @@
   }
 
   // Populate image select for presentations
-  function populateImageSelect() {
-    const imageSelect = document.getElementById('campaignImageSelect');
-    imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
-    
-    // Filter allMediaFiles for images only
-    const images = allMediaFiles.filter(file => file.file_type && file.file_type.includes('image'));
-    images.forEach(image => {
+function populateImageSelect() {
+  const imageSelect = document.getElementById('campaignImageSelect');
+  imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
+  
+  // Use the same imageFiles array that's already populated
+  if (imageFiles && imageFiles.length > 0) {
+    imageFiles.forEach(image => {
       const option = document.createElement('option');
       option.value = image.URL || image.url;
       option.textContent = image.name || 'Campaign Image';
       imageSelect.appendChild(option);
     });
   }
+}
 
   // Select image reference
   function selectImageReference(fileName, type) {
