@@ -602,8 +602,7 @@ const ENDPOINTS = {
   createImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create',
   createVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/create',
   createPresentation: 'https://victoryvision.app.n8n.cloud/webhook/presentations/create',
-  getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
-  getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/files'
+  getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get'
 };
 
 // Global variables
@@ -759,25 +758,22 @@ async function loadContacts() {
   }
 }
 
-// Load campaign files for image selection
+// Change this function around line 450:
 async function loadCampaignFiles() {
-  try {
-    const response = await apiCall(ENDPOINTS.getCampaignFiles);
-    campaignFiles = Array.isArray(response) ? response : (response.files || []);
-    
-    const imageSelect = document.getElementById('campaignImageSelect');
-    imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
-    
-    // Filter for images only
-    const images = campaignFiles.filter(file => file.file_type && file.file_type.includes('image'));
-    images.forEach(image => {
-      const option = document.createElement('option');
-      option.value = image.URL || image.url;
-      option.textContent = image.filename || 'Campaign Image';
-      imageSelect.appendChild(option);
-    });
-    
-  } catch (error) {
+  // Use already loaded media instead of making another API call
+  const imageSelect = document.getElementById('campaignImageSelect');
+  imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
+  
+  // Filter allMedia for images only (data already loaded from loadMediaAssets)
+  const images = allMedia.filter(file => file.file_type && file.file_type.includes('image'));
+  images.forEach(image => {
+    const option = document.createElement('option');
+    option.value = image.URL || image.url;
+    option.textContent = image.filename || 'Campaign Image';
+    imageSelect.appendChild(option);
+  });
+}
+  catch (error) {
     console.error('Error loading campaign files:', error);
   }
 }
