@@ -1148,7 +1148,7 @@
       videoCreditsElement.textContent = userCredits.video_credits;
     }
     if (presentationCreditsElement) {
-      presentationCreditsElement.textContent = userCredits.presentation_credits || 0;
+      presentationCreditsElement.textContent = userCredits.image_credits || 0;
     }
     
     // Enable/disable buttons based on credits
@@ -1163,7 +1163,7 @@
       videoBtn.disabled = userCredits.video_credits <= 0;
     }
     if (presentationBtn) {
-      presentationBtn.disabled = (userCredits.presentation_credits || 0) <= 0;
+      presentationBtn.disabled = (userCredits.image_credits || 0) <= 0;
     }
   }
 
