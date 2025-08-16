@@ -486,11 +486,25 @@
         <div class="form-group">
           <label for="presentationPages">Number of Pages</label>
           <select id="presentationPages">
+            <option value="1">1 Page</option>
+            <option value="2">2 Pages</option>
+            <option value="3">3 Pages</option>
+            <option value="4">4 Pages</option>
             <option value="5">5 Pages</option>
+            <option value="6">6 Pages</option>
+            <option value="7">7 Pages</option>
             <option value="8" selected>8 Pages</option>
+            <option value="9">9 Pages</option>
             <option value="10">10 Pages</option>
+            <option value="11">11 Pages</option>
             <option value="12">12 Pages</option>
+            <option value="13">13 Pages</option>
+            <option value="14">14 Pages</option>
             <option value="15">15 Pages</option>
+            <option value="16">16 Pages</option>
+            <option value="17">17 Pages</option>
+            <option value="18">18 Pages</option>
+            <option value="19">19 Pages</option>
             <option value="20">20 Pages</option>
           </select>
         </div>
@@ -602,7 +616,8 @@ const ENDPOINTS = {
   createImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create',
   createVideo: 'https://victoryvision.app.n8n.cloud/webhook/videos/create',
   createPresentation: 'https://victoryvision.app.n8n.cloud/webhook/presentations/create',
-  getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get'
+  getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
+  getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get'
 };
 
 // Global variables
@@ -612,7 +627,7 @@ let userCredits = { image_credits: 0, video_credits: 0, presentation_credits: 0 
 let allMedia = [];
 let filteredMedia = [];
 let contacts = [];
-let campaignFiles = [];
+let campaigns = [];
 
 // Tab switching
 function switchTab(tabName) {
@@ -758,9 +773,19 @@ async function loadContacts() {
   }
 }
 
-// Change this function around line 450:
-async function loadCampaignFiles() {
-  // Use already loaded media instead of making another API call
+// Load campaigns for filter
+async function loadCampaigns() {
+  try {
+    const response = await apiCall(ENDPOINTS.getCampaigns);
+    campaigns = Array.isArray(response) ? response : (response.campaigns || []);
+    
+  } catch (error) {
+    console.error('Error loading campaigns:', error);
+  }
+}
+
+// Load campaign files from media for image selection
+function loadCampaignFiles() {
   const imageSelect = document.getElementById('campaignImageSelect');
   imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
   
@@ -772,10 +797,6 @@ async function loadCampaignFiles() {
     option.textContent = image.filename || 'Campaign Image';
     imageSelect.appendChild(option);
   });
-}
-  catch (error) {
-    console.error('Error loading campaign files:', error);
-  }
 }
 
 // Create image
@@ -933,6 +954,7 @@ async function loadMediaAssets() {
     filteredMedia = [...allMedia];
     renderMediaGrid();
     populateFilterOptions();
+    loadCampaignFiles(); // Load campaign files after media is loaded
   } catch (error) {
     console.error('Error loading media:', error);
     showStatus('Error loading media assets', true);
@@ -987,10 +1009,14 @@ function renderMediaGrid() {
 // Populate filter options
 function populateFilterOptions() {
   const campaignSelect = document.getElementById('campaign');
-  const campaigns = [...new Set(allMedia.map(item => item.campaign_name).filter(Boolean))];
+  
+  // Use campaign names from media and loaded campaigns
+  const mediaCampaigns = [...new Set(allMedia.map(item => item.campaign_name).filter(Boolean))];
+  const loadedCampaigns = campaigns.map(c => c.name || c.campaign_name).filter(Boolean);
+  const allCampaignNames = [...new Set([...mediaCampaigns, ...loadedCampaigns])];
   
   campaignSelect.innerHTML = '<option value="">All Campaigns</option>';
-  campaigns.forEach(campaign => {
+  allCampaignNames.forEach(campaign => {
     const option = document.createElement('option');
     option.value = campaign;
     option.textContent = campaign;
@@ -1093,7 +1119,7 @@ async function init() {
         loadUserData(),
         loadMediaAssets(),
         loadContacts(),
-        loadCampaignFiles()
+        loadCampaigns()
       ]);
       
     } else {
