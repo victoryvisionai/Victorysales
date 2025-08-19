@@ -960,6 +960,7 @@
   let filteredMediaFiles = [];
   let imageFiles = [];
   let videoFiles = [];
+  let presentationFiles = [];
   let campaigns = [];
   let contacts = [];
   let selectedImageReference = null;
@@ -1242,39 +1243,42 @@
     }
   }
 
-  // Load media files from n8n webhook
-  async function loadMediaFiles() {
-    try {
-      const data = await apiCall(ENDPOINTS.getMedia);
-      console.log('Response from n8n:', data);
-      
-      // Handle response from n8n webhook
-      if (data && Array.isArray(data)) {
-        allMediaFiles = data;
-      } else if (data && data.media && Array.isArray(data.media)) {
-        allMediaFiles = data.media;
-      } else {
-        console.log('Unexpected response structure:', data);
-        allMediaFiles = [];
-      }
-
-      console.log(`Loaded ${allMediaFiles.length} media files`);
-      filteredMediaFiles = [...allMediaFiles];
-      
-      // Separate images and videos
-      imageFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'image');
-      videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
-      
-      populateReferenceLists();
-      populateImageSelect();
-      
-    } catch (error) {
-      console.error('Error loading media:', error);
+// Load media files from n8n webhook
+async function loadMediaFiles() {
+  try {
+    const data = await apiCall(ENDPOINTS.getMedia);
+    console.log('Response from n8n:', data);
+    
+    // Handle response from n8n webhook
+    if (data && Array.isArray(data)) {
+      allMediaFiles = data;
+    } else if (data && data.media && Array.isArray(data.media)) {
+      allMediaFiles = data.media;
+    } else {
+      console.log('Unexpected response structure:', data);
       allMediaFiles = [];
-      filteredMediaFiles = [];
-      showStatus('Error loading media files: ' + error.message, true);
     }
+
+    console.log(`Loaded ${allMediaFiles.length} media files`);
+    filteredMediaFiles = [...allMediaFiles];
+    
+    // Separate images, videos, and presentations
+    imageFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'image');
+    videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
+    presentationFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'presentation');
+    
+    console.log(`Found: ${imageFiles.length} images, ${videoFiles.length} videos, ${presentationFiles.length} presentations`);
+    
+    populateReferenceLists();
+    populateImageSelect();
+    
+  } catch (error) {
+    console.error('Error loading media:', error);
+    allMediaFiles = [];
+    filteredMediaFiles = [];
+    showStatus('Error loading media files: ' + error.message, true);
   }
+}
 
   // Populate reference lists
   function populateReferenceLists() {
@@ -1305,12 +1309,14 @@ function populateImageSelect() {
   const imageSelect = document.getElementById('campaignImageSelect');
   imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
   
-  // Use the same imageFiles array that's already populated
-  if (imageFiles && imageFiles.length > 0) {
-    imageFiles.forEach(image => {
+  // Use both imageFiles and presentationFiles
+  const referenceFiles = [...imageFiles, ...presentationFiles];
+  
+  if (referenceFiles && referenceFiles.length > 0) {
+    referenceFiles.forEach(file => {
       const option = document.createElement('option');
-      option.value = image.URL || image.url;
-      option.textContent = image.name || 'Campaign Image';
+      option.value = file.URL || file.url;
+      option.textContent = file.name || 'Campaign File';
       imageSelect.appendChild(option);
     });
   }
