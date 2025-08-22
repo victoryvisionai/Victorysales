@@ -2216,28 +2216,30 @@
   }
 
   // AI-powered content creation functions
-  async function generateCaption() {
-    try {
-      showStatus('Generating AI caption...', false);
-      const result = await apiCall(ENDPOINTS.generateCaption, {
-        content: postContent.value,
-        platforms: selectedPlatforms,
-        tone: 'professional',
-        attachments: attachedFiles
-      });
-      
-      if (result.caption) {
-        postContent.value = result.caption;
-        showStatus('AI caption generated successfully!');
-      } else {
-        showStatus('No caption generated. Try adding some initial content.', true);
-      }
-    } catch (error) {
-      console.error('Error generating caption:', error);
-      showStatus('Error generating caption: ' + error.message, true);
+async function generateCaption() {
+  try {
+    console.log('Starting caption generation...'); // Debug log
+    showStatus('Generating AI caption...', false);
+    
+    const result = await apiCall(ENDPOINTS.generateCaption, {
+      content: postContent.value,
+      platforms: selectedPlatforms,
+      tone: 'professional'
+    });
+    
+    console.log('Caption result:', result); // Debug log
+    
+    if (result.caption) {
+      postContent.value = result.caption;
+      showStatus('AI caption generated successfully!');
+    } else {
+      showStatus('No caption generated. Try adding some initial content.', true);
     }
+  } catch (error) {
+    console.error('Error generating caption:', error);
+    showStatus('Error generating caption: ' + error.message, true);
   }
-
+}
   async function suggestHashtags() {
     try {
       if (!postContent.value.trim()) {
