@@ -1196,7 +1196,7 @@
         
         <div class="schedule-options">
           <button class="success" onclick="postNow()">📤 Post Now</button>
-          <button onclick="openScheduleModal()">⏰ Schedule</button>
+        <button id="scheduleBtn">⏰ Schedule</button>
           <button class="secondary" onclick="saveDraft()">💾 Save Draft</button>
         </div>
       </div>
@@ -1342,7 +1342,7 @@
   <div class="post-modal-content">
     <div class="modal-header">
       <h2 class="modal-title">⏰ Schedule Your Post</h2>
-      <button class="modal-close" onclick="closeScheduleModal()">×</button>
+    <button class="modal-close" id="scheduleModalCloseBtn">×</button>
     </div>
     <div class="modal-body">
       <div class="form-group">
@@ -1362,7 +1362,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeScheduleModal()">Cancel</button>
-      <button class="btn-primary" onclick="confirmSchedulePost()">📅 Schedule Post</button>
+<button class="btn-primary" id="scheduleModalConfirmBtn">📅 Schedule Post</button>
     </div>
   </div>
 </div>
