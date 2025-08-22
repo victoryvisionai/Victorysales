@@ -179,7 +179,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* Content Creation Hub */
+    /* Enhanced Content Creation Hub */
     .content-hub {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -218,6 +218,8 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 8px rgba(187, 19, 62, 0.3);
     }
+    
+    /* Enhanced Post Composer with larger text area */
     .post-composer {
       background: white;
       border-radius: 8px;
@@ -225,14 +227,224 @@
     }
     .post-composer textarea {
       width: 100%;
-      min-height: 100px;
+      min-height: 400px; /* Increased from 100px to 400px - 4x bigger */
       border: 1px solid #ddd;
       border-radius: 6px;
-      padding: 10px;
+      padding: 15px;
       resize: vertical;
       font-family: inherit;
       box-sizing: border-box;
+      font-size: 14px;
+      line-height: 1.5;
     }
+    
+    /* Post Input Modal */
+    .post-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .post-modal-content {
+      background: white;
+      margin: 2% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
+    .modal-body {
+      padding: 20px;
+    }
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #edebe9;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Upload Post Example Modal */
+    .upload-example-modal {
+      display: none;
+      position: fixed;
+      z-index: 2001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .upload-example-content {
+      background: white;
+      margin: 2% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 900px;
+      height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .upload-example-form {
+      padding: 20px;
+      display: grid;
+      gap: 15px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    /* Monthly Calendar */
+    .calendar-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid #bb133e;
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .calendar-nav {
+      background: #0A3161;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .calendar-nav:hover {
+      background: #083050;
+    }
+    .calendar-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0A3161;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #dee2e6;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .calendar-day-header {
+      background: #0A3161;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .calendar-day {
+      background: white;
+      padding: 8px;
+      min-height: 80px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .calendar-day:hover {
+      background: #f8f9fa;
+    }
+    .calendar-day.other-month {
+      background: #f8f9fa;
+      color: #6c757d;
+    }
+    .calendar-day.today {
+      background: #e3f2fd;
+      border: 2px solid #0A3161;
+    }
+    .calendar-day-number {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .calendar-post {
+      background: #bb133e;
+      color: white;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 10px;
+      margin-bottom: 2px;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .calendar-post:hover {
+      background: #8b0f2e;
+    }
+
+    /* Date Time Picker */
+    .datetime-picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .datetime-picker input {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
     .platform-selector {
       margin: 15px 0;
       display: flex;
@@ -380,19 +592,10 @@
     
     .filter-section {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr auto auto;
+      grid-template-columns: 1fr 1fr 1fr auto auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
     }
     .form-group input,
     .form-group select {
@@ -428,6 +631,14 @@
     button.success:hover {
       background: #218838;
     }
+    button.warning {
+      background: #ffc107;
+      color: #333;
+    }
+    button.warning:hover {
+      background: #e0a800;
+    }
+    
     .social-table {
       width: 100%;
       border-collapse: collapse;
@@ -721,13 +932,6 @@
       font-size: 10px;
       color: #8a8886;
     }
-    .modal-footer {
-      padding: 16px 24px;
-      border-top: 1px solid #edebe9;
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-    }
     .btn-secondary {
       background: white;
       color: #323130;
@@ -864,6 +1068,19 @@
         flex-direction: column;
         gap: 10px;
       }
+      .calendar-grid {
+        grid-template-columns: repeat(7, 1fr);
+        font-size: 12px;
+      }
+      .calendar-day {
+        min-height: 60px;
+        padding: 4px;
+      }
+      .post-modal-content,
+      .upload-example-content {
+        width: 95%;
+        margin: 5% auto;
+      }
     }
   </style>
 </head>
@@ -933,7 +1150,7 @@
     <div class="create-post-section">
       <h3 style="margin: 0 0 15px 0; color: #0A3161;">🚀 AI-Powered Content Creator</h3>
       
-    <div class="ai-assistant-panel">
+      <div class="ai-assistant-panel">
         <h4>🤖 AI Writing Assistant</h4>
         <button class="ai-btn" onclick="generateCaption()">✨ Generate Caption</button>
         <button class="ai-btn" onclick="suggestHashtags()">🏷️ Smart Hashtags</button>
@@ -941,12 +1158,13 @@
         <button class="ai-btn" onclick="getTrendingTopics()">📈 Trending Topics</button>
       </div>
 
-    Media Upload Section -->
+      <!-- Media Upload Section -->
       <div class="media-upload-section">
         <h4>📁 Media & Files</h4>
         <div class="upload-controls">
           <button class="upload-btn" onclick="openFileBrowser()">📂 Browse Media</button>
           <button class="upload-btn secondary" onclick="uploadNewFile()">📤 Upload New</button>
+          <button class="upload-btn warning" onclick="openUploadExampleModal()">📋 Upload Post Example</button>
           <input type="file" id="fileUploadInput" style="display: none;" multiple accept="image/*,video/*" onchange="handleFileUpload(event)">
         </div>
         <div class="attached-media" id="attachedMedia">
@@ -955,7 +1173,7 @@
       </div>
       
       <div class="post-composer">
-        <textarea id="postContent" placeholder="What's happening? Our AI can help you craft the perfect message..."></textarea>
+        <textarea id="postContent" placeholder="What's happening? Our AI can help you craft the perfect message..." onclick="openPostModal()"></textarea>
         
         <div class="platform-selector">
           <div class="platform-toggle active" data-platform="linkedin">
@@ -977,8 +1195,8 @@
         
         <div class="schedule-options">
           <button class="success" onclick="postNow()">📤 Post Now</button>
-     <button onclick="schedulePost()">⏰ Schedule</button>
-    <!--    <button class="secondary" onclick="saveDraft()">💾 Save Draft</button> -->
+          <button onclick="openScheduleModal()">⏰ Schedule</button>
+          <button class="secondary" onclick="saveDraft()">💾 Save Draft</button>
         </div>
       </div>
     </div>
@@ -1000,6 +1218,19 @@
     </div>
   </section>
 
+  <!-- Monthly Calendar Section -->
+  <section class="calendar-section" data-intro="View your scheduled posts in a monthly calendar view. Click on any post to edit or reschedule." data-step="4">
+    <div class="calendar-header">
+      <button class="calendar-nav" onclick="previousMonth()">← Previous</button>
+      <h3 class="calendar-title" id="calendarTitle">January 2025</h3>
+      <button class="calendar-nav" onclick="nextMonth()">Next →</button>
+    </div>
+    
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- Calendar will be generated here -->
+    </div>
+  </section>
+
   <!-- Control Section with AI Toggle -->
   <section class="card">
     <div class="section-header">
@@ -1009,7 +1240,7 @@
           <div class="credits-number" id="socialCredits">Loading...</div>
           <div class="credits-label">Social Credits</div>
         </div>
-        <div class="ai-toggle-container" data-intro="Enable AI Auto Post to automatically create and schedule content." data-step="4">
+        <div class="ai-toggle-container" data-intro="Enable AI Auto Post to automatically create and schedule content." data-step="5">
           <span class="ai-toggle-label">🤖 AI Auto Post</span>
           <div class="toggle-switch" id="aiToggle" onclick="toggleAIPost()">
             <div class="toggle-slider"></div>
@@ -1018,7 +1249,7 @@
       </div>
     </div>
     
-    <div class="filter-section" data-intro="Filter your posts by platform or search for specific content." data-step="5">
+    <div class="filter-section" data-intro="Filter your posts by platform or search for specific content." data-step="6">
       <div class="form-group">
         <label for="platformFilter">Platform</label>
         <select id="platformFilter">
@@ -1035,10 +1266,9 @@
         <label for="performanceFilter">Performance</label>
         <select id="performanceFilter">
           <option value="">All Posts</option>
-          <option value="high">High Performing</option>
-          <option value="medium">Medium Performing</option>
-          <option value="low">Low Performing</option>
-          <option value="viral">Viral Posts</option>
+          <option value="high">High Performing (Top Third)</option>
+          <option value="medium">Medium Performing (Middle Third)</option>
+          <option value="low">Low Performing (Bottom Third)</option>
         </select>
       </div>
       <div class="form-group">
@@ -1047,16 +1277,193 @@
       </div>
       <button id="refreshSocial">🔄 Refresh</button>
       <button id="clearFilters" class="secondary">Clear Filters</button>
+      <button id="updatePosts" class="warning" onclick="openUpdatePostsModal()">📝 Update Posts</button>
     </div>
   </section>
 
   <!-- Social Posts Table -->
-  <section id="socialContainer" data-intro="Your complete social media post history with performance analytics and revenue tracking." data-step="6">
+  <section id="socialContainer" data-intro="Your complete social media post history with performance analytics and revenue tracking." data-step="7">
     <div class="loading">Loading your social media posts...</div>
   </section>
 
   <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
+</div>
+
+<!-- Enhanced Post Input Modal -->
+<div id="postModal" class="post-modal">
+  <div class="post-modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">✨ Create Your Social Media Post</h2>
+      <button class="modal-close" onclick="closePostModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="modalPostContent">Post Content</label>
+        <textarea id="modalPostContent" placeholder="What's happening? Share your thoughts, insights, or updates with your audience..."></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>Select Platforms</label>
+        <div class="platform-selector" id="modalPlatformSelector">
+          <div class="platform-toggle active" data-platform="linkedin">
+            <span>💼</span> LinkedIn
+          </div>
+          <div class="platform-toggle" data-platform="twitter">
+            <span>𝕏</span> Twitter
+          </div>
+          <div class="platform-toggle" data-platform="instagram">
+            <span>📷</span> Instagram
+          </div>
+          <div class="platform-toggle" data-platform="youtube">
+            <span>▶️</span> YouTube
+          </div>
+          <div class="platform-toggle" data-platform="facebook">
+            <span>📘</span> Facebook
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="modalHashtags">Hashtags</label>
+        <input type="text" id="modalHashtags" placeholder="#hashtag1 #hashtag2 #hashtag3">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closePostModal()">Cancel</button>
+      <button class="btn-primary" onclick="savePostFromModal()">Save & Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Schedule Post Modal -->
+<div id="scheduleModal" class="post-modal">
+  <div class="post-modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">⏰ Schedule Your Post</h2>
+      <button class="modal-close" onclick="closeScheduleModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="scheduleDate">Schedule Date & Time</label>
+        <div class="datetime-picker">
+          <input type="date" id="scheduleDate" min="" value="">
+          <input type="time" id="scheduleTime" value="09:00">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Post Preview</label>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #dee2e6;">
+          <div id="schedulePreview">Your post content will appear here...</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeScheduleModal()">Cancel</button>
+      <button class="btn-primary" onclick="confirmSchedulePost()">📅 Schedule Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Post Example Modal -->
+<div id="uploadExampleModal" class="upload-example-modal">
+  <div class="upload-example-content">
+    <div class="modal-header">
+      <h2 class="modal-title">📋 Upload Post Example</h2>
+      <button class="modal-close" onclick="closeUploadExampleModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <form class="upload-example-form" id="uploadExampleForm">
+        <div class="form-group">
+          <label for="exampleTitle">Post Title</label>
+          <input type="text" id="exampleTitle" placeholder="Enter a descriptive title for this post">
+        </div>
+        
+        <div class="form-group">
+          <label for="examplePlatform">Platform</label>
+          <select id="examplePlatform">
+            <option value="linkedin">LinkedIn</option>
+            <option value="twitter">Twitter</option>
+            <option value="instagram">Instagram</option>
+            <option value="youtube">YouTube</option>
+            <option value="facebook">Facebook</option>
+            <option value="tiktok">TikTok</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleContent">Post Content</label>
+          <textarea id="exampleContent" placeholder="Enter the full post content..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleHashtags">Hashtags</label>
+          <input type="text" id="exampleHashtags" placeholder="#hashtag1 #hashtag2 #hashtag3">
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleUrl">Post URL (if published)</label>
+          <input type="url" id="exampleUrl" placeholder="https://...">
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleEngagements">Engagements</label>
+          <input type="number" id="exampleEngagements" placeholder="0" min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleShares">Shares</label>
+          <input type="number" id="exampleShares" placeholder="0" min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleClicks">Clicks</label>
+          <input type="number" id="exampleClicks" placeholder="0" min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleRevenue">Revenue Generated ($)</label>
+          <input type="number" id="exampleRevenue" placeholder="0.00" min="0" step="0.01">
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleMediaUrl">Media URL</label>
+          <input type="url" id="exampleMediaUrl" placeholder="https://... (image or video URL)">
+        </div>
+        
+        <div class="form-group">
+          <label for="exampleNotes">Notes</label>
+          <textarea id="exampleNotes" placeholder="Additional notes about this post..." style="min-height: 80px;"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeUploadExampleModal()">Cancel</button>
+      <button class="btn-primary" onclick="savePostExample()">💾 Save Post Example</button>
+    </div>
+  </div>
+</div>
+
+<!-- Update Posts Modal -->
+<div id="updatePostsModal" class="post-modal">
+  <div class="post-modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">📝 Update Posts</h2>
+      <button class="modal-close" onclick="closeUpdatePostsModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom: 20px;">
+        <h4>Drafts & Scheduled Posts</h4>
+        <div id="updatePostsList">
+          <!-- List of drafts and scheduled posts will appear here -->
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeUpdatePostsModal()">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- File Browser Modal -->
@@ -1098,14 +1505,16 @@
     getSocial: 'https://victoryvision.app.n8n.cloud/webhook/socials/get',
     getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
     aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost',
-    // Enhanced endpoints for media functionality
     createPost: 'https://victoryvision.app.n8n.cloud/webhook/social/create-post',
     schedulePost: 'https://victoryvision.app.n8n.cloud/webhook/social/schedule',
     generateCaption: 'https://victoryvision.app.n8n.cloud/webhook/social/generate-caption',
     suggestHashtags: 'https://victoryvision.app.n8n.cloud/webhook/social/hashtags',
     getTrending: 'https://victoryvision.app.n8n.cloud/webhook/social/trending',
     optimizeContent: 'https://victoryvision.app.n8n.cloud/webhook/social/optimize',
-    uploadMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/upload'
+    uploadMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/upload',
+    savePostExample: 'https://victoryvision.app.n8n.cloud/webhook/social/save-example',
+    updatePost: 'https://victoryvision.app.n8n.cloud/webhook/social/update',
+    getDrafts: 'https://victoryvision.app.n8n.cloud/webhook/social/drafts'
   };
   
   let CUSTOMER_ID = null;
@@ -1121,6 +1530,10 @@
   let campaignFiles = [];
   let attachedFiles = [];
   let selectedFiles = [];
+  let currentDate = new Date();
+  let scheduledPosts = {};
+  let drafts = [];
+  let performanceThresholds = { high: 0, medium: 0, low: 0 };
 
   // DOM elements
   const socialContainer = document.getElementById('socialContainer');
@@ -1185,7 +1598,7 @@
   // API call function
   async function apiCall(endpoint, data = {}) {
     try {
-      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get');
+      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get') || endpoint.includes('/drafts');
       
       const url = isGetRequest ? 
         `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
@@ -1218,6 +1631,28 @@
       console.error('API call failed:', error);
       throw error;
     }
+  }
+
+  // Calculate performance thresholds
+  function calculatePerformanceThresholds() {
+    if (allSocialPosts.length === 0) {
+      performanceThresholds = { high: 0, medium: 0, low: 0 };
+      return;
+    }
+
+    const engagementScores = allSocialPosts.map(post => {
+      const engagements = parseInt(post.engagements) || 0;
+      const clicks = parseInt(post.clicks) || 0;
+      const shares = parseInt(post.shares) || 0;
+      return engagements + clicks + shares;
+    }).sort((a, b) => b - a);
+
+    const third = Math.floor(engagementScores.length / 3);
+    performanceThresholds = {
+      high: engagementScores[third - 1] || 0,
+      medium: engagementScores[third * 2 - 1] || 0,
+      low: 0
+    };
   }
 
   // Load user data and credits
@@ -1262,6 +1697,18 @@
     }
   }
 
+  // Load drafts and scheduled posts
+  async function loadDrafts() {
+    try {
+      const data = await apiCall(ENDPOINTS.getDrafts);
+      drafts = Array.isArray(data) ? data : (data.drafts || []);
+      console.log(`Loaded ${drafts.length} drafts`);
+    } catch (error) {
+      console.error('Error loading drafts:', error);
+      drafts = [];
+    }
+  }
+
   // Update credits display
   function updateCreditsDisplay() {
     const socialCreditsElement = document.getElementById('socialCredits');
@@ -1299,6 +1746,316 @@
       console.error('Error toggling AI post:', error);
       showStatus('Error updating AI auto post: ' + error.message, true);
     }
+  }
+
+  // Enhanced Post Modal Functions
+  function openPostModal() {
+    const modal = document.getElementById('postModal');
+    const modalContent = document.getElementById('modalPostContent');
+    modalContent.value = postContent.value;
+    modal.style.display = 'block';
+  }
+
+  function closePostModal() {
+    document.getElementById('postModal').style.display = 'none';
+  }
+
+  function savePostFromModal() {
+    const modalContent = document.getElementById('modalPostContent');
+    const hashtags = document.getElementById('modalHashtags').value;
+    
+    let content = modalContent.value;
+    if (hashtags.trim()) {
+      content += '\n\n' + hashtags;
+    }
+    
+    postContent.value = content;
+    closePostModal();
+  }
+
+  // Schedule Modal Functions
+  function openScheduleModal() {
+    if (!postContent.value.trim()) {
+      showStatus('Please enter some content first', true);
+      return;
+    }
+    
+    const modal = document.getElementById('scheduleModal');
+    const preview = document.getElementById('schedulePreview');
+    const dateInput = document.getElementById('scheduleDate');
+    
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.min = today;
+    dateInput.value = today;
+    
+    preview.textContent = postContent.value;
+    modal.style.display = 'block';
+  }
+
+  function closeScheduleModal() {
+    document.getElementById('scheduleModal').style.display = 'none';
+  }
+
+  async function confirmSchedulePost() {
+    const scheduleDate = document.getElementById('scheduleDate').value;
+    const scheduleTime = document.getElementById('scheduleTime').value;
+    
+    if (!scheduleDate || !scheduleTime) {
+      showStatus('Please select both date and time', true);
+      return;
+    }
+    
+    const scheduledDateTime = `${scheduleDate} ${scheduleTime}`;
+    
+    try {
+      showStatus('Scheduling post...', false);
+      const result = await apiCall(ENDPOINTS.schedulePost, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        scheduled_for: scheduledDateTime,
+        attachments: attachedFiles
+      });
+      
+      if (result.success !== false) {
+        showStatus(`Post scheduled for ${scheduledDateTime}!`);
+        postContent.value = '';
+        attachedFiles = [];
+        updateAttachmentDisplay();
+        closeScheduleModal();
+        await loadSocialPosts();
+        renderCalendar();
+      } else {
+        showStatus('Post scheduling failed. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error scheduling post:', error);
+      showStatus('Error scheduling post: ' + error.message, true);
+    }
+  }
+
+  // Upload Example Modal Functions
+  function openUploadExampleModal() {
+    document.getElementById('uploadExampleModal').style.display = 'block';
+  }
+
+  function closeUploadExampleModal() {
+    document.getElementById('uploadExampleModal').style.display = 'none';
+    document.getElementById('uploadExampleForm').reset();
+  }
+
+  async function savePostExample() {
+    const form = document.getElementById('uploadExampleForm');
+    const formData = new FormData(form);
+    
+    const postData = {
+      title: document.getElementById('exampleTitle').value,
+      platform: document.getElementById('examplePlatform').value,
+      message: document.getElementById('exampleContent').value,
+      hashtag: document.getElementById('exampleHashtags').value,
+      URL: document.getElementById('exampleUrl').value,
+      engagements: parseInt(document.getElementById('exampleEngagements').value) || 0,
+      shares: parseInt(document.getElementById('exampleShares').value) || 0,
+      clicks: parseInt(document.getElementById('exampleClicks').value) || 0,
+      revenue: parseFloat(document.getElementById('exampleRevenue').value) || 0,
+      media_URL: document.getElementById('exampleMediaUrl').value,
+      notes: document.getElementById('exampleNotes').value,
+      created_at: new Date().toISOString(),
+      example: true
+    };
+    
+    try {
+      showStatus('Saving post example...', false);
+      const result = await apiCall(ENDPOINTS.savePostExample, postData);
+      
+      if (result.success !== false) {
+        showStatus('Post example saved successfully!');
+        closeUploadExampleModal();
+        await loadSocialPosts();
+        applyFilters();
+      } else {
+        showStatus('Failed to save post example. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error saving post example:', error);
+      showStatus('Error saving post example: ' + error.message, true);
+    }
+  }
+
+  // Update Posts Modal Functions
+  async function openUpdatePostsModal() {
+    await loadDrafts();
+    const modal = document.getElementById('updatePostsModal');
+    const list = document.getElementById('updatePostsList');
+    
+    if (drafts.length === 0) {
+      list.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">No drafts or scheduled posts found.</p>';
+    } else {
+      list.innerHTML = drafts.map((draft, index) => `
+        <div style="border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin-bottom: 10px; background: white;">
+          <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 10px;">
+            <div>
+              <strong>${draft.title || 'Untitled Post'}</strong>
+              <span style="margin-left: 10px; font-size: 12px; background: #0A3161; color: white; padding: 2px 6px; border-radius: 10px;">
+                ${draft.status || 'Draft'}
+              </span>
+            </div>
+            <div style="margin-left: auto;">
+              <button onclick="editDraft(${index})" style="background: #ffc107; color: #333; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 5px;">Edit</button>
+              <button onclick="deleteDraft(${index})" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px;">Delete</button>
+            </div>
+          </div>
+          <div style="color: #666; font-size: 14px; margin-bottom: 10px;">
+            ${(draft.message || '').substring(0, 100)}${draft.message && draft.message.length > 100 ? '...' : ''}
+          </div>
+          <div style="font-size: 12px; color: #666;">
+            Platform: ${draft.platform || 'Multiple'} | 
+            ${draft.scheduled_for ? `Scheduled: ${new Date(draft.scheduled_for).toLocaleString()}` : 'Draft'}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    modal.style.display = 'block';
+  }
+
+  function closeUpdatePostsModal() {
+    document.getElementById('updatePostsModal').style.display = 'none';
+  }
+
+  async function editDraft(index) {
+    const draft = drafts[index];
+    postContent.value = draft.message || '';
+    
+    if (draft.hashtag) {
+      postContent.value += '\n\n' + draft.hashtag;
+    }
+    
+    closeUpdatePostsModal();
+    showStatus('Draft loaded for editing');
+  }
+
+  async function deleteDraft(index) {
+    if (!confirm('Are you sure you want to delete this draft?')) return;
+    
+    try {
+      const draft = drafts[index];
+      const result = await apiCall(ENDPOINTS.updatePost, {
+        id: draft.id,
+        action: 'delete'
+      });
+      
+      if (result.success !== false) {
+        showStatus('Draft deleted successfully');
+        await loadDrafts();
+        openUpdatePostsModal(); // Refresh the modal
+      } else {
+        showStatus('Failed to delete draft', true);
+      }
+    } catch (error) {
+      console.error('Error deleting draft:', error);
+      showStatus('Error deleting draft: ' + error.message, true);
+    }
+  }
+
+  // Calendar Functions
+  function renderCalendar() {
+    const calendarGrid = document.getElementById('calendarGrid');
+    const calendarTitle = document.getElementById('calendarTitle');
+    
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    calendarTitle.textContent = new Date(year, month).toLocaleDateString('en-US', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+    
+    // Clear existing calendar
+    calendarGrid.innerHTML = '';
+    
+    // Add day headers
+    const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayHeaders.forEach(day => {
+      const dayHeader = document.createElement('div');
+      dayHeader.className = 'calendar-day-header';
+      dayHeader.textContent = day;
+      calendarGrid.appendChild(dayHeader);
+    });
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    
+    // Add empty cells for days before first day of month
+    for (let i = 0; i < firstDay; i++) {
+      const emptyDay = document.createElement('div');
+      emptyDay.className = 'calendar-day other-month';
+      calendarGrid.appendChild(emptyDay);
+    }
+    
+    // Add days of month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayElement = document.createElement('div');
+      dayElement.className = 'calendar-day';
+      
+      const currentDateForDay = new Date(year, month, day);
+      
+      // Check if this is today
+      if (currentDateForDay.toDateString() === today.toDateString()) {
+        dayElement.classList.add('today');
+      }
+      
+      dayElement.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+      
+      // Add scheduled posts for this day
+      const dateKey = currentDateForDay.toISOString().split('T')[0];
+      const postsForDay = allSocialPosts.filter(post => {
+        if (!post.scheduled_for) return false;
+        const postDate = new Date(post.scheduled_for).toISOString().split('T')[0];
+        return postDate === dateKey;
+      });
+      
+      postsForDay.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.className = 'calendar-post';
+        postElement.textContent = (post.title || post.message || 'Scheduled Post').substring(0, 15) + '...';
+        postElement.onclick = (e) => {
+          e.stopPropagation();
+          openPostDetails(post);
+        };
+        dayElement.appendChild(postElement);
+      });
+      
+      dayElement.onclick = () => {
+        if (currentDateForDay >= today) {
+          selectCalendarDate(currentDateForDay);
+        }
+      };
+      
+      calendarGrid.appendChild(dayElement);
+    }
+  }
+
+  function previousMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  }
+
+  function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  }
+
+  function selectCalendarDate(date) {
+    const dateString = date.toISOString().split('T')[0];
+    document.getElementById('scheduleDate').value = dateString;
+    openScheduleModal();
+  }
+
+  function openPostDetails(post) {
+    alert(`Post Details:\n\nTitle: ${post.title || 'Untitled'}\nPlatform: ${post.platform}\nScheduled: ${new Date(post.scheduled_for).toLocaleString()}\n\nContent: ${post.message || 'No content'}`);
   }
 
   // File attachment functions
@@ -1355,8 +2112,6 @@
       selectedFiles.push(fileId);
       fileCard.classList.add('selected');
     }
-    
-    console.log('Selected files:', selectedFiles);
   }
 
   function attachSelectedFiles() {
@@ -1388,7 +2143,7 @@
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = function(e) {
-        const base64Data = e.target.result.split(',')[1]; // Remove data:type;base64, prefix
+        const base64Data = e.target.result.split(',')[1];
         
         attachedFiles.push({
           id: 'upload_' + Date.now() + '_' + Math.random(),
@@ -1397,7 +2152,7 @@
           type: 'upload',
           base64: base64Data,
           mimeType: file.type,
-          url: e.target.result // For preview
+          url: e.target.result
         });
         
         updateAttachmentDisplay();
@@ -1405,7 +2160,7 @@
       reader.readAsDataURL(file);
     });
     
-    event.target.value = ''; // Reset input
+    event.target.value = '';
   }
 
   function updateAttachmentDisplay() {
@@ -1573,6 +2328,24 @@
         console.log('Selected platforms:', selectedPlatforms);
       });
     });
+
+    // Setup modal platform selector
+    const modalPlatformToggles = document.querySelectorAll('#modalPlatformSelector .platform-toggle');
+    modalPlatformToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const platform = toggle.dataset.platform;
+        
+        if (toggle.classList.contains('active')) {
+          if (selectedPlatforms.length > 1) {
+            toggle.classList.remove('active');
+            selectedPlatforms = selectedPlatforms.filter(p => p !== platform);
+          }
+        } else {
+          toggle.classList.add('active');
+          selectedPlatforms.push(platform);
+        }
+      });
+    });
   }
 
   // Post creation functions
@@ -1606,50 +2379,22 @@
     }
   }
 
-  async function schedulePost() {
-    if (!postContent.value.trim()) {
-      showStatus('Please enter some content first', true);
-      return;
-    }
-    
-    const scheduleTime = prompt('Schedule for when? (YYYY-MM-DD HH:MM)');
-    if (!scheduleTime) return;
-    
-    try {
-      showStatus('Scheduling post...', false);
-      const result = await apiCall(ENDPOINTS.schedulePost, {
-        content: postContent.value,
-        platforms: selectedPlatforms,
-        scheduled_for: scheduleTime,
-        attachments: attachedFiles
-      });
-      
-      if (result.success !== false) {
-        showStatus(`Post scheduled for ${scheduleTime}!`);
-        postContent.value = '';
-        attachedFiles = [];
-        updateAttachmentDisplay();
-      } else {
-        showStatus('Post scheduling failed. Try again.', true);
-      }
-    } catch (error) {
-      console.error('Error scheduling post:', error);
-      showStatus('Error scheduling post: ' + error.message, true);
-    }
-  }
-
   function saveDraft() {
     if (!postContent.value.trim()) {
       showStatus('Nothing to save', true);
       return;
     }
     
-    localStorage.setItem('social_draft', JSON.stringify({
+    const draft = {
       content: postContent.value,
       platforms: selectedPlatforms,
       attachments: attachedFiles,
       timestamp: new Date().toISOString()
-    }));
+    };
+    
+    let savedDrafts = JSON.parse(localStorage.getItem('social_drafts') || '[]');
+    savedDrafts.push(draft);
+    localStorage.setItem('social_drafts', JSON.stringify(savedDrafts));
     
     showStatus('Draft saved locally!');
   }
@@ -1672,6 +2417,7 @@
       }
 
       console.log(`Loaded ${allSocialPosts.length} social posts`);
+      calculatePerformanceThresholds();
       filteredSocialPosts = [...allSocialPosts];
       updateStats();
       
@@ -1697,7 +2443,7 @@
     document.getElementById('totalRevenue').textContent = `${totalRevenue.toLocaleString()}`;
   }
 
-  // Apply filters
+  // Apply filters with improved performance filtering
   function applyFilters() {
     const platform = platformFilter.value.toLowerCase();
     const performance = performanceFilter.value;
@@ -1709,24 +2455,22 @@
         return false;
       }
 
-      // Performance filter
+      // Performance filter based on thirds
       if (performance) {
         const engagements = parseInt(post.engagements) || 0;
         const clicks = parseInt(post.clicks) || 0;
-        const totalMetric = engagements + clicks;
+        const shares = parseInt(post.shares) || 0;
+        const totalMetric = engagements + clicks + shares;
         
         switch (performance) {
           case 'high':
-            if (totalMetric < 100) return false;
+            if (totalMetric < performanceThresholds.high) return false;
             break;
           case 'medium':
-            if (totalMetric < 50 || totalMetric >= 100) return false;
+            if (totalMetric < performanceThresholds.medium || totalMetric >= performanceThresholds.high) return false;
             break;
           case 'low':
-            if (totalMetric >= 50) return false;
-            break;
-          case 'viral':
-            if (totalMetric < 1000) return false;
+            if (totalMetric >= performanceThresholds.medium) return false;
             break;
         }
       }
@@ -1832,7 +2576,7 @@
       } else if (isVideo) {
         mediaDisplay = `<div class="post-media"><video src="${mediaUrl}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video></div>`;
       } else {
-        mediaDisplay = '<div class="media-placeholder">📎 Media attached</div>';
+        mediaDisplay = '<div class="media-placeholder">🔎 Media attached</div>';
       }
     }
 
@@ -2024,6 +2768,7 @@
       await loadUserData();
       await loadSocialPosts();
       applyFilters();
+      renderCalendar();
     });
     
     clearFiltersBtn.addEventListener('click', clearFilters);
@@ -2042,10 +2787,20 @@
 
     // Close modals when clicking outside
     window.addEventListener('click', (event) => {
-      const modal = document.getElementById('fileBrowserModal');
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
+      const modals = [
+        'fileBrowserModal',
+        'postModal',
+        'scheduleModal',
+        'uploadExampleModal',
+        'updatePostsModal'
+      ];
+      
+      modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
     });
   }
 
@@ -2058,10 +2813,12 @@
         await Promise.all([
           loadUserData(),
           loadCampaignFiles(),
-          loadSocialPosts()
+          loadSocialPosts(),
+          loadDrafts()
         ]);
         setupEventListeners();
         applyFilters();
+        renderCalendar();
         
         if (!hasCompletedTour()) {
           setTimeout(() => {
@@ -2116,7 +2873,6 @@
   window.optimizeForPlatform = optimizeForPlatform;
   window.getTrendingTopics = getTrendingTopics;
   window.postNow = postNow;
-  window.schedulePost = schedulePost;
   window.saveDraft = saveDraft;
   window.sortBy = sortBy;
   window.startTour = startTour;
@@ -2127,10 +2883,31 @@
   window.uploadNewFile = uploadNewFile;
   window.handleFileUpload = handleFileUpload;
   window.removeAttachment = removeAttachment;
+  
+  // New modal functions
+  window.openPostModal = openPostModal;
+  window.closePostModal = closePostModal;
+  window.savePostFromModal = savePostFromModal;
+  window.openScheduleModal = openScheduleModal;
+  window.closeScheduleModal = closeScheduleModal;
+  window.confirmSchedulePost = confirmSchedulePost;
+  window.openUploadExampleModal = openUploadExampleModal;
+  window.closeUploadExampleModal = closeUploadExampleModal;
+  window.savePostExample = savePostExample;
+  window.openUpdatePostsModal = openUpdatePostsModal;
+  window.closeUpdatePostsModal = closeUpdatePostsModal;
+  window.editDraft = editDraft;
+  window.deleteDraft = deleteDraft;
+  
+  // Calendar functions
+  window.previousMonth = previousMonth;
+  window.nextMonth = nextMonth;
+  window.selectCalendarDate = selectCalendarDate;
+  window.openPostDetails = openPostDetails;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
 
 </body>
-</html>g
+</html>
