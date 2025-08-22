@@ -1799,43 +1799,41 @@
     document.getElementById('scheduleModal').style.display = 'none';
   }
 
-  async function confirmSchedulePost() {
-    const scheduleDate = document.getElementById('scheduleDate').value;
-    const scheduleTime = document.getElementById('scheduleTime').value;
-    
-    if (!scheduleDate || !scheduleTime) {
-      showStatus('Please select both date and time', true);
-      return;
-    }
-    
-    const scheduledDateTime = `${scheduleDate} ${scheduleTime}`;
-    
-    try {
-      showStatus('Scheduling post...', false);
-      const result = await apiCall(ENDPOINTS.schedulePost, {
-        content: postContent.value,
-        platforms: selectedPlatforms,
-        scheduled_for: scheduledDateTime,
-        attachments: attachedFiles
-      });
-      
-      if (result.success !== false) {
-        showStatus(`Post scheduled for ${scheduledDateTime}!`);
-        postContent.value = '';
-        attachedFiles = [];
-        updateAttachmentDisplay();
-        closeScheduleModal();
-        await loadSocialPosts();
-        renderCalendar();
-      } else {
-        showStatus('Post scheduling failed. Try again.', true);
-      }
-    } catch (error) {
-      console.error('Error scheduling post:', error);
-      showStatus('Error scheduling post: ' + error.message, true);
-    }
+async function confirmSchedulePost() {
+  const scheduleDate = document.getElementById('scheduleDate').value;
+  const scheduleTime = document.getElementById('scheduleTime').value;
+  
+  if (!scheduleDate || !scheduleTime) {
+    showStatus('Please select both date and time', true);
+    return;
   }
-
+  
+  const scheduledDateTime = `${scheduleDate} ${scheduleTime}`;
+  
+  try {
+    const result = await apiCall(ENDPOINTS.schedulePost, {
+      content: postContent.value,
+      platforms: selectedPlatforms,
+      scheduled_for: scheduledDateTime,
+      attachments: attachedFiles
+    });
+    
+    if (result.success !== false) {
+      showStatus(`Post scheduled for ${scheduledDateTime}!`);
+      postContent.value = '';
+      attachedFiles = [];
+      updateAttachmentDisplay();
+      closeScheduleModal();
+      await loadSocialPosts();
+      renderCalendar();
+    } else {
+      showStatus('Post scheduling failed. Try again.', true);
+    }
+  } catch (error) {
+    console.error('Error scheduling post:', error);
+    showStatus('Error scheduling post: ' + error.message, true);
+  }
+}
   // Upload Example Modal Functions
   function openUploadExampleModal() {
     document.getElementById('uploadExampleModal').style.display = 'block';
