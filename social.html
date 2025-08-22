@@ -1818,22 +1818,21 @@ async function confirmSchedulePost() {
       attachments: attachedFiles
     });
     
-    if (result.success !== false) {
-      showStatus(`Post scheduled for ${scheduledDateTime}!`);
-      postContent.value = '';
-      attachedFiles = [];
-      updateAttachmentDisplay();
-      closeScheduleModal();
-      await loadSocialPosts();
-      renderCalendar();
-    } else {
-      showStatus('Post scheduling failed. Try again.', true);
-    }
+    showStatus(`Post scheduled for ${scheduledDateTime}!`);
+    postContent.value = '';
+    attachedFiles = [];
+    updateAttachmentDisplay();
+    closeScheduleModal();
+    await loadSocialPosts();
+    renderCalendar();
+    
   } catch (error) {
     console.error('Error scheduling post:', error);
     showStatus('Error scheduling post: ' + error.message, true);
+    closeScheduleModal();
   }
 }
+  
   // Upload Example Modal Functions
   function openUploadExampleModal() {
     document.getElementById('uploadExampleModal').style.display = 'block';
@@ -2899,6 +2898,7 @@ window.closeScheduleModal = closeScheduleModal;
   window.handleFileUpload = handleFileUpload;
   window.removeAttachment = removeAttachment;
   
+  
   // New modal functions
   window.openPostModal = openPostModal;
   window.closePostModal = closePostModal;
@@ -2913,7 +2913,7 @@ window.closeScheduleModal = closeScheduleModal;
   window.closeUpdatePostsModal = closeUpdatePostsModal;
   window.editDraft = editDraft;
   window.deleteDraft = deleteDraft;
-  
+window.confirmSchedulePost = confirmSchedulePost;  
   
   // Calendar functions
   window.previousMonth = previousMonth;
