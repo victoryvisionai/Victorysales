@@ -2784,7 +2784,11 @@ async function generateCaption() {
       applyFilters();
       renderCalendar();
     });
-    
+
+    // Add these lines inside the setupEventListeners() function:
+document.getElementById('scheduleBtn').addEventListener('click', openScheduleModal);
+document.getElementById('scheduleModalConfirmBtn').addEventListener('click', confirmSchedulePost);
+document.getElementById('scheduleModalCloseBtn').addEventListener('click', closeScheduleModal);
     clearFiltersBtn.addEventListener('click', clearFilters);
 
     [platformFilter, performanceFilter].forEach(element => {
