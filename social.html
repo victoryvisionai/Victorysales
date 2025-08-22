@@ -2214,32 +2214,41 @@
     return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
   }
 
-  // AI-powered content creation functions
 async function generateCaption() {
   try {
-    console.log('Starting caption generation...'); // Debug log
+    console.log('Button clicked, starting generation...');
+    console.log('Post content:', postContent.value);
+    console.log('Selected platforms:', selectedPlatforms);
+    console.log('Attached files:', attachedFiles);
+    
     showStatus('Generating AI caption...', false);
     
-    const result = await apiCall(ENDPOINTS.generateCaption, {
+    const requestData = {
       content: postContent.value,
       platforms: selectedPlatforms,
       tone: 'professional',
       attachments: attachedFiles
-    });
+    };
     
-    console.log('Caption result:', result); // Debug log
+    console.log('Sending request:', requestData);
     
-    if (result.caption) {
+    const result = await apiCall(ENDPOINTS.generateCaption, requestData);
+    
+    console.log('Received result:', result);
+    
+    if (result && result.caption) {
       postContent.value = result.caption;
       showStatus('AI caption generated successfully!');
     } else {
+      console.log('No caption in result:', result);
       showStatus('No caption generated. Try adding some initial content.', true);
     }
   } catch (error) {
-    console.error('Error generating caption:', error);
+    console.error('Full error:', error);
     showStatus('Error generating caption: ' + error.message, true);
   }
 }
+  
   async function suggestHashtags() {
     try {
       if (!postContent.value.trim()) {
