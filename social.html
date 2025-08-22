@@ -2215,53 +2215,41 @@
   }
 
 async function generateCaption() {
-  const button = document.querySelector('button[onclick="generateCaption()"]');
-  const originalText = button ? button.innerHTML : '';
-  
   try {
-    console.log('Button clicked, starting generation...');
-    
-    // Disable button and show loading state
-    if (button) {
-      button.disabled = true;
-      button.innerHTML = '⏳ Generating...';
-      button.style.opacity = '0.7';
-    }
+    // Change button text to show loading
+    const button = event.target || document.querySelector('.ai-btn');
+    const originalText = button.innerHTML;
+    button.innerHTML = '⏳ Generating...';
     
     showStatus('Generating AI caption...', false);
     
-    const requestData = {
+    const result = await apiCall(ENDPOINTS.generateCaption, {
       content: postContent.value,
       platforms: selectedPlatforms,
       tone: 'professional',
       attachments: attachedFiles
-    };
+    });
     
-    console.log('Sending request:', requestData);
-    
-    const result = await apiCall(ENDPOINTS.generateCaption, requestData);
-    
-    console.log('Received result:', result);
-    
-    if (result && result.caption) {
+    if (result.caption) {
       postContent.value = result.caption;
       showStatus('AI caption generated successfully!');
     } else {
-      console.log('No caption in result:', result);
       showStatus('No caption generated. Try adding some initial content.', true);
     }
+    
+    // Reset button text back to original
+    button.innerHTML = originalText;
+    
   } catch (error) {
-    console.error('Full error:', error);
+    console.error('Error generating caption:', error);
     showStatus('Error generating caption: ' + error.message, true);
-  } finally {
-    // Always reset button state
-    if (button) {
-      button.disabled = false;
-      button.innerHTML = originalText || '✨ Generate Caption';
-      button.style.opacity = '1';
-    }
+    
+    // Reset button text even on error
+    const button = event.target || document.querySelector('.ai-btn');
+    button.innerHTML = '✨ Generate Caption';
   }
-}  
+}
+  
   async function suggestHashtags() {
     try {
       if (!postContent.value.trim()) {
