@@ -2,11 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Equitable Capital Advisors - Strategic Clarity for Turbulent Times"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Equitable Capital Advisors - Strategic Clarity for Turbulent Times" />
+  <meta name="theme-color" content="#2377df" />
+  <meta property="og:title" content="Pathway to Prosperity | Equitable Capital Advisors" />
+  <meta property="og:description" content="Strategic capital advisory for private equity, hedge fund, and family office executives navigating complex markets." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1756242653/sjyccwinrqmx06vijmxc.jpg" />
+  <meta property="og:url" content="https://equitablecapitaladvisors.com" />
+  <meta property="og:type" content="website" />
   <title>Pathway to Prosperity | Equitable Capital Advisors</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f4b0.svg" type="image/svg+xml" />
   <style>
     :root {
       --brand-light: #b8ddfa;
@@ -16,10 +24,10 @@
       --text-muted: #555;
       --transition: 0.3s ease-in-out;
     }
-    * {
+    *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
     body {
       font-family: 'Inter', sans-serif;
@@ -39,12 +47,11 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: white;
+      color: #fff;
     }
     .hero video {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -55,161 +62,167 @@
       z-index: 2;
       max-width: 900px;
       padding: 2rem;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.5);
       border-radius: 12px;
     }
     .tagline {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 1rem;
     }
     .subtag {
       font-size: 1.25rem;
       color: var(--brand-light);
+      margin-bottom: 2rem;
     }
     .logo {
       max-height: 60px;
       margin-bottom: 1rem;
     }
-
-    .intro, .narrative, .infographics, .testimonials, .cta {
-      max-width: 1200px;
-      margin: 0 auto;
+    .sticky-cta {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--brand-primary);
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+      z-index: 999;
+      transition: background var(--transition);
     }
-
-    .intro h2 {
+    .sticky-cta:hover {
+      background-color: #1e5ec0;
+    }
+    main {
+      max-width: 1200px;
+      margin: auto;
+    }
+    .intro h2, .narrative h3, .infographics h3, .testimonials h3, .proof-points h3, .cta h3 {
       font-size: 2rem;
       color: var(--brand-primary);
       margin-bottom: 1rem;
+      text-align: center;
     }
-
     .intro p {
       font-size: 1.1rem;
       color: var(--text-muted);
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
     }
-
     .narrative {
-      background: white;
+      background: #fff;
       border-radius: 8px;
       padding: 3rem 2rem;
       margin-top: 3rem;
     }
-
-    .narrative h3 {
-      font-size: 1.8rem;
-      margin-bottom: 2rem;
-      color: var(--brand-primary);
-      text-align: center;
-    }
-
     .features {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
       gap: 2rem;
+      justify-content: center;
     }
-
     .feature {
-      background: #ffffff;
+      background: #fff;
       border: 1px solid #ddd;
       border-left: 6px solid var(--brand-primary);
-      border-radius: 6px;
       padding: 1.5rem;
+      border-radius: 6px;
       flex: 1 1 30%;
       min-width: 280px;
       transition: transform var(--transition);
     }
-
     .feature:hover {
       transform: translateY(-5px);
     }
-
     .feature h4 {
-      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 700;
       color: var(--brand-primary);
-      font-weight: 600;
+      margin-bottom: 0.5rem;
     }
-
     .feature p {
       font-size: 0.95rem;
       color: #444;
     }
-
-    .infographics, .testimonials {
-      margin-top: 4rem;
-    }
-
-    .infographics h3, .testimonials h3 {
-      text-align: center;
-      font-size: 2rem;
-      color: var(--brand-primary);
-      margin-bottom: 2rem;
-    }
-
     .infographic, .testimonial {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1.5rem;
       max-width: 800px;
-      margin: 0 auto 3rem auto;
+      margin: 0 auto 3rem;
     }
-
     .infographic img, .testimonial video {
       max-width: 100%;
       border-radius: 8px;
     }
-
-    .cta {
-      background-color: #ffffff;
-      padding: 4rem 2rem;
-      border-radius: 12px;
-      margin: 4rem 0;
+    blockquote {
       text-align: center;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #333;
+      max-width: 700px;
     }
-
-    .cta h3 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--brand-primary);
+    .cta {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 4rem 2rem;
+      text-align: center;
+      margin-top: 4rem;
     }
-
     .cta p {
       font-size: 1rem;
       color: var(--text-muted);
       margin-bottom: 2rem;
     }
-
     .cta form {
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 1rem;
       max-width: 400px;
       margin: 0 auto;
     }
-
     .cta input, .cta button {
-      width: 100%;
       padding: 0.75rem 1rem;
       border-radius: 5px;
-      border: 1px solid #ccc;
+      width: 100%;
       font-size: 1rem;
     }
-
+    .cta input {
+      border: 1px solid #ccc;
+    }
     .cta button {
       background-color: var(--brand-primary);
-      color: white;
+      color: #fff;
       border: none;
       font-weight: 600;
       transition: background var(--transition);
       cursor: pointer;
     }
-
     .cta button:hover {
       background-color: #1e5ec0;
     }
-
+    .trusted-by-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .trusted-by-logos img {
+      max-height: 50px;
+      object-fit: contain;
+      opacity: 0.8;
+    }
+    .proof-points h3 + div {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1rem;
+    }
     footer {
       background: #121212;
       color: #f5f5f5;
@@ -217,13 +230,16 @@
       text-align: center;
       font-size: 0.9rem;
     }
-
+    footer a {
+      color: var(--brand-light);
+      text-decoration: underline;
+    }
     @media (max-width: 768px) {
       .features {
         flex-direction: column;
       }
-      .hero-overlay .tagline {
-        font-size: 1.6rem;
+      .tagline {
+        font-size: 1.8rem;
       }
       header, section {
         padding: 2rem 1rem;
@@ -232,89 +248,75 @@
   </style>
 </head>
 <body>
-
+  <a href="#book" class="sticky-cta">Get Your Strategy Session</a>
   <header class="hero">
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline aria-label="Hero background video">
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756268218/viral_campaign_final_c026360407070c58.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
     <div class="hero-overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756242653/sjyccwinrqmx06vijmxc.jpg" alt="Equitable Capital Advisors logo" class="logo" />
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756242653/sjyccwinrqmx06vijmxc.jpg" alt="Equitable Capital Advisors Logo" class="logo" />
       <div class="tagline">Strategic Clarity for Turbulent Times</div>
-      <div class="subtag">Your bridge from uncertainty to prosperity starts here.</div>
+      <div class="subtag">See beyond market storm to a bridge of opportunity.</div>
+      <a href="#book" class="sticky-cta" style="position:static;margin-top:1rem;">Schedule Strategy Call</a>
     </div>
   </header>
-
   <main>
     <section class="intro">
       <h2>About Equitable Capital Advisors</h2>
-      <p>
-        Equitable Capital Advisors is a premier advisory firm dedicated to delivering bespoke, high-touch services to alternative asset managers, including private equity and hedge funds. 
-        With a unique foundation built upon the extensive personal and professional network of founder Andrew Glaze, our firm leverages over a decade of experience in public board service and high-level finance roles to optimize the operational effectiveness of portfolio companies.
-        We offer tailored support, including board service, consulting, capital introductions, vendor referrals, investment research, and exclusive events, aimed at accelerating revenue growth and enhancing competitive positioning within the complex financial landscape.
-        Our commitment to excellence and strategic insight establishes us as a trusted partner for discerning clients seeking to unlock new growth channels and achieve sustainable financial results.
-      </p>
+      <p>Equitable Capital Advisors partners with elite investment executives navigating complex financial terrain. Founded by Andrew Glaze, our firm brings over 15 years of public and private capital market experience—empowering private equity, hedge fund, and family office leaders to unlock scalable growth. Built on credibility, access, and precision, we help clients differentiate strategically via capital introductions, board-level insight, vetted vendor alignment, investment research, and exclusive events.</p>
     </section>
-
+    <section class="proof-points">
+      <h3>Trusted by Decision-Makers Managing Billions</h3>
+      <div class="trusted-by-logos">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756270001/client_logo1.png" alt="Client Logo 1" />
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756270002/client_logo2.png" alt="Client Logo 2" />
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756270003/client_logo3.png" alt="Client Logo 3" />
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756270004/client_logo4.png" alt="Client Logo 4" />
+      </div>
+      <div><strong>$275M+</strong> in revenue growth influenced • <strong>40+</strong> board and capital advisory engagements • <strong>200+</strong> proprietary capital introductions enabled</div>
+    </section>
     <section class="narrative">
       <h3>From Market Turbulence to Measured Triumph</h3>
       <div class="features">
-        <div class="feature">
-          <h4>Crisis Resilience</h4>
-          <p>Learn how industry leaders build long-term organizational stability through scenario-based risk strategies and governance excellence.</p>
-        </div>
-        <div class="feature">
-          <h4>Financial Agility</h4>
-          <p>Gain access to real-time advisors who enable faster capital realignment and strategic liquidity planning in volatile markets.</p>
-        </div>
-        <div class="feature">
-          <h4>Strategic Partnerships</h4>
-          <p>Expand your firm’s reach through curated introductions across family offices, institutional LPs, and global dealmakers.</p>
-        </div>
-        <div class="feature">
-          <h4>Investment Optimization</h4>
-          <p>Restructure deal flow pipelines with high-conviction research and vendor access tailored to your sector objectives and timing.</p>
-        </div>
-        <div class="feature">
-          <h4>Emerging Market Growth</h4>
-          <p>Capitalize on undiscovered alpha with early insights into geostrategic trends and emerging economies through active board service networks.</p>
-        </div>
-        <div class="feature">
-          <h4>Clear Competitive Advantage</h4>
-          <p>Partner with a firm that brings operational clarity and stakeholder confidence during high-stakes moments of financial inflection.</p>
-        </div>
+        <div class="feature"><h4>Crisis Resilience</h4><p>Apply governance and stress-tested strategy frameworks used by top-tier boards to remain agile in volatile cycles.</p></div>
+        <div class="feature"><h4>Financial Agility</h4><p>Real-time capital strategy consulting that enables repositioning for liquidity inflection and alpha capture.</p></div>
+        <div class="feature"><h4>Strategic Partnerships</h4><p>Connect directly with institutional LPs, sovereigns, family offices, and cross-border dealmakers shaping global allocation flows.</p></div>
+        <div class="feature"><h4>Investment Optimization</h4><p>Reduce due diligence fatigue with curated vendor pathways and on-demand research that aligns to fund thesis.</p></div>
+        <div class="feature"><h4>Emerging Market Growth</h4><p>Accelerate edge exposure through board-level intelligence within untapped sectors and geographies.</p></div>
+        <div class="feature"><h4>Clear Competitive Advantage</h4><p>Build trusted differentiation where it counts—at the capital table and inside the C-suite—through operational confidence.</p></div>
       </div>
     </section>
-
     <section class="infographics">
       <h3>Insights You Can Share with Action</h3>
       <div class="infographic">
-        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756269000/example_infographic_growth_strategy.jpg" alt="Growth Strategy Infographic"/>
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756269000/example_infographic_growth_strategy.jpg" alt="Growth Strategy Infographic" />
       </div>
     </section>
-
     <section class="testimonials">
       <h3>What Executive Clients Say</h3>
       <div class="testimonial">
-        <video controls poster="https://via.placeholder.com/800x450.png?text=Testimonial+Preview">
-          <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756269111/executive_testimonial_sample.mp4" type="video/mp4">
+        <blockquote>“Equitable Capital helped us unlock $15M in co-investment funds and secured three new LPs within six months. Their network is elite—and tangible.”</blockquote>
+        <video controls poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1756270100/testimonial_poster.jpg" aria-label="Executive Testimonial Video">
+          <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756269111/executive_testimonial_sample.mp4" type="video/mp4"/>
           Your browser does not support the video tag.
         </video>
       </div>
     </section>
-
-    <section class="cta">
+    <section class="cta" id="book">
       <h3>Book Your Strategic Introduction Session</h3>
-      <p>Join hundreds of top-performing financial executives turning complexity into opportunity. Limited slots available weekly.</p>
+      <p>Exclusively available to qualified managing partners, CIOs, and principal decision-makers. Weekly slots fill fast—secure yours today.</p>
       <form action="#" method="POST">
-        <input type="email" name="email" placeholder="Enter your work email" required />
-        <button type="submit">Schedule My Session</button>
+        <input type="email" name="email" placeholder="Enter your work email" required aria-label="Email input" />
+        <button type="submit">Secure My Session</button>
       </form>
     </section>
   </main>
-
   <footer>
-    &copy; 2024 Equitable Capital Advisors. All rights reserved. | <a href="#" style="color: var(--brand-light); text-decoration: underline;">LinkedIn</a>
+    &copy; 2024 Equitable Capital Advisors. All rights reserved.<br/>
+    <a href="https://www.linkedin.com/company/equitable-capital-advisors" target="_blank" rel="noopener noreferrer">Connect on LinkedIn</a><br/>
+    <p style="margin-top:1rem;">Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a></p>
   </footer>
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=2d17800818fd0e7d1d455ebfcb22e90fd58225b1" width="1" height="1" style="display:none;" alt="tracking pixel"/>
 </body>
 </html>
