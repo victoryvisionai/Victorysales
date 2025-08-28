@@ -179,7 +179,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* Enhanced Content Creation Hub */
+    /* Content Creation Hub */
     .content-hub {
       display: grid;
       grid-template-columns: 2fr 1fr;
@@ -219,7 +219,7 @@
       box-shadow: 0 4px 8px rgba(187, 19, 62, 0.3);
     }
     
-    /* Enhanced Post Composer with larger text area */
+    /* Post Composer */
     .post-composer {
       background: white;
       border-radius: 8px;
@@ -238,7 +238,7 @@
       line-height: 1.5;
     }
     
-    /* Post Input Modal */
+    /* Post Modal */
     .post-modal {
       display: none;
       position: fixed;
@@ -294,7 +294,7 @@
       gap: 12px;
     }
 
-    /* Collapsible Calendar */
+    /* Calendar Section - Collapsible */
     .calendar-section {
       background: white;
       border-radius: 8px;
@@ -319,14 +319,15 @@
       color: #0A3161;
       transition: transform 0.3s ease;
     }
-    .calendar-collapsed .calendar-collapse-icon {
+    .calendar-section.collapsed .calendar-collapse-icon {
       transform: rotate(-90deg);
     }
     .calendar-content {
-      transition: max-height 0.3s ease;
+      max-height: 1000px;
       overflow: hidden;
+      transition: max-height 0.3s ease;
     }
-    .calendar-collapsed .calendar-content {
+    .calendar-section.collapsed .calendar-content {
       max-height: 0;
     }
     .calendar-header {
@@ -407,7 +408,7 @@
       background: #8b0f2e;
     }
 
-    /* Drafts Section */
+    /* Drafts Widget - Collapsible */
     .drafts-widget {
       background: white;
       border-radius: 8px;
@@ -432,14 +433,15 @@
       color: #0A3161;
       transition: transform 0.3s ease;
     }
-    .drafts-collapsed .drafts-collapse-icon {
+    .drafts-widget.collapsed .drafts-collapse-icon {
       transform: rotate(-90deg);
     }
     .drafts-content {
-      transition: max-height 0.3s ease;
+      max-height: 1000px;
       overflow: hidden;
+      transition: max-height 0.3s ease;
     }
-    .drafts-collapsed .drafts-content {
+    .drafts-widget.collapsed .drafts-content {
       max-height: 0;
     }
     .draft-item {
@@ -596,7 +598,7 @@
       font-weight: bold;
     }
 
-    /* Enhanced Analytics */
+    /* Analytics Widget */
     .analytics-widget {
       background: white;
       border-radius: 8px;
@@ -823,18 +825,6 @@
       font-size: 0.7em;
       color: #666;
       text-transform: uppercase;
-    }
-    
-    /* Revenue tracking */
-    .revenue-badge {
-      background: linear-gradient(45deg, #28a745, #20c997);
-      color: white;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-      margin-top: 5px;
-      display: inline-block;
     }
 
     /* Media Display */
@@ -1210,7 +1200,7 @@
     <p class="page-subtitle">Create, schedule, and analyze your social media presence with AI-powered insights</p>
   </header>
 
-  <!-- Enhanced Stats Overview -->
+  <!-- Stats Overview (no revenue) -->
   <section class="stats-section" data-intro="Your social media performance dashboard shows real-time metrics across all platforms." data-step="1">
     <div class="stat-card">
       <div class="stat-number" id="totalPosts">0</div>
@@ -1228,13 +1218,9 @@
       <div class="stat-number" id="totalClicks">0</div>
       <div class="stat-label">Total Clicks</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-number" id="totalRevenue">$0</div>
-      <div class="stat-label">Revenue Generated</div>
-    </div>
   </section>
 
-  <!-- Enhanced Content Creation Hub -->
+  <!-- Content Creation Hub -->
   <section class="content-hub" data-intro="Create and schedule posts across all your social platforms with AI assistance and media uploads." data-step="2">
     <div class="create-post-section">
       <h3 style="margin: 0 0 15px 0; color: #0A3161;">AI-Powered Content Creator</h3>
@@ -1304,7 +1290,7 @@
       <!-- Drafts Section Widget -->
       <div class="drafts-widget" data-intro="Access your saved drafts and unscheduled posts here." data-step="4">
         <div class="drafts-toggle" onclick="toggleDrafts()">
-          <h4 style="margin: 0; color: #0A3161;">📁 Drafts</h4>
+          <h4 style="margin: 0; color: #0A3161;">📝 Drafts</h4>
           <span class="drafts-collapse-icon" id="draftsCollapseIcon">▼</span>
         </div>
         <div class="drafts-content" id="draftsContent">
@@ -1386,7 +1372,7 @@
   </section>
 
   <!-- Social Posts Table -->
-  <section id="socialContainer" data-intro="Your complete social media post history with performance analytics and revenue tracking." data-step="8">
+  <section id="socialContainer" data-intro="Your complete social media post history with performance analytics." data-step="8">
     <div class="loading">Loading your social media posts...</div>
   </section>
 
@@ -1394,7 +1380,7 @@
   <div id="statusMessage" class="status-message"></div>
 </div>
 
-<!-- Enhanced Post Input Modal -->
+<!-- Post Input Modal -->
 <div id="postModal" class="post-modal">
   <div class="post-modal-content">
     <div class="modal-header">
@@ -1553,21 +1539,18 @@
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
   
-  // Enhanced n8n endpoints
+  // n8n endpoints - Fixed getMedia to POST
   const ENDPOINTS = {
     getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
     getSocial: 'https://victoryvision.app.n8n.cloud/webhook/socials/get',
-    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/create',
     aiPost: 'https://victoryvision.app.n8n.cloud/webhook/user/aipost',
     createPost: 'https://victoryvision.app.n8n.cloud/webhook/social/create-post',
     schedulePost: 'https://victoryvision.app.n8n.cloud/webhook/social/schedule',
     optimizeContent: 'https://victoryvision.app.n8n.cloud/webhook/social/optimize',
     uploadMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/upload',
     updatePost: 'https://victoryvision.app.n8n.cloud/webhook/social/update',
-    deletePost: 'https://victoryvision.app.n8n.cloud/webhook/social/delete',
-    generateCaption: 'https://victoryvision.app.n8n.cloud/webhook/social/generate-caption',
-    suggestHashtags: 'https://victoryvision.app.n8n.cloud/webhook/social/hashtags',
-    getTrending: 'https://victoryvision.app.n8n.cloud/webhook/social/trending'
+    deletePost: 'https://victoryvision.app.n8n.cloud/webhook/social/delete'
   };
   
   let CUSTOMER_ID = null;
@@ -1602,7 +1585,7 @@
   const aiToggle = document.getElementById('aiToggle');
   const postContent = document.getElementById('postContent');
 
-  // Tour completion tracking
+  // Tour functions
   function completeTour() {
     localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
   }
@@ -1655,7 +1638,7 @@
   // API call function
   async function apiCall(endpoint, data = {}) {
     try {
-      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get') || endpoint.includes('/media/get');
+      const isGetRequest = endpoint.includes('/user/get') || endpoint.includes('/socials/get');
       
       const url = isGetRequest ? 
         `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
@@ -1690,7 +1673,7 @@
     }
   }
 
-  // Separate posts based on campaign field and posted_at
+  // Separate posts based on campaign field and post_at
   function separatePosts() {
     const now = new Date();
     
@@ -1700,10 +1683,10 @@
     
     allSocialPosts.forEach(post => {
       const isDraft = post.campaign === 'DRAFT';
-      const postedAt = post.posted_at ? new Date(post.posted_at) : null;
+      const postAt = post.post_at ? new Date(post.post_at) : null;
       
       if (isDraft) {
-        if (postedAt && postedAt > now) {
+        if (postAt && postAt > now) {
           // Draft scheduled for future
           scheduledPosts.push(post);
         } else {
@@ -1771,7 +1754,7 @@
     }
   }
 
-  // Load campaign files for media browser
+  // Load campaign files for media browser - Fixed to POST
   async function loadCampaignFiles() {
     try {
       const data = await apiCall(ENDPOINTS.getMedia);
@@ -1822,36 +1805,34 @@
     }
   }
 
-  // Calendar toggle functions
+  // Calendar toggle functions - Fixed collapsible behavior
   function toggleCalendar() {
     const calendarSection = document.querySelector('.calendar-section');
-    const calendarContent = document.getElementById('calendarContent');
     const calendarIcon = document.getElementById('calendarCollapseIcon');
     
     calendarCollapsed = !calendarCollapsed;
     
     if (calendarCollapsed) {
-      calendarSection.classList.add('calendar-collapsed');
-      calendarIcon.textContent = '►';
+      calendarSection.classList.add('collapsed');
+      calendarIcon.textContent = '▶';
     } else {
-      calendarSection.classList.remove('calendar-collapsed');
+      calendarSection.classList.remove('collapsed');
       calendarIcon.textContent = '▼';
     }
   }
 
-  // Drafts toggle functions
+  // Drafts toggle functions - Fixed collapsible behavior
   function toggleDrafts() {
     const draftsWidget = document.querySelector('.drafts-widget');
-    const draftsContent = document.getElementById('draftsContent');
     const draftsIcon = document.getElementById('draftsCollapseIcon');
     
     draftsCollapsed = !draftsCollapsed;
     
     if (draftsCollapsed) {
-      draftsWidget.classList.add('drafts-collapsed');
-      draftsIcon.textContent = '►';
+      draftsWidget.classList.add('collapsed');
+      draftsIcon.textContent = '▶';
     } else {
-      draftsWidget.classList.remove('drafts-collapsed');
+      draftsWidget.classList.remove('collapsed');
       draftsIcon.textContent = '▼';
     }
   }
@@ -1877,7 +1858,7 @@
     `).join('');
   }
 
-  // Enhanced Post Modal Functions
+  // Post Modal Functions
   function openPostModal() {
     const modal = document.getElementById('postModal');
     const modalContent = document.getElementById('modalPostContent');
@@ -1975,8 +1956,8 @@
     document.getElementById('draftPlatform').value = draft.platform || 'linkedin';
     document.getElementById('draftHashtags').value = draft.hashtag || '';
     
-    if (draft.posted_at) {
-      const scheduledDate = new Date(draft.posted_at);
+    if (draft.post_at) {
+      const scheduledDate = new Date(draft.post_at);
       document.getElementById('draftScheduleDate').value = scheduledDate.toISOString().split('T')[0];
       document.getElementById('draftScheduleTime').value = scheduledDate.toTimeString().substr(0, 5);
     }
@@ -2011,7 +1992,7 @@
         message: content,
         platform: platform,
         hashtag: hashtags,
-        posted_at: scheduledDateTime
+        post_at: scheduledDateTime
       });
       
       if (result.success !== false) {
@@ -2054,7 +2035,7 @@
     }
   }
 
-  // Calendar Functions
+  // Calendar Functions - Shows ALL posts with post_at values
   function renderCalendar() {
     const calendarGrid = document.getElementById('calendarGrid');
     const calendarTitle = document.getElementById('calendarTitle');
@@ -2105,11 +2086,11 @@
       
       dayElement.innerHTML = `<div class="calendar-day-number">${day}</div>`;
       
-      // Add scheduled posts for this day
+      // Add ALL posts with post_at for this day
       const dateKey = currentDateForDay.toISOString().split('T')[0];
-      const postsForDay = scheduledPosts.filter(post => {
-        if (!post.posted_at) return false;
-        const postDate = new Date(post.posted_at).toISOString().split('T')[0];
+      const postsForDay = allSocialPosts.filter(post => {
+        if (!post.post_at) return false;
+        const postDate = new Date(post.post_at).toISOString().split('T')[0];
         return postDate === dateKey;
       });
       
@@ -2158,7 +2139,7 @@
     if (campaignFiles.length === 0) {
       fileGrid.innerHTML = `
         <div style="text-align: center; padding: 40px; color: #605e5c; grid-column: 1 / -1;">
-          <div style="font-size: 24px; margin-bottom: 10px;">📁</div>
+          <div style="font-size: 24px; margin-bottom: 10px;">📂</div>
           <div>No files available</div>
           <div style="font-size: 12px; margin-top: 5px;">Upload files through the Media page first</div>
         </div>
@@ -2441,7 +2422,7 @@
 
       console.log(`Loaded ${allSocialPosts.length} social posts`);
       
-      // Separate posts based on campaign field and posted_at
+      // Separate posts based on campaign field and post_at
       separatePosts();
       calculatePerformanceThresholds();
       filteredSocialPosts = [...publishedPosts];
@@ -2457,19 +2438,17 @@
     }
   }
 
-  // Update stats (only for published posts)
+  // Update stats (only for published posts, removed revenue)
   function updateStats() {
     const totalPosts = publishedPosts.length;
     const totalEngagements = publishedPosts.reduce((sum, post) => sum + (parseInt(post.engagements) || 0), 0);
     const totalShares = publishedPosts.reduce((sum, post) => sum + (parseInt(post.shares) || 0), 0);
     const totalClicks = publishedPosts.reduce((sum, post) => sum + (parseInt(post.clicks) || 0), 0);
-    const totalRevenue = publishedPosts.reduce((sum, post) => sum + (parseFloat(post.revenue) || 0), 0);
 
     document.getElementById('totalPosts').textContent = totalPosts.toLocaleString();
     document.getElementById('totalEngagements').textContent = totalEngagements.toLocaleString();
     document.getElementById('totalShares').textContent = totalShares.toLocaleString();
     document.getElementById('totalClicks').textContent = totalClicks.toLocaleString();
-    document.getElementById('totalRevenue').textContent = `${totalRevenue.toLocaleString()}`;
   }
 
   // Apply filters (only to published posts)
@@ -2532,7 +2511,7 @@
     applyFilters();
   }
 
-  // Render social posts table (published posts only)
+  // Render social posts table - Updated to use created_at, message, media_type
   function renderSocialTable() {
     if (filteredSocialPosts.length === 0) {
       if (publishedPosts.length === 0) {
@@ -2549,7 +2528,10 @@
     table.innerHTML = `
       <thead>
         <tr>
-          <th onclick="sortBy('created_at')">Date</th>
+          <th onclick="sortBy('platform')">Platform</th>
+          <th onclick="sortBy('message')">Content</th>
+          <th onclick="sortBy('engagements')">Engagement</th>
+          <th onclick="sortBy('created_at')">Created</th>
         </tr>
       </thead>
       <tbody id="socialTableBody">
@@ -2570,7 +2552,7 @@
     socialContainer.appendChild(table);
   }
 
-  // Create social post table row
+  // Create social post table row - Updated display format
   function createSocialRow(post, index) {
     const row = document.createElement('tr');
     row.onclick = () => toggleExpanded(index);
@@ -2587,7 +2569,13 @@
 
     const platform = (post.platform || 'default').toLowerCase();
     const platformIcon = getPlatformIcon(platform);
-    const revenue = parseFloat(post.revenue) || 0;
+    
+    // Display media type if available
+    let mediaTypeDisplay = '';
+    if (post.media_type) {
+      const mediaIcon = getMediaTypeIcon(post.media_type);
+      mediaTypeDisplay = `<div style="margin-top: 5px; font-size: 12px; color: #666;">${mediaIcon} ${post.media_type}</div>`;
+    }
 
     // Create media display
     let mediaDisplay = '';
@@ -2614,6 +2602,7 @@
       <td>
         <div class="post-title">${post.title || 'Untitled Post'}</div>
         <div class="post-preview">${post.message || 'No message content'}</div>
+        ${mediaTypeDisplay}
         ${mediaDisplay}
       </td>
       <td>
@@ -2632,13 +2621,22 @@
           </div>
         </div>
       </td>
-      <td>
-        ${revenue > 0 ? `<div class="revenue-badge">${revenue.toFixed(2)}</div>` : '$0.00'}
-      </td>
       <td>${createdDate}</td>
     `;
 
     return row;
+  }
+
+  // Helper function for media type icons
+  function getMediaTypeIcon(mediaType) {
+    if (!mediaType) return '';
+    
+    const type = mediaType.toLowerCase();
+    if (type.includes('image')) return '🖼️';
+    if (type.includes('video')) return '🎥';
+    if (type.includes('audio')) return '🎵';
+    if (type.includes('gif')) return '🎞️';
+    return '📄';
   }
 
   // Create expanded content row
@@ -2647,7 +2645,7 @@
     expandedRow.className = `expanded-content ${expandedRows.has(index) ? 'show' : ''}`;
     
     expandedRow.innerHTML = `
-      <td colspan="5">
+      <td colspan="4">
         <div class="expanded-details">
           <div class="detail-grid">
             <div class="detail-item">
@@ -2661,8 +2659,8 @@
               </div>
             </div>
             <div class="detail-item">
-              <div class="detail-label">Revenue</div>
-              <div class="detail-value">${(parseFloat(post.revenue) || 0).toFixed(2)}</div>
+              <div class="detail-label">Media Type</div>
+              <div class="detail-value">${post.media_type || 'N/A'}</div>
             </div>
             <div class="detail-item">
               <div class="detail-label">Hashtags</div>
@@ -2706,7 +2704,376 @@
       let aVal = a[field] || '';
       let bVal = b[field] || '';
 
-      if (field === 'engagements' || field === 'shares' || field === 'clicks' || field === 'revenue') {
+      if (field === 'engagements' || field === 'shares' || field === 'clicks') {
+        aVal = parseFloat(aVal) || 0;
+        bVal = parseFloat(bVal) || 0;
+      } else if (field === 'created_at') {
+        aVal = new Date(aVal).getTime() || 0;
+        bVal = new Date(bVal).getTime() || 0;
+      } else {
+        aVal = aVal.toString().toLowerCase();
+        bVal = bVal.toString().toLowerCase();
+      }
+
+      if (sortDirection === 'asc') {
+        return aVal > bVal ? 1 : -1;
+      } else {
+        return aVal < bVal ? 1 : -1;
+      }
+    });
+
+    renderSocialTable();
+  }
+
+  // Toggle expanded row
+  function toggleExpanded(index) {
+    if (expandedRows.has(index)) {
+      expandedRows.delete(index);
+    } else {
+      expandedRows.add(index);
+    }
+    renderSocialTable();
+  }
+
+  // Open post URL
+  function openPost(url) {
+    if (url && url !== 'N/A') {
+      window.open(url, '_blank');
+    }
+  }
+
+  // Get platform icon
+  function getPlatformIcon(platform) {
+    switch (platform) {
+      case 'twitter': return 'X';
+      case 'linkedin': return 'in';
+      case 'instagram': return 'IG';
+      case 'youtube': return 'YT';
+      case 'facebook': return 'f';
+      case 'tiktok': return 'TT';
+      default: return 'SM';
+    }
+  }
+
+  function showEmptyState() {
+    socialContainer.innerHTML = `
+      <div class="empty-state">
+        <h3>No social media posts yet</h3>
+        <p>Your social media posts will appear here as your campaigns generate content.</p>
+        <button onclick="optimizeForPlatform()" class="success" style="margin-top: 15px;">Create Your First Post</button>
+      </div>
+    `;
+  }
+
+  function showNoResultsState() {
+    socialContainer.innerHTML = `
+      <div class="empty-state">
+        <h3>No posts match your filters</h3>
+        <p>Try adjusting your search criteria or clearing the filters.</p>
+      </div>
+    `;
+  }
+
+  function showStatus(message, isError = false) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+    statusDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 5000);
+  }
+
+  // Event listeners
+  function setupEventListeners() {
+    refreshSocialBtn.addEventListener('click', async () => {
+      await loadUserData();
+      await loadSocialPosts();
+      applyFilters();
+      renderCalendar();
+      renderDraftsList();
+    });
+
+    document.getElementById('scheduleBtn').addEventListener('click', openScheduleModal);
+    
+    clearFiltersBtn.addEventListener('click', clearFilters);
+
+    [platformFilter, performanceFilter].forEach(element => {
+      element.addEventListener('change', applyFilters);
+    });
+
+    let searchTimeout;
+    searchFilter.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(applyFilters, 300);
+    });
+
+    setupPlatformSelector();
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (event) => {
+      const modals = [
+        'fileBrowserModal',
+        'postModal',
+        'scheduleModal',
+        'draftEditModal'
+      ];
+      
+      modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // Initialize page
+  async function init() {
+    try {
+      const isAuthenticated = await checkAuthentication();
+      
+      if (isAuthenticated) {
+        await Promise.all([
+          loadUserData(),
+          loadCampaignFiles(),
+          loadSocialPosts()
+        ]);
+        setupEventListeners();
+        applyFilters();
+        renderCalendar();
+        renderDraftsList();
+        
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
+      } else {
+        redirectToLogin();
+      }
+    } catch (error) {
+      console.error('Error initializing page:', error);
+      showStatus('Failed to load social media posts. Please refresh the page.', true);
+    }
+  }
+
+  // Security checks - session validation every 5 minutes
+  setInterval(async function() {
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        console.log('Session expired, redirecting to login');
+        redirectToLogin();
+      } else {
+        authToken = session.access_token;
+      }
+    } catch (e) {
+      console.error('Session check failed:', e);
+    }
+  }, 300000);
+
+  // Check auth when page becomes visible
+  document.addEventListener('visibilitychange', async function() {
+    if (!document.hidden) {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+          redirectToLogin();
+        } else {
+          authToken = session.access_token;
+        }
+      } catch (e) {
+        console.error('Visibility auth check failed:', e);
+      }
+    }
+  });
+
+  // Make functions globally available
+  window.toggleAIPost = toggleAIPost;
+  window.openPost = openPost;
+  window.optimizeForPlatform = optimizeForPlatform;
+  window.postNow = postNow;
+  window.saveDraft = saveDraft;
+  window.sortBy = sortBy;
+  window.startTour = startTour;
+  window.openFileBrowser = openFileBrowser;
+  window.closeFileBrowser = closeFileBrowser;
+  window.toggleFileSelection = toggleFileSelection;
+  window.attachSelectedFiles = attachSelectedFiles;
+  window.uploadNewFile = uploadNewFile;
+  window.handleFileUpload = handleFileUpload;
+  window.removeAttachment = removeAttachment;
+  
+  // Modal functions
+  window.openPostModal = openPostModal;
+  window.closePostModal = closePostModal;
+  window.savePostFromModal = savePostFromModal;
+  window.openScheduleModal = openScheduleModal;
+  window.closeScheduleModal = closeScheduleModal;
+  window.confirmSchedulePost = confirmSchedulePost;
+  window.openDraftEditModal = openDraftEditModal;
+  window.closeDraftEditModal = closeDraftEditModal;
+  window.updateDraft = updateDraft;
+  window.deleteDraft = deleteDraft;
+  
+  // Calendar and drafts functions
+  window.toggleCalendar = toggleCalendar;
+  window.toggleDrafts = toggleDrafts;
+  window.previousMonth = previousMonth;
+  window.nextMonth = nextMonth;
+  window.selectCalendarDate = selectCalendarDate;
+
+  // Initialize when DOM loads
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>String();
+      } catch (e) {
+        createdDate = post.created_at;
+      }
+    }
+
+    const platform = (post.platform || 'default').toLowerCase();
+    const platformIcon = getPlatformIcon(platform);
+    
+    // Display media type if available
+    let mediaTypeDisplay = '';
+    if (post.media_type) {
+      const mediaIcon = getMediaTypeIcon(post.media_type);
+      mediaTypeDisplay = `<div style="margin-top: 5px; font-size: 12px; color: #666;">${mediaIcon} ${post.media_type}</div>`;
+    }
+
+    // Create media display
+    let mediaDisplay = '';
+    if (post.media_URL || post.URL) {
+      const mediaUrl = post.media_URL || post.URL;
+      const isImage = mediaUrl.match(/\.(jpg|jpeg|png|gif|webp)(\?|$)/i);
+      const isVideo = mediaUrl.match(/\.(mp4|webm|mov|avi)(\?|$)/i);
+      
+      if (isImage) {
+        mediaDisplay = `<div class="post-media"><img src="${mediaUrl}" alt="Post media" loading="lazy"></div>`;
+      } else if (isVideo) {
+        mediaDisplay = `<div class="post-media"><video src="${mediaUrl}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video></div>`;
+      } else {
+        mediaDisplay = '<div class="media-placeholder">Media attached</div>';
+      }
+    }
+
+    row.innerHTML = `
+      <td>
+        <div class="platform-badge ${platform}">
+          ${platformIcon} ${post.platform || 'Unknown'}
+        </div>
+      </td>
+      <td>
+        <div class="post-title">${post.title || 'Untitled Post'}</div>
+        <div class="post-preview">${post.message || 'No message content'}</div>
+        ${mediaTypeDisplay}
+        ${mediaDisplay}
+      </td>
+      <td>
+        <div class="engagement-stats">
+          <div class="engagement-item">
+            <span class="engagement-number">${post.engagements || 0}</span>
+            <span class="engagement-label">Likes</span>
+          </div>
+          <div class="engagement-item">
+            <span class="engagement-number">${post.shares || 0}</span>
+            <span class="engagement-label">Shares</span>
+          </div>
+          <div class="engagement-item">
+            <span class="engagement-number">${post.clicks || 0}</span>
+            <span class="engagement-label">Clicks</span>
+          </div>
+        </div>
+      </td>
+      <td>${createdDate}</td>
+    `;
+
+    return row;
+  }
+
+  // Helper function for media type icons
+  function getMediaTypeIcon(mediaType) {
+    if (!mediaType) return '';
+    
+    const type = mediaType.toLowerCase();
+    if (type.includes('image')) return '🖼️';
+    if (type.includes('video')) return '🎥';
+    if (type.includes('audio')) return '🎵';
+    if (type.includes('gif')) return '🎞️';
+    return '📄';
+  }
+
+  // Create expanded content row
+  function createExpandedRow(post, index) {
+    const expandedRow = document.createElement('tr');
+    expandedRow.className = `expanded-content ${expandedRows.has(index) ? 'show' : ''}`;
+    
+    expandedRow.innerHTML = `
+      <td colspan="4">
+        <div class="expanded-details">
+          <div class="detail-grid">
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">${post.platform || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Post URL</div>
+              <div class="detail-value">
+                ${post.URL ? `<span class="post-url" onclick="openPost('${post.URL}')">${post.URL}</span>` : 'N/A'}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Media Type</div>
+              <div class="detail-value">${post.media_type || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Hashtags</div>
+              <div class="detail-value">${post.hashtag || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Keywords</div>
+              <div class="detail-value">${post.key_words || 'N/A'}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Media URL</div>
+              <div class="detail-value">
+                ${post.media_URL ? `<span class="post-url" onclick="openPost('${post.media_URL}')">${post.media_URL}</span>` : 'N/A'}
+              </div>
+            </div>
+          </div>
+          <div class="detail-item" style="margin-top: 15px;">
+            <div class="detail-label">Full Message</div>
+            <div class="detail-value">${post.message || 'N/A'}</div>
+          </div>
+        </div>
+      </td>
+    `;
+
+    return expandedRow;
+  }
+
+  // Sorting functionality
+  let sortField = null;
+  let sortDirection = 'desc';
+
+  function sortBy(field) {
+    if (sortField === field) {
+      sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortField = field;
+      sortDirection = 'desc';
+    }
+
+    filteredSocialPosts.sort((a, b) => {
+      let aVal = a[field] || '';
+      let bVal = b[field] || '';
+
+      if (field === 'engagements' || field === 'shares' || field === 'clicks') {
         aVal = parseFloat(aVal) || 0;
         bVal = parseFloat(bVal) || 0;
       } else if (field === 'created_at') {
