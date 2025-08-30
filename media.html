@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Create and manage your generated media files."/>
   <meta name="author" content="Victory Vision"/>
-  <title>Victory Vision AI - Media Library</title>
+  <title>Victory Vision AI - Media Library</title>ct
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
@@ -1504,6 +1504,71 @@ function populateImageSelect() {
     });
   }
 
+// Handle file uploads
+function setupUploadHandlers() {
+  document.getElementById('imageUploadInput').addEventListener('change', handleImageUpload);
+  document.getElementById('videoUploadInput').addEventListener('change', handleVideoUpload);
+  document.getElementById('presentationUploadInput').addEventListener('change', handlePresentationUpload);
+}
+
+async function handleImageUpload(event) {
+  const files = Array.from(event.target.files);
+  await uploadFiles(files, 'image');
+}
+
+async function handleVideoUpload(event) {
+  const files = Array.from(event.target.files);
+  await uploadFiles(files, 'video');
+}
+
+async function handlePresentationUpload(event) {
+  const files = Array.from(event.target.files);
+  await uploadFiles(files, 'presentation');
+}
+
+async function uploadFiles(files, type) {
+  if (files.length === 0) return;
+  
+  const progressDiv = document.getElementById('uploadProgress');
+  const progressFill = document.getElementById('progressFill');
+  const statusText = document.getElementById('uploadStatus');
+  
+  progressDiv.style.display = 'block';
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const progress = ((i + 1) / files.length) * 100;
+    
+    progressFill.style.width = `${progress}%`;
+    statusText.textContent = `Uploading ${file.name}... (${i + 1}/${files.length})`;
+    
+    try {
+      const base64File = await fileToBase64(file);
+      
+      const result = await apiCall('https://victoryvision.app.n8n.cloud/webhook/media/upload', {
+        file_data: base64File,
+        file_name: file.name,
+        file_type: type,
+        mime_type: file.type
+      });
+      
+      if (result.success !== false) {
+        console.log(`${file.name} uploaded successfully`);
+      } else {
+        throw new Error(result.message || `Failed to upload ${file.name}`);
+      }
+    } catch (error) {
+      console.error(`Error uploading ${file.name}:`, error);
+      showStatus(`Error uploading ${file.name}: ${error.message}`, true);
+    }
+  }
+  
+  progressDiv.style.display = 'none';
+  showStatus(`${files.length} files uploaded successfully!`);
+  await loadMediaFiles();
+  applyFilters();
+}
+  
   // Create image
   async function createImage(formData) {
     try {
@@ -2001,6 +2066,7 @@ function populateImageSelect() {
           loadMediaFiles()
         ]);
         setupEventListeners();
+        setupUploadHandlers();
         applyFilters();
         
         // Auto-start tour for new users
