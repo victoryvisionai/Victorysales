@@ -164,6 +164,79 @@
       justify-content: center;
       align-items: center;
     }
+
+    .upload-panel {
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 30px 20px;
+  text-align: center;
+  min-height: 400px;
+}
+
+.upload-types {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.upload-type {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.upload-type h5 {
+  margin: 0 0 10px 0;
+  color: #0A3161;
+  font-size: 1.1em;
+}
+
+.upload-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.upload-btn:hover {
+  background: #218838;
+}
+
+.upload-info {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.upload-progress {
+  margin-top: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #28a745;
+  width: 0%;
+  transition: width 0.3s ease;
+}
     .processing-overlay {
       position: absolute;
       top: 0;
@@ -241,8 +314,9 @@
       box-sizing: border-box;
     }
     .form-group textarea {
-      height: 100px;
+      height: 150px;
       resize: vertical;
+      min-height: 150px;
     }
     .reference-list {
       max-height: 120px;
@@ -848,21 +922,50 @@
         </div>
       </div>
 
-      <!-- Preview Panel -->
-      <div class="preview-panel" id="previewPanel" data-intro="Generated content appears here for preview. You can see your images, videos, and presentations immediately after creation." data-step="10">
-        <div>
-          <h4>📱 Preview</h4>
-          <p>Generated content will appear here</p>
-          <small>Create media to see a preview</small>
-        </div>
-        
-        <!-- Processing Overlay -->
-        <div id="processingOverlay" class="processing-overlay">
-          <div class="processing-spinner"></div>
-          <div class="processing-text" id="processingText">Processing...</div>
-        </div>
+  <!-- Upload Panel -->
+<div class="upload-panel" id="uploadPanel" data-intro="Upload your own images, videos, and presentations to your media library." data-step="10">
+  <div class="upload-section">
+    <h4>📁 Upload Files</h4>
+    
+    <div class="upload-types">
+      <div class="upload-type">
+        <h5>📷 Upload Images</h5>
+        <input type="file" id="imageUploadInput" accept="image/*" multiple style="display: none;">
+        <button type="button" onclick="document.getElementById('imageUploadInput').click()" class="upload-btn">
+          Choose Images
+        </button>
+        <p class="upload-info">JPG, PNG, GIF • Max 10MB each</p>
+      </div>
+      
+      <div class="upload-type">
+        <h5>🎬 Upload Videos</h5>
+        <input type="file" id="videoUploadInput" accept="video/*" multiple style="display: none;">
+        <button type="button" onclick="document.getElementById('videoUploadInput').click()" class="upload-btn">
+          Choose Videos
+        </button>
+        <p class="upload-info">MP4, MOV, AVI • Max 100MB each</p>
+      </div>
+      
+      <div class="upload-type">
+        <h5>📊 Upload Presentations</h5>
+        <input type="file" id="presentationUploadInput" accept=".ppt,.pptx,.pdf" multiple style="display: none;">
+        <button type="button" onclick="document.getElementById('presentationUploadInput').click()" class="upload-btn">
+          Choose Presentations
+        </button>
+        <p class="upload-info">PPT, PPTX, PDF • Max 50MB each</p>
       </div>
     </div>
+    
+    <div class="upload-progress" id="uploadProgress" style="display: none;">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <p id="uploadStatus">Uploading...</p>
+    </div>
+  </div>
+</div>
+  
+  
   </section>
 
   <!-- Filter Section -->
