@@ -303,8 +303,18 @@
       font-weight: bold;
       color: #333;
     }
-    .form-group input,
-    .form-group textarea {
+ .form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-group textarea {
   height: 180px;
   resize: vertical;
   min-height: 180px;
@@ -1543,7 +1553,7 @@ async function handleVideoUpload(event) {
 
 async function handlePresentationUpload(event) {
   const files = Array.from(event.target.files);
-  await es(files, 'presentation');
+ await uploadFiles(files, 'presentation');
 }
 
 async function uploadFiles(files, type) {
@@ -1587,38 +1597,7 @@ async function uploadFiles(files, type) {
   showStatus(`${files.length} files uploaded successfully!`);
   await loadMediaFiles();
   applyFilters();
-}    
-    // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Add to local display
-    const uploadedFile = {
-      id: 'upload_' + Date.now() + '_' + i,
-      name: file.name,
-      file_type: file.type,
-      file_size: formatFileSize(file.size),
-      URL: URL.createObjectURL(file),
-      created_at: new Date().toISOString(),
-      prompt: `Uploaded ${type}: ${file.name}`
-    };
-    
-    allMediaFiles.unshift(uploadedFile);
-  }
-  
-  progressDiv.style.display = 'none';
-  showStatus(`${files.length} files added to library!`);
-  applyFilters();
-}
-
-// Helper function to format file sizes
-function formatFileSize(bytes) {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-  
+}      
   // Create image
   async function createImage(formData) {
     try {
