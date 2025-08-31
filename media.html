@@ -1326,40 +1326,69 @@
     }
   }
 
-  // File upload function using base64
-  async function uploadFileToN8N(file, fileType) {
-    try {
-      const base64Data = await fileToBase64(file);
-      
-      const payload = {
-        customer_id: CUSTOMER_ID,
-        file_data: base64Data,
-        file_name: file.name,
-        file_type: fileType,
-        mime_type: file.type,
-        file_size: `${(file.size / 1024 / 1024).toFixed(2)} MB`
-      };
-
-      const result = await apiCall(ENDPOINTS.uploadMedia, payload);
-      
-      if (result.success !== false) {
-        return result;
-      } else {
-        throw new Error(result.message || 'Upload failed');
-      }
-    } catch (error) {
-      console.error('Upload error:', error);
-      throw error;
-    }
-  }
-
-  // Convert file to base64
-  function fileToBase64(file) {
+  // File upload function using multipart form data (CORS-safe)
+  function uploadFileToN8N(file, fileType) {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('customer_id', CUSTOMER_ID);
+      formData.append('file_type', fileType);
+      
+      // Create a hidden iframe for form submission
+      const iframe = document.createElement('iframe');
+      iframe.name = 'uploadFrame_' + Date.now();
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      
+      // Create a hidden form
+      const form = document.createElement('form');
+      form.action = ENDPOINTS.uploadMedia;
+      form.method = 'POST';
+      form.enctype = 'multipart/form-data';
+      form.target = iframe.name;
+      form.style.display = 'none';
+      
+      // Add form data as hidden inputs
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.name = 'file';
+      fileInput.files = file.constructor === File ? [file].reduce((dt, f) => { dt.items.add(f); return dt; }, new DataTransfer()).files : file;
+      
+      const customerInput = document.createElement('input');
+      customerInput.type = 'hidden';
+      customerInput.name = 'customer_id';
+      customerInput.value = CUSTOMER_ID;
+      
+      const typeInput = document.createElement('input');
+      typeInput.type = 'hidden';
+      typeInput.name = 'file_type';
+      typeInput.value = fileType;
+      
+      form.appendChild(fileInput);
+      form.appendChild(customerInput);
+      form.appendChild(typeInput);
+      document.body.appendChild(form);
+      
+      // Handle response
+      iframe.onload = function() {
+        try {
+          // Clean up
+          document.body.removeChild(form);
+          document.body.removeChild(iframe);
+          resolve({ success: true });
+        } catch (error) {
+          reject(error);
+        }
+      };
+      
+      iframe.onerror = function() {
+        reject(new Error('Upload failed'));
+        document.body.removeChild(form);
+        document.body.removeChild(iframe);
+      };
+      
+      // Submit the form
+      form.submit();
     });
   }
 
@@ -1419,14 +1448,27 @@
     
     if (successCount > 0) {
       showStatus(`${successCount} files uploaded successfully!`);
-      await loadMediaFiles();
-      applyFilters();
+      // Wait a moment for n8n to process before reloading
+      setTimeout(async () => {
+        await loadMediaFiles();
+        applyFilters();
+      }, 2000);
     }
     
     // Clear the inputs
     document.getElementById('imageFileInput').value = '';
     document.getElementById('videoFileInput').value = '';
     document.getElementById('presentationFileInput').value = '';
+  }
+
+  // Convert file to base64 (still needed for AI creation)
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
   }
 
   // Toggle functions
