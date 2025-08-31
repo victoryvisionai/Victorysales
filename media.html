@@ -166,77 +166,79 @@
     }
 
     .upload-panel {
-  background: #f8f9fa;
-  border: 2px dashed #dee2e6;
-  border-radius: 8px;
-  padding: 30px 20px;
-  text-align: center;
-  min-height: 400px;
-}
+      background: #f8f9fa;
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 30px 20px;
+      text-align: center;
+      min-height: 400px;
+    }
 
-.upload-types {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
+    .upload-types {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
 
-.upload-type {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  border: 1px solid #dee2e6;
-}
+    .upload-type {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+    }
 
-.upload-type h5 {
-  margin: 0 0 10px 0;
-  color: #0A3161;
-  font-size: 1.1em;
-}
+    .upload-type h5 {
+      margin: 0 0 10px 0;
+      color: #0A3161;
+      font-size: 1.1em;
+    }
 
-.upload-btn {
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
+    .upload-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
 
-.upload-btn:hover {
-  background: #218838;
-}
+    .upload-btn:hover {
+      background: #218838;
+    }
 
-.upload-info {
-  font-size: 12px;
-  color: #666;
-  margin: 0;
-}
+    .upload-info {
+      font-size: 12px;
+      color: #666;
+      margin: 0;
+    }
 
-.upload-progress {
-  margin-top: 20px;
-  background: white;
-  padding: 15px;
-  border-radius: 6px;
-}
+    .upload-progress {
+      margin-top: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      display: none;
+    }
 
-.progress-bar {
-  width: 100%;
-  height: 20px;
-  background: #f0f0f0;
-  border-radius: 10px;
-  overflow: hidden;
-}
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
-.progress-fill {
-  height: 100%;
-  background: #28a745;
-  width: 0%;
-  transition: width 0.3s ease;
-}
+    .progress-fill {
+      height: 100%;
+      background: #28a745;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
     .processing-overlay {
       position: absolute;
       top: 0;
@@ -303,37 +305,8 @@
       font-weight: bold;
       color: #333;
     }
- .form-group input,
-.form-group textarea,
-.form-group select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
-.form-group textarea {
-  height: 180px;
-  resize: vertical;
-  min-height: 180px;
-}
-
-#imageChat {
-  height: 200px;
-  min-height: 200px;
-}
-
-#videoChat {
-  height: 200px;
-  min-height: 200px;
-}
-
-#presentationChat {
-  height: 220px;
-  min-height: 220px;
-}
+    .form-group input,
+    .form-group textarea,
     .form-group select {
       width: 100%;
       padding: 8px;
@@ -342,11 +315,28 @@
       font-size: 14px;
       box-sizing: border-box;
     }
+
     .form-group textarea {
-      height: 150px;
+      height: 180px;
       resize: vertical;
-      min-height: 150px;
+      min-height: 180px;
     }
+
+    #imageChat {
+      height: 200px;
+      min-height: 200px;
+    }
+
+    #videoChat {
+      height: 200px;
+      min-height: 200px;
+    }
+
+    #presentationChat {
+      height: 220px;
+      min-height: 220px;
+    }
+
     .reference-list {
       max-height: 120px;
       overflow-y: auto;
@@ -434,13 +424,36 @@
       background: #218838;
     }
     
-    /* Updated filter section to match the image */
+    /* Updated filter section */
     .filter-section {
       display: grid;
-      grid-template-columns: 200px 200px 200px 200px 1fr auto auto;
+      grid-template-columns: 200px 200px 200px 200px 1fr auto auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
+    }
+    
+    .view-toggle {
+      display: flex;
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    .view-btn {
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      color: #666;
+      margin: 0;
+    }
+    
+    .view-btn.active {
+      background: #0A3161;
+      color: white;
     }
     
     .media-grid {
@@ -448,6 +461,68 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 20px;
     }
+    
+    .media-list {
+      display: none;
+    }
+    
+    .media-list.active {
+      display: block;
+    }
+    
+    .media-grid.active {
+      display: grid;
+    }
+    
+    .media-grid.hidden {
+      display: none;
+    }
+    
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .list-table th {
+      background: #0A3161;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: bold;
+    }
+    
+    .list-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+    
+    .list-table tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .list-thumbnail {
+      width: 60px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    
+    .list-actions {
+      display: flex;
+      gap: 5px;
+    }
+    
+    .btn-small {
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 3px;
+    }
+
     .media-card {
       background: white;
       border-radius: 8px;
@@ -530,11 +605,6 @@
     .media-actions {
       display: flex;
       gap: 8px;
-    }
-    .btn-small {
-      padding: 8px 12px;
-      font-size: 12px;
-      flex: 1;
     }
     .loading {
       text-align: center;
@@ -712,6 +782,46 @@
 
     .modal-link:hover {
       color: #083050;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    
+    .edit-mode {
+      display: none;
+    }
+    
+    .edit-mode.active {
+      display: block;
+    }
+    
+    .view-mode.hidden {
+      display: none;
+    }
+    
+    .modal-edit-field {
+      margin-bottom: 15px;
+    }
+    
+    .modal-edit-field label {
+      display: block;
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 5px;
+    }
+    
+    .modal-edit-field input,
+    .modal-edit-field textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
     
     /* Intro.js custom styling */
@@ -951,57 +1061,49 @@
         </div>
       </div>
 
-<!-- Upload Panel -->
-<div class="upload-panel" id="uploadPanel" data-intro="Upload your own images, videos, and presentations to your media library." data-step="10">
-  <div class="upload-section">
-    <h4>📁 Upload Files</h4>
-    
-    <div class="upload-types">
-      <div class="upload-type">
-        <h5>📷 Upload Images</h5>
-        <form action="https://victoryvision.app.n8n.cloud/webhook/media/upload" method="POST" enctype="multipart/form-data" target="uploadFrame">
-          <input type="hidden" name="customer_id" id="customerIdImage">
-          <input type="hidden" name="file_type" value="image">
-          <input type="file" name="file" accept="image/*" multiple onchange="this.form.submit()">
-          <button type="button" onclick="this.previousElementSibling.click()" class="upload-btn">
-            Choose Images
-          </button>
-        </form>
-        <p class="upload-info">JPG, PNG, GIF • Max 10MB each</p>
-      </div>
-      
-      <div class="upload-type">
-        <h5>🎬 Upload Videos</h5>
-        <form action="https://victoryvision.app.n8n.cloud/webhook/media/upload" method="POST" enctype="multipart/form-data" target="uploadFrame">
-          <input type="hidden" name="customer_id" id="customerIdVideo">
-          <input type="hidden" name="file_type" value="video">
-          <input type="file" name="file" accept="video/*" multiple onchange="this.form.submit()">
-          <button type="button" onclick="this.previousElementSibling.click()" class="upload-btn">
-            Choose Videos
-          </button>
-        </form>
-        <p class="upload-info">MP4, MOV, AVI • Max 100MB each</p>
-      </div>
-      
-      <div class="upload-type">
-        <h5>📊 Upload Presentations</h5>
-        <form action="https://victoryvision.app.n8n.cloud/webhook/media/upload" method="POST" enctype="multipart/form-data" target="uploadFrame">
-          <input type="hidden" name="customer_id" id="customerIdPresentation">
-          <input type="hidden" name="file_type" value="presentation">
-          <input type="file" name="file" accept=".ppt,.pptx,.pdf" multiple onchange="this.form.submit()">
-          <button type="button" onclick="this.previousElementSibling.click()" class="upload-btn">
-            Choose Presentations
-          </button>
-        </form>
-        <p class="upload-info">PPT, PPTX, PDF • Max 50MB each</p>
+      <!-- Upload Panel -->
+      <div class="upload-panel" id="uploadPanel" data-intro="Upload your own images, videos, and presentations to your media library. Files are processed and stored securely." data-step="10">
+        <div class="upload-section">
+          <h4>📁 Upload Files</h4>
+          
+          <div class="upload-types">
+            <div class="upload-type">
+              <h5>📷 Upload Images</h5>
+              <input type="file" id="imageFileInput" accept="image/*" multiple style="display: none;">
+              <button type="button" onclick="document.getElementById('imageFileInput').click()" class="upload-btn">
+                Choose Images
+              </button>
+              <p class="upload-info">JPG, PNG, GIF • Max 10MB each</p>
+            </div>
+            
+            <div class="upload-type">
+              <h5>🎬 Upload Videos</h5>
+              <input type="file" id="videoFileInput" accept="video/*" multiple style="display: none;">
+              <button type="button" onclick="document.getElementById('videoFileInput').click()" class="upload-btn">
+                Choose Videos
+              </button>
+              <p class="upload-info">MP4, MOV, AVI • Max 100MB each</p>
+            </div>
+            
+            <div class="upload-type">
+              <h5>📊 Upload Presentations</h5>
+              <input type="file" id="presentationFileInput" accept=".ppt,.pptx,.pdf" multiple style="display: none;">
+              <button type="button" onclick="document.getElementById('presentationFileInput').click()" class="upload-btn">
+                Choose Presentations
+              </button>
+              <p class="upload-info">PPT, PPTX, PDF • Max 50MB each</p>
+            </div>
+          </div>
+          
+          <div class="upload-progress" id="uploadProgress">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p id="uploadStatus">Uploading...</p>
+          </div>
+        </div>
       </div>
     </div>
-    
-    <iframe name="uploadFrame" style="display:none;"></iframe>
-  </div>
-</div>
-  
-  
   </section>
 
   <!-- Filter Section -->
@@ -1040,11 +1142,15 @@
       </div>
       <button id="applyFilters">Apply Filters</button>
       <button id="clearFilters" class="secondary">Clear</button>
+      <div class="view-toggle" data-intro="Switch between grid view (visual cards) and list view (compact table) to browse your media files." data-step="12">
+        <button id="gridViewBtn" class="view-btn active">🔲 Grid</button>
+        <button id="listViewBtn" class="view-btn">📋 List</button>
+      </div>
     </div>
   </section>
 
-  <!-- Media Grid -->
-  <section id="mediaContainer" data-intro="Your created media files appear here. Click any item to view details, download, or delete. Media is organized by creation date and type." data-step="12">
+  <!-- Media Grid/List -->
+  <section id="mediaContainer" data-intro="Your created media files appear here. Click any item to view details, edit information, or delete. Media is organized by creation date and type." data-step="13">
     <div class="loading">Loading your media library...</div>
   </section>
 
@@ -1083,6 +1189,8 @@
   const ENDPOINTS = {
     getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
     getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+    updateMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/update',
+    deleteMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/delete',
     createImage: 'https://victoryvision.app.n8n.cloud/webhook/images/create',
     createVideo: 'https://victoryvision.app.n8n.cloud/webhook/ai-video',
     uploadMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/upload',
@@ -1105,6 +1213,7 @@
   let contacts = [];
   let selectedImageReference = null;
   let selectedVideoReference = null;
+  let currentViewMode = 'grid'; // 'grid' or 'list'
   
   // UI state
   let currentType = 'image'; // 'image', 'video', or 'presentation'
@@ -1124,12 +1233,10 @@
     localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
   }
 
-  // Check if tour has been completed for this page
   function hasCompletedTour() {
     return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
   }
 
-  // Start tour function
   function startTour() {
     introJs().setOptions({
       showProgress: true,
@@ -1219,6 +1326,109 @@
     }
   }
 
+  // File upload function using base64
+  async function uploadFileToN8N(file, fileType) {
+    try {
+      const base64Data = await fileToBase64(file);
+      
+      const payload = {
+        customer_id: CUSTOMER_ID,
+        file_data: base64Data,
+        file_name: file.name,
+        file_type: fileType,
+        mime_type: file.type,
+        file_size: `${(file.size / 1024 / 1024).toFixed(2)} MB`
+      };
+
+      const result = await apiCall(ENDPOINTS.uploadMedia, payload);
+      
+      if (result.success !== false) {
+        return result;
+      } else {
+        throw new Error(result.message || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      throw error;
+    }
+  }
+
+  // Convert file to base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+
+  // Handle file uploads
+  function setupFileUploadHandlers() {
+    // Image upload
+    document.getElementById('imageFileInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) {
+        await handleFileUploads(files, 'image');
+      }
+    });
+
+    // Video upload
+    document.getElementById('videoFileInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) {
+        await handleFileUploads(files, 'video');
+      }
+    });
+
+    // Presentation upload
+    document.getElementById('presentationFileInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) {
+        await handleFileUploads(files, 'presentation');
+      }
+    });
+  }
+
+  async function handleFileUploads(files, fileType) {
+    const progressDiv = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+    const statusText = document.getElementById('uploadStatus');
+    
+    progressDiv.style.display = 'block';
+    
+    let successCount = 0;
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const progress = ((i + 1) / files.length) * 100;
+      
+      progressFill.style.width = `${progress}%`;
+      statusText.textContent = `Uploading ${file.name}... (${i + 1}/${files.length})`;
+      
+      try {
+        await uploadFileToN8N(file, fileType);
+        successCount++;
+      } catch (error) {
+        console.error(`Error uploading ${file.name}:`, error);
+        showStatus(`Error uploading ${file.name}: ${error.message}`, true);
+      }
+    }
+    
+    progressDiv.style.display = 'none';
+    
+    if (successCount > 0) {
+      showStatus(`${successCount} files uploaded successfully!`);
+      await loadMediaFiles();
+      applyFilters();
+    }
+    
+    // Clear the inputs
+    document.getElementById('imageFileInput').value = '';
+    document.getElementById('videoFileInput').value = '';
+    document.getElementById('presentationFileInput').value = '';
+  }
+
   // Toggle functions
   function setupToggles() {
     const imageToggle = document.getElementById('imageToggle');
@@ -1254,6 +1464,21 @@
       updateSectionTitle();
     });
 
+    // View mode toggles
+    document.getElementById('gridViewBtn').addEventListener('click', () => {
+      currentViewMode = 'grid';
+      document.getElementById('gridViewBtn').classList.add('active');
+      document.getElementById('listViewBtn').classList.remove('active');
+      renderMediaDisplay();
+    });
+
+    document.getElementById('listViewBtn').addEventListener('click', () => {
+      currentViewMode = 'list';
+      document.getElementById('listViewBtn').classList.add('active');
+      document.getElementById('gridViewBtn').classList.remove('active');
+      renderMediaDisplay();
+    });
+
     function updateSectionTitle() {
       const typeText = currentType === 'image' ? '🎨 Images' : 
                       currentType === 'video' ? '🎬 Videos' : '📊 Presentations';
@@ -1261,12 +1486,10 @@
     }
 
     function updateFormVisibility() {
-      // Hide all forms
       document.querySelectorAll('.creation-form').forEach(form => {
         form.classList.remove('active');
       });
 
-      // Show the correct form
       const formId = `create${currentType.charAt(0).toUpperCase() + currentType.slice(1)}Form`;
       const targetForm = document.getElementById(formId);
       if (targetForm) {
@@ -1313,7 +1536,6 @@
       const response = await apiCall(ENDPOINTS.getUserData);
       console.log('Raw response:', response);
       
-      // Get the first element from the array
       const userData = response[0];
       console.log('User data (first element):', userData);
       
@@ -1344,7 +1566,6 @@
       const data = await apiCall(ENDPOINTS.getCampaigns);
       campaigns = Array.isArray(data) ? data : [];
       
-      // Populate campaign filter dropdown
       const dropdown = campaignFilter;
       dropdown.innerHTML = '<option value="">All Campaigns</option>';
       
@@ -1369,7 +1590,6 @@
       const companySelect = document.getElementById('companySelect');
       companySelect.innerHTML = '<option value="">None - Generic presentation</option>';
       
-      // Get unique companies
       const companies = [...new Set(contacts.map(c => c.company).filter(Boolean))];
       companies.forEach(company => {
         const option = document.createElement('option');
@@ -1383,42 +1603,40 @@
     }
   }
 
-// Load media files from n8n webhook
-async function loadMediaFiles() {
-  try {
-    const data = await apiCall(ENDPOINTS.getMedia);
-    console.log('Response from n8n:', data);
-    
-    // Handle response from n8n webhook
-    if (data && Array.isArray(data)) {
-      allMediaFiles = data;
-    } else if (data && data.media && Array.isArray(data.media)) {
-      allMediaFiles = data.media;
-    } else {
-      console.log('Unexpected response structure:', data);
-      allMediaFiles = [];
-    }
+  // Load media files from n8n webhook
+  async function loadMediaFiles() {
+    try {
+      const data = await apiCall(ENDPOINTS.getMedia);
+      console.log('Response from n8n:', data);
+      
+      if (data && Array.isArray(data)) {
+        allMediaFiles = data;
+      } else if (data && data.media && Array.isArray(data.media)) {
+        allMediaFiles = data.media;
+      } else {
+        console.log('Unexpected response structure:', data);
+        allMediaFiles = [];
+      }
 
-    console.log(`Loaded ${allMediaFiles.length} media files`);
-    filteredMediaFiles = [...allMediaFiles];
-    
-    // Separate images, videos, and presentations
-    imageFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'image');
-    videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
-    presentationFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'presentation');
-    
-    console.log(`Found: ${imageFiles.length} images, ${videoFiles.length} videos, ${presentationFiles.length} presentations`);
-    
-    populateReferenceLists();
-    populateImageSelect();
-    
-  } catch (error) {
-    console.error('Error loading media:', error);
-    allMediaFiles = [];
-    filteredMediaFiles = [];
-    showStatus('Error loading media files: ' + error.message, true);
+      console.log(`Loaded ${allMediaFiles.length} media files`);
+      filteredMediaFiles = [...allMediaFiles];
+      
+      imageFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'image');
+      videoFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'video');
+      presentationFiles = allMediaFiles.filter(file => getFileType(file.file_type) === 'presentation');
+      
+      console.log(`Found: ${imageFiles.length} images, ${videoFiles.length} videos, ${presentationFiles.length} presentations`);
+      
+      populateReferenceLists();
+      populateImageSelect();
+      
+    } catch (error) {
+      console.error('Error loading media:', error);
+      allMediaFiles = [];
+      filteredMediaFiles = [];
+      showStatus('Error loading media files: ' + error.message, true);
+    }
   }
-}
 
   // Populate reference lists
   function populateReferenceLists() {
@@ -1445,22 +1663,21 @@ async function loadMediaFiles() {
   }
 
   // Populate image select for presentations
-function populateImageSelect() {
-  const imageSelect = document.getElementById('campaignImageSelect');
-  imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
-  
-  // Use both imageFiles and presentationFiles
-  const referenceFiles = [...imageFiles, ...presentationFiles];
-  
-  if (referenceFiles && referenceFiles.length > 0) {
-    referenceFiles.forEach(file => {
-      const option = document.createElement('option');
-      option.value = file.URL || file.url;
-      option.textContent = file.name || 'Campaign File';
-      imageSelect.appendChild(option);
-    });
+  function populateImageSelect() {
+    const imageSelect = document.getElementById('campaignImageSelect');
+    imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
+    
+    const referenceFiles = [...imageFiles, ...presentationFiles];
+    
+    if (referenceFiles && referenceFiles.length > 0) {
+      referenceFiles.forEach(file => {
+        const option = document.createElement('option');
+        option.value = file.URL || file.url;
+        option.textContent = file.name || 'Campaign File';
+        imageSelect.appendChild(option);
+      });
+    }
   }
-}
 
   // Select image reference
   function selectImageReference(fileName, type) {
@@ -1486,21 +1703,25 @@ function populateImageSelect() {
   // Show/Hide Processing functions
   function showProcessing(message = 'Processing...') {
     const overlay = document.getElementById('processingOverlay');
-    const text = document.getElementById('processingText');
-    text.textContent = message;
-    overlay.style.display = 'flex';
+    if (overlay) {
+      const text = document.getElementById('processingText');
+      if (text) text.textContent = message;
+      overlay.style.display = 'flex';
+    }
   }
 
   function hideProcessing() {
     const overlay = document.getElementById('processingOverlay');
-    overlay.style.display = 'none';
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
   }
 
   // Show preview in right panel
   function showPreview(mediaData) {
     const previewPanel = document.getElementById('previewPanel');
     
-    if (!mediaData || !mediaData.URL) {
+    if (!previewPanel || !mediaData || !mediaData.URL) {
       return;
     }
 
@@ -1531,80 +1752,6 @@ function populateImageSelect() {
     `;
   }
 
-  // Convert file to base64
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  }
-
-// Handle file uploads
-function setupUploadHandlers() {
-  document.getElementById('imageUploadInput').addEventListener('change', handleImageUpload);
-  document.getElementById('videoUploadInput').addEventListener('change', handleVideoUpload);
-  document.getElementById('presentationUploadInput').addEventListener('change', handlePresentationUpload);
-}
-
-async function handleImageUpload(event) {
-  const files = Array.from(event.target.files);
-  await uploadFiles(files, 'image');
-}
-
-async function handleVideoUpload(event) {
-  const files = Array.from(event.target.files);
-  await uploadFiles(files, 'video');
-}
-
-async function handlePresentationUpload(event) {
-  const files = Array.from(event.target.files);
- await uploadFiles(files, 'presentation');
-}
-
-async function uploadFiles(files, type) {
-  if (files.length === 0) return;
-  
-  const progressDiv = document.getElementById('uploadProgress');
-  const progressFill = document.getElementById('progressFill');
-  const statusText = document.getElementById('uploadStatus');
-  
-  progressDiv.style.display = 'block';
-  
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const progress = ((i + 1) / files.length) * 100;
-    
-    progressFill.style.width = `${progress}%`;
-    statusText.textContent = `Uploading ${file.name}... (${i + 1}/${files.length})`;
-    
-    try {
-      const base64File = await fileToBase64(file);
-      
-      const result = await apiCall(ENDPOINTS.uploadMedia, {
-        file_data: base64File,
-        file_name: file.name,
-        file_type: type,
-        mime_type: file.type
-      });
-      
-      if (result.success !== false) {
-        console.log(`${file.name} uploaded successfully`);
-      } else {
-        throw new Error(result.message || `Failed to upload ${file.name}`);
-      }
-    } catch (error) {
-      console.error(`Error uploading ${file.name}:`, error);
-      showStatus(`Error uploading ${file.name}: ${error.message}`, true);
-    }
-  }
-  
-  progressDiv.style.display = 'none';
-  showStatus(`${files.length} files uploaded successfully!`);
-  await loadMediaFiles();
-  applyFilters();
-}      
   // Create image
   async function createImage(formData) {
     try {
@@ -1800,7 +1947,7 @@ async function uploadFiles(files, type) {
       return true;
     });
 
-    renderMediaGrid();
+    renderMediaDisplay();
   }
 
   // Clear filters
@@ -1813,8 +1960,8 @@ async function uploadFiles(files, type) {
     applyFilters();
   }
 
-  // Render media grid
-  function renderMediaGrid() {
+  // Render media display (grid or list)
+  function renderMediaDisplay() {
     if (filteredMediaFiles.length === 0) {
       if (allMediaFiles.length === 0) {
         showEmptyState();
@@ -1824,8 +1971,17 @@ async function uploadFiles(files, type) {
       return;
     }
 
+    if (currentViewMode === 'grid') {
+      renderMediaGrid();
+    } else {
+      renderMediaList();
+    }
+  }
+
+  // Render media grid
+  function renderMediaGrid() {
     const grid = document.createElement('div');
-    grid.className = 'media-grid';
+    grid.className = 'media-grid active';
 
     filteredMediaFiles.forEach(file => {
       const card = createMediaCard(file);
@@ -1836,12 +1992,82 @@ async function uploadFiles(files, type) {
     mediaContainer.appendChild(grid);
   }
 
+  // Render media list
+  function renderMediaList() {
+    const listContainer = document.createElement('div');
+    listContainer.className = 'media-list active';
+
+    const table = document.createElement('table');
+    table.className = 'list-table';
+    
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>Preview</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Campaign</th>
+          <th>Created</th>
+          <th>Size</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filteredMediaFiles.map(file => createMediaListRow(file)).join('')}
+      </tbody>
+    `;
+
+    listContainer.appendChild(table);
+    mediaContainer.innerHTML = '';
+    mediaContainer.appendChild(listContainer);
+  }
+
+  // Create media list row
+  function createMediaListRow(file) {
+    const fileType = getFileType(file.file_type);
+    let createdDate = 'Unknown';
+    if (file.created_at) {
+      try {
+        createdDate = new Date(file.created_at).toLocaleDateString();
+      } catch (e) {
+        createdDate = file.created_at;
+      }
+    }
+
+    let preview = '';
+    if (fileType === 'image' && file.URL) {
+      preview = `<img src="${file.URL}" class="list-thumbnail" alt="${file.name}">`;
+    } else if (fileType === 'video' && file.URL) {
+      preview = `<video class="list-thumbnail" preload="metadata"><source src="${file.URL}" type="${file.mime_type}"></video>`;
+    } else {
+      const icon = fileType === 'video' ? '🎬' : fileType === 'presentation' ? '📊' : '📷';
+      preview = `<div style="width: 60px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 4px; font-size: 24px;">${icon}</div>`;
+    }
+
+    return `
+      <tr style="cursor: pointer;" onclick="openModal('${file.id}')">
+        <td>${preview}</td>
+        <td><strong>${file.name || 'Untitled'}</strong></td>
+        <td><span class="media-type-badge ${fileType}">${fileType.toUpperCase()}</span></td>
+        <td>${file.campaign_name || 'N/A'}</td>
+        <td>${createdDate}</td>
+        <td>${file.file_size || 'N/A'}</td>
+        <td>
+          <div class="list-actions">
+            <button class="btn-small" onclick="event.stopPropagation(); openModal('${file.id}')">View</button>
+            <button class="btn-small secondary" onclick="event.stopPropagation(); downloadFile('${file.URL}', '${file.name}')">Download</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
   // Create media card with modal functionality
   function createMediaCard(file) {
     const card = document.createElement('div');
     card.className = 'media-card';
     card.style.cursor = 'pointer';
-    card.onclick = () => openModal(file);
+    card.onclick = () => openModal(file.id);
 
     const fileType = getFileType(file.file_type);
     const previewUrl = file.URL;
@@ -1899,8 +2125,11 @@ async function uploadFiles(files, type) {
     }
   }
 
-  // Modal functions
-  function openModal(file) {
+  // Modal functions with edit capability
+  function openModal(fileId) {
+    const file = allMediaFiles.find(f => f.id === fileId);
+    if (!file) return;
+
     const modal = document.getElementById('mediaModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
@@ -1921,62 +2150,156 @@ async function uploadFiles(files, type) {
     modalBody.innerHTML = `
       ${mediaPreview}
       
-      <div class="modal-field">
-        <div class="modal-label">Name:</div>
-        <div class="modal-value">${file.name || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">URL:</div>
-        <div class="modal-value">
-          <span class="modal-link" onclick="window.open('${file.URL}', '_blank')">${file.URL}</span>
+      <!-- View Mode -->
+      <div id="viewMode" class="view-mode">
+        <div class="modal-field">
+          <div class="modal-label">Name:</div>
+          <div class="modal-value" id="displayName">${file.name || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">Campaign Name:</div>
+          <div class="modal-value" id="displayCampaignName">${file.campaign_name || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">URL:</div>
+          <div class="modal-value">
+            <span class="modal-link" onclick="window.open('${file.URL}', '_blank')">${file.URL}</span>
+          </div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">File Type:</div>
+          <div class="modal-value">${file.file_type || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">File Size:</div>
+          <div class="modal-value">${file.file_size || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">Prompt:</div>
+          <div class="modal-value">${file.prompt || 'N/A'}</div>
         </div>
       </div>
       
-      <div class="modal-field">
-        <div class="modal-label">Campaign Name:</div>
-        <div class="modal-value">${file.campaign_name || 'N/A'}</div>
+      <!-- Edit Mode -->
+      <div id="editMode" class="edit-mode">
+        <div class="modal-edit-field">
+          <label for="editName">Name:</label>
+          <input type="text" id="editName" value="${file.name || ''}" maxlength="100">
+        </div>
+        
+        <div class="modal-edit-field">
+          <label for="editCampaignName">Campaign Name:</label>
+          <input type="text" id="editCampaignName" value="${file.campaign_name || ''}" maxlength="100">
+        </div>
+        
+        <div class="modal-edit-field">
+          <label for="editPrompt">Prompt/Description:</label>
+          <textarea id="editPrompt" rows="4" maxlength="500">${file.prompt || ''}</textarea>
+        </div>
       </div>
       
-      <div class="modal-field">
-        <div class="modal-label">File Type:</div>
-        <div class="modal-value">${file.file_type || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">File Size:</div>
-        <div class="modal-value">${file.file_size || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">Prompt:</div>
-        <div class="modal-value">${file.prompt || 'N/A'}</div>
-      </div>
-      
-      <div style="margin-top: 20px;">
-        <button onclick="deleteFile('${file.id}', '${fileType}')" style="background: #dc3545;">Delete File</button>
+      <div class="modal-actions">
+        <button id="editBtn" onclick="toggleEditMode()">📝 Edit</button>
+        <button id="saveBtn" onclick="saveFileChanges('${file.id}')" style="display: none; background: #28a745;">💾 Save</button>
+        <button id="cancelBtn" onclick="cancelEdit()" style="display: none; background: #6c757d;">❌ Cancel</button>
+        <button onclick="downloadFile('${file.URL}', '${file.name}')" style="background: #17a2b8;">📥 Download</button>
+        <button onclick="deleteFile('${file.id}', '${fileType}')" style="background: #dc3545;">🗑️ Delete</button>
       </div>
     `;
     
     modal.style.display = 'block';
   }
 
+  function toggleEditMode() {
+    const viewMode = document.getElementById('viewMode');
+    const editMode = document.getElementById('editMode');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    
+    viewMode.classList.add('hidden');
+    editMode.classList.add('active');
+    editBtn.style.display = 'none';
+    saveBtn.style.display = 'inline-block';
+    cancelBtn.style.display = 'inline-block';
+  }
+
+  function cancelEdit() {
+    const viewMode = document.getElementById('viewMode');
+    const editMode = document.getElementById('editMode');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    
+    viewMode.classList.remove('hidden');
+    editMode.classList.remove('active');
+    editBtn.style.display = 'inline-block';
+    saveBtn.style.display = 'none';
+    cancelBtn.style.display = 'none';
+  }
+
+  async function saveFileChanges(fileId) {
+    try {
+      const newName = document.getElementById('editName').value.trim();
+      const newCampaignName = document.getElementById('editCampaignName').value.trim();
+      const newPrompt = document.getElementById('editPrompt').value.trim();
+      
+      const result = await apiCall(ENDPOINTS.updateMedia, {
+        id: fileId,
+        name: newName,
+        campaign_name: newCampaignName,
+        prompt: newPrompt
+      });
+      
+      if (result.success !== false) {
+        showStatus('File updated successfully!');
+        
+        // Update local data
+        const fileIndex = allMediaFiles.findIndex(f => f.id === fileId);
+        if (fileIndex !== -1) {
+          allMediaFiles[fileIndex].name = newName;
+          allMediaFiles[fileIndex].campaign_name = newCampaignName;
+          allMediaFiles[fileIndex].prompt = newPrompt;
+        }
+        
+        // Update display
+        document.getElementById('displayName').textContent = newName;
+        document.getElementById('displayCampaignName').textContent = newCampaignName || 'N/A';
+        
+        cancelEdit();
+        applyFilters(); // Refresh the grid/list
+      } else {
+        throw new Error(result.message || 'Update failed');
+      }
+    } catch (error) {
+      console.error('Error updating file:', error);
+      showStatus('Error updating file: ' + error.message, true);
+    }
+  }
+
   function closeModal() {
     document.getElementById('mediaModal').style.display = 'none';
+    cancelEdit(); // Reset edit mode
+  }
+
+  function downloadFile(url, filename) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename || 'download';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   function deleteFile(fileId, fileType) {
     if (confirm('Are you sure you want to delete this file?')) {
-      let endpoint;
-      if (fileType === 'video') {
-        endpoint = 'https://victoryvision.app.n8n.cloud/webhook/videos/remove';
-      } else if (fileType === 'presentation') {
-        endpoint = 'https://victoryvision.app.n8n.cloud/webhook/images/remove';
-      } else {
-        endpoint = 'https://victoryvision.app.n8n.cloud/webhook/images/remove';
-      }
-      
-      apiCall(endpoint, { id: fileId })
+      apiCall(ENDPOINTS.deleteMedia, { id: fileId })
         .then(() => {
           showStatus('File deleted successfully!');
           closeModal();
@@ -2037,8 +2360,8 @@ async function uploadFiles(files, type) {
 
   // Event listeners
   function setupEventListeners() {
-    // Setup toggles
     setupToggles();
+    setupFileUploadHandlers();
 
     // Image creation form
     document.getElementById('imageForm').addEventListener('submit', async (e) => {
@@ -2102,9 +2425,6 @@ async function uploadFiles(files, type) {
           loadMediaFiles()
         ]);
         setupEventListeners();
-document.getElementById('customerIdImage').value = CUSTOMER_ID;
-document.getElementById('customerIdVideo').value = CUSTOMER_ID;
-document.getElementById('customerIdPresentation').value = CUSTOMER_ID;
         applyFilters();
         
         // Auto-start tour for new users
@@ -2140,7 +2460,12 @@ document.getElementById('customerIdPresentation').value = CUSTOMER_ID;
   window.selectImageReference = selectImageReference;
   window.closeModal = closeModal;
   window.deleteFile = deleteFile;
+  window.downloadFile = downloadFile;
   window.startTour = startTour;
+  window.toggleEditMode = toggleEditMode;
+  window.saveFileChanges = saveFileChanges;
+  window.cancelEdit = cancelEdit;
+  window.openModal = openModal;
 
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
