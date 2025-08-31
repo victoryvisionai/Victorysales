@@ -1068,6 +1068,7 @@
     getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
     createImage: 'https://victoryvision.app.n8n.cloud/webhook/images/create',
     createVideo: 'https://victoryvision.app.n8n.cloud/webhook/ai-video',
+    uploadMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/upload',
     createPresentation: 'https://victoryvision.app.n8n.cloud/webhook/presentations/create',
     getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get',
     getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get'
@@ -1559,8 +1560,34 @@ async function uploadFiles(files, type) {
     const progress = ((i + 1) / files.length) * 100;
     
     progressFill.style.width = `${progress}%`;
-    statusText.textContent = `Processing ${file.name}... (${i + 1}/${files.length})`;
+    statusText.textContent = `Uploading ${file.name}... (${i + 1}/${files.length})`;
     
+    try {
+      const base64File = await fileToBase64(file);
+      
+      const result = await apiCall(ENDPOINTS.uploadMedia, {
+        file_data: base64File,
+        file_name: file.name,
+        file_type: type,
+        mime_type: file.type
+      });
+      
+      if (result.success !== false) {
+        console.log(`${file.name} uploaded successfully`);
+      } else {
+        throw new Error(result.message || `Failed to upload ${file.name}`);
+      }
+    } catch (error) {
+      console.error(`Error uploading ${file.name}:`, error);
+      showStatus(`Error uploading ${file.name}: ${error.message}`, true);
+    }
+  }
+  
+  progressDiv.style.display = 'none';
+  showStatus(`${files.length} files uploaded successfully!`);
+  await loadMediaFiles();
+  applyFilters();
+}    
     // Simulate processing time
     await new Promise(resolve => setTimeout(resolve, 500));
     
