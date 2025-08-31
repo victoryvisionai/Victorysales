@@ -1326,69 +1326,38 @@
     }
   }
 
-  // File upload function using multipart form data (CORS-safe)
+  // File upload function using direct form submission (bypasses CORS and iframe restrictions)
   function uploadFileToN8N(file, fileType) {
     return new Promise((resolve, reject) => {
+      // Create a direct form submission without iframe
       const formData = new FormData();
       formData.append('file', file);
       formData.append('customer_id', CUSTOMER_ID);
       formData.append('file_type', fileType);
       
-      // Create a hidden iframe for form submission
-      const iframe = document.createElement('iframe');
-      iframe.name = 'uploadFrame_' + Date.now();
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+      // Use XMLHttpRequest instead of fetch to avoid CORS preflight for simple requests
+      const xhr = new XMLHttpRequest();
       
-      // Create a hidden form
-      const form = document.createElement('form');
-      form.action = ENDPOINTS.uploadMedia;
-      form.method = 'POST';
-      form.enctype = 'multipart/form-data';
-      form.target = iframe.name;
-      form.style.display = 'none';
-      
-      // Add form data as hidden inputs
-      const fileInput = document.createElement('input');
-      fileInput.type = 'file';
-      fileInput.name = 'file';
-      fileInput.files = file.constructor === File ? [file].reduce((dt, f) => { dt.items.add(f); return dt; }, new DataTransfer()).files : file;
-      
-      const customerInput = document.createElement('input');
-      customerInput.type = 'hidden';
-      customerInput.name = 'customer_id';
-      customerInput.value = CUSTOMER_ID;
-      
-      const typeInput = document.createElement('input');
-      typeInput.type = 'hidden';
-      typeInput.name = 'file_type';
-      typeInput.value = fileType;
-      
-      form.appendChild(fileInput);
-      form.appendChild(customerInput);
-      form.appendChild(typeInput);
-      document.body.appendChild(form);
-      
-      // Handle response
-      iframe.onload = function() {
-        try {
-          // Clean up
-          document.body.removeChild(form);
-          document.body.removeChild(iframe);
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
           resolve({ success: true });
-        } catch (error) {
-          reject(error);
+        } else {
+          reject(new Error(`Upload failed: ${xhr.status}`));
         }
       };
       
-      iframe.onerror = function() {
-        reject(new Error('Upload failed'));
-        document.body.removeChild(form);
-        document.body.removeChild(iframe);
+      xhr.onerror = function() {
+        reject(new Error('Upload failed - network error'));
       };
       
-      // Submit the form
-      form.submit();
+      xhr.ontimeout = function() {
+        reject(new Error('Upload timed out'));
+      };
+      
+      // Open and send the request
+      xhr.open('POST', ENDPOINTS.uploadMedia);
+      xhr.timeout = 30000; // 30 second timeout
+      xhr.send(formData);
     });
   }
 
@@ -1452,7 +1421,7 @@
       setTimeout(async () => {
         await loadMediaFiles();
         applyFilters();
-      }, 2000);
+      }, 3000);
     }
     
     // Clear the inputs
