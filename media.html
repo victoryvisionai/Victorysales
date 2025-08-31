@@ -951,7 +951,7 @@
         </div>
       </div>
 
-  <!-- Upload Panel -->
+<!-- Upload Panel -->
 <div class="upload-panel" id="uploadPanel" data-intro="Upload your own images, videos, and presentations to your media library." data-step="10">
   <div class="upload-section">
     <h4>📁 Upload Files</h4>
@@ -959,38 +959,45 @@
     <div class="upload-types">
       <div class="upload-type">
         <h5>📷 Upload Images</h5>
-        <input type="file" id="imageUploadInput" accept="image/*" multiple style="display: none;">
-        <button type="button" onclick="document.getElementById('imageUploadInput').click()" class="upload-btn">
-          Choose Images
-        </button>
+        <form action="https://victoryvision.app.n8n.cloud/webhook/media/upload" method="POST" enctype="multipart/form-data" target="uploadFrame">
+          <input type="hidden" name="customer_id" id="customerIdImage">
+          <input type="hidden" name="file_type" value="image">
+          <input type="file" name="file" accept="image/*" multiple onchange="this.form.submit()">
+          <button type="button" onclick="this.previousElementSibling.click()" class="upload-btn">
+            Choose Images
+          </button>
+        </form>
         <p class="upload-info">JPG, PNG, GIF • Max 10MB each</p>
       </div>
       
       <div class="upload-type">
         <h5>🎬 Upload Videos</h5>
-        <input type="file" id="videoUploadInput" accept="video/*" multiple style="display: none;">
-        <button type="button" onclick="document.getElementById('videoUploadInput').click()" class="upload-btn">
-          Choose Videos
-        </button>
+        <form action="https://victoryvision.app.n8n.cloud/webhook/media/upload" method="POST" enctype="multipart/form-data" target="uploadFrame">
+          <input type="hidden" name="customer_id" id="customerIdVideo">
+          <input type="hidden" name="file_type" value="video">
+          <input type="file" name="file" accept="video/*" multiple onchange="this.form.submit()">
+          <button type="button" onclick="this.previousElementSibling.click()" class="upload-btn">
+            Choose Videos
+          </button>
+        </form>
         <p class="upload-info">MP4, MOV, AVI • Max 100MB each</p>
       </div>
       
       <div class="upload-type">
         <h5>📊 Upload Presentations</h5>
-        <input type="file" id="presentationUploadInput" accept=".ppt,.pptx,.pdf" multiple style="display: none;">
-        <button type="button" onclick="document.getElementById('presentationUploadInput').click()" class="upload-btn">
-          Choose Presentations
-        </button>
+        <form action="https://victoryvision.app.n8n.cloud/webhook/media/upload" method="POST" enctype="multipart/form-data" target="uploadFrame">
+          <input type="hidden" name="customer_id" id="customerIdPresentation">
+          <input type="hidden" name="file_type" value="presentation">
+          <input type="file" name="file" accept=".ppt,.pptx,.pdf" multiple onchange="this.form.submit()">
+          <button type="button" onclick="this.previousElementSibling.click()" class="upload-btn">
+            Choose Presentations
+          </button>
+        </form>
         <p class="upload-info">PPT, PPTX, PDF • Max 50MB each</p>
       </div>
     </div>
     
-    <div class="upload-progress" id="uploadProgress" style="display: none;">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-      <p id="uploadStatus">Uploading...</p>
-    </div>
+    <iframe name="uploadFrame" style="display:none;"></iframe>
   </div>
 </div>
   
@@ -2095,7 +2102,9 @@ async function uploadFiles(files, type) {
           loadMediaFiles()
         ]);
         setupEventListeners();
-        setupUploadHandlers();
+document.getElementById('customerIdImage').value = CUSTOMER_ID;
+document.getElementById('customerIdVideo').value = CUSTOMER_ID;
+document.getElementById('customerIdPresentation').value = CUSTOMER_ID;
         applyFilters();
         
         // Auto-start tour for new users
