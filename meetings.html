@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Schedule and manage meetings and webinars with AI-powered features."/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision AI - Meetings</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .navbar {
+      background-color: #0A3161;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .navbar nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar nav ul li {
+      margin: 0 10px;
+    }
+    .navbar nav ul li a {
+      color: white;
+      text-decoration: none;
+    }
+    .navbar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .navbar .subscription-medallion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      position: relative;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    .subscription-medallion.bronze {
+      background: linear-gradient(45deg, #CD7F32, #A0522D);
+    }
+    .subscription-medallion.silver {
+      background: linear-gradient(45deg, #C0C0C0, #808080);
+    }
+    .subscription-medallion.gold {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+    }
+    .subscription-medallion:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .logo img {
+      height: 60px;
+      width: auto;
+      max-height: 100px;
+    }
+    .content {
+      padding: 20px 4px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .page-header {
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #0A3161;
+      margin-bottom: 0.5rem;
+    }
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: #666;
+    }
+    .header-actions {
+      display: flex;
+      gap: 15px;
+    }
+    .btn-primary {
+      background: #0A3161;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #083050;
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+    .btn-success {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    .btn-success:hover {
+      background: #218838;
+    }
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    .btn-danger:hover {
+      background: #c82333;
+    }
+    .btn-warning {
+      background: #ffc107;
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    .btn-warning:hover {
+      background: #e0a800;
+    }
+
+    /* Tab Navigation */
+    .tab-navigation {
+      background: white;
+      border-radius: 8px 8px 0 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 0;
+    }
+    .tab-header {
+      display: flex;
+      border-bottom: 2px solid #dee2e6;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 15px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+    }
+    .tab-button.active {
+      color: #0A3161;
+      border-bottom-color: #0A3161;
+      background: #f8f9fa;
+    }
+    .tab-button:hover:not(.active) {
+      background: #f8f9fa;
+      color: #0A3161;
+    }
+
+    /* Sub-tabs */
+    .sub-tab-navigation {
+      background: #f8f9fa;
+      padding: 10px 20px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .sub-tab-buttons {
+      display: flex;
+      gap: 15px;
+    }
+    .sub-tab-button {
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      transition: all 0.2s ease;
+    }
+    .sub-tab-button.active {
+      background: #0A3161;
+      color: white;
+      border-color: #0A3161;
+    }
+    .sub-tab-button:hover:not(.active) {
+      border-color: #0A3161;
+      color: #0A3161;
+    }
+
+    /* Main Layout - List + Detail */
+    .meetings-layout {
+      background: white;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      min-height: 600px;
+      overflow: hidden;
+    }
+
+    /* Meeting List */
+    .meetings-list {
+      border-right: 1px solid #dee2e6;
+      overflow-y: auto;
+      max-height: 600px;
+    }
+    .list-header {
+      padding: 15px 20px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #dee2e6;
+      font-weight: 600;
+      color: #0A3161;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .meeting-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .meeting-item:hover {
+      background: #f8f9fa;
+    }
+    .meeting-item.selected {
+      background: #e3f2fd;
+      border-right: 3px solid #0A3161;
+    }
+    .meeting-item.unread {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+    }
+    .meeting-title {
+      font-weight: 600;
+      color: #0A3161;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    .meeting-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .meeting-datetime {
+      font-size: 12px;
+      color: #666;
+    }
+    .meeting-type-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .meeting-type-badge.meeting {
+      background: #e3f2fd;
+      color: #0A3161;
+    }
+    .meeting-type-badge.webinar {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+    .meeting-status {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .meeting-status.scheduled {
+      background: #e8f5e8;
+      color: #28a745;
+    }
+    .meeting-status.in-progress {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+    .meeting-status.completed {
+      background: #f8f9fa;
+      color: #6c757d;
+    }
+    .meeting-status.canceled {
+      background: #f8d7da;
+      color: #dc3545;
+    }
+    .meeting-attendees {
+      font-size: 11px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Meeting Detail Pane */
+    .meeting-detail {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 600px;
+    }
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .detail-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0A3161;
+      margin-bottom: 5px;
+    }
+    .detail-meta {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .detail-sections {
+      display: grid;
+      gap: 20px;
+    }
+    .detail-section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #0A3161;
+    }
+    .detail-section h4 {
+      margin: 0 0 10px 0;
+      color: #0A3161;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .detail-section p {
+      margin: 0;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    /* Attendees List */
+    .attendees-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .attendee-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: white;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+    }
+    .attendee-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0A3161;
+      color: white;
+      font-size: 10px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .attendee-info {
+      flex: 1;
+    }
+    .attendee-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+    }
+    .attendee-email {
+      font-size: 10px;
+      color: #666;
+    }
+    .attendee-status {
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .attendee-status.accepted {
+      background: #e8f5e8;
+      color: #28a745;
+    }
+    .attendee-status.pending {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+    .attendee-status.declined {
+      background: #f8d7da;
+      color: #dc3545;
+    }
+    .attendee-status.tentative {
+      background: #e3f2fd;
+      color: #0A3161;
+    }
+
+    /* Empty States */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 400px;
+      color: #666;
+      text-align: center;
+    }
+    .empty-state h3 {
+      color: #0A3161;
+      margin-bottom: 10px;
+    }
+    .empty-state p {
+      margin-bottom: 20px;
+      max-width: 300px;
+      line-height: 1.5;
+    }
+
+    /* Filters Section */
+    .filters-section {
+      background: white;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      align-items: end;
+    }
+    .form-group {
+      margin-bottom: 0;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #333;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      overflow-y: auto;
+    }
+    .modal-content {
+      background: white;
+      margin: 2% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
+    .modal-body {
+      padding: 20px;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #dee2e6;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    /* Form Styling */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    .form-group textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      resize: vertical;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .checkbox-item input[type="checkbox"] {
+      margin: 0;
+    }
+
+    /* Contact Picker */
+    .contact-picker {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: white;
+    }
+    .contact-item {
+      padding: 10px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .contact-item:hover {
+      background: #f8f9fa;
+    }
+    .contact-item.selected {
+      background: #e3f2fd;
+    }
+    .contact-item input[type="checkbox"] {
+      margin: 0;
+    }
+    .selected-contacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .contact-tag {
+      background: #e3f2fd;
+      color: #0A3161;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .contact-tag .remove {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Calendar Widget */
+    .calendar-section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid #bb133e;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .calendar-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      margin-bottom: 10px;
+      user-select: none;
+    }
+    .calendar-toggle h3 {
+      margin: 0;
+      color: #0A3161;
+    }
+    .calendar-collapse-icon {
+      font-size: 18px;
+      color: #0A3161;
+      transition: transform 0.3s ease;
+    }
+    .calendar-section.collapsed .calendar-collapse-icon {
+      transform: rotate(-90deg);
+    }
+    .calendar-content {
+      max-height: 1000px;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .calendar-section.collapsed .calendar-content {
+      max-height: 0;
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .calendar-nav {
+      background: #0A3161;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .calendar-nav:hover {
+      background: #083050;
+    }
+    .calendar-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #0A3161;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #dee2e6;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .calendar-day-header {
+      background: #0A3161;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .calendar-day {
+      background: white;
+      padding: 8px;
+      min-height: 80px;
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .calendar-day:hover {
+      background: #f8f9fa;
+    }
+    .calendar-day.other-month {
+      background: #f8f9fa;
+      color: #6c757d;
+    }
+    .calendar-day.today {
+      background: #e3f2fd;
+      border: 2px solid #0A3161;
+    }
+    .calendar-day-number {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .calendar-meeting {
+      background: #bb133e;
+      color: white;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: 10px;
+      margin-bottom: 2px;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .calendar-meeting:hover {
+      background: #8b0f2e;
+    }
+    .calendar-meeting.webinar {
+      background: #f57c00;
+    }
+    .calendar-meeting.webinar:hover {
+      background: #e65100;
+    }
+
+    /* Status Messages */
+    .status-message {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      max-width: 400px;
+      z-index: 1000;
+    }
+    .status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    /* Loading Spinner */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      font-size: 1.1rem;
+      color: #666;
+    }
+    .loading::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ddd;
+      border-top: 2px solid #0A3161;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 0.5rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .content {
+        padding: 10px 5px;
+      }
+      .page-header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .meetings-layout {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .meetings-list {
+        max-height: 300px;
+        border-right: none;
+        border-bottom: 1px solid #dee2e6;
+      }
+      .meeting-detail {
+        max-height: none;
+      }
+      .filters-section {
+        grid-template-columns: 1fr;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+      .calendar-grid {
+        font-size: 12px;
+      }
+      .calendar-day {
+        min-height: 60px;
+        padding: 4px;
+      }
+    }
+
+    footer {
+      background: #0A3161;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    footer a {
+      color: #fff;
+      margin-right: 15px;
+      text-decoration: none;
+    }
+
+    /* Intro.js styling */
+    .introjs-tooltip {
+      max-width: 350px;
+      font-size: 14px;
+    }
+    .introjs-button {
+      background: #0A3161 !important;
+      border: 1px solid #0A3161 !important;
+      color: white !important;
+      padding: 8px 15px !important;
+      border-radius: 4px !important;
+    }
+    .introjs-button:hover {
+      background: #083050 !important;
+    }
+    .introjs-progressbar {
+      background-color: #0A3161 !important;
+    }
+  </style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">
+    <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="ads">Ads</a></li>
+      <li><a href="contacts">Contacts</a></li>
+      <li><a href="messages">Messages</a></li>
+      <li><a href="meetings">Meetings</a></li>
+      <li><a href="settings">Settings</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+      Take Tour
+    </button>
+    <div id="subscriptionMedallion" class="subscription-medallion bronze">
+      <span class="plan-name">Bronze</span>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">🎥 Meetings & Webinars</h1>
+      <p class="page-subtitle">Schedule, manage, and host virtual meetings and webinars with AI-powered insights</p>
+    </div>
+    <div class="header-actions" data-intro="Create new meetings or webinars with advanced scheduling features and attendee management." data-step="1">
+      <button class="btn-primary" onclick="openCreateModal('meeting')">📅 New Meeting</button>
+      <button class="btn-primary" onclick="openCreateModal('webinar')" style="background: #f57c00;">🎤 New Webinar</button>
+    </div>
+  </header>
+
+  <!-- Filters Section -->
+  <section class="filters-section" data-intro="Filter your meetings by date range, status, type, or host to find what you need quickly." data-step="2">
+    <div class="form-group">
+      <label for="dateRangeFilter">Date Range</label>
+      <select id="dateRangeFilter">
+        <option value="all">All Dates</option>
+        <option value="today">Today</option>
+        <option value="tomorrow">Tomorrow</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="custom">Custom Range</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="statusFilter">Status</label>
+      <select id="statusFilter">
+        <option value="">All Status</option>
+        <option value="draft">Draft</option>
+        <option value="scheduled">Scheduled</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="in-progress">In Progress</option>
+        <option value="completed">Completed</option>
+        <option value="canceled">Canceled</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="typeFilter">Type</label>
+      <select id="typeFilter">
+        <option value="">All Types</option>
+        <option value="meeting">Meeting</option>
+        <option value="webinar">Webinar</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="hostFilter">Host</label>
+      <select id="hostFilter">
+        <option value="">All Hosts</option>
+        <option value="me">Me</option>
+        <option value="others">Others</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="searchFilter">Search</label>
+      <input type="text" id="searchFilter" placeholder="Search meetings...">
+    </div>
+    <button class="btn-primary" onclick="refreshMeetings()">🔄 Refresh</button>
+    <button class="btn-secondary" onclick="clearFilters()">Clear Filters</button>
+  </section>
+
+  <!-- Calendar Section -->
+  <section class="calendar-section" data-intro="View your scheduled meetings and webinars in a monthly calendar view. Click on any meeting to view details or join." data-step="3">
+    <div class="calendar-toggle" onclick="toggleCalendar()">
+      <h3>📅 Meeting Calendar</h3>
+      <span class="calendar-collapse-icon" id="calendarCollapseIcon">▼</span>
+    </div>
+    
+    <div class="calendar-content" id="calendarContent">
+      <div class="calendar-header">
+        <button class="calendar-nav" onclick="previousMonth()">← Previous</button>
+        <h3 class="calendar-title" id="calendarTitle">January 2025</h3>
+        <button class="calendar-nav" onclick="nextMonth()">Next →</button>
+      </div>
+      
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Calendar will be generated here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Meeting Interface -->
+  <section class="tab-navigation" data-intro="Switch between meetings you host and meetings you're invited to attend." data-step="4">
+    <div class="tab-header">
+      <button class="tab-button active" data-tab="host" onclick="switchTab('host')">🎯 Host (You Created)</button>
+      <button class="tab-button" data-tab="attend" onclick="switchTab('attend')">👥 Attend (Invited To)</button>
+    </div>
+    
+    <!-- Host Tab -->
+    <div id="hostTab" class="tab-content active">
+      <div class="sub-tab-navigation">
+        <div class="sub-tab-buttons">
+          <button class="sub-tab-button active" data-subtab="host-upcoming" onclick="switchSubTab('host', 'upcoming')">Upcoming</button>
+          <button class="sub-tab-button" data-subtab="host-past" onclick="switchSubTab('host', 'past')">Past</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Attend Tab -->
+    <div id="attendTab" class="tab-content">
+      <div class="sub-tab-navigation">
+        <div class="sub-tab-buttons">
+          <button class="sub-tab-button active" data-subtab="attend-invites" onclick="switchSubTab('attend', 'invites')">Invites</button>
+          <button class="sub-tab-button" data-subtab="attend-upcoming" onclick="switchSubTab('attend', 'upcoming')">Upcoming</button>
+          <button class="sub-tab-button" data-subtab="attend-past" onclick="switchSubTab('attend', 'past')">Past</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- List + Detail Layout -->
+  <section class="meetings-layout" data-intro="Browse your meetings on the left and view detailed information, attendee lists, and action buttons on the right." data-step="5">
+    <!-- Meeting List -->
+    <div class="meetings-list">
+      <div class="list-header" id="listHeader">
+        Loading meetings...
+      </div>
+      <div id="meetingsList">
+        <div class="loading">Loading your meetings...</div>
+      </div>
+    </div>
+
+    <!-- Meeting Detail Pane -->
+    <div class="meeting-detail" id="meetingDetail">
+      <div class="empty-state">
+        <h3>Select a Meeting</h3>
+        <p>Choose a meeting from the list to view details, join, or manage attendees.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Create Meeting/Webinar Modal -->
+<div id="createModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="createModalTitle">Create New Meeting</h2>
+      <button class="modal-close" onclick="closeCreateModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <form id="createMeetingForm">
+        <div class="form-group">
+          <label for="meetingTitle">Title *</label>
+          <input type="text" id="meetingTitle" required placeholder="Enter meeting title...">
+        </div>
+        
+        <div class="form-group">
+          <label for="meetingDescription">Description</label>
+          <textarea id="meetingDescription" placeholder="Meeting description and agenda..."></textarea>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="meetingType">Type *</label>
+            <select id="meetingType" required>
+              <option value="meeting">Meeting</option>
+              <option value="webinar">Webinar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="meetingDuration">Duration (minutes) *</label>
+            <input type="number" id="meetingDuration" required value="60" min="15" max="480" step="15">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="meetingDate">Date *</label>
+            <input type="date" id="meetingDate" required>
+          </div>
+          <div class="form-group">
+            <label for="meetingTime">Start Time *</label>
+            <input type="time" id="meetingTime" required value="09:00">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="meetingTimezone">Timezone *</label>
+            <select id="meetingTimezone" required>
+              <option value="America/New_York">Eastern Time (EST/EDT)</option>
+              <option value="America/Chicago">Central Time (CST/CDT)</option>
+              <option value="America/Denver">Mountain Time (MST/MDT)</option>
+              <option value="America/Los_Angeles">Pacific Time (PST/PDT)</option>
+              <option value="UTC">UTC</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="meetingCapacity">Capacity *</label>
+            <input type="number" id="meetingCapacity" required value="10" min="1" max="200">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Meeting Settings</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="recordOnStart" checked>
+              <label for="recordOnStart">Record on start</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="waitingRoom" checked>
+              <label for="waitingRoom">Enable waiting room</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="enableChat">
+              <label for="enableChat">Enable chat/Q&A</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="requireRegistration">
+              <label for="requireRegistration">Registration required</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Invitees (1-200)</label>
+          <input type="text" id="contactSearch" placeholder="Search contacts to invite..." onkeyup="searchContacts()">
+          <div class="contact-picker" id="contactPicker" style="display: none;">
+            <!-- Contacts will be loaded here -->
+          </div>
+          <div class="selected-contacts" id="selectedContacts">
+            <!-- Selected contacts will appear here -->
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Follow-up Settings</label>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="sendRecapAttendees">
+              <label for="sendRecapAttendees">Send recap to attendees</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="sendRecapNoShows">
+              <label for="sendRecapNoShows">Send recap to no-shows</label>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeCreateModal()">Cancel</button>
+      <button class="btn-primary" onclick="createMeeting()">Create & Send Invites</button>
+    </div>
+  </div>
+</div>
+
+<!-- RSVP Modal -->
+<div id="rsvpModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Respond to Meeting Invitation</h2>
+      <button class="modal-close" onclick="closeRsvpModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="rsvpMeetingDetails">
+        <!-- Meeting details will be populated here -->
+      </div>
+      <div class="form-group">
+        <label>Your Response</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="radio" name="rsvp" value="accepted" id="rsvpAccept">
+            <label for="rsvpAccept">✅ Accept</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="radio" name="rsvp" value="tentative" id="rsvpTentative">
+            <label for="rsvpTentative">❓ Tentative</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="radio" name="rsvp" value="declined" id="rsvpDecline">
+            <label for="rsvpDecline">❌ Decline</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="rsvpNote">Optional Note</label>
+        <textarea id="rsvpNote" placeholder="Add a note to the host (optional)..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeRsvpModal()">Cancel</button>
+      <button class="btn-primary" onclick="submitRsvp()">Send Response</button>
+    </div>
+  </div>
+</div>
+
+<!-- Status Messages -->
+<div id="statusMessage" class="status-message"></div>
+
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+  // Supabase configuration
+  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+  
+  // n8n endpoints
+  const ENDPOINTS = {
+    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
+    getMeetings: 'https://victoryvision.app.n8n.cloud/webhook/meetings/get',
+    createMeeting: 'https://victoryvision.app.n8n.cloud/webhook/meetings/create',
+    inviteMeeting: 'https://victoryvision.app.n8n.cloud/webhook/meetings/invite',
+    rsvpMeeting: 'https://victoryvision.app.n8n.cloud/webhook/meetings/rsvp',
+    updateMeeting: 'https://victoryvision.app.n8n.cloud/webhook/meetings/update',
+    endMeeting: 'https://victoryvision.app.n8n.cloud/webhook/meetings/end'
+  };
+
+  // Global variables
+  let CUSTOMER_ID = null;
+  let authToken = null;
+  let allMeetings = [];
+  let filteredMeetings = [];
+  let allContacts = [];
+  let selectedMeeting = null;
+  let selectedContactIds = new Set();
+  let currentTab = 'host';
+  let currentSubTab = 'upcoming';
+  let currentDate = new Date();
+  let calendarCollapsed = false;
+
+  // Tour functions
+  function completeTour() {
+    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
+  }
+
+  function hasCompletedTour() {
+    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
+  }
+
+  function startTour() {
+    introJs().setOptions({
+      showProgress: true,
+      showBullets: false,
+      exitOnOverlayClick: false,
+      nextLabel: 'Next →',
+      prevLabel: '← Back',
+      doneLabel: 'Complete!',
+      skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
+
+  // Authentication
+  async function checkAuthentication() {
+    try {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      
+      if (error) {
+        console.error('Auth error:', error);
+        return false;
+      }
+
+      if (session && session.user) {
+        CUSTOMER_ID = session.user.email;
+        authToken = session.access_token;
+        document.getElementById('userEmail').textContent = CUSTOMER_ID;
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      console.error('Auth check error:', e);
+      return false;
+    }
+  }
+
+  function redirectToLogin() {
+    localStorage.removeItem('vv_session');
+    window.location.href = 'login.html';
+  }
+
+  // API call function
+  async function apiCall(endpoint, data = {}) {
+    try {
+      const isGetRequest = endpoint.includes('/get');
+      
+      const url = isGetRequest ? 
+        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+        endpoint;
+      
+      const requestOptions = {
+        method: isGetRequest ? 'GET' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        }
+      };
+
+      if (!isGetRequest) {
+        requestOptions.body = JSON.stringify({
+          customer_id: CUSTOMER_ID,
+          ...data
+        });
+      }
+
+      const response = await fetch(url, requestOptions);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+    }
+  }
+
+  // Load user data
+  async function loadUserData() {
+    try {
+      const response = await apiCall(ENDPOINTS.getUserData);
+      const userData = Array.isArray(response) ? response[0] : response;
+      
+      // Update subscription medallion
+      const medallion = document.getElementById('subscriptionMedallion');
+      const plan = userData.subscription_plan || 'bronze';
+      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
+      medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      showStatus('Error loading user data: ' + error.message, true);
+    }
+  }
+
+  // Load contacts for invitee selection
+  async function loadContacts() {
+    try {
+      const data = await apiCall(ENDPOINTS.getContacts);
+      allContacts = Array.isArray(data) ? data : (data.contacts || []);
+      console.log(`Loaded ${allContacts.length} contacts`);
+    } catch (error) {
+      console.error('Error loading contacts:', error);
+      allContacts = [];
+    }
+  }
+
+  // Load meetings
+  async function loadMeetings() {
+    try {
+      const response = await apiCall(ENDPOINTS.getMeetings);
+      allMeetings = Array.isArray(response) ? response : (response.meetings || []);
+      console.log(`Loaded ${allMeetings.length} meetings`);
+      
+      applyFilters();
+    } catch (error) {
+      console.error('Error loading meetings:', error);
+      allMeetings = [];
+      filteredMeetings = [];
+      renderMeetingsList();
+    }
+  }
+
+  // Calendar functions
+  function toggleCalendar() {
+    const calendarSection = document.querySelector('.calendar-section');
+    const calendarIcon = document.getElementById('calendarCollapseIcon');
+    
+    calendarCollapsed = !calendarCollapsed;
+    
+    if (calendarCollapsed) {
+      calendarSection.classList.add('collapsed');
+      calendarIcon.textContent = '▶';
+    } else {
+      calendarSection.classList.remove('collapsed');
+      calendarIcon.textContent = '▼';
+    }
+  }
+
+  function renderCalendar() {
+    const calendarGrid = document.getElementById('calendarGrid');
+    const calendarTitle = document.getElementById('calendarTitle');
+    
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    calendarTitle.textContent = new Date(year, month).toLocaleDateString('en-US', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+    
+    // Clear existing calendar
+    calendarGrid.innerHTML = '';
+    
+    // Add day headers
+    const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayHeaders.forEach(day => {
+      const dayHeader = document.createElement('div');
+      dayHeader.className = 'calendar-day-header';
+      dayHeader.textContent = day;
+      calendarGrid.appendChild(dayHeader);
+    });
+    
+    // Get first day of month and number of days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    
+    // Add empty cells for days before first day of month
+    for (let i = 0; i < firstDay; i++) {
+      const emptyDay = document.createElement('div');
+      emptyDay.className = 'calendar-day other-month';
+      calendarGrid.appendChild(emptyDay);
+    }
+    
+    // Add days of month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayElement = document.createElement('div');
+      dayElement.className = 'calendar-day';
+      
+      const currentDateForDay = new Date(year, month, day);
+      
+      // Check if this is today
+      if (currentDateForDay.toDateString() === today.toDateString()) {
+        dayElement.classList.add('today');
+      }
+      
+      dayElement.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+      
+      // Add meetings for this day
+      const dateKey = currentDateForDay.toISOString().split('T')[0];
+      const meetingsForDay = allMeetings.filter(meeting => {
+        if (!meeting.start_at) return false;
+        const meetingDate = new Date(meeting.start_at).toISOString().split('T')[0];
+        return meetingDate === dateKey;
+      });
+      
+      meetingsForDay.forEach(meeting => {
+        const meetingElement = document.createElement('div');
+        meetingElement.className = `calendar-meeting ${meeting.type || 'meeting'}`;
+        meetingElement.textContent = (meeting.title || 'Meeting').substring(0, 15) + '...';
+        meetingElement.onclick = (e) => {
+          e.stopPropagation();
+          selectMeeting(meeting.id);
+        };
+        dayElement.appendChild(meetingElement);
+      });
+      
+      calendarGrid.appendChild(dayElement);
+    }
+  }
+
+  function previousMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  }
+
+  function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  }
+
+  // Tab switching
+  function switchTab(tab) {
+    currentTab = tab;
+    
+    // Update tab buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.tab === tab) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Show/hide tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+      content.classList.remove('active');
+    });
+    document.getElementById(tab + 'Tab').classList.add('active');
+    
+    // Reset to first sub-tab
+    currentSubTab = (tab === 'host') ? 'upcoming' : 'invites';
+    switchSubTab(tab, currentSubTab);
+    
+    applyFilters();
+  }
+
+  function switchSubTab(tab, subTab) {
+    currentSubTab = subTab;
+    
+    // Update sub-tab buttons
+    const tabContent = document.getElementById(tab + 'Tab');
+    tabContent.querySelectorAll('.sub-tab-button').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.subtab === `${tab}-${subTab}`) {
+        btn.classList.add('active');
+      }
+    });
+    
+    applyFilters();
+  }
+
+  // Apply filters and render meetings
+  function applyFilters() {
+    const statusFilter = document.getElementById('statusFilter')?.value || '';
+    const typeFilter = document.getElementById('typeFilter')?.value || '';
+    const hostFilter = document.getElementById('hostFilter')?.value || '';
+    const searchFilter = document.getElementById('searchFilter')?.value?.toLowerCase() || '';
+    const dateRangeFilter = document.getElementById('dateRangeFilter')?.value || 'all';
+    
+    const now = new Date();
+    
+    filteredMeetings = allMeetings.filter(meeting => {
+      // Tab and sub-tab filtering
+      const isHost = meeting.host_user_id === CUSTOMER_ID;
+      const meetingDate = meeting.start_at ? new Date(meeting.start_at) : null;
+      const isPast = meetingDate && meetingDate < now;
+      const isUpcoming = meetingDate && meetingDate >= now;
+      const hasRsvp = meeting.rsvp && meeting.rsvp !== 'pending';
+      
+      if (currentTab === 'host') {
+        if (!isHost) return false;
+        if (currentSubTab === 'upcoming' && !isUpcoming) return false;
+        if (currentSubTab === 'past' && !isPast) return false;
+      } else if (currentTab === 'attend') {
+        if (isHost) return false;
+        if (currentSubTab === 'invites' && hasRsvp) return false;
+        if (currentSubTab === 'upcoming' && (!isUpcoming || !hasRsvp)) return false;
+        if (currentSubTab === 'past' && !isPast) return false;
+      }
+      
+      // Additional filters
+      if (statusFilter && meeting.status !== statusFilter) return false;
+      if (typeFilter && meeting.type !== typeFilter) return false;
+      if (hostFilter === 'me' && !isHost) return false;
+      if (hostFilter === 'others' && isHost) return false;
+      
+      // Search filter
+      if (searchFilter) {
+        const searchText = [
+          meeting.title || '',
+          meeting.description || '',
+          meeting.host_email || ''
+        ].join(' ').toLowerCase();
+        if (!searchText.includes(searchFilter)) return false;
+      }
+      
+      // Date range filter
+      if (dateRangeFilter !== 'all' && meetingDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const meetingDay = new Date(meetingDate);
+        meetingDay.setHours(0, 0, 0, 0);
+        
+        switch (dateRangeFilter) {
+          case 'today':
+            if (meetingDay.getTime() !== today.getTime()) return false;
+            break;
+          case 'tomorrow':
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
+            if (meetingDay.getTime() !== tomorrow.getTime()) return false;
+            break;
+          case 'week':
+            const weekFromNow = new Date(today);
+            weekFromNow.setDate(today.getDate() + 7);
+            if (meetingDay < today || meetingDay > weekFromNow) return false;
+            break;
+          case 'month':
+            const monthFromNow = new Date(today);
+            monthFromNow.setMonth(today.getMonth() + 1);
+            if (meetingDay < today || meetingDay > monthFromNow) return false;
+            break;
+        }
+      }
+      
+      return true;
+    });
+    
+    // Sort meetings by date
+    filteredMeetings.sort((a, b) => {
+      const dateA = a.start_at ? new Date(a.start_at) : new Date(0);
+      const dateB = b.start_at ? new Date(b.start_at) : new Date(0);
+      return dateA - dateB;
+    });
+    
+    renderMeetingsList();
+    updateListHeader();
+  }
+
+  function updateListHeader() {
+    const header = document.getElementById('listHeader');
+    const tabName = currentTab === 'host' ? 'Hosting' : 'Attending';
+    const subTabName = currentSubTab.charAt(0).toUpperCase() + currentSubTab.slice(1);
+    header.textContent = `${tabName} - ${subTabName} (${filteredMeetings.length})`;
+  }
+
+  function clearFilters() {
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('typeFilter').value = '';
+    document.getElementById('hostFilter').value = '';
+    document.getElementById('searchFilter').value = '';
+    document.getElementById('dateRangeFilter').value = 'all';
+    applyFilters();
+  }
+
+  // Render meetings list
+  function renderMeetingsList() {
+    const container = document.getElementById('meetingsList');
+    
+    if (filteredMeetings.length === 0) {
+      const emptyMessage = getEmptyStateMessage();
+      container.innerHTML = `
+        <div class="empty-state" style="height: 200px; font-size: 14px;">
+          <h4>${emptyMessage.title}</h4>
+          <p style="margin-bottom: 15px;">${emptyMessage.subtitle}</p>
+          ${emptyMessage.action}
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filteredMeetings.map(meeting => {
+      const meetingDate = meeting.start_at ? new Date(meeting.start_at) : null;
+      const dateString = meetingDate ? meetingDate.toLocaleDateString() : 'No date';
+      const timeString = meetingDate ? meetingDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '';
+      
+      const attendeeCount = meeting.invites ? meeting.invites.length : 0;
+      const acceptedCount = meeting.invites ? meeting.invites.filter(i => i.rsvp === 'accepted').length : 0;
+      
+      return `
+        <div class="meeting-item ${selectedMeeting?.id === meeting.id ? 'selected' : ''} ${meeting.rsvp === 'pending' ? 'unread' : ''}" 
+             onclick="selectMeeting('${meeting.id}')">
+          <div class="meeting-title">${meeting.title || 'Untitled Meeting'}</div>
+          <div class="meeting-meta">
+            <div class="meeting-datetime">${dateString} ${timeString}</div>
+            <div class="meeting-type-badge ${meeting.type || 'meeting'}">${meeting.type || 'meeting'}</div>
+          </div>
+          <div class="meeting-status ${meeting.status || 'scheduled'}">${meeting.status || 'scheduled'}</div>
+          <div class="meeting-attendees">
+            👥 ${acceptedCount}/${attendeeCount} attending
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function getEmptyStateMessage() {
+    const messages = {
+      'host-upcoming': {
+        title: 'No Upcoming Meetings',
+        subtitle: 'You haven\'t scheduled any meetings yet.',
+        action: '<button class="btn-primary" onclick="openCreateModal(\'meeting\')">Create Your First Meeting</button>'
+      },
+      'host-past': {
+        title: 'No Past Meetings',
+        subtitle: 'Your completed meetings will appear here.',
+        action: ''
+      },
+      'attend-invites': {
+        title: 'No Pending Invites',
+        subtitle: 'You don\'t have any meeting invitations waiting for response.',
+        action: ''
+      },
+      'attend-upcoming': {
+        title: 'No Upcoming Meetings',
+        subtitle: 'You don\'t have any confirmed meetings coming up.',
+        action: ''
+      },
+      'attend-past': {
+        title: 'No Past Meetings',
+        subtitle: 'Meetings you\'ve attended will appear here.',
+        action: ''
+      }
+    };
+    
+    return messages[`${currentTab}-${currentSubTab}`] || messages['host-upcoming'];
+  }
+
+  // Select meeting and show details
+  function selectMeeting(meetingId) {
+    selectedMeeting = allMeetings.find(m => m.id === meetingId);
+    if (!selectedMeeting) return;
+    
+    renderMeetingDetail();
+    renderMeetingsList(); // Re-render to update selection
+  }
+
+  function renderMeetingDetail() {
+    const container = document.getElementById('meetingDetail');
+    if (!selectedMeeting) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <h3>Select a Meeting</h3>
+          <p>Choose a meeting from the list to view details, join, or manage attendees.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const meeting = selectedMeeting;
+    const meetingDate = meeting.start_at ? new Date(meeting.start_at) : null;
+    const isHost = meeting.host_user_id === CUSTOMER_ID;
+    const isPast = meetingDate && meetingDate < new Date();
+    const isUpcoming = meetingDate && meetingDate >= new Date();
+    const canJoin = meeting.room_url && (isUpcoming || meeting.status === 'in-progress');
+
+    container.innerHTML = `
+      <div class="detail-header">
+        <div>
+          <h2 class="detail-title">${meeting.title || 'Untitled Meeting'}</h2>
+          <div class="detail-meta">
+            <div><strong>Type:</strong> ${meeting.type || 'Meeting'}</div>
+            <div><strong>Date:</strong> ${meetingDate ? meetingDate.toLocaleDateString() : 'No date set'}</div>
+            <div><strong>Time:</strong> ${meetingDate ? meetingDate.toLocaleTimeString() : 'No time set'}</div>
+            <div><strong>Duration:</strong> ${meeting.duration_min || 60} minutes</div>
+            <div><strong>Status:</strong> <span class="meeting-status ${meeting.status || 'scheduled'}">${meeting.status || 'Scheduled'}</span></div>
+            ${meeting.timezone ? `<div><strong>Timezone:</strong> ${meeting.timezone}</div>` : ''}
+          </div>
+        </div>
+        <div class="detail-actions">
+          ${renderMeetingActions(meeting, isHost, canJoin, isPast)}
+        </div>
+      </div>
+
+      <div class="detail-sections">
+        ${meeting.description ? `
+          <div class="detail-section">
+            <h4>Description</h4>
+            <p>${meeting.description}</p>
+          </div>
+        ` : ''}
+
+        ${meeting.room_url ? `
+          <div class="detail-section">
+            <h4>Join Information</h4>
+            <p><strong>Meeting Room:</strong> <a href="${meeting.room_url}" target="_blank" class="post-url">${meeting.room_url}</a></p>
+            ${meeting.magic_token ? `<p><strong>Your Join Link:</strong> <a href="${meeting.room_url}?t=${meeting.magic_token}" target="_blank" class="post-url">Personalized Link</a></p>` : ''}
+          </div>
+        ` : ''}
+
+        <div class="detail-section">
+          <h4>Meeting Settings</h4>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+            <div>Recording: ${meeting.record ? '✅ Enabled' : '❌ Disabled'}</div>
+            <div>Waiting Room: ${meeting.waiting_room ? '✅ Enabled' : '❌ Disabled'}</div>
+            <div>Capacity: ${meeting.capacity || 'Unlimited'}</div>
+            <div>Registration: ${meeting.registration_required ? '✅ Required' : '❌ Not Required'}</div>
+          </div>
+        </div>
+
+        ${renderAttendeesSection(meeting, isHost)}
+
+        ${meeting.recording_url ? `
+          <div class="detail-section">
+            <h4>Recording</h4>
+            <p><a href="${meeting.recording_url}" target="_blank" class="post-url">View Recording</a></p>
+            ${meeting.transcript ? `<p><strong>Transcript:</strong> Available</p>` : ''}
+            ${meeting.summary ? `<p><strong>Summary:</strong> ${meeting.summary}</p>` : ''}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  function renderMeetingActions(meeting, isHost, canJoin, isPast) {
+    let actions = [];
+
+    if (canJoin) {
+      actions.push(`<button class="btn-success" onclick="joinMeeting('${meeting.id}')">🚀 Join Meeting</button>`);
+    }
+
+    if (isHost) {
+      if (!isPast) {
+        actions.push(`<button class="btn-primary" onclick="copyInviteLink('${meeting.id}')">🔗 Copy Invite Link</button>`);
+        actions.push(`<button class="btn-warning" onclick="editMeeting('${meeting.id}')">✏️ Edit</button>`);
+        actions.push(`<button class="btn-danger" onclick="cancelMeeting('${meeting.id}')">❌ Cancel</button>`);
+      }
+      if (meeting.status === 'in-progress') {
+        actions.push(`<button class="btn-danger" onclick="endMeeting('${meeting.id}')">🛑 End Meeting</button>`);
+      }
+    } else {
+      // Attendee actions
+      if (!isPast && meeting.rsvp === 'pending') {
+        actions.push(`<button class="btn-success" onclick="openRsvpModal('${meeting.id}')">✅ Respond</button>`);
+      }
+      if (!isPast && meeting.rsvp !== 'pending') {
+        actions.push(`<button class="btn-secondary" onclick="openRsvpModal('${meeting.id}')">📝 Update RSVP</button>`);
+      }
+      actions.push(`<button class="btn-primary" onclick="addToCalendar('${meeting.id}')">📅 Add to Calendar</button>`);
+    }
+
+    return actions.join('');
+  }
+
+  function renderAttendeesSection(meeting, isHost) {
+    if (!meeting.invites || meeting.invites.length === 0) {
+      return `
+        <div class="detail-section">
+          <h4>Attendees</h4>
+          <p>No attendees invited yet.</p>
+        </div>
+      `;
+    }
+
+    const attendeesHtml = meeting.invites.map(invite => {
+      const initials = invite.email ? invite.email.substring(0, 2).toUpperCase() : '??';
+      return `
+        <div class="attendee-item">
+          <div class="attendee-avatar">${initials}</div>
+          <div class="attendee-info">
+            <div class="attendee-name">${invite.name || invite.email}</div>
+            <div class="attendee-email">${invite.email}</div>
+          </div>
+          <div class="attendee-status ${invite.rsvp || 'pending'}">${invite.rsvp || 'pending'}</div>
+        </div>
+      `;
+    }).join('');
+
+    const stats = {
+      total: meeting.invites.length,
+      accepted: meeting.invites.filter(i => i.rsvp === 'accepted').length,
+      declined: meeting.invites.filter(i => i.rsvp === 'declined').length,
+      pending: meeting.invites.filter(i => !i.rsvp || i.rsvp === 'pending').length
+    };
+
+    return `
+      <div class="detail-section">
+        <h4>Attendees (${stats.accepted}/${stats.total} confirmed)</h4>
+        <div style="margin-bottom: 15px;">
+          <span style="color: #28a745;">✅ ${stats.accepted} Accepted</span> • 
+          <span style="color: #dc3545;">❌ ${stats.declined} Declined</span> • 
+          <span style="color: #f57c00;">⏳ ${stats.pending} Pending</span>
+        </div>
+        <div class="attendees-grid">
+          ${attendeesHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  // Modal functions
+  function openCreateModal(type = 'meeting') {
+    const modal = document.getElementById('createModal');
+    const title = document.getElementById('createModalTitle');
+    const typeSelect = document.getElementById('meetingType');
+    
+    title.textContent = type === 'webinar' ? 'Create New Webinar' : 'Create New Meeting';
+    typeSelect.value = type;
+    
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('meetingDate').min = today;
+    document.getElementById('meetingDate').value = today;
+    
+    // Populate timezone based on user's location
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timezoneSelect = document.getElementById('meetingTimezone');
+    if (timezone.includes('New_York')) timezoneSelect.value = 'America/New_York';
+    else if (timezone.includes('Chicago')) timezoneSelect.value = 'America/Chicago';
+    else if (timezone.includes('Denver')) timezoneSelect.value = 'America/Denver';
+    else if (timezone.includes('Los_Angeles')) timezoneSelect.value = 'America/Los_Angeles';
+    
+    modal.style.display = 'block';
+    
+    // Load contacts for picker
+    if (allContacts.length === 0) {
+      loadContacts();
+    }
+  }
+
+  function closeCreateModal() {
+    document.getElementById('createModal').style.display = 'none';
+    document.getElementById('createMeetingForm').reset();
+    selectedContactIds.clear();
+    updateSelectedContacts();
+  }
+
+  function openRsvpModal(meetingId) {
+    const meeting = allMeetings.find(m => m.id === meetingId);
+    if (!meeting) return;
+    
+    const modal = document.getElementById('rsvpModal');
+    const detailsDiv = document.getElementById('rsvpMeetingDetails');
+    
+    const meetingDate = meeting.start_at ? new Date(meeting.start_at) : null;
+    
+    detailsDiv.innerHTML = `
+      <div class="detail-section">
+        <h4>Meeting Details</h4>
+        <p><strong>Title:</strong> ${meeting.title || 'Untitled Meeting'}</p>
+        <p><strong>Type:</strong> ${meeting.type || 'Meeting'}</p>
+        <p><strong>Date:</strong> ${meetingDate ? meetingDate.toLocaleDateString() : 'TBD'}</p>
+        <p><strong>Time:</strong> ${meetingDate ? meetingDate.toLocaleTimeString() : 'TBD'}</p>
+        <p><strong>Duration:</strong> ${meeting.duration_min || 60} minutes</p>
+        ${meeting.description ? `<p><strong>Description:</strong> ${meeting.description}</p>` : ''}
+      </div>
+    `;
+    
+    // Pre-select current RSVP if exists
+    const currentRsvp = meeting.rsvp || 'pending';
+    if (currentRsvp !== 'pending') {
+      document.getElementById('rsvp' + currentRsvp.charAt(0).toUpperCase() + currentRsvp.slice(1)).checked = true;
+    }
+    
+    modal.style.display = 'block';
+  }
+
+  function closeRsvpModal() {
+    document.getElementById('rsvpModal').style.display = 'none';
+    document.getElementById('rsvpNote').value = '';
+    document.querySelectorAll('input[name="rsvp"]').forEach(input => input.checked = false);
+  }
+
+  // Contact search and selection
+  function searchContacts() {
+    const query = document.getElementById('contactSearch').value.toLowerCase();
+    const picker = document.getElementById('contactPicker');
+    
+    if (query.length < 2) {
+      picker.style.display = 'none';
+      return;
+    }
+    
+    const filteredContacts = allContacts.filter(contact => 
+      (contact.name || '').toLowerCase().includes(query) ||
+      (contact.email || '').toLowerCase().includes(query) ||
+      (contact.company || '').toLowerCase().includes(query)
+    );
+    
+    if (filteredContacts.length === 0) {
+      picker.innerHTML = '<div class="contact-item">No contacts found</div>';
+      picker.style.display = 'block';
+      return;
+    }
+    
+    picker.innerHTML = filteredContacts.slice(0, 10).map(contact => `
+      <div class="contact-item ${selectedContactIds.has(contact.id) ? 'selected' : ''}" 
+           onclick="toggleContactSelection('${contact.id}')">
+        <input type="checkbox" ${selectedContactIds.has(contact.id) ? 'checked' : ''} 
+               onchange="toggleContactSelection('${contact.id}')">
+        <div>
+          <div class="attendee-name">${contact.name || contact.email}</div>
+          <div class="attendee-email">${contact.email}${contact.company ? ` • ${contact.company}` : ''}</div>
+        </div>
+      </div>
+    `).join('');
+    
+    picker.style.display = 'block';
+  }
+
+  function toggleContactSelection(contactId) {
+    if (selectedContactIds.has(contactId)) {
+      selectedContactIds.delete(contactId);
+    } else {
+      selectedContactIds.add(contactId);
+    }
+    updateSelectedContacts();
+  }
+
+  function updateSelectedContacts() {
+    const container = document.getElementById('selectedContacts');
+    const selectedContacts = allContacts.filter(c => selectedContactIds.has(c.id));
+    
+    container.innerHTML = selectedContacts.map(contact => `
+      <div class="contact-tag">
+        ${contact.name || contact.email}
+        <span class="remove" onclick="toggleContactSelection('${contact.id}')">×</span>
+      </div>
+    `).join('');
+  }
+
+  // Meeting actions
+  async function createMeeting() {
+    const form = document.getElementById('createMeetingForm');
+    const formData = new FormData(form);
+    
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    
+    if (selectedContactIds.size === 0) {
+      showStatus('Please select at least one attendee', true);
+      return;
+    }
+    
+    try {
+      showStatus('Creating meeting and sending invites...', false);
+      
+      const meetingData = {
+        title: document.getElementById('meetingTitle').value,
+        description: document.getElementById('meetingDescription').value,
+        type: document.getElementById('meetingType').value,
+        duration_min: parseInt(document.getElementById('meetingDuration').value),
+        start_at: `${document.getElementById('meetingDate').value} ${document.getElementById('meetingTime').value}`,
+        timezone: document.getElementById('meetingTimezone').value,
+        capacity: parseInt(document.getElementById('meetingCapacity').value),
+        record: document.getElementById('recordOnStart').checked,
+        waiting_room: document.getElementById('waitingRoom').checked,
+        chat_enabled: document.getElementById('enableChat').checked,
+        registration_required: document.getElementById('requireRegistration').checked,
+        send_recap_attendees: document.getElementById('sendRecapAttendees').checked,
+        send_recap_noshows: document.getElementById('sendRecapNoShows').checked,
+        invitees: Array.from(selectedContactIds)
+      };
+      
+      const result = await apiCall(ENDPOINTS.createMeeting, meetingData);
+      
+      if (result.success !== false) {
+        showStatus('Meeting created and invites sent successfully!');
+        closeCreateModal();
+        await loadMeetings();
+        renderCalendar();
+      } else {
+        showStatus('Failed to create meeting: ' + (result.message || 'Unknown error'), true);
+      }
+    } catch (error) {
+      console.error('Error creating meeting:', error);
+      showStatus('Error creating meeting: ' + error.message, true);
+    }
+  }
+
+  async function submitRsvp() {
+    if (!selectedMeeting) return;
+    
+    const rsvpValue = document.querySelector('input[name="rsvp"]:checked')?.value;
+    if (!rsvpValue) {
+      showStatus('Please select a response', true);
+      return;
+    }
+    
+    const note = document.getElementById('rsvpNote').value;
+    
+    try {
+      showStatus('Sending RSVP response...', false);
+      
+      const result = await apiCall(ENDPOINTS.rsvpMeeting, {
+        meeting_id: selectedMeeting.id,
+        rsvp: rsvpValue,
+        note: note
+      });
+      
+      if (result.success !== false) {
+        showStatus(`RSVP response sent: ${rsvpValue}`);
+        closeRsvpModal();
+        await loadMeetings();
+        renderCalendar();
+      } else {
+        showStatus('Failed to send RSVP: ' + (result.message || 'Unknown error'), true);
+      }
+    } catch (error) {
+      console.error('Error sending RSVP:', error);
+      showStatus('Error sending RSVP: ' + error.message, true);
+    }
+  }
+
+  function joinMeeting(meetingId) {
+    const meeting = allMeetings.find(m => m.id === meetingId);
+    if (!meeting || !meeting.room_url) {
+      showStatus('Meeting room not available', true);
+      return;
+    }
+    
+    const joinUrl = meeting.magic_token ? 
+      `${meeting.room_url}?t=${meeting.magic_token}` : 
+      meeting.room_url;
+    
+    window.open(joinUrl, '_blank');
+  }
+
+  function copyInviteLink(meetingId) {
+    const meeting = allMeetings.find(m => m.id === meetingId);
+    if (!meeting || !meeting.room_url) {
+      showStatus('No invite link available', true);
+      return;
+    }
+    
+    navigator.clipboard.writeText(meeting.room_url).then(() => {
+      showStatus('Invite link copied to clipboard!');
+    }).catch(() => {
+      showStatus('Failed to copy link', true);
+    });
+  }
+
+  function addToCalendar(meetingId) {
+    const meeting = allMeetings.find(m => m.id === meetingId);
+    if (!meeting || !meeting.start_at) {
+      showStatus('Meeting date not available', true);
+      return;
+    }
+    
+    const startDate = new Date(meeting.start_at);
+    const endDate = new Date(startDate.getTime() + (meeting.duration_min || 60) * 60000);
+    
+    // Generate ICS file content
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Victory Vision//Meetings//EN
+BEGIN:VEVENT
+UID:${meeting.id}@victoryvision.app
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+SUMMARY:${meeting.title || 'Victory Vision Meeting'}
+DESCRIPTION:${meeting.description || ''}${meeting.room_url ? '\\nJoin: ' + meeting.room_url : ''}
+LOCATION:Online
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR`;
+    
+    // Create and download ICS file
+    const blob = new Blob([icsContent], { type: 'text/calendar' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `meeting-${meeting.id}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    showStatus('Calendar invite downloaded!');
+  }
+
+  async function cancelMeeting(meetingId) {
+    if (!confirm('Are you sure you want to cancel this meeting? All attendees will be notified.')) {
+      return;
+    }
+    
+    try {
+      showStatus('Canceling meeting...', false);
+      
+      const result = await apiCall(ENDPOINTS.updateMeeting, {
+        meeting_id: meetingId,
+        status: 'canceled'
+      });
+      
+      if (result.success !== false) {
+        showStatus('Meeting canceled and attendees notified');
+        await loadMeetings();
+        renderCalendar();
+      } else {
+        showStatus('Failed to cancel meeting: ' + (result.message || 'Unknown error'), true);
+      }
+    } catch (error) {
+      console.error('Error canceling meeting:', error);
+      showStatus('Error canceling meeting: ' + error.message, true);
+    }
+  }
+
+  async function endMeeting(meetingId) {
+    if (!confirm('Are you sure you want to end this meeting? Recording will be processed automatically.')) {
+      return;
+    }
+    
+    try {
+      showStatus('Ending meeting...', false);
+      
+      const result = await apiCall(ENDPOINTS.endMeeting, {
+        meeting_id: meetingId
+      });
+      
+      if (result.success !== false) {
+        showStatus('Meeting ended. Recording will be available shortly.');
+        await loadMeetings();
+        renderCalendar();
+      } else {
+        showStatus('Failed to end meeting: ' + (result.message || 'Unknown error'), true);
+      }
+    } catch (error) {
+      console.error('Error ending meeting:', error);
+      showStatus('Error ending meeting: ' + error.message, true);
+    }
+  }
+
+  function refreshMeetings() {
+    loadMeetings();
+    renderCalendar();
+    showStatus('Meetings refreshed');
+  }
+
+  // Utility functions
+  function showStatus(message, isError = false) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+    statusDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 5000);
+  }
+
+  // Event listeners
+  function setupEventListeners() {
+    // Search filter with debounce
+    let searchTimeout;
+    document.getElementById('searchFilter')?.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(applyFilters, 300);
+    });
+
+    // Other filters
+    ['statusFilter', 'typeFilter', 'hostFilter', 'dateRangeFilter'].forEach(filterId => {
+      document.getElementById(filterId)?.addEventListener('change', applyFilters);
+    });
+
+    // Close modals when clicking outside
+    window.addEventListener('click', (event) => {
+      const modals = ['createModal', 'rsvpModal'];
+      modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+      
+      // Close contact picker when clicking outside
+      const picker = document.getElementById('contactPicker');
+      const search = document.getElementById('contactSearch');
+      if (picker && search && !picker.contains(event.target) && !search.contains(event.target)) {
+        picker.style.display = 'none';
+      }
+    });
+  }
+
+  // Initialize page
+  async function init() {
+    try {
+      const isAuthenticated = await checkAuthentication();
+      
+      if (isAuthenticated) {
+        await Promise.all([
+          loadUserData(),
+          loadMeetings(),
+          loadContacts()
+        ]);
+        
+        setupEventListeners();
+        renderCalendar();
+        
+        if (!hasCompletedTour()) {
+          setTimeout(() => {
+            startTour();
+          }, 1000);
+        }
+      } else {
+        redirectToLogin();
+      }
+    } catch (error) {
+      console.error('Error initializing meetings page:', error);
+      showStatus('Failed to load meetings. Please refresh the page.', true);
+    }
+  }
+
+  // Security checks
+  setInterval(async function() {
+    try {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        console.log('Session expired, redirecting to login');
+        redirectToLogin();
+      } else {
+        authToken = session.access_token;
+      }
+    } catch (e) {
+      console.error('Session check failed:', e);
+    }
+  }, 300000);
+
+  // Make functions globally available
+  window.startTour = startTour;
+  window.toggleCalendar = toggleCalendar;
+  window.previousMonth = previousMonth;
+  window.nextMonth = nextMonth;
+  window.switchTab = switchTab;
+  window.switchSubTab = switchSubTab;
+  window.selectMeeting = selectMeeting;
+  window.openCreateModal = openCreateModal;
+  window.closeCreateModal = closeCreateModal;
+  window.openRsvpModal = openRsvpModal;
+  window.closeRsvpModal = closeRsvpModal;
+  window.searchContacts = searchContacts;
+  window.toggleContactSelection = toggleContactSelection;
+  window.createMeeting = createMeeting;
+  window.submitRsvp = submitRsvp;
+  window.joinMeeting = joinMeeting;
+  window.copyInviteLink = copyInviteLink;
+  window.addToCalendar = addToCalendar;
+  window.editMeeting = () => showStatus('Edit functionality coming soon');
+  window.cancelMeeting = cancelMeeting;
+  window.endMeeting = endMeeting;
+  window.refreshMeetings = refreshMeetings;
+  window.clearFilters = clearFilters;
+
+  // Initialize when DOM loads
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
