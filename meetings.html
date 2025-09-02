@@ -2214,13 +2214,6 @@ if (typeof dateString === 'string') {
   dateString = dateString.replace('T', ' ').replace(/\+.*$/, ' UTC');
 }
 
-const startDate = new Date(dateString);
-if (isNaN(startDate.getTime())) {
-  showStatus('Invalid date format', true);
-  return;
-}
-
-const endDate = new Date(startDate.getTime() + (meeting.duration || meeting.duration_min || 60) * 60000);  
     // Generate ICS file content
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
