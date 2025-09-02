@@ -1808,7 +1808,8 @@
       if (!isPast && meeting.rsvp !== 'pending') {
         actions.push(`<button class="btn-secondary" onclick="openRsvpModal('${meeting.id}')">📝 Update RSVP</button>`);
       }
-      actions.push(`<button class="btn-primary" onclick="addToCalendar('${meeting.id}')">📅 Add to Calendar</button>`);
+     actions.push(`<button class="btn-primary" onclick="addToGoogleCalendar('${meeting.id}')">📅 Google Calendar</button>`);
+actions.push(`<button class="btn-primary" onclick="addToOutlook('${meeting.id}')">📅 Outlook</button>`);
     }
 
     return actions.join('');
@@ -2117,7 +2118,59 @@ const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) == Strin
     showStatus('Meeting not found', true);
     return;
   }
+function addToGoogleCalendar(meetingId) {
+  const meeting = allMeetings.find(m => m.id == meetingId);
+  if (!meeting || !meeting.start_at) {
+    showStatus('Meeting date not available', true);
+    return;
+  }
+  
+  const startDate = new Date(meeting.start_at);
+  const endDate = new Date(startDate.getTime() + (meeting.duration || 60) * 60000);
+  
+  const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(meeting.title || meeting.meeting_name || 'Victory Vision Meeting')}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=${encodeURIComponent((meeting.description || '') + (meeting.room_url ? '\n\nJoin: ' + meeting.room_url : ''))}&location=Online`;
+  
+  window.open(googleUrl, '_blank');
+}
 
+function addToOutlook(meetingId) {
+  const meeting = allMeetings.find(m => m.id == meetingId);
+  if (!meeting || !meeting.start_at) {
+    showStatus('Meeting date not available', true);
+    return;
+  }
+  
+  // Keep your existing ICS download code here
+  const startDate = new Date(meeting.start_at);
+  const endDate = new Date(startDate.getTime() + (meeting.duration || 60) * 60000);
+  
+  const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Victory Vision//Meetings//EN
+BEGIN:VEVENT
+UID:${meeting.id}@victoryvision.app
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+SUMMARY:${meeting.title || meeting.meeting_name || 'Victory Vision Meeting'}
+DESCRIPTION:${meeting.description || ''}${meeting.room_url ? '\\nJoin: ' + meeting.room_url : ''}
+LOCATION:Online
+STATUS:CONFIRMED
+END:VEVENT
+END:VCALENDAR`;
+  
+  const blob = new Blob([icsContent], { type: 'text/calendar' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `meeting-${meeting.id}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+  
+  showStatus('Calendar file downloaded for Outlook!');
+}
 // Handle timestamptz format from PostgreSQL
 let dateString = meeting.start_at;
 if (typeof dateString === 'string') {
