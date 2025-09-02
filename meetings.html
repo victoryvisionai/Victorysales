@@ -2106,14 +2106,25 @@
 
   function addToCalendar(meetingId) {
     const meeting = allMeetings.find(m => m.id === meetingId);
-    if (!meeting || !meeting.start_at) {
-      showStatus('Meeting date not available', true);
-      return;
-    }
-    
-    const startDate = new Date(meeting.start_at);
-    const endDate = new Date(startDate.getTime() + (meeting.duration_min || 60) * 60000);
-    
+  if (!meeting || !meeting.start_at || meeting.start_at === 'NULL') {
+  showStatus('Meeting date not available', true);
+  return;
+}
+
+// Handle timestamptz format from PostgreSQL
+let dateString = meeting.start_at;
+if (typeof dateString === 'string') {
+  // Convert "2025-09-02T09:00:00+00:00" to something JS likes better
+  dateString = dateString.replace('T', ' ').replace(/\+.*$/, ' UTC');
+}
+
+const startDate = new Date(dateString);
+if (isNaN(startDate.getTime())) {
+  showStatus('Invalid date format', true);
+  return;
+}
+
+const endDate = new Date(startDate.getTime() + (meeting.duration || meeting.duration_min || 60) * 60000);  
     // Generate ICS file content
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
