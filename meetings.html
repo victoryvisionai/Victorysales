@@ -2187,7 +2187,7 @@ BEGIN:VEVENT
 UID:${meeting.id}@victoryvision.app
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
 DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DTEND:${endDate.toISOString().replace /[-:]/g, '').split('.')[0]}Z
+DTEND:${endDate.toISOString().replace (/[-:]/g, '').split('.')[0]}Z
 SUMMARY:${meeting.title || meeting.meeting_name || 'Victory Vision Meeting'}
 DESCRIPTION:${meeting.description || ''}${meeting.room_url ? '\\nJoin: ' + meeting.room_url : ''}
 LOCATION:Online
