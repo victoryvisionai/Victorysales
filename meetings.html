@@ -2126,7 +2126,7 @@ function addToCalendar(meetingId) {
   
   const startDate = new Date(meeting.start_at);
   const endDate = new Date(startDate.getTime() + (meeting.duration || 60) * 60000);
-
+}
 function addToGoogleCalendar(meetingId) {
   const meeting = allMeetings.find(m => m.id == meetingId);
   if (!meeting || !meeting.start_at) {
