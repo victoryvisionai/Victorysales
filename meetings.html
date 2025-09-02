@@ -2126,33 +2126,6 @@ function addToCalendar(meetingId) {
   
   const startDate = new Date(meeting.start_at);
   const endDate = new Date(startDate.getTime() + (meeting.duration || 60) * 60000);
-  
-  const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Victory Vision//Meetings//EN
-BEGIN:VEVENT
-UID:${meeting.id}@victoryvision.app
-DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DTSTART:${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-DTEND:${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
-SUMMARY:${meeting.title || meeting.meeting_name || 'Victory Vision Meeting'}
-DESCRIPTION:${meeting.description || ''}${meeting.room_url ? '\\nJoin: ' + meeting.room_url : ''}
-LOCATION:Online
-STATUS:CONFIRMED
-END:VEVENT
-END:VCALENDAR`;
-  
-  const blob = new Blob([icsContent], { type: 'text/calendar' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `meeting-${meeting.id}.ics`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(url);
-  
-  showStatus('Calendar invite downloaded!');
 
 function addToGoogleCalendar(meetingId) {
   const meeting = allMeetings.find(m => m.id == meetingId);
@@ -2163,7 +2136,6 @@ function addToGoogleCalendar(meetingId) {
   
   const startDate = new Date(meeting.start_at);
   const endDate = new Date(startDate.getTime() + (meeting.duration || 60) * 60000);
-  
   const googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(meeting.title || meeting.meeting_name || 'Victory Vision Meeting')}&dates=${startDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z&details=${encodeURIComponent((meeting.description || '') + (meeting.room_url ? '\n\nJoin: ' + meeting.room_url : ''))}&location=Online`;
   
   window.open(googleUrl, '_blank');
