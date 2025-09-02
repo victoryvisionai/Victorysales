@@ -1898,7 +1898,7 @@
   }
 
   function openRsvpModal(meetingId) {
-const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) === String(meetingId));
+const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) == String(meetingId));
     if (!meeting) return;
     
     const modal = document.getElementById('rsvpModal');
@@ -2077,7 +2077,7 @@ const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) === Stri
   }
 
   function joinMeeting(meetingId) {
-    const meeting = allMeetings.find(m => m.id === meetingId);
+const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) == String(meetingId));
     if (!meeting || !meeting.room_url) {
       showStatus('Meeting room not available', true);
       return;
@@ -2091,7 +2091,7 @@ const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) === Stri
   }
 
   function copyInviteLink(meetingId) {
-    const meeting = allMeetings.find(m => m.id === meetingId);
+ const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) == String(meetingId));
     if (!meeting || !meeting.room_url) {
       showStatus('No invite link available', true);
       return;
@@ -2109,7 +2109,7 @@ function addToCalendar(meetingId) {
   console.log('First 3 meeting IDs:', allMeetings.slice(0,3).map(m => ({id: m.id, type: typeof m.id})));
   console.log('Looking for meeting with ID:', meetingId);
   
-  const meeting = allMeetings.find(m => m.id === meetingId);
+const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) == String(meetingId));
   console.log('Found meeting:', !!meeting);
   
   if (!meeting) {
