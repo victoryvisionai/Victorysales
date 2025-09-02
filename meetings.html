@@ -1898,7 +1898,7 @@
   }
 
   function openRsvpModal(meetingId) {
-    const meeting = allMeetings.find(m => m.id === meetingId);
+const meeting = allMeetings.find(m => m.id == meetingId || String(m.id) === String(meetingId));
     if (!meeting) return;
     
     const modal = document.getElementById('rsvpModal');
