@@ -2104,14 +2104,17 @@
     });
   }
 function addToCalendar(meetingId) {
-  const meeting = allMeetings.find(m => m.id === meetingId);
-  if (!meeting) {
-    showStatus('Meeting not found', true);
-    return;
-  }
+  console.log('addToCalendar called with:', meetingId, typeof meetingId);
+  console.log('allMeetings length:', allMeetings.length);
+  console.log('First 3 meeting IDs:', allMeetings.slice(0,3).map(m => ({id: m.id, type: typeof m.id})));
+  console.log('Looking for meeting with ID:', meetingId);
   
-  if (!meeting.start_at) {
-    showStatus('Meeting date not available', true);
+  const meeting = allMeetings.find(m => m.id === meetingId);
+  console.log('Found meeting:', !!meeting);
+  
+  if (!meeting) {
+    console.log('FAILED: Meeting not found');
+    showStatus('Meeting not found', true);
     return;
   }
 
