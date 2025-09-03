@@ -1104,6 +1104,11 @@
         </div>
       </div>
     </div>
+    <!-- Processing Overlay -->
+<div class="processing-overlay" style="display: none;">
+  <div class="processing-spinner"></div>
+  <div class="processing-text">Processing...</div>
+</div>
   </section>
 
   <!-- Filter Section -->
@@ -1715,14 +1720,14 @@
   function showProcessing(message = 'Processing...') {
     const overlay = document.getElementById('processingOverlay');
     if (overlay) {
-      const text = document.getElementById('processingText');
+     const text = document.querySelector('.processing-text');
       if (text) text.textContent = message;
       overlay.style.display = 'flex';
     }
   }
 
   function hideProcessing() {
-    const overlay = document.getElementById('processingOverlay');
+  const overlay = document.querySelector('.processing-overlay');
     if (overlay) {
       overlay.style.display = 'none';
     }
@@ -1790,12 +1795,12 @@
       if (result.success !== false) {
         hideProcessing();
         showStatus('Image created successfully!');
+        document.getElementById('imageForm').reset();
         userCredits.image_credits--;
         updateCreditsDisplay();
         await loadMediaFiles();
         applyFilters();
         showPreview(result.data);
-        document.getElementById('imageForm').reset();
         selectedImageReference = null;
         populateReferenceLists();
       } else {
@@ -1839,9 +1844,9 @@
       if (result.success !== false) {
         hideProcessing();
         showStatus('Video creation started! It will appear in your media library when ready.');
+        document.getElementById('videoForm').reset();
         userCredits.video_credits--;
         updateCreditsDisplay();
-        document.getElementById('videoForm').reset();
         selectedVideoReference = null;
         populateReferenceLists();
       } else {
@@ -1896,12 +1901,12 @@
       if (result.success !== false) {
         hideProcessing();
         showStatus('Presentation created successfully!');
+        document.getElementById('presentationForm').reset();
         userCredits.presentation_credits = (userCredits.presentation_credits || 0) - 1;
         updateCreditsDisplay();
         await loadMediaFiles();
         applyFilters();
-        showPreview(result.data);
-        document.getElementById('presentationForm').reset();
+        showPreview(result.data);     
       } else {
         hideProcessing();
         throw new Error(result.message || 'Presentation creation failed');
