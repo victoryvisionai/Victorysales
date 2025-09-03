@@ -1746,7 +1746,8 @@
       medallion.querySelector('.plan-name').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
       
       // Update AI post status
-      aiPostEnabled = userData.ai_auto_post === true || userData.ai_auto_post === 'true';
+aiPostEnabled = userData.ai_auto_post === true || userData.ai_auto_post === 'true' || userData.ai_auto_post === 1;
+updateAIToggleDisplay();
       updateAIToggleDisplay();
       
       updateCreditsDisplay();
