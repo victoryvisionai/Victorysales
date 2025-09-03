@@ -1777,7 +1777,8 @@
 
       showStatus('Creating image... This may take a few moments.');
       showProcessing('Creating image...');
-      
+      document.getElementById('imageChat').value = '';
+document.getElementById('imageUpload').value = '';
       const payload = {
         chat: formData.get('chat')
       };
@@ -1801,9 +1802,12 @@
         await loadMediaFiles();
         applyFilters();
         showPreview(result.data);
-        selectedImageReference = null;
-        populateReferenceLists();
-      } else {
+        document.getElementById('imageChat').value = '';
+      document.getElementById('imageUpload').value = '';
+      selectedImageReference = null;
+      populateReferenceLists();
+    }
+      else {
         hideProcessing();
         throw new Error(result.message || 'Image creation failed');
       }
@@ -1906,7 +1910,11 @@
         updateCreditsDisplay();
         await loadMediaFiles();
         applyFilters();
-        showPreview(result.data);     
+        showPreview(result.data);   
+        document.getElementById('presentationChat').value = '';
+document.getElementById('presentationPages').value = '8';
+document.getElementById('companySelect').value = '';
+document.getElementById('campaignImageSelect').value = '';
       } else {
         hideProcessing();
         throw new Error(result.message || 'Presentation creation failed');
