@@ -1936,7 +1936,7 @@
         closeScheduleModal();
         await loadSocialPosts();
         renderCalendar();
-   //    renderDraftsList(); //
+ //    renderDraftsList(); // 
       } else {
         showStatus('Post scheduling failed. Try again.', true);
       }
@@ -1947,7 +1947,7 @@
   }
 
   // Draft Edit Modal Functions
-  function openDraftEditModal(draftId) {
+/*  function openDraftEditModal(draftId) {
     const draft = draftPosts.find(d => d.id === draftId) || scheduledPosts.find(d => d.id === draftId);
     if (!draft) return;
     
@@ -2035,7 +2035,7 @@
       console.error('Error deleting draft:', error);
       showStatus('Error deleting draft: ' + error.message, true);
     }
-  }
+  } */
 
   // Calendar Functions - Shows ALL posts with post_at values
   function renderCalendar() {
@@ -2794,7 +2794,7 @@
       await loadSocialPosts();
       applyFilters();
       renderCalendar();
-      renderDraftsList();
+  //    renderDraftsList(); //
     });
 
     document.getElementById('scheduleBtn').addEventListener('click', openScheduleModal);
@@ -2845,7 +2845,7 @@
         setupEventListeners();
         applyFilters();
         renderCalendar();
-        renderDraftsList();
+  //      renderDraftsList(); //
         
         if (!hasCompletedTour()) {
           setTimeout(() => {
