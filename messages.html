@@ -1755,6 +1755,12 @@ async function loadEmails() {
     const data = await apiCall(ENDPOINTS.getEmails);
     allEmails = Array.isArray(data) ? data : (data.emails || []);
     
+    // DEBUG: Log the first email to see the actual field structure
+    if (allEmails.length > 0) {
+      console.log('DEBUG: First email structure:', allEmails[0]);
+      console.log('DEBUG: Available fields:', Object.keys(allEmails[0]));
+    }
+    
     // Process emails for proper field mapping
     allEmails = allEmails.map(email => ({
       ...email,
@@ -1911,7 +1917,7 @@ function filterByTag(tag) {
     const contactEmails = contactsWithTag.map(c => c.email).filter(Boolean);
     
     filteredEmails = filteredEmails.filter(email => {
-      return contactEmails.includes(email.from_email_address) || contactEmails.includes(email.to_email_address);
+      return contactEmails.includes(email.from_email_add) || contactEmails.includes(email.to_email_add);
     });
   } else {
     filterEmailsByFolder(currentFolder);
@@ -1934,7 +1940,7 @@ function renderEmailList() {
   filteredEmails.forEach((email) => {
     const isSelected = selectedEmail && selectedEmail.id === email.id;
     const isUnread = !email.opened_time && email.inbound;
-    const sender = email.inbound ? (email.from_email_address || 'Unknown') : (email.to_email_address || 'Unknown');
+    const sender = email.inbound ? (email.from_email_add || 'Unknown') : (email.to_email_add || 'Unknown');
     
     const emailDiv = document.createElement('div');
     emailDiv.className = `email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}`;
@@ -2006,7 +2012,7 @@ function showEmailView(email) {
   
   // Populate email details
   document.getElementById('emailSubject').textContent = email.email_subject || 'No Subject';
-  document.getElementById('emailTo').textContent = email.to_email_address || 'Unknown';
+  document.getElementById('emailTo').textContent = email.to_email_add || 'Unknown';
   document.getElementById('emailDate').textContent = formatDateFull(email.created_at);
   
   // Enhanced tracking display with proper time formatting
@@ -2345,14 +2351,14 @@ function showCompose(replyTo = null, forward = null) {
   
   if (replyTo) {
     // Reply mode
-    selectedEmailAddresses = [replyTo.from_email_address];
+    selectedEmailAddresses = [replyTo.from_email_add];
     updateSelectedEmails();
     document.getElementById('composeSubject').value = 'Re: ' + (replyTo.email_subject || '').replace(/^re:\s*/i, '');
-    document.getElementById('composeBody').value = `\n\n--- Original Message ---\nFrom: ${replyTo.from_email_address}\nDate: ${formatDateFull(replyTo.created_at)}\nSubject: ${replyTo.email_subject}\n\n${replyTo.email_body}`;
+    document.getElementById('composeBody').value = `\n\n--- Original Message ---\nFrom: ${replyTo.from_email_add}\nDate: ${formatDateFull(replyTo.created_at)}\nSubject: ${replyTo.email_subject}\n\n${replyTo.email_body}`;
   } else if (forward) {
     // Forward mode
     document.getElementById('composeSubject').value = 'Fwd: ' + (forward.email_subject || '').replace(/^fwd?:\s*/i, '');
-    document.getElementById('composeBody').value = `\n\n--- Forwarded Message ---\nFrom: ${forward.from_email_address}\nTo: ${forward.to_email_address}\nDate: ${formatDateFull(forward.created_at)}\nSubject: ${forward.email_subject}\n\n${forward.email_body}`;
+    document.getElementById('composeBody').value = `\n\n--- Forwarded Message ---\nFrom: ${forward.from_email_add}\nTo: ${forward.to_email_add}\nDate: ${formatDateFull(forward.created_at)}\nSubject: ${forward.email_subject}\n\n${forward.email_body}`;
   }
   
   // Add signature
@@ -2638,7 +2644,7 @@ function searchEmails() {
   }
   
   filteredEmails = filteredEmails.filter(email => {
-    const searchText = `${email.from_email_address || ''} ${email.to_email_address || ''} ${email.email_subject || ''} ${email.email_body || ''}`.toLowerCase();
+    const searchText = `${email.from_email_add || ''} ${email.to_email_add || ''} ${email.email_subject || ''} ${email.email_body || ''}`.toLowerCase();
     return searchText.includes(query);
   });
   
