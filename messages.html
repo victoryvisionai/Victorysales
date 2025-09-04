@@ -1755,10 +1755,15 @@ async function loadEmails() {
     const data = await apiCall(ENDPOINTS.getEmails);
     allEmails = Array.isArray(data) ? data : (data.emails || []);
     
-    // DEBUG: Log the first email to see the actual field structure
+    // DEBUG: Log the actual data structure
+    console.log('DEBUG: Raw API response:', data);
+    console.log('DEBUG: All emails array:', allEmails);
+    console.log('DEBUG: First email structure:', allEmails[0]);
     if (allEmails.length > 0) {
-      console.log('DEBUG: First email structure:', allEmails[0]);
-      console.log('DEBUG: Available fields:', Object.keys(allEmails[0]));
+      console.log('DEBUG: All available fields in first email:', Object.keys(allEmails[0]));
+      console.log('DEBUG: email_body value:', allEmails[0].email_body);
+      console.log('DEBUG: from_email_address value:', allEmails[0].from_email_address);
+      console.log('DEBUG: email_subject value:', allEmails[0].email_subject);
     }
     
     // Process emails for proper field mapping
@@ -1767,19 +1772,13 @@ async function loadEmails() {
       // Map database fields to display fields
       delivered_time: email.delivered_time || null,
       opened_time: email.opened_time || email.opened_at || null,
-      clicked_time: email.clicked_time || email.clicked_at || null,
       replied_time: email.replied_time || email.replied_at || null,
-      has_replied: email.has_replied || false,
-      // Keep original fields for compatibility
-      delivered_at: email.delivered_time || null,
-      opened_at: email.opened_time || email.opened_at || null,
-      clicked_at: email.clicked_time || email.clicked_at || null,
-      replied_at: email.replied_time || email.replied_at || null
+      has_replied: email.has_replied || false
     }));
     
     // Remove sent drafts
     allEmails = allEmails.filter(email => {
-      if (email.draft && email.sent_at) return false;
+      if (email.draft_id && email.sent_at) return false;
       return true;
     });
     
@@ -1789,7 +1788,7 @@ async function loadEmails() {
     updateFolderCounts();
     filterEmailsByFolder(currentFolder);
     
-    console.log(`Loaded ${allEmails.length} emails`);
+    console.log(`DEBUG: Processed ${allEmails.length} emails`);
   } catch (error) {
     console.error('Error loading emails:', error);
     allEmails = [];
