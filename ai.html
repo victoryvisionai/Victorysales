@@ -1554,13 +1554,13 @@ function redirectToLogin() {
 }
 
 // API call function
-async function apiCall(endpoint, method = 'GET', data = {}) {
+async function apiCall(endpoint, method = 'POST', data = {}) {
   if (!rateLimiter.canMakeCall()) {
     throw new Error('Rate limit exceeded. Please wait before making more requests.');
   }
 
   try {
-    
+    let url = endpoint;
     const requestOptions = {
       method: method,
       headers: {
@@ -1570,7 +1570,11 @@ async function apiCall(endpoint, method = 'GET', data = {}) {
       }
     };
 
-    if (method !== 'GET') {
+    if (method === 'GET') {
+      // For GET requests, add customer_id as query parameter
+      url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
+    } else {
+      // For POST requests, add customer_id to body
       requestOptions.body = JSON.stringify({
         customer_id: CUSTOMER_ID,
         ...data
@@ -1590,7 +1594,6 @@ async function apiCall(endpoint, method = 'GET', data = {}) {
     throw error;
   }
 }
-
 // Lead scoring algorithm
 function calculateLeadScore(contact, emails, meetings, meetingInvites) {
   let score = 0;
@@ -1734,15 +1737,14 @@ async function loadAllData() {
     showStatus('Loading AI analytics data...', false);
 
     // Load data from all endpoints
-    const [emailsResponse, contactsResponse, meetingsResponse, meetingInvitesResponse, campaignFilesResponse, userResponse] = await Promise.allSettled([
-      apiCall(ENDPOINTS.getEmails, 'POST'),
-      apiCall(ENDPOINTS.getContacts, 'POST'),
-      apiCall(ENDPOINTS.getMeetings).catch(() => ({ meetings: [] })),
-      apiCall(ENDPOINTS.getMeetingInvites).catch(() => ({ meeting_invites: [] })),
-      apiCall(ENDPOINTS.getCampaignFiles).catch(() => ({ campaign_files: [] })),
-      apiCall(ENDPOINTS.getUser)
-    ]);
-
+const [emailsResponse, contactsResponse, meetingsResponse, meetingInvitesResponse, campaignFilesResponse, userResponse] = await Promise.allSettled([
+  apiCall(ENDPOINTS.getEmails, 'POST'),
+  apiCall(ENDPOINTS.getContacts, 'POST'),
+  apiCall(ENDPOINTS.getMeetings, 'GET').catch(() => ({ meetings: [] })),
+  apiCall(ENDPOINTS.getMeetingInvites, 'GET').catch(() => ({ meeting_invites: [] })),
+  apiCall(ENDPOINTS.getCampaignFiles, 'POST').catch(() => ({ campaign_files: [] })),
+  apiCall(ENDPOINTS.getUser, 'GET')
+]);    
     // Process responses
     if (emailsResponse.status === 'fulfilled') {
       allEmails = Array.isArray(emailsResponse.value) ? emailsResponse.value : 
