@@ -1392,7 +1392,19 @@ function loadContactTimeline(contact) {
 // Filter functionality
 function setupFilters() {
   document.getElementById('searchInput').addEventListener('input', applyFilters);
-  document.getElementById('activityFilter').addEventListener('change', applyFilters);
+  document.getElementById('activityFilter').addEventListener('change', function() {
+    const customGroup = document.getElementById('customDateGroup');
+    if (this.value === 'custom') {
+      customGroup.style.display = 'block';
+    } else {
+      customGroup.style.display = 'none';
+    }
+    updateFilterTagCounts();
+    applyFilters();
+  });
+  document.getElementById('customFromDate').addEventListener('change', applyFilters);
+  document.getElementById('customToDate').addEventListener('change', applyFilters);
+  document.getElementById('tagsFilter').addEventListener('change', applyFilters);
   document.getElementById('workflowFilter').addEventListener('change', applyFilters);
   document.getElementById('priorityFilter').addEventListener('change', applyFilters);
   
@@ -1407,7 +1419,8 @@ function setupFilters() {
 
 function applyFilters() {
   const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-  const activityHours = parseInt(document.getElementById('activityFilter').value);
+  const activityWindow = getActivityWindow();
+  const selectedTags = Array.from(document.getElementById('tagsFilter').selectedOptions).map(opt => opt.value);
   const workflow = document.getElementById('workflowFilter').value;
   const priority = document.getElementById('priorityFilter').value;
   
@@ -1415,13 +1428,15 @@ function applyFilters() {
     .map(tag => tag.dataset.filter);
 
   const now = new Date();
-  const activityCutoff = new Date(now.getTime() - (activityHours * 60 * 60 * 1000));
+  const weekFromNow = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
+  const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
 
   let filtered = allContacts.map(contact => {
     const score = calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites);
     return { ...contact, lead_score: score };
   });
 
+  // Search filter
   if (searchTerm) {
     filtered = filtered.filter(contact => 
       (contact.name || '').toLowerCase().includes(searchTerm) ||
@@ -1430,15 +1445,102 @@ function applyFilters() {
     );
   }
 
+  // Tags filter
+  if (selectedTags.length > 0 && !selectedTags.includes('')) {
+    filtered = filtered.filter(contact => {
+      if (!contact.tags) return false;
+      const contactTags = contact.tags.split(',').map(t => t.trim());
+      return selectedTags.some(tag => contactTags.includes(tag));
+    });
+  }
+
+  // Workflow filter
   if (workflow) {
     filtered = filtered.filter(contact => contact.workflow === workflow);
   }
 
+  // Activity window filter
+  if (!activityWindow.isAll) {
+    filtered = filtered.filter(contact => {
+      if (!contact.last_opened_date && !contact.last_clicked_date && !contact.last_emailed_date) {
+        return false;
+      }
+      
+      const lastActivity = Math.max(
+        contact.last_opened_date ? new Date(contact.last_opened_date).getTime() : 0,
+        contact.last_clicked_date ? new Date(contact.last_clicked_date).getTime() : 0,
+        contact.last_emailed_date ? new Date(contact.last_emailed_date).getTime() : 0
+      );
+      
+      if (activityWindow.isCustom) {
+        return lastActivity >= activityWindow.cutoff.getTime() && lastActivity <= activityWindow.end.getTime();
+      } else {
+        return lastActivity > activityWindow.cutoff.getTime();
+      }
+    });
+  }
+
+  // Priority filter
   if (priority === 'hot') {
     filtered = filtered.filter(contact => contact.lead_score > 70);
   } else if (priority === 'warm') {
-    filtered = filtered.filter(contact => contact.lead_score > 40 && contact.lead_score <= 70);
+    filtered = filtered.filter(contact => contact.lead_score >= 40 && contact.lead_score <= 70);
+  } else if (priority === 'cold') {
+    filtered = filtered.filter(contact => contact.lead_score < 40);
   }
+
+  // Active tag filters
+  activeTags.forEach(tag => {
+    switch(tag) {
+      case 'meeting_week':
+        filtered = filtered.filter(contact => {
+          return allMeetings.some(meeting => 
+            meeting.contact_email === contact.email &&
+            meeting.status === 'scheduled' &&
+            new Date(meeting.start_at) >= now &&
+            new Date(meeting.start_at) <= weekFromNow
+          );
+        });
+        break;
+      case 'rsvp_yes':
+        filtered = filtered.filter(contact => {
+          return allMeetingInvites.some(invite => 
+            invite.contact_email === contact.email && invite.rsvp === 'yes'
+          );
+        });
+        break;
+      case 'no_show':
+        filtered = filtered.filter(contact => {
+          return allMeetings.some(meeting => 
+            meeting.contact_email === contact.email && meeting.status === 'no_show'
+          );
+        });
+        break;
+      case 'clicked_window':
+        filtered = filtered.filter(contact => 
+          contact.last_clicked_date && new Date(contact.last_clicked_date) > activityWindow.cutoff
+        );
+        break;
+      case 'opened_no_reply':
+        filtered = filtered.filter(contact => {
+          const contactEmails = allEmails.filter(email => 
+            email.to_email === contact.email || email.to === contact.email
+          );
+          const hasOpens = contactEmails.some(email => email.opens > 0 || email.opened_at);
+          const hasReplies = contactEmails.some(email => email.replied_at) || contact.last_responded;
+          return hasOpens && !hasReplies;
+        });
+        break;
+      case 'no_response_7d':
+        filtered = filtered.filter(contact => {
+          if (contact.last_responded && new Date(contact.last_responded) > sevenDaysAgo) {
+            return false;
+          }
+          return !contact.last_responded || new Date(contact.last_responded) < sevenDaysAgo;
+        });
+        break;
+    }
+  });
 
   filteredProspects = filtered.sort((a, b) => b.lead_score - a.lead_score);
   updateFocusLeads();
