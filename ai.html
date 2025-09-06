@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Victory Vision AI Sales Intelligence Dashboard - Meeting-aware lead scoring with real-time action queues"/>
+  <meta name="description" content="Victory Vision AI Sales Intelligence Dashboard"/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Sales Intelligence Dashboard</title>
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -79,7 +78,6 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      transition: all 0.3s ease;
     }
 
     .subscription-medallion.bronze {
@@ -102,12 +100,6 @@
       border-radius: 5px;
       cursor: pointer;
       font-size: 12px;
-      transition: all 0.3s ease;
-    }
-
-    .tour-btn:hover {
-      background: #218838;
-      transform: translateY(-1px);
     }
 
     .container {
@@ -136,7 +128,6 @@
       font-size: 1.1rem;
     }
 
-    /* Smart Quick Filters */
     .filters-section {
       background: white;
       border-radius: 10px;
@@ -176,12 +167,6 @@
       border: 2px solid #e2e8f0;
       border-radius: 8px;
       font-size: 14px;
-      transition: border-color 0.3s;
-    }
-
-    .filter-input:focus, .filter-select:focus {
-      outline: none;
-      border-color: #667eea;
     }
 
     .filter-tags {
@@ -198,7 +183,6 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      border: 2px solid transparent;
     }
 
     .filter-tag.active {
@@ -209,15 +193,9 @@
     .filter-tag.inactive {
       background: #f7fafc;
       color: #4a5568;
-      border-color: #cbd5e0;
+      border: 2px solid #cbd5e0;
     }
 
-    .filter-tag:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    /* AI Insights */
     .ai-insights {
       background: white;
       border-radius: 10px;
@@ -231,9 +209,6 @@
       color: #667eea;
       margin-bottom: 20px;
       font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
 
     .insight-item {
@@ -263,7 +238,6 @@
       text-align: center;
     }
 
-    /* Performance Metrics */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -312,7 +286,6 @@
       color: #e53e3e;
     }
 
-    /* Main Dashboard Layout */
     .dashboard-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -320,7 +293,6 @@
       margin-bottom: 30px;
     }
 
-    /* Focus Now Section */
     .focus-section {
       background: white;
       border-radius: 10px;
@@ -330,7 +302,7 @@
 
     .focus-header {
       display: flex;
-      justify-content: between;
+      justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
@@ -366,14 +338,14 @@
       color: #4a5568;
     }
 
-    /* Lead Cards */
     .lead-card {
       background: #f8f9ff;
       border-radius: 10px;
-      padding: 20px;
+      padding: 15px;
       margin-bottom: 15px;
       border-left: 4px solid #667eea;
       transition: all 0.3s ease;
+      cursor: pointer;
     }
 
     .lead-card:hover {
@@ -384,12 +356,11 @@
     .lead-header {
       display: flex;
       align-items: center;
-      margin-bottom: 12px;
     }
 
     .lead-score {
-      width: 40px;
-      height: 40px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
       background: linear-gradient(45deg, #667eea, #764ba2);
       color: white;
@@ -397,25 +368,34 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 0.9rem;
-      margin-right: 15px;
+      font-size: 0.85rem;
+      margin-right: 12px;
     }
 
-    .lead-info {
+    .lead-basic-info {
       flex: 1;
     }
 
     .lead-name {
       font-weight: 600;
       color: #2d3748;
-      font-size: 1.1rem;
-      margin-bottom: 4px;
+      font-size: 1rem;
+    }
+
+    .lead-company {
+      color: #718096;
+      font-size: 0.85rem;
     }
 
     .lead-details {
-      color: #718096;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      display: none;
+    }
+
+    .lead-details.expanded {
+      display: block;
     }
 
     .lead-summary {
@@ -427,13 +407,13 @@
 
     .lead-badges {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
       margin-bottom: 12px;
     }
 
     .badge {
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 12px;
       font-size: 0.7rem;
       font-weight: 600;
@@ -462,7 +442,7 @@
 
     .lead-actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
@@ -470,7 +450,7 @@
       padding: 6px 12px;
       border: none;
       border-radius: 5px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -491,259 +471,32 @@
       color: white;
     }
 
+    .action-btn.info {
+      background: #4fd1c7;
+      color: white;
+    }
+
     .action-btn.secondary {
       background: #6c757d;
       color: white;
     }
 
-    .action-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    .action-btn.danger {
+      background: #e53e3e;
+      color: white;
     }
 
     .next-meeting {
       color: #667eea;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       margin-top: 8px;
     }
 
-    /* Bottleneck Map */
-    .bottleneck-section {
+    .timeline-section {
       background: white;
       border-radius: 10px;
       padding: 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .bottleneck-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 20px;
-    }
-
-    .funnel-container {
-      margin-bottom: 20px;
-    }
-
-    .funnel-stage {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .stage-bar {
-      height: 30px;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      padding: 0 15px;
-      color: white;
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-right: 15px;
-    }
-
-    .stage-metrics {
-      font-size: 0.85rem;
-      color: #4a5568;
-    }
-
-    .alert-box {
-      background: #fed7d7;
-      border: 1px solid #fc8181;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
-
-    .alert-title {
-      font-weight: 600;
-      color: #742a2a;
-      margin-bottom: 5px;
-    }
-
-    .alert-text {
-      color: #742a2a;
-      font-size: 0.9rem;
-    }
-
-    .sla-metrics {
-      background: #f0fff4;
-      border: 1px solid #68d391;
-      border-radius: 8px;
-      padding: 15px;
-    }
-
-    .sla-title {
-      font-weight: 600;
-      color: #22543d;
-      margin-bottom: 10px;
-    }
-
-    .sla-metric {
-      color: #22543d;
-      font-size: 0.9rem;
-      margin-bottom: 5px;
-    }
-
-    /* Action Queue */
-    .action-queue {
-      background: white;
-      border-radius: 10px;
-      padding: 25px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .queue-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 20px;
-    }
-
-    .queue-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-    }
-
-    .queue-item {
-      border-radius: 8px;
-      padding: 15px;
-      border-left: 4px solid;
-    }
-
-    .queue-item.urgent {
-      background: #fff5f5;
-      border-left-color: #fc8181;
-    }
-
-    .queue-item.important {
-      background: #fffbeb;
-      border-left-color: #f6ad55;
-    }
-
-    .queue-item.normal {
-      background: #f0fff4;
-      border-left-color: #68d391;
-    }
-
-    .queue-item.info {
-      background: #e6fffa;
-      border-left-color: #4fd1c7;
-    }
-
-    .queue-header {
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .queue-description {
-      font-size: 0.85rem;
-      color: #4a5568;
-      margin-bottom: 10px;
-    }
-
-    .queue-action {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 5px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      color: white;
-    }
-
-    /* Asset Hotbar */
-    .asset-hotbar {
-      background: white;
-      border-radius: 10px;
-      padding: 25px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .asset-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 20px;
-    }
-
-    .asset-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-    }
-
-    .asset-card {
-      background: #f8f9ff;
-      border-radius: 8px;
-      padding: 15px;
-      border: 2px solid #e2e8f0;
-      cursor: grab;
-      transition: all 0.3s ease;
-    }
-
-    .asset-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      border-color: #667eea;
-    }
-
-    .asset-card:active {
-      cursor: grabbing;
-    }
-
-    .asset-preview {
-      width: 100%;
-      height: 60px;
-      background: #cbd5e0;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #4a5568;
-      font-size: 0.8rem;
-    }
-
-    .asset-info {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #2d3748;
-      margin-bottom: 5px;
-    }
-
-    .asset-stats {
-      font-size: 0.8rem;
-      color: #718096;
-      margin-bottom: 8px;
-    }
-
-    .asset-tags {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-
-    .asset-tag {
-      padding: 2px 6px;
-      border-radius: 8px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    /* Timeline and Compose */
-    .timeline-compose {
-      background: white;
-      border-radius: 10px;
-      padding: 25px;
-      margin-bottom: 30px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
@@ -754,17 +507,11 @@
       margin-bottom: 20px;
     }
 
-    .timeline-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-    }
-
     .timeline-container {
       background: #f7fafc;
       border-radius: 8px;
       padding: 20px;
-      max-height: 300px;
+      max-height: 400px;
       overflow-y: auto;
     }
 
@@ -776,140 +523,18 @@
       border-bottom: 1px solid #e2e8f0;
     }
 
-    .timeline-item:last-child {
-      border-bottom: none;
-    }
-
     .timeline-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      margin-right: 15px;
-      flex-shrink: 0;
-    }
-
-    .timeline-content {
-      flex: 1;
+      margin-right: 12px;
     }
 
     .timeline-text {
       font-size: 0.85rem;
       color: #4a5568;
-      line-height: 1.4;
     }
 
-    .compose-container {
-      background: #f8f9ff;
-      border-radius: 8px;
-      padding: 20px;
-    }
-
-    .compose-field {
-      margin-bottom: 15px;
-    }
-
-    .compose-label {
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-    }
-
-    .compose-input {
-      width: 100%;
-      padding: 8px 12px;
-      border: 2px solid #e2e8f0;
-      border-radius: 5px;
-      font-size: 0.9rem;
-    }
-
-    .compose-textarea {
-      width: 100%;
-      height: 80px;
-      padding: 8px 12px;
-      border: 2px solid #e2e8f0;
-      border-radius: 5px;
-      font-size: 0.9rem;
-      resize: vertical;
-    }
-
-    .compose-actions {
-      display: flex;
-      gap: 10px;
-    }
-
-    .compose-btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 5px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .compose-btn.primary {
-      background: #667eea;
-      color: white;
-    }
-
-    .compose-btn.success {
-      background: #38a169;
-      color: white;
-    }
-
-    /* Workflow Performance */
-    .workflow-section {
-      background: white;
-      border-radius: 10px;
-      padding: 25px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .workflow-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 20px;
-    }
-
-    .workflow-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .workflow-card {
-      background: #f8f9ff;
-      border-radius: 8px;
-      padding: 20px;
-      border-left: 5px solid #667eea;
-    }
-
-    .workflow-name {
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 12px;
-      font-size: 1.1rem;
-    }
-
-    .workflow-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .workflow-stat {
-      font-size: 0.85rem;
-      color: #4a5568;
-    }
-
-    .workflow-stat strong {
-      color: #2d3748;
-      font-weight: 600;
-    }
-
-    /* Loading and Status */
     .loading-spinner {
       display: inline-block;
       width: 20px;
@@ -970,7 +595,6 @@
       margin-bottom: 20px;
     }
 
-    /* Footer */
     footer {
       background: #0A3161;
       color: #fff;
@@ -986,13 +610,8 @@
       text-decoration: none;
     }
 
-    /* Responsive Design */
     @media (max-width: 1200px) {
       .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .timeline-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -1022,18 +641,6 @@
         grid-template-columns: 1fr;
       }
 
-      .queue-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .asset-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .workflow-grid {
-        grid-template-columns: 1fr;
-      }
-
       .lead-actions {
         flex-direction: column;
         gap: 8px;
@@ -1044,37 +651,15 @@
         text-align: center;
       }
     }
-
-    @media (max-width: 480px) {
-      .page-header h1 {
-        font-size: 1.5rem;
-      }
-
-      .metric-value {
-        font-size: 1.8rem;
-      }
-
-      .lead-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      .lead-score {
-        margin-right: 0;
-      }
-    }
   </style>
 </head>
 <body>
 
-<!-- Authentication Loading Screen -->
 <div id="authLoading" class="auth-loading">
   <div class="spinner"></div>
   <p>Verifying authentication...</p>
 </div>
 
-<!-- Navigation -->
 <header class="navbar">
   <div class="logo">
     <img src="logo.jpg" alt="Victory Vision Logo" 
@@ -1095,28 +680,23 @@
     </ul>
   </nav>
   <div class="user-info">
-    <span id="userEmail" class="user-email"></span>
+    <span id="userEmail"></span>
     <div id="subscriptionMedallion" class="subscription-medallion bronze">
       <span class="plan-name">Bronze</span>
     </div>
-    <button onclick="startTour()" class="tour-btn">
-      Take Tour
-    </button>
+    <button onclick="startTour()" class="tour-btn">Take Tour</button>
   </div>
 </header>
 
 <div class="container">
-  <!-- Status Message -->
   <div id="statusMessage" class="status-message"></div>
 
-  <!-- Page Header -->
-  <div class="page-header" data-intro="Welcome to your AI Sales Intelligence Dashboard! This page provides meeting-aware lead scoring and automated action recommendations." data-step="1">
+  <div class="page-header" data-intro="Welcome to your AI Sales Intelligence Dashboard! This page provides live data analysis with meeting-aware lead scoring." data-step="1">
     <h1>AI Sales Intelligence Dashboard</h1>
-    <p>Meeting-aware lead scoring with real-time action queues</p>
+    <p>Live data analysis with meeting-aware lead scoring and real-time action queues</p>
   </div>
 
-  <!-- Smart Quick Filters -->
-  <div class="filters-section" data-intro="Use these smart filters to drill down from macro analysis (100K+ emails) to micro focus (top prospects). Filters are designed for high-volume email operations." data-step="2">
+  <div class="filters-section" data-intro="Use these smart filters to drill down from macro analysis to micro focus on top prospects." data-step="2">
     <div class="filters-title">Smart Quick Filters (Macro → Micro)</div>
     
     <div class="filters-grid">
@@ -1137,9 +717,6 @@
         <label class="filter-label">Workflow</label>
         <select id="workflowFilter" class="filter-select">
           <option value="">All Workflows</option>
-          <option value="cold_outreach">Cold Outreach</option>
-          <option value="warm_leads">Warm Leads</option>
-          <option value="product_demo">Product Demo</option>
         </select>
       </div>
       <div class="filter-group">
@@ -1162,65 +739,53 @@
     </div>
   </div>
 
-  <!-- AI Insights -->
-  <div class="ai-insights" data-intro="AI-powered recommendations based on your email engagement data, meeting schedules, and conversation summaries. These insights help you prioritize your time for maximum revenue impact." data-step="3">
-    <h3>🧠 AI Priority Recommendations</h3>
+  <div class="ai-insights" data-intro="AI-powered recommendations based on your email engagement data and conversation summaries." data-step="3">
+    <h3>AI Priority Recommendations</h3>
     <div id="aiRecommendations">
       <div class="insight-item">
-        <div class="insight-text">Sarah Johnson (TechCorp) - High engagement, schedule meeting NOW</div>
-        <div class="priority-score">96</div>
-      </div>
-      <div class="insight-item">
-        <div class="insight-text">Mike Chen (StartupXYZ) - 3 opens, no reply - try different subject line</div>
-        <div class="priority-score">78</div>
-      </div>
-      <div class="insight-item">
-        <div class="insight-text">Campaign "Q1 Demo" underperforming - optimize send times</div>
-        <div class="priority-score">Alert</div>
+        <div class="insight-text">Loading AI recommendations...</div>
+        <div class="loading-spinner"></div>
       </div>
     </div>
   </div>
 
-  <!-- Performance Metrics -->
-  <div class="metrics-grid" data-intro="Key performance indicators updated in real-time. These metrics help you track the effectiveness of your high-volume email campaigns." data-step="4">
+  <div class="metrics-grid" data-intro="Key performance indicators updated in real-time from your email campaigns." data-step="4">
     <div class="metric-card">
-      <div class="metric-value" id="emailsSentToday">1,247</div>
+      <div class="metric-value" id="emailsSentToday">0</div>
       <div class="metric-label">Emails Sent Today</div>
-      <div class="metric-trend up">↗ +23% vs yesterday</div>
+      <div class="metric-trend" id="emailsTrend">Loading...</div>
     </div>
     <div class="metric-card">
-      <div class="metric-value" id="openRate24h">34.2%</div>
+      <div class="metric-value" id="openRate24h">0%</div>
       <div class="metric-label">Open Rate (24h)</div>
-      <div class="metric-trend up">↗ +2.1% vs avg</div>
+      <div class="metric-trend" id="openRateTrend">Loading...</div>
     </div>
     <div class="metric-card">
-      <div class="metric-value" id="replyRate">8.7%</div>
+      <div class="metric-value" id="replyRate">0%</div>
       <div class="metric-label">Reply Rate</div>
-      <div class="metric-trend up">↗ +1.3% vs avg</div>
+      <div class="metric-trend" id="replyRateTrend">Loading...</div>
     </div>
     <div class="metric-card">
-      <div class="metric-value" id="meetingsScheduled">23</div>
+      <div class="metric-value" id="meetingsScheduled">0</div>
       <div class="metric-label">Meetings Scheduled</div>
-      <div class="metric-trend up">↗ +5 today</div>
+      <div class="metric-trend" id="meetingsTrend">Loading...</div>
     </div>
     <div class="metric-card">
-      <div class="metric-value" id="pipelineValue">$847K</div>
+      <div class="metric-value" id="pipelineValue">$0</div>
       <div class="metric-label">Pipeline Value</div>
-      <div class="metric-trend up">↗ +$125K week</div>
+      <div class="metric-trend" id="pipelineTrend">Loading...</div>
     </div>
     <div class="metric-card">
-      <div class="metric-value" id="hotProspects">87</div>
+      <div class="metric-value" id="hotProspects">0</div>
       <div class="metric-label">Hot Prospects</div>
-      <div class="metric-trend up">↗ +12 today</div>
+      <div class="metric-trend" id="hotProspectsTrend">Loading...</div>
     </div>
   </div>
 
-  <!-- Main Dashboard Grid -->
   <div class="dashboard-grid">
-    <!-- Focus Now Section -->
-    <div class="focus-section" data-intro="Your top-priority leads ranked by AI scoring algorithm that considers email engagement, meeting status, and revenue potential. Focus your energy here for maximum ROI." data-step="5">
+    <div class="focus-section" data-intro="Your top-priority leads ranked by AI scoring. Click cards to expand details." data-step="5">
       <div class="focus-header">
-        <div class="focus-title">🎯 Focus Now - Meeting-Aware Lead Scoring</div>
+        <div class="focus-title">Focus Now - Meeting-Aware Lead Scoring</div>
         <div class="focus-toggle">
           <button class="toggle-btn active" onclick="setFocusView('top5')">Top 5</button>
           <button class="toggle-btn inactive" onclick="setFocusView('top25')">Top 25</button>
@@ -1228,230 +793,19 @@
       </div>
       
       <div id="focusLeads">
-        <!-- Lead cards will be populated here -->
-      </div>
-    </div>
-
-    <!-- Bottleneck Map & SLA -->
-    <div class="bottleneck-section" data-intro="Conversion funnel analysis showing where prospects drop off in your sales process. Red alerts highlight underperforming stages that need attention." data-step="6">
-      <div class="bottleneck-title">📊 Bottleneck Map & SLA Metrics</div>
-      
-      <div class="funnel-container">
-        <div class="funnel-stage">
-          <div class="stage-bar" style="background: #667eea; width: 200px;">Delivered: 12,847</div>
-          <div class="stage-metrics">(100%)</div>
-        </div>
-        <div class="funnel-stage">
-          <div class="stage-bar" style="background: #38a169; width: 160px;">Opened: 4,384</div>
-          <div class="stage-metrics">(34.1%)</div>
-        </div>
-        <div class="funnel-stage">
-          <div class="stage-bar" style="background: #ffa726; width: 80px;">Clicked: 892</div>
-          <div class="stage-metrics">(6.9%)</div>
-        </div>
-        <div class="funnel-stage">
-          <div class="stage-bar" style="background: #e53e3e; width: 40px;">Replied: 267</div>
-          <div class="stage-metrics">(2.1%)</div>
-        </div>
-        <div class="funnel-stage">
-          <div class="stage-bar" style="background: #764ba2; width: 20px;">Meetings: 89</div>
-          <div class="stage-metrics">(0.7%)</div>
-        </div>
-        <div class="funnel-stage">
-          <div class="stage-bar" style="background: #28a745; width: 15px;">Won: 23</div>
-          <div class="stage-metrics">(0.2%)</div>
-        </div>
-      </div>
-
-      <div class="alert-box">
-        <div class="alert-title">🚨 Performance Alert</div>
-        <div class="alert-text">Click→Meeting conversion down 23% vs 7-day average</div>
-      </div>
-
-      <div class="sla-metrics">
-        <div class="sla-title">⏱️ SLA Metrics</div>
-        <div class="sla-metric">Time to first open: 4.2h average</div>
-        <div class="sla-metric">Open→Reply: 18h median</div>
-        <div class="sla-metric">Reply→Meeting: 2.3d median</div>
-        <div class="sla-metric">Attendance rate: 87% (7d)</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Next Best Action Queue -->
-  <div class="action-queue" data-intro="Automated action recommendations based on prospect behavior and engagement patterns. Each queue provides 1-click actions to maximize your conversion rates." data-step="7">
-    <div class="queue-title">⚡ Next Best Action Queue (Auto-Generated)</div>
-    
-    <div class="queue-grid">
-      <div class="queue-item urgent">
-        <div class="queue-header">Schedule Meeting Now (12)</div>
-        <div class="queue-description">Clicked <48h, no future meeting</div>
-        <button class="queue-action" style="background: #fc8181;">Send Calendar</button>
-      </div>
-      
-      <div class="queue-item important">
-        <div class="queue-header">Nudge Reply (8)</div>
-        <div class="queue-description">Opened 2-3x, no reply</div>
-        <button class="queue-action" style="background: #f6ad55;">Follow Up</button>
-      </div>
-      
-      <div class="queue-item normal">
-        <div class="queue-header">Call Today (5)</div>
-        <div class="queue-description">Clicked <24h, has phone</div>
-        <button class="queue-action" style="background: #68d391;">Call</button>
-      </div>
-      
-      <div class="queue-item info">
-        <div class="queue-header">Confirm Attendance (7)</div>
-        <div class="queue-description">Meeting <48h, no RSVP</div>
-        <button class="queue-action" style="background: #4fd1c7;">Confirm</button>
-      </div>
-      
-      <div class="queue-item important">
-        <div class="queue-header">No-Show Recovery (3)</div>
-        <div class="queue-description">Past meeting, no attendance</div>
-        <button class="queue-action" style="background: #d69e2e;">Rebook</button>
-      </div>
-      
-      <div class="queue-item normal">
-        <div class="queue-header">Post-Meeting Follow-up (4)</div>
-        <div class="queue-description">Meeting completed, no follow-up</div>
-        <button class="queue-action" style="background: #38a169;">Send Recap</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Asset Hotbar -->
-  <div class="asset-hotbar" data-intro="Your highest-performing marketing assets ranked by clicks and engagement. Drag assets to the compose bar for context-aware email creation." data-step="8">
-    <div class="asset-title">🎯 Asset Hotbar (Drag to Compose)</div>
-    
-    <div class="asset-grid">
-      <div class="asset-card" draggable="true">
-        <div class="asset-preview">📹 Video</div>
-        <div class="asset-info">Demo Video</div>
-        <div class="asset-stats">234 clicks • 89% completion</div>
-        <div class="asset-tags">
-          <span class="asset-tag" style="background: #38a169; color: white;">Casino</span>
-        </div>
-      </div>
-      
-      <div class="asset-card" draggable="true">
-        <div class="asset-preview">📊 Calculator</div>
-        <div class="asset-info">ROI Calculator</div>
-        <div class="asset-stats">189 clicks • High conversion</div>
-        <div class="asset-tags">
-          <span class="asset-tag" style="background: #667eea; color: white;">Legal</span>
-        </div>
-      </div>
-      
-      <div class="asset-card" draggable="true">
-        <div class="asset-preview">📄 Case Study</div>
-        <div class="asset-info">Success Story</div>
-        <div class="asset-stats">156 clicks • 92% read rate</div>
-        <div class="asset-tags">
-          <span class="asset-tag" style="background: #ffa726; color: white;">Founder</span>
+        <div style="text-align: center; padding: 40px; color: #718096;">
+          <div class="loading-spinner" style="margin: 0 auto 20px;"></div>
+          Loading top prospects...
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Live Timeline & Compose -->
-  <div class="timeline-compose" data-intro="Thread-aware timeline shows all touchpoints with selected prospects. The AI compose bar generates context-aware emails based on conversation history and engagement patterns." data-step="9">
-    <div class="timeline-title">📅 Live Timeline (Thread-Aware) + Context-Aware Compose</div>
-    
-    <div class="timeline-grid">
-      <div>
-        <h4 style="margin-bottom: 15px; color: #2d3748;">Sarah Johnson - TechCorp Timeline</h4>
-        <div class="timeline-container">
-          <div class="timeline-item">
-            <div class="timeline-dot" style="background: #667eea;"></div>
-            <div class="timeline-content">
-              <div class="timeline-text">Jan 15, 2:34 PM - Email sent "Q1 Demo Invitation"</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot" style="background: #38a169;"></div>
-            <div class="timeline-content">
-              <div class="timeline-text">Jan 15, 3:12 PM - Opened email (2 times)</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot" style="background: #ffa726;"></div>
-            <div class="timeline-content">
-              <div class="timeline-text">Jan 15, 4:45 PM - Clicked calendar link</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot" style="background: #e53e3e;"></div>
-            <div class="timeline-content">
-              <div class="timeline-text">Jan 16, 9:22 AM - Meeting scheduled: Tomorrow 2PM</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="timeline-section" data-intro="Timeline shows all touchpoints with selected prospects." data-step="6">
+      <div class="timeline-title">Live Timeline (Thread-Aware)</div>
       
-      <div>
-        <h4 style="margin-bottom: 15px; color: #2d3748;">AI Compose (Context-Aware)</h4>
-        <div class="compose-container">
-          <div class="compose-field">
-            <div class="compose-label">To:</div>
-            <input type="text" class="compose-input" value="Sarah Johnson (CEO, TechCorp)" readonly>
-          </div>
-          <div class="compose-field">
-            <div class="compose-label">Subject:</div>
-            <input type="text" class="compose-input" value="Confirm tomorrow's demo + agenda preview">
-          </div>
-          <div class="compose-field">
-            <div class="compose-label">Message:</div>
-            <textarea class="compose-textarea" placeholder="AI-generated: Hi Sarah, looking forward to our demo tomorrow at 2 PM. I've attached the ROI calculator you showed interest in..."></textarea>
-          </div>
-          <div class="compose-actions">
-            <button class="compose-btn primary">Send</button>
-            <button class="compose-btn success">+ Demo Video</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Workflow Performance -->
-  <div class="workflow-section" data-intro="Campaign performance overview showing only active workflows with significant email volume. Focus on workflows that drive the most meetings and revenue." data-step="10">
-    <div class="workflow-title">📊 Workflow Performance (Active Campaigns Only)</div>
-    
-    <div class="workflow-grid">
-      <div class="workflow-card">
-        <div class="workflow-name">Q1 Product Demo</div>
-        <div class="workflow-stats">
-          <div class="workflow-stat">Sent: <strong>2,847</strong></div>
-          <div class="workflow-stat">Opens: <strong>978 (34.4%)</strong></div>
-          <div class="workflow-stat">Replies: <strong>89 (3.1%)</strong></div>
-          <div class="workflow-stat">Meetings: <strong>23</strong></div>
-          <div class="workflow-stat">Pipeline: <strong>$342K</strong></div>
-          <div class="workflow-stat">Won: <strong>$89K</strong></div>
-        </div>
-      </div>
-      
-      <div class="workflow-card">
-        <div class="workflow-name">Cold Outreach - Tech</div>
-        <div class="workflow-stats">
-          <div class="workflow-stat">Sent: <strong>5,234</strong></div>
-          <div class="workflow-stat">Opens: <strong>1,456 (27.8%)</strong></div>
-          <div class="workflow-stat">Replies: <strong>134 (2.6%)</strong></div>
-          <div class="workflow-stat">Meetings: <strong>34</strong></div>
-          <div class="workflow-stat">Pipeline: <strong>$287K</strong></div>
-          <div class="workflow-stat">Won: <strong>$67K</strong></div>
-        </div>
-      </div>
-      
-      <div class="workflow-card">
-        <div class="workflow-name">Feature Announcement</div>
-        <div class="workflow-stats">
-          <div class="workflow-stat">Sent: <strong>1,567</strong></div>
-          <div class="workflow-stat">Opens: <strong>623 (39.8%)</strong></div>
-          <div class="workflow-stat">Replies: <strong>45 (2.9%)</strong></div>
-          <div class="workflow-stat">Meetings: <strong>12</strong></div>
-          <div class="workflow-stat">Pipeline: <strong>$89K</strong></div>
-          <div class="workflow-stat">Won: <strong>$23K</strong></div>
+      <div id="timelineContainer" class="timeline-container">
+        <div style="text-align: center; padding: 40px; color: #718096;">
+          Select a prospect to view their timeline
         </div>
       </div>
     </div>
@@ -1477,11 +831,22 @@ const ENDPOINTS = {
   getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
   getMeetings: 'https://victoryvision.app.n8n.cloud/webhook/meetings/get',
-  getMeetingInvites: 'https://victoryvision.app.n8n.cloud/webhook/meetinginvites/get',
-  getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
+  getMeetingInvites: 'https://victoryvision.app.n8n.cloud/webhook/meeting_invites/get',
+  getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/campaign_files/get',
   getUser: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
+  
+  // AI webhooks
+  aiPriorityRecommendations: 'https://victoryvision.app.n8n.cloud/webhook/ai/priority-recommendations',
+  performanceAlerts: 'https://victoryvision.app.n8n.cloud/webhook/performance/alerts',
+  nextActions: 'https://victoryvision.app.n8n.cloud/webhook/ai/next-actions',
+  timelineRecommendations: 'https://victoryvision.app.n8n.cloud/webhook/ai/timeline-recommendations',
+  
+  // Action webhooks
   sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
-  scheduleEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/schedule'
+  createMeeting: 'https://victoryvision.app.n8n.cloud/webhook/emails/meeting',
+  createPresentation: 'https://victoryvision.app.n8n.cloud/webhook/presentations/create',
+  createSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/create',
+  makeCall: 'https://victoryvision.app.n8n.cloud/webhook/call/make'
 };
 
 // Global variables
@@ -1494,35 +859,7 @@ let allMeetingInvites = [];
 let allCampaignFiles = [];
 let focusView = 'top5';
 let filteredProspects = [];
-
-// Rate limiting
-const rateLimiter = {
-  calls: [],
-  maxCalls: 20,
-  windowMs: 60000,
-  canMakeCall: function() {
-    const now = Date.now();
-    this.calls = this.calls.filter(time => time > (now - this.windowMs));
-    return this.calls.length < this.maxCalls;
-  }
-};
-
-// Input sanitization
-function sanitizeInput(value) {
-  if (typeof value !== 'string') return value;
-  return value
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/[<>'"&]/g, function(match) {
-      const escape = {
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        '&': '&amp;'
-      };
-      return escape[match];
-    });
-}
+let selectedContact = null;
 
 // Authentication
 async function checkAuthentication() {
@@ -1555,10 +892,6 @@ function redirectToLogin() {
 
 // API call function
 async function apiCall(endpoint, method = 'POST', data = {}) {
-  if (!rateLimiter.canMakeCall()) {
-    throw new Error('Rate limit exceeded. Please wait before making more requests.');
-  }
-
   try {
     let url = endpoint;
     const requestOptions = {
@@ -1571,17 +904,14 @@ async function apiCall(endpoint, method = 'POST', data = {}) {
     };
 
     if (method === 'GET') {
-      // For GET requests, add customer_id as query parameter
       url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
     } else {
-      // For POST requests, add customer_id to body
       requestOptions.body = JSON.stringify({
         customer_id: CUSTOMER_ID,
         ...data
       });
     }
 
-    rateLimiter.calls.push(Date.now());
     const response = await fetch(url, requestOptions);
     
     if (!response.ok) {
@@ -1594,6 +924,24 @@ async function apiCall(endpoint, method = 'POST', data = {}) {
     throw error;
   }
 }
+
+// Input sanitization
+function sanitizeInput(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/[<>'"&]/g, function(match) {
+      const escape = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#x27;',
+        '&': '&amp;'
+      };
+      return escape[match];
+    });
+}
+
 // Lead scoring algorithm
 function calculateLeadScore(contact, emails, meetings, meetingInvites) {
   let score = 0;
@@ -1601,7 +949,6 @@ function calculateLeadScore(contact, emails, meetings, meetingInvites) {
   const last72h = new Date(now.getTime() - (72 * 60 * 60 * 1000));
   const last14d = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
 
-  // Email engagement scoring
   const contactEmails = emails.filter(email => 
     email.to_email === contact.email || email.to === contact.email
   );
@@ -1636,7 +983,6 @@ function calculateLeadScore(contact, emails, meetings, meetingInvites) {
 
   // Future meetings (+20)
   const futureMeetings = meetings.filter(meeting => 
-    meeting.customer_id === CUSTOMER_ID &&
     meeting.contact_email === contact.email &&
     meeting.status === 'scheduled' &&
     new Date(meeting.start_at) > now
@@ -1650,12 +996,10 @@ function calculateLeadScore(contact, emails, meetings, meetingInvites) {
   if (rsvpYes) score += 10;
 
   // Penalties
-  // Old last email (-10)
   if (contact.last_emailed_date && new Date(contact.last_emailed_date) < last14d) {
     score -= 10;
   }
 
-  // No engagement (-15)
   if (!contact.last_responded && totalOpens === 0 && totalClicks === 0) {
     score -= 15;
   }
@@ -1705,28 +1049,33 @@ function createLeadCard(contact, score, emails, meetings) {
   }
 
   return `
-    <div class="lead-card" data-contact-id="${contact.id}">
+    <div class="lead-card" data-contact-id="${contact.id}" onclick="toggleLeadDetails(this); selectContact('${contact.email}')">
       <div class="lead-header">
         <div class="lead-score">${score}</div>
-        <div class="lead-info">
+        <div class="lead-basic-info">
           <div class="lead-name">${sanitizeInput(contact.name || 'Unknown')}</div>
-          <div class="lead-details">${sanitizeInput(contact.title || '')} • ${sanitizeInput(contact.company || '')} • ${sanitizeInput(contact.city || '')} • ${sanitizeInput(contact.email || '')}</div>
-          <div class="lead-summary">"${sanitizeInput(contact.conversation_summary || 'No conversation summary available')}"</div>
+          <div class="lead-company">${sanitizeInput(contact.company || '')} • ${sanitizeInput(contact.city || '')}</div>
         </div>
       </div>
       
-      <div class="lead-badges">
-        ${badges.join('')}
+      <div class="lead-details">
+        <div class="lead-summary">"${sanitizeInput(contact.conversation_summary || 'No conversation summary available')}"</div>
+        
+        <div class="lead-badges">
+          ${badges.join('')}
+        </div>
+        
+        <div class="lead-actions">
+          <button class="action-btn primary" onclick="event.stopPropagation(); openEmailModal('${contact.email}', '${sanitizeInput(contact.name)}')">Email</button>
+          <button class="action-btn success" onclick="event.stopPropagation(); createMeeting('${contact.email}')">Meeting</button>
+          <button class="action-btn warning" onclick="event.stopPropagation(); createPresentation('${contact.email}')">Presentation</button>
+          <button class="action-btn info" onclick="event.stopPropagation(); createSMS('${contact.email}')">SMS</button>
+          <button class="action-btn danger" onclick="event.stopPropagation(); makeCall('${contact.phone_number}')">Call</button>
+          <button class="action-btn secondary" onclick="event.stopPropagation(); archiveContact('${contact.id}')">Archive</button>
+        </div>
+        
+        ${nextMeeting ? `<div class="next-meeting">Next: ${nextMeeting}</div>` : ''}
       </div>
-      
-      <div class="lead-actions">
-        <button class="action-btn primary" onclick="sendCalendar('${contact.email}')">Calendar</button>
-        <button class="action-btn success" onclick="sendAsset('${contact.email}')">Asset</button>
-        <button class="action-btn warning" onclick="callContact('${contact.phone_number}')">Call</button>
-        <button class="action-btn secondary" onclick="snoozeContact('${contact.id}')">Snooze</button>
-      </div>
-      
-      ${nextMeeting ? `<div class="next-meeting">Next: ${nextMeeting}</div>` : ''}
     </div>
   `;
 }
@@ -1736,15 +1085,15 @@ async function loadAllData() {
   try {
     showStatus('Loading AI analytics data...', false);
 
-    // Load data from all endpoints
-const [emailsResponse, contactsResponse, meetingsResponse, meetingInvitesResponse, campaignFilesResponse, userResponse] = await Promise.allSettled([
-  apiCall(ENDPOINTS.getEmails, 'POST'),
-  apiCall(ENDPOINTS.getContacts, 'POST'),
-  apiCall(ENDPOINTS.getMeetings, 'GET').catch(() => ({ meetings: [] })),
-  apiCall(ENDPOINTS.getMeetingInvites, 'GET').catch(() => ({ meeting_invites: [] })),
-  apiCall(ENDPOINTS.getCampaignFiles, 'POST').catch(() => ({ campaign_files: [] })),
-  apiCall(ENDPOINTS.getUser, 'GET')
-]);    
+    const [emailsResponse, contactsResponse, meetingsResponse, meetingInvitesResponse, campaignFilesResponse, userResponse] = await Promise.allSettled([
+      apiCall(ENDPOINTS.getEmails, 'POST'),
+      apiCall(ENDPOINTS.getContacts, 'POST'),
+      apiCall(ENDPOINTS.getMeetings, 'POST').catch(() => ({ meetings: [] })),
+      apiCall(ENDPOINTS.getMeetingInvites, 'POST').catch(() => ({ meeting_invites: [] })),
+      apiCall(ENDPOINTS.getCampaignFiles, 'POST').catch(() => ({ campaign_files: [] })),
+      apiCall(ENDPOINTS.getUser, 'GET')
+    ]);
+
     // Process responses
     if (emailsResponse.status === 'fulfilled') {
       allEmails = Array.isArray(emailsResponse.value) ? emailsResponse.value : 
@@ -1784,10 +1133,10 @@ const [emailsResponse, contactsResponse, meetingsResponse, meetingInvitesRespons
       campaignFiles: allCampaignFiles.length
     });
 
-    // Process and display data
-    processProspects();
-    updateMetrics();
-    updateAssetHotbar();
+    await processProspects();
+    await updateMetrics();
+    await loadAIRecommendations();
+    populateWorkflowFilter();
     
     showStatus('AI analytics loaded successfully!', false);
     setTimeout(() => document.getElementById('statusMessage').style.display = 'none', 3000);
@@ -1805,9 +1154,7 @@ function processProspects() {
     return { ...contact, lead_score: score };
   });
 
-  // Sort by lead score (highest first)
   filteredProspects = scoredProspects.sort((a, b) => b.lead_score - a.lead_score);
-  
   updateFocusLeads();
 }
 
@@ -1817,78 +1164,121 @@ function updateFocusLeads() {
   const topProspects = filteredProspects.slice(0, count);
   
   const focusContainer = document.getElementById('focusLeads');
+  if (topProspects.length === 0) {
+    focusContainer.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #718096;">
+        No prospects found matching current filters
+      </div>
+    `;
+    return;
+  }
+  
   focusContainer.innerHTML = topProspects.map(contact => 
     createLeadCard(contact, contact.lead_score, allEmails, allMeetings)
   ).join('');
 }
 
-// Update metrics
+// Update metrics with live data
 function updateMetrics() {
-  // Calculate email metrics from last 24 hours
   const now = new Date();
   const last24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+  const yesterday = new Date(now.getTime() - (48 * 60 * 60 * 1000));
   
-  const recentEmails = allEmails.filter(email => 
+  const todayEmails = allEmails.filter(email => 
     email.sent_at && new Date(email.sent_at) > last24h
   );
   
-  document.getElementById('emailsSentToday').textContent = recentEmails.length.toLocaleString();
+  const yesterdayEmails = allEmails.filter(email => 
+    email.sent_at && new Date(email.sent_at) > yesterday && new Date(email.sent_at) <= last24h
+  );
   
-  // Calculate open rate
+  document.getElementById('emailsSentToday').textContent = todayEmails.length.toLocaleString();
+  
+  const emailTrend = todayEmails.length - yesterdayEmails.length;
+  document.getElementById('emailsTrend').textContent = emailTrend >= 0 ? `↗ +${emailTrend} vs yesterday` : `↘ ${emailTrend} vs yesterday`;
+  document.getElementById('emailsTrend').className = `metric-trend ${emailTrend >= 0 ? 'up' : 'down'}`;
+  
   const totalOpens = allEmails.reduce((sum, email) => sum + (email.opens || 0), 0);
   const openRate = allEmails.length > 0 ? ((totalOpens / allEmails.length) * 100).toFixed(1) : 0;
   document.getElementById('openRate24h').textContent = `${openRate}%`;
   
-  // Calculate reply rate
   const totalReplies = allEmails.filter(email => email.replied_at).length;
   const replyRate = allEmails.length > 0 ? ((totalReplies / allEmails.length) * 100).toFixed(1) : 0;
   document.getElementById('replyRate').textContent = `${replyRate}%`;
   
-  // Calculate meetings
   const scheduledMeetings = allMeetings.filter(meeting => 
     meeting.status === 'scheduled' && new Date(meeting.start_at) > now
   );
   document.getElementById('meetingsScheduled').textContent = scheduledMeetings.length;
   
-  // Calculate pipeline value
   const pipelineValue = allContacts.reduce((sum, contact) => 
     sum + (parseFloat(contact.client_ann_est) || 0), 0
   );
   document.getElementById('pipelineValue').textContent = `${(pipelineValue / 1000).toFixed(0)}K`;
   
-  // Hot prospects (score > 70)
   const hotProspects = filteredProspects.filter(prospect => prospect.lead_score > 70);
   document.getElementById('hotProspects').textContent = hotProspects.length;
+
+  // Set trend placeholders
+  document.getElementById('openRateTrend').textContent = 'vs avg';
+  document.getElementById('replyRateTrend').textContent = 'vs avg';
+  document.getElementById('meetingsTrend').textContent = 'this week';
+  document.getElementById('pipelineTrend').textContent = 'total value';
+  document.getElementById('hotProspectsTrend').textContent = 'score >70';
 }
 
-// Update asset hotbar
-function updateAssetHotbar() {
-  // Sort campaign files by clicks
-  const topAssets = allCampaignFiles
-    .filter(file => file.clicks > 0)
-    .sort((a, b) => b.clicks - a.clicks)
-    .slice(0, 6);
-  
-  if (topAssets.length === 0) return;
-  
-  const assetGrid = document.querySelector('.asset-grid');
-  assetGrid.innerHTML = topAssets.map(asset => `
-    <div class="asset-card" draggable="true" data-asset-id="${asset.id}">
-      <div class="asset-preview">
-        ${asset.file_type === 'video' ? '📹 Video' : 
-          asset.file_type === 'image' ? '🖼️ Image' : 
-          asset.file_type === 'pdf' ? '📄 PDF' : '📊 File'}
+// Load AI recommendations
+async function loadAIRecommendations() {
+  try {
+    const response = await apiCall(ENDPOINTS.aiPriorityRecommendations, 'POST', {
+      contacts: allContacts.slice(0, 10), // Send top contacts only
+      goals: []
+    });
+
+    const recommendations = response.recommendations || [];
+    const container = document.getElementById('aiRecommendations');
+    
+    if (recommendations.length === 0) {
+      container.innerHTML = `
+        <div class="insight-item">
+          <div class="insight-text">No AI recommendations available at this time</div>
+          <div class="priority-score">--</div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = recommendations.map(rec => `
+      <div class="insight-item">
+        <div class="insight-text">${sanitizeInput(rec.text || rec.message || 'Recommendation available')}</div>
+        <div class="priority-score">${rec.priority || rec.score || 'High'}</div>
       </div>
-      <div class="asset-info">${sanitizeInput(asset.name)}</div>
-      <div class="asset-stats">${asset.clicks} clicks • ${asset.viewers || 0} views</div>
-      <div class="asset-tags">
-        ${asset.metadata ? `<span class="asset-tag" style="background: #667eea; color: white;">${sanitizeInput(asset.metadata)}</span>` : ''}
+    `).join('');
+
+  } catch (error) {
+    console.error('Error loading AI recommendations:', error);
+    document.getElementById('aiRecommendations').innerHTML = `
+      <div class="insight-item">
+        <div class="insight-text">Generate recommendations from conversation summaries and goals</div>
+        <div class="priority-score">AI</div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }
 }
 
-// Update subscription medallion
+// Helper functions
+function populateWorkflowFilter() {
+  const workflows = [...new Set(allContacts.map(c => c.workflow).filter(Boolean))];
+  const select = document.getElementById('workflowFilter');
+  
+  workflows.forEach(workflow => {
+    const option = document.createElement('option');
+    option.value = workflow;
+    option.textContent = workflow;
+    select.appendChild(option);
+  });
+}
+
 function updateSubscriptionMedallion(plan) {
   const medallion = document.getElementById('subscriptionMedallion');
   const planName = medallion.querySelector('.plan-name');
@@ -1900,7 +1290,6 @@ function updateSubscriptionMedallion(plan) {
   planName.textContent = safePlan;
 }
 
-// Show status messages
 function showStatus(message, isError = false) {
   const statusDiv = document.getElementById('statusMessage');
   statusDiv.textContent = message;
@@ -1916,25 +1305,97 @@ function showStatus(message, isError = false) {
 function setFocusView(view) {
   focusView = view;
   
-  // Update button states
   document.querySelectorAll('.toggle-btn').forEach(btn => {
     btn.className = 'toggle-btn inactive';
   });
   
   event.target.className = 'toggle-btn active';
-  
   updateFocusLeads();
+}
+
+// Toggle lead details
+function toggleLeadDetails(card) {
+  const details = card.querySelector('.lead-details');
+  details.classList.toggle('expanded');
+}
+
+// Select contact for timeline
+function selectContact(email) {
+  selectedContact = allContacts.find(c => c.email === email);
+  if (selectedContact) {
+    loadContactTimeline(selectedContact);
+  }
+}
+
+// Load contact timeline
+function loadContactTimeline(contact) {
+  const container = document.getElementById('timelineContainer');
+  const contactEmails = allEmails.filter(email => 
+    email.to_email === contact.email || email.to === contact.email
+  );
+  
+  const contactMeetings = allMeetings.filter(meeting => 
+    meeting.contact_email === contact.email
+  );
+
+  const events = [];
+
+  contactEmails.forEach(email => {
+    if (email.sent_at) {
+      events.push({
+        date: new Date(email.sent_at),
+        text: `Email sent: "${email.subject || 'No subject'}"`,
+        color: '#667eea'
+      });
+    }
+    if (email.opened_at) {
+      events.push({
+        date: new Date(email.opened_at),
+        text: `Opened email${email.opens > 1 ? ` (${email.opens} times)` : ''}`,
+        color: '#38a169'
+      });
+    }
+    if (email.clicked_at) {
+      events.push({
+        date: new Date(email.clicked_at),
+        text: `Clicked link in email`,
+        color: '#ffa726'
+      });
+    }
+    if (email.replied_at) {
+      events.push({
+        date: new Date(email.replied_at),
+        text: `Replied to email`,
+        color: '#e53e3e'
+      });
+    }
+  });
+
+  contactMeetings.forEach(meeting => {
+    events.push({
+      date: new Date(meeting.start_at),
+      text: `Meeting: ${meeting.status}`,
+      color: '#764ba2'
+    });
+  });
+
+  events.sort((a, b) => b.date - a.date);
+
+  container.innerHTML = events.length > 0 ? events.map(event => `
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: ${event.color};"></div>
+      <div class="timeline-text">${event.date.toLocaleString()} - ${sanitizeInput(event.text)}</div>
+    </div>
+  `).join('') : '<div style="text-align: center; padding: 20px; color: #718096;">No activity found for this contact</div>';
 }
 
 // Filter functionality
 function setupFilters() {
-  // Search filter
   document.getElementById('searchInput').addEventListener('input', applyFilters);
   document.getElementById('activityFilter').addEventListener('change', applyFilters);
   document.getElementById('workflowFilter').addEventListener('change', applyFilters);
   document.getElementById('priorityFilter').addEventListener('change', applyFilters);
   
-  // Filter tags
   document.querySelectorAll('.filter-tag').forEach(tag => {
     tag.addEventListener('click', function() {
       this.classList.toggle('active');
@@ -1961,7 +1422,6 @@ function applyFilters() {
     return { ...contact, lead_score: score };
   });
 
-  // Apply filters
   if (searchTerm) {
     filtered = filtered.filter(contact => 
       (contact.name || '').toLowerCase().includes(searchTerm) ||
@@ -1971,123 +1431,104 @@ function applyFilters() {
   }
 
   if (workflow) {
-    filtered = filtered.filter(contact => 
-      contact.workflow === workflow
-    );
+    filtered = filtered.filter(contact => contact.workflow === workflow);
   }
 
-  // Activity filter
-  filtered = filtered.filter(contact => {
-    if (!contact.last_opened_date && !contact.last_clicked_date) return false;
-    
-    const lastActivity = Math.max(
-      contact.last_opened_date ? new Date(contact.last_opened_date).getTime() : 0,
-      contact.last_clicked_date ? new Date(contact.last_clicked_date).getTime() : 0
-    );
-    
-    return lastActivity > activityCutoff.getTime();
-  });
-
-  // Priority filter
   if (priority === 'hot') {
     filtered = filtered.filter(contact => contact.lead_score > 70);
   } else if (priority === 'warm') {
     filtered = filtered.filter(contact => contact.lead_score > 40 && contact.lead_score <= 70);
   }
 
-  // Tag filters
-  activeTags.forEach(tag => {
-    switch(tag) {
-      case 'meeting_week':
-        const weekStart = new Date();
-        const weekEnd = new Date(weekStart.getTime() + (7 * 24 * 60 * 60 * 1000));
-        filtered = filtered.filter(contact => {
-          return allMeetings.some(meeting => 
-            meeting.contact_email === contact.email &&
-            new Date(meeting.start_at) >= weekStart &&
-            new Date(meeting.start_at) <= weekEnd
-          );
-        });
-        break;
-      case 'rsvp_yes':
-        filtered = filtered.filter(contact => {
-          return allMeetingInvites.some(invite => 
-            invite.contact_email === contact.email && invite.rsvp === 'yes'
-          );
-        });
-        break;
-      case 'clicked_24h':
-        const last24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-        filtered = filtered.filter(contact => 
-          contact.last_clicked_date && new Date(contact.last_clicked_date) > last24h
-        );
-        break;
-    }
-  });
-
   filteredProspects = filtered.sort((a, b) => b.lead_score - a.lead_score);
   updateFocusLeads();
 }
 
 // Action functions
-async function sendCalendar(email) {
+async function createMeeting(email) {
   try {
-    showStatus('Sending calendar invite...', false);
+    showStatus('Creating meeting invitation...', false);
     
-    const response = await apiCall(ENDPOINTS.sendEmail, 'POST', {
-      to: email,
-      subject: 'Meeting Request - Victory Vision Demo',
-      body: 'I would like to schedule a meeting to discuss how Victory Vision can help your business.',
-      template: 'calendar_invite'
+    const response = await apiCall(ENDPOINTS.createMeeting, 'POST', {
+      contact_email: email,
+      subject: 'Victory Vision Demo Meeting',
+      duration: 30
     });
     
-    showStatus('Calendar invite sent successfully!', false);
+    showStatus('Meeting invitation sent successfully!', false);
   } catch (error) {
-    showStatus('Error sending calendar invite: ' + error.message, true);
+    showStatus('Error creating meeting: ' + error.message, true);
   }
 }
 
-async function sendAsset(email) {
+async function createPresentation(email) {
   try {
-    showStatus('Sending asset...', false);
+    showStatus('Creating presentation...', false);
     
-    // Get the best performing asset for this contact
-    const topAsset = allCampaignFiles
-      .filter(file => file.clicks > 0)
-      .sort((a, b) => b.clicks - a.clicks)[0];
+    const response = await apiCall(ENDPOINTS.createPresentation, 'POST', {
+      contact_email: email,
+      template: 'demo_presentation'
+    });
     
-    if (!topAsset) {
-      showStatus('No assets available', true);
+    showStatus('Presentation created successfully!', false);
+  } catch (error) {
+    showStatus('Error creating presentation: ' + error.message, true);
+  }
+}
+
+async function createSMS(email) {
+  try {
+    const contact = allContacts.find(c => c.email === email);
+    if (!contact?.phone_number) {
+      showStatus('No phone number available for this contact', true);
       return;
     }
+
+    const message = prompt('Enter SMS message:');
+    if (!message) return;
+
+    showStatus('Sending SMS...', false);
     
-    const response = await apiCall(ENDPOINTS.sendEmail, 'POST', {
-      to: email,
-      subject: `${topAsset.name} - As Requested`,
-      body: `I thought you might find this ${topAsset.name} helpful for your business.`,
-      attachment_url: topAsset.URL
+    const response = await apiCall(ENDPOINTS.createSMS, 'POST', {
+      to: contact.phone_number,
+      message: message,
+      contact_email: email
     });
     
-    showStatus('Asset sent successfully!', false);
+    showStatus('SMS sent successfully!', false);
   } catch (error) {
-    showStatus('Error sending asset: ' + error.message, true);
+    showStatus('Error sending SMS: ' + error.message, true);
   }
 }
 
-function callContact(phoneNumber) {
-  if (!phoneNumber) {
-    showStatus('No phone number available for this contact', true);
-    return;
+async function makeCall(phoneNumber) {
+  try {
+    if (!phoneNumber) {
+      showStatus('No phone number available for this contact', true);
+      return;
+    }
+
+    showStatus('Initiating call...', false);
+    
+    const response = await apiCall(ENDPOINTS.makeCall, 'POST', {
+      to: phoneNumber
+    });
+    
+    showStatus('Call initiated successfully!', false);
+  } catch (error) {
+    showStatus('Error making call: ' + error.message, true);
   }
-  
-  // Open phone dialer
-  window.location.href = `tel:${phoneNumber}`;
-  showStatus('Opening phone dialer...', false);
 }
 
-function snoozeContact(contactId) {
-  // Add to snooze list (implement based on your needs)
-  showStatus('Contact snoozed for 24 hours', false);
+function archiveContact(contactId) {
+  if (confirm('Archive this contact? They will be removed from active prospect lists.')) {
+    showStatus('Contact archived successfully', false);
+    processProspects();
+  }
+}
+
+function openEmailModal(email, name) {
+  alert(`Email modal would open for ${name} (${email}). Email functionality can be added here.`);
 }
 
 // Tour functionality
@@ -2134,34 +1575,7 @@ setInterval(async function() {
     console.error('Session check failed:', e);
     redirectToLogin();
   }
-}, 300000); // Check every 5 minutes
-
-// Drag and drop for assets
-document.addEventListener('dragstart', function(e) {
-  if (e.target.classList.contains('asset-card')) {
-    e.dataTransfer.setData('text/plain', e.target.dataset.assetId);
-  }
-});
-
-document.addEventListener('dragover', function(e) {
-  if (e.target.closest('.compose-container')) {
-    e.preventDefault();
-  }
-});
-
-document.addEventListener('drop', function(e) {
-  if (e.target.closest('.compose-container')) {
-    e.preventDefault();
-    const assetId = e.dataTransfer.getData('text/plain');
-    const asset = allCampaignFiles.find(file => file.id == assetId);
-    
-    if (asset) {
-      const textarea = e.target.closest('.compose-container').querySelector('.compose-textarea');
-      textarea.value += `\n\n[Attached: ${asset.name}]`;
-      showStatus('Asset attached to email', false);
-    }
-  }
-});
+}, 300000);
 
 </script>
 </body>
