@@ -1477,7 +1477,7 @@ const ENDPOINTS = {
   getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
   getMeetings: 'https://victoryvision.app.n8n.cloud/webhook/meetings/get',
-  getMeetingInvites: 'https://victoryvision.app.n8n.cloud/webhook/meeting_invites/get',
+  getMeetingInvites: 'https://victoryvision.app.n8n.cloud/webhook/meetinginvites/get',
   getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
   getUser: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
@@ -1560,9 +1560,6 @@ async function apiCall(endpoint, method = 'GET', data = {}) {
   }
 
   try {
-    const url = method === 'GET' ? 
-      `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
-      endpoint;
     
     const requestOptions = {
       method: method,
@@ -1738,8 +1735,8 @@ async function loadAllData() {
 
     // Load data from all endpoints
     const [emailsResponse, contactsResponse, meetingsResponse, meetingInvitesResponse, campaignFilesResponse, userResponse] = await Promise.allSettled([
-      apiCall(ENDPOINTS.getEmails),
-      apiCall(ENDPOINTS.getContacts),
+      apiCall(ENDPOINTS.getEmails, 'POST'),
+      apiCall(ENDPOINTS.getContacts, 'POST'),
       apiCall(ENDPOINTS.getMeetings).catch(() => ({ meetings: [] })),
       apiCall(ENDPOINTS.getMeetingInvites).catch(() => ({ meeting_invites: [] })),
       apiCall(ENDPOINTS.getCampaignFiles).catch(() => ({ campaign_files: [] })),
