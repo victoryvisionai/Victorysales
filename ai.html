@@ -717,8 +717,8 @@
           <option value="custom">Custom Range</option>
         </select>
         <div id="customDatePicker" class="custom-date-picker" style="display: none; margin-top: 10px;">
-          <input type="date" id="startDate" placeholder="Start Date" style="margin-right: 10px;">
-          <input type="date" id="endDate" placeholder="End Date">
+          <input type="date" id="startDate" placeholder="Start Date" style="margin-right: 10px;" onchange="updateCustomRange()">
+          <input type="date" id="endDate" placeholder="End Date" onchange="updateCustomRange()">
         </div>
       </div>
       <div class="filter-group">
@@ -1306,13 +1306,7 @@ function updateMetrics() {
   document.getElementById('pipelineTrend').textContent = windowLabel;
   document.getElementById('hotProspectsTrend').textContent = 'score >70';
 }
-  // Set trend placeholders
-  document.getElementById('openRateTrend').textContent = 'vs avg';
-  document.getElementById('replyRateTrend').textContent = 'vs avg';
-  document.getElementById('meetingsTrend').textContent = 'this week';
-  document.getElementById('pipelineTrend').textContent = 'total value';
-  document.getElementById('hotProspectsTrend').textContent = 'score >70';
-}
+ 
 
 // Load AI recommendations
 async function loadAIRecommendations() {
@@ -1479,7 +1473,8 @@ function loadContactTimeline(contact) {
 // Filter functionality
 function setupFilters() {
   document.getElementById('searchInput').addEventListener('input', applyFilters);
-  document.getElementById('activityFilter').addEventListener('change', applyFilters);
+  // REMOVE this line since we now use onchange in HTML:
+  // document.getElementById('activityFilter').addEventListener('change', applyFilters);
   document.getElementById('workflowFilter').addEventListener('change', applyFilters);
   document.getElementById('priorityFilter').addEventListener('change', applyFilters);
   
