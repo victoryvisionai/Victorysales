@@ -1274,9 +1274,10 @@ function updateMetrics() {
   document.getElementById('emailsSentToday').textContent = windowEmails.length.toLocaleString();
   
   const totalOpens = windowEmails.reduce((sum, email) => sum + (email.opens || 0), 0);
-  const openRate = windowEmails.length > 0 ? ((totalOpens / windowEmails.length) * 100).toFixed(1) : 0;
-  document.getElementById('openRate24h').textContent = `${openRate}%`;
-  
+ // Count unique emails that were opened (not total opens)
+const openedEmails = windowEmails.filter(email => email.opened_at).length;
+const openRate = windowEmails.length > 0 ? ((openedEmails / windowEmails.length) * 100).toFixed(1) : 0;
+document.getElementById('openRate24h').textContent = `${openRate}%`;  
   const totalReplies = windowEmails.filter(email => 
     email.replied_at && new Date(email.replied_at) >= dateRange.start && new Date(email.replied_at) <= dateRange.end
   ).length;
@@ -1626,16 +1627,24 @@ function showMetricQuery(metricType, title) {
   currentQueryType = title;
   
   switch(metricType) {
-    case 'opens':
-      queryResults = allContacts.filter(contact => 
-        contact.last_opened_date && 
-        new Date(contact.last_opened_date) >= dateRange.start && 
-        new Date(contact.last_opened_date) <= dateRange.end
-      ).map(contact => ({
-        ...contact,
-        lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
-      }));
-      break;
+  case 'opens':
+  // Get emails that were opened in the time window
+  const openedEmails = allEmails.filter(email => 
+    email.opened_at && 
+    new Date(email.opened_at) >= dateRange.start && 
+    new Date(email.opened_at) <= dateRange.end
+  );
+  
+  // Get unique contacts who opened emails
+  const openedContactEmails = [...new Set(openedEmails.map(email => email.to_email || email.to))];
+  
+  queryResults = openedContactEmails.map(email => 
+    allContacts.find(c => c.email === email)
+  ).filter(Boolean).map(contact => ({
+    ...contact,
+    lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
+  }));
+  break;
       
    case 'replies':
   // Get emails with replies in the time window
