@@ -975,7 +975,18 @@ function setActivityWindow(window) {
   updateMetrics();
   applyFilters();
 }
-
+function getLastActivityDate(contact) {
+  const dates = [
+    contact.last_emailed_date,
+    contact.last_opened_date,
+    contact.last_clicked_date,
+    contact.last_responded_date,
+    contact.created_at,
+    contact.updated_at
+  ].filter(Boolean).map(d => new Date(d));
+  
+  return dates.length > 0 ? new Date(Math.max(...dates)) : null;
+}
 function updateCustomRange() {
   customStartDate = document.getElementById('startDate').value;
   customEndDate = document.getElementById('endDate').value;
@@ -1244,47 +1255,57 @@ function updateFocusLeads() {
   ).join('');
 }
 
-// Update metrics with live data
 function updateMetrics() {
-  const now = new Date();
-  const last24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-  const yesterday = new Date(now.getTime() - (48 * 60 * 60 * 1000));
+  const dateRange = getActivityDateRange();
   
-  const todayEmails = allEmails.filter(email => 
-    email.sent_at && new Date(email.sent_at) > last24h
+  const windowEmails = allEmails.filter(email => 
+    email.sent_at && new Date(email.sent_at) >= dateRange.start && new Date(email.sent_at) <= dateRange.end
   );
   
-  const yesterdayEmails = allEmails.filter(email => 
-    email.sent_at && new Date(email.sent_at) > yesterday && new Date(email.sent_at) <= last24h
-  );
+  document.getElementById('emailsSentToday').textContent = windowEmails.length.toLocaleString();
   
-  document.getElementById('emailsSentToday').textContent = todayEmails.length.toLocaleString();
-  
-  const emailTrend = todayEmails.length - yesterdayEmails.length;
-  document.getElementById('emailsTrend').textContent = emailTrend >= 0 ? `↗ +${emailTrend} vs yesterday` : `↘ ${emailTrend} vs yesterday`;
-  document.getElementById('emailsTrend').className = `metric-trend ${emailTrend >= 0 ? 'up' : 'down'}`;
-  
-  const totalOpens = allEmails.reduce((sum, email) => sum + (email.opens || 0), 0);
-  const openRate = allEmails.length > 0 ? ((totalOpens / allEmails.length) * 100).toFixed(1) : 0;
+  const totalOpens = windowEmails.reduce((sum, email) => sum + (email.opens || 0), 0);
+  const openRate = windowEmails.length > 0 ? ((totalOpens / windowEmails.length) * 100).toFixed(1) : 0;
   document.getElementById('openRate24h').textContent = `${openRate}%`;
   
-  const totalReplies = allEmails.filter(email => email.replied_at).length;
-  const replyRate = allEmails.length > 0 ? ((totalReplies / allEmails.length) * 100).toFixed(1) : 0;
+  const totalReplies = windowEmails.filter(email => 
+    email.replied_at && new Date(email.replied_at) >= dateRange.start && new Date(email.replied_at) <= dateRange.end
+  ).length;
+  const replyRate = windowEmails.length > 0 ? ((totalReplies / windowEmails.length) * 100).toFixed(1) : 0;
   document.getElementById('replyRate').textContent = `${replyRate}%`;
   
   const scheduledMeetings = allMeetings.filter(meeting => 
-    meeting.status === 'scheduled' && new Date(meeting.start_at) > now
+    meeting.status === 'scheduled' && 
+    new Date(meeting.start_at) >= dateRange.start &&
+    new Date(meeting.start_at) <= dateRange.end
   );
   document.getElementById('meetingsScheduled').textContent = scheduledMeetings.length;
   
-  const pipelineValue = allContacts.reduce((sum, contact) => 
+  const windowContacts = allContacts.filter(contact => {
+    const lastActivity = getLastActivityDate(contact);
+    return !lastActivity || (lastActivity >= dateRange.start && lastActivity <= dateRange.end);
+  });
+  
+  const pipelineValue = windowContacts.reduce((sum, contact) => 
     sum + (parseFloat(contact.client_ann_est) || 0), 0
   );
-  document.getElementById('pipelineValue').textContent = `${(pipelineValue / 1000).toFixed(0)}K`;
+  document.getElementById('pipelineValue').textContent = `$${(pipelineValue / 1000).toFixed(0)}K`;
   
   const hotProspects = filteredProspects.filter(prospect => prospect.lead_score > 70);
   document.getElementById('hotProspects').textContent = hotProspects.length;
 
+  // Update trend labels to reflect current window
+  const windowLabel = currentActivityWindow === 'custom' ? 'custom range' : 
+                     currentActivityWindow === 'all' ? 'all time' : 
+                     `${currentActivityWindow}h window`;
+  
+  document.getElementById('emailsTrend').textContent = windowLabel;
+  document.getElementById('openRateTrend').textContent = windowLabel;
+  document.getElementById('replyRateTrend').textContent = windowLabel;
+  document.getElementById('meetingsTrend').textContent = windowLabel;
+  document.getElementById('pipelineTrend').textContent = windowLabel;
+  document.getElementById('hotProspectsTrend').textContent = 'score >70';
+}
   // Set trend placeholders
   document.getElementById('openRateTrend').textContent = 'vs avg';
   document.getElementById('replyRateTrend').textContent = 'vs avg';
