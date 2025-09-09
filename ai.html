@@ -1266,18 +1266,18 @@ function updateFocusLeads() {
 
 function updateMetrics() {
   const dateRange = getActivityDateRange();
-  
   const windowEmails = allEmails.filter(email => 
-    email.sent_at && new Date(email.sent_at) >= dateRange.start && new Date(email.sent_at) <= dateRange.end
-  );
+  email.sent_at && new Date(email.sent_at) >= dateRange.start && new Date(email.sent_at) <= dateRange.end
+);
+document.getElementById('emailsSentToday').textContent = windowEmails.length.toLocaleString();
   
-  document.getElementById('emailsSentToday').textContent = windowEmails.length.toLocaleString();
-  
-  const totalOpens = windowEmails.reduce((sum, email) => sum + (email.opens || 0), 0);
- // Count unique emails that were opened (not total opens)
-const openedEmails = windowEmails.filter(email => email.opened_at).length;
-const openRate = windowEmails.length > 0 ? ((openedEmails / windowEmails.length) * 100).toFixed(1) : 0;
+// Use the opens integer field instead of opened_at timestamp
+const openedEmails = windowEmails.filter(email => email.opens > 0);
+
+const openRate = windowEmails.length > 0 ? ((openedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
 document.getElementById('openRate24h').textContent = `${openRate}%`;  
+  
+  
   const totalReplies = windowEmails.filter(email => 
     email.replied_at && new Date(email.replied_at) >= dateRange.start && new Date(email.replied_at) <= dateRange.end
   ).length;
@@ -1627,13 +1627,25 @@ function showMetricQuery(metricType, title) {
   currentQueryType = title;
   
   switch(metricType) {
-  case 'opens':
-  // Get emails that were opened in the time window
+case 'opens':
+  // Get emails that were opened (opens > 0) in the time window
   const openedEmails = allEmails.filter(email => 
-    email.opened_at && 
-    new Date(email.opened_at) >= dateRange.start && 
-    new Date(email.opened_at) <= dateRange.end
+    email.sent_at &&
+    new Date(email.sent_at) >= dateRange.start && 
+    new Date(email.sent_at) <= dateRange.end &&
+    email.opens > 0
   );
+  
+  // Get unique contacts who opened emails
+  const openedContactEmails = [...new Set(openedEmails.map(email => email.to_email || email.to))];
+  
+  queryResults = openedContactEmails.map(email => 
+    allContacts.find(c => c.email === email)
+  ).filter(Boolean).map(contact => ({
+    ...contact,
+    lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
+  }));
+  break;
   
   // Get unique contacts who opened emails
   const openedContactEmails = [...new Set(openedEmails.map(email => email.to_email || email.to))];
