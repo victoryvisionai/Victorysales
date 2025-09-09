@@ -1271,8 +1271,7 @@ function updateMetrics() {
 );
 document.getElementById('emailsSentToday').textContent = windowEmails.length.toLocaleString();
   
-// Use the opens integer field instead of opened_at timestamp
-const openedEmails = windowEmails.filter(email => email.opens > 0);
+
 
 const openRate = windowEmails.length > 0 ? ((openedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
 document.getElementById('openRate24h').textContent = `${openRate}%`;  
