@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,6 +129,84 @@
       font-size: 1.1rem;
     }
 
+    /* Enhanced Activity Window Filter */
+    .activity-window-section {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-left: 4px solid #bb133e;
+    }
+
+    .activity-window-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .activity-window-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .window-btn {
+      padding: 10px 15px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      color: #4a5568;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .window-btn.active {
+      background: #bb133e;
+      color: white;
+      border-color: #bb133e;
+    }
+
+    .custom-date-picker {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 15px;
+      padding: 15px;
+      background: #f7fafc;
+      border-radius: 8px;
+    }
+
+    .custom-date-picker.show {
+      display: grid;
+    }
+
+    .date-input-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .date-input-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 5px;
+    }
+
+    .date-input-group input {
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+    }
+
     .filters-section {
       background: white;
       border-radius: 10px;
@@ -169,6 +248,70 @@
       font-size: 14px;
     }
 
+    /* Multi-select for tags */
+    .tags-multiselect {
+      position: relative;
+    }
+
+    .tags-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .tags-dropdown.show {
+      display: block;
+    }
+
+    .tag-option {
+      padding: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-option:hover {
+      background: #f7fafc;
+    }
+
+    .tag-checkbox {
+      width: 16px;
+      height: 16px;
+    }
+
+    .selected-tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 5px;
+    }
+
+    .selected-tag {
+      background: #bb133e;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .selected-tag .remove {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
     .filter-tags {
       display: flex;
       gap: 10px;
@@ -183,6 +326,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      position: relative;
     }
 
     .filter-tag.active {
@@ -196,6 +340,30 @@
       border: 2px solid #cbd5e0;
     }
 
+    .filter-tag .count {
+      font-size: 0.8em;
+      opacity: 0.8;
+      margin-left: 5px;
+    }
+
+    .refresh-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .refresh-btn:hover {
+      background: #218838;
+    }
+
     .ai-insights {
       background: white;
       border-radius: 10px;
@@ -205,9 +373,15 @@
       border-left: 5px solid #667eea;
     }
 
+    .ai-insights-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
     .ai-insights h3 {
       color: #667eea;
-      margin-bottom: 20px;
       font-size: 1.2rem;
     }
 
@@ -236,6 +410,82 @@
       font-size: 0.9rem;
       min-width: 60px;
       text-align: center;
+    }
+
+    /* Sales Funnel Waterfall */
+    .funnel-section {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .funnel-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .funnel-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .funnel-level {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .funnel-level:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .funnel-bar {
+      flex: 1;
+      height: 40px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .funnel-bar.leads { background: linear-gradient(90deg, #4299e1, #3182ce); }
+    .funnel-bar.qualified { background: linear-gradient(90deg, #48bb78, #38a169); }
+    .funnel-bar.meetings { background: linear-gradient(90deg, #ed8936, #dd6b20); }
+    .funnel-bar.proposals { background: linear-gradient(90deg, #9f7aea, #805ad5); }
+    .funnel-bar.closing { background: linear-gradient(90deg, #f56565, #e53e3e); }
+    .funnel-bar.closed { background: linear-gradient(90deg, #38b2ac, #319795); }
+
+    .funnel-label {
+      color: white;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+    .funnel-count {
+      color: white;
+      font-weight: bold;
+      margin-left: auto;
+      z-index: 2;
+    }
+
+    .funnel-dropoff {
+      min-width: 80px;
+      text-align: center;
+      font-weight: 600;
+      color: #e53e3e;
     }
 
     .metrics-grid {
@@ -535,6 +785,135 @@
       color: #4a5568;
     }
 
+    /* Next Best Action Queue */
+    .action-queue-section {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-left: 5px solid #38a169;
+    }
+
+    .action-queue-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .action-queue-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .queue-item {
+      background: #f0fff4;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 12px;
+      border-left: 4px solid #38a169;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .queue-content {
+      flex: 1;
+    }
+
+    .queue-title {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 5px;
+    }
+
+    .queue-description {
+      color: #4a5568;
+      font-size: 0.9rem;
+    }
+
+    .queue-action {
+      padding: 8px 16px;
+      background: #38a169;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 10px 10px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .funnel-modal-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .funnel-contact-item {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .funnel-contact-item:hover {
+      background: #f7fafc;
+    }
+
+    .contact-name {
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .contact-company {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
     .loading-spinner {
       display: inline-block;
       width: 20px;
@@ -641,6 +1020,10 @@
         grid-template-columns: 1fr;
       }
 
+      .activity-window-controls {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .lead-actions {
         flex-direction: column;
         gap: 8px;
@@ -649,6 +1032,15 @@
       .action-btn {
         width: 100%;
         text-align: center;
+      }
+
+      .funnel-level {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .funnel-bar {
+        width: 100%;
       }
     }
   </style>
@@ -691,56 +1083,110 @@
 <div class="container">
   <div id="statusMessage" class="status-message"></div>
 
-  <div class="page-header" data-intro="Welcome to your AI Sales Intelligence Dashboard! This page provides live data analysis with meeting-aware lead scoring." data-step="1">
+  <div class="page-header" data-intro="Welcome to your enhanced AI Sales Intelligence Dashboard! This page provides comprehensive analytics driven by customizable time windows." data-step="1">
     <h1>AI Sales Intelligence Dashboard</h1>
-    <p>Live data analysis with meeting-aware lead scoring and real-time action queues</p>
+    <p>Advanced analytics with activity windows, sales funnel tracking, and AI-powered recommendations</p>
   </div>
 
-  <div class="filters-section" data-intro="Use these smart filters to drill down from macro analysis to micro focus on top prospects." data-step="2">
-    <div class="filters-title">Smart Quick Filters (Macro → Micro)</div>
+  <!-- Enhanced Activity Window Controls -->
+  <div class="activity-window-section" data-intro="Choose your activity window to filter all data on this page. Custom range gives you full control over date selection." data-step="2">
+    <div class="activity-window-title">
+      🕒 Activity Window Controls
+      <span style="font-size: 0.8rem; color: #718096;">(Drives all page functions)</span>
+    </div>
+    
+    <div class="activity-window-controls">
+      <button class="window-btn" data-window="24" onclick="setActivityWindow('24')">24h</button>
+      <button class="window-btn" data-window="72" onclick="setActivityWindow('72')">3d</button>
+      <button class="window-btn active" data-window="168" onclick="setActivityWindow('168')">7d</button>
+      <button class="window-btn" data-window="720" onclick="setActivityWindow('720')">30d</button>
+      <button class="window-btn" data-window="1440" onclick="setActivityWindow('1440')">60d</button>
+      <button class="window-btn" data-window="2160" onclick="setActivityWindow('2160')">90d</button>
+      <button class="window-btn" data-window="all" onclick="setActivityWindow('all')">All Time</button>
+      <button class="window-btn" data-window="custom" onclick="setActivityWindow('custom')">Custom Range</button>
+    </div>
+
+    <div id="customDatePicker" class="custom-date-picker">
+      <div class="date-input-group">
+        <label>Start Date</label>
+        <input type="date" id="startDate" onchange="updateCustomRange()">
+      </div>
+      <div class="date-input-group">
+        <label>End Date</label>
+        <input type="date" id="endDate" onchange="updateCustomRange()">
+      </div>
+    </div>
+  </div>
+
+  <div class="filters-section" data-intro="Advanced filtering options including tags, search, and behavioral patterns." data-step="3">
+    <div class="filters-title">Smart Quick Filters</div>
     
     <div class="filters-grid">
       <div class="filter-group">
         <label class="filter-label">Search Prospects</label>
-        <input type="text" id="searchInput" class="filter-input" placeholder="Name, company, or email...">
-      </div>
-      <div class="filter-group">
-        <label class="filter-label">Activity Window</label>
-        <select id="activityFilter" class="filter-select">
-          <option value="24">Last 24 hours</option>
-          <option value="72">Last 3 days</option>
-          <option value="168">Last 7 days</option>
-          <option value="720">Last 30 days</option>
-        </select>
+        <input type="text" id="searchInput" class="filter-input" placeholder="Name, company, or email..." onkeyup="applyFilters()">
       </div>
       <div class="filter-group">
         <label class="filter-label">Workflow</label>
-        <select id="workflowFilter" class="filter-select">
+        <select id="workflowFilter" class="filter-select" onchange="applyFilters()">
           <option value="">All Workflows</option>
         </select>
       </div>
       <div class="filter-group">
         <label class="filter-label">Priority Level</label>
-        <select id="priorityFilter" class="filter-select">
-          <option value="hot">Hot Prospects Only</option>
-          <option value="warm">Warm Prospects</option>
+        <select id="priorityFilter" class="filter-select" onchange="applyFilters()">
+          <option value="hot">Hot Prospects (>70)</option>
+          <option value="warm">Warm Prospects (40-70)</option>
+          <option value="cold">Cold Prospects (<40)</option>
           <option value="all">All Prospects</option>
         </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Tags</label>
+        <div class="tags-multiselect">
+          <input type="text" id="tagsInput" class="filter-input" placeholder="Select tags..." onclick="toggleTagsDropdown()" readonly>
+          <div id="tagsDropdown" class="tags-dropdown">
+            <!-- Dynamic tag options populated by JS -->
+          </div>
+          <div id="selectedTags" class="selected-tags">
+            <!-- Selected tags appear here -->
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="filter-tags">
-      <div class="filter-tag active" data-filter="meeting_week">Meeting This Week</div>
-      <div class="filter-tag inactive" data-filter="rsvp_yes">RSVP Yes</div>
-      <div class="filter-tag inactive" data-filter="no_show">No-Show</div>
-      <div class="filter-tag inactive" data-filter="clicked_24h">Clicked <24h</div>
-      <div class="filter-tag inactive" data-filter="opened_no_reply">Opened No Reply</div>
-      <div class="filter-tag inactive" data-filter="no_response_7d">No Response 7d</div>
+      <div class="filter-tag active" data-filter="meeting_week" onclick="toggleFilterTag(this)">
+        Meeting This Week <span class="count" id="meetingWeekCount">(0)</span>
+      </div>
+      <div class="filter-tag inactive" data-filter="rsvp_yes" onclick="toggleFilterTag(this)">
+        RSVP Yes <span class="count" id="rsvpYesCount">(0)</span>
+      </div>
+      <div class="filter-tag inactive" data-filter="no_show" onclick="toggleFilterTag(this)">
+        No-Show <span class="count" id="noShowCount">(0)</span>
+      </div>
+      <div class="filter-tag inactive" data-filter="clicked" onclick="toggleFilterTag(this)">
+        Clicked <span class="count" id="clickedCount">(0)</span>
+      </div>
+      <div class="filter-tag inactive" data-filter="opened_no_reply" onclick="toggleFilterTag(this)">
+        Opened No Reply <span class="count" id="openedNoReplyCount">(0)</span>
+      </div>
+      <div class="filter-tag inactive" data-filter="unopened" onclick="toggleFilterTag(this)">
+        Unopened <span class="count" id="unopenedCount">(0)</span>
+      </div>
+      <div class="filter-tag inactive" data-filter="replied" onclick="toggleFilterTag(this)">
+        Replied <span class="count" id="repliedCount">(0)</span>
+      </div>
     </div>
   </div>
 
-  <div class="ai-insights" data-intro="AI-powered recommendations based on your email engagement data and conversation summaries." data-step="3">
-    <h3>AI Priority Recommendations</h3>
+  <div class="ai-insights" data-intro="AI-powered recommendations refreshed from your latest performance data and behavioral patterns." data-step="4">
+    <div class="ai-insights-header">
+      <h3>AI Priority Recommendations</h3>
+      <button class="refresh-btn" onclick="refreshAIRecommendations()">
+        <span>🔄</span> Refresh
+      </button>
+    </div>
     <div id="aiRecommendations">
       <div class="insight-item">
         <div class="insight-text">Loading AI recommendations...</div>
@@ -749,15 +1195,23 @@
     </div>
   </div>
 
-  <div class="metrics-grid" data-intro="Key performance indicators updated in real-time from your email campaigns." data-step="4">
+  <!-- Sales Funnel Waterfall -->
+  <div class="funnel-section" data-intro="Sales funnel showing lead progression with drop-off rates. Click bottom 3 levels to see detailed contact lists." data-step="5">
+    <div class="funnel-title">Sales Funnel Waterfall</div>
+    <div class="funnel-container" id="salesFunnel">
+      <!-- Funnel levels populated by JavaScript -->
+    </div>
+  </div>
+
+  <div class="metrics-grid" data-intro="Key performance metrics updated based on your selected activity window." data-step="6">
     <div class="metric-card">
       <div class="metric-value" id="emailsSentToday">0</div>
-      <div class="metric-label">Emails Sent Today</div>
+      <div class="metric-label">Emails Sent</div>
       <div class="metric-trend" id="emailsTrend">Loading...</div>
     </div>
     <div class="metric-card">
       <div class="metric-value" id="openRate24h">0%</div>
-      <div class="metric-label">Open Rate (24h)</div>
+      <div class="metric-label">Open Rate</div>
       <div class="metric-trend" id="openRateTrend">Loading...</div>
     </div>
     <div class="metric-card">
@@ -782,8 +1236,27 @@
     </div>
   </div>
 
+  <!-- Next Best Action Queue -->
+  <div class="action-queue-section" data-intro="Auto-generated action recommendations based on AI analysis of your prospect behavior." data-step="7">
+    <div class="action-queue-header">
+      <div class="action-queue-title">Next Best Action Queue (Auto-Generated)</div>
+      <button class="refresh-btn" onclick="refreshActionQueue()">
+        <span>🔄</span> Refresh Queue
+      </button>
+    </div>
+    <div id="actionQueue">
+      <div class="queue-item">
+        <div class="queue-content">
+          <div class="queue-title">Loading action recommendations...</div>
+          <div class="queue-description">AI is analyzing your prospect behavior patterns</div>
+        </div>
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="dashboard-grid">
-    <div class="focus-section" data-intro="Your top-priority leads ranked by AI scoring. Click cards to expand details." data-step="5">
+    <div class="focus-section" data-intro="Top prospects based on your activity window selection. Lead scores update dynamically." data-step="8">
       <div class="focus-header">
         <div class="focus-title">Focus Now - Meeting-Aware Lead Scoring</div>
         <div class="focus-toggle">
@@ -800,13 +1273,28 @@
       </div>
     </div>
 
-    <div class="timeline-section" data-intro="Timeline shows all touchpoints with selected prospects." data-step="6">
+    <div class="timeline-section" data-intro="Timeline shows all touchpoints with selected prospects." data-step="9">
       <div class="timeline-title">Live Timeline (Thread-Aware)</div>
       
       <div id="timelineContainer" class="timeline-container">
         <div style="text-align: center; padding: 40px; color: #718096;">
           Select a prospect to view their timeline
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Funnel Level Modal -->
+<div id="funnelModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="funnelModalTitle">Funnel Level Details</h2>
+      <span class="close" onclick="closeFunnelModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div id="funnelModalContent" class="funnel-modal-list">
+        <!-- Contact list populated by JavaScript -->
       </div>
     </div>
   </div>
@@ -835,11 +1323,15 @@ const ENDPOINTS = {
   getCampaignFiles: 'https://victoryvision.app.n8n.cloud/webhook/campaign_files/get',
   getUser: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   
-  // AI webhooks
+  // Enhanced AI webhooks
   aiPriorityRecommendations: 'https://victoryvision.app.n8n.cloud/webhook/ai/priority-recommendations',
   performanceAlerts: 'https://victoryvision.app.n8n.cloud/webhook/performance/alerts',
   nextActions: 'https://victoryvision.app.n8n.cloud/webhook/ai/next-actions',
   timelineRecommendations: 'https://victoryvision.app.n8n.cloud/webhook/ai/timeline-recommendations',
+  
+  // New required webhooks
+  rsvpUpdate: 'https://victoryvision.app.n8n.cloud/webhook/meeting_invites/rsvp-update',
+  attendanceTrack: 'https://victoryvision.app.n8n.cloud/webhook/meetings/attendance-track',
   
   // Action webhooks
   sendEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/send',
@@ -860,6 +1352,11 @@ let allCampaignFiles = [];
 let focusView = 'top5';
 let filteredProspects = [];
 let selectedContact = null;
+let currentActivityWindow = '168'; // Default to 7 days
+let customStartDate = null;
+let customEndDate = null;
+let selectedTags = [];
+let availableTags = [];
 
 // Authentication
 async function checkAuthentication() {
@@ -888,6 +1385,148 @@ async function checkAuthentication() {
 function redirectToLogin() {
   localStorage.removeItem('vv_session');
   window.location.href = 'login.html';
+}
+
+// Enhanced activity window functionality
+function setActivityWindow(window) {
+  currentActivityWindow = window;
+  
+  // Update button states
+  document.querySelectorAll('.window-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  document.querySelector(`[data-window="${window}"]`).classList.add('active');
+  
+  // Show/hide custom date picker
+  const customPicker = document.getElementById('customDatePicker');
+  if (window === 'custom') {
+    customPicker.classList.add('show');
+    // Set default dates if not set
+    if (!customStartDate) {
+      const endDate = new Date();
+      const startDate = new Date(endDate.getTime() - (30 * 24 * 60 * 60 * 1000)); // 30 days ago
+      document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+      document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+      updateCustomRange();
+    }
+  } else {
+    customPicker.classList.remove('show');
+    customStartDate = null;
+    customEndDate = null;
+  }
+  
+  // Refresh all data based on new window
+  processProspects();
+  updateMetrics();
+  updateFilterCounts();
+  updateSalesFunnel();
+  refreshActionQueue();
+}
+
+function updateCustomRange() {
+  customStartDate = document.getElementById('startDate').value;
+  customEndDate = document.getElementById('endDate').value;
+  
+  if (customStartDate && customEndDate) {
+    processProspects();
+    updateMetrics();
+    updateFilterCounts();
+    updateSalesFunnel();
+    refreshActionQueue();
+  }
+}
+
+// Get activity window date range
+function getActivityDateRange() {
+  const now = new Date();
+  
+  if (currentActivityWindow === 'custom') {
+    return {
+      start: customStartDate ? new Date(customStartDate) : new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000)),
+      end: customEndDate ? new Date(customEndDate) : now
+    };
+  } else if (currentActivityWindow === 'all') {
+    return {
+      start: new Date('2020-01-01'), // Far past date
+      end: now
+    };
+  } else {
+    const hours = parseInt(currentActivityWindow);
+    return {
+      start: new Date(now.getTime() - (hours * 60 * 60 * 1000)),
+      end: now
+    };
+  }
+}
+
+// Enhanced tags functionality
+function initializeTags() {
+  // Extract unique tags from all contacts
+  const tagSet = new Set();
+  allContacts.forEach(contact => {
+    if (contact.tags) {
+      const contactTags = typeof contact.tags === 'string' ? 
+        contact.tags.split(',').map(t => t.trim()) : 
+        (Array.isArray(contact.tags) ? contact.tags : []);
+      contactTags.forEach(tag => {
+        if (tag && tag.length > 0) tagSet.add(tag);
+      });
+    }
+  });
+  
+  availableTags = Array.from(tagSet).sort();
+  populateTagsDropdown();
+}
+
+function populateTagsDropdown() {
+  const dropdown = document.getElementById('tagsDropdown');
+  dropdown.innerHTML = availableTags.map(tag => `
+    <div class="tag-option" onclick="toggleTagSelection('${tag}')">
+      <input type="checkbox" class="tag-checkbox" id="tag-${tag}" ${selectedTags.includes(tag) ? 'checked' : ''}>
+      <label for="tag-${tag}">${tag}</label>
+    </div>
+  `).join('');
+}
+
+function toggleTagsDropdown() {
+  const dropdown = document.getElementById('tagsDropdown');
+  dropdown.classList.toggle('show');
+}
+
+function toggleTagSelection(tag) {
+  const index = selectedTags.indexOf(tag);
+  if (index > -1) {
+    selectedTags.splice(index, 1);
+  } else {
+    selectedTags.push(tag);
+  }
+  
+  updateSelectedTagsDisplay();
+  populateTagsDropdown();
+  applyFilters();
+}
+
+function updateSelectedTagsDisplay() {
+  const container = document.getElementById('selectedTags');
+  container.innerHTML = selectedTags.map(tag => `
+    <div class="selected-tag">
+      ${tag}
+      <span class="remove" onclick="removeTag('${tag}')">&times;</span>
+    </div>
+  `).join('');
+  
+  // Update input placeholder
+  const input = document.getElementById('tagsInput');
+  input.placeholder = selectedTags.length > 0 ? 
+    `${selectedTags.length} tag(s) selected` : 
+    'Select tags...';
+}
+
+function removeTag(tag) {
+  selectedTags = selectedTags.filter(t => t !== tag);
+  updateSelectedTagsDisplay();
+  populateTagsDropdown();
+  applyFilters();
 }
 
 // API call function
@@ -942,38 +1581,39 @@ function sanitizeInput(value) {
     });
 }
 
-// Lead scoring algorithm
+// Enhanced lead scoring algorithm with activity window awareness
 function calculateLeadScore(contact, emails, meetings, meetingInvites) {
   let score = 0;
-  const now = new Date();
-  const last72h = new Date(now.getTime() - (72 * 60 * 60 * 1000));
-  const last14d = new Date(now.getTime() - (14 * 24 * 60 * 60 * 1000));
+  const dateRange = getActivityDateRange();
 
   const contactEmails = emails.filter(email => 
-    email.to_email === contact.email || email.to === contact.email
+    (email.to_email === contact.email || email.to === contact.email) &&
+    (email.sent_at && new Date(email.sent_at) >= dateRange.start && new Date(email.sent_at) <= dateRange.end)
   );
 
-  // Recent click activity (+45)
+  // Recent click activity within window (+45)
   const recentClicks = contactEmails.some(email => 
-    (email.clicked_at && new Date(email.clicked_at) > last72h) ||
-    (contact.last_clicked_date && new Date(contact.last_clicked_date) > last72h)
+    (email.clicked_at && new Date(email.clicked_at) >= dateRange.start && new Date(email.clicked_at) <= dateRange.end) ||
+    (contact.last_clicked_date && new Date(contact.last_clicked_date) >= dateRange.start && new Date(contact.last_clicked_date) <= dateRange.end)
   );
   if (recentClicks) score += 45;
 
-  // Recent open activity (+30)
+  // Recent open activity within window (+30)
   const recentOpens = contactEmails.some(email => 
-    (email.opened_at && new Date(email.opened_at) > last72h) ||
-    (contact.last_opened_date && new Date(contact.last_opened_date) > last72h)
+    (email.opened_at && new Date(email.opened_at) >= dateRange.start && new Date(email.opened_at) <= dateRange.end) ||
+    (contact.last_opened_date && new Date(contact.last_opened_date) >= dateRange.start && new Date(contact.last_opened_date) <= dateRange.end)
   );
   if (recentOpens) score += 30;
 
-  // Multiple opens (+15)
-  const totalOpens = contactEmails.reduce((sum, email) => sum + (email.opens || 0), 0);
-  if (totalOpens >= 3) score += 15;
+  // Multiple opens within window (+15)
+  const windowOpens = contactEmails.reduce((sum, email) => 
+    sum + (email.opens && new Date(email.opened_at || email.sent_at) >= dateRange.start ? email.opens : 0), 0);
+  if (windowOpens >= 3) score += 15;
 
-  // Multiple clicks (+10)
-  const totalClicks = contactEmails.reduce((sum, email) => sum + (email.clicks || 0), 0);
-  if (totalClicks >= 2) score += 10;
+  // Multiple clicks within window (+10)
+  const windowClicks = contactEmails.reduce((sum, email) => 
+    sum + (email.clicks && new Date(email.clicked_at || email.sent_at) >= dateRange.start ? email.clicks : 0), 0);
+  if (windowClicks >= 2) score += 10;
 
   // Conversation summary keywords (+10)
   const summary = (contact.conversation_summary || '').toLowerCase();
@@ -981,602 +1621,36 @@ function calculateLeadScore(contact, emails, meetings, meetingInvites) {
     score += 10;
   }
 
-  // Future meetings (+20)
+  // Future meetings within extended window (+20)
   const futureMeetings = meetings.filter(meeting => 
     meeting.contact_email === contact.email &&
     meeting.status === 'scheduled' &&
-    new Date(meeting.start_at) > now
+    new Date(meeting.start_at) > dateRange.start
   );
   if (futureMeetings.length > 0) score += 20;
 
-  // RSVP yes (+10)
+  // RSVP yes within window (+10)
   const rsvpYes = meetingInvites.some(invite => 
-    invite.contact_email === contact.email && invite.rsvp === 'yes'
+    invite.contact_email === contact.email && 
+    invite.rsvp === 'yes' &&
+    new Date(invite.created_at || invite.updated_at) >= dateRange.start
   );
   if (rsvpYes) score += 10;
 
-  // Penalties
-  if (contact.last_emailed_date && new Date(contact.last_emailed_date) < last14d) {
+  // Replied within window (+25)
+  const repliedInWindow = contactEmails.some(email => 
+    email.replied_at && new Date(email.replied_at) >= dateRange.start && new Date(email.replied_at) <= dateRange.end
+  );
+  if (repliedInWindow) score += 25;
+
+  // Penalties for inactivity
+  if (contact.last_emailed_date && new Date(contact.last_emailed_date) < dateRange.start) {
     score -= 10;
   }
 
-  if (!contact.last_responded && totalOpens === 0 && totalClicks === 0) {
+  if (!contact.last_responded && windowOpens === 0 && windowClicks === 0) {
     score -= 15;
   }
 
   return Math.max(0, score);
 }
-
-// Create lead card HTML
-function createLeadCard(contact, score, emails, meetings) {
-  const contactEmails = emails.filter(email => 
-    email.to_email === contact.email || email.to === contact.email
-  );
-  
-  const futureMeetings = meetings.filter(meeting => 
-    meeting.contact_email === contact.email &&
-    meeting.status === 'scheduled' &&
-    new Date(meeting.start_at) > new Date()
-  );
-
-  const nextMeeting = futureMeetings.length > 0 ? 
-    new Date(futureMeetings[0].start_at).toLocaleString() : null;
-
-  // Generate badges
-  const badges = [];
-  const now = new Date();
-  const last24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-  
-  if (contact.last_opened_date && new Date(contact.last_opened_date) > last24h) {
-    badges.push('<span class="badge info">Opened <24h</span>');
-  }
-  
-  if (contact.last_clicked_date && new Date(contact.last_clicked_date) > last24h) {
-    badges.push('<span class="badge warning">Clicked <24h</span>');
-  }
-  
-  if (contact.last_responded) {
-    badges.push('<span class="badge success">Replied</span>');
-  }
-  
-  if (nextMeeting) {
-    badges.push('<span class="badge info">Meeting Set</span>');
-  }
-  
-  const last7d = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-  if (!contact.last_responded && (!contact.last_emailed_date || new Date(contact.last_emailed_date) < last7d)) {
-    badges.push('<span class="badge danger">No response 7d</span>');
-  }
-
-  return `
-    <div class="lead-card" data-contact-id="${contact.id}" onclick="toggleLeadDetails(this); selectContact('${contact.email}')">
-      <div class="lead-header">
-        <div class="lead-score">${score}</div>
-        <div class="lead-basic-info">
-          <div class="lead-name">${sanitizeInput(contact.name || 'Unknown')}</div>
-          <div class="lead-company">${sanitizeInput(contact.company || '')} • ${sanitizeInput(contact.city || '')}</div>
-        </div>
-      </div>
-      
-      <div class="lead-details">
-        <div class="lead-summary">"${sanitizeInput(contact.conversation_summary || 'No conversation summary available')}"</div>
-        
-        <div class="lead-badges">
-          ${badges.join('')}
-        </div>
-        
-        <div class="lead-actions">
-          <button class="action-btn primary" onclick="event.stopPropagation(); openEmailModal('${contact.email}', '${sanitizeInput(contact.name)}')">Email</button>
-          <button class="action-btn success" onclick="event.stopPropagation(); createMeeting('${contact.email}')">Meeting</button>
-          <button class="action-btn warning" onclick="event.stopPropagation(); createPresentation('${contact.email}')">Presentation</button>
-          <button class="action-btn info" onclick="event.stopPropagation(); createSMS('${contact.email}')">SMS</button>
-          <button class="action-btn danger" onclick="event.stopPropagation(); makeCall('${contact.phone_number}')">Call</button>
-          <button class="action-btn secondary" onclick="event.stopPropagation(); archiveContact('${contact.id}')">Archive</button>
-        </div>
-        
-        ${nextMeeting ? `<div class="next-meeting">Next: ${nextMeeting}</div>` : ''}
-      </div>
-    </div>
-  `;
-}
-
-// Load all data
-async function loadAllData() {
-  try {
-    showStatus('Loading AI analytics data...', false);
-
-    const [emailsResponse, contactsResponse, meetingsResponse, meetingInvitesResponse, campaignFilesResponse, userResponse] = await Promise.allSettled([
-      apiCall(ENDPOINTS.getEmails, 'POST'),
-      apiCall(ENDPOINTS.getContacts, 'POST'),
-      apiCall(ENDPOINTS.getMeetings, 'POST').catch(() => ({ meetings: [] })),
-      apiCall(ENDPOINTS.getMeetingInvites, 'POST').catch(() => ({ meeting_invites: [] })),
-      apiCall(ENDPOINTS.getCampaignFiles, 'POST').catch(() => ({ campaign_files: [] })),
-      apiCall(ENDPOINTS.getUser, 'GET')
-    ]);
-
-    // Process responses
-    if (emailsResponse.status === 'fulfilled') {
-      allEmails = Array.isArray(emailsResponse.value) ? emailsResponse.value : 
-                 emailsResponse.value.emails || [];
-    }
-
-    if (contactsResponse.status === 'fulfilled') {
-      allContacts = Array.isArray(contactsResponse.value) ? contactsResponse.value : 
-                   contactsResponse.value.contacts || [];
-    }
-
-    if (meetingsResponse.status === 'fulfilled') {
-      allMeetings = Array.isArray(meetingsResponse.value) ? meetingsResponse.value : 
-                   meetingsResponse.value.meetings || [];
-    }
-
-    if (meetingInvitesResponse.status === 'fulfilled') {
-      allMeetingInvites = Array.isArray(meetingInvitesResponse.value) ? meetingInvitesResponse.value : 
-                         meetingInvitesResponse.value.meeting_invites || [];
-    }
-
-    if (campaignFilesResponse.status === 'fulfilled') {
-      allCampaignFiles = Array.isArray(campaignFilesResponse.value) ? campaignFilesResponse.value : 
-                        campaignFilesResponse.value.campaign_files || [];
-    }
-
-    if (userResponse.status === 'fulfilled') {
-      const userData = Array.isArray(userResponse.value) ? userResponse.value[0] : userResponse.value;
-      updateSubscriptionMedallion(userData?.subscription_plan || 'Bronze');
-    }
-
-    console.log('Data loaded:', { 
-      emails: allEmails.length, 
-      contacts: allContacts.length, 
-      meetings: allMeetings.length,
-      meetingInvites: allMeetingInvites.length,
-      campaignFiles: allCampaignFiles.length
-    });
-
-    await processProspects();
-    await updateMetrics();
-    await loadAIRecommendations();
-    populateWorkflowFilter();
-    
-    showStatus('AI analytics loaded successfully!', false);
-    setTimeout(() => document.getElementById('statusMessage').style.display = 'none', 3000);
-
-  } catch (error) {
-    console.error('Error loading data:', error);
-    showStatus('Error loading analytics data: ' + error.message, true);
-  }
-}
-
-// Process prospects with lead scoring
-function processProspects() {
-  const scoredProspects = allContacts.map(contact => {
-    const score = calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites);
-    return { ...contact, lead_score: score };
-  });
-
-  filteredProspects = scoredProspects.sort((a, b) => b.lead_score - a.lead_score);
-  updateFocusLeads();
-}
-
-// Update focus leads display
-function updateFocusLeads() {
-  const count = focusView === 'top5' ? 5 : 25;
-  const topProspects = filteredProspects.slice(0, count);
-  
-  const focusContainer = document.getElementById('focusLeads');
-  if (topProspects.length === 0) {
-    focusContainer.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: #718096;">
-        No prospects found matching current filters
-      </div>
-    `;
-    return;
-  }
-  
-  focusContainer.innerHTML = topProspects.map(contact => 
-    createLeadCard(contact, contact.lead_score, allEmails, allMeetings)
-  ).join('');
-}
-
-// Update metrics with live data
-function updateMetrics() {
-  const now = new Date();
-  const last24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-  const yesterday = new Date(now.getTime() - (48 * 60 * 60 * 1000));
-  
-  const todayEmails = allEmails.filter(email => 
-    email.sent_at && new Date(email.sent_at) > last24h
-  );
-  
-  const yesterdayEmails = allEmails.filter(email => 
-    email.sent_at && new Date(email.sent_at) > yesterday && new Date(email.sent_at) <= last24h
-  );
-  
-  document.getElementById('emailsSentToday').textContent = todayEmails.length.toLocaleString();
-  
-  const emailTrend = todayEmails.length - yesterdayEmails.length;
-  document.getElementById('emailsTrend').textContent = emailTrend >= 0 ? `↗ +${emailTrend} vs yesterday` : `↘ ${emailTrend} vs yesterday`;
-  document.getElementById('emailsTrend').className = `metric-trend ${emailTrend >= 0 ? 'up' : 'down'}`;
-  
-  const totalOpens = allEmails.reduce((sum, email) => sum + (email.opens || 0), 0);
-  const openRate = allEmails.length > 0 ? ((totalOpens / allEmails.length) * 100).toFixed(1) : 0;
-  document.getElementById('openRate24h').textContent = `${openRate}%`;
-  
-  const totalReplies = allEmails.filter(email => email.replied_at).length;
-  const replyRate = allEmails.length > 0 ? ((totalReplies / allEmails.length) * 100).toFixed(1) : 0;
-  document.getElementById('replyRate').textContent = `${replyRate}%`;
-  
-  const scheduledMeetings = allMeetings.filter(meeting => 
-    meeting.status === 'scheduled' && new Date(meeting.start_at) > now
-  );
-  document.getElementById('meetingsScheduled').textContent = scheduledMeetings.length;
-  
-  const pipelineValue = allContacts.reduce((sum, contact) => 
-    sum + (parseFloat(contact.client_ann_est) || 0), 0
-  );
-  document.getElementById('pipelineValue').textContent = `${(pipelineValue / 1000).toFixed(0)}K`;
-  
-  const hotProspects = filteredProspects.filter(prospect => prospect.lead_score > 70);
-  document.getElementById('hotProspects').textContent = hotProspects.length;
-
-  // Set trend placeholders
-  document.getElementById('openRateTrend').textContent = 'vs avg';
-  document.getElementById('replyRateTrend').textContent = 'vs avg';
-  document.getElementById('meetingsTrend').textContent = 'this week';
-  document.getElementById('pipelineTrend').textContent = 'total value';
-  document.getElementById('hotProspectsTrend').textContent = 'score >70';
-}
-
-// Load AI recommendations
-async function loadAIRecommendations() {
-  try {
-    const response = await apiCall(ENDPOINTS.aiPriorityRecommendations, 'POST', {
-      contacts: allContacts.slice(0, 10), // Send top contacts only
-      goals: []
-    });
-
-    const recommendations = response.recommendations || [];
-    const container = document.getElementById('aiRecommendations');
-    
-    if (recommendations.length === 0) {
-      container.innerHTML = `
-        <div class="insight-item">
-          <div class="insight-text">No AI recommendations available at this time</div>
-          <div class="priority-score">--</div>
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML = recommendations.map(rec => `
-      <div class="insight-item">
-        <div class="insight-text">${sanitizeInput(rec.text || rec.message || 'Recommendation available')}</div>
-        <div class="priority-score">${rec.priority || rec.score || 'High'}</div>
-      </div>
-    `).join('');
-
-  } catch (error) {
-    console.error('Error loading AI recommendations:', error);
-    document.getElementById('aiRecommendations').innerHTML = `
-      <div class="insight-item">
-        <div class="insight-text">Generate recommendations from conversation summaries and goals</div>
-        <div class="priority-score">AI</div>
-      </div>
-    `;
-  }
-}
-
-// Helper functions
-function populateWorkflowFilter() {
-  const workflows = [...new Set(allContacts.map(c => c.workflow).filter(Boolean))];
-  const select = document.getElementById('workflowFilter');
-  
-  workflows.forEach(workflow => {
-    const option = document.createElement('option');
-    option.value = workflow;
-    option.textContent = workflow;
-    select.appendChild(option);
-  });
-}
-
-function updateSubscriptionMedallion(plan) {
-  const medallion = document.getElementById('subscriptionMedallion');
-  const planName = medallion.querySelector('.plan-name');
-  
-  const validPlans = ['Bronze', 'Silver', 'Gold'];
-  const safePlan = validPlans.includes(plan) ? plan : 'Bronze';
-  
-  medallion.className = `subscription-medallion ${safePlan.toLowerCase()}`;
-  planName.textContent = safePlan;
-}
-
-function showStatus(message, isError = false) {
-  const statusDiv = document.getElementById('statusMessage');
-  statusDiv.textContent = message;
-  statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
-  statusDiv.style.display = 'block';
-  
-  setTimeout(() => {
-    statusDiv.style.display = 'none';
-  }, 5000);
-}
-
-// Focus view toggle
-function setFocusView(view) {
-  focusView = view;
-  
-  document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.className = 'toggle-btn inactive';
-  });
-  
-  event.target.className = 'toggle-btn active';
-  updateFocusLeads();
-}
-
-// Toggle lead details
-function toggleLeadDetails(card) {
-  const details = card.querySelector('.lead-details');
-  details.classList.toggle('expanded');
-}
-
-// Select contact for timeline
-function selectContact(email) {
-  selectedContact = allContacts.find(c => c.email === email);
-  if (selectedContact) {
-    loadContactTimeline(selectedContact);
-  }
-}
-
-// Load contact timeline
-function loadContactTimeline(contact) {
-  const container = document.getElementById('timelineContainer');
-  const contactEmails = allEmails.filter(email => 
-    email.to_email === contact.email || email.to === contact.email
-  );
-  
-  const contactMeetings = allMeetings.filter(meeting => 
-    meeting.contact_email === contact.email
-  );
-
-  const events = [];
-
-  contactEmails.forEach(email => {
-    if (email.sent_at) {
-      events.push({
-        date: new Date(email.sent_at),
-        text: `Email sent: "${email.subject || 'No subject'}"`,
-        color: '#667eea'
-      });
-    }
-    if (email.opened_at) {
-      events.push({
-        date: new Date(email.opened_at),
-        text: `Opened email${email.opens > 1 ? ` (${email.opens} times)` : ''}`,
-        color: '#38a169'
-      });
-    }
-    if (email.clicked_at) {
-      events.push({
-        date: new Date(email.clicked_at),
-        text: `Clicked link in email`,
-        color: '#ffa726'
-      });
-    }
-    if (email.replied_at) {
-      events.push({
-        date: new Date(email.replied_at),
-        text: `Replied to email`,
-        color: '#e53e3e'
-      });
-    }
-  });
-
-  contactMeetings.forEach(meeting => {
-    events.push({
-      date: new Date(meeting.start_at),
-      text: `Meeting: ${meeting.status}`,
-      color: '#764ba2'
-    });
-  });
-
-  events.sort((a, b) => b.date - a.date);
-
-  container.innerHTML = events.length > 0 ? events.map(event => `
-    <div class="timeline-item">
-      <div class="timeline-dot" style="background: ${event.color};"></div>
-      <div class="timeline-text">${event.date.toLocaleString()} - ${sanitizeInput(event.text)}</div>
-    </div>
-  `).join('') : '<div style="text-align: center; padding: 20px; color: #718096;">No activity found for this contact</div>';
-}
-
-// Filter functionality
-function setupFilters() {
-  document.getElementById('searchInput').addEventListener('input', applyFilters);
-  document.getElementById('activityFilter').addEventListener('change', applyFilters);
-  document.getElementById('workflowFilter').addEventListener('change', applyFilters);
-  document.getElementById('priorityFilter').addEventListener('change', applyFilters);
-  
-  document.querySelectorAll('.filter-tag').forEach(tag => {
-    tag.addEventListener('click', function() {
-      this.classList.toggle('active');
-      this.classList.toggle('inactive');
-      applyFilters();
-    });
-  });
-}
-
-function applyFilters() {
-  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-  const activityHours = parseInt(document.getElementById('activityFilter').value);
-  const workflow = document.getElementById('workflowFilter').value;
-  const priority = document.getElementById('priorityFilter').value;
-  
-  const activeTags = Array.from(document.querySelectorAll('.filter-tag.active'))
-    .map(tag => tag.dataset.filter);
-
-  const now = new Date();
-  const activityCutoff = new Date(now.getTime() - (activityHours * 60 * 60 * 1000));
-
-  let filtered = allContacts.map(contact => {
-    const score = calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites);
-    return { ...contact, lead_score: score };
-  });
-
-  if (searchTerm) {
-    filtered = filtered.filter(contact => 
-      (contact.name || '').toLowerCase().includes(searchTerm) ||
-      (contact.company || '').toLowerCase().includes(searchTerm) ||
-      (contact.email || '').toLowerCase().includes(searchTerm)
-    );
-  }
-
-  if (workflow) {
-    filtered = filtered.filter(contact => contact.workflow === workflow);
-  }
-
-  if (priority === 'hot') {
-    filtered = filtered.filter(contact => contact.lead_score > 70);
-  } else if (priority === 'warm') {
-    filtered = filtered.filter(contact => contact.lead_score > 40 && contact.lead_score <= 70);
-  }
-
-  filteredProspects = filtered.sort((a, b) => b.lead_score - a.lead_score);
-  updateFocusLeads();
-}
-
-// Action functions
-async function createMeeting(email) {
-  try {
-    showStatus('Creating meeting invitation...', false);
-    
-    const response = await apiCall(ENDPOINTS.createMeeting, 'POST', {
-      contact_email: email,
-      subject: 'Victory Vision Demo Meeting',
-      duration: 30
-    });
-    
-    showStatus('Meeting invitation sent successfully!', false);
-  } catch (error) {
-    showStatus('Error creating meeting: ' + error.message, true);
-  }
-}
-
-async function createPresentation(email) {
-  try {
-    showStatus('Creating presentation...', false);
-    
-    const response = await apiCall(ENDPOINTS.createPresentation, 'POST', {
-      contact_email: email,
-      template: 'demo_presentation'
-    });
-    
-    showStatus('Presentation created successfully!', false);
-  } catch (error) {
-    showStatus('Error creating presentation: ' + error.message, true);
-  }
-}
-
-async function createSMS(email) {
-  try {
-    const contact = allContacts.find(c => c.email === email);
-    if (!contact?.phone_number) {
-      showStatus('No phone number available for this contact', true);
-      return;
-    }
-
-    const message = prompt('Enter SMS message:');
-    if (!message) return;
-
-    showStatus('Sending SMS...', false);
-    
-    const response = await apiCall(ENDPOINTS.createSMS, 'POST', {
-      to: contact.phone_number,
-      message: message,
-      contact_email: email
-    });
-    
-    showStatus('SMS sent successfully!', false);
-  } catch (error) {
-    showStatus('Error sending SMS: ' + error.message, true);
-  }
-}
-
-async function makeCall(phoneNumber) {
-  try {
-    if (!phoneNumber) {
-      showStatus('No phone number available for this contact', true);
-      return;
-    }
-
-    showStatus('Initiating call...', false);
-    
-    const response = await apiCall(ENDPOINTS.makeCall, 'POST', {
-      to: phoneNumber
-    });
-    
-    showStatus('Call initiated successfully!', false);
-  } catch (error) {
-    showStatus('Error making call: ' + error.message, true);
-  }
-}
-
-function archiveContact(contactId) {
-  if (confirm('Archive this contact? They will be removed from active prospect lists.')) {
-    showStatus('Contact archived successfully', false);
-    processProspects();
-  }
-}
-
-function openEmailModal(email, name) {
-  alert(`Email modal would open for ${name} (${email}). Email functionality can be added here.`);
-}
-
-// Tour functionality
-function startTour() {
-  introJs().setOptions({
-    showProgress: true,
-    showBullets: false,
-    exitOnOverlayClick: false,
-    nextLabel: 'Next →',
-    prevLabel: '← Back',
-    doneLabel: 'Complete Tour!',
-    skipLabel: 'Skip Tour'
-  }).start();
-}
-
-// Initialize page
-document.addEventListener('DOMContentLoaded', async function() {
-  document.getElementById('authLoading').style.display = 'flex';
-  
-  try {
-    const isAuthenticated = await checkAuthentication();
-    
-    if (isAuthenticated) {
-      document.getElementById('authLoading').style.display = 'none';
-      setupFilters();
-      await loadAllData();
-    } else {
-      redirectToLogin();
-    }
-  } catch (e) {
-    console.error('Initialization failed:', e);
-    redirectToLogin();
-  }
-});
-
-// Session management
-setInterval(async function() {
-  try {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-      redirectToLogin();
-    }
-  } catch (e) {
-    console.error('Session check failed:', e);
-    redirectToLogin();
-  }
-}, 300000);
-
-</script>
-</body>
-</html>
