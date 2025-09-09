@@ -768,7 +768,12 @@
   <div class="metric-label">Open Rate</div>
   <div class="metric-trend" id="openRateTrend">Loading...</div>
 </div>
-<div class="metric-card" onclick="showMetricQuery('replies', 'Contacts Who Replied')">
+<div class="metric-card" onclick="showMetricQuery('clicks', 'Contacts Who Clicked')">
+  <div class="metric-value" id="clickRate">0%</div>
+  <div class="metric-label">Click Rate</div>
+  <div class="metric-trend" id="clickTrend">Loading...</div>
+</div>
+    <div class="metric-card" onclick="showMetricQuery('replies', 'Contacts Who Replied')">
   <div class="metric-value" id="replyRate">0%</div>
   <div class="metric-label">Reply Rate</div>
   <div class="metric-trend" id="replyRateTrend">Loading...</div>
@@ -782,11 +787,6 @@
       <div class="metric-value" id="pipelineValue">$0</div>
       <div class="metric-label">Pipeline Value</div>
       <div class="metric-trend" id="pipelineTrend">Loading...</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-value" id="hotProspects">0</div>
-      <div class="metric-label">Hot Prospects</div>
-      <div class="metric-trend" id="hotProspectsTrend">Loading...</div>
     </div>
   </div>
 
@@ -1277,7 +1277,10 @@ const openedEmails = windowEmails.filter(email => email.opens > 0);
 const openRate = windowEmails.length > 0 ? ((openedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
 document.getElementById('openRate24h').textContent = `${openRate}%`;  
   
-  
+const clickedEmails = windowEmails.filter(email => email.clicks > 0);
+const clickRate = windowEmails.length > 0 ? ((clickedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
+document.getElementById('clickRate').textContent = `${clickRate}%`;
+document.getElementById('clickTrend').textContent = windowLabel;  
   const totalReplies = windowEmails.filter(email => 
     email.replied_at && new Date(email.replied_at) >= dateRange.start && new Date(email.replied_at) <= dateRange.end
   ).length;
@@ -1646,7 +1649,23 @@ case 'opens':
     lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
   }));
   break;
-      
+case 'clicks':
+  const clickedEmails = allEmails.filter(email => 
+    email.sent_at &&
+    new Date(email.sent_at) >= dateRange.start && 
+    new Date(email.sent_at) <= dateRange.end &&
+    email.clicks > 0
+  );
+  
+  const clickedContactEmails = [...new Set(clickedEmails.map(email => email.to_email || email.to))];
+  
+  queryResults = clickedContactEmails.map(email => 
+    allContacts.find(c => c.email === email)
+  ).filter(Boolean).map(contact => ({
+    ...contact,
+    lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
+  }));
+  break;      
    case 'replies':
   // Get emails with replies in the time window
   const repliedEmails = allEmails.filter(email => 
