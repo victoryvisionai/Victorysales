@@ -1,20 +1,31 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Victory Vision | AI-Powered Digital Billboard Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/twitter/twemoji/assets/72x72/1f4bb.png" />
+  <meta name="description" content="Victory Vision's AI-powered digital billboard platform helps mid-sized businesses drive measurable ROI through predictive targeting and performance-driven outdoor advertising." />
+  <meta property="og:title" content="Victory Vision | AI-Powered Digital Billboard Platform" />
+  <meta property="og:description" content="Transform your customer reach with AI-automated billboard advertising. Personalized targeting, analytics, and ROI optimization." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <style>
     :root {
       --primary: #0a3161;
       --accent: #bb133e;
       --white: #ffffff;
       --font: 'Inter', sans-serif;
+      --light-gray: #f1f3f5;
     }
 
-    * {
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -22,21 +33,26 @@
 
     body {
       font-family: var(--font);
-      line-height: 1.6;
       background-color: var(--white);
       color: var(--primary);
-    }
-
-    header video {
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
     header {
       position: relative;
       text-align: center;
       overflow: hidden;
+      height: 100vh;
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     header::after {
@@ -51,13 +67,16 @@
     }
 
     .hero-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      position: relative;
       z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 1rem;
       color: var(--white);
-      max-width: 90%;
+      text-align: center;
     }
 
     .hero-content img {
@@ -71,13 +90,29 @@
       margin-bottom: 1rem;
     }
 
-    .hero-content p {
-      font-size: 1.25rem;
-      max-width: 700px;
-      margin: 0 auto;
+    .hero-content h2 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 1.5rem;
     }
 
-    section {
+    .btn-secondary {
+      display: inline-block;
+      margin-top: 1rem;
+      background-color: var(--accent);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      background-color: #a30f33;
+    }
+
+    main section {
       padding: 4rem 1rem;
       max-width: 1200px;
       margin: 0 auto;
@@ -96,6 +131,15 @@
     .intro p {
       font-size: 1.125rem;
       color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .divider {
+      margin: 4rem auto;
+      height: 2px;
+      background-color: #ddd;
+      max-width: 800px;
     }
 
     .problem {
@@ -103,6 +147,9 @@
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
       align-items: center;
+      background-color: #f8f9fc;
+      padding: 3rem;
+      border-radius: 10px;
     }
 
     .problem h2 {
@@ -113,6 +160,25 @@
 
     .problem p {
       font-size: 1.125rem;
+      color: #333;
+    }
+
+    .problem img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .feature-section {
+      background-color: var(--light-gray);
+      padding: 4rem 1rem;
+      border-radius: 10px;
+    }
+
+    .feature-section h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--accent);
+      font-size: 2rem;
     }
 
     .feature-grid {
@@ -122,7 +188,7 @@
     }
 
     .feature {
-      background-color: #f8f9fc;
+      background-color: #fff;
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
@@ -141,6 +207,31 @@
 
     .feature p {
       color: #444;
+      font-size: 1rem;
+    }
+
+    .metrics {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 3rem;
+      text-align: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .metric {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .metric h3 {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .metric p {
+      color: #333;
       font-size: 1rem;
     }
 
@@ -193,6 +284,19 @@
       background-color: #a30f33;
     }
 
+    .alt-cta {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .alt-cta a {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--white);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
     footer {
       text-align: center;
       padding: 2rem 1rem;
@@ -201,84 +305,134 @@
       color: #666;
     }
 
+    footer a {
+      color: var(--primary);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
     @media screen and (max-width: 768px) {
       .problem {
         grid-template-columns: 1fr;
+        padding: 2rem 1rem;
       }
 
       .hero-content h1 {
         font-size: 2rem;
       }
 
-      .hero-content p {
+      .hero-content h2 {
         font-size: 1rem;
       }
+
+      .metrics {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      border: 0;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1757394435/xjxleyawlba9fdpfppu9.mp4" autoplay muted loop playsinline></video>
+    <video autoplay muted loop playsinline>
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1757394435/xjxleyawlba9fdpfppu9.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
     <div class="hero-content">
       <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision Logo" />
       <h1>AI-Driven Billboard Advertising with Measurable ROI</h1>
-      <p>Victory Vision helps mid-sized businesses reach the right people, at the right time — with clarity, precision, and impact.</p>
+      <h2>Get campaign analytics, personalized targeting, and smart ROI optimization from day one.</h2>
+      <a href="#demo" class="btn-secondary">See Platform in Action</a>
     </div>
   </header>
 
   <main>
     <section class="intro">
       <h2>Revolutionizing Outdoor Advertising</h2>
-      <p>Victory Vision is a pioneering AI platform that seamlessly integrates advanced technology with an extensive digital billboard network, transforming the advertising landscape for mid-sized businesses. As a veteran-owned enterprise, we empower advertisers with innovative tools aimed at enhancing brand visibility and facilitating meaningful community engagement. Our offerings, including automated prospect scouting, personalized content scheduling, and detailed campaign analytics, position us as the premier partner for organizations seeking to maximize their ROI while fostering deeper consumer connections. By leveraging our cutting-edge solutions, clients can streamline their promotional strategies, fuel growth, and cultivate a culture of ongoing improvement in their marketing efforts.</p>
+      <p>Victory Vision is a veteran-owned AI platform transforming out-of-home advertising by combining intelligent automation with expansive digital billboard capabilities. We help mid-sized businesses generate measurable growth with advanced features like automated prospect scouting, adaptive content scheduling, and real-time campaign analytics — all designed to maximize brand visibility and budget efficiency.</p>
     </section>
 
-    <section class="problem">
+    <div class="divider" role="separator" aria-hidden="true"></div>
+
+    <section class="problem" aria-label="Problem and Solution">
       <div>
         <h2>Built for Ambitious CEOs & CMOs</h2>
-        <p>Victory Vision gives marketing leaders a competitive advantage in today's data-driven world. If your team is struggling to allocate ad budgets efficiently, lacks real-time campaign clarity, or needs tools that go beyond guesswork—you're not alone. Victory Vision’s AI-powered intelligence bridges the gap between intent and conversion. We empower decision-makers with automated targeting, predictive insights, and transparent performance reporting that align with your growth goals.</p>
+        <p>Facing budget allocation challenges or struggling with vague campaign results? You're not alone. Victory Vision delivers AI-powered clarity with tools like predictive targeting, automated optimization, and transparent reporting. Empowering decision-makers to drive accountability, alignment, and sustained growth has never been simpler.</p>
       </div>
       <div>
-        <img src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Business analytics dashboard" style="width:100%; border-radius: 10px;">
+        <img src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Business analytics dashboard" />
       </div>
     </section>
 
-    <section>
-      <h2 style="text-align:center; margin-bottom: 2rem;">What Makes Victory Vision Different</h2>
+    <section class="feature-section" aria-label="Product Features">
+      <h2>What Makes Victory Vision Different</h2>
       <div class="feature-grid">
         <div class="feature">
           <h3>Automated Prospect Scouting</h3>
-          <p>Leverage intelligent algorithms to target the right audience—automatically. No more wasted impressions or guesswork.</p>
+          <p>Our intelligent algorithms identify, prioritize, and reach ideal customer segments for you — saving time and reducing waste.</p>
         </div>
         <div class="feature">
           <h3>Personalized Content Scheduling</h3>
-          <p>Deliver dynamic messaging based on location, audience behavior, and time — ensuring every ad hits the mark.</p>
+          <p>Deliver context-aware ad variants that adjust based on audience behaviors, geography, and time of day.</p>
         </div>
         <div class="feature">
-          <h3>Campaign Performance Analytics</h3>
-          <p>Monitor KPIs through intuitive dashboards, tie results to spend, and optimize with confidence using real-time data.</p>
+          <h3>Real-Time Performance Dashboards</h3>
+          <p>Track impressions, conversions, and ROI with dashboards that keep your KPIs front and center — no guesswork needed.</p>
         </div>
         <div class="feature">
-          <h3>Scalable for Mid-Sized Growth</h3>
-          <p>Whether you're in retail, e-commerce, or healthcare — our platform adapts to your needs and goals as they scale.</p>
+          <h3>Case-Driven Optimization</h3>
+          <p>Leverage machine learning insights from prior campaigns to continuously improve your ad strategy.</p>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <h3>4.2x</h3>
+          <p>Average ROI increase across campaigns</p>
+        </div>
+        <div class="metric">
+          <h3>92%</h3>
+          <p>Client retention from mid-size brands</p>
+        </div>
+        <div class="metric">
+          <h3>25 Days</h3>
+          <p>Avg. time to see measurable performance boost</p>
         </div>
       </div>
     </section>
 
-    <section class="cta">
+    <section class="cta" id="demo" aria-label="Call to Action">
       <h2>Schedule a Demo Today</h2>
-      <p>See how Victory Vision can transform your marketing performance. We're on a mission to help you grow faster and smarter.</p>
-      <form>
-        <input type="email" placeholder="Enter your email" required />
+      <p>Join growing teams tapping into smarter outdoor marketing. Learn how Victory Vision can help your campaigns do more with less.</p>
+      <form aria-label="Demo Form">
+        <label for="email" class="visually-hidden">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
         <button type="submit">Book a Demo</button>
       </form>
+      <div class="alt-cta">
+        <a href="https://www.victoryvision.app/platform-overview.pdf" target="_blank" rel="noopener noreferrer">Download Our Platform Overview (PDF)</a>
+      </div>
     </section>
   </main>
 
   <footer>
-    &copy; 2024 Victory Vision. All rights reserved.
+    Your Vision. Our AI. Pure Victory. 
+    <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a>
   </footer>
+
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=87af3bd8d2e53ec33651ed7329919728e1e9a0ee" width="1" height="1" style="display:none;" alt="Tracking Pixel" />
 
 </body>
 </html>
-```
