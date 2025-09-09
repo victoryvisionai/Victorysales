@@ -763,21 +763,21 @@
       <div class="metric-label">Total Emails Sent</div>
       <div class="metric-trend" id="emailsTrend">Loading...</div>
     </div>
-    <div class="metric-card">
-      <div class="metric-value" id="openRate24h">0%</div>
-      <div class="metric-label">Open Rate</div>
-      <div class="metric-trend" id="openRateTrend">Loading...</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-value" id="replyRate">0%</div>
-      <div class="metric-label">Reply Rate</div>
-      <div class="metric-trend" id="replyRateTrend">Loading...</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-value" id="meetingsScheduled">0</div>
-      <div class="metric-label">Meetings Scheduled</div>
-      <div class="metric-trend" id="meetingsTrend">Loading...</div>
-    </div>
+    <div class="metric-card" onclick="showMetricQuery('opens', 'Contacts Who Opened Emails')">
+  <div class="metric-value" id="openRate24h">0%</div>
+  <div class="metric-label">Open Rate</div>
+  <div class="metric-trend" id="openRateTrend">Loading...</div>
+</div>
+<div class="metric-card" onclick="showMetricQuery('replies', 'Contacts Who Replied')">
+  <div class="metric-value" id="replyRate">0%</div>
+  <div class="metric-label">Reply Rate</div>
+  <div class="metric-trend" id="replyRateTrend">Loading...</div>
+</div>
+<div class="metric-card" onclick="showMetricQuery('meetings', 'Contacts With Meetings')">
+  <div class="metric-value" id="meetingsScheduled">0</div>
+  <div class="metric-label">Meetings Scheduled</div>
+  <div class="metric-trend" id="meetingsTrend">Loading...</div>
+</div>
     <div class="metric-card">
       <div class="metric-value" id="pipelineValue">$0</div>
       <div class="metric-label">Pipeline Value</div>
@@ -794,10 +794,11 @@
     <div class="focus-section" data-intro="Your top-priority leads ranked by AI scoring. Click cards to expand details." data-step="5">
       <div class="focus-header">
         <div class="focus-title">Focus Now - Meeting-Aware Lead Scoring</div>
-        <div class="focus-toggle">
-          <button class="toggle-btn active" onclick="setFocusView('top5')">Top 5</button>
-          <button class="toggle-btn inactive" onclick="setFocusView('top25')">Top 25</button>
-        </div>
+       <div class="focus-toggle">
+  <button class="toggle-btn active" onclick="setFocusView('top5')">Top 5</button>
+  <button class="toggle-btn inactive" onclick="setFocusView('top25')">Top 25</button>
+  <button class="toggle-btn inactive" onclick="setFocusView('query')" id="queryBtn">Query</button>
+</div>
       </div>
       
       <div id="focusLeads">
@@ -871,6 +872,8 @@ let selectedContact = null;
 let currentActivityWindow = '168'; // Default to 7 days
 let customStartDate = null;
 let customEndDate = null;
+  let queryResults = [];
+let currentQueryType = '';
 // Authentication
 async function checkAuthentication() {
   try {
@@ -1237,21 +1240,27 @@ function processProspects() {
 
 // Update focus leads display
 function updateFocusLeads() {
-  const count = focusView === 'top5' ? 5 : 25;
-  const topProspects = filteredProspects.slice(0, count);
+  let prospects = [];
+  
+  if (focusView === 'query') {
+    prospects = queryResults.sort((a, b) => (b.lead_score || 0) - (a.lead_score || 0));
+  } else {
+    const count = focusView === 'top5' ? 5 : 25;
+    prospects = filteredProspects.slice(0, count);
+  }
   
   const focusContainer = document.getElementById('focusLeads');
-  if (topProspects.length === 0) {
+  if (prospects.length === 0) {
     focusContainer.innerHTML = `
       <div style="text-align: center; padding: 40px; color: #718096;">
-        No prospects found matching current filters
+        ${focusView === 'query' ? 'Click a metric tile to see detailed contact breakdown' : 'No prospects found matching current filters'}
       </div>
     `;
     return;
   }
   
-  focusContainer.innerHTML = topProspects.map(contact => 
-    createLeadCard(contact, contact.lead_score, allEmails, allMeetings)
+  focusContainer.innerHTML = prospects.map(contact => 
+    createLeadCard(contact, contact.lead_score || calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites), allEmails, allMeetings)
   ).join('');
 }
 
@@ -1612,7 +1621,58 @@ function archiveContact(contactId) {
 function openEmailModal(email, name) {
   alert(`Email modal would open for ${name} (${email}). Email functionality can be added here.`);
 }
-
+function showMetricQuery(metricType, title) {
+  const dateRange = getActivityDateRange();
+  currentQueryType = title;
+  
+  switch(metricType) {
+    case 'opens':
+      queryResults = allContacts.filter(contact => 
+        contact.last_opened_date && 
+        new Date(contact.last_opened_date) >= dateRange.start && 
+        new Date(contact.last_opened_date) <= dateRange.end
+      ).map(contact => ({
+        ...contact,
+        lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
+      }));
+      break;
+      
+    case 'replies':
+      queryResults = allContacts.filter(contact => 
+        contact.last_responded && 
+        new Date(contact.last_responded) >= dateRange.start && 
+        new Date(contact.last_responded) <= dateRange.end
+      ).map(contact => ({
+        ...contact,
+        lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
+      }));
+      break;
+      
+    case 'meetings':
+      const scheduledMeetings = allMeetings.filter(meeting => 
+        meeting.status === 'scheduled' && 
+        new Date(meeting.start_at) >= dateRange.start &&
+        new Date(meeting.start_at) <= dateRange.end
+      );
+      queryResults = scheduledMeetings.map(meeting => 
+        allContacts.find(c => c.email === meeting.contact_email)
+      ).filter(Boolean).map(contact => ({
+        ...contact,
+        lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
+      }));
+      break;
+  }
+  
+  // Switch to query view
+  focusView = 'query';
+  document.querySelectorAll('.toggle-btn').forEach(btn => btn.className = 'toggle-btn inactive');
+  document.getElementById('queryBtn').className = 'toggle-btn active';
+  
+  // Update the focus title to show what was queried
+  document.querySelector('.focus-title').textContent = `${title} (${queryResults.length} contacts)`;
+  
+  updateFocusLeads();
+}
 // Tour functionality
 function startTour() {
   introJs().setOptions({
