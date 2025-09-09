@@ -1,0 +1,284 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victory Vision | AI-Powered Digital Billboard Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #0a3161;
+      --accent: #bb133e;
+      --white: #ffffff;
+      --font: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      line-height: 1.6;
+      background-color: var(--white);
+      color: var(--primary);
+    }
+
+    header video {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+
+    header {
+      position: relative;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 49, 97, 0.5);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      color: var(--white);
+      max-width: 90%;
+    }
+
+    .hero-content img {
+      width: 150px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+      font-size: 1.25rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    section {
+      padding: 4rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .intro {
+      text-align: center;
+    }
+
+    .intro h2 {
+      color: var(--accent);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro p {
+      font-size: 1.125rem;
+      color: #333;
+    }
+
+    .problem {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .problem h2 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .problem p {
+      font-size: 1.125rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature {
+      background-color: #f8f9fc;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+    }
+
+    .feature h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .feature p {
+      color: #444;
+      font-size: 1rem;
+    }
+
+    .cta {
+      background-color: var(--primary);
+      color: var(--white);
+      text-align: center;
+      padding: 4rem 1rem;
+      border-radius: 10px;
+    }
+
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .cta input[type="email"] {
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      width: 300px;
+      max-width: 100%;
+    }
+
+    .cta button {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta button:hover {
+      background-color: #a30f33;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      background-color: #f5f5f5;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    @media screen and (max-width: 768px) {
+      .problem {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <video src="https://res.cloudinary.com/dv94te4zt/video/upload/v1757394435/xjxleyawlba9fdpfppu9.mp4" autoplay muted loop playsinline></video>
+    <div class="hero-content">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision Logo" />
+      <h1>AI-Driven Billboard Advertising with Measurable ROI</h1>
+      <p>Victory Vision helps mid-sized businesses reach the right people, at the right time — with clarity, precision, and impact.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Revolutionizing Outdoor Advertising</h2>
+      <p>Victory Vision is a pioneering AI platform that seamlessly integrates advanced technology with an extensive digital billboard network, transforming the advertising landscape for mid-sized businesses. As a veteran-owned enterprise, we empower advertisers with innovative tools aimed at enhancing brand visibility and facilitating meaningful community engagement. Our offerings, including automated prospect scouting, personalized content scheduling, and detailed campaign analytics, position us as the premier partner for organizations seeking to maximize their ROI while fostering deeper consumer connections. By leveraging our cutting-edge solutions, clients can streamline their promotional strategies, fuel growth, and cultivate a culture of ongoing improvement in their marketing efforts.</p>
+    </section>
+
+    <section class="problem">
+      <div>
+        <h2>Built for Ambitious CEOs & CMOs</h2>
+        <p>Victory Vision gives marketing leaders a competitive advantage in today's data-driven world. If your team is struggling to allocate ad budgets efficiently, lacks real-time campaign clarity, or needs tools that go beyond guesswork—you're not alone. Victory Vision’s AI-powered intelligence bridges the gap between intent and conversion. We empower decision-makers with automated targeting, predictive insights, and transparent performance reporting that align with your growth goals.</p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Business analytics dashboard" style="width:100%; border-radius: 10px;">
+      </div>
+    </section>
+
+    <section>
+      <h2 style="text-align:center; margin-bottom: 2rem;">What Makes Victory Vision Different</h2>
+      <div class="feature-grid">
+        <div class="feature">
+          <h3>Automated Prospect Scouting</h3>
+          <p>Leverage intelligent algorithms to target the right audience—automatically. No more wasted impressions or guesswork.</p>
+        </div>
+        <div class="feature">
+          <h3>Personalized Content Scheduling</h3>
+          <p>Deliver dynamic messaging based on location, audience behavior, and time — ensuring every ad hits the mark.</p>
+        </div>
+        <div class="feature">
+          <h3>Campaign Performance Analytics</h3>
+          <p>Monitor KPIs through intuitive dashboards, tie results to spend, and optimize with confidence using real-time data.</p>
+        </div>
+        <div class="feature">
+          <h3>Scalable for Mid-Sized Growth</h3>
+          <p>Whether you're in retail, e-commerce, or healthcare — our platform adapts to your needs and goals as they scale.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <h2>Schedule a Demo Today</h2>
+      <p>See how Victory Vision can transform your marketing performance. We're on a mission to help you grow faster and smarter.</p>
+      <form>
+        <input type="email" placeholder="Enter your email" required />
+        <button type="submit">Book a Demo</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Victory Vision. All rights reserved.
+  </footer>
+
+</body>
+</html>
+```
