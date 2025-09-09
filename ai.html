@@ -1637,16 +1637,24 @@ function showMetricQuery(metricType, title) {
       }));
       break;
       
-    case 'replies':
-      queryResults = allContacts.filter(contact => 
-        contact.last_responded && 
-        new Date(contact.last_responded) >= dateRange.start && 
-        new Date(contact.last_responded) <= dateRange.end
-      ).map(contact => ({
-        ...contact,
-        lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
-      }));
-      break;
+   case 'replies':
+  // Get emails with replies in the time window
+  const repliedEmails = allEmails.filter(email => 
+    email.replied_at && 
+    new Date(email.replied_at) >= dateRange.start && 
+    new Date(email.replied_at) <= dateRange.end
+  );
+  
+  // Get unique contacts who replied
+  const repliedContactEmails = [...new Set(repliedEmails.map(email => email.to_email || email.to))];
+  
+  queryResults = repliedContactEmails.map(email => 
+    allContacts.find(c => c.email === email)
+  ).filter(Boolean).map(contact => ({
+    ...contact,
+    lead_score: calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites)
+  }));
+  break;
       
     case 'meetings':
       const scheduledMeetings = allMeetings.filter(meeting => 
