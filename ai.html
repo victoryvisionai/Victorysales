@@ -1265,30 +1265,33 @@ function updateFocusLeads() {
     createLeadCard(contact, contact.lead_score || calculateLeadScore(contact, allEmails, allMeetings, allMeetingInvites), allEmails, allMeetings)
   ).join('');
 }
-
 function updateMetrics() {
   const dateRange = getActivityDateRange();
+  
   const windowEmails = allEmails.filter(email => 
-  email.sent_at && new Date(email.sent_at) >= dateRange.start && new Date(email.sent_at) <= dateRange.end
-);
-document.getElementById('emailsSentToday').textContent = windowEmails.length.toLocaleString();
+    email.sent_at && new Date(email.sent_at) >= dateRange.start && new Date(email.sent_at) <= dateRange.end
+  );
   
-// Use the opens integer field instead of opened_at timestamp
-const openedEmails = windowEmails.filter(email => email.opens > 0);
-
-const openRate = windowEmails.length > 0 ? ((openedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
-document.getElementById('openRate24h').textContent = `${openRate}%`;  
+  document.getElementById('emailsSentToday').textContent = windowEmails.length.toLocaleString();
   
-const clickedEmails = windowEmails.filter(email => email.clicks > 0);
-const clickRate = windowEmails.length > 0 ? ((clickedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
-document.getElementById('clickRate').textContent = `${clickRate}%`;
-document.getElementById('clickTrend').textContent = windowLabel;  
+  // Opens calculation
+  const openedEmails = windowEmails.filter(email => email.opens > 0);
+  const openRate = windowEmails.length > 0 ? ((openedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
+  document.getElementById('openRate24h').textContent = `${openRate}%`;
+  
+  // Clicks calculation  
+  const clickedEmails = windowEmails.filter(email => email.clicks > 0);
+  const clickRate = windowEmails.length > 0 ? ((clickedEmails.length / windowEmails.length) * 100).toFixed(1) : 0;
+  document.getElementById('clickRate').textContent = `${clickRate}%`;
+  
+  // Replies calculation
   const totalReplies = windowEmails.filter(email => 
     email.replied_at && new Date(email.replied_at) >= dateRange.start && new Date(email.replied_at) <= dateRange.end
   ).length;
   const replyRate = windowEmails.length > 0 ? ((totalReplies / windowEmails.length) * 100).toFixed(1) : 0;
   document.getElementById('replyRate').textContent = `${replyRate}%`;
   
+  // Meetings
   const scheduledMeetings = allMeetings.filter(meeting => 
     meeting.status === 'scheduled' && 
     new Date(meeting.start_at) >= dateRange.start &&
@@ -1296,6 +1299,7 @@ document.getElementById('clickTrend').textContent = windowLabel;
   );
   document.getElementById('meetingsScheduled').textContent = scheduledMeetings.length;
   
+  // Pipeline
   const windowContacts = allContacts.filter(contact => {
     const lastActivity = getLastActivityDate(contact);
     return !lastActivity || (lastActivity >= dateRange.start && lastActivity <= dateRange.end);
@@ -1305,10 +1309,21 @@ document.getElementById('clickTrend').textContent = windowLabel;
     sum + (parseFloat(contact.client_ann_est) || 0), 0
   );
   document.getElementById('pipelineValue').textContent = `$${(pipelineValue / 1000).toFixed(0)}K`;
-  
-  const hotProspects = filteredProspects.filter(prospect => prospect.lead_score > 70);
-  document.getElementById('hotProspects').textContent = hotProspects.length;
 
+  // Update trend labels
+  const windowLabel = currentActivityWindow === 'custom' ? 'custom range' : 
+                     currentActivityWindow === 'all' ? 'all time' : 
+                     `${currentActivityWindow}h window`;
+  
+  document.getElementById('emailsTrend').textContent = windowLabel;
+  document.getElementById('openRateTrend').textContent = windowLabel;
+  document.getElementById('clickTrend').textContent = windowLabel;
+  document.getElementById('replyRateTrend').textContent = windowLabel;
+  document.getElementById('meetingsTrend').textContent = windowLabel;
+  document.getElementById('pipelineTrend').textContent = windowLabel;
+}
+
+  
   // Update trend labels to reflect current window
   const windowLabel = currentActivityWindow === 'custom' ? 'custom range' : 
                      currentActivityWindow === 'all' ? 'all time' : 
