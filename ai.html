@@ -698,12 +698,13 @@
 
   <div class="filters-section" data-intro="Use these smart filters to drill down from macro analysis to micro focus on top prospects." data-step="2">
     <div class="filters-title">Smart Quick Filters (Macro → Micro)</div>
-    
+<!--    
     <div class="filters-grid">
       <div class="filter-group">
         <label class="filter-label">Search Prospects</label>
         <input type="text" id="searchInput" class="filter-input" placeholder="Name, company, or email...">
       </div>
+    -->
     <div class="filter-group">
         <label class="filter-label">Activity Window</label>
         <select id="activityFilter" class="filter-select" onchange="setActivityWindow(this.value)">
@@ -721,6 +722,7 @@
           <input type="date" id="endDate" placeholder="End Date" onchange="updateCustomRange()">
         </div>
       </div>
+    <!--
       <div class="filter-group">
         <label class="filter-label">Workflow</label>
         <select id="workflowFilter" class="filter-select">
@@ -746,7 +748,7 @@
       <div class="filter-tag inactive" data-filter="no_response_7d">No Response</div>
     </div>
   </div>
-
+-->
   <div class="ai-insights" data-intro="AI-powered recommendations based on your email engagement data and conversation summaries." data-step="3">
     <h3>AI Priority Recommendations</h3>
     <div id="aiRecommendations">
@@ -1732,7 +1734,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     if (isAuthenticated) {
       document.getElementById('authLoading').style.display = 'none';
-      setupFilters();
+  //    setupFilters();
       await loadAllData();
     } else {
       redirectToLogin();
