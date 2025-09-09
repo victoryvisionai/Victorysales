@@ -1323,21 +1323,6 @@ function updateMetrics() {
   document.getElementById('pipelineTrend').textContent = windowLabel;
 }
 
-  
-  // Update trend labels to reflect current window
-  const windowLabel = currentActivityWindow === 'custom' ? 'custom range' : 
-                     currentActivityWindow === 'all' ? 'all time' : 
-                     `${currentActivityWindow}h window`;
-  
-  document.getElementById('emailsTrend').textContent = windowLabel;
-  document.getElementById('openRateTrend').textContent = windowLabel;
-  document.getElementById('replyRateTrend').textContent = windowLabel;
-  document.getElementById('meetingsTrend').textContent = windowLabel;
-  document.getElementById('pipelineTrend').textContent = windowLabel;
-  document.getElementById('hotProspectsTrend').textContent = 'score >70';
-}
- 
-
 // Load AI recommendations
 async function loadAIRecommendations() {
   try {
