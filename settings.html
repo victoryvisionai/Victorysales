@@ -6,6 +6,7 @@
   <meta name="description" content="Victory Vision AI Settings and Integrations"/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Settings</title>
+  <link rel="icon" type="image/x-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32' fill='%230A3161' /><text x='8' y='20' font-size='16' fill='white'>VV</text></svg>">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
@@ -272,7 +273,7 @@
     }
     .billing-section {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
       margin: 20px 0;
     }
@@ -370,130 +371,124 @@
       font-size: 0.9em;
       color: #666;
     }
- /* Billing Toggle Styles */
-.billing-toggle-section {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px 0;
-}
+    
+    /* Billing Toggle Styles */
+    .billing-toggle-section {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
 
-.billing-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-}
+    .billing-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
 
-.toggle-label {
-  font-weight: 600;
-  color: #666;
-  transition: color 0.3s ease;
-}
+    .toggle-label {
+      font-weight: 600;
+      color: #666;
+      transition: color 0.3s ease;
+    }
 
-.toggle-label.active {
-  color: #0A3161;
-}
+    .toggle-label.active {
+      color: #0A3161;
+    }
 
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
 
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
 
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 34px;
-}
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
 
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
 
-input:checked + .toggle-slider {
-  background-color: #0A3161;
-}
+    input:checked + .toggle-slider {
+      background-color: #0A3161;
+    }
 
-input:checked + .toggle-slider:before {
-  transform: translateX(26px);
-}
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
 
-.savings-badge {
-  background: #28a745;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: bold;
-  margin-left: 5px;
-}
+    .savings-badge {
+      background: #28a745;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-left: 5px;
+    }
 
-.annual-savings {
-  font-size: 0.85rem;
-  color: #28a745;
-  font-weight: 600;
-  margin-top: 5px;
-}
+    .annual-savings {
+      font-size: 0.85rem;
+      color: #28a745;
+      font-weight: 600;
+      margin-top: 5px;
+    }
 
-/* Update billing section grid to include 4 plans */
-.billing-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
+    /* Enterprise plan styling */
+    #enterprisePlan {
+      border: 2px solid #bb133e;
+      position: relative;
+    }
 
-/* Enterprise plan styling */
-#enterprisePlan {
-  border: 2px solid #bb133e;
-  position: relative;
-}
+    #enterprisePlan::before {
+      content: "MOST POPULAR";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #bb133e;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+    }
 
-#enterprisePlan::before {
-  content: "MOST POPULAR";
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #bb133e;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: bold;
-}
+    #enterpriseButton {
+      background: #bb133e;
+      border-color: #bb133e;
+    }
 
-#enterpriseButton {
-  background: #bb133e;
-  border-color: #bb133e;
-}
-
-#enterpriseButton:hover {
-  background: #a01135;
-  border-color: #a01135;
-}   
+    #enterpriseButton:hover {
+      background: #a01135;
+      border-color: #a01135;
+    }
+    
     /* Domain Modal Styles */
     .modal {
       display: none;
@@ -684,7 +679,7 @@ input:checked + .toggle-slider:before {
       <li><a href="ads">Ads</a></li>
       <li><a href="contacts">Contacts</a></li>
       <li><a href="messages">Messages</a></li>
-    <li><a href="settings">Settings</a></li>
+      <li><a href="settings">Settings</a></li>
     </ul>
   </nav>
   <div class="user-info">
@@ -758,127 +753,128 @@ input:checked + .toggle-slider:before {
         <strong>Connected as:</strong> <span id="linkedin-profile"></span>
       </div>
     </div>
-  </div>
-<!-- Calendly Integration -->
-<div class="settings-group" data-intro="Connect your Calendly account to enable automatic meeting scheduling and calendar integration with your campaigns." data-step="6a">
-  <h3>
-    <span class="status-indicator status-disconnected" id="calendly-status"></span>
-    Calendly Integration
-  </h3>
-  <p>Connect Calendly for automated scheduling and calendar management.</p>
-  <button onclick="connectCalendly()" id="connect-calendly">Connect Calendly</button>
-  <button class="danger" onclick="disconnectCalendly()" style="display: none;" id="disconnect-calendly">Disconnect</button>
-  <div class="connection-info" id="calendly-info" style="display: none;">
-    <strong>Connected as:</strong> <span id="calendly-profile"></span>
-  </div>
-</div>
-  
- <div class="card" id="billing-section" data-intro="Manage your subscription and billing here. View your current plan details, usage statistics, and upgrade options to unlock more AI credits and features." data-step="7">
-  <div class="section-header">
-    <h3>💳 Billing & Subscription Management</h3>
+
+    <!-- Calendly Integration -->
+    <div class="settings-group" data-intro="Connect your Calendly account to enable automatic meeting scheduling and calendar integration with your campaigns." data-step="6a">
+      <h3>
+        <span class="status-indicator status-disconnected" id="calendly-status"></span>
+        Calendly Integration
+      </h3>
+      <p>Connect Calendly for automated scheduling and calendar management.</p>
+      <button onclick="connectCalendly()" id="connect-calendly">Connect Calendly</button>
+      <button class="danger" onclick="disconnectCalendly()" style="display: none;" id="disconnect-calendly">Disconnect</button>
+      <div class="connection-info" id="calendly-info" style="display: none;">
+        <strong>Connected as:</strong> <span id="calendly-profile"></span>
+      </div>
+    </div>
   </div>
   
-  <div class="plan-info">
-    <p><strong>Current Plan:</strong> <span id="currentPlanName">Loading...</span></p>
-    <p><strong>Status:</strong> <span id="subscriptionStatus">Loading...</span></p>
-    <p id="nextBillingInfo" style="display: none;"><strong>Next Billing:</strong> <span id="nextBillingDate">Loading...</span></p>
+  <div class="card" id="billing-section" data-intro="Manage your subscription and billing here. View your current plan details, usage statistics, and upgrade options to unlock more AI credits and features." data-step="7">
+    <div class="section-header">
+      <h3>💳 Billing & Subscription Management</h3>
+    </div>
+    
+    <div class="plan-info">
+      <p><strong>Current Plan:</strong> <span id="currentPlanName">Loading...</span></p>
+      <p><strong>Status:</strong> <span id="subscriptionStatus">Loading...</span></p>
+      <p id="nextBillingInfo" style="display: none;"><strong>Next Billing:</strong> <span id="nextBillingDate">Loading...</span></p>
+    </div>
+
+    <!-- Billing Toggle -->
+    <div class="billing-toggle-section" style="text-align: center; margin: 20px 0;">
+      <div class="billing-toggle">
+        <span class="toggle-label active" id="monthlyLabel">Monthly</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="annualToggle" onchange="toggleBillingPeriod()">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label" id="annualLabel">Annual <span class="savings-badge">Save 10%</span></span>
+      </div>
+    </div>
+
+    <h4>Available Plans</h4>
+    <div class="billing-section" data-intro="Choose your subscription tier based on your marketing needs. Bronze is perfect for small businesses, Silver for growing companies, Gold for enterprises, and Enterprise for teams requiring unlimited campaigns." data-step="8">
+      <!-- Bronze Plan -->
+      <div class="plan-card" id="bronzePlan">
+        <h4>Bronze Plan</h4>
+        <div class="plan-price">
+          <span id="bronzePrice">$99</span>
+          <span style="font-size: 1rem; color: #666;" id="bronzePeriod">/month</span>
+          <div class="annual-savings" id="bronzeSavings" style="display: none;">Save $120/year</div>
+        </div>
+        <ul class="plan-features">
+          <li>✓ 100 Image Credits</li>
+          <li>✓ 20 Video Credits</li>
+          <li>✓ 50 Lead Credits</li>
+          <li>✓ 10 Campaign Credits</li>
+          <li>✓ 25 Social Credits</li>
+          <li>✓ Basic Support</li>
+        </ul>
+        <button onclick="upgradeToPlan('bronze')" id="bronzeButton">Select Bronze</button>
+      </div>
+
+      <!-- Silver Plan -->
+      <div class="plan-card" id="silverPlan">
+        <h4>Silver Plan</h4>
+        <div class="plan-price">
+          <span id="silverPrice">$299</span>
+          <span style="font-size: 1rem; color: #666;" id="silverPeriod">/month</span>
+          <div class="annual-savings" id="silverSavings" style="display: none;">Save $360/year</div>
+        </div>
+        <ul class="plan-features">
+          <li>✓ 500 Image Credits</li>
+          <li>✓ 100 Video Credits</li>
+          <li>✓ 200 Lead Credits</li>
+          <li>✓ 50 Campaign Credits</li>
+          <li>✓ 100 Social Credits</li>
+          <li>✓ Priority Support</li>
+          <li>✓ Advanced Analytics</li>
+        </ul>
+        <button onclick="upgradeToPlan('silver')" id="silverButton">Select Silver</button>
+      </div>
+
+      <!-- Gold Plan -->
+      <div class="plan-card" id="goldPlan">
+        <h4>Gold Plan</h4>
+        <div class="plan-price">
+          <span id="goldPrice">$799</span>
+          <span style="font-size: 1rem; color: #666;" id="goldPeriod">/month</span>
+          <div class="annual-savings" id="goldSavings" style="display: none;">Save $960/year</div>
+        </div>
+        <ul class="plan-features">
+          <li>✓ Unlimited Image Credits</li>
+          <li>✓ 500 Video Credits</li>
+          <li>✓ 1000 Lead Credits</li>
+          <li>✓ Unlimited Campaign Credits</li>
+          <li>✓ 500 Social Credits</li>
+          <li>✓ 24/7 Dedicated Support</li>
+          <li>✓ White-label Options</li>
+          <li>✓ Custom Integrations</li>
+        </ul>
+        <button onclick="upgradeToPlan('gold')" id="goldButton">Select Gold</button>
+      </div>
+
+      <!-- Enterprise Plan -->
+      <div class="plan-card" id="enterprisePlan">
+        <h4>Enterprise Plan</h4>
+        <div class="plan-price">
+          <span id="enterprisePrice">Contact Us</span>
+          <span style="font-size: 1rem; color: #666;" id="enterprisePeriod"></span>
+        </div>
+        <ul class="plan-features">
+          <li>✓ Everything in Gold</li>
+          <li>✓ Role-based approvals</li>
+          <li>✓ Inline comments</li>
+          <li>✓ Calendar rescheduling</li>
+          <li>✓ Custom integrations</li>
+          <li>✓ Dedicated account manager</li>
+          <li>✓ SLA guarantees</li>
+          <li>✓ Priority development</li>
+        </ul>
+        <button onclick="contactEnterprise()" id="enterpriseButton">Contact Sales</button>
+      </div>
+    </div>
   </div>
-
-  <!-- Billing Toggle -->
-  <div class="billing-toggle-section" style="text-align: center; margin: 20px 0;">
-    <div class="billing-toggle">
-      <span class="toggle-label" id="monthlyLabel">Monthly</span>
-      <label class="toggle-switch">
-        <input type="checkbox" id="annualToggle" onchange="toggleBillingPeriod()">
-        <span class="toggle-slider"></span>
-      </label>
-      <span class="toggle-label" id="annualLabel">Annual <span class="savings-badge">Save 20%</span></span>
-    </div>
-  </div>
-
-  <h4>Available Plans</h4>
-  <div class="billing-section" data-intro="Choose your subscription tier based on your marketing needs. Bronze is perfect for small businesses, Silver for growing companies, Gold for enterprises, and Enterprise for teams requiring unlimited campaigns." data-step="8">
-    <!-- Bronze Plan -->
-    <div class="plan-card" id="bronzePlan">
-      <h4>Bronze Plan</h4>
-      <div class="plan-price">
-        <span id="bronzePrice">$99</span>
-        <span style="font-size: 1rem; color: #666;" id="bronzePeriod">/month</span>
-        <div class="annual-savings" id="bronzeSavings" style="display: none;">Save $238/year</div>
-      </div>
-      <ul class="plan-features">
-        <li>✓ 100 Image Credits</li>
-        <li>✓ 20 Video Credits</li>
-        <li>✓ 50 Lead Credits</li>
-        <li>✓ 10 Campaign Credits</li>
-        <li>✓ 25 Social Credits</li>
-        <li>✓ Basic Support</li>
-      </ul>
-      <button onclick="upgradeToPlan('bronze')" id="bronzeButton">Select Bronze</button>
-    </div>
-
-    <!-- Silver Plan -->
-    <div class="plan-card" id="silverPlan">
-      <h4>Silver Plan</h4>
-      <div class="plan-price">
-        <span id="silverPrice">$299</span>
-        <span style="font-size: 1rem; color: #666;" id="silverPeriod">/month</span>
-        <div class="annual-savings" id="silverSavings" style="display: none;">Save $718/year</div>
-      </div>
-      <ul class="plan-features">
-        <li>✓ 500 Image Credits</li>
-        <li>✓ 100 Video Credits</li>
-        <li>✓ 200 Lead Credits</li>
-        <li>✓ 50 Campaign Credits</li>
-        <li>✓ 100 Social Credits</li>
-        <li>✓ Priority Support</li>
-        <li>✓ Advanced Analytics</li>
-      </ul>
-      <button onclick="upgradeToPlan('silver')" id="silverButton">Select Silver</button>
-    </div>
-
-    <!-- Gold Plan -->
-    <div class="plan-card" id="goldPlan">
-      <h4>Gold Plan</h4>
-      <div class="plan-price">
-        <span id="goldPrice">$799</span>
-        <span style="font-size: 1rem; color: #666;" id="goldPeriod">/month</span>
-        <div class="annual-savings" id="goldSavings" style="display: none;">Save $1,918/year</div>
-      </div>
-      <ul class="plan-features">
-        <li>✓ Unlimited Image Credits</li>
-        <li>✓ 500 Video Credits</li>
-        <li>✓ 1000 Lead Credits</li>
-        <li>✓ Unlimited Campaign Credits</li>
-        <li>✓ 500 Social Credits</li>
-        <li>✓ 24/7 Dedicated Support</li>
-        <li>✓ White-label Options</li>
-        <li>✓ Custom Integrations</li>
-      </ul>
-      <button onclick="upgradeToPlan('gold')" id="goldButton">Select Gold</button>
-    </div>
-
-    <!-- Enterprise Plan -->
-    <div class="plan-card" id="enterprisePlan">
-      <h4>Enterprise Plan</h4>
-      <div class="plan-price">
-        <span id="enterprisePrice">Contact Us</span>
-        <span style="font-size: 1rem; color: #666;" id="enterprisePeriod"></span>
-      </div>
-      <ul class="plan-features">
-        <li>✓ Everything in Gold</li>
-        <li>✓ Role-based approvals</li>
-        <li>✓ Inline comments</li>
-        <li>✓ Calendar rescheduling</li>
-        <li>✓ Custom integrations</li>
-        <li>✓ Dedicated account manager</li>
-        <li>✓ SLA guarantees</li>
-        <li>✓ Priority development</li>
-      </ul>
-      <button onclick="contactEnterprise()" id="enterpriseButton">Contact Sales</button>
-    </div>
-  </div>
-</div>
 
   <!-- Account Deletion Section -->
   <div class="account-deletion">
@@ -948,7 +944,8 @@ input:checked + .toggle-slider:before {
   // OAuth Client IDs
   const OAUTH_CLIENTS = {
     linkedin: '86utfb95bpsrjk',
-    twitter: 'MzExUGVkUzRXTm9ObEM2bEZfelU6MTpjaQ' // Decoded from Base64
+    twitter: 'MzExUGVkUzRXTm9ObEM2bEZfelU6MTpjaQ',
+    calendly: 'u2pAkEV1atUsGNXL90DRhPWLuYcJ4q-FLY2sFzU8Yaw'
   };
   
   // n8n webhook endpoints
@@ -967,6 +964,7 @@ input:checked + .toggle-slider:before {
   let currentUser = null;
   let authToken = null;
   let selectedDomain = null;
+  let isAnnual = false;
 
   // Tour completion tracking
   function completeTour() {
@@ -1114,6 +1112,76 @@ input:checked + .toggle-slider:before {
     }
   }
 
+  // Calendly OAuth functions
+  function connectCalendly() {
+    const state = generateStateFromSession();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/calendly-callback');
+    const scope = encodeURIComponent('default');
+    const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${OAUTH_CLIENTS.calendly}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+    
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'calendly');
+    
+    window.location.href = authUrl;
+  }
+
+  async function disconnectCalendly() {
+    if (confirm('Are you sure you want to disconnect Calendly?')) {
+      try {
+        const response = await apiCall(N8N_ENDPOINTS.oauthDisconnect, {
+          platform: 'calendly'
+        });
+        
+        if (response.success !== false) {
+          showStatus('Calendly disconnected successfully!', false);
+          updateConnectionStatus('calendly', false);
+        } else {
+          showStatus('Error disconnecting Calendly', true);
+        }
+      } catch (error) {
+        console.error('Error disconnecting Calendly:', error);
+        showStatus('Error disconnecting Calendly', true);
+      }
+    }
+  }
+
+  // Enterprise contact function
+  function contactEnterprise() {
+    window.location.href = 'mailto:andrew@victoryvision.app?subject=Enterprise Plan Inquiry&body=Hi, I\'m interested in learning more about the Enterprise plan for my organization.';
+  }
+
+  // Billing toggle function
+  function toggleBillingPeriod() {
+    isAnnual = document.getElementById('annualToggle').checked;
+    
+    // Update labels
+    document.getElementById('monthlyLabel').classList.toggle('active', !isAnnual);
+    document.getElementById('annualLabel').classList.toggle('active', isAnnual);
+    
+    // Update pricing with 10% discount
+    const plans = {
+      bronze: { monthly: 99, annual: 89 },   // 10% discount: $99 -> $89
+      silver: { monthly: 299, annual: 269 }, // 10% discount: $299 -> $269  
+      gold: { monthly: 799, annual: 719 }    // 10% discount: $799 -> $719
+    };
+    
+    Object.keys(plans).forEach(plan => {
+      const priceEl = document.getElementById(`${plan}Price`);
+      const periodEl = document.getElementById(`${plan}Period`);
+      const savingsEl = document.getElementById(`${plan}Savings`);
+      
+      if (isAnnual) {
+        priceEl.textContent = `${plans[plan].annual}`;
+        periodEl.textContent = '/month (billed annually)';
+        savingsEl.style.display = 'block';
+      } else {
+        priceEl.textContent = `${plans[plan].monthly}`;
+        periodEl.textContent = '/month';
+        savingsEl.style.display = 'none';
+      }
+    });
+  }
+
   // Load user data and subscription info
   async function loadUserData() {
     try {
@@ -1242,7 +1310,7 @@ input:checked + .toggle-slider:before {
     document.getElementById('purchaseDomainBtn').style.display = 'none';
   }
 
-  // FIXED: Domain search function
+  // Domain search function
   async function searchDomains() {
     const searchTerm = document.getElementById('domainSearchTerm').value.trim();
     
@@ -1290,7 +1358,7 @@ input:checked + .toggle-slider:before {
     }
   }
 
-  // FIXED: Display domain results
+  // Display domain results
   function displayDomainResults(domains) {
     const domainList = document.getElementById('domainList');
     
@@ -1314,7 +1382,6 @@ input:checked + .toggle-slider:before {
               ✅ ${status}
             </div>
           </div>
-        
         </div>
       `;
     }).filter(html => html !== '').join('');
@@ -1324,7 +1391,7 @@ input:checked + .toggle-slider:before {
     }
   }
 
-  // FIXED: Select domain function
+  // Select domain function
   function selectDomain(domainName, price, isAvailable) {
     console.log('Selecting domain:', domainName, price, isAvailable);
     
@@ -1448,9 +1515,11 @@ input:checked + .toggle-slider:before {
       // Handle array response - each item is a separate OAuth record
       const oauthArray = Array.isArray(response) ? response : [response];
       
-      // Look for LinkedIn and Twitter connections specifically
+      // Look for LinkedIn and Calendly connections specifically
       let linkedinConnected = false;
       let linkedinProfile = null;
+      let calendlyConnected = false;
+      let calendlyProfile = null;
       
       oauthArray.forEach(item => {
         if (item && item.platform && item.access_token) {
@@ -1458,18 +1527,25 @@ input:checked + .toggle-slider:before {
             linkedinConnected = true;
             linkedinProfile = item.customer_id || item.profile_id;
           }
+          if (item.platform.toLowerCase() === 'calendly') {
+            calendlyConnected = true;
+            calendlyProfile = item.customer_id || item.profile_id;
+          }
         }
       });
       
       console.log('LinkedIn connected:', linkedinConnected, 'Profile:', linkedinProfile);
+      console.log('Calendly connected:', calendlyConnected, 'Profile:', calendlyProfile);
       
       // Update UI for each platform
       updateConnectionStatus('linkedin', linkedinConnected, linkedinProfile);
+      updateConnectionStatus('calendly', calendlyConnected, calendlyProfile);
       
     } catch (error) {
       console.error('Error checking connection status:', error);
       // Set all to disconnected on error
       updateConnectionStatus('linkedin', false);
+      updateConnectionStatus('calendly', false);
     }
   }
 
@@ -1530,20 +1606,31 @@ input:checked + .toggle-slider:before {
     }
   }
 
-  // Price ID mapping
+  // Price ID mapping based on billing period
   function getPriceId(planName) {
     const priceMap = {
-      'bronze': 'price_1RYVFiDtO3GiFEcMAmOjFNTA',
-      'silver': 'price_1RYVHzDtO3GiFEcMddvY6z5g',
-      'gold': 'price_1RYVM0DtO3GiFEcMiFXfxVXQ'
+      monthly: {
+        'bronze': 'price_1RYVFiDtO3GiFEcMAmOjFNTA',
+        'silver': 'price_1RYVHzDtO3GiFEcMddvY6z5g',
+        'gold': 'price_1RYVM0DtO3GiFEcMiFXfxVXQ'
+      },
+      annual: {
+        'bronze': 'price_bronze_annual', // You'll need to create these in Stripe
+        'silver': 'price_silver_annual',
+        'gold': 'price_gold_annual'
+      }
     };
-    return priceMap[planName];
+    
+    const billingPeriod = isAnnual ? 'annual' : 'monthly';
+    return priceMap[billingPeriod][planName];
   }
 
   // Stripe checkout
   async function upgradeToPlan(planName) {
     try {
       const priceId = getPriceId(planName);
+      const billingPeriod = isAnnual ? 'annual' : 'monthly';
+      
       showStatus('Redirecting to secure checkout...', false);
       
       const response = await fetch(N8N_ENDPOINTS.getCheckout, {
@@ -1557,6 +1644,7 @@ input:checked + .toggle-slider:before {
           customer_id: CUSTOMER_ID,
           price_id: priceId,
           plan_name: planName,
+          billing_period: billingPeriod,
           success_url: `${window.location.origin}/settings?session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${window.location.origin}/settings`
         })
@@ -1607,132 +1695,7 @@ input:checked + .toggle-slider:before {
     if (oauthError) {
       showStatus(`Error connecting: ${oauthError}`, true);
     }
-  // Add to OAUTH_CLIENTS object
-const OAUTH_CLIENTS = {
-  linkedin: '86utfb95bpsrjk',
-  twitter: 'MzExUGVkUzRXTm9ObEM2bEZfelU6MTpjaQ',
-  calendly: 'u2pAkEV1atUsGNXL90DRhPWLuYcJ4q-FLY2sFzU8Yaw'
-};
-
-// Calendly OAuth functions
-function connectCalendly() {
-  const state = generateStateFromSession();
-  const redirectUri = encodeURIComponent('https://victoryvision.app/calendly-callback');
-  const scope = encodeURIComponent('default');
-  const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${OAUTH_CLIENTS.calendly}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
-  
-  sessionStorage.setItem('oauth_state', state);
-  sessionStorage.setItem('oauth_platform', 'calendly');
-  
-  window.location.href = authUrl;
-}
-
-async function disconnectCalendly() {
-  if (confirm('Are you sure you want to disconnect Calendly?')) {
-    try {
-      const response = await apiCall(N8N_ENDPOINTS.oauthDisconnect, {
-        platform: 'calendly'
-      });
-      
-      if (response.success !== false) {
-        showStatus('Calendly disconnected successfully!', false);
-        updateConnectionStatus('calendly', false);
-      } else {
-        showStatus('Error disconnecting Calendly', true);
-      }
-    } catch (error) {
-      console.error('Error disconnecting Calendly:', error);
-      showStatus('Error disconnecting Calendly', true);
-    }
-  }
-}
-
-// Billing toggle function
-let isAnnual = false;
-
-function toggleBillingPeriod() {
-  isAnnual = document.getElementById('annualToggle').checked;
-  
-  // Update labels
-  document.getElementById('monthlyLabel').classList.toggle('active', !isAnnual);
-  document.getElementById('annualLabel').classList.toggle('active', isAnnual);
-  
-  // Update pricing
-  const plans = {
-    bronze: { monthly: 99, annual: 79 },  // 20% discount
-    silver: { monthly: 299, annual: 239 },
-    gold: { monthly: 799, annual: 639 }
-  };
-  
-  Object.keys(plans).forEach(plan => {
-    const priceEl = document.getElementById(`${plan}Price`);
-    const periodEl = document.getElementById(`${plan}Period`);
-    const savingsEl = document.getElementById(`${plan}Savings`);
     
-    if (isAnnual) {
-      priceEl.textContent = `$${plans[plan].annual}`;
-      periodEl.textContent = '/month (billed annually)';
-      savingsEl.style.display = 'block';
-    } else {
-      priceEl.textContent = `$${plans[plan].monthly}`;
-      periodEl.textContent = '/month';
-      savingsEl.style.display = 'none';
-    }
-  });
-}
-
-// Enterprise contact function
-function contactEnterprise() {
-  window.location.href = 'mailto:andrew@victoryvision.app?subject=Enterprise Plan Inquiry&body=Hi, I\'m interested in learning more about the Enterprise plan for my organization.';
-}
-
-// Update the checkConnectionStatus function to include Calendly
-function updateConnectionStatus(platform, isConnected, profileInfo = null) {
-  const statusIndicator = document.getElementById(`${platform}-status`);
-  const connectBtn = document.getElementById(`connect-${platform}`);
-  const disconnectBtn = document.getElementById(`disconnect-${platform}`);
-  const infoDiv = document.getElementById(`${platform}-info`);
-  const profileSpan = document.getElementById(`${platform}-profile`);
-  
-  if (isConnected) {
-    statusIndicator.className = 'status-indicator status-connected';
-    connectBtn.style.display = 'none';
-    disconnectBtn.style.display = 'inline-block';
-    if (profileInfo && infoDiv && profileSpan) {
-      profileSpan.textContent = profileInfo;
-      infoDiv.style.display = 'block';
-    }
-  } else {
-    statusIndicator.className = 'status-indicator status-disconnected';
-    connectBtn.style.display = 'inline-block';
-    disconnectBtn.style.display = 'none';
-    if (infoDiv) {
-      infoDiv.style.display = 'none';
-    }
-  }
-}
-
-// Update the upgradeToPlan function to handle annual billing
-async function upgradeToPlan(planName) {
-  try {
-    const billing_period = isAnnual ? 'annual' : 'monthly';
-    showStatus('Redirecting to secure payment...', false);
-    
-    const response = await apiCall(N8N_ENDPOINTS.getCheckout, {
-      plan: planName,
-      billing_period: billing_period
-    });
-    
-    if (response && response.checkout_url) {
-      window.location.href = response.checkout_url;
-    } else {
-      throw new Error('No checkout URL received');
-    }
-  } catch (error) {
-    console.error('Error upgrading plan:', error);
-    showStatus('Error processing upgrade: ' + error.message, true);
-  }
-}  
     // Check for successful checkout
     const sessionId = urlParams.get('session_id');
     if (sessionId) {
