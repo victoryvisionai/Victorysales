@@ -1116,7 +1116,7 @@
   function connectCalendly() {
     const state = generateStateFromSession();
     const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
-    const scope = encodeURIComponent('default');
+ const scope = encodeURIComponent('default scheduled_events:write');
     const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${OAUTH_CLIENTS.calendly}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
     
     sessionStorage.setItem('oauth_state', state);
