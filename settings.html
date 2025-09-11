@@ -1112,19 +1112,21 @@
     }
   }
 
-  // Calendly OAuth functions
-  function connectCalendly() {
-    const state = generateStateFromSession();
-    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
- const scope = encodeURIComponent('default scheduled_events:write');
-    const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${OAUTH_CLIENTS.calendly}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
-    
-    sessionStorage.setItem('oauth_state', state);
-    sessionStorage.setItem('oauth_platform', 'calendly');
-    
-    window.location.href = authUrl;
-  }
-
+// Calendly OAuth functions
+function connectCalendly() {
+  const state = generateStateFromSession();
+  const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
+  
+  // FIXED: Use proper space-separated scopes (removed colon and added 'default')
+  const scope = encodeURIComponent('default scheduled_events routing_forms event_types webhooks');
+  
+  const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${OAUTH_CLIENTS.calendly}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+  
+  sessionStorage.setItem('oauth_state', state);
+  sessionStorage.setItem('oauth_platform', 'calendly');
+  
+  window.location.href = authUrl;
+}
   async function disconnectCalendly() {
     if (confirm('Are you sure you want to disconnect Calendly?')) {
       try {
