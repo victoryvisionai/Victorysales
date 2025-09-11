@@ -276,7 +276,6 @@
       }
     }
 
-    /* Daily.co specific styles */
     .daily-video-container {
       width: 100%;
       height: 100%;
@@ -378,7 +377,11 @@
 </div>
 
 <script>
-// Supabase configuration
+// API Configuration - UPDATE THIS WITH YOUR BACKEND URL
+const API_BASE_URL = 'https://api.victoryvision.app'; // Production
+// const API_BASE_URL = 'http://localhost:3001'; // Development
+
+// Supabase client for authentication only
 const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -389,6 +392,7 @@ let currentMeetings = [];
 let userEmail = '';
 let isMuted = false;
 let isVideoOff = false;
+let authToken = null;
 
 // DOM elements
 const emailForm = document.getElementById('emailForm');
@@ -403,51 +407,124 @@ const backBtn = document.getElementById('backBtn');
 const videoContainer = document.getElementById('videoContainer');
 const dailyContainer = document.getElementById('dailyContainer');
 const meetingControls = document.getElementById('meetingControls');
-
-// Control buttons
 const muteBtn = document.getElementById('muteBtn');
 const videoBtn = document.getElementById('videoBtn');
 const leaveBtn = document.getElementById('leaveBtn');
 
-// Event listeners
-findMeetingBtn.addEventListener('click', findMeetings);
-backBtn.addEventListener('click', showEmailForm);
-emailInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') findMeetings();
-});
+// Rate limiting
+const clientRateLimit = {
+  calls: [],
+  maxCalls: 5,
+  windowMs: 60000,
+  canMakeCall() {
+    const now = Date.now();
+    this.calls = this.calls.filter(time => time > (now - this.windowMs));
+    if (this.calls.length >= this.maxCalls) return false;
+    this.calls.push(now);
+    return true;
+  }
+};
 
-// Control button event listeners
-muteBtn.addEventListener('click', toggleMute);
-videoBtn.addEventListener('click', toggleVideo);
-leaveBtn.addEventListener('click', leaveMeeting);
-
-// Show error message
-function showError(message) {
-  errorMessage.textContent = message;
-  errorMessage.style.display = 'block';
-  successMessage.style.display = 'none';
-  setTimeout(() => {
-    errorMessage.style.display = 'none';
-  }, 5000);
+// Authentication helper
+async function getAuthToken() {
+  try {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (session?.access_token) {
+      authToken = session.access_token;
+      return authToken;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting auth token:', error);
+    return null;
+  }
 }
 
-// Show success message
-function showSuccess(message) {
-  successMessage.textContent = message;
-  successMessage.style.display = 'block';
-  errorMessage.style.display = 'none';
-  setTimeout(() => {
-    successMessage.style.display = 'none';
-  }, 3000);
+// API request helper
+async function makeAuthenticatedRequest(endpoint, options = {}) {
+  const token = await getAuthToken();
+  
+  const defaultOptions = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    }
+  };
+
+  const mergedOptions = {
+    ...defaultOptions,
+    ...options,
+    headers: { ...defaultOptions.headers, ...options.headers }
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, mergedOptions);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    return response.json();
+  } catch (error) {
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Unable to connect to server. Please check your internet connection.');
+    }
+    throw error;
+  }
 }
 
-// Validate email format
+// Utility functions
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  return emailRegex.test(email) && email.length <= 254;
 }
 
-// Find meetings for the user
+function sanitizeInput(input) {
+  if (typeof input !== 'string') return input;
+  return input
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim();
+}
+
+function sanitizeUrl(url) {
+  try {
+    const parsedUrl = new URL(url);
+    if (parsedUrl.protocol !== 'https:') {
+      throw new Error('Only HTTPS URLs are allowed');
+    }
+    const allowedDomains = ['victoryvision.daily.co', 'daily.co'];
+    if (!allowedDomains.some(domain => 
+      parsedUrl.hostname === domain || parsedUrl.hostname.endsWith('.' + domain)
+    )) {
+      throw new Error('URL domain not allowed');
+    }
+    return url;
+  } catch (error) {
+    console.error('URL validation failed:', error);
+    throw new Error('Invalid meeting room URL');
+  }
+}
+
+function showError(message) {
+  const sanitizedMessage = sanitizeInput(message);
+  errorMessage.textContent = sanitizedMessage;
+  errorMessage.style.display = 'block';
+  successMessage.style.display = 'none';
+  setTimeout(() => { errorMessage.style.display = 'none'; }, 8000);
+}
+
+function showSuccess(message) {
+  const sanitizedMessage = sanitizeInput(message);
+  successMessage.textContent = sanitizedMessage;
+  successMessage.style.display = 'block';
+  errorMessage.style.display = 'none';
+  setTimeout(() => { successMessage.style.display = 'none'; }, 5000);
+}
+
+// Find meetings function
 async function findMeetings() {
   const email = emailInput.value.trim();
   
@@ -461,54 +538,57 @@ async function findMeetings() {
     return;
   }
 
+  if (!clientRateLimit.canMakeCall()) {
+    showError('Too many requests. Please wait a moment before trying again.');
+    return;
+  }
+
   userEmail = email;
-  
-  // Show loading state
   emailForm.style.display = 'none';
   loadingState.style.display = 'flex';
   
   try {
-    // Query database for meetings
-    const { data: meetings, error } = await supabaseClient
-      .from('meetings')
-      .select('*')
-      .eq('attendee_email', email)
-      .gte('meeting_start_time', new Date(Date.now() - 30 * 60 * 1000).toISOString()) // 30 minutes ago
-      .lte('meeting_start_time', new Date(Date.now() + 30 * 60 * 1000).toISOString()) // 30 minutes from now
-      .order('meeting_start_time', { ascending: true });
+    const response = await makeAuthenticatedRequest('/api/meetings/find', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
 
     loadingState.style.display = 'none';
 
-    if (error) {
-      console.error('Database error:', error);
-      showError('Unable to find meetings. Please check your email or contact support.');
-      emailForm.style.display = 'block';
-      return;
-    }
-
-    if (!meetings || meetings.length === 0) {
+    if (!response.success || !response.meetings || response.meetings.length === 0) {
       showError('No meetings found for your email address in the next 30 minutes. Please check your email or try again later.');
       emailForm.style.display = 'block';
       return;
     }
 
-    currentMeetings = meetings;
-    displayMeetings(meetings);
+    currentMeetings = response.meetings;
+    displayMeetings(response.meetings);
+    showSuccess(`Found ${response.meetings.length} meeting(s) for ${email}`);
     
   } catch (error) {
     console.error('Error finding meetings:', error);
     loadingState.style.display = 'none';
-    showError('An error occurred while finding your meetings. Please try again.');
+    
+    if (error.message.includes('Too many requests')) {
+      showError('Too many requests. Please wait before trying again.');
+    } else if (error.message.includes('Invalid email')) {
+      showError('Please enter a valid email address.');
+    } else if (error.message.includes('connect to server')) {
+      showError('Unable to connect to server. Please check your internet connection and try again.');
+    } else {
+      showError('Unable to find meetings. Please check your email or contact support.');
+    }
+    
     emailForm.style.display = 'block';
   }
 }
 
-// Display meetings list
+// Display meetings
 function displayMeetings(meetings) {
   meetingsContainer.innerHTML = '';
   
-  meetings.forEach((meeting, index) => {
-    const meetingTime = new Date(meeting.meeting_start_time);
+  meetings.forEach((meeting) => {
+    const meetingTime = new Date(meeting.start_at);
     const now = new Date();
     const timeDiff = meetingTime.getTime() - now.getTime();
     const minutesDiff = Math.round(timeDiff / (1000 * 60));
@@ -526,8 +606,8 @@ function displayMeetings(meetings) {
     meetingItem.className = 'meeting-item';
     meetingItem.innerHTML = `
       <div class="meeting-time">${timeDisplay}</div>
-      <div class="meeting-title-item">${meeting.meeting_title || 'Victory Vision Meeting'}</div>
-      <div class="meeting-attendees">Click to join meeting</div>
+      <div class="meeting-title-item">${sanitizeInput(meeting.title) || 'Victory Vision Meeting'}</div>
+      <div class="meeting-attendees">Duration: ${meeting.duration || 60} minutes</div>
     `;
     
     meetingItem.addEventListener('click', () => joinMeeting(meeting));
@@ -537,19 +617,15 @@ function displayMeetings(meetings) {
   meetingsList.style.display = 'block';
 }
 
-// Join a specific meeting
+// Join meeting
 async function joinMeeting(meeting) {
-  if (!meeting.daily_room_url) {
-    showError('Meeting room URL not available. Please contact support.');
-    return;
-  }
-
   try {
+    const safeRoomUrl = sanitizeUrl(meeting.room_url);
+    
     meetingsList.style.display = 'none';
     loadingState.style.display = 'flex';
     loadingState.querySelector('span').textContent = 'Joining meeting...';
 
-    // Initialize Daily.co call frame
     callFrame = DailyIframe.createFrame(dailyContainer, {
       showLeaveButton: false,
       showFullscreenButton: true,
@@ -557,10 +633,9 @@ async function joinMeeting(meeting) {
       showParticipantsBar: true,
     });
 
-    // Join the meeting
     await callFrame.join({
-      url: meeting.daily_room_url,
-      userName: userEmail.split('@')[0], // Use part before @ as display name
+      url: safeRoomUrl,
+      userName: userEmail.split('@')[0],
     });
 
     loadingState.style.display = 'none';
@@ -568,8 +643,6 @@ async function joinMeeting(meeting) {
     meetingControls.style.display = 'block';
     
     showSuccess('Successfully joined the meeting!');
-    
-    // Set up meeting event listeners
     setupMeetingEventListeners();
     
   } catch (error) {
@@ -580,7 +653,7 @@ async function joinMeeting(meeting) {
   }
 }
 
-// Setup meeting event listeners
+// Meeting event listeners
 function setupMeetingEventListeners() {
   if (!callFrame) return;
 
@@ -593,20 +666,11 @@ function setupMeetingEventListeners() {
     console.error('Meeting error:', error);
     showError('A meeting error occurred. Please try rejoining.');
   });
-
-  callFrame.on('participant-joined', (event) => {
-    console.log('Participant joined:', event.participant);
-  });
-
-  callFrame.on('participant-left', (event) => {
-    console.log('Participant left:', event.participant);
-  });
 }
 
-// Toggle mute
+// Meeting controls
 async function toggleMute() {
   if (!callFrame) return;
-
   try {
     if (isMuted) {
       await callFrame.setLocalAudio(true);
@@ -619,13 +683,12 @@ async function toggleMute() {
     }
   } catch (error) {
     console.error('Error toggling mute:', error);
+    showError('Unable to toggle microphone.');
   }
 }
 
-// Toggle video
 async function toggleVideo() {
   if (!callFrame) return;
-
   try {
     if (isVideoOff) {
       await callFrame.setLocalVideo(true);
@@ -638,13 +701,12 @@ async function toggleVideo() {
     }
   } catch (error) {
     console.error('Error toggling video:', error);
+    showError('Unable to toggle camera.');
   }
 }
 
-// Leave meeting
 async function leaveMeeting() {
   if (!callFrame) return;
-
   try {
     await callFrame.leave();
     callFrame.destroy();
@@ -657,7 +719,6 @@ async function leaveMeeting() {
   }
 }
 
-// Show email form (reset to initial state)
 function showEmailForm() {
   emailForm.style.display = 'block';
   meetingsList.style.display = 'none';
@@ -667,7 +728,6 @@ function showEmailForm() {
   errorMessage.style.display = 'none';
   successMessage.style.display = 'none';
   
-  // Clean up call frame if exists
   if (callFrame) {
     try {
       callFrame.destroy();
@@ -677,7 +737,6 @@ function showEmailForm() {
     }
   }
   
-  // Reset form
   emailInput.value = '';
   userEmail = '';
   currentMeetings = [];
@@ -685,19 +744,46 @@ function showEmailForm() {
   isVideoOff = false;
 }
 
-// Check for URL parameters (email pre-fill)
-window.addEventListener('load', () => {
+// Event listeners
+findMeetingBtn.addEventListener('click', findMeetings);
+backBtn.addEventListener('click', showEmailForm);
+emailInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') findMeetings();
+});
+muteBtn.addEventListener('click', toggleMute);
+videoBtn.addEventListener('click', toggleVideo);
+leaveBtn.addEventListener('click', leaveMeeting);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (callFrame) {
+    if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+      e.preventDefault();
+      toggleMute();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+      e.preventDefault();
+      toggleVideo();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+      e.preventDefault();
+      leaveMeeting();
+    }
+  }
+});
+
+// Page initialization
+window.addEventListener('load', async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const emailParam = urlParams.get('email');
   
   if (emailParam && isValidEmail(emailParam)) {
     emailInput.value = emailParam;
-    // Auto-find meetings if email is provided
-    findMeetings();
+    await findMeetings();
   }
 });
 
-// Handle page refresh/close
+// Cleanup on page unload
 window.addEventListener('beforeunload', () => {
   if (callFrame) {
     try {
@@ -708,6 +794,9 @@ window.addEventListener('beforeunload', () => {
     }
   }
 });
+
+console.log('Victory Vision Meeting Page Loaded');
+console.log('Backend URL:', API_BASE_URL);
 </script>
 
 </body>
