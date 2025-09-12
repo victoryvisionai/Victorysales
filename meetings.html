@@ -468,14 +468,14 @@ async function findMeetings() {
   loadingState.style.display = 'flex';
   
   try {
-    // Query database for meetings
+    // Query database for meetings using attendees_email field with contains search
     const { data: meetings, error } = await supabaseClient
       .from('meetings')
       .select('*')
-      .eq('attendee_email', email)
-      .gte('meeting_start_time', new Date(Date.now() - 30000 * 60 * 1000).toISOString()) // 30 minutes ago
-      .lte('meeting_start_time', new Date(Date.now() + 30000 * 60 * 1000).toISOString()) // 30 minutes from now
-      .order('meeting_start_time', { ascending: true });
+      .contains('attendees_email', email)
+      .gte('start_at', new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()) // 4 hours ago
+      .lte('start_at', new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString()) // 4 hours from now
+      .order('start_at', { ascending: true });
 
     loadingState.style.display = 'none';
 
@@ -487,7 +487,7 @@ async function findMeetings() {
     }
 
     if (!meetings || meetings.length === 0) {
-      showError('No meetings found for your email address in the next 30 minutes. Please check your email or try again later.');
+      showError('No meetings found for your email address in the next 4 hours. Please check your email or try again later.');
       emailForm.style.display = 'block';
       return;
     }
@@ -508,29 +508,51 @@ function displayMeetings(meetings) {
   meetingsContainer.innerHTML = '';
   
   meetings.forEach((meeting, index) => {
-    const meetingTime = new Date(meeting.meeting_start_time);
+    const meetingTime = new Date(meeting.start_at);
     const now = new Date();
     const timeDiff = meetingTime.getTime() - now.getTime();
     const minutesDiff = Math.round(timeDiff / (1000 * 60));
     
     let timeDisplay;
-    if (minutesDiff > 5) {
+    let timeColor = '#0a3161';
+    
+    if (minutesDiff > 15) {
       timeDisplay = `Starts in ${minutesDiff} minutes`;
+      timeColor = '#718096';
+    } else if (minutesDiff > 5) {
+      timeDisplay = `Starts in ${minutesDiff} minutes`;
+      timeColor = '#ed8936';
     } else if (minutesDiff > -15) {
       timeDisplay = 'Available to join now';
-    } else {
+      timeColor = '#38a169';
+    } else if (minutesDiff > -60) {
       timeDisplay = `Started ${Math.abs(minutesDiff)} minutes ago`;
+      timeColor = '#bb133e';
+    } else {
+      timeDisplay = `Meeting ended`;
+      timeColor = '#a0aec0';
     }
     
     const meetingItem = document.createElement('div');
     meetingItem.className = 'meeting-item';
     meetingItem.innerHTML = `
-      <div class="meeting-time">${timeDisplay}</div>
-      <div class="meeting-title-item">${meeting.meeting_title || 'Victory Vision Meeting'}</div>
-      <div class="meeting-attendees">Click to join meeting</div>
+      <div class="meeting-time" style="color: ${timeColor}">${timeDisplay}</div>
+      <div class="meeting-title-item">${meeting.title || 'Victory Vision Meeting'}</div>
+      <div class="meeting-attendees">
+        Duration: ${meeting.duration || 30} minutes
+        ${meeting.description ? `<br>Description: ${meeting.description}` : ''}
+      </div>
     `;
     
-    meetingItem.addEventListener('click', () => joinMeeting(meeting));
+    // Only allow joining if meeting is within joinable timeframe
+    if (minutesDiff > -60 && minutesDiff < 60) {
+      meetingItem.addEventListener('click', () => joinMeeting(meeting));
+      meetingItem.style.cursor = 'pointer';
+    } else {
+      meetingItem.style.opacity = '0.6';
+      meetingItem.style.cursor = 'not-allowed';
+    }
+    
     meetingsContainer.appendChild(meetingItem);
   });
   
@@ -539,7 +561,7 @@ function displayMeetings(meetings) {
 
 // Join a specific meeting
 async function joinMeeting(meeting) {
-  if (!meeting.daily_room_url) {
+  if (!meeting.room_url) {
     showError('Meeting room URL not available. Please contact support.');
     return;
   }
@@ -559,7 +581,7 @@ async function joinMeeting(meeting) {
 
     // Join the meeting
     await callFrame.join({
-      url: meeting.daily_room_url,
+      url: meeting.room_url,
       userName: userEmail.split('@')[0], // Use part before @ as display name
     });
 
