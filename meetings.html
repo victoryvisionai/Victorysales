@@ -6,8 +6,6 @@
   <title>Join Your Meeting - Victory Vision</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://unpkg.com/@daily-co/daily-js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
   
   <style>
     * {
@@ -44,7 +42,6 @@
       color: white;
       padding: 30px;
       text-align: center;
-      position: relative;
     }
 
     .logo {
@@ -191,7 +188,6 @@
       overflow: hidden;
       margin-top: 20px;
       background: #000;
-      position: relative;
     }
 
     .loading {
@@ -248,42 +244,6 @@
       color: white;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @media (max-width: 768px) {
-      .meeting-container {
-        margin: 10px;
-        border-radius: 12px;
-      }
-      
-      .meeting-header {
-        padding: 20px;
-      }
-      
-      .meeting-title {
-        font-size: 1.5rem;
-      }
-      
-      .meeting-content {
-        padding: 20px;
-      }
-      
-      .video-container {
-        height: 300px;
-      }
-    }
-
-    /* Daily.co specific styles */
-    .daily-video-container {
-      width: 100%;
-      height: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
     .meeting-controls {
       display: none;
       padding: 20px;
@@ -314,6 +274,34 @@
 
     .control-btn.danger:hover {
       background: #9d1134;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .meeting-container {
+        margin: 10px;
+        border-radius: 12px;
+      }
+      
+      .meeting-header {
+        padding: 20px;
+      }
+      
+      .meeting-title {
+        font-size: 1.5rem;
+      }
+      
+      .meeting-content {
+        padding: 20px;
+      }
+      
+      .video-container {
+        height: 300px;
+      }
     }
   </style>
 </head>
@@ -365,7 +353,7 @@
 
     <!-- Video Container -->
     <div id="videoContainer" class="video-container">
-      <div id="dailyContainer" class="daily-video-container"></div>
+      <div id="dailyContainer" style="width: 100%; height: 100%;"></div>
     </div>
   </div>
 
@@ -468,32 +456,32 @@ async function findMeetings() {
   loadingState.style.display = 'flex';
   
   try {
-    // Query database for meetings using attendees_email field with contains search
-    const { data: meetings, error } = await supabaseClient
-      .from('meetings')
+    // Query meeting_invites table
+    const { data: meetingInvites, error } = await supabaseClient
+      .from('meeting_invites')
       .select('*')
-      .contains('attendees_email', email)
-      .gte('start_at', new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()) // 4 hours ago
-      .lte('start_at', new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString()) // 4 hours from now
-      .order('start_at', { ascending: true });
+      .eq('email', email)
+      .gte('rsvp_at', new Date(Date.now() - 96 * 60 * 60 * 1000).toISOString()) // 96 hours ago
+      .lte('rsvp_at', new Date(Date.now() + 96 * 60 * 60 * 1000).toISOString()) // 96 hours from now
+      .order('rsvp_at', { ascending: true });
 
     loadingState.style.display = 'none';
 
     if (error) {
       console.error('Database error:', error);
-      showError('Unable to find meetings. Please check your email or contact support.');
+      showError('Unable to find meeting invites. Please check your email or contact support.');
       emailForm.style.display = 'block';
       return;
     }
 
-    if (!meetings || meetings.length === 0) {
-      showError('No meetings found for your email address in the next 96 hours. Please check your email or try again later.');
+    if (!meetingInvites || meetingInvites.length === 0) {
+      showError('No meeting invites found for your email address. Please check your email or try again later.');
       emailForm.style.display = 'block';
       return;
     }
 
-    currentMeetings = meetings;
-    displayMeetings(meetings);
+    currentMeetings = meetingInvites;
+    displayMeetings(meetingInvites);
     
   } catch (error) {
     console.error('Error finding meetings:', error);
@@ -504,11 +492,11 @@ async function findMeetings() {
 }
 
 // Display meetings list
-function displayMeetings(meetings) {
+function displayMeetings(meetingInvites) {
   meetingsContainer.innerHTML = '';
   
-  meetings.forEach((meeting, index) => {
-    const meetingTime = new Date(meeting.start_at);
+  meetingInvites.forEach((invite, index) => {
+    const meetingTime = new Date(invite.rsvp_at);
     const now = new Date();
     const timeDiff = meetingTime.getTime() - now.getTime();
     const minutesDiff = Math.round(timeDiff / (1000 * 60));
@@ -516,7 +504,11 @@ function displayMeetings(meetings) {
     let timeDisplay;
     let timeColor = '#0a3161';
     
-    if (minutesDiff > 15) {
+    if (minutesDiff > 60) {
+      const hoursDiff = Math.round(minutesDiff / 60);
+      timeDisplay = `Starts in ${hoursDiff} hours`;
+      timeColor = '#718096';
+    } else if (minutesDiff > 15) {
       timeDisplay = `Starts in ${minutesDiff} minutes`;
       timeColor = '#718096';
     } else if (minutesDiff > 5) {
@@ -537,20 +529,24 @@ function displayMeetings(meetings) {
     meetingItem.className = 'meeting-item';
     meetingItem.innerHTML = `
       <div class="meeting-time" style="color: ${timeColor}">${timeDisplay}</div>
-      <div class="meeting-title-item">${meeting.title || 'Victory Vision Meeting'}</div>
+      <div class="meeting-title-item">${invite.name || 'Victory Vision Meeting'}</div>
       <div class="meeting-attendees">
-        Duration: ${meeting.duration || 30} minutes
-        ${meeting.description ? `<br>Description: ${meeting.description}` : ''}
+        Company: ${invite.company || 'N/A'}<br>
+        RSVP: ${invite.rsvp || 'Pending'}
+        ${invite.attend ? '<br>✅ Confirmed Attendance' : ''}
       </div>
     `;
     
-    // Only allow joining if meeting is within joinable timeframe
-    if (minutesDiff > -60 && minutesDiff < 60) {
-      meetingItem.addEventListener('click', () => joinMeeting(meeting));
+    // Only allow joining if meeting is within joinable timeframe and has meeting_url
+    if (minutesDiff > -60 && minutesDiff < 240 && invite.meeting_url) { // 4 hours window
+      meetingItem.addEventListener('click', () => joinMeeting(invite));
       meetingItem.style.cursor = 'pointer';
     } else {
       meetingItem.style.opacity = '0.6';
       meetingItem.style.cursor = 'not-allowed';
+      if (!invite.meeting_url) {
+        meetingItem.innerHTML += '<div style="color: #e53e3e; font-size: 0.8rem; margin-top: 5px;">⚠️ No meeting URL available</div>';
+      }
     }
     
     meetingsContainer.appendChild(meetingItem);
@@ -560,9 +556,9 @@ function displayMeetings(meetings) {
 }
 
 // Join a specific meeting
-async function joinMeeting(meeting) {
-  if (!meeting.room_url) {
-    showError('Meeting room URL not available. Please contact support.');
+async function joinMeeting(invite) {
+  if (!invite.meeting_url) {
+    showError('Meeting URL not available. Please contact support.');
     return;
   }
 
@@ -581,8 +577,8 @@ async function joinMeeting(meeting) {
 
     // Join the meeting
     await callFrame.join({
-      url: meeting.room_url,
-      userName: userEmail.split('@')[0], // Use part before @ as display name
+      url: invite.meeting_url,
+      userName: invite.name || userEmail.split('@')[0],
     });
 
     loadingState.style.display = 'none';
@@ -614,14 +610,6 @@ function setupMeetingEventListeners() {
   callFrame.on('error', (error) => {
     console.error('Meeting error:', error);
     showError('A meeting error occurred. Please try rejoining.');
-  });
-
-  callFrame.on('participant-joined', (event) => {
-    console.log('Participant joined:', event.participant);
-  });
-
-  callFrame.on('participant-left', (event) => {
-    console.log('Participant left:', event.participant);
   });
 }
 
@@ -714,7 +702,6 @@ window.addEventListener('load', () => {
   
   if (emailParam && isValidEmail(emailParam)) {
     emailInput.value = emailParam;
-    // Auto-find meetings if email is provided
     findMeetings();
   }
 });
