@@ -163,16 +163,10 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .meeting-time {
-      font-weight: 600;
-      color: #0a3161;
-      font-size: 1.1rem;
-      margin-bottom: 5px;
-    }
-
     .meeting-title-item {
       color: #2d3748;
       margin-bottom: 5px;
+      font-weight: 600;
     }
 
     .meeting-attendees {
@@ -328,7 +322,7 @@
         >
       </div>
       <button id="findMeetingBtn" class="join-btn">
-        🔍 Find My Meeting
+        Find My Meeting
       </button>
     </div>
 
@@ -346,9 +340,9 @@
 
     <!-- Meetings List -->
     <div id="meetingsList" class="meetings-list">
-      <h3 style="margin-bottom: 20px; color: #2d3748;">Select your meeting:</h3>
+      <h3 style="margin-bottom: 20px; color: #2d3748;">Click to join your meeting:</h3>
       <div id="meetingsContainer"></div>
-      <button id="backBtn" class="back-btn">← Back to Email Entry</button>
+      <button id="backBtn" class="back-btn">Back to Email Entry</button>
     </div>
 
     <!-- Video Container -->
@@ -359,9 +353,9 @@
 
   <!-- Meeting Controls -->
   <div id="meetingControls" class="meeting-controls">
-    <button id="muteBtn" class="control-btn">🎤 Mute</button>
-    <button id="videoBtn" class="control-btn">📹 Video</button>
-    <button id="leaveBtn" class="control-btn danger">📞 Leave Meeting</button>
+    <button id="muteBtn" class="control-btn">Mute</button>
+    <button id="videoBtn" class="control-btn">Video</button>
+    <button id="leaveBtn" class="control-btn danger">Leave Meeting</button>
   </div>
 </div>
 
@@ -456,26 +450,27 @@ async function findMeetings() {
   loadingState.style.display = 'flex';
   
   try {
-    // Query meeting_invites table
+    console.log('Searching for email:', email);
+    
+    // Query meeting_invites table - simple email match
     const { data: meetingInvites, error } = await supabaseClient
       .from('meeting_invites')
       .select('*')
-      .eq('email', email)
-      .gte('rsvp_at', new Date(Date.now() - 96 * 60 * 60 * 1000).toISOString()) // 96 hours ago
-      .lte('rsvp_at', new Date(Date.now() + 96 * 60 * 60 * 1000).toISOString()) // 96 hours from now
-      .order('rsvp_at', { ascending: true });
+      .eq('email', email);
+
+    console.log('Query result:', { meetingInvites, error });
 
     loadingState.style.display = 'none';
 
     if (error) {
       console.error('Database error:', error);
-      showError('Unable to find meeting invites. Please check your email or contact support.');
+      showError('Database error: ' + error.message);
       emailForm.style.display = 'block';
       return;
     }
 
     if (!meetingInvites || meetingInvites.length === 0) {
-      showError('No meeting invites found for your email address. Please check your email or try again later.');
+      showError('No meetings found for: ' + email);
       emailForm.style.display = 'block';
       return;
     }
@@ -486,7 +481,7 @@ async function findMeetings() {
   } catch (error) {
     console.error('Error finding meetings:', error);
     loadingState.style.display = 'none';
-    showError('An error occurred while finding your meetings. Please try again.');
+    showError('Error: ' + error.message);
     emailForm.style.display = 'block';
   }
 }
@@ -496,49 +491,22 @@ function displayMeetings(meetingInvites) {
   meetingsContainer.innerHTML = '';
   
   meetingInvites.forEach((invite, index) => {
-    const meetingTime = new Date(invite.rsvp_at);
-    const now = new Date();
-    const timeDiff = meetingTime.getTime() - now.getTime();
-    const minutesDiff = Math.round(timeDiff / (1000 * 60));
-    
-    let timeDisplay;
-    let timeColor = '#0a3161';
-    
-    if (minutesDiff > 60) {
-      const hoursDiff = Math.round(minutesDiff / 60);
-      timeDisplay = `Starts in ${hoursDiff} hours`;
-      timeColor = '#718096';
-    } else if (minutesDiff > 15) {
-      timeDisplay = `Starts in ${minutesDiff} minutes`;
-      timeColor = '#718096';
-    } else if (minutesDiff > 5) {
-      timeDisplay = `Starts in ${minutesDiff} minutes`;
-      timeColor = '#ed8936';
-    } else if (minutesDiff > -15) {
-      timeDisplay = 'Available to join now';
-      timeColor = '#38a169';
-    } else if (minutesDiff > -60) {
-      timeDisplay = `Started ${Math.abs(minutesDiff)} minutes ago`;
-      timeColor = '#bb133e';
-    } else {
-      timeDisplay = `Meeting ended`;
-      timeColor = '#a0aec0';
-    }
-    
     const meetingItem = document.createElement('div');
     meetingItem.className = 'meeting-item';
     meetingItem.innerHTML = `
-      <div class="meeting-time" style="color: ${timeColor}">${timeDisplay}</div>
       <div class="meeting-title-item">${invite.name || 'Victory Vision Meeting'}</div>
       <div class="meeting-attendees">
-        Company: ${invite.company || 'N/A'}<br>
-        RSVP: ${invite.rsvp || 'Pending'}
-        ${invite.attend ? '<br>✅ Confirmed Attendance' : ''}
+        Company: ${invite.company || 'N/A'}
+        ${invite.room_url ? '' : '<br>⚠️ No room URL available'}
       </div>
     `;
     
- #e53e3e; font-size: 0.8rem; margin-top: 5px;">⚠️ No meeting URL available</div>';
-      }
+    if (invite.room_url) {
+      meetingItem.addEventListener('click', () => joinMeeting(invite));
+      meetingItem.style.cursor = 'pointer';
+    } else {
+      meetingItem.style.opacity = '0.6';
+      meetingItem.style.cursor = 'not-allowed';
     }
     
     meetingsContainer.appendChild(meetingItem);
@@ -549,8 +517,8 @@ function displayMeetings(meetingInvites) {
 
 // Join a specific meeting
 async function joinMeeting(invite) {
-  if (!invite.meeting_url) {
-    showError('Meeting URL not available. Please contact support.');
+  if (!invite.room_url) {
+    showError('No room URL available');
     return;
   }
 
@@ -569,7 +537,7 @@ async function joinMeeting(invite) {
 
     // Join the meeting
     await callFrame.join({
-      url: invite.meeting_url,
+      url: invite.room_url,
       userName: invite.name || userEmail.split('@')[0],
     });
 
@@ -579,44 +547,25 @@ async function joinMeeting(invite) {
     
     showSuccess('Successfully joined the meeting!');
     
-    // Set up meeting event listeners
-    setupMeetingEventListeners();
-    
   } catch (error) {
     console.error('Error joining meeting:', error);
     loadingState.style.display = 'none';
-    showError('Unable to join the meeting. Please try again or contact support.');
+    showError('Unable to join meeting: ' + error.message);
     meetingsList.style.display = 'block';
   }
-}
-
-// Setup meeting event listeners
-function setupMeetingEventListeners() {
-  if (!callFrame) return;
-
-  callFrame.on('left-meeting', () => {
-    showEmailForm();
-    showSuccess('You have left the meeting.');
-  });
-
-  callFrame.on('error', (error) => {
-    console.error('Meeting error:', error);
-    showError('A meeting error occurred. Please try rejoining.');
-  });
 }
 
 // Toggle mute
 async function toggleMute() {
   if (!callFrame) return;
-
   try {
     if (isMuted) {
       await callFrame.setLocalAudio(true);
-      muteBtn.textContent = '🎤 Mute';
+      muteBtn.textContent = 'Mute';
       isMuted = false;
     } else {
       await callFrame.setLocalAudio(false);
-      muteBtn.textContent = '🔇 Unmute';
+      muteBtn.textContent = 'Unmute';
       isMuted = true;
     }
   } catch (error) {
@@ -627,15 +576,14 @@ async function toggleMute() {
 // Toggle video
 async function toggleVideo() {
   if (!callFrame) return;
-
   try {
     if (isVideoOff) {
       await callFrame.setLocalVideo(true);
-      videoBtn.textContent = '📹 Video';
+      videoBtn.textContent = 'Video';
       isVideoOff = false;
     } else {
       await callFrame.setLocalVideo(false);
-      videoBtn.textContent = '📹 Start Video';
+      videoBtn.textContent = 'Start Video';
       isVideoOff = true;
     }
   } catch (error) {
@@ -646,7 +594,6 @@ async function toggleVideo() {
 // Leave meeting
 async function leaveMeeting() {
   if (!callFrame) return;
-
   try {
     await callFrame.leave();
     callFrame.destroy();
@@ -669,7 +616,6 @@ function showEmailForm() {
   errorMessage.style.display = 'none';
   successMessage.style.display = 'none';
   
-  // Clean up call frame if exists
   if (callFrame) {
     try {
       callFrame.destroy();
@@ -679,7 +625,6 @@ function showEmailForm() {
     }
   }
   
-  // Reset form
   emailInput.value = '';
   userEmail = '';
   currentMeetings = [];
