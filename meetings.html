@@ -473,8 +473,8 @@ async function findMeetings() {
       .from('meetings')
       .select('*')
       .eq('attendee_email', email)
-      .gte('meeting_start_time', new Date(Date.now() - 30 * 60 * 1000).toISOString()) // 30 minutes ago
-      .lte('meeting_start_time', new Date(Date.now() + 30 * 60 * 1000).toISOString()) // 30 minutes from now
+      .gte('meeting_start_time', new Date(Date.now() - 30000 * 60 * 1000).toISOString()) // 30 minutes ago
+      .lte('meeting_start_time', new Date(Date.now() + 30000 * 60 * 1000).toISOString()) // 30 minutes from now
       .order('meeting_start_time', { ascending: true });
 
     loadingState.style.display = 'none';
