@@ -537,15 +537,7 @@ function displayMeetings(meetingInvites) {
       </div>
     `;
     
-    // Only allow joining if meeting is within joinable timeframe and has room_url
-    if (minutesDiff > -60 && minutesDiff < 240 && invite.room_url) { // 4 hours window
-      meetingItem.addEventListener('click', () => joinMeeting(invite));
-      meetingItem.style.cursor = 'pointer';
-    } else {
-      meetingItem.style.opacity = '0.6';
-      meetingItem.style.cursor = 'not-allowed';
-      if (!invite.room_url) {
-        meetingItem.innerHTML += '<div style="color: #e53e3e; font-size: 0.8rem; margin-top: 5px;">⚠️ No meeting URL available</div>';
+ #e53e3e; font-size: 0.8rem; margin-top: 5px;">⚠️ No meeting URL available</div>';
       }
     }
     
@@ -557,7 +549,7 @@ function displayMeetings(meetingInvites) {
 
 // Join a specific meeting
 async function joinMeeting(invite) {
-  if (!invite.room_url) {
+  if (!invite.meeting_url) {
     showError('Meeting URL not available. Please contact support.');
     return;
   }
@@ -577,7 +569,7 @@ async function joinMeeting(invite) {
 
     // Join the meeting
     await callFrame.join({
-      url: invite.room_url,
+      url: invite.meeting_url,
       userName: invite.name || userEmail.split('@')[0],
     });
 
