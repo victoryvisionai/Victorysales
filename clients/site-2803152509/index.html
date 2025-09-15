@@ -5,17 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Exclusive Webinar: Capital Strategy Mastery - Equitable Capital Advisors</title>
     <meta name="description" content="Join Andrew Glaze for an exclusive webinar on advanced capital strategy techniques. Limited registration available. Learn proven methods that have guided $100M+ in portfolio transitions." />
-    <meta name="keywords" content="capital strategy webinar, investment advisory, private equity, institutional investing, Andrew Glaze" />
-    <meta name="author" content="Equitable Capital Advisors" />
-    <meta property="og:title" content="Exclusive Capital Strategy Webinar - Limited Registration" />
-    <meta property="og:description" content="Discover advanced capital allocation strategies in this exclusive webinar. Registration is limited - secure your spot now." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yourdomain.com" />
-    <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1756242653/sjyccwinrqmx06vijmxc.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-    <link rel="icon" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont/icons/tabler-icon-briefcase.svg" type="image/svg+xml" />
     
     <style>
         :root {
@@ -24,148 +16,151 @@
             --dark-blue: #0d2c6c;
             --light-teal: #b9ebf4;
             --gray: #212121;
-            --soft-gray: #f4f4f4;
+            --soft-gray: #f8f9fa;
             --accent-red: #e74c3c;
             --font-sans: 'Inter', sans-serif;
         }
 
-        *, *::before, *::after {
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        html, body {
-            margin: 0;
-            padding: 0;
+        body {
             font-family: var(--font-sans);
-            font-size: 16px;
-            background: var(--white);
+            line-height: 1.6;
             color: var(--gray);
-            scroll-behavior: smooth;
-            line-height: 1.65;
-            max-width: 100%;
-            overflow-x: hidden;
+            background: var(--white);
         }
 
-        header {
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header with Video Background */
+        .hero {
             position: relative;
-            height: 100vh;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--dark-blue) 0%, var(--blue) 100%);
             overflow: hidden;
         }
 
-        header video {
+        .hero-video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -2;
+            z-index: 1;
         }
 
-        .overlay {
-            background: rgba(0, 0, 0, 0.7);
+        .hero-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            background: rgba(13, 44, 108, 0.8);
+            z-index: 2;
         }
 
         .hero-content {
             position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            z-index: 3;
             text-align: center;
-            height: 100%;
+            color: white;
             padding: 2rem;
-            color: var(--white);
         }
 
         .hero-logo {
-            width: 120px;
-            margin-bottom: 1.25rem;
+            width: 100px;
+            height: auto;
+            margin-bottom: 2rem;
         }
 
         .webinar-badge {
             background: var(--accent-red);
             color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
             font-weight: 600;
             font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+            display: inline-block;
+            margin-bottom: 2rem;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
+            0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
         }
 
         .hero-title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
+            margin-bottom: 1.5rem;
             color: var(--light-teal);
-            max-width: 800px;
             line-height: 1.2;
-            margin-bottom: 1rem;
         }
 
         .hero-subtitle {
-            font-size: 1.35rem;
-            margin-bottom: 1rem;
-            color: #eafcff;
-            max-width: 700px;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #e8f4f8;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .webinar-details {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin: 1.5rem 0;
+        .webinar-info {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem auto;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .webinar-date {
-            font-size: 1.25rem;
-            font-weight: 600;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--light-teal);
             margin-bottom: 0.5rem;
         }
 
         .webinar-time {
-            font-size: 1rem;
-            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
         }
 
-        .limited-spots {
+        .limited-notice {
             background: var(--accent-red);
             color: white;
-            padding: 0.75rem 1.5rem;
+            padding: 1rem;
             border-radius: 8px;
             font-weight: 600;
-            margin: 1rem 0;
-            font-size: 1.1rem;
+            margin: 1.5rem 0;
         }
 
         .cta-button {
-            margin-top: 1.5rem;
-            padding: 1.25rem 3rem;
+            display: inline-block;
             background: var(--blue);
-            color: var(--white);
-            border: none;
+            color: white;
+            padding: 1.5rem 3rem;
             border-radius: 8px;
+            text-decoration: none;
             font-weight: 700;
             font-size: 1.2rem;
-            cursor: pointer;
+            margin-top: 1rem;
             transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
             box-shadow: 0 4px 15px rgba(30, 98, 243, 0.3);
         }
 
@@ -175,113 +170,81 @@
             box-shadow: 0 6px 20px rgba(30, 98, 243, 0.4);
         }
 
-        main {
-            margin-top: -4rem;
+        /* Main Content Sections */
+        .section {
+            padding: 5rem 0;
         }
 
-        section {
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .value-prop {
-            text-align: center;
-            background: linear-gradient(135deg, var(--blue), var(--dark-blue));
-            color: white;
-            padding: 4rem 2rem;
-            margin: 0 -2rem;
-        }
-
-        .value-prop h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--light-teal);
-        }
-
-        .value-prop p {
-            font-size: 1.25rem;
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            line-height: 1.7;
-        }
-
-        .webinar-agenda {
+        .section-alt {
             background: var(--soft-gray);
-            border-radius: 15px;
-            padding: 3rem;
-            margin: 3rem 0;
         }
 
-        .webinar-agenda h3 {
-            font-size: 2rem;
-            color: var(--dark-blue);
+        .section-title {
+            font-size: 2.5rem;
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            color: var(--dark-blue);
         }
 
-        .agenda-items {
+        .value-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            margin-top: 3rem;
         }
 
-        .agenda-item {
+        .value-card {
             background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border-left: 4px solid var(--blue);
+            transition: transform 0.3s ease;
         }
 
-        .agenda-item h4 {
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .value-card h3 {
+            font-size: 1.4rem;
             color: var(--dark-blue);
-            font-size: 1.3rem;
             margin-bottom: 1rem;
         }
 
-        .agenda-item p {
-            color: #555;
-            line-height: 1.6;
+        .value-card p {
+            color: #666;
+            line-height: 1.7;
         }
 
         .speaker-section {
             text-align: center;
-            background: white;
-            padding: 4rem 2rem;
-        }
-
-        .speaker-section h3 {
-            font-size: 2rem;
-            color: var(--dark-blue);
-            margin-bottom: 2rem;
         }
 
         .speaker-bio {
             max-width: 800px;
             margin: 0 auto;
             font-size: 1.1rem;
-            color: #444;
-            line-height: 1.7;
+            line-height: 1.8;
+            color: #555;
         }
 
         .urgency-section {
-            background: var(--accent-red);
+            background: linear-gradient(135deg, var(--accent-red), #c0392b);
             color: white;
             text-align: center;
-            padding: 3rem 2rem;
-            margin: 3rem -2rem;
+            padding: 4rem 2rem;
         }
 
-        .urgency-section h3 {
-            font-size: 2.2rem;
-            margin-bottom: 1rem;
+        .urgency-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .urgency-section p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-bottom: 2rem;
-            max-width: 600px;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -289,7 +252,6 @@
         .cta-white {
             background: white;
             color: var(--accent-red);
-            font-weight: 700;
         }
 
         .cta-white:hover {
@@ -297,87 +259,65 @@
             color: var(--accent-red);
         }
 
-        .testimonial-section {
-            background: var(--soft-gray);
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
         .testimonial {
-            max-width: 700px;
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            max-width: 800px;
             margin: 0 auto;
-            font-style: italic;
-            font-size: 1.2rem;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .testimonial strong {
-            display: block;
-            font-style: normal;
-            color: var(--dark-blue);
-            margin-top: 1.5rem;
-            font-weight: 600;
-        }
-
-        .final-cta {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             text-align: center;
-            background: var(--dark-blue);
-            color: white;
-            padding: 4rem 2rem;
         }
 
-        .final-cta h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--light-teal);
+        .testimonial-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 1.5rem;
         }
 
-        .final-cta p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--dark-blue);
         }
 
         footer {
-            text-align: center;
-            padding: 2rem 1rem;
             background: #f0f0f0;
-            font-size: 0.9rem;
-            color: #555;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
         }
 
         footer a {
             color: var(--blue);
             text-decoration: none;
-            font-weight: 600;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             .hero-title {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
             }
             
             .hero-subtitle {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
 
-            .webinar-details {
-                padding: 1rem;
+            .webinar-info {
+                padding: 1.5rem;
             }
 
             .cta-button {
-                padding: 1rem 2rem;
+                padding: 1.2rem 2rem;
                 font-size: 1.1rem;
             }
 
-            .value-prop h2 {
+            .section-title {
                 font-size: 2rem;
             }
 
-            .agenda-items {
+            .value-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -385,90 +325,115 @@
 </head>
 
 <body>
-    <header>
-        <video autoplay muted loop playsinline>
-            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756268218/viral_campaign_final_c026360407070c58.mp4" type="video/mp4" />
-            Your browser does not support the video element.
+    <!-- Hero Section -->
+    <section class="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756268218/viral_campaign_final_c026360407070c58.mp4" type="video/mp4">
         </video>
-        <div class="overlay"></div>
+        <div class="hero-overlay"></div>
+        
         <div class="hero-content">
-            <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756242653/sjyccwinrqmx06vijmxc.jpg" alt="Equitable Capital Advisors Logo" class="hero-logo" />
+            <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756242653/sjyccwinrqmx06vijmxc.jpg" alt="Equitable Capital Advisors" class="hero-logo">
             
             <div class="webinar-badge">EXCLUSIVE WEBINAR EVENT</div>
             
-            <h1 class="hero-title">Master Advanced Capital Strategy Techniques</h1>
-            <p class="hero-subtitle">Learn the proven methods behind $100M+ in successful portfolio transitions</p>
+            <h1 class="hero-title">Master Advanced Capital Strategy</h1>
+            <p class="hero-subtitle">Discover the proven techniques behind $100M+ in successful portfolio transitions</p>
             
-            <div class="webinar-details">
-                <div class="webinar-date">October 2nd, 2025</div>
-                <div class="webinar-time">4:30 PM PST | 90 Minutes | Live Q&A Included</div>
+            <div class="webinar-info">
+                <div class="webinar-date">October 2, 2025</div>
+                <div class="webinar-time">4:30 PM PST • 90 Minutes • Live Q&A</div>
+                <div class="limited-notice">LIMITED REGISTRATION - SEATS FILLING FAST</div>
             </div>
 
-            <div class="limited-spots">⚠️ LIMITED REGISTRATION - SEATS FILLING FAST</div>
-
-            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">SECURE YOUR SPOT NOW</a>
+            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">REGISTER NOW</a>
         </div>
-    </header>
+    </section>
 
-    <main>
-        <section class="value-prop">
-            <h2>Why This Webinar Changes Everything</h2>
-            <p>In 90 minutes, you'll discover the advanced capital allocation frameworks that have delivered 19% median return lift over benchmarks. This isn't theory—these are battle-tested strategies from real $100M+ transitions.</p>
-            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">REGISTER BEFORE SPOTS RUN OUT</a>
-        </section>
+    <!-- Value Proposition -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Why This Webinar Changes Everything</h2>
+            <p style="text-align: center; font-size: 1.3rem; max-width: 800px; margin: 0 auto 3rem; color: #555;">Learn the advanced frameworks that have delivered 19% median return lift over benchmarks. These are battle-tested strategies from real institutional transitions.</p>
+            
+            <div style="text-align: center;">
+                <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">SECURE YOUR SPOT</a>
+            </div>
+        </div>
+    </section>
 
-        <section class="webinar-agenda">
-            <h3>What You'll Learn in This Exclusive Session</h3>
-            <div class="agenda-items">
-                <div class="agenda-item">
-                    <h4>Advanced Portfolio Theory in Practice</h4>
-                    <p>Discover how to identify hidden exposures and implement proprietary stress frameworks that protect and optimize your capital allocation decisions.</p>
+    <!-- What You'll Learn -->
+    <section class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">What You'll Learn</h2>
+            
+            <div class="value-grid">
+                <div class="value-card">
+                    <h3>Advanced Portfolio Theory</h3>
+                    <p>Discover proprietary stress frameworks that identify hidden exposures and optimize your capital allocation decisions for maximum protection and growth.</p>
                 </div>
-                <div class="agenda-item">
-                    <h4>Risk-Aligned Allocation Strategies</h4>
-                    <p>Learn the precise methodologies for achieving asymmetric upside while maintaining fiduciary responsibility and stakeholder accountability.</p>
+                
+                <div class="value-card">
+                    <h3>Risk-Aligned Allocation</h3>
+                    <p>Master the methodologies for achieving asymmetric upside while maintaining fiduciary responsibility and stakeholder accountability.</p>
                 </div>
-                <div class="agenda-item">
-                    <h4>Performance Optimization Techniques</h4>
-                    <p>Master the KPI frameworks that translate capital decisions into measurable, long-term value for institutional mandates and partnership structures.</p>
+                
+                <div class="value-card">
+                    <h3>Performance Optimization</h3>
+                    <p>Learn KPI frameworks that translate capital decisions into measurable, long-term value for institutional mandates and partnerships.</p>
                 </div>
-                <div class="agenda-item">
-                    <h4>Live Case Study Analysis</h4>
-                    <p>Walk through a real $50M portfolio repositioning that outperformed benchmarks by 23% using the exact frameworks you'll learn.</p>
+                
+                <div class="value-card">
+                    <h3>Live Case Study</h3>
+                    <p>Walk through a real $50M portfolio repositioning that outperformed benchmarks by 23% using the exact frameworks you'll master.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="speaker-section">
-            <h3>Your Expert Guide: Andrew Glaze</h3>
+    <!-- Speaker Section -->
+    <section class="section speaker-section">
+        <div class="container">
+            <h2 class="section-title">Your Expert: Andrew Glaze</h2>
             <div class="speaker-bio">
-                <p>Andrew Glaze, founder of Equitable Capital Advisors, has guided over $100M in portfolio transitions for family offices, private equity sponsors, and institutional LPs. His data-driven approach combines advanced analytics with practical wisdom gained from working with top-tier private equity firms. In this exclusive webinar, Andrew will share the exact frameworks and strategies that have consistently delivered superior returns while maintaining alignment with fiduciary obligations.</p>
+                <p>Andrew Glaze, founder of Equitable Capital Advisors, has guided over $100M in portfolio transitions for family offices, private equity sponsors, and institutional LPs. His data-driven approach combines advanced analytics with practical wisdom from working with top-tier firms. In this exclusive webinar, Andrew shares the exact frameworks that consistently deliver superior returns.</p>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="urgency-section">
-            <h3>Registration Closes Soon</h3>
+    <!-- Urgency Section -->
+    <section class="urgency-section">
+        <div class="container">
+            <h2>Registration Closes Soon</h2>
             <p>We're limiting attendance to ensure an intimate, high-value experience with direct access to Andrew. Don't miss this opportunity to learn strategies typically reserved for institutional clients.</p>
-            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button cta-white">CLAIM YOUR SEAT TODAY</a>
-        </section>
+            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button cta-white">CLAIM YOUR SEAT</a>
+        </div>
+    </section>
 
-        <section class="testimonial-section">
+    <!-- Testimonial -->
+    <section class="section section-alt">
+        <div class="container">
             <div class="testimonial">
-                <p>"Andrew's insights during our strategic planning session were transformational. The frameworks he shared helped us navigate a complex transition with confidence and achieve results that exceeded our board's expectations."</p>
-                <strong>Managing Director, $300M Private Markets Fund</strong>
+                <p class="testimonial-text">"Andrew's insights during our strategic planning session were transformational. The frameworks he shared helped us navigate a complex transition with confidence and achieve results that exceeded our board's expectations."</p>
+                <div class="testimonial-author">Managing Director, $300M Private Markets Fund</div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="final-cta">
-            <h2>Ready to Master Capital Strategy?</h2>
-            <p>Join Andrew Glaze for this exclusive 90-minute deep dive into advanced capital allocation techniques. Registration is limited and spots are filling quickly.</p>
-            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">REGISTER NOW - LIMITED SEATS AVAILABLE</a>
-        </section>
-    </main>
+    <!-- Final CTA -->
+    <section class="section" style="background: var(--dark-blue); color: white; text-align: center;">
+        <div class="container">
+            <h2 style="color: var(--light-teal); font-size: 2.5rem; margin-bottom: 1.5rem;">Ready to Master Capital Strategy?</h2>
+            <p style="font-size: 1.3rem; margin-bottom: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">Join this exclusive 90-minute session with Andrew Glaze. Limited seats available.</p>
+            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">REGISTER NOW</a>
+        </div>
+    </section>
 
     <footer>
-        &copy; 2024 Equitable Capital Advisors. All rights reserved.<br />
-        <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Your Vision. Our AI. Pure Victory. Build your free AI website at Victory Vision</a>
+        <div class="container">
+            &copy; 2024 Equitable Capital Advisors. All rights reserved.<br>
+            <a href="https://www.victoryvision.app" target="_blank">Build your AI website at Victory Vision</a>
+        </div>
     </footer>
 
     <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=ffd94df4d279f45a609e82bca666ae0258531520" width="1" height="1" style="display:none;" alt="Tracking Pixel" />
