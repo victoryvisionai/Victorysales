@@ -1,0 +1,312 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equitable Capital Advisors</title>
+  <meta name="description" content="Equitable Capital Advisors – Financial advisory for institutional capital allocators seeking innovation, integrity and equitable growth." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --white: #ffffff;
+      --blue: #1e62f3;
+      --light-teal: #b9ebf4;
+      --gray: #212121;
+      --font-sans: 'Inter', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: var(--font-sans);
+      background: var(--white);
+      color: var(--gray);
+      scroll-behavior: smooth;
+    }
+
+    header {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    header video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.5);
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      color: var(--white);
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .hero-logo {
+      width: 100px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 600;
+      line-height: 1.2;
+      max-width: 700px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      color: var(--light-teal);
+    }
+
+    .cta-button {
+      margin-top: 2rem;
+      padding: 0.75rem 2rem;
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background: #1349b6;
+    }
+
+    main {
+      margin-top: -5rem;
+    }
+
+    section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .intro {
+      text-align: center;
+    }
+
+    .intro h2 {
+      font-size: 2rem;
+      color: var(--blue);
+      margin-bottom: 1rem;
+    }
+
+    .intro p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .value-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .card {
+      background: #f7f9fc;
+      padding: 2rem;
+      border-radius: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      color: var(--blue);
+      margin-bottom: 1rem;
+    }
+
+    .card p {
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .highlight {
+      background: var(--light-teal);
+      padding: 4rem 2rem;
+      border-radius: 10px;
+    }
+
+    .highlight h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--gray);
+    }
+
+    .highlight p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .cta-block {
+      text-align: center;
+      background: var(--blue);
+      color: var(--white);
+      padding: 4rem 2rem;
+    }
+
+    .cta-block h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-block p {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .cta-form input[type="email"] {
+      padding: 0.75rem;
+      width: 300px;
+      max-width: 100%;
+      border: none;
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+
+    .cta-form button {
+      padding: 0.75rem 1.5rem;
+      background: var(--light-teal);
+      color: var(--gray);
+      font-weight: 600;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .cta-form button:hover {
+      background: #a0dfe8;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #f0f0f0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <video autoplay muted loop playsinline>
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756268218/viral_campaign_final_c026360407070c58.mp4" type="video/mp4" />
+  </video>
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1756242653/sjyccwinrqmx06vijmxc.jpg" alt="Equitable Capital Advisors Logo" class="hero-logo" />
+    <h1 class="hero-title">Strategic Financial Advisory for Today’s Institutional Visionaries</h1>
+    <p class="hero-subtitle">Integrity, Innovation, and Equitable Growth</p>
+    <button class="cta-button" onclick="document.querySelector('#contact').scrollIntoView({behavior: 'smooth'})">
+      Start the Conversation
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="intro">
+    <h2>About Equitable Capital Advisors</h2>
+    <p>
+      Equitable Capital Advisors is a premier financial advisory firm dedicated to addressing the complex challenges faced by institutional capital allocators. Founded by Andrew Glaze, our firm embodies a commitment to innovative and equitable solutions that prioritize the interests of all stakeholders, including clients, partners, and the community at large. Leveraging deep industry insight and a collaborative approach, Equitable Capital Advisors stands out in a competitive landscape by delivering tailored financial strategies that ensure balanced success and foster long-term relationships built on trust and transparency.
+    </p>
+  </section>
+
+  <section class="highlight">
+    <h2>Solving What Matters Most</h2>
+    <p>
+      Institutional leaders face increasing complexity in capital deployment, risk balancing, and stakeholder accountability. We understand that CEOs and investment decision-makers demand more than generic counsel—they seek a strategic partner that aligns with both their fiduciary goals and values. That’s where we come in. Our clients, typically with over $5 million in revenue and a legacy of collaboration with top-tier firms, require precision, innovation, and fairness. Equitable Capital Advisors delivers on all three: seamlessly integrating cutting-edge infrastructure with an equitable mindset to ensure capital commitment leads to lasting success.
+    </p>
+  </section>
+
+  <section>
+    <div class="value-section">
+      <div class="card">
+        <h3>Strategic Consulting</h3>
+        <p>
+          Navigate market uncertainty with actionable insights and high-touch advisory tailored to your firm’s unique challenges. Our expert guidance ensures every move is driven by data and refined by decades of experience.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Risk Management</h3>
+        <p>
+          Through innovative frameworks, we help protect downside exposure while positioning you for asymmetric upside. From portfolio realignment to stress-testing, our approach is agile and comprehensive.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Performance Optimization</h3>
+        <p>
+          Align capital with conviction. We ensure capital allocation strategies are continually optimized for equitable long-term success—across all key stakeholders.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="highlight">
+    <h2>Client Impact</h2>
+    <p>
+      In the last 12 months, Equitable Capital Advisors has advised on over $100M in asset transitions, guiding clients through tactical repositioning that resulted in a 19% median increase in total return compared to benchmark indices. Our hands-on model not only delivers measurable gains—it fortifies lasting partnerships. Whether you’re managing direct investments or complex vehicles, we bring clarity and alignment to your capital mission.
+    </p>
+  </section>
+
+  <section id="contact" class="cta-block">
+    <h2>Let’s Talk Capital Strategy</h2>
+    <p>We’re currently vetting strategic partners as we raise $50M in committed institutional capital. Let’s align priorities and uncover opportunity—together.</p>
+    <form class="cta-form" action="#" method="POST">
+      <input type="email" name="email" placeholder="Enter your email" required />
+      <button type="submit">Connect Now</button>
+    </form>
+  </section>
+
+</main>
+
+<footer>
+  &copy; 2024 Equitable Capital Advisors. All rights reserved.
+</footer>
+
+</body>
+</html>
+```
