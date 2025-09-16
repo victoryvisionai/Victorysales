@@ -222,22 +222,17 @@
       align-items: center;
       gap: 3rem;
       flex-wrap: wrap;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
     }
     
     .trust-badge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-decoration: none;
       transition: transform 0.3s ease;
-      padding: 1.5rem;
+      padding: 1rem;
       border-radius: 12px;
       background: var(--white);
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       border: 1px solid #e2e8f0;
-      min-width: 200px;
     }
     
     .trust-badge:hover {
@@ -245,10 +240,21 @@
       box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
     
+    .trust-badge img {
+      max-height: 80px;
+      width: auto;
+      display: block;
+    }
+    
     .trustpilot-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
       background: linear-gradient(135deg, #00b67a, #00a170);
       color: white;
       border: none;
+      min-width: 200px;
     }
     
     .trustpilot-badge:hover {
@@ -279,76 +285,6 @@
     .trustpilot-text {
       font-size: 0.9rem;
       opacity: 0.9;
-    }
-    
-    .capterra-badge {
-      border: 2px solid #ff6d2d;
-      background: var(--white);
-    }
-    
-    .capterra-badge:hover {
-      border-color: #e55a1f;
-      background: #fef7f4;
-    }
-    
-    .g2-badge {
-      border: 2px solid #ff492c;
-      background: var(--white);
-    }
-    
-    .g2-badge:hover {
-      border-color: #e63e23;
-      background: #fef6f5;
-    }
-    
-    .badge-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    
-    .badge-logo {
-      font-weight: 700;
-      font-size: 1.4rem;
-    }
-    
-    .capterra-logo {
-      color: #ff6d2d;
-    }
-    
-    .g2-logo {
-      color: #ff492c;
-    }
-    
-    .badge-rating {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .badge-stars {
-      display: flex;
-      gap: 2px;
-    }
-    
-    .platform-star {
-      color: #ffd700;
-      font-size: 1.1rem;
-    }
-    
-    .badge-score {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    
-    .badge-subtitle {
-      font-size: 0.85rem;
-      color: var(--medium-gray);
-      font-weight: 500;
-      margin-top: 0.5rem;
     }
 
     /* Main Content */
@@ -757,38 +693,16 @@
         <div class="trustpilot-text">Trustpilot Reviews</div>
       </a>
       
-      <a href="https://www.capterra.com/p/10030882/Victory-Vision/" target="_blank" class="trust-badge capterra-badge">
-        <div class="badge-header">
-          <div class="badge-logo capterra-logo">Capterra</div>
-        </div>
-        <div class="badge-rating">
-          <div class="badge-stars">
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-          </div>
-          <div class="badge-score">5.0</div>
-        </div>
-        <div class="badge-subtitle">Based on 2 reviews</div>
+      <a href="https://www.capterra.com/p/10030882/Victory-Vision/reviews/" target="_blank" class="trust-badge">
+        <img border="0" src="https://brand-assets.capterra.com/badge/670391c3-8fb3-432c-ab30-fe0649e3fa49.svg" alt="Capterra Reviews" />
       </a>
       
-      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="trust-badge g2-badge">
-        <div class="badge-header">
-          <div class="badge-logo g2-logo">G2</div>
-        </div>
-        <div class="badge-rating">
-          <div class="badge-stars">
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-            <span class="platform-star">★</span>
-          </div>
-          <div class="badge-score">5.0</div>
-        </div>
-        <div class="badge-subtitle">Based on 3 reviews</div>
+      <a href="https://www.softwareadvice.com/product/529664-Victory-Vision/reviews/" target="_blank" class="trust-badge">
+        <img border="0" src="https://brand-assets.softwareadvice.com/badge/77ed2f28-6d2f-4269-a35d-93c98843b738.png" alt="Software Advice Reviews" />
+      </a>
+      
+      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="trust-badge">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1758005352/arcl24eklnd4qxetgkhg.png" alt="G2 Reviews" />
       </a>
     </div>
   </section>
@@ -872,6 +786,17 @@
           </video>
         </div>
         <div class="video-caption">Jason Blontein, Managing Partner at Roo Partners</div>
+      </div>
+
+      <div class="testimonials">
+        <div class="testimonial">
+          <p>"Victory Vision helped us double our local walk-in traffic within two months. Their AI targeting saved us from wasted spend."</p>
+          <div class="client">— Sarah Klein, Director of Marketing, HealthChoice</div>
+        </div>
+        <div class="testimonial">
+          <p>"Finally a billboard provider who understands tech. Smart scheduling and fast insights dramatically improved our CAC."</p>
+          <div class="client">— James Monroe, VP Growth, Hightower Retail</div>
+        </div>
       </div>
     </section>
 
