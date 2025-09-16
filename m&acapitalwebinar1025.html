@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exclusive Access: Inside PE Sourcing & Allocation - October 2nd</title>
+    <meta name="description" content="Join top allocators from billion-dollar funds as they reveal what they look for in deals. Limited seats for serious dealmakers only." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --accent-gold: #d97706;
+            --dark-navy: #0f172a;
+            --light-gray: #f8fafc;
+            --medium-gray: #64748b;
+            --white: #ffffff;
+            --success-green: #059669;
+            --font-primary: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            color: var(--dark-navy);
+            background: var(--white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-navy) 100%);
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            max-width: 900px;
+        }
+
+        .exclusive-badge {
+            background: var(--accent-gold);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(217, 119, 6, 0.5); }
+            to { box-shadow: 0 0 30px rgba(217, 119, 6, 0.8); }
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            color: #cbd5e1;
+            font-weight: 300;
+        }
+
+        .webinar-details {
+            background: rgba(59, 130, 246, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin: 2rem auto;
+            max-width: 600px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .webinar-date {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+
+        .webinar-time {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: #e2e8f0;
+        }
+
+        .limited-seats {
+            background: linear-gradient(135deg, var(--accent-gold), #ea580c);
+            color: white;
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            margin: 1.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            color: white;
+            padding: 1.8rem 3.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.6);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+        }
+
+        /* Quick Access CTA */
+        .quick-access {
+            background: var(--light-gray);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 3px solid var(--accent-gold);
+        }
+
+        .quick-access h3 {
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .quick-access p {
+            font-size: 1.1rem;
+            color: var(--medium-gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Main Content Sections */
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-alt {
+            background: var(--light-gray);
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--medium-gray);
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .insight-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(30, 58, 138, 0.1);
+            border-top: 4px solid var(--accent-gold);
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(30, 58, 138, 0.15);
+        }
+
+        .insight-card h3 {
+            font-size: 1.5rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+        }
+
+        .insight-card p {
+            color: #475569;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .allocators-section {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-navy));
+            color: white;
+            text-align: center;
+        }
+
+        .allocators-section .section-title {
+            color: white;
+        }
+
+        .allocators-section .section-subtitle {
+            color: #cbd5e1;
+        }
+
+        .fund-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .fund-logo {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .vrc-highlight {
+            background: var(--white);
+            padding: 4rem;
+            border-radius: 20px;
+            margin: 4rem auto;
+            max-width: 800px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            color: var(--dark-navy);
+        }
+
+        .vrc-highlight h3 {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .vrc-highlight p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            text-align: center;
+            color: var(--medium-gray);
+        }
+
+        .urgency-section {
+            background: linear-gradient(135deg, var(--accent-gold), #ea580c);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .urgency-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .urgency-section p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-white {
+            background: white;
+            color: var(--accent-gold);
+            border: 3px solid white;
+        }
+
+        .cta-white:hover {
+            background: transparent;
+            color: white;
+            border: 3px solid white;
+        }
+
+        .social-proof {
+            background: white;
+            padding: 4rem;
+            border-radius: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .quote-text {
+            font-size: 1.4rem;
+            font-style: italic;
+            line-height: 1.7;
+            color: var(--dark-navy);
+            margin-bottom: 2rem;
+        }
+
+        .quote-author {
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        footer {
+            background: var(--dark-navy);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: #94a3b8;
+        }
+
+        footer a {
+            color: var(--secondary-blue);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .webinar-details {
+                padding: 2rem;
+            }
+
+            .cta-button {
+                padding: 1.5rem 2.5rem;
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .fund-logos {
+                gap: 1.5rem;
+            }
+
+            .fund-logo {
+                font-size: 1rem;
+                padding: 1rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <video class="hero-video" autoplay muted loop playsinline>
+            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756268218/viral_campaign_final_c026360407070c58.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        
+        <div class="hero-content">
+            <div class="exclusive-badge">Invitation Only Event</div>
+            
+            <h1 class="hero-title">Inside PE Sourcing & Allocation</h1>
+            <p class="hero-subtitle">Billion-dollar allocators reveal what they actually look for in deals</p>
+            
+            <div class="webinar-details">
+                <div class="webinar-date">October 2nd, 2025</div>
+                <div class="webinar-time">4:30 PM PST • 90 Minutes + Q&A</div>
+                <div class="limited-seats">Limited to 50 Serious Dealmakers</div>
+            </div>
+
+            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">Reserve Your Seat</a>
+        </div>
+    </section>
+
+    <!-- Quick Access CTA -->
+    <section class="quick-access">
+        <div class="container">
+            <h3>Skip the Details - Secure Your Spot Now</h3>
+            <p>Join allocators from major funds as they share real deal criteria and sourcing strategies</p>
+            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button">Get Immediate Access</a>
+        </div>
+    </section>
+
+    <!-- What You'll Discover -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Real Intel from Real Allocators</h2>
+            <p class="section-subtitle">This isn't theory. These are the exact frameworks billion-dollar funds use to evaluate and source deals.</p>
+            
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <h3>Bespoke M&A Sourcing</h3>
+                    <p>How allocators at major funds identify off-market opportunities before they hit traditional channels. Real processes, real networks, real results.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>Deal Evaluation Criteria</h3>
+                    <p>The specific metrics and red flags that determine which deals get funding. Learn what allocators actually care about beyond the pitch deck.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>Access to $200B+ Capital</h3>
+                    <p>Andrew Glaze shares proven methods that opened doors to Davidson Kempner, Trive, and other institutional players managing hundreds of billions.</p>
+                </div>
+                
+                <div class="insight-card">
+                    <h3>Speed & Confidence</h3>
+                    <p>Why VRC's participation aligns perfectly: dealmakers need expert valuation insight to move quickly when opportunities arise.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Allocators Speaking -->
+    <section class="section allocators-section">
+        <div class="container">
+            <h2 class="section-title">Speaking: Major Fund Allocators</h2>
+            <p class="section-subtitle">Allocators managing several billion in private credit will share firsthand what they look for in deals</p>
+            
+            <div class="fund-logos">
+                <div class="fund-logo">Multi-Billion Credit Fund</div>
+                <div class="fund-logo">Institutional Allocator</div>
+                <div class="fund-logo">Private Markets LP</div>
+            </div>
+
+            <div class="vrc-highlight">
+                <h3>Perfect Alignment for VRC</h3>
+                <p>Dealmakers seeking actionable opportunities need expert valuation insight to move quickly and with confidence. This webinar delivers exactly what serious allocators want to see in their deal partners.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="section section-alt">
+        <div class="container">
+            <div class="social-proof">
+                <p class="quote-text">"Andrew's network and insights gave us access to deals we never would have seen through traditional channels. The frameworks he shared directly led to our most successful allocation last quarter."</p>
+                <div class="quote-author">Senior Partner, $4.2B Private Markets Fund</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Urgency Section -->
+    <section class="urgency-section">
+        <div class="container">
+            <h2>Registration Closes Soon</h2>
+            <p>We're limiting attendance to ensure allocators can speak candidly about their actual deal processes. This level of insight isn't shared in public forums.</p>
+            <a href="https://calendly.com/glaze-vvdoh/webinar/2025-10-02T16:30:00-07:00" class="cta-button cta-white">Secure Your Access</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            &copy; 2024 Equitable Capital Advisors. All rights reserved.<br>
+            <a href="https://www.victoryvision.app" target="_blank">Powered by Victory Vision</a>
+        </div>
+    </footer>
+
+    <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=ffd94df4d279f45a609e82bca666ae0258531520" width="1" height="1" style="display:none;" alt="Tracking Pixel" />
+</body>
+</html>
