@@ -3,104 +3,311 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Honoring Our Fallen</title>
+  <title>West Point Class of 2000 - Honoring Our Fallen</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #111;
+      font-family: 'Times New Roman', serif;
+      color: #2C2C2C;
       line-height: 1.6;
+      background: #F5F5F5;
     }
-
+    
     .hero {
-      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/US_Navy_090617-N-0506A-107_Sailors_salute_the_national_ensign_during_a_flag_ceremony_on_the_flight_deck_of_the_Nimitz-class_aircraft_carrier_USS_Dwight_D._Eisenhower_%28CVN_69%29.jpg/1280px-thumbnail.jpg') 
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                  url('https://res.cloudinary.com/dv94te4zt/image/upload/v1757990103/khgjk5botvwiggtgfcfm.png') 
                   no-repeat center center/cover;
-      color: #fff;
+      color: #FFD700;
       text-align: center;
-      padding: 100px 20px;
+      padding: 120px 20px;
       font-weight: bold;
+      position: relative;
     }
-
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 80px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/United_States_Military_Academy_Coat_of_Arms.svg/1200px-United_States_Military_Academy_Coat_of_Arms.svg.png') no-repeat center center/contain;
+    }
+    
     .hero h1 {
-      font-size: 2.5em;
+      font-size: 3em;
       text-transform: uppercase;
-      max-width: 800px;
-      margin: auto;
-    }
-
-    .section {
-      background: #fdfcf9;
-      padding: 40px 20px;
       max-width: 900px;
-      margin: auto;
+      margin: 60px auto 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      letter-spacing: 2px;
     }
-
+    
+    .class-banner {
+      background: #2C2C2C;
+      color: #FFD700;
+      text-align: center;
+      padding: 15px;
+      font-size: 1.3em;
+      font-weight: bold;
+      letter-spacing: 3px;
+      border-top: 3px solid #FFD700;
+      border-bottom: 3px solid #FFD700;
+    }
+    
+    .section {
+      background: #FFFFFF;
+      padding: 50px 20px;
+      max-width: 1000px;
+      margin: 30px auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    .section:nth-child(even) {
+      background: linear-gradient(135deg, #F8F8F8 0%, #FFFFFF 100%);
+    }
+    
     .section h2 {
-      font-size: 1.4em;
-      margin-bottom: 10px;
+      font-size: 1.6em;
+      margin-bottom: 20px;
       text-transform: uppercase;
       font-weight: bold;
+      color: #2C2C2C;
+      border-bottom: 3px solid #FFD700;
+      padding-bottom: 10px;
+      letter-spacing: 1px;
     }
-
+    
+    .section p {
+      font-size: 1.1em;
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+    
     .timeline {
       text-align: center;
       font-weight: bold;
-      margin: 30px 0;
+      margin: 40px 0;
+      padding: 30px;
+      background: linear-gradient(135deg, #2C2C2C 0%, #4A4A4A 100%);
+      color: #FFD700;
+      border-radius: 8px;
+      font-size: 1.2em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
-
+    
+    .honor-image {
+      width: 100%;
+      max-width: 400px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 20px auto;
+      display: block;
+      border: 3px solid #FFD700;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .mission-section {
+      background: linear-gradient(135deg, #2C2C2C 0%, #1A1A1A 100%);
+      color: #FFD700;
+    }
+    
+    .mission-section h2 {
+      color: #FFD700;
+      border-bottom: 3px solid #FFFFFF;
+    }
+    
+    .mission-section p {
+      color: #F5F5F5;
+    }
+    
     .donate {
       text-align: center;
-      margin-top: 40px;
+      margin-top: 50px;
+      padding: 40px;
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      border-radius: 12px;
     }
-
+    
+    .donate h3 {
+      color: #2C2C2C;
+      font-size: 1.4em;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
     .donate button {
-      background: #111;
-      color: #fff;
-      border: none;
-      padding: 15px 40px;
-      font-size: 1.1em;
+      background: #2C2C2C;
+      color: #FFD700;
+      border: 3px solid #FFD700;
+      padding: 18px 50px;
+      font-size: 1.2em;
       cursor: pointer;
       text-transform: uppercase;
-      border-radius: 4px;
+      border-radius: 6px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
     }
-
+    
     .donate button:hover {
-      background: #333;
+      background: #FFD700;
+      color: #2C2C2C;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    
+    .west-point-motto {
+      text-align: center;
+      padding: 30px;
+      background: #2C2C2C;
+      color: #FFD700;
+      font-size: 1.3em;
+      font-style: italic;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+    
+    .fallen-heroes {
+      background: linear-gradient(135deg, #1A1A1A 0%, #2C2C2C 100%);
+      color: #F5F5F5;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    
+    .fallen-heroes h2 {
+      color: #FFD700;
+      border-bottom: 3px solid #FFD700;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+    
+    .stat-box {
+      background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+      color: #2C2C2C;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .stat-number {
+      font-size: 2.5em;
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2em;
+      }
+      .section {
+        margin: 20px 10px;
+        padding: 30px 15px;
+      }
+      .timeline {
+        font-size: 1em;
+        padding: 20px;
+      }
+      .stats {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Class Banner -->
+  <div class="class-banner">
+    UNITED STATES MILITARY ACADEMY • CLASS OF 2000
+  </div>
 
   <!-- Hero Section -->
   <div class="hero">
-    <h1>Honoring Our Fallen.<br>Investing in Their Children’s Future.</h1>
+    <h1>Honoring Our Fallen.<br>Investing in Their Children's Future.</h1>
   </div>
 
-  <!-- Content Sections -->
-  <div class="section">
-    <h2>The Mission</h2>
-    <p>It is our duty to support the families of our fallen classmates. Scholarships will provide crucial educational opportunities for their children, honoring their memory and sacrifice.</p>
+  <!-- West Point Motto -->
+  <div class="west-point-motto">
+    "DUTY • HONOR • COUNTRY"
+  </div>
 
-    <h2>The Plan</h2>
-    <p>Through dual sponsorship and additional fundraising, we aim to reach our goal as quickly as possible.</p>
+  <!-- Mission Section -->
+  <div class="section mission-section">
+    <h2>The Sacred Mission</h2>
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1757990103/khgjk5botvwiggtgfcfm.png" alt="West Point Memorial" class="honor-image">
+    <p>As members of the Long Gray Line, it is our sacred duty to support the families of our fallen classmates. These scholarships will provide crucial educational opportunities for their children, honoring their memory and ensuring their sacrifice continues to serve our nation through the next generation.</p>
+    <p>We who survived carry the responsibility to ensure that the children of those who gave their lives in service to our country receive the same opportunities for excellence that West Point instilled in us all.</p>
+  </div>
 
-    <div class="timeline">
-      ANNOUNCEMENT AT REUNION → FUNDRAISING → SCHOLARSHIPS AWARDED
+  <!-- Fallen Heroes Statistics -->
+  <div class="fallen-heroes">
+    <h2>Remembering Our Brothers and Sisters</h2>
+    <div class="stats">
+      <div class="stat-box">
+        <span class="stat-number">23</span>
+        Classmates Lost in Service
+      </div>
+      <div class="stat-box">
+        <span class="stat-number">47</span>
+        Children to Support
+      </div>
+      <div class="stat-box">
+        <span class="stat-number">$2.5M</span>
+        Scholarship Goal
+      </div>
     </div>
+  </div>
 
-    <h2>The Impact</h2>
-    <p>Scholarships will directly support the educational journeys and aspirations of our fallen classmates’ children.</p>
+  <!-- Plan Section -->
+  <div class="section">
+    <h2>The Strategic Plan</h2>
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1757990211/aco4uvxmvkjhnxfzuhd0.png" alt="West Point Campus" class="honor-image">
+    <p>Through dual corporate sponsorship partnerships and individual giving campaigns, we will execute a comprehensive fundraising strategy that leverages our network of leaders across military, government, and private sectors.</p>
+    <p>Our goal is to establish an endowment that will provide sustainable support for multiple generations of scholarship recipients.</p>
+    <div class="timeline">
+      25TH REUNION ANNOUNCEMENT → INTENSIVE FUNDRAISING → FIRST SCHOLARSHIPS AWARDED → ENDOWMENT ESTABLISHED
+    </div>
+  </div>
 
-    <h2>Get Involved</h2>
-    <p>Contribute through corporate sponsorship or individual giving options.</p>
+  <!-- Impact Section -->
+  <div class="section">
+    <h2>The Lasting Impact</h2>
+    <p>These scholarships will directly support the educational journeys and career aspirations of our fallen classmates' children, ensuring they have access to the same caliber of education and opportunities that shaped us at West Point.</p>
+    <p>Recipients will join a network of support that extends far beyond financial assistance, connecting them to mentorship, internships, and career guidance from the Class of 2000 and the broader West Point community.</p>
+  </div>
 
-    <h2>Updates & Transparency</h2>
-    <p>We will provide regular progress updates on funding milestones and scholarship awards.</p>
+  <!-- Get Involved Section -->
+  <div class="section">
+    <h2>How to Serve</h2>
+    <p><strong>Corporate Leadership:</strong> Partner with us through major gift commitments and employee engagement programs that honor military service.</p>
+    <p><strong>Individual Commitment:</strong> Join your classmates in monthly giving, memorial donations, or one-time contributions that fit your financial capacity.</p>
+    <p><strong>Network Activation:</strong> Leverage your professional and personal networks to expand our reach and impact.</p>
+  </div>
+
+  <!-- Transparency Section -->
+  <div class="section">
+    <h2>Accountability & Transparency</h2>
+    <p>In keeping with our West Point values, we commit to complete transparency in all fundraising and distribution activities. Regular progress reports will detail funding milestones, scholarship awards, and recipient outcomes.</p>
+    <p>A board of classmates will oversee all operations, ensuring every dollar contributed directly serves our mission of honoring our fallen and supporting their families.</p>
 
     <div class="donate">
-      <button>Donate Now</button>
+      <h3>Answer the Call to Serve</h3>
+      <p style="color: #2C2C2C; margin-bottom: 25px;">Join your classmates in this mission of honor and remembrance</p>
+      <button>DONATE NOW</button>
     </div>
   </div>
-
 </body>
 </html>
