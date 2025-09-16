@@ -144,6 +144,7 @@
       padding: var(--spacing);
       color: var(--white);
       z-index: 2;
+      padding-top: 200px; /* Make room for badges */
     }
     
     .overlay img {
@@ -201,90 +202,87 @@
       color: var(--primary);
     }
 
-    /* Trust Badges */
-    .trust-section {
-      background: var(--light-gray);
-      padding: 3rem 2rem;
-      text-align: center;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    
-    .trust-section h3 {
-      color: var(--primary);
-      margin-bottom: 2rem;
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-    
-    .trust-badges {
+    /* Trust Badges - Now in Hero */
+    .hero-trust-badges {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 3rem;
+      gap: 2rem;
       flex-wrap: wrap;
-      max-width: 1000px;
-      margin: 0 auto;
+      margin-bottom: 2rem;
     }
     
-    .trust-badge {
+    .hero-trust-badge {
       transition: transform 0.3s ease;
-      padding: 1rem;
-      border-radius: 12px;
-      background: var(--white);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border: 1px solid #e2e8f0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     
-    .trust-badge:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    .hero-trust-badge:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
     
-    .trust-badge img {
-      max-height: 80px;
+    .hero-trust-badge img {
+      max-height: 60px;
       width: auto;
       display: block;
     }
     
-    .trustpilot-badge {
+    .hero-trustpilot-badge {
       display: flex;
       flex-direction: column;
       align-items: center;
       text-decoration: none;
-      background: linear-gradient(135deg, #00b67a, #00a170);
+      background: rgba(0, 182, 122, 0.95);
       color: white;
-      border: none;
-      min-width: 200px;
+      border: 1px solid rgba(0, 182, 122, 0.3);
+      min-width: 140px;
+      padding: 1rem 0.75rem;
     }
     
-    .trustpilot-badge:hover {
-      background: linear-gradient(135deg, #00a170, #009060);
+    .hero-trustpilot-badge:hover {
+      background: rgba(0, 161, 112, 0.95);
     }
     
-    .trustpilot-score {
-      font-size: 2rem;
+    .hero-trustpilot-score {
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
     }
     
-    .trustpilot-stars {
+    .hero-trustpilot-stars {
       display: flex;
-      gap: 2px;
-      margin-bottom: 0.5rem;
+      gap: 1px;
+      margin-bottom: 0.25rem;
     }
     
-    .star {
-      color: rgba(255,255,255,0.3);
-      font-size: 1.2rem;
+    .hero-star {
+      color: rgba(255,255,255,0.4);
+      font-size: 1rem;
     }
     
-    .star.filled {
+    .hero-star.filled {
       color: #ffffff;
     }
     
-    .trustpilot-text {
-      font-size: 0.9rem;
+    .hero-trustpilot-text {
+      font-size: 0.75rem;
       opacity: 0.9;
+    }
+
+    /* Original Trust Section - Now Hidden */
+    .trust-section {
+      display: none;
     }
 
     /* Main Content */
@@ -586,16 +584,39 @@
         font-size: 0.85rem;
       }
       
+      .hero-trust-badges {
+        top: 80px;
+        gap: 1rem;
+        padding: 0 1rem;
+      }
+      
+      .hero-trust-badge img {
+        max-height: 45px;
+      }
+      
+      .hero-trustpilot-badge {
+        min-width: 100px;
+        padding: 0.75rem 0.5rem;
+      }
+      
+      .hero-trustpilot-score {
+        font-size: 1.2rem;
+      }
+      
+      .hero-star {
+        font-size: 0.9rem;
+      }
+      
+      .overlay {
+        padding-top: 160px;
+      }
+      
       .overlay h1 {
         font-size: 2.5rem;
       }
       
       .overlay p {
         font-size: 1.1rem;
-      }
-      
-      .trust-badges {
-        gap: 1.5rem;
       }
       
       section {
@@ -624,6 +645,16 @@
     }
     
     @media (max-width: 480px) {
+      .hero-trust-badges {
+        flex-direction: column;
+        gap: 0.75rem;
+        top: 70px;
+      }
+      
+      .overlay {
+        padding-top: 240px;
+      }
+      
       .hero-cta {
         flex-direction: column;
         align-items: center;
@@ -632,11 +663,6 @@
       .hero-cta a {
         width: 100%;
         max-width: 280px;
-      }
-      
-      .trust-badges {
-        flex-direction: column;
-        gap: 1rem;
       }
     }
   </style>
@@ -666,9 +692,37 @@
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1757394435/xjxleyawlba9fdpfppu9.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
+    
+    <!-- Trust Badges in Hero -->
+    <div class="hero-trust-badges">
+      <a href="https://businessapp.b2b.trustpilot.com/dashboard" target="_blank" class="hero-trust-badge hero-trustpilot-badge">
+        <div class="hero-trustpilot-score">4.0</div>
+        <div class="hero-trustpilot-stars">
+          <span class="hero-star filled">★</span>
+          <span class="hero-star filled">★</span>
+          <span class="hero-star filled">★</span>
+          <span class="hero-star filled">★</span>
+          <span class="hero-star">★</span>
+        </div>
+        <div class="hero-trustpilot-text">Trustpilot</div>
+      </a>
+      
+      <a href="https://www.capterra.com/p/10030882/Victory-Vision/reviews/" target="_blank" class="hero-trust-badge">
+        <img border="0" src="https://brand-assets.capterra.com/badge/670391c3-8fb3-432c-ab30-fe0649e3fa49.svg" alt="Capterra Reviews" />
+      </a>
+      
+      <a href="https://www.softwareadvice.com/product/529664-Victory-Vision/reviews/" target="_blank" class="hero-trust-badge">
+        <img border="0" src="https://brand-assets.softwareadvice.com/badge/77ed2f28-6d2f-4269-a35d-93c98843b738.png" alt="Software Advice Reviews" />
+      </a>
+      
+      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="hero-trust-badge">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1758005352/arcl24eklnd4qxetgkhg.png" alt="G2 Reviews" />
+      </a>
+    </div>
+    
     <div class="overlay">
       <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision logo">
-      <h1>Smarter Advertising with AI Insight</h1>
+      <h1>Smarter Billboard Advertising with AI Insight</h1>
       <p>Precision-targeted digital campaigns that maximize ROI. Automatically identify ideal audiences, streamline scheduling, and measure what matters—in real time.</p>
       <div class="hero-cta">
         <a href="#contact">Request a Demo</a>
