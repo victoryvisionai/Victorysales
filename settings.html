@@ -770,7 +770,24 @@
       </div>
     </div>
   </div>
-  
+  <!-- SMS Phone Number Setup -->
+    <div class="settings-group" data-intro="Set up SMS messaging for your business. We'll help you get a dedicated phone number and handle all the compliance requirements automatically." data-step="6b">
+      <h3>
+        <span class="status-indicator status-disconnected" id="sms-status"></span>
+        SMS Phone Number Setup
+      </h3>
+      <p>Get a dedicated SMS phone number for your business with automated A2P compliance.</p>
+      <div id="sms-setup-info" style="display: none;">
+        <div class="connection-info">
+          <strong>Business Phone:</strong> <span id="sms-phone-number">Loading...</span><br>
+          <strong>Status:</strong> <span id="sms-registration-status">Active</span><br>
+          <strong>Brand Registration:</strong> <span id="brand-status">Approved</span><br>
+          <strong>Monthly Cost:</strong> ~$5/month + usage
+        </div>
+      </div>
+      <button onclick="showSMSSetupModal()" id="setup-sms-btn">📱 Setup SMS Number</button>
+      <button class="danger" onclick="disconnectSMS()" style="display: none;" id="disconnect-sms">Disconnect SMS</button>
+    </div>
   <div class="card" id="billing-section" data-intro="Manage your subscription and billing here. View your current plan details, usage statistics, and upgrade options to unlock more AI credits and features." data-step="7">
     <div class="section-header">
       <h3>💳 Billing & Subscription Management</h3>
@@ -1789,7 +1806,222 @@ function connectCalendly() {
       }
     }
   });
+<!-- SMS Setup Modal -->
+<div id="smsSetupModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>📱 SMS Business Setup</h2>
+      <span class="close" onclick="closeSMSSetupModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="search-section">
+        <h4>Business Information</h4>
+        <p>We need some business details to register you for SMS compliance (required by law).</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+          <div>
+            <label>Business Legal Name *</label>
+            <input type="text" id="smsBusinessName" placeholder="Your Business LLC" required>
+          </div>
+          <div>
+            <label>EIN (Tax ID) *</label>
+            <input type="text" id="smsEIN" placeholder="12-3456789" required>
+          </div>
+          <div>
+            <label>Business Phone *</label>
+            <input type="tel" id="smsBusinessPhone" placeholder="+1-555-0123" required>
+          </div>
+          <div>
+            <label>Support Email *</label>
+            <input type="email" id="smsSupportEmail" placeholder="support@yourbusiness.com" required>
+          </div>
+          <div>
+            <label>Business Address *</label>
+            <input type="text" id="smsBusinessAddress" placeholder="123 Main St, City, State 12345" required>
+          </div>
+          <div>
+            <label>Website</label>
+            <input type="url" id="smsWebsite" placeholder="https://yourbusiness.com">
+          </div>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <label>How do customers opt-in to your SMS? *</label>
+          <textarea id="smsOptInDescription" placeholder="Customers opt-in by filling out our contact form and checking the SMS updates box" style="height: 60px;" required></textarea>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <label>Preferred Area Code</label>
+          <select id="smsAreaCode">
+            <option value="415">415 - San Francisco</option>
+            <option value="212">212 - New York</option>
+            <option value="310">310 - Los Angeles</option>
+            <option value="312">312 - Chicago</option>
+            <option value="713">713 - Houston</option>
+            <option value="404">404 - Atlanta</option>
+            <option value="617">617 - Boston</option>
+            <option value="206">206 - Seattle</option>
+            <option value="303">303 - Denver</option>
+            <option value="702">702 - Las Vegas</option>
+          </select>
+        </div>
+      </div>
+      
+      <div id="smsSetupProgress" style="display: none;">
+        <div class="loading-domains">
+          <div class="spinner"></div>
+          <p id="smsProgressText">Setting up your SMS number...</p>
+        </div>
+      </div>
+      
+      <div class="domain-actions">
+        <button class="secondary" onclick="closeSMSSetupModal()">Cancel</button>
+        <button onclick="setupSMSNumber()" id="setupSMSBtn" class="success">
+          📱 Setup SMS Number (~$5/month)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
+<script>
+// Add these functions to your existing JavaScript section
+
+// SMS Setup functions
+function showSMSSetupModal() {
+  document.getElementById('smsSetupModal').style.display = 'block';
+  
+  // Pre-fill business email with user email
+  if (CUSTOMER_ID) {
+    document.getElementById('smsSupportEmail').value = CUSTOMER_ID;
+  }
+}
+
+function closeSMSSetupModal() {
+  document.getElementById('smsSetupModal').style.display = 'none';
+  document.getElementById('smsSetupProgress').style.display = 'none';
+}
+
+async function setupSMSNumber() {
+  // Validate required fields
+  const requiredFields = ['smsBusinessName', 'smsEIN', 'smsBusinessPhone', 'smsSupportEmail', 'smsBusinessAddress', 'smsOptInDescription'];
+  
+  for (let field of requiredFields) {
+    const element = document.getElementById(field);
+    if (!element.value.trim()) {
+      showStatus(`Please fill in ${element.previousElementSibling.textContent}`, true);
+      element.focus();
+      return;
+    }
+  }
+  
+  try {
+    // Show progress
+    document.getElementById('smsSetupProgress').style.display = 'block';
+    document.getElementById('setupSMSBtn').disabled = true;
+    
+    const progressText = document.getElementById('smsProgressText');
+    
+    // Collect form data
+    const smsData = {
+      business_legal_name: document.getElementById('smsBusinessName').value.trim(),
+      ein: document.getElementById('smsEIN').value.trim(),
+      business_phone: document.getElementById('smsBusinessPhone').value.trim(),
+      business_email: document.getElementById('smsSupportEmail').value.trim(),
+      business_address: document.getElementById('smsBusinessAddress').value.trim(),
+      website: document.getElementById('smsWebsite').value.trim(),
+      opt_in_description: document.getElementById('smsOptInDescription').value.trim(),
+      desired_area_code: document.getElementById('smsAreaCode').value
+    };
+    
+    progressText.textContent = 'Creating business profile...';
+    
+    // Call SMS setup webhook
+    const response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/sms/setup', smsData);
+    
+    progressText.textContent = 'Registering brand and campaign...';
+    
+    if (response.success !== false) {
+      progressText.textContent = 'SMS setup complete!';
+      
+      showStatus('SMS number setup successful! Your phone number is being activated.', false);
+      
+      // Update UI
+      updateSMSStatus(true, response.phone_number, response.status || 'pending');
+      
+      setTimeout(() => {
+        closeSMSSetupModal();
+      }, 2000);
+      
+    } else {
+      throw new Error(response.message || 'SMS setup failed');
+    }
+    
+  } catch (error) {
+    console.error('Error setting up SMS:', error);
+    showStatus('Error setting up SMS: ' + error.message, true);
+    document.getElementById('smsSetupProgress').style.display = 'none';
+  } finally {
+    document.getElementById('setupSMSBtn').disabled = false;
+  }
+}
+
+function updateSMSStatus(isConnected, phoneNumber = null, status = null) {
+  const statusIndicator = document.getElementById('sms-status');
+  const setupInfo = document.getElementById('sms-setup-info');
+  const phoneSpan = document.getElementById('sms-phone-number');
+  const statusSpan = document.getElementById('sms-registration-status');
+  const setupBtn = document.getElementById('setup-sms-btn');
+  const disconnectBtn = document.getElementById('disconnect-sms');
+  
+  if (isConnected && phoneNumber) {
+    statusIndicator.className = 'status-indicator status-connected';
+    setupInfo.style.display = 'block';
+    phoneSpan.textContent = phoneNumber;
+    statusSpan.textContent = status === 'pending' ? 'Pending Approval' : 'Active';
+    setupBtn.style.display = 'none';
+    disconnectBtn.style.display = 'inline-block';
+    setupBtn.textContent = '✅ SMS Active';
+  } else {
+    statusIndicator.className = 'status-indicator status-disconnected';
+    setupInfo.style.display = 'none';
+    setupBtn.style.display = 'inline-block';
+    disconnectBtn.style.display = 'none';
+    setupBtn.textContent = '📱 Setup SMS Number';
+  }
+}
+
+async function disconnectSMS() {
+  if (confirm('Are you sure you want to disconnect SMS? This will deactivate your business phone number.')) {
+    try {
+      const response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/sms/disconnect');
+      
+      if (response.success !== false) {
+        showStatus('SMS disconnected successfully!', false);
+        updateSMSStatus(false);
+      } else {
+        throw new Error(response.message || 'SMS disconnection failed');
+      }
+    } catch (error) {
+      console.error('Error disconnecting SMS:', error);
+      showStatus('Error disconnecting SMS: ' + error.message, true);
+    }
+  }
+}
+
+// Add SMS modal close on outside click to existing modal handler
+const originalWindowClick = window.onclick;
+window.onclick = function(event) {
+  // Call original handler
+  if (originalWindowClick) originalWindowClick(event);
+  
+  // Handle SMS modal
+  const smsModal = document.getElementById('smsSetupModal');
+  if (event.target === smsModal) {
+    closeSMSSetupModal();
+  }
+}
+</script>
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
