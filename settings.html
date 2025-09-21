@@ -975,8 +975,20 @@
             <input type="email" id="smsSupportEmail" placeholder="support@yourbusiness.com" required>
           </div>
           <div>
-            <label>Business Address *</label>
-            <input type="text" id="smsBusinessAddress" placeholder="123 Main St, City, State 12345" required>
+            <label>Business Street Address *</label>
+            <input type="text" id="smsStreetAddress" placeholder="123 Main St, City, State 12345" required>
+          </div>  
+          <label>Zipcode *</label>
+            <input type="text" id="smsZipCode" placeholder="123 Main St, City, State 12345" required>
+          </div>
+            <label>City *</label>
+            <input type="text" id="smsCity" placeholder="123 Main St, City, State 12345" required>
+          </div>
+        <label>State *</label>
+            <input type="text" id="smsState" placeholder="NY" required>
+          </div>
+      <label>Country *</label>
+            <input type="text" id="smsCountry" placeholder="US" required>
           </div>
           <div>
             <label>Website</label>
@@ -1902,7 +1914,7 @@ function closeSMSSetupModal() {
 
 async function setupSMSNumber() {
   // Validate required fields
-  const requiredFields = ['smsBusinessName', 'smsEIN', 'smsBusinessPhone', 'smsSupportEmail', 'smsBusinessAddress', 'smsOptInDescription'];
+  const requiredFields = ['smsBusinessName', 'smsEIN', 'smsBusinessPhone', 'smsSupportEmail', 'smsStreetAddress', 'smsCity', 'smsState','smsZipCode','smsCountry','smsOptInDescription'];
   
   for (let field of requiredFields) {
     const element = document.getElementById(field);
@@ -1926,7 +1938,11 @@ async function setupSMSNumber() {
       ein: document.getElementById('smsEIN').value.trim(),
       business_phone: document.getElementById('smsBusinessPhone').value.trim(),
       business_email: document.getElementById('smsSupportEmail').value.trim(),
-      business_address: document.getElementById('smsBusinessAddress').value.trim(),
+      business_address: document.getElementById('smsStreetAddress').value.trim(),
+     business_address: document.getElementById('smsState').value.trim(),
+       business_address: document.getElementById('smsCity').value.trim(),
+       business_address: document.getElementById('smsZipCode').value.trim(),
+       business_address: document.getElementById('smsCountry').value.trim(),
       website: document.getElementById('smsWebsite').value.trim(),
       opt_in_description: document.getElementById('smsOptInDescription').value.trim(),
       desired_area_code: document.getElementById('smsAreaCode').value
