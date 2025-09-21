@@ -957,84 +957,69 @@
         <h4>Business Information</h4>
         <p>We need some business details to register you for SMS compliance (required by law).</p>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
-          <div>
-            <label>Business Legal Name *</label>
-            <input type="text" id="smsBusinessName" placeholder="Your Business LLC" required>
-          </div>
-          <div>
-            <label>EIN (Tax ID) *</label>
-            <input type="text" id="smsEIN" placeholder="12-3456789" required>
-          </div>
-          <div>
-            <label>Business Phone *</label>
-            <input type="tel" id="smsBusinessPhone" placeholder="+1-555-0123" required>
-          </div>
-          <div>
-            <label>Support Email *</label>
-            <input type="email" id="smsSupportEmail" placeholder="support@yourbusiness.com" required>
-          </div>
-          <div>
-            <label>Business Street Address *</label>
-            <input type="text" id="smsStreetAddress" placeholder="123 Main St, City, State 12345" required>
-          </div>  
-          <label>Zipcode *</label>
-            <input type="text" id="smsZipCode" placeholder="123 Main St, City, State 12345" required>
-          </div>
-            <label>City *</label>
-            <input type="text" id="smsCity" placeholder="123 Main St, City, State 12345" required>
-          </div>
-        <label>State *</label>
-            <input type="text" id="smsState" placeholder="NY" required>
-          </div>
-      <label>Country *</label>
-            <input type="text" id="smsCountry" placeholder="US" required>
-          </div>
-          <div>
-            <label>Website</label>
-            <input type="url" id="smsWebsite" placeholder="https://yourbusiness.com">
-          </div>
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <label>How do customers opt-in to your SMS? *</label>
-          <textarea id="smsOptInDescription" placeholder="Customers opt-in by filling out our contact form and checking the SMS updates box" style="height: 60px;" required></textarea>
-        </div>
-        
-        <div style="margin: 20px 0;">
-          <label>Preferred Area Code</label>
-          <select id="smsAreaCode">
-            <option value="415">415 - San Francisco</option>
-            <option value="212">212 - New York</option>
-            <option value="310">310 - Los Angeles</option>
-            <option value="312">312 - Chicago</option>
-            <option value="713">713 - Houston</option>
-            <option value="404">404 - Atlanta</option>
-            <option value="617">617 - Boston</option>
-            <option value="206">206 - Seattle</option>
-            <option value="303">303 - Denver</option>
-            <option value="702">702 - Las Vegas</option>
-          </select>
-        </div>
-      </div>
-      
-      <div id="smsSetupProgress" style="display: none;">
-        <div class="loading-domains">
-          <div class="spinner"></div>
-          <p id="smsProgressText">Setting up your SMS number...</p>
-        </div>
-      </div>
-      
-      <div class="domain-actions">
-        <button class="secondary" onclick="closeSMSSetupModal()">Cancel</button>
-        <button onclick="setupSMSNumber()" id="setupSMSBtn" class="success">
-          📱 Setup SMS Number (~$5/month)
-        </button>
-      </div>
-    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+  <div>
+    <label>Business Legal Name *</label>
+    <input type="text" id="smsBusinessName" placeholder="Your Business LLC" required>
+  </div>
+  <div>
+    <label>EIN (Tax ID) *</label>
+    <input type="text" id="smsEIN" placeholder="12-3456789" required>
+  </div>
+  <div>
+    <label>Business Phone *</label>
+    <input type="tel" id="smsBusinessPhone" placeholder="+1-555-0123" required>
+  </div>
+  <div>
+    <label>Support Email *</label>
+    <input type="email" id="smsSupportEmail" placeholder="support@yourbusiness.com" required>
+  </div>
+  <div>
+    <label>Business Street Address *</label>
+    <input type="text" id="smsStreetAddress" placeholder="123 Main St" required>
+  </div>  
+  <div>
+    <label>Zipcode *</label>
+    <input type="text" id="smsZipCode" placeholder="12345" required>
+  </div>
+  <div>
+    <label>City *</label>
+    <input type="text" id="smsCity" placeholder="Las Vegas" required>
+  </div>
+  <div>
+    <label>State *</label>
+    <input type="text" id="smsState" placeholder="NV" required>
+  </div>
+  <div>
+    <label>Country *</label>
+    <input type="text" id="smsCountry" value="US" readonly>
+  </div>
+  <div>
+    <label>Website</label>
+    <input type="url" id="smsWebsite" placeholder="https://yourbusiness.com">
   </div>
 </div>
 
+<div style="margin: 20px 0;">
+  <label>How do customers opt-in to your SMS? *</label>
+  <textarea id="smsOptInDescription" placeholder="Customers opt-in by filling out our contact form and checking the SMS updates box" style="width: 100%; height: 60px;" required></textarea>
+</div>
+
+<div style="margin: 20px 0;">
+  <label>Preferred Area Code</label>
+  <select id="smsAreaCode" style="width: 100%; padding: 10px;">
+    <option value="415">415 - San Francisco</option>
+    <option value="212">212 - New York</option>
+    <option value="310">310 - Los Angeles</option>
+    <option value="312">312 - Chicago</option>
+    <option value="713">713 - Houston</option>
+    <option value="404">404 - Atlanta</option>
+    <option value="617">617 - Boston</option>
+    <option value="206">206 - Seattle</option>
+    <option value="303">303 - Denver</option>
+    <option value="702">702 - Las Vegas</option>
+  </select>
+</div>
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
