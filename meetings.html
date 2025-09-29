@@ -496,8 +496,8 @@ function displayMeetings(meetingInvites) {
     meetingItem.innerHTML = `
       <div class="meeting-title-item">${invite.name || 'Victory Vision Meeting'}</div>
       <div class="meeting-attendees">
-        Link: ${invite.room_url || 'N/A'}
-        ${invite.room_url ? '' : '<br>⚠️ No room URL available'}
+        Link: ${invite.room_url.split('-')[1].replace(/([A-Z])/g, ' $1').trim() || 'N/A'}
+        ${invite.room_url ? '' : '<br>⚠️ No room information available'}
       </div>
     `;
     
