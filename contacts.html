@@ -1747,7 +1747,7 @@ async function enrichSelectedContacts() {
         c.email === id || 
         c.linkedin === id
       )
-    ).filter(c => c && (c.email || c.linkedin));
+    ).filter(c => c);
     
     if (selectedContactsList.length === 0) {
       showStatus('No valid contacts selected for enrichment', true);
@@ -1759,10 +1759,14 @@ async function enrichSelectedContacts() {
       const enrichmentData = {
         contact: {
           id: contact.contact_id || contact.id || contact.email,
-          email: contact.email,
+          email: contact.email || '',
           linkedin: contact.linkedin || '',
           name: contact.name || '',
           domain: contact.domain || '',
+          domain: contact.address || '',
+          domain: contact.tags || '',
+          domain: contact.notes || '',
+          domain: contact.title || '',
           company: contact.company || ''
         }
       };
