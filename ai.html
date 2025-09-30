@@ -1691,23 +1691,36 @@ window.addEventListener('click', function(event) {
     closeAiEmailModal();
   }
 });
+
 // Action functions
 async function createMeeting(email) {
   try {
     showStatus('Creating meeting invitation...', false);
     
-    const response = await apiCall(ENDPOINTS.createMeeting, 'POST', {
-      contact_email: email,
-      subject: 'Victory Vision Demo Meeting',
-      duration: 30
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/meeting', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
+      },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        contact_email: email,
+        subject: 'Victory Vision Demo Meeting',
+        duration: 30
+      })
     });
+    
+    if (!response.ok) throw new Error('Failed to create meeting');
     
     showStatus('Meeting invitation sent successfully!', false);
   } catch (error) {
+    console.error('Error creating meeting:', error);
     showStatus('Error creating meeting: ' + error.message, true);
   }
 }
-
+  
 async function createPresentation(email) {
   try {
     showStatus('Creating presentation...', false);
