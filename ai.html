@@ -823,7 +823,41 @@
     </div>
   </div>
 </div>
-
+<!-- AI Email Draft Modal -->
+<div id="aiEmailModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">AI-Generated Email</h2>
+      <button class="modal-close" onclick="closeAiEmailModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="aiEmailLoading" style="text-align: center; padding: 40px; color: #605e5c;">
+        <div style="font-size: 24px; margin-bottom: 10px;">🤖</div>
+        <div>Generating AI email draft...</div>
+      </div>
+      
+      <div id="aiEmailBodySection" style="display: none;">
+        <div class="form-group">
+          <label class="form-label">To:</label>
+          <input type="text" class="form-input" id="aiEmailTo" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject:</label>
+          <input type="text" class="form-input" id="aiEmailSubject">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message:</label>
+          <textarea class="form-textarea" id="aiEmailBody" rows="12"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeAiEmailModal()">Cancel</button>
+      <button class="btn-primary" onclick="scheduleAiEmail()" style="background: #6c757d; border-color: #6c757d;">📅 Schedule</button>
+      <button class="btn-primary" onclick="sendAiEmail()">📤 Send Now</button>
+    </div>
+  </div>
+</div>
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -1149,7 +1183,7 @@ function createLeadCard(contact, score, emails, meetings) {
         </div>
         
         <div class="lead-actions">
-          <button class="action-btn primary" onclick="event.stopPropagation(); openEmailModal('${contact.email}', '${sanitizeInput(contact.name)}')">Email</button>
+          <button class="action-btn primary" onclick="event.stopPropagation(); openAiEmailModal('${contact.email}', '${sanitizeInput(contact.name)}')">Email</button>
           <button class="action-btn success" onclick="event.stopPropagation(); createMeeting('${contact.email}')">Meeting</button>
           <button class="action-btn warning" onclick="event.stopPropagation(); createPresentation('${contact.email}')">Presentation</button>
           <button class="action-btn info" onclick="event.stopPropagation(); createSMS('${contact.email}')">SMS</button>
@@ -1482,6 +1516,7 @@ function loadContactTimeline(contact) {
     <div class="timeline-item">
       <div class="timeline-dot" style="background: ${event.color};"></div>
       <div class="timeline-text">${event.date.toLocaleString()} - ${sanitizeInput(event.text)}</div>
+    
     </div>
   `).join('') : '<div style="text-align: center; padding: 20px; color: #718096;">No activity found for this contact</div>';
 }
@@ -1541,7 +1576,13 @@ function applyFilters() {
   filteredProspects = filtered.sort((a, b) => b.lead_score - a.lead_score);
   updateFocusLeads();
 }
-
+// Close AI email modal when clicking outside
+window.addEventListener('click', function(event) {
+  const aiEmailModal = document.getElementById('aiEmailModal');
+  if (event.target === aiEmailModal) {
+    closeAiEmailModal();
+  }
+});
 // Action functions
 async function createMeeting(email) {
   try {
@@ -1624,11 +1665,149 @@ function archiveContact(contactId) {
     processProspects();
   }
 }
+// AI Email Modal Functions
+let currentContactEmail = null;
 
-function openEmailModal(email, name) {
-  alert(`Email modal would open for ${name} (${email}). Email functionality can be added here.`);
+async function openAiEmailModal(contactEmail, contactName) {
+  currentContactEmail = contactEmail;
+  
+  const modal = document.getElementById('aiEmailModal');
+  const loading = document.getElementById('aiEmailLoading');
+  const bodySection = document.getElementById('aiEmailBodySection');
+  
+  // Show modal and loading
+  modal.style.display = 'block';
+  loading.style.display = 'block';
+  bodySection.style.display = 'none';
+  
+  // Set recipient
+  document.getElementById('aiEmailTo').value = contactEmail;
+  
+  try {
+    // Call AI assist webhook to generate draft
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/ai-assist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
+      },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        recipient: contactEmail,
+        recipient_name: contactName,
+        tone: 'professional',
+        context: 'outreach'
+      })
+    });
+    
+    if (!response.ok) throw new Error('Failed to generate email');
+    
+    const result = await response.json();
+    
+    // Populate fields with AI-generated content
+    document.getElementById('aiEmailSubject').value = result.subject || '';
+    document.getElementById('aiEmailBody').value = result.content || result.body || '';
+    
+    // Hide loading, show fields
+    loading.style.display = 'none';
+    bodySection.style.display = 'block';
+    
+  } catch (error) {
+    console.error('Error generating AI email:', error);
+    loading.innerHTML = 'Error generating email. Please try again.';
+    setTimeout(() => {
+      closeAiEmailModal();
+    }, 2000);
+  }
 }
-function showMetricQuery(metricType, title) {
+
+function closeAiEmailModal() {
+  document.getElementById('aiEmailModal').style.display = 'none';
+  currentContactEmail = null;
+}
+
+async function sendAiEmail() {
+  const to = document.getElementById('aiEmailTo').value;
+  const subject = document.getElementById('aiEmailSubject').value;
+  const body = document.getElementById('aiEmailBody').value;
+  
+  if (!to || !subject || !body) {
+    showStatus('Please fill in all fields', true);
+    return;
+  }
+  
+  try {
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
+      },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        to_email: to,
+        subject: subject,
+        body: body,
+        campaign: 'AI Outreach'
+      })
+    });
+    
+    if (!response.ok) throw new Error('Failed to send email');
+    
+    showStatus('Email sent successfully!', false);
+    closeAiEmailModal();
+    
+  } catch (error) {
+    console.error('Error sending email:', error);
+    showStatus('Error sending email. Please try again.', true);
+  }
+}
+
+async function scheduleAiEmail() {
+  const to = document.getElementById('aiEmailTo').value;
+  const subject = document.getElementById('aiEmailSubject').value;
+  const body = document.getElementById('aiEmailBody').value;
+  
+  if (!to || !subject || !body) {
+    showStatus('Please fill in all fields', true);
+    return;
+  }
+  
+  const scheduleTime = prompt('Enter schedule time (e.g., 2025-10-01 10:00 AM):');
+  if (!scheduleTime) return;
+  
+  try {
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/schedule', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
+      },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        to_email: to,
+        subject: subject,
+        body: body,
+        schedule_time: scheduleTime,
+        campaign: 'AI Outreach'
+      })
+    });
+    
+    if (!response.ok) throw new Error('Failed to schedule email');
+    
+    showStatus('Email scheduled successfully!', false);
+    closeAiEmailModal();
+    
+  } catch (error) {
+    console.error('Error scheduling email:', error);
+    showStatus('Error scheduling email. Please try again.', true);
+  }
+}
+
+  function showMetricQuery(metricType, title) {
   const dateRange = getActivityDateRange();
   currentQueryType = title;
   
