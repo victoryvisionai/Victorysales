@@ -868,7 +868,7 @@
 <div style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: #f8fafc; border-radius: 8px; font-size: 0.85rem; color: #475569; line-height: 1.6;">
   <h4 style="color: #0a3161; margin-bottom: 1rem; font-size: 1rem;">Stay Connected via Text</h4>
   
-  <form action="https://victoryvision.app.n8n.cloud/webhook/sms/optin" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+  <form id="smsForm" action="https://victoryvision.app.n8n.cloud/webhook/sms/optin" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
     <div style="display: flex; gap: 0.5rem; align-items: center;">
       <input type="tel" name="phone" placeholder="+1 987-654-3210" required 
              style="flex: 1; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;">
@@ -891,6 +891,15 @@
     View our <a href="/privacy.html" style="color: #0a3161; text-decoration: underline;">Privacy Policy</a> and <a href="/terms.html" style="color: #0a3161; text-decoration: underline;">Terms of Service</a>.
   </p>
 </div>
+
+<script>
+document.getElementById('smsForm').onsubmit = function(e) {
+  e.preventDefault();
+  fetch(this.action, {method: 'POST', body: new FormData(this)});
+  alert('Thanks! Check your phone.');
+  this.reset();
+};
+</script>
   <!-- Footer -->
   <footer>
     &copy; 2024 Victory Vision — Veteran Owned. Purpose Driven. Results Delivered.<br>
