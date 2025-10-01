@@ -249,7 +249,7 @@
     /* Updated filter section to match media page design */
     .filter-section {
       display: grid;
-      grid-template-columns: 200px 200px 200px 200px 200px 200px auto auto;
+      grid-template-columns: 200px 200px 200px 200px 200px 200px 150px 150px auto auto;
       gap: 15px;
       align-items: end;
       margin-bottom: 20px;
@@ -904,16 +904,23 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
           <option value="followup">Follow-up</option>
         </select>
       </div>
-      <div class="form-group">
+      
+    <div class="form-group">
         <label for="tagsFilter">Tags</label>
         <select id="tagsFilter">
           <option value="">All Tags</option>
         </select>
       </div>
+      <div class="form-group">
+        <label for="createdFromFilter">Created From</label>
+        <input type="date" id="createdFromFilter">
+      </div>
+      <div class="form-group">
+        <label for="createdToFilter">Created To</label>
+        <input type="date" id="createdToFilter">
+      </div>
       <button id="refreshBtn">🔄 Refresh</button>
       <button id="clearFiltersBtn" class="secondary">Clear Filters</button>
-    </div>
-
     <!-- Bulk Actions -->
     <div class="bulk-actions" data-intro="Select multiple contacts and perform bulk actions like enrolling in workflows, enriching data, or deleting contacts." data-step="6">
       <div class="bulk-actions-left">
@@ -1382,7 +1389,6 @@ function sanitizeInput(value) {
     .trim();
 }
 
-// ADD THIS NEW FUNCTION HERE:
 function formatDateTime(dateString) {
   if (!dateString || dateString === 'null' || dateString === '') return 'Never';
   
@@ -1403,7 +1409,49 @@ function formatDateTime(dateString) {
   
   return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
 }
+// Draggable columns functionality
+let draggedColumn = null;
+
+function makColumnsDraggable() {
+  const headers = document.querySelectorAll('#tableHeader th:not(.checkbox-cell)');
   
+  headers.forEach((header, index) => {
+    header.draggable = true;
+    header.style.cursor = 'move';
+    
+    header.addEventListener('dragstart', (e) => {
+      draggedColumn = index;
+      e.dataTransfer.effectAllowed = 'move';
+      header.style.opacity = '0.5';
+    });
+    
+    header.addEventListener('dragend', (e) => {
+      header.style.opacity = '1';
+    });
+    
+    header.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+    
+    header.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const targetIndex = Array.from(headers).indexOf(header);
+      
+      if (draggedColumn !== null && draggedColumn !== targetIndex) {
+        // Reorder visibleColumns array
+        const movedColumn = visibleColumns[draggedColumn];
+        visibleColumns.splice(draggedColumn, 1);
+        visibleColumns.splice(targetIndex, 0, movedColumn);
+        
+        // Re-render table
+        renderTableHeader();
+        renderContactsTable();
+        makeColumnsDraggable();
+      }
+    });
+  });
+}  
 // Tour completion tracking
 function completeTour() {
   localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
@@ -2415,7 +2463,8 @@ function applyFilters() {
   const school = document.getElementById('schoolFilter').value;
   const workflow = document.getElementById('workflowFilter').value;
   const tags = document.getElementById('tagsFilter').value;
-  
+  const createdFrom = document.getElementById('createdFromFilter').value;
+  const createdTo = document.getElementById('createdToFilter').value;
   filteredContacts = allContacts.filter(contact => {
     if (searchTerm) {
       const searchableText = [
