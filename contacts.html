@@ -1362,6 +1362,15 @@ const rateLimiter = {
     return true;
   }
 };
+// Input sanitization
+function sanitizeInput(value) {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim();
+}
 
 // Input sanitization
 function sanitizeInput(value) {
@@ -1373,6 +1382,31 @@ function sanitizeInput(value) {
     .trim();
 }
 
+// ADD THIS NEW FUNCTION HERE:
+function formatDateTime(dateString) {
+  if (!dateString || dateString === 'null' || dateString === '') return 'Never';
+  
+  const date = new Date(dateString);
+  
+  // Check if date is valid
+  if (isNaN(date.getTime())) return dateString;
+  
+  // Format: MM/DD/YYYY HH:MM AM/PM
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12 || 12;
+  
+  return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
+}
+
+// Tour completion tracking
+function completeTour() {
+  
 // Tour completion tracking
 function completeTour() {
   localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
@@ -2178,6 +2212,8 @@ function formatCellValue(contact, column) {
       return value ? `<a href="${value}" target="_blank" style="color: #0A3161;" onclick="event.stopPropagation();">View</a>` : 'N/A';
     case 'email':
       return value ? `<a href="mailto:${value}" style="color: #0A3161;" onclick="event.stopPropagation();">${value}</a>` : 'N/A';
+   case 'created':
+      return formatDateTime(value);
     case 'last_responded':
     case 'last_emailed_date':
     case 'client_won_date':
