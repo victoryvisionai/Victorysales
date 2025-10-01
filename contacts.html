@@ -921,6 +921,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       </div>
       <button id="refreshBtn">🔄 Refresh</button>
       <button id="clearFiltersBtn" class="secondary">Clear Filters</button>
+      </div>
     <!-- Bulk Actions -->
     <div class="bulk-actions" data-intro="Select multiple contacts and perform bulk actions like enrolling in workflows, enriching data, or deleting contacts." data-step="6">
       <div class="bulk-actions-left">
@@ -2513,6 +2514,23 @@ function applyFilters() {
       if (!contactTags.includes(tags)) return false;
     }
 
+    // Date filter for created field
+    if (createdFrom || createdTo) {
+      const contactCreated = contact.created ? new Date(contact.created) : null;
+      if (!contactCreated) return false;
+      
+      if (createdFrom) {
+        const fromDate = new Date(createdFrom);
+        fromDate.setHours(0, 0, 0, 0);
+        if (contactCreated < fromDate) return false;
+      }
+      
+      if (createdTo) {
+        const toDate = new Date(createdTo);
+        toDate.setHours(23, 59, 59, 999);
+        if (contactCreated > toDate) return false;
+      }
+    }
     return true;
   });
 
@@ -2527,6 +2545,8 @@ function clearFilters() {
   document.getElementById('schoolFilter').value = '';
   document.getElementById('workflowFilter').value = '';
   document.getElementById('tagsFilter').value = '';
+  document.getElementById('createdFromFilter').value = '';
+  document.getElementById('createdToFilter').value = '';
   applyFilters();
 }
 
@@ -2606,7 +2626,7 @@ function setupEventListeners() {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(applyFilters, 300);
   });
-  ['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'workflowFilter', 'tagsFilter'].forEach(id => {
+['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'workflowFilter', 'tagsFilter', 'createdFromFilter', 'createdToFilter'].forEach(id => {
     const element = document.getElementById(id);
     if (element) element.addEventListener('change', applyFilters);
   });
