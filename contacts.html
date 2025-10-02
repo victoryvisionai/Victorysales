@@ -1472,7 +1472,6 @@ function startTour() {
   }).oncomplete(completeTour).onexit(completeTour).start();
 }
 
-// Authentication
 async function checkAuthentication() {
   try {
     const { data: { session }, error } = await supabaseClient.auth.getSession();
@@ -1483,6 +1482,21 @@ async function checkAuthentication() {
     }
 
     if (session && session.user) {
+      // NEW: Check blacklist
+      const { data: blacklisted } = await supabaseClient
+        .from('email_blacklist')
+        .select('email')
+        .eq('email', session.user.email)
+        .single();
+      
+      if (blacklisted) {
+        // User is blacklisted - sign them out
+        await supabaseClient.auth.signOut();
+        alert('Your account has been terminated. Please contact support if you believe this is an error.');
+        window.location.href = 'login.html';
+        return false;
+      }
+      
       CUSTOMER_ID = session.user.email;
       authToken = session.access_token;
       document.getElementById('userEmail').textContent = CUSTOMER_ID;
@@ -1495,7 +1509,6 @@ async function checkAuthentication() {
     return false;
   }
 }
-
 function redirectToLogin() {
   localStorage.removeItem('vv_session');
   window.location.href = 'login.html';
