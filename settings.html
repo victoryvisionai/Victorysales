@@ -1092,39 +1092,43 @@
     }).oncomplete(completeTour).onexit(completeTour).start();
   }
 
-  // Authentication functions
-  async function checkAuthentication() {
-    try {
-      console.log('Checking authentication...');
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      
-      if (error) {
-        console.error('Auth error:', error);
-        return false;
-      }
-
-      if (session && session.user) {
-        CUSTOMER_ID = session.user.email;
-        authToken = session.access_token;
-        currentUser = {
-          id: session.user.id,
-          email: session.user.email,
-          customer_id: session.user.email,
-          company_name: session.user.user_metadata?.company_name || ''
-        };
-        
-        console.log('Authentication successful for:', CUSTOMER_ID);
-        document.getElementById('userEmail').textContent = CUSTOMER_ID;
-        return true;
-      }
-
-      console.log('No valid session found');
-      return false;
-    } catch (e) {
-      console.error('Auth check error:', e);
+async function checkAuthentication() {
+  try {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    
+    if (error) {
+      console.error('Auth error:', error);
       return false;
     }
+
+    if (session && session.user) {
+      // NEW: Check blacklist
+      const { data: blacklisted } = await supabaseClient
+        .from('email_blacklist')
+        .select('email')
+        .eq('email', session.user.email)
+        .single();
+      
+      if (blacklisted) {
+        // User is blacklisted - sign them out
+        await supabaseClient.auth.signOut();
+        alert('Your account has been terminated. Please contact support if you believe this is an error.');
+        window.location.href = 'login.html';
+        return false;
+      }
+      
+      CUSTOMER_ID = session.user.email;
+      authToken = session.access_token;
+      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+      return true;
+    }
+
+    return false;
+  } catch (e) {
+    console.error('Auth check error:', e);
+    return false;
   }
+}
 
   function redirectToLogin() {
     localStorage.removeItem('vv_session');
