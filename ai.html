@@ -1751,6 +1751,7 @@ async function createSMS(email) {
     
     const response = await apiCall(ENDPOINTS.createSMS, 'POST', {
       to: contact.phone_number,
+      id: contact.id,
       message: message,
       contact_email: email
     });
