@@ -722,7 +722,6 @@
     </div>
   </div>
 </header>
-<body>
 <div class="content">
   <header class="page-header">
     <h1 class="page-title">Contact Management</h1>
@@ -3079,26 +3078,6 @@ function handleCallEnded() {
   if (callTimer) clearInterval(callTimer);
   closeCallModal();
   currentCall = null;
-}
-
-function closeCallModal() {
-  if (callTimer) clearInterval(callTimer);
-  document.getElementById('callModal').style.display = 'none';
-  currentCallContact = null;
-  callStartTime = null;
-}
-
-function startCallTimer() {
-  if (callTimer) clearInterval(callTimer);
-  callStartTime = Date.now();
-  
-  callTimer = setInterval(() => {
-    const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
-    const minutes = Math.floor(elapsed / 60);
-    const seconds = elapsed % 60;
-    document.getElementById('callDuration').textContent = 
-      `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  }, 1000);
 }
 
 function handleCallStatusUpdate(event) {
