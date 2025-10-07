@@ -2060,36 +2060,6 @@ async function createSMSForContact(contactId) {
   document.getElementById('smsModal').style.display = 'block';  
   closeModal(); // Close contact details modal
 }
-
-async function makeCallToContact(contactId) {
-  const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
-  if (!contact || !contact.phone_number) {
-    showStatus('No phone number available', true);
-    return;
-  }
-  
-  try {
-    // Store contact info
-    window.currentCallContact = contact;
-    window.callStartTime = null;
-    window.callTimer = null;
-    window.callControlId = null;
-    window.isMuted = false;
-    window.isRecording = false;
-    window.isOnHold = false;
-    
-    // Show call modal
-    document.getElementById('callContactName').textContent = contact.name || contact.email;
-    document.getElementById('callStatus').textContent = 'Initiating call...';
-    document.getElementById('callDuration').textContent = '00:00';
-    document.getElementById('callNotes').value = '';
-    document.getElementById('callModal').style.display = 'block';
-    closeModal();
-  } catch (error) {
-    console.error('Error:', error);
-    showStatus('Error initiating call', true);
-  }
-}
 function editContact(contactId) {
   const contact = allContacts.find(c => 
     c.contact_id === contactId || 
