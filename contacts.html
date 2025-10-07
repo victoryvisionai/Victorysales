@@ -1678,8 +1678,8 @@ async function loadUserData() {
 
 // Store user's VV number and Telnyx info
 window.userVVNumber = userData.vvnumber || null;
-window.userConnectionId = userData.telnyx_connection_id || '2797039610767606984';
-window.userWebRTCUsername = userData.webrtc_username || userData.email;
+window.userConnectionId = userData.number_id || '2797039610767606984';
+window.userWebRTCUsername = userData.email;
     
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
@@ -2928,11 +2928,7 @@ function startCallTimer() {
 // WebRTC Client - Global
 let telnyxClient = null;
 let currentCall = null;
-let currentCallContact = null;
-let callStartTime = null;
-let callTimer = null;
-let isMuted = false;
-let isOnHold = false;
+
 // Initialize WebRTC Client
 async function initializeTelnyxWebRTC() {
   if (telnyxClient) return;
@@ -3050,6 +3046,7 @@ async function makeCallToContact(contactId) {
     document.getElementById('holdBtn').textContent = '⏸️ Hold';
     document.getElementById('callModal').style.display = 'block';
     
+    // WebRTC call - happens directly in browser, NO API call needed!
     currentCall = telnyxClient.newCall({
       destinationNumber: contact.phone_number,
       callerNumber: window.userVVNumber,
@@ -3057,7 +3054,8 @@ async function makeCallToContact(contactId) {
       video: false
     });
     
-    closeModal();
+    closeModal(); // Close contact details modal
+    
   } catch (error) {
     console.error('Error making call:', error);
     showStatus('Error making call: ' + error.message, true);
