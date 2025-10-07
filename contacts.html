@@ -7,8 +7,11 @@
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Contacts</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@telnyx/webrtc@2.14.0/dist/telnyx.umd.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+  
+  
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -1420,7 +1423,7 @@ const ENDPOINTS = {
 // Global variables
 let CUSTOMER_ID = null;
 let authToken = null;
-let userCredits = { contact_credits: 0, video_credits: 0 };
+let userCredits = { credits: 0, video_credits: 0 };
 let allContacts = [];
 let filteredContacts = [];
 let selectedContacts = new Set();
@@ -1669,10 +1672,14 @@ async function loadUserData() {
     const userData = Array.isArray(response) ? response[0] : response;
     console.log('User data:', userData);
     
-    userCredits = {
-      contact_credits: userData.contact_credits || 0,
-      video_credits: userData.video_credits || 0
-    };
+   userCredits = {
+  credits: userData.credits || 0
+};
+
+// Store user's VV number and Telnyx info
+window.userVVNumber = userData.vvnumber || null;
+window.userConnectionId = userData.telnyx_connection_id || '2797039610767606984';
+window.userWebRTCUsername = userData.webrtc_username || userData.email;
     
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
@@ -1692,22 +1699,17 @@ function updateCreditsDisplay() {
   const creditsSpan = document.getElementById('contactCredits');
   
   if (creditsDisplay) {
-    creditsDisplay.textContent = userCredits.contact_credits;
+    creditsDisplay.textContent = userCredits.credits;
   }
   if (creditsSpan) {
-    creditsSpan.textContent = `${userCredits.contact_credits} contacts`;
+    creditsSpan.textContent = `${userCredits.credits} credits`;
   }
   
   // Enable/disable generate button based on credits
   const generateBtn = document.getElementById('generateBtn');
   if (generateBtn) {
-    generateBtn.disabled = userCredits.contact_credits <= 0;
-    if (userCredits.contact_credits <= 0) {
-      generateBtn.textContent = '🚫 No Credits Remaining';
-      generateBtn.style.background = '#6c757d';
-    }
-  }
-}
+    generateBtn.disabled = userCredits.credits <= 0;
+    if (userCredits.credits <= 0) {
 
 // Load contacts
 async function loadContacts() {
@@ -1758,7 +1760,7 @@ async function generateNewContacts() {
   const generateBtn = document.getElementById('generateBtn');
   
   try {
-    if (userCredits.contact_credits <= 0) {
+    if (userCredits.credits <= 0) {
       throw new Error('Insufficient contact credits. Please upgrade your plan.');
     }
 
@@ -1775,8 +1777,8 @@ async function generateNewContacts() {
       throw new Error('Please enter a LinkedIn URL');
     }
 
-    if (userCredits.contact_credits < leadCount) {
-      throw new Error(`Insufficient credits. You need ${leadCount} credits but only have ${userCredits.contact_credits}.`);
+    if (userCredits.credits < leadCount) {
+      throw new Error(`Insufficient credits. You need ${leadCount} credits but only have ${userCredits.credits}.`);
     }
 
     console.log('Sending request to contacts/look');
@@ -1790,7 +1792,7 @@ async function generateNewContacts() {
       showStatus(`Successfully generating ${leadCount} contacts! They will appear shortly.`, false);
       
       // Deduct credits
-      userCredits.contact_credits -= leadCount;
+      userCredits.credits -= leadCount;
       updateCreditsDisplay();
       
       // Clear inputs
@@ -2788,6 +2790,10 @@ async function init() {
       renderTableHeader();
       setupEventListeners();
       await Promise.all([loadUserData(), loadContacts()]);
+// Initialize WebRTC after user data loads
+if (window.userVVNumber) {
+  initializeTelnyxWebRTC().catch(err => console.warn('WebRTC init failed:', err));
+}
       if (!hasCompletedTour()) {
         setTimeout(() => startTour(), 1000);
       }
@@ -2839,7 +2845,10 @@ function closeSMSModal() {
 }
 
 async function generateAISMS() {
-  if (!currentSMSContact) return;
+  if (!currentSMSContact) {
+    showStatus('No contact selected', true);
+    return;
+  }
   
   const statusDiv = document.getElementById('smsStatus');
   statusDiv.textContent = 'Generating AI message...';
@@ -2859,7 +2868,16 @@ async function generateAISMS() {
       }
     });
     
-    document.getElementById('smsMessage').value = response.message || response.sms || '';
+    console.log('AI SMS Response:', response);
+    
+    // Handle different response formats
+    const aiMessage = response.message || response.sms || response.body || response.text || '';
+    
+    if (!aiMessage) {
+      throw new Error('No message returned from AI');
+    }
+    
+    document.getElementById('smsMessage').value = aiMessage;
     document.getElementById('aiReviseBtn').style.display = 'inline-block';
     
     statusDiv.textContent = 'AI message generated! Edit if needed.';
@@ -2868,7 +2886,8 @@ async function generateAISMS() {
     
     setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
   } catch (error) {
-    statusDiv.textContent = 'Error generating AI message: ' + error.message;
+    console.error('Error generating AI SMS:', error);
+    statusDiv.textContent = 'Error: ' + error.message;
     statusDiv.style.background = '#f8d7da';
     statusDiv.style.color = '#721c24';
   }
@@ -2933,114 +2952,242 @@ function startCallTimer() {
   }, 1000);
 }
 
-async function toggleMute() {
-  if (!callControlId) return;
+// WebRTC Client - Global
+let telnyxClient = null;
+let currentCall = null;
+
+// Initialize WebRTC Client
+async function initializeTelnyxWebRTC() {
+  if (telnyxClient) return;
+  
+  if (!window.userVVNumber) {
+    console.warn('No VV number assigned to user');
+    return;
+  }
   
   try {
-    const endpoint = isMuted ? 'unmute' : 'mute';
-    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
-        'Content-Type': 'application/json'
-      }
+    telnyxClient = new TelnyxRTC({
+      login_token: await getTelnyxLoginToken()
     });
     
-    isMuted = !isMuted;
-    document.getElementById('muteBtn').textContent = isMuted ? '🔇 Unmute' : '🎤 Mute';
-    document.getElementById('muteBtn').style.background = isMuted ? '#dc3545' : '#6c757d';
+    telnyxClient.on('telnyx.ready', () => {
+      console.log('Telnyx WebRTC ready');
+    });
+    
+    telnyxClient.on('telnyx.error', (error) => {
+      console.error('Telnyx error:', error);
+      showStatus('WebRTC error: ' + error.message, true);
+    });
+    
+    telnyxClient.on('telnyx.notification', (notification) => {
+      handleCallNotification(notification);
+    });
+    
+    await telnyxClient.connect();
+    console.log('WebRTC client connected');
+    
+  } catch (error) {
+    console.error('Error initializing WebRTC:', error);
+    showStatus('Failed to initialize calling: ' + error.message, true);
+  }
+}
+
+async function getTelnyxLoginToken() {
+  try {
+    if (!window.userWebRTCUsername) {
+      throw new Error('Calling not enabled for your account');
+    }
+    
+    const response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/webrtc/token', {
+      username: window.userWebRTCUsername,
+      connection_id: window.userConnectionId
+    });
+    return response.login_token;
+  } catch (error) {
+    console.error('Error getting WebRTC token:', error);
+    throw new Error('Failed to get calling credentials');
+  }
+}
+
+function handleCallNotification(notification) {
+  console.log('Call notification:', notification);
+  if (notification.type === 'callUpdate') {
+    handleCallUpdate(notification.call);
+  } else if (notification.type === 'userMediaError') {
+    showStatus('Microphone access denied', true);
+    closeCallModal();
+  }
+}
+
+function handleCallUpdate(call) {
+  const state = call.state;
+  switch(state) {
+    case 'new':
+      document.getElementById('callStatus').textContent = 'Calling...';
+      break;
+    case 'trying':
+      document.getElementById('callStatus').textContent = 'Ringing...';
+      break;
+    case 'early':
+      document.getElementById('callStatus').textContent = 'Connecting...';
+      break;
+    case 'active':
+      document.getElementById('callStatus').textContent = 'Connected';
+      startCallTimer();
+      break;
+    case 'held':
+      document.getElementById('callStatus').textContent = 'On Hold';
+      break;
+    case 'hangup':
+    case 'destroy':
+      handleCallEnded();
+      break;
+  }
+}
+
+async function makeCallToContact(contactId) {
+  const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
+  if (!contact || !contact.phone_number) {
+    showStatus('No phone number available', true);
+    return;
+  }
+  
+  if (!window.userVVNumber) {
+    showStatus('Please assign a phone number in Settings to enable calling', true);
+    return;
+  }
+  
+  try {
+    await initializeTelnyxWebRTC();
+    
+    currentCallContact = contact;
+    isMuted = false;
+    isOnHold = false;
+    
+    document.getElementById('callContactName').textContent = contact.name || contact.email;
+    document.getElementById('callStatus').textContent = 'Initializing...';
+    document.getElementById('callDuration').textContent = '00:00';
+    document.getElementById('callNotes').value = '';
+    document.getElementById('muteBtn').textContent = '🎤 Mute';
+    document.getElementById('muteBtn').style.background = '#6c757d';
+    document.getElementById('holdBtn').textContent = '⏸️ Hold';
+    document.getElementById('callModal').style.display = 'block';
+    
+    currentCall = telnyxClient.newCall({
+      destinationNumber: contact.phone_number,
+      callerNumber: window.userVVNumber,
+      audio: true,
+      video: false
+    });
+    
+    closeModal();
+  } catch (error) {
+    console.error('Error making call:', error);
+    showStatus('Error making call: ' + error.message, true);
+    closeCallModal();
+  }
+}
+
+function toggleMute() {
+  if (!currentCall) return;
+  try {
+    if (isMuted) {
+      currentCall.unmute();
+      isMuted = false;
+      document.getElementById('muteBtn').textContent = '🎤 Mute';
+      document.getElementById('muteBtn').style.background = '#6c757d';
+    } else {
+      currentCall.mute();
+      isMuted = true;
+      document.getElementById('muteBtn').textContent = '🔇 Unmute';
+      document.getElementById('muteBtn').style.background = '#dc3545';
+    }
   } catch (error) {
     console.error('Error toggling mute:', error);
   }
 }
 
-async function toggleRecord() {
-  if (!callControlId) return;
-  
-  try {
-    const endpoint = isRecording ? 'record_stop' : 'record_start';
-    const body = isRecording ? {} : { format: 'mp3', channels: 'dual' };
-    
-    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    
-    isRecording = !isRecording;
-    document.getElementById('recordBtn').textContent = isRecording ? '⏹️ Stop Recording' : '⏺️ Record';
-    document.getElementById('recordBtn').style.background = isRecording ? '#dc3545' : '#6c757d';
-  } catch (error) {
-    console.error('Error toggling record:', error);
-  }
+function toggleRecord() {
+  showStatus('Call recording is handled server-side automatically', false);
 }
 
-async function toggleHold() {
-  if (!callControlId) return;
-  
+function toggleHold() {
+  if (!currentCall) return;
   try {
-    const endpoint = isOnHold ? 'unhold' : 'hold';
-    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    isOnHold = !isOnHold;
-    document.getElementById('holdBtn').textContent = isOnHold ? '▶️ Resume' : '⏸️ Hold';
-    document.getElementById('callStatus').textContent = isOnHold ? 'On Hold' : 'Connected';
+    if (isOnHold) {
+      currentCall.unhold();
+      isOnHold = false;
+      document.getElementById('holdBtn').textContent = '⏸️ Hold';
+      document.getElementById('callStatus').textContent = 'Connected';
+    } else {
+      currentCall.hold();
+      isOnHold = true;
+      document.getElementById('holdBtn').textContent = '▶️ Resume';
+      document.getElementById('callStatus').textContent = 'On Hold';
+    }
   } catch (error) {
     console.error('Error toggling hold:', error);
   }
 }
 
 async function hangupCall() {
-  if (!callControlId) {
+  if (!currentCall) {
     closeCallModal();
     return;
   }
   
   try {
-    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/hangup`, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
-        'Content-Type': 'application/json'
-      }
-    });
+    currentCall.hangup();
     
-    // Save call notes if any
     const notes = document.getElementById('callNotes').value.trim();
     if (notes && currentCallContact) {
       await apiCall(ENDPOINTS.updateContact, {
         contact_id: currentCallContact.contact_id || currentCallContact.id,
-        conversation_summary: notes
+        conversation_summary: (currentCallContact.conversation_summary || '') + '\n\n' + 
+          `Call ${new Date().toLocaleDateString()}: ${notes}`
       });
     }
     
-    showStatus('Call ended successfully', false);
-    closeCallModal();
+    showStatus('Call ended', false);
   } catch (error) {
     console.error('Error hanging up:', error);
-    closeCallModal();
+  } finally {
+    handleCallEnded();
   }
 }
 
-// Listen for call status updates (you'll need to implement webhook handling)
-// This would come from your Telnyx callback webhook
-function handleCallStatusUpdate(event) {
-  if (event.event_type === 'call.answered') {
-    document.getElementById('callStatus').textContent = 'Connected';
-    startCallTimer();
-  } else if (event.event_type === 'call.hangup') {
-    closeCallModal();
-  }
+function handleCallEnded() {
+  if (callTimer) clearInterval(callTimer);
+  closeCallModal();
+  currentCall = null;
 }
+
+function closeCallModal() {
+  if (callTimer) clearInterval(callTimer);
+  document.getElementById('callModal').style.display = 'none';
+  currentCallContact = null;
+  callStartTime = null;
+}
+
+function startCallTimer() {
+  if (callTimer) clearInterval(callTimer);
+  callStartTime = Date.now();
+  
+  callTimer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    document.getElementById('callDuration').textContent = 
+      `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }, 1000);
+}
+
+function handleCallStatusUpdate(event) {
+  // For future webhook integration
+  console.log('Call status update:', event);
+}
+
+      
   
 window.showContactDetails = showContactDetails;
 window.toggleContactSelection = toggleContactSelection;
