@@ -1573,8 +1573,11 @@ function startTour() {
 }
 
 async function checkAuthentication() {
+  console.log('checkAuthentication START');
   try {
     const { data: { session }, error } = await supabaseClient.auth.getSession();
+    
+    console.log('Session:', session);
     
     if (error) {
       console.error('Auth error:', error);
@@ -1582,26 +1585,19 @@ async function checkAuthentication() {
     }
 
     if (session && session.user) {
-      // NEW: Check blacklist
-      const { data: blacklisted } = await supabaseClient
-        .from('email_blacklist')
-        .select('email')
-        .eq('email', session.user.email)
-       .maybeSingle();      
-      if (blacklisted) {
-        // User is blacklisted - sign them out
-        await supabaseClient.auth.signOut();
-        alert('Your account has been terminated. Please contact support if you believe this is an error.');
-        window.location.href = 'login.html';
-        return false;
-      }
-      
       CUSTOMER_ID = session.user.email;
       authToken = session.access_token;
-      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+      
+      const userEmailEl = document.getElementById('userEmail');
+      if (userEmailEl) {
+        userEmailEl.textContent = CUSTOMER_ID;
+      }
+      
+      console.log('Auth successful, CUSTOMER_ID:', CUSTOMER_ID);
       return true;
     }
 
+    console.log('No session found');
     return false;
   } catch (e) {
     console.error('Auth check error:', e);
