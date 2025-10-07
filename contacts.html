@@ -2127,28 +2127,6 @@ async function createSMSForContact(contactId) {
     document.getElementById('callDuration').textContent = '00:00';
     document.getElementById('callNotes').value = '';
     document.getElementById('callModal').style.display = 'block';
-    
-    // Initiate the call
-    const response = await apiCall(ENDPOINTS.makeCall, {
-      contact_id: contactId,
-      phone: contact.phone_number,
-      name: contact.name,
-      user_phone: '+1YOUR_PHONE_NUMBER' // Replace with actual user phone from profile
-    });
-    
-    if (response.call_control_id) {
-      window.callControlId = response.call_control_id;
-      document.getElementById('callStatus').textContent = 'Ringing...';
-    }
-    
-    closeModal(); // Close contact details modal
-  } catch (error) {
-    console.error('Error making call:', error);
-    showStatus('Error making call: ' + error.message, true);
-    closeCallModal();
-  }
-}
-
   
 function editContact(contactId) {
   const contact = allContacts.find(c => 
