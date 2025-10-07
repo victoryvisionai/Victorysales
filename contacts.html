@@ -1710,7 +1710,14 @@ function updateCreditsDisplay() {
   if (generateBtn) {
     generateBtn.disabled = userCredits.credits <= 0;
     if (userCredits.credits <= 0) {
+      generateBtn.textContent = '🚫 No Credits Remaining';
+      generateBtn.style.background = '#6c757d';
+    }
+  }
+}
 
+// Load contacts
+async function loadContacts() {
 // Load contacts
 async function loadContacts() {
   try {
