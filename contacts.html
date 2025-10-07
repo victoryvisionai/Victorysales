@@ -1347,43 +1347,6 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
-
-  <!-- Call Control Modal -->
-<div id="callModal" class="modal">
-  <div class="modal-content" style="max-width: 450px;">
-    <div class="modal-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
-      <h2>📞 Call in Progress</h2>
-      <span class="close" onclick="closeCallModal()">&times;</span>
-    </div>
-    <div class="modal-body" style="text-align: center;">
-      <div style="margin: 20px 0;">
-        <h3 id="callContactName" style="color: #0A3161; margin: 10px 0;">Contact Name</h3>
-        <div id="callStatus" style="font-size: 16px; color: #666; margin: 10px 0;">Connecting...</div>
-        <div id="callDuration" style="font-size: 24px; font-weight: bold; color: #0A3161; margin: 15px 0;">00:00</div>
-      </div>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
-        <button id="muteBtn" onclick="toggleMute()" class="secondary">
-          🎤 Mute
-        </button>
-        <button id="recordBtn" onclick="toggleRecord()" class="secondary">
-          ⏺️ Record
-        </button>
-        <button id="holdBtn" onclick="toggleHold()" class="secondary">
-          ⏸️ Hold
-        </button>
-        <button onclick="hangupCall()" class="danger" style="grid-column: span 2;">
-          📞 Hang Up
-        </button>
-      </div>
-      
-      <div class="form-group">
-        <label for="callNotes">Call Notes</label>
-        <textarea id="callNotes" placeholder="Take notes during the call..." style="min-height: 80px;"></textarea>
-      </div>
-    </div>
-  </div>
-</div>
   
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
@@ -2098,7 +2061,12 @@ async function createSMSForContact(contactId) {
   closeModal(); // Close contact details modal
 }
 
-
+async function makeCallToContact(contactId) {
+  const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
+  if (!contact || !contact.phone_number) {
+    showStatus('No phone number available', true);
+    return;
+  }
   
   try {
     // Store contact info
@@ -2116,6 +2084,14 @@ async function createSMSForContact(contactId) {
     document.getElementById('callDuration').textContent = '00:00';
     document.getElementById('callNotes').value = '';
     document.getElementById('callModal').style.display = 'block';
+    closeModal();
+  } catch (error) {
+    console.error('Error:', error);
+    showStatus('Error initiating call', true);
+  }
+}
+  
+function editContact(contactId) {
   
 function editContact(contactId) {
   const contact = allContacts.find(c => 
@@ -2807,8 +2783,6 @@ document.addEventListener('visibilitychange', async function() {
     }
   }
 });
-
-document.addEventListener('DOMContentLoaded', init);
 
 // SMS Modal Functions
 let currentSMSContact = null;
