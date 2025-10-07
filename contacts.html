@@ -2950,7 +2950,11 @@ function startCallTimer() {
 // WebRTC Client - Global
 let telnyxClient = null;
 let currentCall = null;
-
+let currentCallContact = null;
+let callStartTime = null;
+let callTimer = null;
+let isMuted = false;
+let isOnHold = false;
 // Initialize WebRTC Client
 async function initializeTelnyxWebRTC() {
   if (telnyxClient) return;
