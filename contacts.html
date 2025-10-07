@@ -2745,13 +2745,23 @@ function setupEventListeners() {
 }
 
 async function init() {
+  console.log('========== INIT STARTING ==========');
   try {
+    console.log('Step 1: Calling checkAuthentication...');
     const isAuthenticated = await checkAuthentication();
+    console.log('Step 2: isAuthenticated =', isAuthenticated);
+    console.log('Step 3: CUSTOMER_ID =', CUSTOMER_ID);
+    
     if (isAuthenticated) {
+      console.log('Step 4: Auth SUCCESS - initializing...');
       initializeColumnSelector();
       renderTableHeader();
       setupEventListeners();
-await Promise.all([loadUserData(), loadContacts()]);
+      
+      console.log('Step 5: Loading user data and contacts...');
+      await Promise.all([loadUserData(), loadContacts()]);
+      console.log('Step 6: Data loaded successfully');
+      
       // Initialize WebRTC after user data loads
       if (window.userVVNumber) {
         initializeTelnyxWebRTC().catch(err => console.warn('WebRTC init failed:', err));
@@ -2761,10 +2771,11 @@ await Promise.all([loadUserData(), loadContacts()]);
         setTimeout(() => startTour(), 1000);
       }
     } else {
+      console.log('Step 4: Auth FAILED - redirecting');
       redirectToLogin();
     }
   } catch (error) {
-    console.error('Error initializing:', error);
+    console.error('ERROR in init():', error);
     showStatus('Failed to initialize. Please refresh.', true);
   }
 }
@@ -2796,6 +2807,8 @@ document.addEventListener('visibilitychange', async function() {
     }
   }
 });
+
+document.addEventListener('DOMContentLoaded', init);
 
 // SMS Modal Functions
 let currentSMSContact = null;
