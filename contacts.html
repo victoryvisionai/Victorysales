@@ -1488,16 +1488,6 @@ function sanitizeInput(value) {
     .trim();
 }
 
-// Input sanitization
-function sanitizeInput(value) {
-  if (typeof value !== 'string') return value;
-  return value
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    .replace(/javascript:/gi, '')
-    .replace(/on\w+\s*=/gi, '')
-    .trim();
-}
-
 function formatDateTime(dateString) {
   if (!dateString || dateString === 'null' || dateString === '') return 'Never';
   
@@ -2766,11 +2756,12 @@ async function init() {
       initializeColumnSelector();
       renderTableHeader();
       setupEventListeners();
-      await Promise.all([loadUserData(), loadContacts()]);
-// Initialize WebRTC after user data loads
-if (window.userVVNumber) {
-  initializeTelnyxWebRTC().catch(err => console.warn('WebRTC init failed:', err));
-}
+await Promise.all([loadUserData(), loadContacts()]);
+      // Initialize WebRTC after user data loads
+      if (window.userVVNumber) {
+        initializeTelnyxWebRTC().catch(err => console.warn('WebRTC init failed:', err));
+      }
+      
       if (!hasCompletedTour()) {
         setTimeout(() => startTour(), 1000);
       }
