@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0window.
   <meta name="description" content="Manage your contacts and email workflows."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Contacts</title>
@@ -1275,6 +1275,113 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
   </div>
 </div>
 
+<!-- SMS Modal -->
+<div id="smsModal" class="modal">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h2>💬 Send SMS to <span id="smsContactName"></span></h2>
+      <span class="close" onclick="closeSMSModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="smsMessage">Message</label>
+        <textarea id="smsMessage" placeholder="Type your message or use AI to generate..." style="min-height: 120px;"></textarea>
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 15px;">
+        <div style="display: flex; gap: 10px;">
+          <button onclick="generateAISMS()" class="success" style="background: #17a2b8;">
+            🤖 AI Generate
+          </button>
+          <button id="aiReviseBtn" onclick="reviseAISMS()" class="warning" style="display: none;">
+            ✨ AI Revise
+          </button>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="closeSMSModal()" class="secondary">Cancel</button>
+          <button onclick="sendSMS()" class="success">📤 Send SMS</button>
+        </div>
+      </div>
+      
+      <div id="smsStatus" style="margin-top: 15px; padding: 10px; border-radius: 4px; display: none;"></div>
+    </div>
+  </div>
+</div>
+
+  <!-- Call Control Modal -->
+<div id="callModal" class="modal">
+  <div class="modal-content" style="max-width: 450px;">
+    <div class="modal-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
+      <h2>📞 Call in Progress</h2>
+      <span class="close" onclick="closeCallModal()">&times;</span>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+      <div style="margin: 20px 0;">
+        <h3 id="callContactName" style="color: #0A3161; margin: 10px 0;">Contact Name</h3>
+        <div id="callStatus" style="font-size: 16px; color: #666; margin: 10px 0;">Connecting...</div>
+        <div id="callDuration" style="font-size: 24px; font-weight: bold; color: #0A3161; margin: 15px 0;">00:00</div>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
+        <button id="muteBtn" onclick="toggleMute()" class="secondary">
+          🎤 Mute
+        </button>
+        <button id="recordBtn" onclick="toggleRecord()" class="secondary">
+          ⏺️ Record
+        </button>
+        <button id="holdBtn" onclick="toggleHold()" class="secondary">
+          ⏸️ Hold
+        </button>
+        <button onclick="hangupCall()" class="danger" style="grid-column: span 2;">
+          📞 Hang Up
+        </button>
+      </div>
+      
+      <div class="form-group">
+        <label for="callNotes">Call Notes</label>
+        <textarea id="callNotes" placeholder="Take notes during the call..." style="min-height: 80px;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Call Control Modal -->
+<div id="callModal" class="modal">
+  <div class="modal-content" style="max-width: 450px;">
+    <div class="modal-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
+      <h2>📞 Call in Progress</h2>
+      <span class="close" onclick="closeCallModal()">&times;</span>
+    </div>
+    <div class="modal-body" style="text-align: center;">
+      <div style="margin: 20px 0;">
+        <h3 id="callContactName" style="color: #0A3161; margin: 10px 0;">Contact Name</h3>
+        <div id="callStatus" style="font-size: 16px; color: #666; margin: 10px 0;">Connecting...</div>
+        <div id="callDuration" style="font-size: 24px; font-weight: bold; color: #0A3161; margin: 15px 0;">00:00</div>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
+        <button id="muteBtn" onclick="toggleMute()" class="secondary">
+          🎤 Mute
+        </button>
+        <button id="recordBtn" onclick="toggleRecord()" class="secondary">
+          ⏺️ Record
+        </button>
+        <button id="holdBtn" onclick="toggleHold()" class="secondary">
+          ⏸️ Hold
+        </button>
+        <button onclick="hangupCall()" class="danger" style="grid-column: span 2;">
+          📞 Hang Up
+        </button>
+      </div>
+      
+      <div class="form-group">
+        <label for="callNotes">Call Notes</label>
+        <textarea id="callNotes" placeholder="Take notes during the call..." style="min-height: 80px;"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+  
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -1989,18 +2096,15 @@ async function createSMSForContact(contactId) {
     return;
   }
   
-  try {
-    await apiCall(ENDPOINTS.createSMS, {
-      contact_id: contactId,
-      phone: contact.phone_number,
-      name: contact.name
-    });
-    showStatus('SMS sent successfully!', false);
-    closeModal();
-  } catch (error) {
-    console.error('Error sending SMS:', error);
-    showStatus('Error sending SMS: ' + error.message, true);
-  }
+  // Store contact info for SMS modal
+  window.currentSMSContact = contact;
+  
+  // Show SMS modal
+  document.getElementById('smsContactName').textContent = contact.name || contact.email;
+  document.getElementById('smsMessage').value = '';
+  document.getElementById('aiReviseBtn').style.display = 'none';
+  document.getElementById('smsModal').style.display = 'block';  
+  closeModal(); // Close contact details modal
 }
 
 async function makeCallToContact(contactId) {
@@ -2011,19 +2115,44 @@ async function makeCallToContact(contactId) {
   }
   
   try {
-    await apiCall(ENDPOINTS.makeCall, {
+    // Store contact info
+    window.currentCallContact = contact;
+    window.callStartTime = null;
+    window.callTimer = null;
+    window.callControlId = null;
+    window.isMuted = false;
+    window.isRecording = false;
+    window.isOnHold = false;
+    
+    // Show call modal
+    document.getElementById('callContactName').textContent = contact.name || contact.email;
+    document.getElementById('callStatus').textContent = 'Initiating call...';
+    document.getElementById('callDuration').textContent = '00:00';
+    document.getElementById('callNotes').value = '';
+    document.getElementById('callModal').style.display = 'block';
+    
+    // Initiate the call
+    const response = await apiCall(ENDPOINTS.makeCall, {
       contact_id: contactId,
       phone: contact.phone_number,
-      name: contact.name
+      name: contact.name,
+      user_phone: '+1YOUR_PHONE_NUMBER' // Replace with actual user phone from profile
     });
-    showStatus('Call initiated successfully!', false);
-    closeModal();
+    
+    if (response.call_control_id) {
+      window.callControlId = response.call_control_id;
+      document.getElementById('callStatus').textContent = 'Ringing...';
+    }
+    
+    closeModal(); // Close contact details modal
   } catch (error) {
     console.error('Error making call:', error);
     showStatus('Error making call: ' + error.message, true);
+    closeCallModal();
   }
 }
 
+  
 function editContact(contactId) {
   const contact = allContacts.find(c => 
     c.contact_id === contactId || 
@@ -2699,6 +2828,220 @@ document.addEventListener('visibilitychange', async function() {
   }
 });
 
+// SMS Modal Functions
+let currentSMSContact = null;
+
+function closeSMSModal() {
+  document.getElementById('smsModal').style.display = 'none';
+  document.getElementById('smsMessage').value = '';
+  document.getElementById('aiReviseBtn').style.display = 'none';
+  currentSMSContact = null;
+}
+
+async function generateAISMS() {
+  if (!currentSMSContact) return;
+  
+  const statusDiv = document.getElementById('smsStatus');
+  statusDiv.textContent = 'Generating AI message...';
+  statusDiv.style.display = 'block';
+  statusDiv.style.background = '#d1ecf1';
+  statusDiv.style.color = '#0c5460';
+  
+  try {
+    const response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/sms/ai', {
+      contact_id: currentSMSContact.contact_id || currentSMSContact.id,
+      contact_name: currentSMSContact.name,
+      phone: currentSMSContact.phone_number,
+      contact_info: {
+        title: currentSMSContact.title,
+        company: currentSMSContact.company,
+        industry: currentSMSContact.industry
+      }
+    });
+    
+    document.getElementById('smsMessage').value = response.message || response.sms || '';
+    document.getElementById('aiReviseBtn').style.display = 'inline-block';
+    
+    statusDiv.textContent = 'AI message generated! Edit if needed.';
+    statusDiv.style.background = '#d4edda';
+    statusDiv.style.color = '#155724';
+    
+    setTimeout(() => { statusDiv.style.display = 'none'; }, 3000);
+  } catch (error) {
+    statusDiv.textContent = 'Error generating AI message: ' + error.message;
+    statusDiv.style.background = '#f8d7da';
+    statusDiv.style.color = '#721c24';
+  }
+}
+
+async function reviseAISMS() {
+  await generateAISMS(); // Just regenerate with same logic
+}
+
+async function sendSMS() {
+  if (!currentSMSContact) return;
+  
+  const message = document.getElementById('smsMessage').value.trim();
+  if (!message) {
+    showStatus('Please enter a message or generate one with AI', true);
+    return;
+  }
+  
+  try {
+    await apiCall(ENDPOINTS.createSMS, {
+      contact_id: currentSMSContact.contact_id || currentSMSContact.id,
+      phone: currentSMSContact.phone_number,
+      name: currentSMSContact.name,
+      message: message
+    });
+    
+    showStatus('SMS sent successfully!', false);
+    closeSMSModal();
+  } catch (error) {
+    console.error('Error sending SMS:', error);
+    showStatus('Error sending SMS: ' + error.message, true);
+  }
+}
+
+// Call Control Functions
+let currentCallContact = null;
+let callStartTime = null;
+let callTimer = null;
+let callControlId = null;
+let isMuted = false;
+let isRecording = false;
+let isOnHold = false;
+
+function closeCallModal() {
+  if (callTimer) clearInterval(callTimer);
+  document.getElementById('callModal').style.display = 'none';
+  currentCallContact = null;
+  callStartTime = null;
+  callControlId = null;
+}
+
+function startCallTimer() {
+  if (callTimer) clearInterval(callTimer);
+  callStartTime = Date.now();
+  
+  callTimer = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - callStartTime) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    document.getElementById('callDuration').textContent = 
+      `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }, 1000);
+}
+
+async function toggleMute() {
+  if (!callControlId) return;
+  
+  try {
+    const endpoint = isMuted ? 'unmute' : 'mute';
+    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    isMuted = !isMuted;
+    document.getElementById('muteBtn').textContent = isMuted ? '🔇 Unmute' : '🎤 Mute';
+    document.getElementById('muteBtn').style.background = isMuted ? '#dc3545' : '#6c757d';
+  } catch (error) {
+    console.error('Error toggling mute:', error);
+  }
+}
+
+async function toggleRecord() {
+  if (!callControlId) return;
+  
+  try {
+    const endpoint = isRecording ? 'record_stop' : 'record_start';
+    const body = isRecording ? {} : { format: 'mp3', channels: 'dual' };
+    
+    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    
+    isRecording = !isRecording;
+    document.getElementById('recordBtn').textContent = isRecording ? '⏹️ Stop Recording' : '⏺️ Record';
+    document.getElementById('recordBtn').style.background = isRecording ? '#dc3545' : '#6c757d';
+  } catch (error) {
+    console.error('Error toggling record:', error);
+  }
+}
+
+async function toggleHold() {
+  if (!callControlId) return;
+  
+  try {
+    const endpoint = isOnHold ? 'unhold' : 'hold';
+    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    isOnHold = !isOnHold;
+    document.getElementById('holdBtn').textContent = isOnHold ? '▶️ Resume' : '⏸️ Hold';
+    document.getElementById('callStatus').textContent = isOnHold ? 'On Hold' : 'Connected';
+  } catch (error) {
+    console.error('Error toggling hold:', error);
+  }
+}
+
+async function hangupCall() {
+  if (!callControlId) {
+    closeCallModal();
+    return;
+  }
+  
+  try {
+    await fetch(`https://api.telnyx.com/v2/calls/${callControlId}/actions/hangup`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer KEY01996E12E2BC01A50C82745155B1D94E_oBSl8tUyxKVYx9R5J443lV',
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    // Save call notes if any
+    const notes = document.getElementById('callNotes').value.trim();
+    if (notes && currentCallContact) {
+      await apiCall(ENDPOINTS.updateContact, {
+        contact_id: currentCallContact.contact_id || currentCallContact.id,
+        conversation_summary: notes
+      });
+    }
+    
+    showStatus('Call ended successfully', false);
+    closeCallModal();
+  } catch (error) {
+    console.error('Error hanging up:', error);
+    closeCallModal();
+  }
+}
+
+// Listen for call status updates (you'll need to implement webhook handling)
+// This would come from your Telnyx callback webhook
+function handleCallStatusUpdate(event) {
+  if (event.event_type === 'call.answered') {
+    document.getElementById('callStatus').textContent = 'Connected';
+    startCallTimer();
+  } else if (event.event_type === 'call.hangup') {
+    closeCallModal();
+  }
+}
+  
 window.showContactDetails = showContactDetails;
 window.toggleContactSelection = toggleContactSelection;
 window.sortBy = sortBy;
@@ -2715,7 +3058,16 @@ window.closeCustomCampaignModal = closeCustomCampaignModal;
 window.createMeetingForContact = createMeetingForContact;
 window.createSMSForContact = createSMSForContact;
 window.makeCallToContact = makeCallToContact;
-
+window.closeSMSModal = closeSMSModal;
+window.generateAISMS = generateAISMS;
+window.reviseAISMS = reviseAISMS;
+window.sendSMS = sendSMS;
+window.closeCallModal = closeCallModal;
+window.toggleMute = toggleMute;
+window.toggleRecord = toggleRecord;
+window.toggleHold = toggleHold;
+window.hangupCall = hangupCall;
+window.handleCallStatusUpdate = handleCallStatusUpdate;
 document.addEventListener('DOMContentLoaded', init);
 </script>
 
