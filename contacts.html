@@ -1672,14 +1672,15 @@ async function loadUserData() {
     const userData = Array.isArray(response) ? response[0] : response;
     console.log('User data:', userData);
     
-   userCredits = {
-  credits: userData.credits || 0
-};
-
-// Store user's VV number and Telnyx info
-window.userVVNumber = userData.vvnumber || null;
-window.userConnectionId = userData.number_id || '2797039610767606984';
-window.userWebRTCUsername = userData.email;
+    // Universal credits system
+    userCredits = {
+      credits: userData.credits || 0
+    };
+    
+    // Store user's VV number and Telnyx info
+    window.userVVNumber = userData.vvnumber || null;
+    window.userConnectionId = userData.number_id || null;
+    window.userWebRTCUsername = userData.email; // Use their email as WebRTC username
     
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
@@ -1694,7 +1695,7 @@ window.userWebRTCUsername = userData.email;
   }
 }
 
-function updateCreditsDisplay() {
+  function updateCreditsDisplay() {
   const creditsDisplay = document.getElementById('contactCreditsDisplay');
   const creditsSpan = document.getElementById('contactCredits');
   
