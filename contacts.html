@@ -1587,8 +1587,7 @@ async function checkAuthentication() {
         .from('email_blacklist')
         .select('email')
         .eq('email', session.user.email)
-        .single();
-      
+       .maybeSingle();      
       if (blacklisted) {
         // User is blacklisted - sign them out
         await supabaseClient.auth.signOut();
