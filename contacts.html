@@ -2109,12 +2109,7 @@ async function createSMSForContact(contactId) {
   closeModal(); // Close contact details modal
 }
 
-async function makeCallToContact(contactId) {
-  const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
-  if (!contact || !contact.phone_number) {
-    showStatus('No phone number available for this contact', true);
-    return;
-  }
+
   
   try {
     // Store contact info
