@@ -1627,7 +1627,7 @@ async function loadUserData() {
     // Store user's VV number and Telnyx info
     window.userVVNumber = userData.vvnumber || null;
     window.userConnectionId = userData.number_id || null;
-window.userWebRTCUsername = userData.name ? userData.name.replace(/\s+/g, '') : userData.email;
+window.userWebRTCUsername = userData.name ? userData.name.replace(/[\s,]+/g, '') : userData.email;
     window.userWebRTCPassword = userData.sip_password
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
