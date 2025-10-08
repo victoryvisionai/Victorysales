@@ -2786,9 +2786,10 @@ async function generateAISMS() {
     
     console.log('AI SMS Response:', response);
     
-    // Handle different response formats
-    const aiMessage = response.message || response.sms || response.body || response.text || '';
-    
+ // Handle array response from n8n
+const data = Array.isArray(response) ? response[0] : response;
+const aiMessage = data.message || data.sms || data.body || data.text || '';    
+
     if (!aiMessage) {
       throw new Error('No message returned from AI');
     }
