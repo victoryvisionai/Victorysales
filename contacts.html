@@ -1627,8 +1627,8 @@ async function loadUserData() {
     // Store user's VV number and Telnyx info
     window.userVVNumber = userData.vvnumber || null;
     window.userConnectionId = userData.number_id || null;
-    window.userWebRTCUsername = userData.email; // Use their email as WebRTC username
-    
+window.userWebRTCUsername = userData.name ? userData.name.replace(/\s+/g, '') : userData.email;
+    window.userWebRTCPassword = userData.sip_password
     // Update subscription medallion
     const medallion = document.getElementById('subscriptionMedallion');
     const plan = userData.subscription_plan || 'Bronze';
@@ -2872,18 +2872,20 @@ function startCallTimer() {
 let telnyxClient = null;
 let currentCall = null;
 
-// Initialize WebRTC Client
 async function initializeTelnyxWebRTC() {
   if (telnyxClient) return;
   
-  if (!window.userVVNumber) {
-    console.warn('No VV number assigned to user');
+  if (!window.userVVNumber || !window.userWebRTCPassword) {
+    console.warn('WebRTC not configured for this user');
     return;
   }
   
   try {
     telnyxClient = new TelnyxWebRTC({
-      login_token: await getTelnyxLoginToken()
+      login: window.userWebRTCUsername,
+      password: window.userWebRTCPassword,
+      ringtoneFile: null,
+      ringbackFile: null
     });
     
     telnyxClient.on('telnyx.ready', () => {
@@ -2907,24 +2909,6 @@ async function initializeTelnyxWebRTC() {
     showStatus('Failed to initialize calling: ' + error.message, true);
   }
 }
-
-async function getTelnyxLoginToken() {
-  try {
-    if (!window.userWebRTCUsername) {
-      throw new Error('Calling not enabled for your account');
-    }
-    
-    const response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/webrtc/token', {
-      username: window.userWebRTCUsername,
-      connection_id: window.userConnectionId
-    });
-    return response.login_token;
-  } catch (error) {
-    console.error('Error getting WebRTC token:', error);
-    throw new Error('Failed to get calling credentials');
-  }
-}
-
 function handleCallNotification(notification) {
   console.log('Call notification:', notification);
   if (notification.type === 'callUpdate') {
