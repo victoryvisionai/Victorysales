@@ -2893,9 +2893,9 @@ async function initializeTelnyxWebRTC() {
     });
     
     telnyxClient.on('telnyx.error', (error) => {
-      console.error('Telnyx error:', error);
-      showStatus('WebRTC error: ' + error.message, true);
-    });
+  console.error('Telnyx error FULL DETAILS:', JSON.stringify(error, null, 2));
+  showStatus('WebRTC error: ' + (error.message || JSON.stringify(error)), true);
+});
     
     telnyxClient.on('telnyx.notification', (notification) => {
       handleCallNotification(notification);
