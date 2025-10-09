@@ -1312,8 +1312,9 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
 <!-- Hidden audio element for WebRTC calls -->
 <audio id="remoteAudio" autoplay playsinline></audio>
   <!-- Call Control Modal -->
+<!-- Call Control Modal -->
 <div id="callModal" class="modal">
-  <div class="modal-content" style="max-width: 450px;">
+  <div class="modal-content" style="max-width: 600px;">
     <div class="modal-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
       <h2>📞 Call in Progress</h2>
       <span class="close" onclick="closeCallModal()">&times;</span>
@@ -1325,12 +1326,17 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <div id="callDuration" style="font-size: 24px; font-weight: bold; color: #0A3161; margin: 15px 0;">00:00</div>
       </div>
       
+      <!-- Call Script Section -->
+      <div id="callScriptSection" style="background: #f8f9fa; border: 2px solid #0A3161; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: left; max-height: 200px; overflow-y: auto;">
+        <h4 style="margin: 0 0 10px 0; color: #0A3161; font-size: 14px;">📋 Call Script:</h4>
+        <div id="callScript" style="font-size: 13px; line-height: 1.6; color: #333; white-space: pre-wrap;">
+          Loading script...
+        </div>
+      </div>
+      
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
         <button id="muteBtn" onclick="toggleMute()" class="secondary">
           🎤 Mute
-        </button>
-        <button id="recordBtn" onclick="toggleRecord()" class="secondary">
-          ⏺️ Record
         </button>
         <button id="holdBtn" onclick="toggleHold()" class="secondary">
           ⏸️ Hold
@@ -1346,8 +1352,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       </div>
     </div>
   </div>
-</div>
-  
+</div>  
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -3013,7 +3018,15 @@ function attachRemoteAudio(call) {
     document.getElementById('muteBtn').style.background = '#6c757d';
     document.getElementById('holdBtn').textContent = '⏸️ Hold';
     document.getElementById('callModal').style.display = 'block';
-    
+   const scriptElement = document.getElementById('callScript');
+    if (contact.script && contact.script.trim()) {
+      scriptElement.textContent = contact.script;
+    } else if (contact.call_script_suggestions && contact.call_script_suggestions.trim()) {
+      scriptElement.textContent = contact.call_script_suggestions;
+    } else {
+      scriptElement.textContent = 'No script available for this contact. Use your standard discovery approach.';
+    }
+ 
     // WebRTC call - happens directly in browser, NO API call needed!
     currentCall = telnyxClient.newCall({
       destinationNumber: contact.phone_number,
@@ -3052,10 +3065,6 @@ function toggleMute() {
   } catch (error) {
     console.error('Error toggling mute:', error);
   }
-}
-
-function toggleRecord() {
-  showStatus('Call recording is handled server-side automatically', false);
 }
 
 function toggleHold() {
@@ -3138,7 +3147,6 @@ window.reviseAISMS = reviseAISMS;
 window.sendSMS = sendSMS;
 window.closeCallModal = closeCallModal;
 window.toggleMute = toggleMute;
-window.toggleRecord = toggleRecord;
 window.toggleHold = toggleHold;
 window.hangupCall = hangupCall;
 window.handleCallStatusUpdate = handleCallStatusUpdate;
