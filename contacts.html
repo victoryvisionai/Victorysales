@@ -1309,7 +1309,8 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
-
+<!-- Hidden audio element for WebRTC calls -->
+<audio id="remoteAudio" autoplay playsinline></audio>
   <!-- Call Control Modal -->
 <div id="callModal" class="modal">
   <div class="modal-content" style="max-width: 450px;">
@@ -2912,6 +2913,7 @@ async function initializeTelnyxWebRTC() {
 }
 function handleCallNotification(notification) {
   console.log('Call notification:', notification);
+  
   if (notification.type === 'callUpdate') {
     handleCallUpdate(notification.call);
   } else if (notification.type === 'userMediaError') {
@@ -2922,23 +2924,32 @@ function handleCallNotification(notification) {
 
 function handleCallUpdate(call) {
   const state = call.state;
+  
   switch(state) {
     case 'new':
       document.getElementById('callStatus').textContent = 'Calling...';
       break;
+      
     case 'trying':
       document.getElementById('callStatus').textContent = 'Ringing...';
       break;
+      
     case 'early':
       document.getElementById('callStatus').textContent = 'Connecting...';
       break;
+      
     case 'active':
       document.getElementById('callStatus').textContent = 'Connected';
       startCallTimer();
+      
+      // CRITICAL FIX: Attach remote audio stream
+      attachRemoteAudio(call);
       break;
+      
     case 'held':
       document.getElementById('callStatus').textContent = 'On Hold';
       break;
+      
     case 'hangup':
     case 'destroy':
       handleCallEnded();
@@ -2946,7 +2957,36 @@ function handleCallUpdate(call) {
   }
 }
 
-async function makeCallToContact(contactId) {
+// NEW FUNCTION: Attach remote audio to audio element
+function attachRemoteAudio(call) {
+  try {
+    const audioElement = document.getElementById('remoteAudio');
+    
+    if (!audioElement) {
+      console.error('Remote audio element not found!');
+      return;
+    }
+    
+    // Get the remote stream from the call
+    const remoteStream = call.remoteStream;
+    
+    if (remoteStream) {
+      // Attach stream to audio element
+      audioElement.srcObject = remoteStream;
+      audioElement.play().catch(err => {
+        console.error('Error playing remote audio:', err);
+      });
+      
+      console.log('Remote audio attached successfully');
+    } else {
+      console.warn('No remote stream available yet');
+    }
+  } catch (error) {
+    console.error('Error attaching remote audio:', error);
+  }
+}
+  
+  async function makeCallToContact(contactId) {
   const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
   if (!contact || !contact.phone_number) {
     showStatus('No phone number available', true);
@@ -2981,9 +3021,13 @@ async function makeCallToContact(contactId) {
       audio: true,
       video: false
     });
-    
-    closeModal(); // Close contact details modal
-    
+
+  currentCall.on('stream', () => {
+      console.log('Stream event received');
+      attachRemoteAudio(currentCall);
+    });  
+    closeModal();
+      
   } catch (error) {
     console.error('Error making call:', error);
     showStatus('Error making call: ' + error.message, true);
