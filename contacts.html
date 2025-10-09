@@ -2991,7 +2991,7 @@ function attachRemoteAudio(call) {
   }
 }
   
-  async function makeCallToContact(contactId) {
+async function makeCallToContact(contactId) {
   const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
   if (!contact || !contact.phone_number) {
     showStatus('No phone number available', true);
@@ -3003,6 +3003,11 @@ function attachRemoteAudio(call) {
     return;
   }
   
+  if (!telnyxClient) {
+    showStatus('Phone system not connected. Please refresh the page.', true);
+    return;
+  }
+  
   try {
     await initializeTelnyxWebRTC();
     
@@ -3010,36 +3015,45 @@ function attachRemoteAudio(call) {
     isMuted = false;
     isOnHold = false;
     
+    // Populate modal content
     document.getElementById('callContactName').textContent = contact.name || contact.email;
-    document.getElementById('callStatus').textContent = 'Initializing...';
+    document.getElementById('callStatus').textContent = 'Calling...';
     document.getElementById('callDuration').textContent = '00:00';
     document.getElementById('callNotes').value = '';
     document.getElementById('muteBtn').textContent = '🎤 Mute';
     document.getElementById('muteBtn').style.background = '#6c757d';
     document.getElementById('holdBtn').textContent = '⏸️ Hold';
-    document.getElementById('callModal').style.display = 'block';
-   const scriptElement = document.getElementById('callScript');
-    if (contact.script && contact.script.trim()) {
-      scriptElement.textContent = contact.script;
-    } else if (contact.call_script_suggestions && contact.call_script_suggestions.trim()) {
-      scriptElement.textContent = contact.call_script_suggestions;
+    
+    // Populate call script (if element exists)
+    const scriptElement = document.getElementById('callScript');
+    if (scriptElement) {
+      if (contact.script && contact.script.trim()) {
+        scriptElement.textContent = contact.script;
+      } else if (contact.call_script_suggestions && contact.call_script_suggestions.trim()) {
+        scriptElement.textContent = contact.call_script_suggestions;
+      } else {
+        scriptElement.textContent = 'No script available. Use standard discovery approach.';
+      }
     } else {
-      scriptElement.textContent = 'No script available for this contact. Use your standard discovery approach.';
+      console.warn('callScript element not found in modal');
     }
- 
-    // WebRTC call - happens directly in browser, NO API call needed!
+    
+    // Show the call modal
+    document.getElementById('callModal').style.display = 'block';
+    
+    // Make the call (this already works!)
     currentCall = telnyxClient.newCall({
       destinationNumber: contact.phone_number,
       callerNumber: window.userVVNumber,
       audio: true,
       video: false
     });
-
-  currentCall.on('stream', () => {
-      console.log('Stream event received');
-      attachRemoteAudio(currentCall);
-    });  
-    closeModal();
+    
+    // Close contact details modal
+    const contactModal = document.getElementById('contactModal');
+    if (contactModal) {
+      contactModal.style.display = 'none';
+    }
       
   } catch (error) {
     console.error('Error making call:', error);
@@ -3047,7 +3061,6 @@ function attachRemoteAudio(call) {
     closeCallModal();
   }
 }
-
 function toggleMute() {
   if (!currentCall) return;
   try {
