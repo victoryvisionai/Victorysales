@@ -1199,7 +1199,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
   </div>
 </div>
 
-<!-- NEW: Custom Email Campaign Modal -->
+<!-- Custom Email Campaign Modal -->
 <div id="customCampaignModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
@@ -1230,7 +1230,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
                    style="min-height: 120px;"></textarea>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
           <div class="form-group">
             <label for="emailCount">
               Number of Emails in Sequence *
@@ -1266,8 +1266,27 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
               <option value="formal">Formal</option>
             </select>
           </div>
+          
+          <!-- NEW: Schedule Start Date -->
+          <div class="form-group">
+            <label for="scheduleStartDate">
+              Start Date *
+              <span class="help-icon">❓
+                <span class="help-tooltip">When should this campaign begin sending? Default is immediately.</span>
+              </span>
+            </label>
+            <input type="datetime-local" id="scheduleStartDate" name="scheduleStartDate" required>
+          </div>
         </div>
         
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" onclick="closeCustomCampaignModal()" class="secondary">Cancel</button>
+          <button type="submit" class="success" style="background: #fd7e14;">✨ Create Campaign</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>        
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
           <button type="button" onclick="closeCustomCampaignModal()" class="secondary">Cancel</button>
           <button type="submit" class="success" style="background: #fd7e14;">✨ Create Campaign</button>
@@ -1777,6 +1796,10 @@ async function generateNewContacts() {
 // NEW: Custom Email Campaign Functions
 function showCustomCampaignModal() {
   document.getElementById('customCampaignModal').style.display = 'block';
+// Set default start date to now
+  const now = new Date();
+  now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Adjust for timezone
+  document.getElementById('scheduleStartDate').value = now.toISOString().slice(0, 16);
 }
 
 function closeCustomCampaignModal() {
@@ -1799,7 +1822,6 @@ function closeAddContactModal() {
   document.querySelector('#addContactModal button[type="submit"]').textContent = '➕ Add Contact';
 }
 
-// Handle form submission for both add and update
 async function handleContactForm(formData, isUpdate = false, contactId = null) {
   try {
     const contactData = {};
@@ -1820,7 +1842,10 @@ async function handleContactForm(formData, isUpdate = false, contactId = null) {
 
     console.log('Contact data being sent:', contactData);
 
+    // FIX: Use correct endpoint
     const endpoint = isUpdate ? ENDPOINTS.updateContact : ENDPOINTS.addContact;
+    console.log('Using endpoint:', endpoint); // Debug log
+    
     const result = await apiCall(endpoint, contactData);
 
     if (result.success !== false) {
@@ -2035,7 +2060,7 @@ async function createMeetingForContact(contactId) {
   if (!contact) return;
   
   try {
-    await apiCall(ENDPOINTS.createMeeting, {
+    await apiCall(ENDPOINTS.enrollMeeting, { 
       contact_id: contactId,
       email: contact.email,
       name: contact.name
@@ -2047,7 +2072,6 @@ async function createMeetingForContact(contactId) {
     showStatus('Error creating meeting: ' + error.message, true);
   }
 }
-
 async function createSMSForContact(contactId) {
   const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
   if (!contact || !contact.phone_number) {
@@ -2642,30 +2666,32 @@ function setupEventListeners() {
       await handleContactForm(formData, false);
     }
   });
-  document.getElementById('customCampaignForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (selectedContacts.size === 0) {
-      showStatus('Please select contacts to send the campaign to', true);
-      return;
-    }
-    const formData = new FormData(e.target);
-    const campaignData = {
-      campaign_name: formData.get('campaignName'),
-      description: formData.get('campaignDescription'),
-      email_count: parseInt(formData.get('emailCount')),
-      tone: formData.get('emailTone'),
-      selected_contacts: Array.from(selectedContacts)
-    };
-    try {
-      await apiCall(ENDPOINTS.customEmailCampaign, campaignData);
-      showStatus(`Custom email campaign "${campaignData.campaign_name}" created successfully!`, false);
-      closeCustomCampaignModal();
-      selectedContacts.clear();
-      updateSelectedCount();
-    } catch (error) {
-      showStatus('Error creating campaign: ' + error.message, true);
-    }
-  });
+document.getElementById('customCampaignForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (selectedContacts.size === 0) {
+    showStatus('Please select contacts to send the campaign to', true);
+    return;
+  }
+  const formData = new FormData(e.target);
+  const campaignData = {
+    campaign_name: formData.get('campaignName'),
+    description: formData.get('campaignDescription'),
+    email_count: parseInt(formData.get('emailCount')),
+    tone: formData.get('emailTone'),
+    schedule_start_date: formData.get('scheduleStartDate'), // ✅ ADD THIS
+    selected_contacts: Array.from(selectedContacts)
+  };
+  try {
+    await apiCall(ENDPOINTS.customEmailCampaign, campaignData);
+    showStatus(`Custom email campaign "${campaignData.campaign_name}" scheduled successfully!`, false);
+    closeCustomCampaignModal();
+    selectedContacts.clear();
+    updateSelectedCount();
+  } catch (error) {
+    showStatus('Error creating campaign: ' + error.message, true);
+  }
+});
+  
   document.getElementById('refreshBtn').addEventListener('click', loadContacts);
   document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
   document.getElementById('selectAllBtn').addEventListener('click', selectAll);
@@ -2829,22 +2855,35 @@ async function sendSMS() {
     return;
   }
   
+  // Show immediate feedback
+  const statusDiv = document.getElementById('smsStatus');
+  statusDiv.textContent = 'Sending SMS...';
+  statusDiv.style.display = 'block';
+  statusDiv.style.background = '#d1ecf1';
+  statusDiv.style.color = '#0c5460';
+  
   try {
-    await apiCall(ENDPOINTS.createSMS, {
+    // Don't await - send and close immediately
+    apiCall(ENDPOINTS.createSMS, {
       contact_id: currentSMSContact.contact_id || currentSMSContact.id,
       phone: currentSMSContact.phone_number,
       name: currentSMSContact.name,
       message: message
+    }).then(() => {
+      console.log('SMS sent successfully');
+    }).catch(err => {
+      console.error('SMS send error:', err);
     });
     
-    showStatus('SMS sent successfully!', false);
+    // Close modal immediately - don't wait for response
+    showStatus('SMS sending...', false);
     closeSMSModal();
+    
   } catch (error) {
     console.error('Error sending SMS:', error);
     showStatus('Error sending SMS: ' + error.message, true);
   }
 }
-
 // Call Control Functions
 let currentCallContact = null;
 let callStartTime = null;
