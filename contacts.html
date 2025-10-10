@@ -1345,55 +1345,70 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
 </div>
 <!-- Hidden audio element for WebRTC calls -->
 <audio id="remoteAudio" autoplay playsinline></audio>
-  <!-- Call Control Modal -->
 <!-- Call Control Modal -->
 <div id="callModal" class="modal">
-  <div class="modal-content" style="max-width: 600px;">
+  <div class="modal-content" style="max-width: 700px; max-height: 90vh; overflow-y: auto;">
     <div class="modal-header" style="background: linear-gradient(135deg, #28a745, #20c997);">
       <h2>📞 Call in Progress</h2>
       <span class="close" onclick="closeCallModal()">&times;</span>
     </div>
-    <div class="modal-body" style="text-align: center;">
-      <div style="margin: 20px 0;">
-        <h3 id="callContactName" style="color: #0A3161; margin: 10px 0;">Contact Name</h3>
-        <div id="callStatus" style="font-size: 16px; color: #666; margin: 10px 0;">Connecting...</div>
-        <div id="callDuration" style="font-size: 24px; font-weight: bold; color: #0A3161; margin: 15px 0;">00:00</div>
+    <div class="modal-body">
+      
+      <!-- Contact Info & Status -->
+      <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #e9ecef;">
+        <h3 id="callContactName" style="color: #0A3161; margin: 5px 0;">Contact Name</h3>
+        <div id="callStatus" style="font-size: 16px; color: #666; margin: 8px 0;">Connecting...</div>
+        <div id="callDuration" style="font-size: 28px; font-weight: bold; color: #0A3161; margin: 10px 0;">00:00</div>
       </div>
       
       <!-- Call Script Section -->
-      <div id="callScriptSection" style="background: #f8f9fa; border: 2px solid #0A3161; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: left; max-height: 200px; overflow-y: auto;">
-        <h4 style="margin: 0 0 10px 0; color: #0A3161; font-size: 14px;">📋 Call Script:</h4>
-        <div id="callScript" style="font-size: 13px; line-height: 1.6; color: #333; white-space: pre-wrap;">
+      <div id="callScriptSection" style="background: #f8f9fa; border: 2px solid #0A3161; border-radius: 8px; padding: 20px; margin: 25px 0;">
+        <h4 style="margin: 0 0 15px 0; color: #0A3161; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+          📋 Call Script
+        </h4>
+        <div id="callScript" style="font-size: 14px; line-height: 1.8; color: #333; white-space: pre-wrap;">
           Loading script...
         </div>
-         <button id="skipWaitBtn" onclick="skipScriptWait()" 
-          style="display: none; margin-top: 10px; width: 100%;" 
-          class="secondary">
-    ⏭️ Start Call Now (Skip Wait)
-  </button>
-</div>
+        
+        <!-- Skip Wait Button -->
+        <button id="skipWaitBtn" onclick="skipScriptWait()" 
+                style="display: none; margin-top: 15px; width: 100%; padding: 10px;" 
+                class="secondary">
+          ⏭️ Start Call Now (Skip Wait)
+        </button>
       </div>
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
-        <button id="muteBtn" onclick="toggleMute()" class="secondary">
+      <!-- Call Controls -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;">
+        <button id="muteBtn" onclick="toggleMute()" class="secondary" style="padding: 12px; font-size: 15px;">
           🎤 Mute
         </button>
-        <button id="holdBtn" onclick="toggleHold()" class="secondary">
+        <button id="holdBtn" onclick="toggleHold()" class="secondary" style="padding: 12px; font-size: 15px;">
           ⏸️ Hold
         </button>
-        <button onclick="hangupCall()" class="danger" style="grid-column: span 2;">
+        <button onclick="hangupCall()" class="danger" style="grid-column: span 2; padding: 15px; font-size: 16px;">
           📞 Hang Up
         </button>
       </div>
       
-      <div class="form-group">
-        <label for="callNotes">Call Notes</label>
-        <textarea id="callNotes" placeholder="Take notes during the call..." style="min-height: 80px;"></textarea>
+      <!-- Call Notes -->
+      <div class="form-group" style="margin-top: 25px;">
+        <label for="callNotes" style="font-size: 16px; font-weight: 600; margin-bottom: 10px; display: block;">
+          📝 Call Notes
+        </label>
+        <textarea id="callNotes" 
+                  placeholder="Take notes during the call..." 
+                  style="min-height: 120px; font-size: 14px; line-height: 1.6; padding: 12px;"></textarea>
+        <div style="font-size: 12px; color: #666; margin-top: 5px;">
+          💡 Tip: Note key points, objections, and next steps
+        </div>
       </div>
+      
     </div>
   </div>
-</div>  
-<footer>
+</div>
+  
+  <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
     <a href="privacy.html">Privacy Policy</a>
