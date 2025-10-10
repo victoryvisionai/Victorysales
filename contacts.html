@@ -198,6 +198,21 @@ telnyxtrtc<!DOCTYPE html>
       cursor: not-allowed;
       transform: none;
     }
+   /* Loading spinner for script generation */
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #0A3161;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
     .add-contact-section {
       display: flex;
       gap: 15px;
@@ -1351,6 +1366,12 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <div id="callScript" style="font-size: 13px; line-height: 1.6; color: #333; white-space: pre-wrap;">
           Loading script...
         </div>
+         <button id="skipWaitBtn" onclick="skipScriptWait()" 
+          style="display: none; margin-top: 10px; width: 100%;" 
+          class="secondary">
+    ⏭️ Start Call Now (Skip Wait)
+  </button>
+</div>
       </div>
       
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
@@ -3029,8 +3050,7 @@ function attachRemoteAudio(call) {
     console.error('Error attaching remote audio:', error);
   }
 }
-  
-async function makeCallToContact(contactId) {
+  async function makeCallToContact(contactId) {
   const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
   if (!contact || !contact.phone_number) {
     showStatus('No phone number available', true);
@@ -3048,24 +3068,53 @@ async function makeCallToContact(contactId) {
   }
   
   try {
-    await initializeTelnyxWebRTC();
-    
+    // STEP 1: Show modal with "Preparing..." message
     currentCallContact = contact;
     isMuted = false;
     isOnHold = false;
     
-    // Populate modal content
     document.getElementById('callContactName').textContent = contact.name || contact.email;
-    document.getElementById('callStatus').textContent = 'Calling...';
+    document.getElementById('callStatus').textContent = '🔄 Preparing Call Script...';
     document.getElementById('callDuration').textContent = '00:00';
     document.getElementById('callNotes').value = '';
     document.getElementById('muteBtn').textContent = '🎤 Mute';
     document.getElementById('muteBtn').style.background = '#6c757d';
     document.getElementById('holdBtn').textContent = '⏸️ Hold';
     
-    // Populate call script (if element exists)
+    // Show "Generating script..." in script section
     const scriptElement = document.getElementById('callScript');
     if (scriptElement) {
+      scriptElement.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="spinner"></div><br>Generating AI call script...</div>';
+    }
+    
+    // Show modal
+    document.getElementById('callModal').style.display = 'block';
+    
+    // Close contact details modal
+    const contactModal = document.getElementById('contactModal');
+    if (contactModal) {
+      contactModal.style.display = 'none';
+    }
+    
+    // STEP 2: Fire webhook to generate script
+    showStatus('Generating call script...', false);
+    
+    const scriptResponse = await fetch('https://victoryvision.app.n8n.cloud/webhook/call/script', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contact_id: contactId,
+        customer_id: window.userData.email
+      })
+    });
+    
+    const scriptData = await scriptResponse.json();
+    
+    // STEP 3: Update script in modal
+    if (scriptData.success && scriptElement) {
+      scriptElement.textContent = scriptData.script;
+    } else if (scriptElement) {
+      // Fallback to existing script
       if (contact.script && contact.script.trim()) {
         scriptElement.textContent = contact.script;
       } else if (contact.call_script_suggestions && contact.call_script_suggestions.trim()) {
@@ -3073,20 +3122,59 @@ async function makeCallToContact(contactId) {
       } else {
         scriptElement.textContent = 'No script available. Use standard discovery approach.';
       }
-    } else {
-      console.warn('callScript element not found in modal');
     }
     
-    // Show the call modal
-    document.getElementById('callModal').style.display = 'block';
+    // STEP 4: Wait 10 seconds (give rep time to review)
+    // Replace the countdown section with:
+document.getElementById('callStatus').textContent = '📖 Review script - Call starting soon...';
+document.getElementById('skipWaitBtn').style.display = 'block'; // Show skip button
+skipWait = false; // Reset
+
+let countdown = 10;
+currentCountdownInterval = setInterval(() => {
+  if (skipWait) {
+    clearInterval(currentCountdownInterval);
+    return;
+  }
+  
+  countdown--;
+  document.getElementById('callStatus').textContent = `📖 Review script - Starting in ${countdown}s...`;
+  
+  if (countdown <= 0) {
+    clearInterval(currentCountdownInterval);
+    document.getElementById('skipWaitBtn').style.display = 'none';
+  }
+}, 1000);
+
+await new Promise(resolve => {
+  const checkSkip = setInterval(() => {
+    if (skipWait || countdown <= 0) {
+      clearInterval(checkSkip);
+      resolve();
+    }
+  }, 100);
+});
     
-    // Make the call (this already works!)
+    // STEP 5: Initialize Telnyx and make the call
+    await initializeTelnyxWebRTC();
+    
+    document.getElementById('callStatus').textContent = 'Calling...';
+    
     currentCall = telnyxClient.newCall({
       destinationNumber: contact.phone_number,
       callerNumber: window.userVVNumber,
       audio: true,
       video: false
     });
+    
+    console.log('Call initiated successfully');
+      
+  } catch (error) {
+    console.error('Error making call:', error);
+    showStatus('Error making call: ' + error.message, true);
+    closeCallModal();
+  }
+}
     
     // Close contact details modal
     const contactModal = document.getElementById('contactModal');
@@ -3100,6 +3188,24 @@ async function makeCallToContact(contactId) {
     closeCallModal();
   }
 }
+// Skip wait variables and function
+let skipWait = false;
+let currentCountdownInterval = null;
+
+function skipScriptWait() {
+  skipWait = true;
+  if (currentCountdownInterval) {
+    clearInterval(currentCountdownInterval);
+  }
+  document.getElementById('skipWaitBtn').style.display = 'none';
+  document.getElementById('callStatus').textContent = 'Calling...';
+}
+
+// Existing toggleMute function starts here
+function toggleMute() {
+  if (!currentCall) return;
+  ...
+  
 function toggleMute() {
   if (!currentCall) return;
   try {
@@ -3138,6 +3244,7 @@ function toggleHold() {
   }
 }
 
+  
 async function hangupCall() {
   if (!currentCall) {
     closeCallModal();
