@@ -1425,7 +1425,9 @@ const ENDPOINTS = {
   customEmailCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/usergenerated',
   createPresentation: 'https://victoryvision.app.n8n.cloud/webhook/presentations/create',
   createSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/create',
-  makeCall: 'https://victoryvision.app.n8n.cloud/webhook/call/make'
+  makeCall: 'https://victoryvision.app.n8n.cloud/webhook/call/make',
+  generateScript: 'https://victoryvision.app.n8n.cloud/webhook/call/script'
+
 };
 
 // Global variables
@@ -3099,7 +3101,7 @@ function attachRemoteAudio(call) {
     // STEP 2: Fire webhook to generate script
     showStatus('Generating call script...', false);
     
-    const scriptResponse = await fetch('https://victoryvision.app.n8n.cloud/webhook/call/script', {
+    const scriptResponse = await fetch(ENDPOINTS.generateScript, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
