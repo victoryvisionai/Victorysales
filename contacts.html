@@ -3163,8 +3163,20 @@ function attachRemoteAudio(call) {
     
     const scriptData = await scriptResponse.json();
     
-    // STEP 3: Update script in modal
-    if (scriptData.success && scriptElement) {
+// STEP 3: Update script in modal
+if (scriptData.success && scriptElement) {
+  // Add formatting in frontend since we stripped it all
+  let formattedScript = scriptData.script
+    // Split into sections and add structure
+    .replace(/OPENING:/gi, '\n\n📞 OPENING:\n')
+    .replace(/KEY TALKING POINTS:/gi, '\n\n💡 KEY TALKING POINTS:\n')
+    .replace(/CLOSING QUESTION:/gi, '\n\n🎯 CLOSING QUESTION:\n')
+    .replace(/CLOSING:/gi, '\n\n🎯 CLOSING:\n')
+    // Add bullets
+    .replace(/- /g, '\n  • ')
+    // Clean up
+    .trim();
+
       scriptElement.textContent = scriptData.script;
     } else if (scriptElement) {
       // Fallback to existing script
