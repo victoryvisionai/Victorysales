@@ -769,7 +769,7 @@
     </button>
     <div id="subscriptionMedallion" class="subscription-medallion bronze">
       <span class="plan-name">Bronze</span>
-      <span class="credits" id="contactCredits">20 contacts</span>
+      <span class="credits" id="Credits">20 contacts</span>
     </div>
   </div>
 </header>
@@ -786,7 +786,7 @@
     </div>
     
     <div class="credits-display">
-      <div class="credits-number" id="contactCreditsDisplay">Loading...</div>
+      <div class="credits-number" id="CreditsDisplay">Loading...</div>
       <div class="credits-label">Contact Credits Remaining</div>
     </div>
     
@@ -1484,7 +1484,7 @@ const ENDPOINTS = {
 // Global variables
 let CUSTOMER_ID = null;
 let authToken = null;
-let userCredits = { credits: 0, video_credits: 0 };
+let userCredits = { credits: 0 };
 let allContacts = [];
 let filteredContacts = [];
 let selectedContacts = new Set();
@@ -1742,8 +1742,8 @@ window.userWebRTCUsername = userData.name ? userData.name.replace(/[\s,]+/g, '')
 }
 
   function updateCreditsDisplay() {
-  const creditsDisplay = document.getElementById('contactCreditsDisplay');
-  const creditsSpan = document.getElementById('contactCredits');
+  const creditsDisplay = document.getElementById('CreditsDisplay');
+  const creditsSpan = document.getElementById('Credits');
   
   if (creditsDisplay) {
     creditsDisplay.textContent = userCredits.credits;
