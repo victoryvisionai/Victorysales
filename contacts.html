@@ -2170,9 +2170,10 @@ function editContact(contactId) {
     c.email === contactId
   );
   if (!contact) return;
-  
-  closeModal();
-  
+ const contactDetailsModal = document.getElementById('contactModal');
+  if (contactDetailsModal) {
+    contactDetailsModal.style.display = 'none';
+  }  
   const modal = document.getElementById('addContactModal');
   const form = document.getElementById('addContactForm');
   
