@@ -945,7 +945,7 @@
         <!-- Create Image Form -->
         <div id="createImageForm" class="creation-form active">
           <div class="credits-display">
-            <div class="credits-number" id="imageCredits">Loading...</div>
+            <div class="credits-number" id="Credits">Loading...</div>
             <div class="credits-label">Image Credits Remaining</div>
           </div>
           
@@ -974,7 +974,7 @@
         <!-- Create Video Form -->
         <div id="createVideoForm" class="creation-form">
           <div class="credits-display">
-            <div class="credits-number" id="videoCredits">Loading...</div>
+            <div class="credits-number" id="Credits">Loading...</div>
             <div class="credits-label">Video Credits Remaining</div>
           </div>
           
@@ -1004,7 +1004,7 @@
         <!-- Create Presentation Form -->
         <div id="createPresentationForm" class="creation-form">
           <div class="credits-display">
-            <div class="credits-number" id="presentationCredits">Loading...</div>
+            <div class="credits-number" id="Credits">Loading...</div>
             <div class="credits-label">Presentation Credits Remaining</div>
           </div>
           
@@ -1208,7 +1208,7 @@
   
   let CUSTOMER_ID = null;
   let authToken = null;
-  let userCredits = { image_credits: 0, video_credits: 0, presentation_credits: 0 };
+  let userCredits = { credits: 0 };
 
   // State management
   let allMediaFiles = [];
@@ -1519,18 +1519,9 @@
   // Update credits display
   function updateCreditsDisplay() {
     console.log('updateCreditsDisplay called with:', userCredits);
-    const imageCreditsElement = document.getElementById('imageCredits');
-    const videoCreditsElement = document.getElementById('videoCredits');
-    const presentationCreditsElement = document.getElementById('presentationCredits');
-    
-    if (imageCreditsElement) {
-      imageCreditsElement.textContent = userCredits.image_credits;
-    }
-    if (videoCreditsElement) {
-      videoCreditsElement.textContent = userCredits.video_credits;
-    }
-    if (presentationCreditsElement) {
-      presentationCreditsElement.textContent = userCredits.image_credits || 0;
+    const CreditsElement = document.getElementById('Credits');
+    if (CreditsElement) {
+      CreditsElement.textContent = userCredits.credits || 0;
     }
     
     // Enable/disable buttons based on credits
@@ -1539,13 +1530,13 @@
     const presentationBtn = document.getElementById('presentationCreateBtn');
     
     if (imageBtn) {
-      imageBtn.disabled = userCredits.image_credits <= 0;
+      imageBtn.disabled = userCredits.credits <= 0;
     }
     if (videoBtn) {
-      videoBtn.disabled = userCredits.video_credits <= 0;
+      videoBtn.disabled = userCredits.credits <= 0;
     }
     if (presentationBtn) {
-      presentationBtn.disabled = (userCredits.image_credits || 0) <= 0;
+      presentationBtn.disabled = (userCredits.credits || 0) <= 0;
     }
   }
 
@@ -1558,9 +1549,7 @@
       console.log('User data (first element):', userData);
       
       userCredits = {
-        image_credits: userData.image_credits || 0,
-        video_credits: userData.video_credits || 0,
-        presentation_credits: userData.image_credits || 0
+        credits: userData.credits || 0
       };
       
       console.log('userCredits after assignment:', userCredits);
@@ -1773,7 +1762,7 @@
   // Create image
   async function createImage(formData) {
     try {
-      if (userCredits.image_credits <= 0) {
+      if (userCredits.credits <= 0) {
         throw new Error('Insufficient image credits');
       }
 
@@ -1799,7 +1788,7 @@ document.getElementById('imageUpload').value = '';
         hideProcessing();
         showStatus('Image created successfully!');
         document.getElementById('imageForm').reset();
-        userCredits.image_credits--;
+        userCredits.credits--;
         updateCreditsDisplay();
         await loadMediaFiles();
         applyFilters();
@@ -1823,7 +1812,7 @@ document.getElementById('imageUpload').value = '';
   // Create video
   async function createVideo(formData) {
     try {
-      if (userCredits.video_credits <= 0) {
+      if (userCredits.credits <= 0) {
         throw new Error('Insufficient video credits');
       }
 
@@ -1851,7 +1840,7 @@ document.getElementById('imageUpload').value = '';
         hideProcessing();
         showStatus('Video creation started! It will appear in your media library when ready.');
         document.getElementById('videoForm').reset();
-        userCredits.video_credits--;
+        userCredits.credits--;
         updateCreditsDisplay();
         selectedVideoReference = null;
         populateReferenceLists();
@@ -1869,7 +1858,7 @@ document.getElementById('imageUpload').value = '';
   // Create presentation
   async function createPresentation(formData) {
     try {
-      if ((userCredits.presentation_credits || 0) <= 0) {
+      if ((userCredits.credits || 0) <= 0) {
         throw new Error('Insufficient presentation credits');
       }
 
@@ -1908,7 +1897,7 @@ document.getElementById('imageUpload').value = '';
         hideProcessing();
         showStatus('Presentation created successfully!');
         document.getElementById('presentationForm').reset();
-        userCredits.presentation_credits = (userCredits.presentation_credits || 0) - 1;
+        userCredits.credits = (userCredits.credits || 0) - 1;
         updateCreditsDisplay();
         await loadMediaFiles();
         applyFilters();
