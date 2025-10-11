@@ -2150,200 +2150,168 @@ document.getElementById('campaignImageSelect').value = '';
       </div>`;
     }
   }
-// Modal functions with edit capability
-function openModal(fileId) {
-  const file = allMediaFiles.find(f => f.id === fileId);
-  if (!file) return;
 
-  const modal = document.getElementById('mediaModal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalBody = document.getElementById('modalBody');
-  
-  modalTitle.textContent = file.name || 'Untitled';
-  
-  const fileType = getFileType(file.file_type);
-  let mediaPreview = '';
-  
-  if (fileType === 'video') {
-    mediaPreview = `<video controls class="modal-video"><source src="${file.URL}" type="${file.mime_type}"></video>`;
-  } else if (fileType === 'presentation') {
-    mediaPreview = `<div style="display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: #666; font-size: 48px; height: 300px; border-radius: 8px;">📊</div>`;
-  } else {
-    mediaPreview = `<img src="${file.URL}" alt="${file.name}" class="modal-image">`;
-  }
-  
-  modalBody.innerHTML = `
-    ${mediaPreview}
+  // Modal functions with edit capability
+  function openModal(fileId) {
+    const file = allMediaFiles.find(f => f.id === fileId);
+    if (!file) return;
+
+    const modal = document.getElementById('mediaModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
     
-    <!-- View Mode (visible by default) -->
-    <div id="viewMode" style="display: block;">
-      <div class="modal-field">
-        <div class="modal-label">Name:</div>
-        <div class="modal-value" id="displayName">${file.name || 'N/A'}</div>
-      </div>
+    modalTitle.textContent = file.name || 'Untitled';
+    
+    const fileType = getFileType(file.file_type);
+    let mediaPreview = '';
+    
+    if (fileType === 'video') {
+      mediaPreview = `<video controls class="modal-video"><source src="${file.URL}" type="${file.mime_type}"></video>`;
+    } else if (fileType === 'presentation') {
+      mediaPreview = `<div style="display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: #666; font-size: 48px; height: 300px; border-radius: 8px;">📊</div>`;
+    } else {
+      mediaPreview = `<img src="${file.URL}" alt="${file.name}" class="modal-image">`;
+    }
+    
+    modalBody.innerHTML = `
+      ${mediaPreview}
       
-      <div class="modal-field">
-        <div class="modal-label">Campaign Name:</div>
-        <div class="modal-value" id="displayCampaignName">${file.campaign_name || 'N/A'}</div>
-      </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">URL:</div>
-        <div class="modal-value">
-          <span class="modal-link" onclick="window.open('${file.URL}', '_blank')">${file.URL}</span>
+      <!-- View Mode -->
+      <div id="viewMode" class="view-mode">
+        <div class="modal-field">
+          <div class="modal-label">Name:</div>
+          <div class="modal-value" id="displayName">${file.name || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">Campaign Name:</div>
+          <div class="modal-value" id="displayCampaignName">${file.campaign_name || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">URL:</div>
+          <div class="modal-value">
+            <span class="modal-link" onclick="window.open('${file.URL}', '_blank')">${file.URL}</span>
+          </div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">File Type:</div>
+          <div class="modal-value">${file.file_type || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">File Size:</div>
+          <div class="modal-value">${file.file_size || 'N/A'}</div>
+        </div>
+        
+        <div class="modal-field">
+          <div class="modal-label">Prompt:</div>
+          <div class="modal-value">${file.prompt || 'N/A'}</div>
         </div>
       </div>
       
-      <div class="modal-field">
-        <div class="modal-label">File Type:</div>
-        <div class="modal-value">${file.file_type || 'N/A'}</div>
+      <!-- Edit Mode -->
+      <div id="editMode" class="edit-mode">
+        <div class="modal-edit-field">
+          <label for="editName">Name:</label>
+          <input type="text" id="editName" value="${file.name || ''}" maxlength="100">
+        </div>
+        
+        <div class="modal-edit-field">
+          <label for="editCampaignName">Campaign Name:</label>
+          <input type="text" id="editCampaignName" value="${file.campaign_name || ''}" maxlength="100">
+        </div>
+        
+        <div class="modal-edit-field">
+          <label for="editPrompt">Prompt/Description:</label>
+          <textarea id="editPrompt" rows="4" maxlength="500">${file.prompt || ''}</textarea>
+        </div>
       </div>
       
-      <div class="modal-field">
-        <div class="modal-label">File Size:</div>
-        <div class="modal-value">${file.file_size || 'N/A'}</div>
+      <div class="modal-actions">
+        <button id="editBtn" onclick="toggleEditMode()">📝 Edit</button>
+        <button id="saveBtn" onclick="saveFileChanges('${file.id}')" style="display: none; background: #28a745;">💾 Save</button>
+        <button id="cancelBtn" onclick="cancelEdit()" style="display: none; background: #6c757d;">❌ Cancel</button>
+        <button onclick="downloadFile('${file.URL}', '${file.name}')" style="background: #17a2b8;">📥 Download</button>
+        <button onclick="deleteFile('${file.id}', '${fileType}')" style="background: #dc3545;">🗑️ Delete</button>
       </div>
-      
-      <div class="modal-field">
-        <div class="modal-label">Prompt:</div>
-        <div class="modal-value">${file.prompt || 'N/A'}</div>
-      </div>
-    </div>
+    `;
     
-    <!-- Edit Mode (hidden by default) -->
-    <div id="editMode" style="display: none;">
-      <div class="modal-edit-field">
-        <label for="editName">Name:</label>
-        <input type="text" id="editName" value="${escapeHtml(file.name || '')}" maxlength="100">
-      </div>
-      
-      <div class="modal-edit-field">
-        <label for="editCampaignName">Campaign Name:</label>
-        <input type="text" id="editCampaignName" value="${escapeHtml(file.campaign_name || '')}" maxlength="100">
-      </div>
-      
-      <div class="modal-edit-field">
-        <label for="editPrompt">Prompt/Description:</label>
-        <textarea id="editPrompt" rows="4" maxlength="500">${escapeHtml(file.prompt || '')}</textarea>
-      </div>
-    </div>
-    
-    <div class="modal-actions">
-      <button id="editBtn" onclick="toggleEditMode()">📝 Edit</button>
-      <button id="saveBtn" onclick="saveFileChanges('${file.id}')" style="display: none; background: #28a745;">💾 Save</button>
-      <button id="cancelBtn" onclick="cancelEdit()" style="display: none; background: #6c757d;">❌ Cancel</button>
-      <button onclick="downloadFile('${escapeHtml(file.URL)}', '${escapeHtml(file.name)}')" style="background: #17a2b8;">📥 Download</button>
-      <button onclick="deleteFile('${file.id}', '${fileType}')" style="background: #dc3545;">🗑️ Delete</button>
-    </div>
-  `;
-  
-  modal.style.display = 'block';
-}
-
-function toggleEditMode() {
-  const viewMode = document.getElementById('viewMode');
-  const editMode = document.getElementById('editMode');
-  const editBtn = document.getElementById('editBtn');
-  const saveBtn = document.getElementById('saveBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  
-  // Hide view mode, show edit mode
-  viewMode.style.display = 'none';
-  editMode.style.display = 'block';
-  editBtn.style.display = 'none';
-  saveBtn.style.display = 'inline-block';
-  cancelBtn.style.display = 'inline-block';
-}
-
-function cancelEdit() {
-  const viewMode = document.getElementById('viewMode');
-  const editMode = document.getElementById('editMode');
-  const editBtn = document.getElementById('editBtn');
-  const saveBtn = document.getElementById('saveBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  
-  // Show view mode, hide edit mode
-  viewMode.style.display = 'block';
-  editMode.style.display = 'none';
-  editBtn.style.display = 'inline-block';
-  saveBtn.style.display = 'none';
-  cancelBtn.style.display = 'none';
-}
-
-async function saveFileChanges(fileId) {
-  try {
-    const newName = document.getElementById('editName').value.trim();
-    const newCampaignName = document.getElementById('editCampaignName').value.trim();
-    const newPrompt = document.getElementById('editPrompt').value.trim();
-    
-    if (!newName) {
-      showStatus('Name is required', true);
-      return;
-    }
-    
-    const result = await apiCall(ENDPOINTS.updateMedia, {
-      id: fileId,
-      name: newName,
-      campaign_name: newCampaignName,
-      prompt: newPrompt
-    });
-    
-    if (result.success !== false) {
-      showStatus('File updated successfully!', false);
-      
-      // Update local data
-      const fileIndex = allMediaFiles.findIndex(f => f.id === fileId);
-      if (fileIndex !== -1) {
-        allMediaFiles[fileIndex].name = newName;
-        allMediaFiles[fileIndex].campaign_name = newCampaignName;
-        allMediaFiles[fileIndex].prompt = newPrompt;
-      }
-      
-      // Update display
-      document.getElementById('displayName').textContent = newName;
-      document.getElementById('displayCampaignName').textContent = newCampaignName || 'N/A';
-      document.getElementById('modalTitle').textContent = newName;
-      
-      cancelEdit();
-      applyFilters(); // Refresh the grid/list
-    } else {
-      throw new Error(result.message || 'Update failed');
-    }
-  } catch (error) {
-    console.error('Error updating file:', error);
-    showStatus('Error updating file: ' + error.message, true);
+    modal.style.display = 'block';
   }
-}
 
-function closeModal() {
-  const modal = document.getElementById('mediaModal');
-  modal.style.display = 'none';
-  
-  // Reset to view mode when closing
-  const viewMode = document.getElementById('viewMode');
-  const editMode = document.getElementById('editMode');
-  
-  if (viewMode && editMode) {
-    viewMode.style.display = 'block';
-    editMode.style.display = 'none';
-    
+  function toggleEditMode() {
+    const viewMode = document.getElementById('viewMode');
+    const editMode = document.getElementById('editMode');
     const editBtn = document.getElementById('editBtn');
     const saveBtn = document.getElementById('saveBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     
-    if (editBtn) editBtn.style.display = 'inline-block';
-    if (saveBtn) saveBtn.style.display = 'none';
-    if (cancelBtn) cancelBtn.style.display = 'none';
+    viewMode.classList.add('hidden');
+    editMode.classList.add('active');
+    editBtn.style.display = 'none';
+    saveBtn.style.display = 'inline-block';
+    cancelBtn.style.display = 'inline-block';
   }
-}
 
-// Helper function to escape HTML (add if not already present)
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+  function cancelEdit() {
+    const viewMode = document.getElementById('viewMode');
+    const editMode = document.getElementById('editMode');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    
+    viewMode.classList.remove('hidden');
+    editMode.classList.remove('active');
+    editBtn.style.display = 'inline-block';
+    saveBtn.style.display = 'none';
+    cancelBtn.style.display = 'none';
+  }
+
+  async function saveFileChanges(fileId) {
+    try {
+      const newName = document.getElementById('editName').value.trim();
+      const newCampaignName = document.getElementById('editCampaignName').value.trim();
+      const newPrompt = document.getElementById('editPrompt').value.trim();
+      
+      const result = await apiCall(ENDPOINTS.updateMedia, {
+        id: fileId,
+        name: newName,
+        campaign_name: newCampaignName,
+        prompt: newPrompt
+      });
+      
+      if (result.success !== false) {
+        showStatus('File updated successfully!');
+        
+        // Update local data
+        const fileIndex = allMediaFiles.findIndex(f => f.id === fileId);
+        if (fileIndex !== -1) {
+          allMediaFiles[fileIndex].name = newName;
+          allMediaFiles[fileIndex].campaign_name = newCampaignName;
+          allMediaFiles[fileIndex].prompt = newPrompt;
+        }
+        
+        // Update display
+        document.getElementById('displayName').textContent = newName;
+        document.getElementById('displayCampaignName').textContent = newCampaignName || 'N/A';
+        
+        cancelEdit();
+        applyFilters(); // Refresh the grid/list
+      } else {
+        throw new Error(result.message || 'Update failed');
+      }
+    } catch (error) {
+      console.error('Error updating file:', error);
+      showStatus('Error updating file: ' + error.message, true);
+    }
+  }
+
+  function closeModal() {
+    document.getElementById('mediaModal').style.display = 'none';
+    cancelEdit(); // Reset edit mode
+  }
 
   function downloadFile(url, filename) {
     const link = document.createElement('a');
