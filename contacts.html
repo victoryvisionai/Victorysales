@@ -2172,9 +2172,14 @@ function editContact(contactId) {
   if (!contact) return;
   
   closeModal();
-  showAddContactModal();
   
-  // Populate form with existing data
+  const modal = document.getElementById('addContactModal');
+  const form = document.getElementById('addContactForm');
+  
+  // Reset and populate form
+  form.reset();
+  
+  // Populate all fields
   document.getElementById('name').value = contact.name || '';
   document.getElementById('email').value = contact.email || '';
   document.getElementById('title').value = contact.title || '';
@@ -2198,14 +2203,14 @@ function editContact(contactId) {
   document.getElementById('aiemail').checked = contact.aiemail || false;
   document.getElementById('newsletter').checked = contact.newsletter || false;
   
-  // Change modal title and button
+  // Set EDIT mode
   document.querySelector('#addContactModal .modal-header h2').textContent = '✏️ Edit Contact';
   document.querySelector('#addContactModal button[type="submit"]').textContent = '💾 Update Contact';
+  form.setAttribute('data-contact-id', contactId);
   
-  // Store contact ID for updating
-  document.getElementById('addContactForm').setAttribute('data-contact-id', contactId);
+  // Show modal
+  modal.style.display = 'block';
 }
-
 async function deleteContact(contactId) {
   if (!confirm('Are you sure you want to delete this contact?')) {
     return;
