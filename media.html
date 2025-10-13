@@ -945,7 +945,7 @@
         <!-- Create Image Form -->
         <div id="createImageForm" class="creation-form active">
           <div class="credits-display">
-            <div class="credits-number" id="Credits">Loading...</div>
+       <div class="credits-number credits-display">Loading...</div>
             <div class="credits-label">Credits Remaining</div>
           </div>
           
@@ -974,7 +974,7 @@
         <!-- Create Video Form -->
         <div id="createVideoForm" class="creation-form">
           <div class="credits-display">
-            <div class="credits-number" id="Credits">Loading...</div>
+    <div class="credits-number credits-display">Loading...</div>
             <div class="credits-label">Credits Remaining</div>
           </div>
           
@@ -1004,7 +1004,7 @@
         <!-- Create Presentation Form -->
         <div id="createPresentationForm" class="creation-form">
           <div class="credits-display">
-            <div class="credits-number" id="Credits">Loading...</div>
+    <div class="credits-number credits-display">Loading...</div>
             <div class="credits-label">Credits Remaining</div>
           </div>
           
@@ -1516,13 +1516,12 @@
     }
   }
 
-  // Update credits display
-  function updateCreditsDisplay() {
+ function updateCreditsDisplay() {
     console.log('updateCreditsDisplay called with:', userCredits);
-    const CreditsElement = document.getElementById('Credits');
-    if (CreditsElement) {
-      CreditsElement.textContent = userCredits.credits || 0;
-    }
+    const creditsElements = document.querySelectorAll('.credits-display');
+    creditsElements.forEach(element => {
+        element.textContent = userCredits.credits || 0;
+    });
     
     // Enable/disable buttons based on credits
     const imageBtn = document.getElementById('imageCreateBtn');
@@ -1530,16 +1529,15 @@
     const presentationBtn = document.getElementById('presentationCreateBtn');
     
     if (imageBtn) {
-      imageBtn.disabled = userCredits.credits <= 0;
+        imageBtn.disabled = userCredits.credits <= 0;
     }
     if (videoBtn) {
-      videoBtn.disabled = userCredits.credits <= 0;
+        videoBtn.disabled = userCredits.credits <= 0;
     }
     if (presentationBtn) {
-      presentationBtn.disabled = (userCredits.credits || 0) <= 0;
+        presentationBtn.disabled = (userCredits.credits || 0) <= 0;
     }
-  }
-
+}
   async function loadUserData() {
     try {
       const response = await apiCall(ENDPOINTS.getUserData);
