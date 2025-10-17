@@ -689,7 +689,7 @@
   let CUSTOMER_ID = null;
   let authToken = null;
   let userCredits = {
-    campaign_credits: 0
+    credits: 0
   };
 
   // Rate limiting
@@ -878,7 +878,7 @@
       if (userData) {
         // Update credits
         userCredits = {
-          campaign_credits: userData.campaign_credits || 0
+          credits: userData.credits || 0
         };
         
         updateCreditsDisplay();
@@ -906,25 +906,30 @@
     planName.textContent = safePlan;
   }
 
-  // Update credits display
-  function updateCreditsDisplay() {
-    const campaignCreditsElement = document.getElementById('campaignCredits');
-    if (campaignCreditsElement) {
-      campaignCreditsElement.textContent = userCredits.campaign_credits || 0;
-    }
-    
-    // Enable/disable create button based on credits
-    const createBtn = document.getElementById('createCampaignBtn');
-    if (createBtn) {
-      if (userCredits.campaign_credits <= 0) {
-        createBtn.disabled = true;
-        createBtn.textContent = '❌ No Campaign Credits';
-      } else {
-        createBtn.disabled = false;
-        createBtn.textContent = '🚀 Create New Campaign';
-      }
+ function updateCreditsDisplay() {
+  const campaignCreditsElement = document.getElementById('campaignCredits');
+  if (campaignCreditsElement) {
+    campaignCreditsElement.textContent = userCredits.credits || 0;
+  }
+  
+  // Enable/disable create button based on credits
+  const createBtn = document.getElementById('createCampaignBtn');
+  if (createBtn) {
+    if (userCredits.credits <= 0) {
+      createBtn.disabled = true;
+      createBtn.textContent = '❌ No Credits';
+    } else {
+      createBtn.disabled = false;
+      createBtn.textContent = '🚀 Create New Campaign';
     }
   }
+  
+  // Update custom campaign button too
+  const customBtn = document.getElementById('submitCustomCampaign');
+  if (customBtn && userCredits.credits <= 0) {
+    customBtn.disabled = true;
+  }
+}
 
   // Load campaigns from n8n webhook
   async function loadCampaigns() {
@@ -960,7 +965,7 @@
   async function createCampaign() {
     try {
       // Check credits first
-      if (userCredits.campaign_credits <= 0) {
+      if (userCredits.credits <= 0) {
         showStatus('Insufficient campaign credits. Please upgrade your subscription.', true);
         return;
       }
@@ -1437,7 +1442,7 @@
       }
       
       // Check credits
-      if (userCredits.campaign_credits <= 0) {
+      if (userCredits.credits <= 0) {
         showStatus('Insufficient campaign credits. Please upgrade your subscription.', true);
         return;
       }
