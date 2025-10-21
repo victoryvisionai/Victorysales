@@ -778,51 +778,6 @@
     <h1 class="page-title">Contact Management</h1>
     <p class="page-subtitle">Generate new contacts and manage your prospect database with AI workflows</p>
   </header>
-
-  <!-- Lead Generation Section -->
-  <section class="card" data-intro="Generate new contacts by entering a LinkedIn profile URL of your ideal customer. Our AI will find similar prospects that match your target profile." data-step="1">
-    <div class="section-header">
-      <h3>🎯 Generate New Contacts</h3>
-    </div>
-    
-    <div class="credits-display">
-      <div class="credits-number" id="CreditsDisplay">Loading...</div>
-      <div class="credits-label"> Credits Remaining</div>
-    </div>
-    
-    <p style="margin-bottom: 20px; color: #666;">
-      Enter a LinkedIn profile URL of your ideal customer and specify how many similar contacts you want to generate.
-    </p>
-    
-    <div class="linkedin-input-section" data-intro="Paste a LinkedIn profile URL here and select how many contacts to generate. Our AI will analyze this profile to find similar contacts in your target market." data-step="2">
-      <div class="form-group">
-        <label for="linkedin1">
-          LinkedIn Profile URL
-          <span class="help-icon">❓
-            <span class="help-tooltip">Enter the LinkedIn URL of someone who represents your ideal customer. Our AI will analyze their profile to find similar prospects.</span>
-          </span>
-        </label>
-        <input type="url" id="linkedin1" placeholder="https://linkedin.com/in/profile-name">
-      </div>
-      <div class="form-group">
-        <label for="leadCount">
-          Number of Leads
-          <span class="help-icon">❓
-            <span class="help-tooltip">Choose how many similar contacts you want to generate (1-20). Each contact uses 1 credit from your account.</span>
-          </span>
-        </label>
-        <select id="leadCount">
-          <option value="1">1 Lead</option>
-          <option value="5" selected>5 Leads</option>
-          <option value="10">10 Leads</option>
-          <option value="15">15 Leads</option>
-          <option value="20">20 Leads</option>
-        </select>
-      </div>
-    </div>
-    
-    <button id="generateBtn" class="generate-btn">🚀 Generate New Contacts</button>
-    
     <!-- Add Contacts Section -->
     <div class="add-contact-section">
       <button onclick="showAddContactModal()" class="success">➕ Add Contact Manually</button>
@@ -980,6 +935,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <button id="deselectAllBtn" class="secondary">Deselect All</button>
         <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
         <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
+        <button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button>
         <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
         <span id="selectedCount" style="margin-left: 10px; color: #666;">0 selected</span>
       </div>
@@ -1376,6 +1332,41 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       </div>
       
       <div id="smsStatus" style="margin-top: 15px; padding: 10px; border-radius: 4px; display: none;"></div>
+    </div>
+  </div>
+</div>
+  <!-- Look Alike Modal -->
+<div id="lookAlikeModal" class="modal">
+  <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2>🔎 Generate Look-Alike Contacts</h2>
+      <span class="close" onclick="closeLookAlikeModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom: 20px; color: #666;">
+        AI will analyze your selected contact(s) and find similar prospects based on their profile characteristics.
+      </p>
+      
+      <div class="form-group">
+        <label for="lookAlikeCount">
+          Number of Leads to Generate
+          <span class="help-icon">❓
+            <span class="help-tooltip">Choose how many similar contacts you want to find. Each contact uses 1 credit.</span>
+          </span>
+        </label>
+        <select id="lookAlikeCount">
+          <option value="5" selected>5 Leads</option>
+          <option value="10">10 Leads</option>
+          <option value="15">15 Leads</option>
+          <option value="20">20 Leads</option>
+          <option value="25">25 Leads</option>
+        </select>
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <button onclick="closeLookAlikeModal()" class="secondary">Cancel</button>
+        <button onclick="generateLookAlikeContacts()" class="success" style="background: #17a2b8;">🔎 Generate</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1958,7 +1949,69 @@ function setupCSVUpload() {
   const csvInput = document.getElementById('csvFileInput');
   csvInput.addEventListener('change', handleCSVFile);
 }
+// Look Alike Modal Functions
+function showLookAlikeModal() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select at least one contact to find look-alikes', true);
+    return;
+  }
+  document.getElementById('lookAlikeModal').style.display = 'block';
+}
 
+function closeLookAlikeModal() {
+  document.getElementById('lookAlikeModal').style.display = 'none';
+}
+
+async function generateLookAlikeContacts() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select contacts first', true);
+    return;
+  }
+  
+  const leadCount = parseInt(document.getElementById('lookAlikeCount').value) || 5;
+  
+  if (userCredits.credits < leadCount) {
+    showStatus(`Insufficient credits. You need ${leadCount} but only have ${userCredits.credits}.`, true);
+    return;
+  }
+  
+  try {
+    const selectedContactsList = Array.from(selectedContacts).map(id => 
+      allContacts.find(c => c.contact_id === id || c.id === id || c.email === id)
+    ).filter(c => c);
+    
+    if (selectedContactsList.length === 0) {
+      showStatus('No valid contacts selected', true);
+      return;
+    }
+    
+    showStatus('Generating look-alike contacts...', false);
+    closeLookAlikeModal();
+    
+    const result = await apiCall(ENDPOINTS.generateContacts, {
+      contact_ids: selectedContactsList.map(c => c.contact_id || c.id || c.email),
+      num_leads: leadCount
+    });
+    
+    if (result.success !== false) {
+      showStatus(`Generating ${leadCount} look-alike contacts! They will appear shortly.`, false);
+      
+      userCredits.credits -= leadCount;
+      updateCreditsDisplay();
+      
+      selectedContacts.clear();
+      updateSelectedCount();
+      
+      setTimeout(() => loadContacts(), 3000);
+    } else {
+      throw new Error(result.message || 'Look-alike generation failed');
+    }
+    
+  } catch (error) {
+    console.error('Error generating look-alikes:', error);
+    showStatus('Error: ' + error.message, true);
+  }
+}
 async function handleCSVFile(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -2422,6 +2475,8 @@ function formatCellValue(contact, column) {
     case 'last_emailed_date':
     case 'client_won_date':
       return formatDate(value);
+    case 'city':
+        return formatCityState(contact);
     case 'tags':
       return formatTags(value);
     case 'aiemail':
@@ -2778,6 +2833,7 @@ document.getElementById('customCampaignForm').addEventListener('submit', async (
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
   document.getElementById('enrollWorkflowsBtn').addEventListener('click', enrollInWorkflows);
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
+  document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContacts);
   let searchTimeout;
   document.getElementById('searchFilter').addEventListener('input', () => {
@@ -3356,6 +3412,9 @@ window.startTour = startTour;
 window.expandFirstSelectedContact = expandFirstSelectedContact;
 window.showCustomCampaignModal = showCustomCampaignModal;
 window.closeCustomCampaignModal = closeCustomCampaignModal;
+  window.showLookAlikeModal = showLookAlikeModal;
+window.closeLookAlikeModal = closeLookAlikeModal;
+window.generateLookAlikeContacts = generateLookAlikeContacts;
 window.createMeetingForContact = createMeetingForContact;
 window.createSMSForContact = createSMSForContact;
 window.makeCallToContact = makeCallToContact;
