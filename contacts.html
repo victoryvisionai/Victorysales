@@ -1335,7 +1335,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
-  <!-- Look Alike Modal -->
+<!-- Look Alike Modal -->
 <div id="lookAlikeModal" class="modal">
   <div class="modal-content" style="max-width: 500px;">
     <div class="modal-header">
@@ -1363,6 +1363,23 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         </select>
       </div>
       
+      <div class="form-group">
+        <label for="lookAlikeGeography">
+          Target Geography
+          <span class="help-icon">❓
+            <span class="help-tooltip">Specify the geographic area to search for similar contacts. You can enter cities, states, regions, or "USA" for nationwide search.</span>
+          </span>
+        </label>
+        <input type="text" 
+               id="lookAlikeGeography" 
+               placeholder="e.g., California, New York City, Southeast USA, USA" 
+               value="USA"
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        <div style="font-size: 12px; color: #666; margin-top: 5px;">
+          Examples: "California", "New York, New Jersey", "Southeast USA", "San Francisco Bay Area", "USA"
+        </div>
+      </div>
+      
       <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
         <button onclick="closeLookAlikeModal()" class="secondary">Cancel</button>
         <button onclick="generateLookAlikeContacts()" class="success" style="background: #17a2b8;">🔎 Generate</button>
@@ -1370,6 +1387,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
+  
 <!-- Hidden audio element for WebRTC calls -->
 <audio id="remoteAudio" autoplay playsinline></audio>
 <!-- Call Control Modal -->
@@ -1898,11 +1916,7 @@ async function generateLookAlikeContacts() {
   }
   
   const leadCount = parseInt(document.getElementById('lookAlikeCount').value) || 5;
-  
-  if (userCredits.credits < leadCount) {
-    showStatus(`Insufficient credits. You need ${leadCount} but only have ${userCredits.credits}.`, true);
-    return;
-  }
+  const geography = document.getElementById('lookAlikeGeography').value.trim() || 'USA';
   
   try {
     const selectedContactsList = Array.from(selectedContacts).map(id => 
@@ -1914,19 +1928,17 @@ async function generateLookAlikeContacts() {
       return;
     }
     
-    showStatus('Generating look-alike contacts...', false);
+    showStatus(`Generating ${leadCount} look-alike contacts in ${geography}...`, false);
     closeLookAlikeModal();
     
     const result = await apiCall(ENDPOINTS.generateContacts, {
       contact_ids: selectedContactsList.map(c => c.contact_id || c.id || c.email),
-      num_leads: leadCount
+      num_leads: leadCount,
+      geography: geography
     });
     
     if (result.success !== false) {
-      showStatus(`Generating ${leadCount} look-alike contacts! They will appear shortly.`, false);
-      
-      userCredits.credits -= leadCount;
-      updateCreditsDisplay();
+      showStatus(`Generating ${leadCount} look-alike contacts in ${geography}! They will appear shortly.`, false);
       
       selectedContacts.clear();
       updateSelectedCount();
@@ -1941,7 +1953,7 @@ async function generateLookAlikeContacts() {
     showStatus('Error: ' + error.message, true);
   }
 }
-async function handleCSVFile(event) {
+  async function handleCSVFile(event) {
   const file = event.target.files[0];
   if (!file) return;
 
