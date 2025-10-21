@@ -1742,17 +1742,8 @@ window.userWebRTCUsername = userData.name ? userData.name.replace(/[\s,]+/g, '')
   if (creditsSpan) {
     creditsSpan.textContent = `${userCredits.credits} credits`;
   }
-    
-  // Enable/disable generate button based on credits
-  const generateBtn = document.getElementById('generateBtn');
-  if (generateBtn) {
-    generateBtn.disabled = userCredits.credits <= 0;
-    if (userCredits.credits <= 0) {
-      generateBtn.textContent = '🚫 No Credits Remaining';
-      generateBtn.style.background = '#6c757d';
-    }
   }
-}
+    
 async function loadContacts() {
   try {
     console.log('Loading contacts for customer:', CUSTOMER_ID);
@@ -1795,68 +1786,6 @@ async function loadContacts() {
   }
 }
 
-// Generate new contacts
-async function generateNewContacts() {
-  console.log('Generate button clicked');
-  const generateBtn = document.getElementById('generateBtn');
-  
-  try {
-    if (userCredits.credits <= 0) {
-      throw new Error('Insufficient contact credits. Please upgrade your plan.');
-    }
-
-    generateBtn.disabled = true;
-    generateBtn.textContent = '🔄 Generating Contacts...';
-    
-    const linkedinUrl = document.getElementById('linkedin1').value.trim();
-    const leadCount = parseInt(document.getElementById('leadCount').value) || 5;
-
-    console.log('LinkedIn URL:', linkedinUrl);
-    console.log('Lead count:', leadCount);
-
-    if (!linkedinUrl) {
-      throw new Error('Please enter a LinkedIn URL');
-    }
-
-    if (userCredits.credits < leadCount) {
-      throw new Error(`Insufficient credits. You need ${leadCount} credits but only have ${userCredits.credits}.`);
-    }
-
-    console.log('Sending request to contacts/look');
-    
-    const result = await apiCall(ENDPOINTS.generateContacts, { 
-      linkedin_urls: [linkedinUrl],
-      lead_count: leadCount
-    });
-
-    if (result.success !== false) {
-      showStatus(`Successfully generating ${leadCount} contacts! They will appear shortly.`, false);
-      
-      // Deduct credits
-      userCredits.credits -= leadCount;
-      updateCreditsDisplay();
-      
-      // Clear inputs
-      document.getElementById('linkedin1').value = '';
-      document.getElementById('leadCount').value = '5';
-      
-      // Reload contacts after a delay
-      setTimeout(() => {
-        console.log('Reloading contacts...');
-        loadContacts();
-      }, 3000);
-    } else {
-      throw new Error(result.message || 'Contact generation failed');
-    }
-    
-  } catch (error) {
-    console.error('Error generating contacts:', error);
-    showStatus(error.message || 'Error generating contacts', true);
-  } finally {
-    generateBtn.disabled = false;
-    generateBtn.textContent = '🚀 Generate New Contacts';
-  }
-}
 
 // NEW: Custom Email Campaign Functions
 function showCustomCampaignModal() {
@@ -2789,7 +2718,6 @@ function showStatus(message, isError = false) {
 }
 
 function setupEventListeners() {
-  document.getElementById('generateBtn').addEventListener('click', generateNewContacts);
   document.getElementById('expandContactBtn').addEventListener('click', expandFirstSelectedContact);
   document.getElementById('addContactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
