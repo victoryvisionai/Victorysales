@@ -764,7 +764,7 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+    <button onclick="startTour()" style="background: #0A3161; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
       📖 Take Tour
     </button>
     <div id="subscriptionMedallion" class="subscription-medallion bronze">
@@ -779,9 +779,10 @@
     <p class="page-subtitle">Generate new contacts and manage your prospect database with AI workflows</p>
   </header>
     <!-- Add Contacts Section -->
+ <!-- Add Contacts Section -->
     <div class="add-contact-section">
-      <button onclick="showAddContactModal()" class="success">➕ Add Contact Manually</button>
-      <button onclick="document.getElementById('csvFileInput').click()" class="secondary">📄 Upload CSV</button>
+      <button onclick="showAddContactModal()" style="background: #0A3161; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">➕ Add Contact Manually</button>
+      <button onclick="document.getElementById('csvFileInput').click()" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">📄 Upload CSV</button>
     </div>
     
     <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
@@ -801,7 +802,7 @@
       </ul>
     </div>
     <div>
-      <button onclick="downloadCsvTemplate()" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">
+      <button onclick="downloadCsvTemplate()" style="background: #0A3161; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">
         📥 Download Template
       </button>
       <p style="margin: 0; font-size: 12px; color: #666;">Template includes sample data and proper formatting</p>
@@ -852,7 +853,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       
       <!-- NEW: Custom Email Campaign Button -->
       <div style="text-align: center; margin-top: 15px;">
-        <button onclick="showCustomCampaignModal()" class="success" style="background: #fd7e14;">
+        <button onclick="showCustomCampaignModal()" class="success" style="background: #0A3161;">
           ✨ Create Custom Email Campaign
         </button>
       </div>
@@ -2078,7 +2079,7 @@ function showContactDetails(contactId, event) {
     
     <div class="modal-actions">
       <button onclick="sendEmailToContact('${contact.email || ''}')" class="success" style="background: #17a2b8;">✉️ Send Email</button>
-      <button onclick="createMeetingForContact('${contactId}')" class="success" style="background: #28a745;">📅 Create Meeting</button>
+      <button onclick="createMeetingForContact('${contactId}')" class="success" style="background: #0A3161;">📅 Create Meeting</button>
       <button onclick="createSMSForContact('${contactId}')" class="success" style="background: #ffc107; color: #000;">💬 Send SMS</button>
       <button onclick="makeCallToContact('${contactId}')" class="success" style="background: #dc3545;">📞 Make Call</button>
       <button onclick="editContact('${contactId}')" class="success">✏️ Edit Contact</button>
