@@ -1333,9 +1333,21 @@
     }
   }
 
-  // File upload function using direct form submission (bypasses CORS and iframe restrictions)
+// File upload function using direct form submission (bypasses CORS and iframe restrictions)
   function uploadFileToN8N(file, fileType) {
     return new Promise((resolve, reject) => {
+      // Log file details
+      console.log(`📤 Uploading: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB, type: ${fileType})`);
+      
+      // Check file size limit (500MB)
+      const MAX_SIZE = 500 * 1024 * 1024;
+      if (file.size > MAX_SIZE) {
+        const errorMsg = `File too large: ${(file.size / 1024 / 1024).toFixed(2)}MB (max 500MB)`;
+        console.error('❌', errorMsg);
+        reject(new Error(errorMsg));
+        return;
+      }
+      
       // Create a direct form submission without iframe
       const formData = new FormData();
       formData.append('file', file);
@@ -1345,25 +1357,46 @@
       // Use XMLHttpRequest instead of fetch to avoid CORS preflight for simple requests
       const xhr = new XMLHttpRequest();
       
+      // Track upload progress
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const percent = ((e.loaded / e.total) * 100).toFixed(1);
+          console.log(`📊 Upload progress: ${percent}% (${(e.loaded / 1024 / 1024).toFixed(2)}MB / ${(e.total / 1024 / 1024).toFixed(2)}MB)`);
+        }
+      };
+      
       xhr.onload = function() {
+        console.log(`📥 Response status: ${xhr.status}`);
         if (xhr.status >= 200 && xhr.status < 300) {
+          console.log(`✅ Upload success: ${file.name}`);
           resolve({ success: true });
         } else {
-          reject(new Error(`Upload failed: ${xhr.status}`));
+          console.error(`❌ Upload failed:`, {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            response: xhr.responseText
+          });
+          reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`));
         }
       };
       
       xhr.onerror = function() {
-        reject(new Error('Upload failed - network error'));
+        console.error(`❌ Network error uploading ${file.name}:`, {
+          status: xhr.status,
+          readyState: xhr.readyState,
+          statusText: xhr.statusText
+        });
+        reject(new Error(`Upload failed - network error (status: ${xhr.status || 'unknown'})`));
       };
       
       xhr.ontimeout = function() {
-        reject(new Error('Upload timed out'));
+        console.error(`⏱️ Upload timeout: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+        reject(new Error(`Upload timed out after 5 minutes - file may be too large`));
       };
       
       // Open and send the request
       xhr.open('POST', ENDPOINTS.uploadMedia);
-      xhr.timeout = 300000; // 30 second timeout
+      xhr.timeout = 300000; // 5 minutes timeout
       xhr.send(formData);
     });
   }
