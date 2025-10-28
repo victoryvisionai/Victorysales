@@ -1004,8 +1004,6 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       <span class="close" onclick="closeModal()">&times;</span>
     </div>
     <div class="modal-body" id="modalBody">
- 
-      
       <!-- Contact details will be loaded here -->
     </div>
   </div>
@@ -2082,33 +2080,34 @@ function showContactDetails(contactId, event) {
     return;
   }
   
-currentContact = contact;
-const modalTitle = document.getElementById('modalTitle');
-const modalBody = document.getElementById('modalBody');
-const modal = document.getElementById('contactModal');
-
-modalTitle.textContent = contact.name || 'Contact Details';
-
-modalBody.innerHTML = `
-  <div class="modal-actions">
-    <button onclick="sendEmailToContact('${contact.email || ''}')" class="success" style="background: #17a2b8;">✉️ Send Email</button>
-    <button onclick="createMeetingForContact('${contactId}')" class="success" style="background: #0A3161;">📅 Create Meeting</button>
-    <button onclick="createSMSForContact('${contactId}')" class="success" style="background: #ffc107; color: #000;">💬 Send SMS</button>
-    <button onclick="makeCallToContact('${contactId}')" class="success" style="background: #dc3545;">📞 Make Call</button>
-    <button onclick="editContact('${contactId}')" class="success">✏️ Edit Contact</button>
-    <button onclick="deleteContact('${contactId}')" class="danger">🗑️ Delete Contact</button>
-  </div>
+  currentContact = contact;
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  const modal = document.getElementById('contactModal');
   
-  <div class="contact-details">
-    ${Object.entries(contact).map(([key, value]) => {
-      if (!value || key === 'id' || key === 'contact_id' || value === 'null' || value === '') return '';
-      const label = availableColumns[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      return renderDetailField(label, value, key === 'linkedin' || key === 'email');
-    }).join('')}
-  </div>
-`;
-
-modal.style.display = 'block';
+  modalTitle.textContent = contact.name || 'Contact Details';
+  
+  modalBody.innerHTML = `
+    <div class="contact-details">
+      ${Object.entries(contact).map(([key, value]) => {
+        if (!value || key === 'id' || key === 'contact_id' || value === 'null' || value === '') return '';
+        const label = availableColumns[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return renderDetailField(label, value, key === 'linkedin' || key === 'email');
+      }).join('')}
+    </div>
+    
+    <div class="modal-actions">
+      <button onclick="sendEmailToContact('${contact.email || ''}')" class="success" style="background: #17a2b8;">✉️ Send Email</button>
+      <button onclick="createMeetingForContact('${contactId}')" class="success" style="background: #0A3161;">📅 Create Meeting</button>
+      <button onclick="createSMSForContact('${contactId}')" class="success" style="background: #ffc107; color: #000;">💬 Send SMS</button>
+      <button onclick="makeCallToContact('${contactId}')" class="success" style="background: #dc3545;">📞 Make Call</button>
+      <button onclick="editContact('${contactId}')" class="success">✏️ Edit Contact</button>
+      <button onclick="deleteContact('${contactId}')" class="danger">🗑️ Delete Contact</button>
+    </div>
+  `;
+  
+  modal.style.display = 'block';
+}
 
 function renderDetailField(label, value, isLink = false) {
   if (!value || value === 'null' || value === '') return '';
@@ -3445,4 +3444,4 @@ document.addEventListener('DOMContentLoaded', init);
 
 </script> 
 </body>
-</html> 
+</html>
