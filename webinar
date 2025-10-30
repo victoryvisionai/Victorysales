@@ -221,6 +221,17 @@
       margin-bottom: 12px;
     }
 
+    .host-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
     .webinar-name {
       font-size: 1.4rem;
       font-weight: 700;
@@ -257,6 +268,16 @@
       color: #2d3748;
     }
 
+    .host-info {
+      background: rgba(255, 193, 7, 0.1);
+      border-left: 4px solid #ffc107;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-top: 8px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
     .attendee-count {
       background: rgba(10, 49, 97, 0.05);
       border-left: 4px solid #0a3161;
@@ -284,6 +305,10 @@
     .join-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(187, 19, 62, 0.4);
+    }
+
+    .join-button.host {
+      background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
     }
 
     .back-button {
@@ -314,9 +339,9 @@
       display: none;
       padding: 20px;
       background: #f8f9fa;
-      display: none;
       justify-content: center;
       gap: 15px;
+      flex-wrap: wrap;
     }
 
     .control-btn {
@@ -347,6 +372,127 @@
     .control-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .host-controls {
+      display: none;
+      background: #fff3cd;
+      border-top: 3px solid #ffc107;
+    }
+
+    .host-controls-header {
+      padding: 15px 20px;
+      font-weight: 700;
+      color: #856404;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #ffeaa7;
+    }
+
+    .host-controls-buttons {
+      padding: 15px 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .host-control-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .host-control-btn.record {
+      background: #e53e3e;
+      color: white;
+    }
+
+    .host-control-btn.mute-all {
+      background: #ffc107;
+      color: #2d3748;
+    }
+
+    .host-control-btn.end-all {
+      background: #c53030;
+      color: white;
+    }
+
+    .host-control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .participants-panel {
+      padding: 20px;
+      background: white;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .participants-header {
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+
+    .participant-item {
+      padding: 12px;
+      margin: 8px 0;
+      background: #f8f9fa;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .participant-info {
+      flex: 1;
+    }
+
+    .participant-name {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 4px;
+    }
+
+    .participant-status {
+      font-size: 0.85rem;
+      color: #718096;
+    }
+
+    .participant-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .participant-action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .participant-action-btn.mute {
+      background: #4299e1;
+      color: white;
+    }
+
+    .participant-action-btn.remove {
+      background: #e53e3e;
+      color: white;
+    }
+
+    .participant-action-btn:hover {
+      opacity: 0.8;
+      transform: scale(1.05);
     }
 
     .status-indicator {
@@ -390,6 +536,15 @@
 
       .webinar-name {
         font-size: 1.2rem;
+      }
+
+      .meeting-controls, .host-controls-buttons {
+        padding: 15px;
+      }
+
+      .control-btn, .host-control-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -444,6 +599,22 @@
     <button id="videoBtn" class="control-btn video">Video</button>
     <button id="leaveBtn" class="control-btn leave">Leave Webinar</button>
   </div>
+
+  <!-- Host Controls -->
+  <div id="hostControls" class="host-controls">
+    <div class="host-controls-header">
+      🎬 Host Controls
+    </div>
+    <div class="host-controls-buttons">
+      <button id="muteAllBtn" class="host-control-btn mute-all">Mute All Participants</button>
+      <button id="startRecordingBtn" class="host-control-btn record">● Start Recording</button>
+      <button id="endForAllBtn" class="host-control-btn end-all">End Webinar for All</button>
+    </div>
+    <div class="participants-panel">
+      <div class="participants-header">Participants</div>
+      <div id="participantsContainer"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -459,11 +630,16 @@ const loadingState = document.getElementById('loadingState');
 const webinarsList = document.getElementById('webinarsList');
 const videoContainer = document.getElementById('videoContainer');
 const meetingControls = document.getElementById('meetingControls');
+const hostControls = document.getElementById('hostControls');
 const errorMessage = document.getElementById('errorMessage');
 const successMessage = document.getElementById('successMessage');
 const muteBtn = document.getElementById('muteBtn');
 const videoBtn = document.getElementById('videoBtn');
 const leaveBtn = document.getElementById('leaveBtn');
+const muteAllBtn = document.getElementById('muteAllBtn');
+const startRecordingBtn = document.getElementById('startRecordingBtn');
+const endForAllBtn = document.getElementById('endForAllBtn');
+const participantsContainer = document.getElementById('participantsContainer');
 
 // State
 let userEmail = '';
@@ -471,11 +647,16 @@ let currentWebinars = [];
 let callFrame = null;
 let isMuted = false;
 let isVideoOff = false;
+let isRecording = false;
+let isHost = false;
 
 // Control button event listeners
 muteBtn.addEventListener('click', toggleMute);
 videoBtn.addEventListener('click', toggleVideo);
 leaveBtn.addEventListener('click', leaveWebinar);
+muteAllBtn.addEventListener('click', muteAllParticipants);
+startRecordingBtn.addEventListener('click', toggleRecording);
+endForAllBtn.addEventListener('click', endMeetingForAll);
 
 // Show error message
 function showError(message) {
@@ -505,6 +686,7 @@ function isValidEmail(email) {
 
 // Format date/time
 function formatDateTime(dateString) {
+  if (!dateString) return 'Date TBD';
   const date = new Date(dateString);
   const options = { 
     weekday: 'long', 
@@ -520,9 +702,11 @@ function formatDateTime(dateString) {
 
 // Get webinar status
 function getWebinarStatus(scheduledStart, scheduledEnd) {
+  if (!scheduledStart) return 'upcoming';
+  
   const now = new Date();
   const start = new Date(scheduledStart);
-  const end = scheduledEnd ? new Date(scheduledEnd) : new Date(start.getTime() + 60 * 60 * 1000); // Default 1 hour
+  const end = scheduledEnd ? new Date(scheduledEnd) : new Date(start.getTime() + 60 * 60 * 1000);
   
   if (now < start) {
     return 'upcoming';
@@ -533,8 +717,12 @@ function getWebinarStatus(scheduledStart, scheduledEnd) {
   }
 }
 
-// Extract webinar name from room URL or use default
+// Extract webinar name from meeting_name or room_url
 function getWebinarName(invite) {
+  if (invite.meeting_name && invite.meeting_name !== 'Victory Vision Meeting') {
+    return invite.meeting_name;
+  }
+  
   if (invite.name && invite.name !== 'Victory Vision Meeting') {
     return invite.name;
   }
@@ -551,7 +739,7 @@ function getWebinarName(invite) {
 
 // Find webinars for the user
 async function findWebinars() {
-  const email = emailInput.value.trim();
+  const email = emailInput.value.trim().toLowerCase();
   
   if (!email) {
     showError('Please enter your email address');
@@ -572,64 +760,63 @@ async function findWebinars() {
   try {
     console.log('Searching for webinar registrations:', email);
     
-    // Query meeting_invites table for webinars
-    // Filter by email and location containing '/webinar' or event_type = 'webinar'
-    const { data: webinarInvites, error } = await supabaseClient
+    // Query meeting_invites for this email where room_url contains 'Webinar-'
+    const { data: invites, error: invitesError } = await supabaseClient
       .from('meeting_invites')
       .select('*')
       .eq('email', email)
-      .or('location.ilike.%/webinar%,event_type.eq.webinar');
+      .ilike('room_url', '%Webinar-%');
 
-    console.log('Query result:', { webinarInvites, error });
+    console.log('Invites found:', invites);
 
-    // If the above query doesn't work, try simpler version
-    if (error && error.code === '42883') {
-      console.log('Trying alternative query...');
-      const { data: allInvites, error: error2 } = await supabaseClient
-        .from('meeting_invites')
-        .select('*')
-        .eq('email', email);
-      
-      if (error2) {
-        throw error2;
-      }
-      
-      // Filter for webinars client-side
-      const webinarInvites2 = allInvites.filter(invite => 
-        (invite.location && invite.location.includes('/webinar')) ||
-        invite.event_type === 'webinar' ||
-        (invite.room_url && invite.room_url.includes('Webinar-'))
-      );
-      
-      if (webinarInvites2.length === 0) {
-        loadingState.style.display = 'none';
-        showError('No webinar registrations found for: ' + email);
-        emailForm.style.display = 'block';
-        return;
-      }
-      
-      currentWebinars = webinarInvites2;
-      await displayWebinars(webinarInvites2);
-      return;
-    }
-
-    loadingState.style.display = 'none';
-
-    if (error) {
-      console.error('Database error:', error);
-      showError('Database error: ' + error.message);
+    if (invitesError) {
+      console.error('Database error:', invitesError);
+      loadingState.style.display = 'none';
+      showError('Database error: ' + invitesError.message);
       emailForm.style.display = 'block';
       return;
     }
 
-    if (!webinarInvites || webinarInvites.length === 0) {
+    if (!invites || invites.length === 0) {
+      loadingState.style.display = 'none';
       showError('No webinar registrations found for: ' + email);
       emailForm.style.display = 'block';
       return;
     }
 
-    currentWebinars = webinarInvites;
-    await displayWebinars(webinarInvites);
+    // For each invite, check if user is host by querying meetings table
+    const webinarsWithHostInfo = await Promise.all(
+      invites.map(async (invite) => {
+        // Query meetings table to check if this user's email matches customer_id
+        const { data: meeting, error: meetingError } = await supabaseClient
+          .from('meetings')
+          .select('customer_id, host_token')
+          .eq('room_url', invite.room_url)
+          .single();
+
+        if (!meetingError && meeting) {
+          // Check if customer_id (email) matches user's email
+          const isHostForThisWebinar = meeting.customer_id && 
+                                       meeting.customer_id.toLowerCase() === email.toLowerCase();
+          
+          return {
+            ...invite,
+            is_host: isHostForThisWebinar,
+            host_token: isHostForThisWebinar ? meeting.host_token : null
+          };
+        }
+
+        return {
+          ...invite,
+          is_host: false,
+          host_token: null
+        };
+      })
+    );
+
+    loadingState.style.display = 'none';
+    currentWebinars = webinarsWithHostInfo;
+    await displayWebinars(webinarsWithHostInfo);
     
   } catch (error) {
     console.error('Error finding webinars:', error);
@@ -640,20 +827,19 @@ async function findWebinars() {
 }
 
 // Get attendee count for a webinar
-async function getAttendeeCount(roomUrl, scheduledStart) {
+async function getAttendeeCount(roomUrl) {
   try {
-    const { data, error } = await supabaseClient
+    const { count, error } = await supabaseClient
       .from('meeting_invites')
-      .select('email', { count: 'exact', head: true })
-      .eq('room_url', roomUrl)
-      .eq('scheduled_start', scheduledStart);
+      .select('*', { count: 'exact', head: true })
+      .eq('room_url', roomUrl);
     
     if (error) {
       console.error('Error getting attendee count:', error);
       return null;
     }
     
-    return data;
+    return count;
   } catch (error) {
     console.error('Error counting attendees:', error);
     return null;
@@ -664,11 +850,11 @@ async function getAttendeeCount(roomUrl, scheduledStart) {
 async function displayWebinars(webinarInvites) {
   webinarsList.innerHTML = '';
   
-  // Group webinars by room_url and scheduled_start to avoid duplicates
+  // Group webinars by room_url to avoid duplicates
   const webinarMap = new Map();
   
   webinarInvites.forEach(invite => {
-    const key = `${invite.room_url}-${invite.scheduled_start}`;
+    const key = invite.room_url;
     if (!webinarMap.has(key)) {
       webinarMap.set(key, invite);
     }
@@ -678,8 +864,8 @@ async function displayWebinars(webinarInvites) {
   
   // Sort by scheduled start time (upcoming first)
   uniqueWebinars.sort((a, b) => {
-    const dateA = new Date(a.scheduled_start || a.start_at);
-    const dateB = new Date(b.scheduled_start || b.start_at);
+    const dateA = new Date(a.scheduled_start || a.created_at || 0);
+    const dateB = new Date(b.scheduled_start || b.created_at || 0);
     return dateA - dateB;
   });
   
@@ -688,29 +874,20 @@ async function displayWebinars(webinarInvites) {
     webinarItem.className = 'webinar-item';
     
     const webinarName = getWebinarName(invite);
-    const scheduledTime = invite.scheduled_start || invite.start_at;
-    const scheduledEnd = invite.scheduled_end || invite.end_at;
+    const scheduledTime = invite.scheduled_start;
+    const scheduledEnd = invite.scheduled_end;
     const status = getWebinarStatus(scheduledTime, scheduledEnd);
     
     // Get attendee count
     let attendeeCountHTML = '';
-    if (invite.room_url && scheduledTime) {
-      try {
-        const { count, error } = await supabaseClient
-          .from('meeting_invites')
-          .select('*', { count: 'exact', head: true })
-          .eq('room_url', invite.room_url)
-          .eq('scheduled_start', scheduledTime);
-        
-        if (!error && count > 0) {
-          attendeeCountHTML = `
-            <div class="attendee-count">
-              👥 ${count} registered ${count === 1 ? 'attendee' : 'attendees'}
-            </div>
-          `;
-        }
-      } catch (e) {
-        console.error('Error getting count:', e);
+    if (invite.room_url) {
+      const count = await getAttendeeCount(invite.room_url);
+      if (count !== null && count > 0) {
+        attendeeCountHTML = `
+          <div class="attendee-count">
+            👥 ${count} registered ${count === 1 ? 'attendee' : 'attendees'}
+          </div>
+        `;
       }
     }
     
@@ -728,8 +905,24 @@ async function displayWebinars(webinarInvites) {
     
     statusBadge = `<span class="webinar-badge"><span class="status-indicator ${statusClass}"></span>${statusText}</span>`;
     
+    // Add host badge if user is host
+    const hostBadgeHTML = invite.is_host ? '<span class="host-badge">🎬 HOST</span>' : '';
+    
+    // Host info box
+    const hostInfoHTML = invite.is_host ? `
+      <div class="host-info">
+        🎬 You are the host - You'll have full control of this webinar
+      </div>
+    ` : '';
+    
+    // Join button text and class
+    const joinButtonClass = invite.is_host ? 'join-button host' : 'join-button';
+    const joinButtonText = invite.is_host 
+      ? (status === 'live' ? '🎬 Join as Host (LIVE)' : '🎬 Join as Host')
+      : (status === 'live' ? '🔴 Join Live Webinar' : 'Join Webinar');
+    
     webinarItem.innerHTML = `
-      ${statusBadge}
+      ${statusBadge}${hostBadgeHTML}
       <div class="webinar-name">${webinarName}</div>
       <div class="webinar-details">
         <div class="detail-row">
@@ -740,10 +933,11 @@ async function displayWebinars(webinarInvites) {
       <div class="registrant-info">
         ✓ Registered as: ${invite.name || userEmail.split('@')[0]}
       </div>
+      ${hostInfoHTML}
       ${attendeeCountHTML}
       ${invite.room_url ? 
-        `<button class="join-button" onclick='joinWebinar(${JSON.stringify(invite).replace(/'/g, "&apos;")})'>
-          ${status === 'live' ? '🔴 Join Live Webinar' : 'Join Webinar'}
+        `<button class="${joinButtonClass}" onclick='joinWebinar(${JSON.stringify(invite).replace(/'/g, "&apos;")})'>
+          ${joinButtonText}
         </button>` : 
         '<div style="color: #e53e3e; margin-top: 12px; font-weight: 600;">⚠️ Room information not available</div>'
       }
@@ -774,6 +968,8 @@ async function joinWebinar(invite) {
     loadingState.style.display = 'flex';
     loadingState.querySelector('span').textContent = 'Joining webinar...';
 
+    isHost = invite.is_host || false;
+
     // Initialize Daily.co call frame
     callFrame = DailyIframe.createFrame(videoContainer, {
       showLeaveButton: false,
@@ -782,17 +978,35 @@ async function joinWebinar(invite) {
       showParticipantsBar: true,
     });
 
-    // Join the webinar
-    await callFrame.join({
+    // Prepare join options
+    const joinOptions = {
       url: invite.room_url,
-      userName: invite.name || userEmail.split('@')[0],
-    });
+      userName: invite.name || userEmail.split('@')[0]
+    };
+
+    // If user is host and has host_token, add it to join options
+    if (isHost && invite.host_token) {
+      joinOptions.token = invite.host_token;
+      console.log('🎬 Joining as HOST with owner permissions');
+    } else {
+      console.log('Joining as regular participant');
+    }
+
+    // Join the webinar
+    await callFrame.join(joinOptions);
 
     loadingState.style.display = 'none';
     videoContainer.style.display = 'block';
     meetingControls.style.display = 'flex';
     
-    showSuccess('Successfully joined the webinar!');
+    // Show host controls if user is host
+    if (isHost) {
+      hostControls.style.display = 'block';
+      setupHostControls();
+      showSuccess('🎬 Successfully joined as host!');
+    } else {
+      showSuccess('Successfully joined the webinar!');
+    }
     
   } catch (error) {
     console.error('Error joining webinar:', error);
@@ -802,7 +1016,62 @@ async function joinWebinar(invite) {
   }
 }
 
-// Toggle mute
+// Setup host controls
+function setupHostControls() {
+  // Listen for participant events
+  callFrame.on('participant-joined', updateParticipantsList);
+  callFrame.on('participant-left', updateParticipantsList);
+  callFrame.on('participant-updated', updateParticipantsList);
+  
+  // Initial participant list
+  updateParticipantsList();
+}
+
+// Update participants list
+async function updateParticipantsList() {
+  if (!callFrame) return;
+  
+  try {
+    const participants = callFrame.participants();
+    participantsContainer.innerHTML = '';
+    
+    for (const [id, participant] of Object.entries(participants)) {
+      if (participant.local) continue; // Skip local user
+      
+      const participantDiv = document.createElement('div');
+      participantDiv.className = 'participant-item';
+      
+      participantDiv.innerHTML = `
+        <div class="participant-info">
+          <div class="participant-name">${participant.user_name || 'Guest'}</div>
+          <div class="participant-status">
+            🎤 ${participant.audio ? 'Unmuted' : 'Muted'} | 
+            📹 ${participant.video ? 'Video On' : 'Video Off'}
+          </div>
+        </div>
+        <div class="participant-actions">
+          <button class="participant-action-btn mute" onclick="toggleParticipantAudio('${id}', ${participant.audio})">
+            ${participant.audio ? 'Mute' : 'Unmute'}
+          </button>
+          <button class="participant-action-btn remove" onclick="removeParticipant('${id}')">
+            Remove
+          </button>
+        </div>
+      `;
+      
+      participantsContainer.appendChild(participantDiv);
+    }
+    
+    // Show message if no other participants
+    if (participantsContainer.children.length === 0) {
+      participantsContainer.innerHTML = '<div style="color: #718096; text-align: center; padding: 20px;">No other participants yet</div>';
+    }
+  } catch (error) {
+    console.error('Error updating participants list:', error);
+  }
+}
+
+// Toggle mute for local user
 async function toggleMute() {
   if (!callFrame) return;
   try {
@@ -820,7 +1089,7 @@ async function toggleMute() {
   }
 }
 
-// Toggle video
+// Toggle video for local user
 async function toggleVideo() {
   if (!callFrame) return;
   try {
@@ -835,6 +1104,120 @@ async function toggleVideo() {
     }
   } catch (error) {
     console.error('Error toggling video:', error);
+  }
+}
+
+// Mute all participants (host only)
+async function muteAllParticipants() {
+  if (!callFrame || !isHost) return;
+  
+  try {
+    const participants = callFrame.participants();
+    let mutedCount = 0;
+    
+    for (const [id, participant] of Object.entries(participants)) {
+      if (!participant.local && participant.audio) {
+        await callFrame.updateParticipant(id, { setAudio: false });
+        mutedCount++;
+      }
+    }
+    
+    showSuccess(`Muted ${mutedCount} participant${mutedCount !== 1 ? 's' : ''}`);
+    updateParticipantsList();
+  } catch (error) {
+    console.error('Error muting participants:', error);
+    showError('Failed to mute participants: ' + error.message);
+  }
+}
+
+// Toggle recording (host only)
+async function toggleRecording() {
+  if (!callFrame || !isHost) return;
+  
+  try {
+    if (isRecording) {
+      await callFrame.stopRecording();
+      startRecordingBtn.textContent = '● Start Recording';
+      startRecordingBtn.style.background = '#e53e3e';
+      isRecording = false;
+      showSuccess('Recording stopped');
+    } else {
+      await callFrame.startRecording();
+      startRecordingBtn.textContent = '⏹ Stop Recording';
+      startRecordingBtn.style.background = '#c53030';
+      isRecording = true;
+      showSuccess('Recording started');
+    }
+  } catch (error) {
+    console.error('Error toggling recording:', error);
+    showError('Failed to toggle recording: ' + error.message);
+  }
+}
+
+// End meeting for all participants (host only)
+async function endMeetingForAll() {
+  if (!callFrame || !isHost) return;
+  
+  if (!confirm('Are you sure you want to end the webinar for all participants? This cannot be undone.')) {
+    return;
+  }
+  
+  try {
+    // Get all participants and eject them
+    const participants = callFrame.participants();
+    
+    for (const [id, participant] of Object.entries(participants)) {
+      if (!participant.local) {
+        await callFrame.updateParticipant(id, { eject: true });
+      }
+    }
+    
+    showSuccess('Webinar ended for all participants');
+    
+    // Leave after 2 seconds
+    setTimeout(() => {
+      leaveWebinar();
+    }, 2000);
+    
+  } catch (error) {
+    console.error('Error ending meeting:', error);
+    showError('Failed to end meeting for all: ' + error.message);
+  }
+}
+
+// Toggle participant audio (host only)
+async function toggleParticipantAudio(participantId, currentAudioState) {
+  if (!callFrame || !isHost) return;
+  
+  try {
+    await callFrame.updateParticipant(participantId, { 
+      setAudio: !currentAudioState 
+    });
+    updateParticipantsList();
+    showSuccess('Participant audio updated');
+  } catch (error) {
+    console.error('Error toggling participant audio:', error);
+    showError('Failed to update participant audio');
+  }
+}
+
+// Remove participant (host only)
+async function removeParticipant(participantId) {
+  if (!callFrame || !isHost) return;
+  
+  if (!confirm('Remove this participant from the webinar?')) {
+    return;
+  }
+  
+  try {
+    await callFrame.updateParticipant(participantId, { 
+      eject: true 
+    });
+    showSuccess('Participant removed');
+    updateParticipantsList();
+  } catch (error) {
+    console.error('Error removing participant:', error);
+    showError('Failed to remove participant');
   }
 }
 
@@ -859,6 +1242,7 @@ function showEmailForm() {
   webinarsList.style.display = 'none';
   videoContainer.style.display = 'none';
   meetingControls.style.display = 'none';
+  hostControls.style.display = 'none';
   loadingState.style.display = 'none';
   errorMessage.style.display = 'none';
   successMessage.style.display = 'none';
@@ -877,6 +1261,8 @@ function showEmailForm() {
   currentWebinars = [];
   isMuted = false;
   isVideoOff = false;
+  isRecording = false;
+  isHost = false;
 }
 
 // Check for URL parameters (email pre-fill)
