@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Your Webinar - Victory Vision</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@daily-co/daily-js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a3161 0%, #1a4c80 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .webinar-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 900px;
+      margin: 20px;
+      overflow: hidden;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .webinar-header {
+      background: linear-gradient(135deg, #bb133e 0%, #0a3161 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-weight: bold;
+      color: #bb133e;
+      font-size: 24px;
+    }
+
+    .webinar-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .webinar-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .webinar-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .email-form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 1rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #bb133e;
+      box-shadow: 0 0 0 3px rgba(187, 19, 62, 0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #bb133e 0%, #0a3161 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(187, 19, 62, 0.3);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .message {
+      padding: 14px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .error-message {
+      background-color: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+
+    .success-message {
+      background-color: #efe;
+      color: #3c3;
+      border: 1px solid #cfc;
+    }
+
+    .loading-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 40px;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e2e8f0;
+      border-top-color: #bb133e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .webinars-list {
+      display: none;
+      padding: 20px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .webinar-item {
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .webinar-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #bb133e 0%, #fd7e14 100%);
+    }
+
+    .webinar-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      border-color: #bb133e;
+    }
+
+    .webinar-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #bb133e 0%, #fd7e14 100%);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .webinar-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0a3161;
+      margin-bottom: 12px;
+    }
+
+    .webinar-details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #4a5568;
+      font-size: 1rem;
+    }
+
+    .detail-icon {
+      font-size: 1.2rem;
+    }
+
+    .registrant-info {
+      background: rgba(187, 19, 62, 0.05);
+      border-left: 4px solid #bb133e;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .attendee-count {
+      background: rgba(10, 49, 97, 0.05);
+      border-left: 4px solid #0a3161;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #4a5568;
+    }
+
+    .join-button {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #bb133e 0%, #fd7e14 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .join-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(187, 19, 62, 0.4);
+    }
+
+    .back-button {
+      padding: 10px 20px;
+      background: #e2e8f0;
+      color: #2d3748;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+      background: #cbd5e0;
+    }
+
+    .video-container {
+      display: none;
+      width: 100%;
+      height: 600px;
+      background: #000;
+    }
+
+    .meeting-controls {
+      display: none;
+      padding: 20px;
+      background: #f8f9fa;
+      display: none;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .control-btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .control-btn.mute {
+      background: #4299e1;
+      color: white;
+    }
+
+    .control-btn.video {
+      background: #48bb78;
+      color: white;
+    }
+
+    .control-btn.leave {
+      background: #f56565;
+      color: white;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    .status-upcoming {
+      background: #fd7e14;
+    }
+
+    .status-live {
+      background: #48bb78;
+      animation: pulse 2s infinite;
+    }
+
+    .status-past {
+      background: #cbd5e0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @media (max-width: 768px) {
+      .webinar-title {
+        font-size: 1.5rem;
+      }
+      
+      .webinar-content {
+        padding: 20px;
+      }
+
+      .webinar-item {
+        padding: 16px;
+      }
+
+      .webinar-name {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="webinar-container">
+  <div class="webinar-header">
+    <div class="logo">VV</div>
+    <h1 class="webinar-title">Victory Vision Webinars</h1>
+    <p class="webinar-subtitle">Enter your email to access your registered webinars</p>
+  </div>
+
+  <div class="webinar-content">
+    <!-- Error/Success Messages -->
+    <div id="errorMessage" class="message error-message"></div>
+    <div id="successMessage" class="message success-message"></div>
+
+    <!-- Email Form -->
+    <div id="emailForm" class="email-form">
+      <div class="form-group">
+        <label class="form-label" for="emailInput">Email Address</label>
+        <input 
+          type="email" 
+          id="emailInput" 
+          class="form-input" 
+          placeholder="your.email@company.com"
+          required
+        />
+      </div>
+      <button type="button" class="submit-btn" onclick="findWebinars()">
+        View My Webinars
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-state">
+      <div class="spinner"></div>
+      <span>Finding your webinars...</span>
+    </div>
+
+    <!-- Webinars List -->
+    <div id="webinarsList" class="webinars-list"></div>
+  </div>
+
+  <!-- Video Container -->
+  <div id="videoContainer" class="video-container"></div>
+
+  <!-- Meeting Controls -->
+  <div id="meetingControls" class="meeting-controls">
+    <button id="muteBtn" class="control-btn mute">Mute</button>
+    <button id="videoBtn" class="control-btn video">Video</button>
+    <button id="leaveBtn" class="control-btn leave">Leave Webinar</button>
+  </div>
+</div>
+
+<script>
+// Supabase configuration
+const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// DOM Elements
+const emailInput = document.getElementById('emailInput');
+const emailForm = document.getElementById('emailForm');
+const loadingState = document.getElementById('loadingState');
+const webinarsList = document.getElementById('webinarsList');
+const videoContainer = document.getElementById('videoContainer');
+const meetingControls = document.getElementById('meetingControls');
+const errorMessage = document.getElementById('errorMessage');
+const successMessage = document.getElementById('successMessage');
+const muteBtn = document.getElementById('muteBtn');
+const videoBtn = document.getElementById('videoBtn');
+const leaveBtn = document.getElementById('leaveBtn');
+
+// State
+let userEmail = '';
+let currentWebinars = [];
+let callFrame = null;
+let isMuted = false;
+let isVideoOff = false;
+
+// Control button event listeners
+muteBtn.addEventListener('click', toggleMute);
+videoBtn.addEventListener('click', toggleVideo);
+leaveBtn.addEventListener('click', leaveWebinar);
+
+// Show error message
+function showError(message) {
+  errorMessage.textContent = message;
+  errorMessage.style.display = 'block';
+  successMessage.style.display = 'none';
+  setTimeout(() => {
+    errorMessage.style.display = 'none';
+  }, 5000);
+}
+
+// Show success message
+function showSuccess(message) {
+  successMessage.textContent = message;
+  successMessage.style.display = 'block';
+  errorMessage.style.display = 'none';
+  setTimeout(() => {
+    successMessage.style.display = 'none';
+  }, 3000);
+}
+
+// Validate email format
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Format date/time
+function formatDateTime(dateString) {
+  const date = new Date(dateString);
+  const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  };
+  return date.toLocaleString('en-US', options);
+}
+
+// Get webinar status
+function getWebinarStatus(scheduledStart, scheduledEnd) {
+  const now = new Date();
+  const start = new Date(scheduledStart);
+  const end = scheduledEnd ? new Date(scheduledEnd) : new Date(start.getTime() + 60 * 60 * 1000); // Default 1 hour
+  
+  if (now < start) {
+    return 'upcoming';
+  } else if (now >= start && now <= end) {
+    return 'live';
+  } else {
+    return 'past';
+  }
+}
+
+// Extract webinar name from room URL or use default
+function getWebinarName(invite) {
+  if (invite.name && invite.name !== 'Victory Vision Meeting') {
+    return invite.name;
+  }
+  
+  if (invite.room_url) {
+    const match = invite.room_url.match(/Webinar-([^-]+)/);
+    if (match && match[1]) {
+      return match[1].replace(/([A-Z])/g, ' $1').trim();
+    }
+  }
+  
+  return 'Victory Vision Webinar';
+}
+
+// Find webinars for the user
+async function findWebinars() {
+  const email = emailInput.value.trim();
+  
+  if (!email) {
+    showError('Please enter your email address');
+    return;
+  }
+  
+  if (!isValidEmail(email)) {
+    showError('Please enter a valid email address');
+    return;
+  }
+
+  userEmail = email;
+  
+  // Show loading state
+  emailForm.style.display = 'none';
+  loadingState.style.display = 'flex';
+  
+  try {
+    console.log('Searching for webinar registrations:', email);
+    
+    // Query meeting_invites table for webinars
+    // Filter by email and location containing '/webinar' or event_type = 'webinar'
+    const { data: webinarInvites, error } = await supabaseClient
+      .from('meeting_invites')
+      .select('*')
+      .eq('email', email)
+      .or('location.ilike.%/webinar%,event_type.eq.webinar');
+
+    console.log('Query result:', { webinarInvites, error });
+
+    // If the above query doesn't work, try simpler version
+    if (error && error.code === '42883') {
+      console.log('Trying alternative query...');
+      const { data: allInvites, error: error2 } = await supabaseClient
+        .from('meeting_invites')
+        .select('*')
+        .eq('email', email);
+      
+      if (error2) {
+        throw error2;
+      }
+      
+      // Filter for webinars client-side
+      const webinarInvites2 = allInvites.filter(invite => 
+        (invite.location && invite.location.includes('/webinar')) ||
+        invite.event_type === 'webinar' ||
+        (invite.room_url && invite.room_url.includes('Webinar-'))
+      );
+      
+      if (webinarInvites2.length === 0) {
+        loadingState.style.display = 'none';
+        showError('No webinar registrations found for: ' + email);
+        emailForm.style.display = 'block';
+        return;
+      }
+      
+      currentWebinars = webinarInvites2;
+      await displayWebinars(webinarInvites2);
+      return;
+    }
+
+    loadingState.style.display = 'none';
+
+    if (error) {
+      console.error('Database error:', error);
+      showError('Database error: ' + error.message);
+      emailForm.style.display = 'block';
+      return;
+    }
+
+    if (!webinarInvites || webinarInvites.length === 0) {
+      showError('No webinar registrations found for: ' + email);
+      emailForm.style.display = 'block';
+      return;
+    }
+
+    currentWebinars = webinarInvites;
+    await displayWebinars(webinarInvites);
+    
+  } catch (error) {
+    console.error('Error finding webinars:', error);
+    loadingState.style.display = 'none';
+    showError('Error: ' + error.message);
+    emailForm.style.display = 'block';
+  }
+}
+
+// Get attendee count for a webinar
+async function getAttendeeCount(roomUrl, scheduledStart) {
+  try {
+    const { data, error } = await supabaseClient
+      .from('meeting_invites')
+      .select('email', { count: 'exact', head: true })
+      .eq('room_url', roomUrl)
+      .eq('scheduled_start', scheduledStart);
+    
+    if (error) {
+      console.error('Error getting attendee count:', error);
+      return null;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Error counting attendees:', error);
+    return null;
+  }
+}
+
+// Display webinars list
+async function displayWebinars(webinarInvites) {
+  webinarsList.innerHTML = '';
+  
+  // Group webinars by room_url and scheduled_start to avoid duplicates
+  const webinarMap = new Map();
+  
+  webinarInvites.forEach(invite => {
+    const key = `${invite.room_url}-${invite.scheduled_start}`;
+    if (!webinarMap.has(key)) {
+      webinarMap.set(key, invite);
+    }
+  });
+  
+  const uniqueWebinars = Array.from(webinarMap.values());
+  
+  // Sort by scheduled start time (upcoming first)
+  uniqueWebinars.sort((a, b) => {
+    const dateA = new Date(a.scheduled_start || a.start_at);
+    const dateB = new Date(b.scheduled_start || b.start_at);
+    return dateA - dateB;
+  });
+  
+  for (const invite of uniqueWebinars) {
+    const webinarItem = document.createElement('div');
+    webinarItem.className = 'webinar-item';
+    
+    const webinarName = getWebinarName(invite);
+    const scheduledTime = invite.scheduled_start || invite.start_at;
+    const scheduledEnd = invite.scheduled_end || invite.end_at;
+    const status = getWebinarStatus(scheduledTime, scheduledEnd);
+    
+    // Get attendee count
+    let attendeeCountHTML = '';
+    if (invite.room_url && scheduledTime) {
+      try {
+        const { count, error } = await supabaseClient
+          .from('meeting_invites')
+          .select('*', { count: 'exact', head: true })
+          .eq('room_url', invite.room_url)
+          .eq('scheduled_start', scheduledTime);
+        
+        if (!error && count > 0) {
+          attendeeCountHTML = `
+            <div class="attendee-count">
+              👥 ${count} registered ${count === 1 ? 'attendee' : 'attendees'}
+            </div>
+          `;
+        }
+      } catch (e) {
+        console.error('Error getting count:', e);
+      }
+    }
+    
+    let statusBadge = '';
+    let statusClass = 'status-upcoming';
+    let statusText = 'Upcoming';
+    
+    if (status === 'live') {
+      statusClass = 'status-live';
+      statusText = '🔴 LIVE NOW';
+    } else if (status === 'past') {
+      statusClass = 'status-past';
+      statusText = 'Completed';
+    }
+    
+    statusBadge = `<span class="webinar-badge"><span class="status-indicator ${statusClass}"></span>${statusText}</span>`;
+    
+    webinarItem.innerHTML = `
+      ${statusBadge}
+      <div class="webinar-name">${webinarName}</div>
+      <div class="webinar-details">
+        <div class="detail-row">
+          <span class="detail-icon">📅</span>
+          <span>${formatDateTime(scheduledTime)}</span>
+        </div>
+      </div>
+      <div class="registrant-info">
+        ✓ Registered as: ${invite.name || userEmail.split('@')[0]}
+      </div>
+      ${attendeeCountHTML}
+      ${invite.room_url ? 
+        `<button class="join-button" onclick='joinWebinar(${JSON.stringify(invite).replace(/'/g, "&apos;")})'>
+          ${status === 'live' ? '🔴 Join Live Webinar' : 'Join Webinar'}
+        </button>` : 
+        '<div style="color: #e53e3e; margin-top: 12px; font-weight: 600;">⚠️ Room information not available</div>'
+      }
+    `;
+    
+    webinarsList.appendChild(webinarItem);
+  }
+  
+  // Add back button
+  const backButton = document.createElement('button');
+  backButton.className = 'back-button';
+  backButton.textContent = '← Enter Different Email';
+  backButton.onclick = showEmailForm;
+  webinarsList.appendChild(backButton);
+  
+  webinarsList.style.display = 'block';
+}
+
+// Join a specific webinar
+async function joinWebinar(invite) {
+  if (!invite.room_url) {
+    showError('No room URL available');
+    return;
+  }
+
+  try {
+    webinarsList.style.display = 'none';
+    loadingState.style.display = 'flex';
+    loadingState.querySelector('span').textContent = 'Joining webinar...';
+
+    // Initialize Daily.co call frame
+    callFrame = DailyIframe.createFrame(videoContainer, {
+      showLeaveButton: false,
+      showFullscreenButton: true,
+      showLocalVideo: true,
+      showParticipantsBar: true,
+    });
+
+    // Join the webinar
+    await callFrame.join({
+      url: invite.room_url,
+      userName: invite.name || userEmail.split('@')[0],
+    });
+
+    loadingState.style.display = 'none';
+    videoContainer.style.display = 'block';
+    meetingControls.style.display = 'flex';
+    
+    showSuccess('Successfully joined the webinar!');
+    
+  } catch (error) {
+    console.error('Error joining webinar:', error);
+    loadingState.style.display = 'none';
+    showError('Unable to join webinar: ' + error.message);
+    webinarsList.style.display = 'block';
+  }
+}
+
+// Toggle mute
+async function toggleMute() {
+  if (!callFrame) return;
+  try {
+    if (isMuted) {
+      await callFrame.setLocalAudio(true);
+      muteBtn.textContent = 'Mute';
+      isMuted = false;
+    } else {
+      await callFrame.setLocalAudio(false);
+      muteBtn.textContent = 'Unmute';
+      isMuted = true;
+    }
+  } catch (error) {
+    console.error('Error toggling mute:', error);
+  }
+}
+
+// Toggle video
+async function toggleVideo() {
+  if (!callFrame) return;
+  try {
+    if (isVideoOff) {
+      await callFrame.setLocalVideo(true);
+      videoBtn.textContent = 'Video';
+      isVideoOff = false;
+    } else {
+      await callFrame.setLocalVideo(false);
+      videoBtn.textContent = 'Start Video';
+      isVideoOff = true;
+    }
+  } catch (error) {
+    console.error('Error toggling video:', error);
+  }
+}
+
+// Leave webinar
+async function leaveWebinar() {
+  if (!callFrame) return;
+  try {
+    await callFrame.leave();
+    callFrame.destroy();
+    callFrame = null;
+    showEmailForm();
+    showSuccess('You have left the webinar.');
+  } catch (error) {
+    console.error('Error leaving webinar:', error);
+    showEmailForm();
+  }
+}
+
+// Show email form (reset to initial state)
+function showEmailForm() {
+  emailForm.style.display = 'block';
+  webinarsList.style.display = 'none';
+  videoContainer.style.display = 'none';
+  meetingControls.style.display = 'none';
+  loadingState.style.display = 'none';
+  errorMessage.style.display = 'none';
+  successMessage.style.display = 'none';
+  
+  if (callFrame) {
+    try {
+      callFrame.destroy();
+      callFrame = null;
+    } catch (error) {
+      console.error('Error destroying call frame:', error);
+    }
+  }
+  
+  emailInput.value = '';
+  userEmail = '';
+  currentWebinars = [];
+  isMuted = false;
+  isVideoOff = false;
+}
+
+// Check for URL parameters (email pre-fill)
+window.addEventListener('load', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const emailParam = urlParams.get('email');
+  
+  if (emailParam && isValidEmail(emailParam)) {
+    emailInput.value = emailParam;
+    findWebinars();
+  }
+});
+
+// Handle page refresh/close
+window.addEventListener('beforeunload', () => {
+  if (callFrame) {
+    try {
+      callFrame.leave();
+      callFrame.destroy();
+    } catch (error) {
+      console.error('Error cleaning up on page unload:', error);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
