@@ -2613,53 +2613,82 @@ async function enrollInWorkflows() {
       )
     ).filter(c => c && c.email);
 
-    for (const workflow of selectedWorkflows) {
+for (const workflow of selectedWorkflows) {
       let endpoint;
+      let useCustomCampaign = false;
+      let campaignPrompt = '';
       
       switch(workflow) {
         case 'ads':
           endpoint = ENDPOINTS.enrollAds;
           break;
         case 'nurture':
-          endpoint = ENDPOINTS.enrollNurture;
+          useCustomCampaign = true;
+          campaignPrompt = 'Create a thoughtful lead nurture email sequence that provides valuable educational content. Focus on building trust and demonstrating expertise without being overly promotional. Include helpful tips, industry insights, and resources that genuinely help the recipient solve their problems.';
           break;
         case 'meeting':
           endpoint = ENDPOINTS.enrollMeeting;
           break;
-        case 'followup':
-          endpoint = ENDPOINTS.enrollFollowup;
-          break;
-          case 'newsletter':
+     case 'newsletter':
           endpoint = ENDPOINTS.enrollNewsletter;
+          break;
+        case 'followup':
+          useCustomCampaign = true;
+          campaignPrompt = 'Create a professional follow-up email sequence to re-engage prospects who have gone quiet. Be respectful of their time while reminding them of the value you can provide. Include a soft call-to-action and make it easy for them to respond or schedule a conversation.';
           break;
         default:
           endpoint = ENDPOINTS.enrollNurture;
       }
       
-      for (const contact of selectedContactsList) {
+      if (useCustomCampaign) {
         try {
-          await apiCall(endpoint, {
-            email: contact.email,
-            name: contact.name,
-            workflow: workflow,
-            contact_id: contact.contact_id || contact.id || contact.email
+          await apiCall(ENDPOINTS.customEmailCampaign, {
+            campaign_name: workflow === 'nurture' ? 'Lead Nurture Sequence' : 'Follow-up Sequence',
+            description: campaignPrompt,
+            email_count: 3,
+            tone: 'professional',
+            schedule_start_date: new Date().toISOString(),
+            selected_contacts: selectedContactsList.map(c => c.contact_id || c.id || c.email)
           });
           
-          const currentWorkflows = contact.workflow_status ? 
-            contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
-          if (!currentWorkflows.includes(workflow)) {
-            currentWorkflows.push(workflow);
-            contact.workflow_status = currentWorkflows.join(',');
+          for (const contact of selectedContactsList) {
+            const currentWorkflows = contact.workflow_status ? 
+              contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
+            if (!currentWorkflows.includes(workflow)) {
+              currentWorkflows.push(workflow);
+              contact.workflow_status = currentWorkflows.join(',');
+            }
+            contact.last_emailed_date = new Date().toISOString();
           }
           
-          contact.last_emailed_date = new Date().toISOString();
-          
         } catch (workflowError) {
-          console.error(`Error enrolling ${contact.email} in ${workflow}:`, workflowError);
+          console.error(`Error enrolling in ${workflow}:`, workflowError);
+        }
+      } else {
+        for (const contact of selectedContactsList) {
+          try {
+            await apiCall(endpoint, {
+              email: contact.email,
+              name: contact.name,
+              workflow: workflow,
+              contact_id: contact.contact_id || contact.id || contact.email
+            });
+            
+            const currentWorkflows = contact.workflow_status ? 
+              contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
+            if (!currentWorkflows.includes(workflow)) {
+              currentWorkflows.push(workflow);
+              contact.workflow_status = currentWorkflows.join(',');
+            }
+            
+            contact.last_emailed_date = new Date().toISOString();
+            
+          } catch (workflowError) {
+            console.error(`Error enrolling ${contact.email} in ${workflow}:`, workflowError);
+          }
         }
       }
-    }
-    
+    }    
     showStatus(`Enrolled ${selectedContactsList.length} contacts in ${selectedWorkflows.length} workflows`, false);
     selectedContacts.clear();
     updateSelectedCount();
