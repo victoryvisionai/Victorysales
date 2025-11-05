@@ -856,7 +856,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       <h3>👥 Your Contacts Database</h3>
     </div>
     
-    <!-- Email Workflows Section - UPDATED: Removed Newsletter Signup -->
+    <!-- Email Workflows Section -->
     <div class="workflow-section" data-intro="Select email workflows to enroll your contacts. Choose multiple workflows and then use the 'Enroll in Workflows' button to automate your outreach." data-step="3">
       <h4 style="margin: 0 0 15px 0; color: #0A3161;">📧 Available Email Workflows</h4>
       <div class="workflow-list" id="workflowList">
@@ -1491,7 +1491,7 @@ const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// API endpoints - ALL operations go through n8n for security
+// API endpoints 
 const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
@@ -1504,6 +1504,7 @@ const ENDPOINTS = {
   enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture',
   enrollMeeting: 'https://victoryvision.app.n8n.cloud/webhook/emails/meeting',
   enrollFollowup: 'https://victoryvision.app.n8n.cloud/webhook/emails/followup',
+  enrollNewsletter: 'https://victoryvision.app.n8n.cloud/webhook/emails/newsletter',
   removeContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/remove',
   // NEW ENDPOINTS
   customEmailCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/usergenerated',
@@ -1511,7 +1512,6 @@ const ENDPOINTS = {
   createSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/create',
   makeCall: 'https://victoryvision.app.n8n.cloud/webhook/call/make',
   generateScript: 'https://victoryvision.app.n8n.cloud/webhook/call/script'
-
 };
 
 // Global variables
