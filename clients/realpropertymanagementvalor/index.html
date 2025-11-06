@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Property Management Valor</title>
+  <meta name="description" content="Full-service property management designed for real estate investors with 15–35+ units. Increase ROI, reduce hassle, and ensure compliance with Real Property Management Valor.">
+  <meta property="og:title" content="Real Property Management Valor - Expert Portfolio Property Management" />
+  <meta property="og:description" content="Increase ROI and peace of mind. We manage properties for serious real estate investors, providing screening, maintenance, rent collection, and financial reporting." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1754423104/tzje2wked3yr7rvqjru5.jpg" />
+  <meta property="og:url" content="https://www.realpmvalor.com" />
+  <meta name="theme-color" content="#152857" />
+  <link rel="icon" href="https://fav.farm/🏢" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #152857;
+      --red: #a43a4a;
+      --light: #f5f5f5;
+      --dark: #111;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light);
+      color: var(--blue);
+      line-height: 1.6;
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    header, nav, main, footer, section {
+      width: 100%;
+    }
+    .global-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 2;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(21, 40, 87, 0.6);
+    }
+    .global-header img.logo {
+      width: 180px;
+    }
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .hero-overlay {
+      position: relative;
+      background: rgba(21, 40, 87, 0.6);
+      padding: 4rem 2rem;
+      max-width: 900px;
+      z-index: 1;
+      margin: 0 1rem;
+    }
+    .hero-overlay h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .hero-overlay p {
+      font-size: 1.25rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      color: #f5f5f5;
+    }
+    .cta-button {
+      background-color: var(--red);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: inline-block;
+    }
+    .cta-button:hover {
+      background-color: #8f2f3e;
+    }
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--blue);
+    }
+    .section p {
+      font-size: 1.125rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+    .section ul {
+      list-style: disc inside;
+      color: #333;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    .section strong {
+      color: var(--red);
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .feature-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(21, 40, 87, 0.08);
+      transition: transform 0.3s ease;
+    }
+    .feature-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(21, 40, 87, 0.1);
+    }
+    .feature-box h3 {
+      color: var(--red);
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+    .testimonials {
+      background: var(--blue);
+      color: #fff;
+      padding: 4rem 2rem;
+    }
+    .testimonial {
+      max-width: 900px;
+      margin: 0 auto;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .testimonial cite {
+      display: block;
+      margin-top: 1rem;
+      font-style: normal;
+      font-weight: 700;
+      color: var(--red);
+    }
+    .cta {
+      background: var(--red);
+      color: #fff;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .cta h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .cta p {
+      font-size: 1.125rem;
+    }
+    .cta form {
+      max-width: 600px;
+      margin: 2rem auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .cta input,
+    .cta textarea {
+      padding: 0.75rem 1rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .cta button {
+      padding: 0.75rem 1.5rem;
+      background-color: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .cta button:hover {
+      background-color: #0f1e46;
+    }
+    footer {
+      padding: 2rem;
+      background: var(--dark);
+      color: #aaa;
+      text-align: center;
+      font-size: 0.875rem;
+    }
+    @media (max-width: 768px) {
+      .hero-overlay h1 {
+        font-size: 2.25rem;
+      }
+      .global-header {
+        padding: 0.5rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .cta form {
+        padding: 0 1rem;
+      }
+      .section h2 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="global-header">
+    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1754423104/tzje2wked3yr7rvqjru5.jpg" alt="Real Property Management Valor Logo" class="logo" />
+  </header>
+
+  <section class="hero" role="banner">
+    <video autoplay muted loop playsinline poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1754423104/tzje2wked3yr7rvqjru5.jpg">
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1754424267/viral_campaign_final_df49a41f3642c2e5.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="hero-overlay">
+      <h1>Your Partner in Portfolio Growth</h1>
+      <p>Comprehensive property management for investors with 15–35+ units. We maximize ROI while eliminating tenant and compliance stress.</p>
+      <a href="#consultation-form" class="cta-button">Request a Free Consultation</a>
+    </div>
+  </section>
+
+  <main>
+    <section class="section">
+      <h2>Strategic Property Management for Serious Investors</h2>
+      <p><strong>Designed for portfolio investors and multifamily operators</strong>, Real Property Management Valor delivers measurable financial performance rooted in full-service leasing, maintenance, and compliance strategies.</p>
+      <ul>
+        <li><strong>11% Increase in Net Rental Yields</strong> across client portfolios (avg. 2023)</li>
+        <li><strong>Zero Compliance Violations</strong> via proactive documentation and monitoring</li>
+        <li><strong>96% Tenant Retention</strong> through transparency and professional service</li>
+      </ul>
+      <p>We eliminate day-to-day headaches so you can focus on scaling confidently.</p>
+    </section>
+
+    <section class="section" aria-label="Investor Benefits">
+      <h2>We Solve for ROI and Peace of Mind</h2>
+      <p>Managing 15 to 35 residential units is challenging without the right systems. Our investors value transparency, consistent returns, and zero hassle. That’s why we bring:</p>
+      <ul>
+        <li><strong>Financial visibility</strong> via real-time dashboards</li>
+        <li><strong>Trusted vendor relationships</strong> to reduce repair costs</li>
+        <li><strong>Proactive lease enforcement</strong> to protect your equity</li>
+      </ul>
+    </section>
+
+    <section class="section" aria-label="Core Services">
+      <h2>Core Services Designed Around Investor Needs</h2>
+      <div class="features">
+        <div class="feature-box">
+          <h3>Tenant Screening</h3>
+          <p>From background checks to income verification, we place only reliable, long-term residents that protect your asset performance.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Rent Collection</h3>
+          <p>Digital rent systems and late fee structures deliver cash flow dependability you can plan on.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Maintenance Coordination</h3>
+          <p>24/7 request systems keep tenants happy and assets preserved—without markups or ambiguity.</p>
+        </div>
+        <div class="feature-box">
+          <h3>Financial Reporting</h3>
+          <p>Custom investor dashboards, monthly income statements, and year-end tax summaries—delivered with precision.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials" aria-label="Client Testimonials">
+      <h2 style="text-align:center; margin-bottom:2rem;">What Our Clients Say</h2>
+      <blockquote class="testimonial">
+        "Valor increased our annual rental yield by 11% while improving tenant satisfaction. Their reporting and responsiveness make us feel like we’re still in control – without any of the stress."
+        <cite>– J. McConnell, Multifamily Portfolio Investor, Denver CO</cite>
+      </blockquote>
+    </section>
+
+    <section class="cta" id="consultation-form" aria-label="Consultation Form">
+      <h2>Start Maximizing Your Portfolio Today</h2>
+      <p>Schedule a free consultation to see how Valor removes risk, boosts returns, and handles the details with transparency.</p>
+      <form>
+        <input type="text" name="name" placeholder="Your Full Name" required />
+        <input type="email" name="email" placeholder="Email Address" required />
+        <input type="tel" name="phone" placeholder="Phone Number" />
+        <textarea name="message" rows="4" placeholder="Tell us about your portfolio"></textarea>
+        <button type="submit">Request Consultation</button>
+      </form>
+    </section>
+  </main>
+
+  <!-- SMS Opt-in Compliance Footer -->
+<div style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: #f8fafc; border-radius: 8px; font-size: 0.85rem; color: #475569; line-height: 1.6;">
+  <h4 style="color: #0a3161; margin-bottom: 1rem; font-size: 1rem;">Stay Connected via Text</h4>
+  
+  <form id="smsForm" action="https://victoryvision.app.n8n.cloud/webhook/sms/optin" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <input type="tel" name="phone" placeholder="+1 987-654-3210" required 
+             style="flex: 1; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;">
+      <button type="submit" 
+              style="background: #bb133e; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 600; white-space: nowrap;">
+        Text Me
+      </button>
+    </div>
+    
+    <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
+      <input type="checkbox" name="sms_consent" style="margin-top: 0.25rem;">
+      <span>By checking this box, you agree to receive SMS marketing messages from Victory Vision. Message frequency may vary. Standard message and data rates may apply. Reply STOP to opt out. Reply HELP for help. We will not share mobile information with third parties for promotional or marketing purposes.</span>
+    </label>
+    
+    <input type="hidden" name="use_case" value="MARKETING">
+  </form>
+  
+  <p style="margin-top: 1rem; font-size: 0.8rem; color: #64748b;">
+    By signing up via text, you agree to receive recurring marketing messages from Victory Vision at the phone number provided. Consent is not a condition of purchase. Message frequency varies. Msg & data rates may apply. 
+    View our <a href="/privacy.html" style="color: #0a3161; text-decoration: underline;">Privacy Policy</a> and <a href="/terms.html" style="color: #0a3161; text-decoration: underline;">Terms of Service</a>.
+  </p>
+</div>
+<script>
+document.getElementById('smsForm').onsubmit = function(e) {
+  e.preventDefault();
+  fetch(this.action, {method: 'POST', body: new FormData(this)});
+  alert('Thanks! Check your phone.');
+  this.reset();
+};
+
+</script>
+  <!-- Footer -->
+  <footer role="contentinfo">
+    <p>&copy; 2024 Real Property Management Valor. Built with integrity and precision. All Rights Reserved.</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a>.</p>
+  </footer>
+
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=8064a2fdcebe10fd29427782a741e7a326a7cd6e" width="1" height="1" style="display:none;" alt="Tracking Pixel"/>
+
+</body>
+</html>
