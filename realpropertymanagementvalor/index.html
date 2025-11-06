@@ -1,0 +1,47 @@
+
+  </main>
+  <!-- SMS Opt-in Compliance Footer -->
+<div style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: #f8fafc; border-radius: 8px; font-size: 0.85rem; color: #475569; line-height: 1.6;">
+  <h4 style="color: #0a3161; margin-bottom: 1rem; font-size: 1rem;">Stay Connected via Text</h4>
+  
+  <form id="smsForm" action="https://victoryvision.app.n8n.cloud/webhook/sms/optin" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <input type="tel" name="phone" placeholder="+1 987-654-3210" required 
+             style="flex: 1; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;">
+      <button type="submit" 
+              style="background: #bb133e; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 600; white-space: nowrap;">
+        Text Me
+      </button>
+    </div>
+    
+    <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
+      <input type="checkbox" name="sms_consent" style="margin-top: 0.25rem;">
+      <span>By checking this box, you agree to receive SMS marketing messages from Victory Vision. Message frequency may vary. Standard message and data rates may apply. Reply STOP to opt out. Reply HELP for help. We will not share mobile information with third parties for promotional or marketing purposes.</span>
+    </label>
+    
+    <input type="hidden" name="use_case" value="MARKETING">
+  </form>
+  
+  <p style="margin-top: 1rem; font-size: 0.8rem; color: #64748b;">
+    By signing up via text, you agree to receive recurring marketing messages from Victory Vision at the phone number provided. Consent is not a condition of purchase. Message frequency varies. Msg & data rates may apply. 
+    View our <a href="/privacy.html" style="color: #0a3161; text-decoration: underline;">Privacy Policy</a> and <a href="/terms.html" style="color: #0a3161; text-decoration: underline;">Terms of Service</a>.
+  </p>
+</div>
+<script>
+document.getElementById('smsForm').onsubmit = function(e) {
+  e.preventDefault();
+  fetch(this.action, {method: 'POST', body: new FormData(this)});
+  alert('Thanks! Check your phone.');
+  this.reset();
+};
+</script>
+  <!-- Footer -->
+  <footer>
+    &copy; 2024 Victory Vision — Veteran Owned. Purpose Driven. Results Delivered.<br>
+    <span>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app">Build your AI website at Victory Vision</a></span>
+  </footer>
+
+  <!-- Tracking Pixel -->
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=248c598a5c900c13037469175340c1d04b3187b6" width="1" height="1" style="display:none;" alt="Tracking Pixel">
+</body>
+</html>
