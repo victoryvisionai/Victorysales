@@ -1175,16 +1175,12 @@
               <textarea id="imageChat" required placeholder="Describe the image you want to create..." data-intro="Describe what you want to create in detail. Be specific about style, colors, composition, and mood for better AI results." data-step="5"></textarea>
             </div>
             
-            <div class="form-group">
-              <label for="imageUpload">Reference Image (Optional)</label>
-              <input type="file" id="imageUpload" accept="image/*" data-intro="Upload a reference image to guide the AI generation. This helps create images in a similar style or composition." data-step="6">
-            </div>
-            
-            <div class="form-group">
-              <label>Existing Images (Click to reference)</label>
-              <div id="imageReferenceList" class="reference-list">
-                Loading available images...
-              </div>
+     <div class="form-group">
+              <label>Reference Image (Optional)</label>
+              <button type="button" class="browse-btn" onclick="openMediaModal('image')">
+                📂 Browse Media Files
+              </button>
+              <div id="selectedImageDisplay" class="selected-file-display"></div>
             </div>
             
             <button type="submit" class="create-btn" id="imageCreateBtn">🎨 Create Image</button>
@@ -1268,7 +1264,7 @@
               </select>
             </div>
             
-            <div class="optional-section">
+     <div class="optional-section">
               <h4>Optional Enhancements</h4>
               
               <div class="form-group">
@@ -1279,10 +1275,11 @@
               </div>
               
               <div class="form-group">
-                <label for="campaignImageSelect">Reference Image (from campaign files)</label>
-                <select id="campaignImageSelect">
-                  <option value="">None - AI generated images</option>
-                </select>
+                <label>Reference Image (Optional)</label>
+                <button type="button" class="browse-btn" onclick="openMediaModal('presentation')">
+                  📂 Browse Media Files
+                </button>
+                <div id="selectedPresentationDisplay" class="selected-file-display"></div>
               </div>
             </div>
             
@@ -2172,46 +2169,50 @@
     `;
   }
 
-  // Create image
-  async function createImage(formData) {
+// Create image
+  async function createImage() {
     try {
       if (userCredits.credits <= 0) {
         throw new Error('Insufficient image credits');
       }
-
+      
+      const imageChat = document.getElementById('imageChat').value;
+      if (!imageChat) {
+        throw new Error('Please provide an image description');
+      }
+      
       showStatus('Creating image... This may take a few moments.');
       showProcessing('Creating image...');
-      document.getElementById('imageChat').value = '';
-document.getElementById('imageUpload').value = '';
+     const imageChat = document.getElementById('imageChat').value;
+      if (!imageChat) {
+        hideProcessing();
+        throw new Error('Please provide an image description');
+      } 
+      const selectedFile = selectedMediaFiles.image;
+      
       const payload = {
-        chat: formData.get('chat')
+        chat: imageChat
       };
-
-      // Add reference image if provided
-      const referenceImage = formData.get('reference_image');
-      if (referenceImage && referenceImage.size > 0) {
-        payload.image_file = await fileToBase64(referenceImage);
-      } else if (selectedImageReference) {
-        payload.existing_image = selectedImageReference;
+      
+      if (selectedFile) {
+        payload.reference_image_url = selectedFile.URL || selectedFile.url;
+        payload.reference_image_id = selectedFile.id;
       }
-
+      
       const result = await apiCall(ENDPOINTS.createImage, payload);
-
+      
       if (result.success !== false) {
         hideProcessing();
         showStatus('Image created successfully!');
         document.getElementById('imageForm').reset();
         userCredits.credits--;
         updateCreditsDisplay();
+        selectedMediaFiles.image = null;
+        document.getElementById('selectedImageDisplay').classList.remove('show');
         await loadMediaFiles();
         applyFilters();
         showPreview(result.data);
-        document.getElementById('imageChat').value = '';
-      document.getElementById('imageUpload').value = '';
-      selectedImageReference = null;
-      populateReferenceLists();
-    }
-      else {
+      } else {
         hideProcessing();
         throw new Error(result.message || 'Image creation failed');
       }
@@ -2221,7 +2222,6 @@ document.getElementById('imageUpload').value = '';
       showStatus('Error creating image: ' + error.message, true);
     }
   }
-
   // Create video
   async function createVideo(formData) {
     try {
@@ -2283,8 +2283,7 @@ const selectedFile = selectedMediaFiles.video;
       const prompt = formData.get('chat');
       const pages = parseInt(formData.get('pages')) || 8;
       const company = formData.get('company') || '';
-      const referenceImage = formData.get('reference_image') || '';
-
+    const selectedFile = selectedMediaFiles.presentation;
       const payload = {
         body: {
           content: prompt,
@@ -2298,12 +2297,13 @@ const selectedFile = selectedMediaFiles.video;
         }
       };
       
-      if (company) {
+   if (company) {
         payload.company = company;
       }
       
-      if (referenceImage) {
-        payload.referenceImage = referenceImage;
+      if (selectedFile) {
+        payload.referenceImage = selectedFile.URL || selectedFile.url;
+        payload.referenceImageId = selectedFile.id;
       }
 
       const result = await apiCall(ENDPOINTS.createPresentation, payload);
@@ -2314,6 +2314,8 @@ const selectedFile = selectedMediaFiles.video;
         document.getElementById('presentationForm').reset();
         userCredits.credits = (userCredits.credits || 0) - 1;
         updateCreditsDisplay();
+          selectedMediaFiles.presentation = null;
+        document.getElementById('selectedPresentationDisplay').classList.remove('show');
         await loadMediaFiles();
         applyFilters();
         showPreview(result.data);   
@@ -2801,13 +2803,10 @@ document.getElementById('campaignImageSelect').value = '';
     setupToggles();
     setupFileUploadHandlers();
 
-    // Image creation form
+   // Image creation form
     document.getElementById('imageForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('videoChat').value);
-      formData.append('duration', document.getElementById('videoDuration').value);
-      await createVideo(formData);
+      await createImage();
     });
 
     // Video creation form
@@ -2819,17 +2818,13 @@ document.getElementById('campaignImageSelect').value = '';
       await createVideo(formData);
     });
 
-    // Presentation creation form
+// Presentation creation form
     document.getElementById('presentationForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('presentationChat').value);
-      formData.append('pages', document.getElementById('presentationPages').value);
-      formData.append('company', document.getElementById('companySelect').value);
-      formData.append('reference_image', document.getElementById('campaignImageSelect').value);
       await createPresentation(formData);
     });
-
+    
     // Filter controls
     applyFiltersBtn.addEventListener('click', applyFilters);
     clearFiltersBtn.addEventListener('click', clearFilters);
