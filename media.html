@@ -823,7 +823,227 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
-    
+/* Campaign Files Modal */
+    .campaign-files-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .campaign-files-content {
+      background-color: white;
+      margin: 3% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .campaign-files-header {
+      background: linear-gradient(135deg, #0A3161, #1a4c80);
+      color: white;
+      padding: 20px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .campaign-files-header h3 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .campaign-files-search {
+      padding: 15px 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .campaign-files-search input {
+      width: 100%;
+      padding: 12px 40px 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 25px;
+      font-size: 14px;
+      box-sizing: border-box;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat right 15px center;
+    }
+
+    .campaign-files-search input:focus {
+      outline: none;
+      border-color: #0A3161;
+    }
+
+    .campaign-files-body {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: calc(85vh - 150px);
+    }
+
+    .campaign-files-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    .campaign-file-item {
+      cursor: pointer;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .campaign-file-item:hover {
+      border-color: #0A3161;
+      box-shadow: 0 4px 12px rgba(10, 49, 97, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .campaign-file-item.selected {
+      border-color: #0A3161;
+      background: #f0f7ff;
+      box-shadow: 0 0 0 3px rgba(10, 49, 97, 0.1);
+    }
+
+    .campaign-file-thumb {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      background: #f5f5f5;
+    }
+
+    .campaign-file-name {
+      font-size: 11px;
+      color: #333;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .campaign-file-type {
+      font-size: 9px;
+      color: #999;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .no-campaign-files {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    .browse-btn {
+      display: inline-block;
+      background: #17a2b8;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 10px;
+      transition: background 0.2s;
+    }
+
+    .browse-btn:hover {
+      background: #138496;
+    }
+
+    .selected-file-display {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f0f7ff;
+      border: 1px solid #0A3161;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #0A3161;
+      display: none;
+    }
+
+    .selected-file-display.show {
+      display: block;
+    }
+
+    /* Duration Slider */
+    .duration-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #ddd;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .duration-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0A3161;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .duration-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0A3161;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      border: none;
+    }
+
+    .duration-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #0A3161;
+    }
+
+    .duration-presets {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .duration-preset-btn {
+      padding: 4px 10px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 12px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .duration-preset-btn:hover {
+      background: #f0f0f0;
+      border-color: #0A3161;
+    }
+
+    .duration-preset-btn.active {
+      background: #0A3161;
+      color: white;
+      border-color: #0A3161;
+    }    
     /* Intro.js custom styling */
     .introjs-tooltip {
       max-width: 350px;
@@ -983,18 +1203,26 @@
               <label for="videoChat">Motion Description *</label>
               <textarea id="videoChat" required placeholder="Describe the video motion you want to create..." data-intro="Describe the motion and animation you want in your video. Be specific about movement, camera angles, and visual effects." data-step="7"></textarea>
             </div>
-            
-            <div class="form-group">
-              <label for="videoSourceImage">Source Image *</label>
-              <input type="file" id="videoSourceImage" accept="image/*" data-intro="Upload an image that will be animated into a video. Choose a high-quality image for best results." data-step="8">
-              <small>Upload an image or select from existing images below</small>
+<div class="form-group">
+              <label for="videoDuration">Video Duration: <span id="durationValue" class="duration-value">60s</span></label>
+              <input type="range" id="videoDuration" name="duration" class="duration-slider" min="5" max="180" value="60" step="5" oninput="updateDurationDisplay(this.value)">
+              <div class="duration-presets">
+                <button type="button" class="duration-preset-btn" onclick="setDuration(5)">5s</button>
+                <button type="button" class="duration-preset-btn" onclick="setDuration(15)">15s</button>
+                <button type="button" class="duration-preset-btn" onclick="setDuration(30)">30s</button>
+                <button type="button" class="duration-preset-btn active" onclick="setDuration(60)">60s</button>
+                <button type="button" class="duration-preset-btn" onclick="setDuration(90)">90s</button>
+                <button type="button" class="duration-preset-btn" onclick="setDuration(120)">2min</button>
+                <button type="button" class="duration-preset-btn" onclick="setDuration(180)">3min</button>
+              </div>
             </div>
             
             <div class="form-group">
-              <label>Existing Images (Click to select)</label>
-              <div id="videoReferenceList" class="reference-list">
-                Loading available images...
-              </div>
+              <label>Source Image (from Media Library) *</label>
+              <button type="button" class="browse-btn" onclick="openMediaModal('video')">
+                📂 Browse Media Files
+              </button>
+              <div id="selectedVideoDisplay" class="selected-file-display"></div>
             </div>
             
             <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
@@ -1186,6 +1414,26 @@
   </div>
 </div>
 
+  <!-- Media Files Selection Modal -->
+<div id="mediaSelectionModal" class="campaign-files-modal">
+  <div class="campaign-files-content">
+    <div class="campaign-files-header">
+      <h3>Select Media to Attach</h3>
+      <button class="close" onclick="closeMediaModal()" style="background:none; border:none; color:white; font-size:28px; cursor:pointer; font-weight:bold;">&times;</button>
+    </div>
+    
+    <div class="campaign-files-search">
+      <input type="text" id="mediaSearch" placeholder="Search media files..." oninput="filterMediaForSelection(this.value)">
+    </div>
+    
+    <div class="campaign-files-body">
+      <div id="mediaSelectionGrid" class="campaign-files-grid">
+        <div class="no-campaign-files">Loading media files...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // Supabase configuration for auth only
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
@@ -1221,6 +1469,9 @@
   let selectedImageReference = null;
   let selectedVideoReference = null;
   let currentViewMode = 'grid'; // 'grid' or 'list'
+  let filteredMediaForSelection = [];
+  let currentModalType = null;
+  let selectedMediaFiles = { image: null, video: null, presentation: null };
   
   // UI state
   let currentType = 'image'; // 'image', 'video', or 'presentation'
@@ -1737,7 +1988,135 @@
       });
     }
   }
+// Duration control functions
+  function updateDurationDisplay(value) {
+    document.getElementById('durationValue').textContent = value + 's';
+    updatePresetButtons(parseInt(value));
+  }
 
+  function setDuration(seconds) {
+    document.getElementById('videoDuration').value = seconds;
+    updateDurationDisplay(seconds);
+  }
+
+  function updatePresetButtons(value) {
+    document.querySelectorAll('.duration-preset-btn').forEach(btn => {
+      btn.classList.remove('active');
+      const btnText = btn.textContent;
+      const btnValue = btnText.includes('min') ? parseInt(btnText) * 60 : parseInt(btnText);
+      if (btnValue === value) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
+  // Media Selection Modal Functions
+  function openMediaModal(type) {
+    currentModalType = type;
+    document.getElementById('mediaSelectionModal').style.display = 'block';
+    
+    // Use already loaded media files
+    let mediaToShow = [...allMediaFiles];
+    
+    // Filter to only images for video/image creation
+    if (type === 'video' || type === 'image') {
+      mediaToShow = mediaToShow.filter(file => {
+        const fileType = getFileType(file.file_type);
+        return fileType === 'image';
+      });
+    }
+    
+    filteredMediaForSelection = mediaToShow;
+    renderMediaSelection(filteredMediaForSelection);
+  }
+
+  function closeMediaModal() {
+    document.getElementById('mediaSelectionModal').style.display = 'none';
+    document.getElementById('mediaSearch').value = '';
+  }
+
+  function filterMediaForSelection(searchTerm) {
+    const term = searchTerm.toLowerCase();
+    
+    let baseMedia = [...allMediaFiles];
+    
+    // Filter to images only for video/image
+    if (currentModalType === 'video' || currentModalType === 'image') {
+      baseMedia = baseMedia.filter(file => {
+        const fileType = getFileType(file.file_type);
+        return fileType === 'image';
+      });
+    }
+    
+    if (!term) {
+      filteredMediaForSelection = baseMedia;
+    } else {
+      filteredMediaForSelection = baseMedia.filter(file => {
+        const searchable = [
+          file.name || '',
+          file.campaign_name || '',
+          file.prompt || ''
+        ].join(' ').toLowerCase();
+        
+        return searchable.includes(term);
+      });
+    }
+    
+    renderMediaSelection(filteredMediaForSelection);
+  }
+
+  function renderMediaSelection(files) {
+    const grid = document.getElementById('mediaSelectionGrid');
+    
+    if (!files || files.length === 0) {
+      grid.innerHTML = '<div class="no-campaign-files">No media files found.</div>';
+      return;
+    }
+    
+    grid.innerHTML = files.map(file => {
+      const fileType = getFileType(file.file_type);
+      const isImage = fileType === 'image';
+      const thumbUrl = file.URL || file.url || '';
+      const fileName = file.name || 'Untitled';
+      const isSelected = selectedMediaFiles[currentModalType]?.id === file.id;
+      
+      const escapedFile = JSON.stringify(file).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      
+      return `
+        <div class="campaign-file-item ${isSelected ? 'selected' : ''}" onclick='selectMediaFile(${escapedFile})'>
+          ${isImage ? 
+            `<img src="${thumbUrl}" class="campaign-file-thumb" alt="${fileName}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%23f0f0f0%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📷</text></svg>'" />` :
+            `<div class="campaign-file-thumb" style="display:flex; align-items:center; justify-content:center; font-size:32px;">📄</div>`
+          }
+          <div class="campaign-file-name" title="${fileName}">${fileName}</div>
+          <div class="campaign-file-type">${fileType}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function selectMediaFile(file) {
+    selectedMediaFiles[currentModalType] = file;
+    
+    const displayId = 'selected' + currentModalType.charAt(0).toUpperCase() + currentModalType.slice(1) + 'Display';
+    const display = document.getElementById(displayId);
+    if (display) {
+      display.innerHTML = '✅ Selected: ' + file.name;
+      display.classList.add('show');
+    }
+    
+    document.querySelectorAll('.campaign-file-item').forEach(item => item.classList.remove('selected'));
+    if (event && event.currentTarget) {
+      event.currentTarget.classList.add('selected');
+    }
+    
+    setTimeout(() => {
+      closeMediaModal();
+    }, 300);
+  }
+
+  // Show/Hide Processing functions
+  
   // Show/Hide Processing functions
   function showProcessing(message = 'Processing...') {
     const overlay = document.getElementById('processingOverlay');
@@ -1850,31 +2229,33 @@ document.getElementById('imageUpload').value = '';
       showStatus('Creating video... This may take several minutes.');
       showProcessing('Creating video...');
       
-      const payload = {
-        chat: formData.get('chat')
-      };
-
-      // Add source image - required
-      const sourceImage = formData.get('source_image');
-      if (sourceImage && sourceImage.size > 0) {
-        payload.image_file = await fileToBase64(sourceImage);
-      } else if (selectedVideoReference) {
-        payload.existing_image = selectedVideoReference;
-      } else {
+const selectedFile = selectedMediaFiles.video;
+      
+      if (!selectedFile) {
         hideProcessing();
-        throw new Error('Source image is required for video creation');
+        throw new Error('Please select a source image from media library');
       }
+
+      const payload = {
+        id: CUSTOMER_ID,
+        chat: formData.get('chat'),
+        duration: parseInt(formData.get('duration')) || 60,
+        source_image_url: selectedFile.URL || selectedFile.url,
+        source_image_id: selectedFile.id,
+        campaign_file: selectedFile
+      };
 
       const result = await apiCall(ENDPOINTS.createVideo, payload);
 
       if (result.success !== false) {
         hideProcessing();
         showStatus('Video creation started! It will appear in your media library when ready.');
-        document.getElementById('videoForm').reset();
+      document.getElementById('videoForm').reset();
+        setDuration(60);
         userCredits.credits--;
         updateCreditsDisplay();
-        selectedVideoReference = null;
-        populateReferenceLists();
+        selectedMediaFiles.video = null;
+        document.getElementById('selectedVideoDisplay').classList.remove('show');
       } else {
         hideProcessing();
         throw new Error(result.message || 'Video creation failed');
@@ -2413,9 +2794,9 @@ document.getElementById('campaignImageSelect').value = '';
     document.getElementById('imageForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('imageChat').value);
-      formData.append('reference_image', document.getElementById('imageUpload').files[0]);
-      await createImage(formData);
+      formData.append('chat', document.getElementById('videoChat').value);
+      formData.append('duration', document.getElementById('videoDuration').value);
+      await createVideo(formData);
     });
 
     // Video creation form
@@ -2512,7 +2893,11 @@ document.getElementById('campaignImageSelect').value = '';
   window.saveFileChanges = saveFileChanges;
   window.cancelEdit = cancelEdit;
   window.openModal = openModal;
-
+window.openMediaModal = openMediaModal;
+  window.closeMediaModal = closeMediaModal;
+  window.selectMediaFile = selectMediaFile;
+  window.updateDurationDisplay = updateDurationDisplay;
+  window.setDuration = setDuration;
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
