@@ -1926,11 +1926,15 @@
       showStatus('Error loading media files: ' + error.message, true);
     }
   }
-
-  // Populate reference lists
+// Populate reference lists
   function populateReferenceLists() {
     const imageList = document.getElementById('imageReferenceList');
     const videoList = document.getElementById('videoReferenceList');
+    
+    // Check if elements exist (they won't exist with new modal approach)
+    if (!imageList || !videoList) {
+      return;
+    }
     
     if (imageFiles.length === 0) {
       const noImagesMsg = '<div style="color: #999; text-align: center; padding: 10px;">No images available</div>';
@@ -1950,7 +1954,6 @@
     imageList.innerHTML = imageItems;
     videoList.innerHTML = videoItems;
   }
-
   // Populate image select for presentations
   function populateImageSelect() {
     const imageSelect = document.getElementById('campaignImageSelect');
