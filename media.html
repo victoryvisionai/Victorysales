@@ -2746,7 +2746,15 @@ document.getElementById('campaignImageSelect').value = '';
       closeModal();
     }
   }
-
+// Close media selection modal when clicking outside
+  const mediaModal = document.getElementById('mediaSelectionModal');
+  if (mediaModal) {
+    mediaModal.onclick = function(event) {
+      if (event.target === mediaModal) {
+        closeMediaModal();
+      }
+    }
+  }
   // Utility functions
   function getFileType(fileType) {
     if (!fileType) return 'unknown';
