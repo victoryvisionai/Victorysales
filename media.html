@@ -1951,9 +1951,16 @@
     imageList.innerHTML = imageItems;
     videoList.innerHTML = videoItems;
   }
-  // Populate image select for presentations
+
+// Populate image select for presentations
   function populateImageSelect() {
     const imageSelect = document.getElementById('campaignImageSelect');
+    
+    // Check if element exists (it won't with new modal approach)
+    if (!imageSelect) {
+      return;
+    }
+    
     imageSelect.innerHTML = '<option value="">None - AI generated images</option>';
     
     const referenceFiles = [...imageFiles, ...presentationFiles];
