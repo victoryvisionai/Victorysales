@@ -2080,47 +2080,71 @@
       return;
     }
     
-    grid.innerHTML = files.map(file => {
-      const fileType = getFileType(file.file_type);
-      const isImage = fileType === 'image';
-      const thumbUrl = file.URL || file.url || '';
-      const fileName = file.name || 'Untitled';
-      const isSelected = selectedMediaFiles[currentModalType]?.id === file.id;
-      
-      const escapedFile = JSON.stringify(file).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-      
-      return `
-        <div class="campaign-file-item ${isSelected ? 'selected' : ''}" onclick='selectMediaFile(${escapedFile})'>
-          ${isImage ? 
-            `<img src="${thumbUrl}" class="campaign-file-thumb" alt="${fileName}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%23f0f0f0%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📷</text></svg>'" />` :
-            `<div class="campaign-file-thumb" style="display:flex; align-items:center; justify-content:center; font-size:32px;">📄</div>`
-          }
-          <div class="campaign-file-name" title="${fileName}">${fileName}</div>
-          <div class="campaign-file-type">${fileType}</div>
-        </div>
-      `;
-    }).join('');
+grid.innerHTML = files.map(file => {
+  const fileType = getFileType(file.file_type);
+  const isImage = fileType === 'image';
+  const thumbUrl = file.URL || file.url || '';
+  const fileName = file.name || 'Untitled';
+  const isSelected = selectedMediaFiles[currentModalType]?.id === file.id;
+  
+  return `
+    <div class="campaign-file-item ${isSelected ? 'selected' : ''}" 
+         data-file-id="${escapeHtml(file.id)}"
+         data-file-url="${escapeHtml(file.URL || file.url || '')}"
+         data-file-name="${escapeHtml(file.name || 'Untitled')}"
+         data-file-type="${escapeHtml(file.file_type || '')}"
+         data-thumbnail-url="${escapeHtml(file.thumbnail_URL || file.URL || file.url || '')}"
+         onclick="selectMediaFileFromCard(this)">
+      ${isImage ? 
+        `<img src="${escapeHtml(thumbUrl)}" class="campaign-file-thumb" alt="${escapeHtml(fileName)}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%23f0f0f0%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-size=%2240%22>📷</text></svg>'" />` :
+        `<div class="campaign-file-thumb" style="display:flex; align-items:center; justify-content:center; font-size:32px;">📄</div>`
+      }
+      <div class="campaign-file-name" title="${escapeHtml(fileName)}">${escapeHtml(fileName)}</div>
+      <div class="campaign-file-type">${escapeHtml(fileType)}</div>
+    </div>
+  `;
+}).join('');
   }
 
-  function selectMediaFile(file) {
-    selectedMediaFiles[currentModalType] = file;
+// New function that reads from data attributes
+function selectMediaFileFromCard(cardElement) {
+  try {
+    const fileData = {
+      id: cardElement.dataset.fileId,
+      URL: cardElement.dataset.fileUrl,
+      url: cardElement.dataset.fileUrl,
+      name: cardElement.dataset.fileName,
+      file_type: cardElement.dataset.fileType,
+      thumbnail_URL: cardElement.dataset.thumbnailUrl
+    };
+    
+    if (!fileData.id) {
+      throw new Error('Invalid file data: missing ID');
+    }
+    
+    console.log('Selected file:', fileData);
+    
+    selectedMediaFiles[currentModalType] = fileData;
     
     const displayId = 'selected' + currentModalType.charAt(0).toUpperCase() + currentModalType.slice(1) + 'Display';
     const display = document.getElementById(displayId);
     if (display) {
-      display.innerHTML = '✅ Selected: ' + file.name;
+      display.innerHTML = '✅ Selected: ' + fileData.name;
       display.classList.add('show');
     }
     
     document.querySelectorAll('.campaign-file-item').forEach(item => item.classList.remove('selected'));
-    if (event && event.currentTarget) {
-      event.currentTarget.classList.add('selected');
-    }
+    cardElement.classList.add('selected');
     
     setTimeout(() => {
       closeMediaModal();
     }, 300);
+    
+  } catch (error) {
+    console.error('Error selecting media:', error);
+    showStatus('Error selecting file: ' + error.message, true);
   }
+}
 
   // Show/Hide Processing functions
   
@@ -2411,7 +2435,13 @@ document.getElementById('campaignImageSelect').value = '';
       renderMediaList();
     }
   }
-
+// Helper function to escape HTML entities
+function escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  const div = document.createElement('div');
+  div.textContent = String(text);
+  return div.innerHTML;
+}
   // Render media grid
   function renderMediaGrid() {
     const grid = document.createElement('div');
