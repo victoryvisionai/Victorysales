@@ -797,7 +797,7 @@
         onclick="autoReadWebsite()"
         style="background: #bb133e; padding: 12px 30px; font-size: 16px; font-weight: bold; min-width: 200px;"
       >
-        🔍 Auto-Read Website
+        🔍 Auto-Fill Profile
       </button>
     </div>
     <small style="color: #e0e0e0; display: block; margin-top: 5px;">Example: victoryvision.app (don't include https://)</small>
@@ -2253,7 +2253,7 @@ async function autoReadWebsite() {
       throw new Error('Not authenticated');
     }
     
-    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/company/auto-read', {
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/user/auto', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
