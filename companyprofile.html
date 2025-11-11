@@ -291,13 +291,15 @@
     .save-all-button:hover {
       background: #218838;
     }
-    #currentGoalDisplay {
-      min-height: 200px; 
-      padding: 15px; 
-      background: #f8f9fa; 
-      border-radius: 4px; 
-      border: 1px solid #e9ecef;
-      line-height: 1.6;
+  #currentGoalDisplay {
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 15px; 
+  background: #f8f9fa; 
+  border-radius: 4px; 
+  border: 1px solid #e9ecef;
+  line-height: 1.6;
     }
     .file-name {
       margin-top: 5px;
@@ -1172,6 +1174,7 @@
   let CUSTOMER_ID = null;
   let currentUser = null;
   let authToken = null;
+let userData = null; 
   let uploadedLogoFile = null;
   let uploadedProductImages = {
     product_image_1: null,
@@ -1806,100 +1809,117 @@ async function saveAllData() {
   }
 }
   // FIXED: Load all data function
-  async function loadAllData() {
-    showLoader();
+async function loadAllData() {
+  showLoader();
+  
+  try {
+    // Load user data and update medallion - STORE GLOBALLY
+    userData = await loadUserSubscriptionData();
     
-    try {
-      // Load user data and update medallion
-      const userData = await loadUserSubscriptionData();
+    if (userData && typeof userData === 'object' && userData.company_name !== undefined) {
       
-      if (userData && typeof userData === 'object' && userData.company_name !== undefined) {
-        
-        // FIXED: Populate form fields with existing data including new fields
-        document.getElementById('companyName').value = userData.company_name || '';
-        document.getElementById('userTitle').value = userData.title || '';
-        document.getElementById('industry').value = userData.industry || '';
-        document.getElementById('domain').value = userData.domain || '';
-        document.getElementById('companyDescription').value = userData.company_description || '';
-        document.getElementById('productDescription').value = userData.product_description || userData.product_descriptions || '';
-        document.getElementById('icp').value = userData.icp || '';
-        
-        // New fields
-        document.getElementById('newsletterTitle').value = userData.newsletter_title || '';
-        document.getElementById('newsletterTagline').value = userData.newsletter_tagline || '';
-        document.getElementById('offer').value = userData.offer || '';
-        document.getElementById('calendar').value = userData.calendar || '';
-        
-        // Handle brand colors
-        if (userData.brand_colors) {
-          const colors = userData.brand_colors.split(',');
-          if (colors[0]) {
-            document.getElementById('color1').value = colors[0].trim();
-            document.getElementById('color1Text').value = colors[0].trim();
-          }
-          if (colors[1]) {
-            document.getElementById('color2').value = colors[1].trim();
-            document.getElementById('color2Text').value = colors[1].trim();
-          }
-          if (colors[2]) {
-            document.getElementById('color3').value = colors[2].trim();
-            document.getElementById('color3Text').value = colors[2].trim();
-          }
-        }
-        
-        // Show existing logo if available
-        if (userData.logo_URL) {
-          document.getElementById('logoPreview').innerHTML = `<img src="${userData.logo_URL}" alt="Company logo">`;
-          document.getElementById('logoFileName').textContent = 'Current logo uploaded';
-          uploadedLogoFile = { url: userData.logo_URL };
-        }
-        
-        // Show existing product images if available
-        for (let i = 1; i <= 4; i++) {
-          const productImageUrl = userData[`product_image_${i}`];
-          if (productImageUrl) {
-            document.getElementById(`productImage${i}Preview`).innerHTML = `<img src="${productImageUrl}" alt="Product image ${i}">`;
-            document.getElementById(`productImage${i}FileName`).textContent = `Current product image ${i} uploaded`;
-            uploadedProductImages[`product_image_${i}`] = { url: productImageUrl };
-          }
-        }
-      }
-
-      // Clear goal form
-      const goalForm = document.querySelector('.goal-form');
-      goalForm.reset();
-
-      // Load and display current goal
-      const goalValue = userData.goal;
-      if (goalValue && typeof goalValue === 'string' && goalValue.trim()) {
-        document.getElementById('currentGoalDisplay').innerHTML = `
-          <strong>Current Goal:</strong><br><br>
-          ${sanitizeInput(goalValue)}
-        `;
-      } else {
-        document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
-      }
-
-      if (userData || goalValue) {
-        showStatus('Data loaded successfully!');
-      } else {
-        showStatus('No existing data found. Please fill out the forms.');
-      }
-
-      // Update tour button visibility based on loaded data
-      updateTourButtonVisibility();
-
-      // Check if new user should see tour
-      checkIfNewUser();
+      // FIXED: Populate form fields with existing data including new fields
+      document.getElementById('companyName').value = userData.company_name || '';
+      document.getElementById('userTitle').value = userData.title || '';
+      document.getElementById('industry').value = userData.industry || '';
+      document.getElementById('companyDescription').value = userData.company_description || '';
+      document.getElementById('productDescription').value = userData.product_description || userData.product_descriptions || '';
+      document.getElementById('icp').value = userData.icp || '';
       
-    } catch (error) {
-      console.error('Error loading data:', error);
-      showStatus('Error loading data: ' + error.message, true);
-    } finally {
-      hideLoader();
+      // New fields
+      document.getElementById('newsletterTitle').value = userData.newsletter_title || '';
+      document.getElementById('newsletterTagline').value = userData.newsletter_tagline || '';
+      document.getElementById('offer').value = userData.offer || '';
+      document.getElementById('calendar').value = userData.calendar || '';
+      
+      // Handle brand colors
+      if (userData.brand_colors) {
+        const colors = userData.brand_colors.split(',');
+        if (colors[0]) {
+          document.getElementById('color1').value = colors[0].trim();
+          document.getElementById('color1Text').value = colors[0].trim();
+        }
+        if (colors[1]) {
+          document.getElementById('color2').value = colors[1].trim();
+          document.getElementById('color2Text').value = colors[1].trim();
+        }
+        if (colors[2]) {
+          document.getElementById('color3').value = colors[2].trim();
+          document.getElementById('color3Text').value = colors[2].trim();
+        }
+      }
+      
+      // Show existing logo if available
+      if (userData.logo_URL) {
+        document.getElementById('logoPreview').innerHTML = `<img src="${userData.logo_URL}" alt="Company logo">`;
+        document.getElementById('logoFileName').textContent = 'Current logo uploaded';
+        uploadedLogoFile = { url: userData.logo_URL };
+      }
+      
+      // Show existing product images if available
+      for (let i = 1; i <= 4; i++) {
+        const productImageUrl = userData[`product_image_${i}`];
+        if (productImageUrl) {
+          document.getElementById(`productImage${i}Preview`).innerHTML = `<img src="${productImageUrl}" alt="Product image ${i}">`;
+          document.getElementById(`productImage${i}FileName`).textContent = `Current product image ${i} uploaded`;
+          uploadedProductImages[`product_image_${i}`] = { url: productImageUrl };
+        }
+      }
     }
-  }
 
+    // Clear goal form
+    const goalForm = document.querySelector('.goal-form');
+    goalForm.reset();
+
+    // FIXED: Load and display current goal - handle both string and object
+    const goalValue = userData.goal;
+    if (goalValue) {
+      let goalDisplay = '';
+      
+      // If goal is an object with fields
+      if (typeof goalValue === 'object' && goalValue !== null) {
+        goalDisplay = `<strong>Current Goal:</strong><br><br>`;
+        if (goalValue.goal_description) goalDisplay += `<strong>Specific:</strong> ${sanitizeInput(goalValue.goal_description)}<br><br>`;
+        if (goalValue.measurement) goalDisplay += `<strong>Measurable:</strong> ${sanitizeInput(goalValue.measurement)}<br><br>`;
+        if (goalValue.achievable) goalDisplay += `<strong>Achievable:</strong> ${sanitizeInput(goalValue.achievable)}<br><br>`;
+        if (goalValue.relationship) goalDisplay += `<strong>Relevant:</strong> ${sanitizeInput(goalValue.relationship)}<br><br>`;
+        if (goalValue.time_limit) goalDisplay += `<strong>Time-bound:</strong> ${goalValue.time_limit}`;
+      } 
+      // If goal is a string (legacy format)
+      else if (typeof goalValue === 'string' && goalValue.trim()) {
+        goalDisplay = `<strong>Current Goal:</strong><br><br>${sanitizeInput(goalValue)}`;
+      }
+      
+      document.getElementById('currentGoalDisplay').innerHTML = goalDisplay || '<em>No goal set yet</em>';
+    } else {
+      document.getElementById('currentGoalDisplay').innerHTML = '<em>No goal set yet</em>';
+    }
+    
+    // Reset goal modification flag after loading
+    goalManuallyEdited = false;
+    if (document.getElementById('goalModifiedFlag')) {
+      document.getElementById('goalModifiedFlag').value = 'false';
+    }
+
+    if (userData || goalValue) {
+      showStatus('Data loaded successfully!');
+    } else {
+      showStatus('No existing data found. Please fill out the forms.');
+    }
+
+    // Update tour button visibility based on loaded data
+    updateTourButtonVisibility();
+
+    // Check if new user should see tour
+    checkIfNewUser();
+    
+  } catch (error) {
+    console.error('Error loading data:', error);
+    showStatus('Error loading data: ' + error.message, true);
+  } finally {
+    hideLoader();
+  }
+}
   // Prevent default form submission
   document.getElementById('companyForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -2267,32 +2287,43 @@ async function autoReadWebsite() {
     }
     
     const data = await response.json();
+    console.log('Auto-read response:', data);
     
-    // Fill in all the fields with returned data
+    // Fill in all the fields with returned data - CORRECTED FIELD IDs
     if (data.company_name) document.getElementById('companyName').value = data.company_name;
-    if (data.website) document.getElementById('website').value = data.website;
+    if (data.title) document.getElementById('userTitle').value = data.title;
     if (data.industry) document.getElementById('industry').value = data.industry;
-    if (data.products_services) document.getElementById('productsServices').value = data.products_services;
-    if (data.target_audience) document.getElementById('targetAudience').value = data.target_audience;
     if (data.company_description) document.getElementById('companyDescription').value = data.company_description;
-    if (data.usp) document.getElementById('usp').value = data.usp;
-    if (data.brand_personality) document.getElementById('brandPersonality').value = data.brand_personality;
-    if (data.brand_voice) document.getElementById('brandVoice').value = data.brand_voice;
-    if (data.primary_color) document.getElementById('primaryColor').value = data.primary_color;
-    if (data.secondary_color) document.getElementById('secondaryColor').value = data.secondary_color;
-    if (data.accent_color) document.getElementById('accentColor').value = data.accent_color;
-    if (data.contact_email) document.getElementById('contactEmail').value = data.contact_email;
-    if (data.contact_phone) document.getElementById('contactPhone').value = data.contact_phone;
-    if (data.address) document.getElementById('address').value = data.address;
-    if (data.city) document.getElementById('city').value = data.city;
-    if (data.state) document.getElementById('state').value = data.state;
-    if (data.zip) document.getElementById('zip').value = data.zip;
-    if (data.social_media_handles) {
-      if (data.social_media_handles.linkedin) document.getElementById('linkedinHandle').value = data.social_media_handles.linkedin;
-      if (data.social_media_handles.twitter) document.getElementById('twitterHandle').value = data.social_media_handles.twitter;
-      if (data.social_media_handles.facebook) document.getElementById('facebookHandle').value = data.social_media_handles.facebook;
-      if (data.social_media_handles.instagram) document.getElementById('instagramHandle').value = data.social_media_handles.instagram;
+    if (data.product_description) document.getElementById('productDescription').value = data.product_description;
+    if (data.icp) document.getElementById('icp').value = data.icp;
+    if (data.newsletter_title) document.getElementById('newsletterTitle').value = data.newsletter_title;
+    if (data.newsletter_tagline) document.getElementById('newsletterTagline').value = data.newsletter_tagline;
+    if (data.offer) document.getElementById('offer').value = data.offer;
+    if (data.calendar) document.getElementById('calendar').value = data.calendar;
+    
+    // Brand colors
+    if (data.primary_color) {
+      document.getElementById('color1').value = data.primary_color;
+      document.getElementById('color1Text').value = data.primary_color;
     }
+    if (data.secondary_color) {
+      document.getElementById('color2').value = data.secondary_color;
+      document.getElementById('color2Text').value = data.secondary_color;
+    }
+    if (data.accent_color) {
+      document.getElementById('color3').value = data.accent_color;
+      document.getElementById('color3Text').value = data.accent_color;
+    }
+    
+    // Logo if returned
+    if (data.logo_URL) {
+      document.getElementById('logoPreview').innerHTML = `<img src="${data.logo_URL}" alt="Company logo">`;
+      document.getElementById('logoFileName').textContent = 'Logo found from website';
+      uploadedLogoFile = { url: data.logo_URL };
+    }
+    
+    // Hide the auto-read card after successful fill
+    document.getElementById('domainAutoReadCard').style.display = 'none';
     
     // Show success message
     const statusDiv = document.getElementById('autoReadStatus');
@@ -2314,7 +2345,6 @@ async function autoReadWebsite() {
     document.getElementById('autoReadWebsiteBtn').disabled = false;
   }
 }
-
 </script>
 </body>
 </html>
