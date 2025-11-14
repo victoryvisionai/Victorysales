@@ -1222,7 +1222,7 @@
             
             <div class="form-group">
               <label for="videoCompanySelect">Select Company (Optional)</label>
-              <select id="videoCompanySelect" name="id">
+              <select id="videoCompanySelect" name="contact_id">
                 <option value="">None - Generic video</option>
               </select>
             </div>
@@ -2230,19 +2230,19 @@ function selectMediaFileFromCard(cardElement) {
         throw new Error('Please provide an image description');
       } 
       const selectedFile = selectedMediaFiles.image;
-      const contactId = formData.get('company') || '';
-      const payload = {
-        id: CUSTOMER_ID,
-        chat: formData.get('chat'),
-        duration: parseInt(formData.get('duration')) || 60,
-        source_image_url: selectedFile.URL || selectedFile.url,
-        source_image_id: selectedFile.id,
-        campaign_file: selectedFile
-      };
-      
-      if (contactId) {
-        payload.contact_id = contactId;
-      }
+      const contactId = formData.get('contact_id') || '';
+const payload = {
+  id: CUSTOMER_ID,
+  chat: formData.get('chat'),
+  duration: parseInt(formData.get('duration')) || 60,
+  source_image_url: selectedFile.URL || selectedFile.url,
+  source_image_id: selectedFile.id,
+  campaign_file: selectedFile
+};
+
+if (contactId) {
+  payload.contact_id = contactId;
+}
       const result = await apiCall(ENDPOINTS.createVideo, payload);
       
       if (result.success !== false) {
