@@ -805,6 +805,13 @@
   <div id="autoReadLoader" class="loader" style="margin: 20px auto;"></div>
   <div id="autoReadStatus" class="status-message"></div>
 </div>
+    <!-- Step 2 Message -->
+<div id="step2Message" class="card" style="background: linear-gradient(135deg, #0A3161, #1a4c80); color: white; border: 3px solid #28a745; display: none; text-align: center; padding: 25px;">
+  <h3 style="color: white; margin: 0 0 15px 0;">✅ Step 1 Complete!</h3>
+  <p style="color: white; margin: 0; font-size: 1.2rem; font-weight: bold;">
+    📝 Step 2: Review/Edit AI created responses below, then hit the Save button
+  </p>
+</div>
     <div class="section-header">
       <h3>Company Information</h3>
     </div>
@@ -2227,6 +2234,7 @@ async function checkIfFirstLogin() {
     } else {
       // Hide domain card after profile is filled
       document.getElementById('domainAutoReadCard').style.display = 'none';
+      document.getElementById('step2Message').style.display = 'block';
     }
   } catch (error) {
     console.error('Error checking first login:', error);
@@ -2321,7 +2329,24 @@ async function autoReadWebsite() {
       document.getElementById('logoFileName').textContent = 'Logo found from website';
       uploadedLogoFile = { url: data.logo_URL };
     }
-    
+ // Populate goal fields
+if (data.goal) {
+  const goalForm = document.querySelector('.goal-form');
+  if (goalForm) {
+    if (data.goal.goal_description) goalForm.querySelector('[name="goal_description"]').value = data.goal.goal_description;
+    if (data.goal.measurement) goalForm.querySelector('[name="measurement"]').value = data.goal.measurement;
+    if (data.goal.achievable) goalForm.querySelector('[name="achievable"]').value = data.goal.achievable;
+    if (data.goal.relationship) goalForm.querySelector('[name="relationship"]').value = data.goal.relationship;
+    if (data.goal.time_limit) {
+      try {
+        const date = new Date(data.goal.time_limit);
+        if (!isNaN(date.getTime())) {
+          goalForm.querySelector('[name="time_limit"]').value = date.toISOString().split('T')[0];
+        }
+      } catch (e) {}
+    }
+  }
+}   
     // Hide the auto-read card after successful fill
     document.getElementById('domainAutoReadCard').style.display = 'none';
     
