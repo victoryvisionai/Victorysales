@@ -2283,6 +2283,8 @@ const selectedFile = selectedMediaFiles.video;
         throw new Error('Please select a source image from media library');
       }
 
+   const contactId = formData.get('contact_id') || '';
+
       const payload = {
         id: CUSTOMER_ID,
         chat: formData.get('chat'),
@@ -2292,13 +2294,16 @@ const selectedFile = selectedMediaFiles.video;
         campaign_file: selectedFile
       };
 
-      const result = await apiCall(ENDPOINTS.createVideo, payload);
+      if (contactId) {
+        payload.contact_id = contactId;
+      }
+    const result = await apiCall(ENDPOINTS.createVideo, payload);
 
       if (result.success !== false) {
         hideProcessing();
         showStatus('Video creation started! It will appear in your media library when ready.');
       document.getElementById('videoForm').reset();
-        setDuration(60);
+        setDuration(30);
         userCredits.credits--;
         updateCreditsDisplay();
         selectedMediaFiles.video = null;
