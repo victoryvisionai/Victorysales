@@ -1212,8 +1212,7 @@
                 <button type="button" class="duration-preset-btn" onclick="setDuration(180)">3min</button>
               </div>
             </div>
-            
-            <div class="form-group">
+          <div class="form-group">
               <label>Source Image (from Media Library) *</label>
               <button type="button" class="browse-btn" onclick="openMediaModal('video')">
                 📂 Browse Media Files
@@ -1221,10 +1220,15 @@
               <div id="selectedVideoDisplay" class="selected-file-display"></div>
             </div>
             
+            <div class="form-group">
+              <label for="videoCompanySelect">Select Company (Optional)</label>
+              <select id="videoCompanySelect" name="company">
+                <option value="">None - Generic video</option>
+              </select>
+            </div>
+            
             <button type="submit" class="create-btn" id="videoCreateBtn">🎬 Create Video</button>
-          </form>
-        </div>
-
+            
         <!-- Create Presentation Form -->
         <div id="createPresentationForm" class="creation-form">
           <div class="credits-display">
@@ -1868,7 +1872,7 @@
   }
 
   // Load contacts for company selection
-  async function loadContacts() {
+async function loadContacts() {
     try {
       const response = await apiCall(ENDPOINTS.getContacts);
       contacts = Array.isArray(response) ? response : (response.contacts || []);
@@ -1876,19 +1880,26 @@
       const companySelect = document.getElementById('companySelect');
       companySelect.innerHTML = '<option value="">None - Generic presentation</option>';
       
+      const videoCompanySelect = document.getElementById('videoCompanySelect');
+      videoCompanySelect.innerHTML = '<option value="">None - Generic video</option>';
+      
       const companies = [...new Set(contacts.map(c => c.company).filter(Boolean))];
       companies.forEach(company => {
         const option = document.createElement('option');
         option.value = company;
         option.textContent = company;
         companySelect.appendChild(option);
+        
+        const videoOption = document.createElement('option');
+        videoOption.value = company;
+        videoOption.textContent = company;
+        videoCompanySelect.appendChild(videoOption);
       });
       
     } catch (error) {
       console.error('Error loading contacts:', error);
     }
   }
-
   // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
@@ -2216,16 +2227,22 @@ function selectMediaFileFromCard(cardElement) {
       } 
       const selectedFile = selectedMediaFiles.image;
       
+  const company = formData.get('company') || '';
+
       const payload = {
-        chat: imageChat
+        id: CUSTOMER_ID,
+        chat: formData.get('chat'),
+        duration: parseInt(formData.get('duration')) || 60,
+        source_image_url: selectedFile.URL || selectedFile.url,
+        source_image_id: selectedFile.id,
+        campaign_file: selectedFile
       };
       
-      if (selectedFile) {
-        payload.reference_image_url = selectedFile.URL || selectedFile.url;
-        payload.reference_image_id = selectedFile.id;
+      if (company) {
+        payload.company = company;
       }
-      
-      const result = await apiCall(ENDPOINTS.createImage, payload);
+
+      const result = await apiCall(ENDPOINTS.createVideo, payload);
       
       if (result.success !== false) {
         hideProcessing();
