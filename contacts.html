@@ -1560,7 +1560,7 @@ let visibleColumns = ['name', 'title', 'company', 'email', 'industry', 'annual_r
 // Rate limiting
 const rateLimiter = {
   calls: [],
-  maxCalls: 20,
+  maxCalls: 100,
   windowMs: 60000,
   canMakeCall: function() {
     const now = Date.now();
