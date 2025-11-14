@@ -2296,50 +2296,51 @@ async function autoReadWebsite() {
     
     const data = await response.json();
     console.log('Auto-read response:', data);
+    const profileData = Array.isArray(data) ? data[0] : data;
     
     // Fill in all the fields with returned data - CORRECTED FIELD IDs
-    if (data.company_name) document.getElementById('companyName').value = data.company_name;
-    if (data.title) document.getElementById('userTitle').value = data.title;
-    if (data.industry) document.getElementById('industry').value = data.industry;
-    if (data.company_description) document.getElementById('companyDescription').value = data.company_description;
-    if (data.product_description) document.getElementById('productDescription').value = data.product_description;
-    if (data.icp) document.getElementById('icp').value = data.icp;
-    if (data.newsletter_title) document.getElementById('newsletterTitle').value = data.newsletter_title;
-    if (data.newsletter_tagline) document.getElementById('newsletterTagline').value = data.newsletter_tagline;
-    if (data.offer) document.getElementById('offer').value = data.offer;
-    if (data.calendar) document.getElementById('calendar').value = data.calendar;
+    if (profileData.company_name) document.getElementById('companyName').value = profileData.company_name;
+    if (profileData.title) document.getElementById('userTitle').value = profileData.title;
+    if (profileData.industry) document.getElementById('industry').value = profileData.industry;
+    if (profileData.company_description) document.getElementById('companyDescription').value = profileData.company_description;
+    if (profileData.product_description) document.getElementById('productDescription').value = profileData.product_description;
+    if (profileData.icp) document.getElementById('icp').value = profileData.icp;
+    if (profileData.newsletter_title) document.getElementById('newsletterTitle').value = profileData.newsletter_title;
+    if (profileData.newsletter_tagline) document.getElementById('newsletterTagline').value = profileData.newsletter_tagline;
+    if (profileData.offer) document.getElementById('offer').value = profileData.offer;
+    if (profileData.calendar) document.getElementById('calendar').value = profileData.calendar;
     
     // Brand colors
-    if (data.primary_color) {
-      document.getElementById('color1').value = data.primary_color;
-      document.getElementById('color1Text').value = data.primary_color;
+    if (profileData.primary_color) {
+      document.getElementById('color1').value = profileData.primary_color;
+      document.getElementById('color1Text').value = profileData.primary_color;
     }
-    if (data.secondary_color) {
-      document.getElementById('color2').value = data.secondary_color;
-      document.getElementById('color2Text').value = data.secondary_color;
+    if (profileData.secondary_color) {
+      document.getElementById('color2').value = profileData.secondary_color;
+      document.getElementById('color2Text').value = profileData.secondary_color;
     }
-    if (data.accent_color) {
-      document.getElementById('color3').value = data.accent_color;
-      document.getElementById('color3Text').value = data.accent_color;
+    if (profileData.accent_color) {
+      document.getElementById('color3').value = profileData.accent_color;
+      document.getElementById('color3Text').value = profileData.accent_color;
     }
     
     // Logo if returned
-    if (data.logo_URL) {
-      document.getElementById('logoPreview').innerHTML = `<img src="${data.logo_URL}" alt="Company logo">`;
+    if (profileData.logo_URL) {
+      document.getElementById('logoPreview').innerHTML = `<img src="${profileData.logo_URL}" alt="Company logo">`;
       document.getElementById('logoFileName').textContent = 'Logo found from website';
-      uploadedLogoFile = { url: data.logo_URL };
+      uploadedLogoFile = { url: profileData.logo_URL };
     }
  // Populate goal fields
-if (data.goal) {
+if (profileData.goal) {
   const goalForm = document.querySelector('.goal-form');
   if (goalForm) {
-    if (data.goal.goal_description) goalForm.querySelector('[name="goal_description"]').value = data.goal.goal_description;
-    if (data.goal.measurement) goalForm.querySelector('[name="measurement"]').value = data.goal.measurement;
-    if (data.goal.achievable) goalForm.querySelector('[name="achievable"]').value = data.goal.achievable;
-    if (data.goal.relationship) goalForm.querySelector('[name="relationship"]').value = data.goal.relationship;
-    if (data.goal.time_limit) {
+    if (profileData.goal.goal_description) goalForm.querySelector('[name="goal_description"]').value = profileData.goal.goal_description;
+    if (profileData.goal.measurement) goalForm.querySelector('[name="measurement"]').value = profileData.goal.measurement;
+    if (profileData.goal.achievable) goalForm.querySelector('[name="achievable"]').value = profileData.goal.achievable;
+    if (profileData.goal.relationship) goalForm.querySelector('[name="relationship"]').value = profileData.goal.relationship;
+    if (profileData.goal.time_limit) {
       try {
-        const date = new Date(data.goal.time_limit);
+        const date = new Date(profileData.goal.time_limit);
         if (!isNaN(date.getTime())) {
           goalForm.querySelector('[name="time_limit"]').value = date.toISOString().split('T')[0];
         }
