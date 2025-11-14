@@ -1872,7 +1872,6 @@
     }
   }
 
-  // Load contacts for company selection
 async function loadContacts() {
     try {
       const response = await apiCall(ENDPOINTS.getContacts);
@@ -1884,23 +1883,27 @@ async function loadContacts() {
       const videoCompanySelect = document.getElementById('videoCompanySelect');
       videoCompanySelect.innerHTML = '<option value="">None - Generic video</option>';
       
-      const companies = [...new Set(contacts.map(c => c.company).filter(Boolean))];
-      companies.forEach(company => {
-        const option = document.createElement('option');
-        option.value = company;
-        option.textContent = company;
-        companySelect.appendChild(option);
-        
-        const videoOption = document.createElement('option');
-        videoOption.value = company;
-        videoOption.textContent = company;
-        videoCompanySelect.appendChild(videoOption);
+      contacts.forEach(contact => {
+        if (contact.company && contact.name) {
+          const displayText = `${contact.company} - ${contact.name}`;
+          
+          const option = document.createElement('option');
+          option.value = contact.id;
+          option.textContent = displayText;
+          companySelect.appendChild(option);
+          
+          const videoOption = document.createElement('option');
+          videoOption.value = contact.id;
+          videoOption.textContent = displayText;
+          videoCompanySelect.appendChild(videoOption);
+        }
       });
       
     } catch (error) {
       console.error('Error loading contacts:', error);
     }
   }
+  
   // Load media files from n8n webhook
   async function loadMediaFiles() {
     try {
@@ -2227,9 +2230,7 @@ function selectMediaFileFromCard(cardElement) {
         throw new Error('Please provide an image description');
       } 
       const selectedFile = selectedMediaFiles.image;
-      
-  const company = formData.get('company') || '';
-
+      const contactId = formData.get('company') || '';
       const payload = {
         id: CUSTOMER_ID,
         chat: formData.get('chat'),
@@ -2239,10 +2240,9 @@ function selectMediaFileFromCard(cardElement) {
         campaign_file: selectedFile
       };
       
-      if (company) {
-        payload.company = company;
+      if (contactId) {
+        payload.contact_id = contactId;
       }
-
       const result = await apiCall(ENDPOINTS.createVideo, payload);
       
       if (result.success !== false) {
