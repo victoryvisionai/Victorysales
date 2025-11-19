@@ -820,7 +820,7 @@
         <div style="margin-bottom: 15px;">
           <strong style="color: #0A3161;">📄 Upload CSV:</strong>
           <p style="margin: 5px 0 0 0; color: #6699cc; font-size: 0.9rem; line-height: 1.5;">
-            Bulk import contacts from a CSV file. Required columns: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">email</code>, <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">name</code>. Optional: address, title, domain, phone, linkedin, company, city, industry, tags, conversation_summary, logo_url.
+            Bulk import contacts from a CSV file. Required columns: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">email</code>, <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">name</code>. Optional: address, title, domain, phone, linkedin, company, city, industry, tags, customer_journey, logo_url.
           </p>
         </div>
         
@@ -838,7 +838,7 @@
 
   <script>
   function downloadCsvTemplate() {
-    const csvContent = `email,name,phone,linkedin,company,city,industry,tags,conversation_summary,logo_url
+    const csvContent = `email,name,phone,linkedin,company,city,industry,tags,customer_journey,logo_url
 john@company.com,John Smith,+1-555-0123,https://linkedin.com/in/johnsmith,Company Inc,San Francisco,Technology,"hot-lead,decision-maker","Had great meeting about Q4 goals",https://company.com/logo.png
 jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business LLC,New York,Finance,"warm-lead,interested","Interested in our services, follow up next week",`;
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -1135,13 +1135,13 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
           <div class="form-group">
-            <label for="conversation_summary">
+            <label for="customer_journey">
               Conversation Summary
               <span class="help-icon">❓
                 <span class="help-tooltip">Summary of all previous conversations, meetings, and interactions with this contact.</span>
               </span>
             </label>
-            <textarea id="conversation_summary" name="conversation_summary" placeholder="Summary of all communication..."></textarea>
+            <textarea id="customer_journey" name="customer_journey" placeholder="Summary of all communication..."></textarea>
           </div>
           <div class="form-group">
             <label for="personal_summary">
@@ -1544,7 +1544,7 @@ const availableColumns = {
   last_emailed_date: 'Last Emailed',
   linkedin: 'LinkedIn',
   tags: 'Tags',
-  conversation_summary: 'Conversation Summary',
+  customer_journey: 'Conversation Summary',
   personal_summary: 'Personal Summary',
   company_summary: 'Company Summary',
   personal_priorities: 'Personal Priorities',
@@ -2226,7 +2226,7 @@ function editContact(contactId) {
   document.getElementById('annual_revenue').value = contact.annual_revenue || '';
   document.getElementById('employee_count').value = contact.employee_count || '';
   document.getElementById('client_won_date').value = contact.client_won_date || '';
-  document.getElementById('conversation_summary').value = contact.conversation_summary || '';
+  document.getElementById('customer_journey').value = contact.customer_journey || '';
   document.getElementById('personal_summary').value = contact.personal_summary || '';
   document.getElementById('company_summary').value = contact.company_summary || '';
   // document.getElementById('created').value = contact.created || ''; // ❌ REMOVE THIS LINE  
@@ -3437,7 +3437,7 @@ async function hangupCall() {
     if (notes && currentCallContact) {
       await apiCall(ENDPOINTS.updateContact, {
         contact_id: currentCallContact.contact_id || currentCallContact.id,
-        conversation_summary: (currentCallContact.conversation_summary || '') + '\n\n' + 
+        customer_journey: (currentCallContact.customer_journey || '') + '\n\n' + 
           `Call ${new Date().toLocaleDateString()}: ${notes}`
       });
     }
