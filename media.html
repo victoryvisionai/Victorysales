@@ -2336,7 +2336,7 @@ const selectedFile = selectedMediaFiles.video;
           theme: 'Night Sky',
           exportAs: 'pptx',
           additionalInstructions: company ? `Focus on ${company} company context.` : 'Generic business presentation.',
-          imageStyle: referenceImage ? `Use similar style to reference image: ${referenceImage}` : 'professional, modern, business'
+          imageStyle: selectedFile ? `Use similar style to reference image: ${selectedFile.URL || selectedFile.url}` : 'professional, modern, business'
         }
       };
       
