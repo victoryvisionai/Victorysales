@@ -2327,9 +2327,10 @@ const selectedFile = selectedMediaFiles.video;
       const pages = parseInt(formData.get('pages')) || 8;
       const company = formData.get('company') || '';
     const selectedFile = selectedMediaFiles.presentation;
-      const payload = {
+    const payload = {
         body: {
           content: prompt,
+          company: company,
           pages: pages,
           textMode: 'preserve',
           format: 'presentation',
@@ -2340,13 +2341,9 @@ const selectedFile = selectedMediaFiles.video;
         }
       };
       
-   if (company) {
-        payload.company = company;
-      }
-      
       if (selectedFile) {
-        payload.referenceImage = selectedFile.URL || selectedFile.url;
-        payload.referenceImageId = selectedFile.id;
+        payload.body.referenceImage = selectedFile.URL || selectedFile.url;
+        payload.body.referenceImageId = selectedFile.id;
       }
 
       const result = await apiCall(ENDPOINTS.createPresentation, payload);
