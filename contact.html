@@ -99,7 +99,7 @@
     }
     .page-subtitle {
       font-size: 1.1rem;
-      color: #666;
+      color: #6699cc;
     }
     .card {
       background: white;
@@ -130,7 +130,7 @@
     }
     .credits-label {
       font-size: 0.85em;
-      color: #666;
+      color: #6699cc;
       margin-top: 2px;
     }
     .linkedin-input-section {
@@ -401,15 +401,18 @@
     .contacts-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 1600px;
+      min-width: 1200px;
     }
     .contacts-table th,
     .contacts-table td {
-      padding: 12px 8px;
+      padding: 8px 6px;
       text-align: left;
       border-bottom: 1px solid #dee2e6;
-      font-size: 13px;
+      font-size: 12px;
       white-space: nowrap;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .contacts-table th {
       background: #f8f9fa;
@@ -470,12 +473,12 @@
       text-align: center;
       padding: 3rem;
       font-size: 1.1rem;
-      color: #666;
+      color: #6699cc;
     }
     .empty-state {
       text-align: center;
       padding: 4rem 2rem;
-      color: #666;
+      color: #6699cc;
     }
     .empty-state h3 {
       font-size: 1.5rem;
@@ -764,7 +767,7 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
+    <button onclick="startTour()" style="background: #0A3161; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
       📖 Take Tour
     </button>
     <div id="subscriptionMedallion" class="subscription-medallion bronze">
@@ -774,87 +777,68 @@
   </div>
 </header>
 <div class="content">
-  <header class="page-header">
+ <header class="page-header">
     <h1 class="page-title">Contact Management</h1>
     <p class="page-subtitle">Generate new contacts and manage your prospect database with AI workflows</p>
   </header>
 
-  <!-- Lead Generation Section -->
+  <!-- Lead Generation Section - COMPACT -->
   <section class="card" data-intro="Generate new contacts by entering a LinkedIn profile URL of your ideal customer. Our AI will find similar prospects that match your target profile." data-step="1">
     <div class="section-header">
-      <h3>🎯 Generate New Contacts</h3>
+      <h3>🎯 Contact Management Tools</h3>
     </div>
     
-    <div class="credits-display">
-      <div class="credits-number" id="CreditsDisplay">Loading...</div>
-      <div class="credits-label"> Credits Remaining</div>
-    </div>
-    
-    <p style="margin-bottom: 20px; color: #666;">
-      Enter a LinkedIn profile URL of your ideal customer and specify how many similar contacts you want to generate.
-    </p>
-    
-    <div class="linkedin-input-section" data-intro="Paste a LinkedIn profile URL here and select how many contacts to generate. Our AI will analyze this profile to find similar contacts in your target market." data-step="2">
-      <div class="form-group">
-        <label for="linkedin1">
-          LinkedIn Profile URL
-          <span class="help-icon">❓
-            <span class="help-tooltip">Enter the LinkedIn URL of someone who represents your ideal customer. Our AI will analyze their profile to find similar prospects.</span>
-          </span>
-        </label>
-        <input type="url" id="linkedin1" placeholder="https://linkedin.com/in/profile-name">
+    <!-- COMPACT LAYOUT: Buttons Left, Instructions Right -->
+    <div style="display: grid; grid-template-columns: 240px 1fr; gap: 25px; align-items: start; padding: 20px 0;">
+      
+      <!-- LEFT COLUMN: Action Buttons -->
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button onclick="showAddContactModal()" style="background: #0A3161; color: white; border: none; padding: 12px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
+          ➕ Add Contact Manually
+        </button>
+        
+        <button onclick="document.getElementById('csvFileInput').click()" style="background: #6c757d; color: white; border: none; padding: 12px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
+          📄 Upload CSV
+        </button>
+        
+        <button onclick="downloadCsvTemplate()" style="background: #0A3161; color: white; border: none; padding: 12px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; width: 100%;">
+          📥 Download Template
+        </button>
       </div>
-      <div class="form-group">
-        <label for="leadCount">
-          Number of Leads
-          <span class="help-icon">❓
-            <span class="help-tooltip">Choose how many similar contacts you want to generate (1-20). Each contact uses 1 credit from your account.</span>
-          </span>
-        </label>
-        <select id="leadCount">
-          <option value="1">1 Lead</option>
-          <option value="5" selected>5 Leads</option>
-          <option value="10">10 Leads</option>
-          <option value="15">15 Leads</option>
-          <option value="20">20 Leads</option>
-        </select>
+      
+      <!-- RIGHT COLUMN: Instructions -->
+      <div style="padding-left: 10px; border-left: 3px solid #0A3161;">
+        <h4 style="margin: 0 0 12px 0; color: #0A3161; font-size: 1.1rem;">Quick Actions</h4>
+        
+        <div style="margin-bottom: 15px;">
+          <strong style="color: #0A3161;">➕ Add Manually:</strong>
+          <p style="margin: 5px 0 0 0; color: #6699cc; font-size: 0.9rem; line-height: 1.5;">
+            Add individual contacts one at a time with full details and custom fields.
+          </p>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+          <strong style="color: #0A3161;">📄 Upload CSV:</strong>
+          <p style="margin: 5px 0 0 0; color: #6699cc; font-size: 0.9rem; line-height: 1.5;">
+            Bulk import contacts from a CSV file. Required columns: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">email</code>, <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">name</code>. Optional: address, title, domain, phone, linkedin, company, city, industry, tags, customer_journey, logo_url.
+          </p>
+        </div>
+        
+        <div>
+          <strong style="color: #0A3161;">📥 Download Template:</strong>
+          <p style="margin: 5px 0 0 0; color: #6699cc; font-size: 0.9rem; line-height: 1.5;">
+            Get a pre-formatted CSV template with sample data and proper column headers to ensure successful imports.
+          </p>
+        </div>
       </div>
-    </div>
-    
-    <button id="generateBtn" class="generate-btn">🚀 Generate New Contacts</button>
-    
-    <!-- Add Contacts Section -->
-    <div class="add-contact-section">
-      <button onclick="showAddContactModal()" class="success">➕ Add Contact Manually</button>
-      <button onclick="document.getElementById('csvFileInput').click()" class="secondary">📄 Upload CSV</button>
     </div>
     
     <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
-<!-- CSV Sample -->
-<div class="csv-sample">
-  <h4>📋 CSV Upload Format</h4>
-  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-bottom: 15px;">
-    <div>
-      <h5 style="margin: 0 0 10px 0; color: #0A3161;">CSV Column Headerd:</h5>
-      <ul style="margin: 0; padding-left: 20px; font-size: 13px;">
-        <li><strong>email</strong> - Contact email address</li>
-        <li><strong>name</strong> - Full contact name</li>
-        <li>address, title, domain</li>
-        <li>phone, linkedin, company</li>
-        <li>city, industry, tags</li>
-        <li>conversation_summary, logo_url</li>
-      </ul>
-    </div>
-    <div>
-      <button onclick="downloadCsvTemplate()" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">
-        📥 Download Template
-      </button>
-      <p style="margin: 0; font-size: 12px; color: #666;">Template includes sample data and proper formatting</p>
-    </div>
-  </div>
+  </section>
+
   <script>
   function downloadCsvTemplate() {
-    const csvContent = `email,name,phone,linkedin,company,city,industry,tags,conversation_summary,logo_url
+    const csvContent = `email,name,phone,linkedin,company,city,industry,tags,customer_journey,logo_url
 john@company.com,John Smith,+1-555-0123,https://linkedin.com/in/johnsmith,Company Inc,San Francisco,Technology,"hot-lead,decision-maker","Had great meeting about Q4 goals",https://company.com/logo.png
 jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business LLC,New York,Finance,"warm-lead,interested","Interested in our services, follow up next week",`;
     const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -866,14 +850,13 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     window.URL.revokeObjectURL(url);
   }
   </script>
-</div>
   <!-- Contacts Management Section -->
   <section class="card">
     <div class="section-header">
       <h3>👥 Your Contacts Database</h3>
     </div>
     
-    <!-- Email Workflows Section - UPDATED: Removed Newsletter Signup -->
+    <!-- Email Workflows Section -->
     <div class="workflow-section" data-intro="Select email workflows to enroll your contacts. Choose multiple workflows and then use the 'Enroll in Workflows' button to automate your outreach." data-step="3">
       <h4 style="margin: 0 0 15px 0; color: #0A3161;">📧 Available Email Workflows</h4>
       <div class="workflow-list" id="workflowList">
@@ -893,11 +876,15 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
           <input type="checkbox" id="workflow_followup" value="followup">
           <label for="workflow_followup">🔄 Follow-up Sequence - Re-engage prospects</label>
         </div>
+    <div class="workflow-item">
+          <input type="checkbox" id="workflow_newsletter" value="newsletter">
+          <label for="workflow_newsletter">📰 Newsletter - Send to newsletter subscribers</label>
+        </div>
       </div>
       
       <!-- NEW: Custom Email Campaign Button -->
       <div style="text-align: center; margin-top: 15px;">
-        <button onclick="showCustomCampaignModal()" class="success" style="background: #fd7e14;">
+        <button onclick="showCustomCampaignModal()" class="success" style="background: #0A3161;">
           ✨ Create Custom Email Campaign
         </button>
       </div>
@@ -980,8 +967,9 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <button id="deselectAllBtn" class="secondary">Deselect All</button>
         <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
         <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
+        <button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button>
         <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
-        <span id="selectedCount" style="margin-left: 10px; color: #666;">0 selected</span>
+        <span id="selectedCount" style="margin-left: 10px; color: #6699cc;">0 selected</span>
       </div>
       <div class="bulk-actions-right">
         <button id="expandContactBtn" class="success" style="background: #17a2b8;">🔍 Expand Contact</button>
@@ -1144,16 +1132,26 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
             <input type="date" id="client_won_date" name="client_won_date">
           </div>
         </div>
+        <div class="form-group">
+        <label for="client_ann_est">
+              Estimated Annual Revenue from Customer
+              <span class="help-icon">❓
+                <span class="help-tooltip">Amount of revenue customer should generate each year.</span>
+              </span>
+            </label>
+            <input type="text" id="client_ann_est" name="client_ann_est">
+          </div>
+        </div>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
           <div class="form-group">
-            <label for="conversation_summary">
+            <label for="customer_journey">
               Conversation Summary
               <span class="help-icon">❓
                 <span class="help-tooltip">Summary of all previous conversations, meetings, and interactions with this contact.</span>
               </span>
             </label>
-            <textarea id="conversation_summary" name="conversation_summary" placeholder="Summary of all communication..."></textarea>
+            <textarea id="customer_journey" name="customer_journey" placeholder="Summary of all communication..."></textarea>
           </div>
           <div class="form-group">
             <label for="personal_summary">
@@ -1338,15 +1336,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>        
-        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-          <button type="button" onclick="closeCustomCampaignModal()" class="secondary">Cancel</button>
-          <button type="submit" class="success" style="background: #fd7e14;">✨ Create Campaign</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
+     
 <!-- SMS Modal -->
 <div id="smsModal" class="modal">
   <div class="modal-content" style="max-width: 600px;">
@@ -1379,6 +1369,59 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
+<!-- Look Alike Modal -->
+<div id="lookAlikeModal" class="modal">
+  <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2>🔎 Generate Look-Alike Contacts</h2>
+      <span class="close" onclick="closeLookAlikeModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom: 20px; color: #6699cc;">
+        AI will analyze your selected contact(s) and find similar prospects based on their profile characteristics.
+      </p>
+      
+      <div class="form-group">
+        <label for="lookAlikeCount">
+          Number of Leads to Generate
+          <span class="help-icon">❓
+            <span class="help-tooltip">Choose how many similar contacts you want to find. Each contact uses 1 credit.</span>
+          </span>
+        </label>
+        <select id="lookAlikeCount">
+          <option value="5" selected>5 Leads</option>
+          <option value="10">10 Leads</option>
+          <option value="15">15 Leads</option>
+          <option value="20">20 Leads</option>
+          <option value="25">25 Leads</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="lookAlikeGeography">
+          Target Geography
+          <span class="help-icon">❓
+            <span class="help-tooltip">Specify the geographic area to search for similar contacts. You can enter cities, states, regions, or "USA" for nationwide search.</span>
+          </span>
+        </label>
+        <input type="text" 
+               id="lookAlikeGeography" 
+               placeholder="e.g., California, New York City, Southeast USA, USA" 
+               value="USA"
+               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        <div style="font-size: 12px; color: #6699cc; margin-top: 5px;">
+          Examples: "California", "New York, New Jersey", "Southeast USA", "San Francisco Bay Area", "USA"
+        </div>
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <button onclick="closeLookAlikeModal()" class="secondary">Cancel</button>
+        <button onclick="generateLookAlikeContacts()" class="success" style="background: #17a2b8;">🔎 Generate</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
 <!-- Hidden audio element for WebRTC calls -->
 <audio id="remoteAudio" autoplay playsinline></audio>
 <!-- Call Control Modal -->
@@ -1393,7 +1436,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       <!-- Contact Info & Status -->
       <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #e9ecef;">
         <h3 id="callContactName" style="color: #0A3161; margin: 5px 0;">Contact Name</h3>
-        <div id="callStatus" style="font-size: 16px; color: #666; margin: 8px 0;">Connecting...</div>
+        <div id="callStatus" style="font-size: 16px; color: #6699cc; margin: 8px 0;">Connecting...</div>
         <div id="callDuration" style="font-size: 28px; font-weight: bold; color: #0A3161; margin: 10px 0;">00:00</div>
       </div>
       
@@ -1435,7 +1478,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <textarea id="callNotes" 
                   placeholder="Take notes during the call..." 
                   style="min-height: 120px; font-size: 14px; line-height: 1.6; padding: 12px;"></textarea>
-        <div style="font-size: 12px; color: #666; margin-top: 5px;">
+        <div style="font-size: 12px; color: #6699cc; margin-top: 5px;">
           💡 Tip: Note key points, objections, and next steps
         </div>
       </div>
@@ -1458,7 +1501,7 @@ const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// API endpoints - ALL operations go through n8n for security
+// API endpoints 
 const ENDPOINTS = {
   getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
   getContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/get',
@@ -1471,6 +1514,7 @@ const ENDPOINTS = {
   enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture',
   enrollMeeting: 'https://victoryvision.app.n8n.cloud/webhook/emails/meeting',
   enrollFollowup: 'https://victoryvision.app.n8n.cloud/webhook/emails/followup',
+  enrollNewsletter: 'https://victoryvision.app.n8n.cloud/webhook/emails/newsletter',
   removeContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/remove',
   // NEW ENDPOINTS
   customEmailCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/usergenerated',
@@ -1478,7 +1522,6 @@ const ENDPOINTS = {
   createSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/create',
   makeCall: 'https://victoryvision.app.n8n.cloud/webhook/call/make',
   generateScript: 'https://victoryvision.app.n8n.cloud/webhook/call/script'
-
 };
 
 // Global variables
@@ -1511,23 +1554,24 @@ const availableColumns = {
   last_emailed_date: 'Last Emailed',
   linkedin: 'LinkedIn',
   tags: 'Tags',
-  conversation_summary: 'Conversation Summary',
+  customer_journey: 'Conversation Summary',
   personal_summary: 'Personal Summary',
   company_summary: 'Company Summary',
   personal_priorities: 'Personal Priorities',
   company_priorities: 'Company Priorities',
   client_won_date: 'Client Won Date',
   aiemail: 'AI Email',
-  newsletter: 'Newsletter'
+  newsletter: 'Newsletter',
+  client_ann_est: 'Est. Revenue to Me'
 };
 
 // Default visible columns
-let visibleColumns = ['name', 'title', 'company', 'email', 'industry', 'annual_revenue', 'city', 'last_responded', 'last_emailed_date', 'workflow_status'];
+let visibleColumns = ['name', 'title', 'company', 'email', 'industry', 'annual_revenue', 'city', 'last_responded', 'last_emailed_date'];
 
 // Rate limiting
 const rateLimiter = {
   calls: [],
-  maxCalls: 20,
+  maxCalls: 100,
   windowMs: 60000,
   canMakeCall: function() {
     const now = Date.now();
@@ -1751,17 +1795,8 @@ window.userWebRTCUsername = userData.name ? userData.name.replace(/[\s,]+/g, '')
   if (creditsSpan) {
     creditsSpan.textContent = `${userCredits.credits} credits`;
   }
-    
-  // Enable/disable generate button based on credits
-  const generateBtn = document.getElementById('generateBtn');
-  if (generateBtn) {
-    generateBtn.disabled = userCredits.credits <= 0;
-    if (userCredits.credits <= 0) {
-      generateBtn.textContent = '🚫 No Credits Remaining';
-      generateBtn.style.background = '#6c757d';
-    }
   }
-}
+    
 async function loadContacts() {
   try {
     console.log('Loading contacts for customer:', CUSTOMER_ID);
@@ -1804,68 +1839,6 @@ async function loadContacts() {
   }
 }
 
-// Generate new contacts
-async function generateNewContacts() {
-  console.log('Generate button clicked');
-  const generateBtn = document.getElementById('generateBtn');
-  
-  try {
-    if (userCredits.credits <= 0) {
-      throw new Error('Insufficient contact credits. Please upgrade your plan.');
-    }
-
-    generateBtn.disabled = true;
-    generateBtn.textContent = '🔄 Generating Contacts...';
-    
-    const linkedinUrl = document.getElementById('linkedin1').value.trim();
-    const leadCount = parseInt(document.getElementById('leadCount').value) || 5;
-
-    console.log('LinkedIn URL:', linkedinUrl);
-    console.log('Lead count:', leadCount);
-
-    if (!linkedinUrl) {
-      throw new Error('Please enter a LinkedIn URL');
-    }
-
-    if (userCredits.credits < leadCount) {
-      throw new Error(`Insufficient credits. You need ${leadCount} credits but only have ${userCredits.credits}.`);
-    }
-
-    console.log('Sending request to contacts/look');
-    
-    const result = await apiCall(ENDPOINTS.generateContacts, { 
-      linkedin_urls: [linkedinUrl],
-      lead_count: leadCount
-    });
-
-    if (result.success !== false) {
-      showStatus(`Successfully generating ${leadCount} contacts! They will appear shortly.`, false);
-      
-      // Deduct credits
-      userCredits.credits -= leadCount;
-      updateCreditsDisplay();
-      
-      // Clear inputs
-      document.getElementById('linkedin1').value = '';
-      document.getElementById('leadCount').value = '5';
-      
-      // Reload contacts after a delay
-      setTimeout(() => {
-        console.log('Reloading contacts...');
-        loadContacts();
-      }, 3000);
-    } else {
-      throw new Error(result.message || 'Contact generation failed');
-    }
-    
-  } catch (error) {
-    console.error('Error generating contacts:', error);
-    showStatus(error.message || 'Error generating contacts', true);
-  } finally {
-    generateBtn.disabled = false;
-    generateBtn.textContent = '🚀 Generate New Contacts';
-  }
-}
 
 // NEW: Custom Email Campaign Functions
 function showCustomCampaignModal() {
@@ -1958,8 +1931,64 @@ function setupCSVUpload() {
   const csvInput = document.getElementById('csvFileInput');
   csvInput.addEventListener('change', handleCSVFile);
 }
+// Look Alike Modal Functions
+function showLookAlikeModal() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select at least one contact to find look-alikes', true);
+    return;
+  }
+  document.getElementById('lookAlikeModal').style.display = 'block';
+}
 
-async function handleCSVFile(event) {
+function closeLookAlikeModal() {
+  document.getElementById('lookAlikeModal').style.display = 'none';
+}
+
+async function generateLookAlikeContacts() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select contacts first', true);
+    return;
+  }
+  
+  const leadCount = parseInt(document.getElementById('lookAlikeCount').value) || 5;
+  const geography = document.getElementById('lookAlikeGeography').value.trim() || 'USA';
+  
+  try {
+    const selectedContactsList = Array.from(selectedContacts).map(id => 
+      allContacts.find(c => c.contact_id === id || c.id === id || c.email === id)
+    ).filter(c => c);
+    
+    if (selectedContactsList.length === 0) {
+      showStatus('No valid contacts selected', true);
+      return;
+    }
+    
+    showStatus(`Generating ${leadCount} look-alike contacts in ${geography}...`, false);
+    closeLookAlikeModal();
+    
+    const result = await apiCall(ENDPOINTS.generateContacts, {
+      contact_ids: selectedContactsList.map(c => c.contact_id || c.id || c.email),
+      num_leads: leadCount,
+      geography: geography
+    });
+    
+    if (result.success !== false) {
+      showStatus(`Generating ${leadCount} look-alike contacts in ${geography}! They will appear shortly.`, false);
+      
+      selectedContacts.clear();
+      updateSelectedCount();
+      
+      setTimeout(() => loadContacts(), 3000);
+    } else {
+      throw new Error(result.message || 'Look-alike generation failed');
+    }
+    
+  } catch (error) {
+    console.error('Error generating look-alikes:', error);
+    showStatus('Error: ' + error.message, true);
+  }
+}
+  async function handleCSVFile(event) {
   const file = event.target.files[0];
   if (!file) return;
 
@@ -2011,38 +2040,53 @@ async function enrichSelectedContacts() {
       return;
     }
     
-    // Send each contact individually
-    for (const contact of selectedContactsList) {
-      const enrichmentData = {
-        contact: {
-          id: contact.contact_id || contact.id || contact.email,
-          email: contact.email || '',
-          linkedin: contact.linkedin || '',
-          name: contact.name || '',
-          domain: contact.domain || '',
-          address: contact.address || '',
-          tags: contact.tags || '',
-          notes: contact.notes || '',
-           industry: contact.industry || '',
-          title: contact.title || '',
-          company: contact.company || ''
-        }
-      };
-      console.log('Enriching contact:', enrichmentData);
-      await apiCall(ENDPOINTS.enrichContacts, enrichmentData).catch(err => ({ success: false, message: err.message }));
+// Show immediate feedback
+    showStatus(`Enriching ${selectedContactsList.length} contacts...`, false);
+    
+    // Process 5 at a time instead of 1 (5x faster)
+    const BATCH_SIZE = 5;
+    let completed = 0;
+    
+    for (let i = 0; i < selectedContactsList.length; i += BATCH_SIZE) {
+      const batch = selectedContactsList.slice(i, i + BATCH_SIZE);
+      
+      await Promise.all(batch.map(contact => {
+        const enrichmentData = {
+          contact: {
+            id: contact.contact_id || contact.id || contact.email,
+            email: contact.email || '',
+            linkedin: contact.linkedin || '',
+            name: contact.name || '',
+            domain: contact.domain || '',
+            address: contact.address || '',
+            tags: contact.tags || '',
+            notes: contact.notes || '',
+            industry: contact.industry || '',
+            title: contact.title || '',
+            company: contact.company || ''
+          }
+        };
+        console.log('Enriching contact:', enrichmentData);
+        return apiCall(ENDPOINTS.enrichContacts, enrichmentData).catch(err => {
+          console.error('Enrich failed:', err);
+        });
+      }));
+      
+      completed += batch.length;
+      showStatus(`Enriched ${completed} of ${selectedContactsList.length} contacts...`, false);
     }
     
-    showStatus(`Enrichment started for ${selectedContactsList.length} contacts!`, false);
+    showStatus(`Enrichment complete! ${selectedContactsList.length} contacts processed.`, false);
     selectedContacts.clear();
     updateSelectedCount();
     setTimeout(() => loadContacts(), 5000);
-    
-  } catch (error) {
+
+} catch (error) {
     console.error('Error enriching contacts:', error);
     showStatus('Error enriching contacts: ' + error.message, true);
   }
 }
-
+    
 // Show contact details modal - UPDATED with new buttons
 function showContactDetails(contactId, event) {
   console.log('showContactDetails called with:', contactId, event);
@@ -2084,7 +2128,7 @@ function showContactDetails(contactId, event) {
     
     <div class="modal-actions">
       <button onclick="sendEmailToContact('${contact.email || ''}')" class="success" style="background: #17a2b8;">✉️ Send Email</button>
-      <button onclick="createMeetingForContact('${contactId}')" class="success" style="background: #28a745;">📅 Create Meeting</button>
+      <button onclick="createMeetingForContact('${contactId}')" class="success" style="background: #0A3161;">📅 Create Meeting</button>
       <button onclick="createSMSForContact('${contactId}')" class="success" style="background: #ffc107; color: #000;">💬 Send SMS</button>
       <button onclick="makeCallToContact('${contactId}')" class="success" style="background: #dc3545;">📞 Make Call</button>
       <button onclick="editContact('${contactId}')" class="success">✏️ Edit Contact</button>
@@ -2193,7 +2237,7 @@ function editContact(contactId) {
   document.getElementById('annual_revenue').value = contact.annual_revenue || '';
   document.getElementById('employee_count').value = contact.employee_count || '';
   document.getElementById('client_won_date').value = contact.client_won_date || '';
-  document.getElementById('conversation_summary').value = contact.conversation_summary || '';
+  document.getElementById('customer_journey').value = contact.customer_journey || '';
   document.getElementById('personal_summary').value = contact.personal_summary || '';
   document.getElementById('company_summary').value = contact.company_summary || '';
   // document.getElementById('created').value = contact.created || ''; // ❌ REMOVE THIS LINE  
@@ -2401,7 +2445,60 @@ function renderContactsTable() {
     row.style.cursor = 'pointer';
   });
 }
+function formatCityState(contact) {
+  // Priority: location > city+state > address parsing
+  if (contact.location && contact.location.includes(',')) {
+    const parts = contact.location.split(',').map(s => s.trim());
+    if (parts.length >= 2) {
+      return `${parts[0]}, ${parts[1]}`;
+    }
+  }
+  
+  if (contact.city && contact.state) {
+    return `${contact.city}, ${contact.state}`;
+  }
+  
+  if (contact.address) {
+    const match = contact.address.match(/,\s*([^,]+),\s*([A-Z]{2})/);
+    if (match) {
+      return `${match[1]}, ${match[2]}`;
+    }
+  }
+  
+  return contact.city || contact.location || 'N/A';
+}
 
+function formatCellValue(contact, column) {
+  const value = contact[column];
+  
+  switch (column) {
+    case 'name':
+      return `<span class="contact-name">${value || 'N/A'}</span>`;
+    case 'annual_revenue':
+      return `<span class="revenue-cell">${formatRevenue(value)}</span>`;
+    case 'workflow_status':
+      return formatWorkflowBadges(value);
+    case 'linkedin':
+      return value ? `<a href="${value}" target="_blank" style="color: #0A3161;" onclick="event.stopPropagation();">View</a>` : 'N/A';
+    case 'email':
+      return value ? `<a href="mailto:${value}" style="color: #0A3161;" onclick="event.stopPropagation();">${value}</a>` : 'N/A';
+    case 'created':
+      return formatDateTime(value);
+    case 'last_responded':
+    case 'last_emailed_date':
+    case 'client_won_date':
+      return formatDate(value);
+    case 'tags':
+      return formatTags(value);
+    case 'city':
+      return formatCityState(contact);
+    case 'aiemail':
+    case 'newsletter':
+      return value ? '✅' : '❌';
+    default:
+      return value || 'N/A';
+  }
+}
 function formatCellValue(contact, column) {
   const value = contact[column];
   
@@ -2422,6 +2519,8 @@ function formatCellValue(contact, column) {
     case 'last_emailed_date':
     case 'client_won_date':
       return formatDate(value);
+    case 'city':
+        return formatCityState(contact);
     case 'tags':
       return formatTags(value);
     case 'aiemail':
@@ -2525,50 +2624,82 @@ async function enrollInWorkflows() {
       )
     ).filter(c => c && c.email);
 
-    for (const workflow of selectedWorkflows) {
+for (const workflow of selectedWorkflows) {
       let endpoint;
+      let useCustomCampaign = false;
+      let campaignPrompt = '';
       
       switch(workflow) {
         case 'ads':
           endpoint = ENDPOINTS.enrollAds;
           break;
         case 'nurture':
-          endpoint = ENDPOINTS.enrollNurture;
+          useCustomCampaign = true;
+          campaignPrompt = 'Create a thoughtful lead nurture email sequence that provides valuable educational content. Focus on building trust and demonstrating expertise without being overly promotional. Include helpful tips, industry insights, and resources that genuinely help the recipient solve their problems.';
           break;
         case 'meeting':
           endpoint = ENDPOINTS.enrollMeeting;
           break;
+     case 'newsletter':
+          endpoint = ENDPOINTS.enrollNewsletter;
+          break;
         case 'followup':
-          endpoint = ENDPOINTS.enrollFollowup;
+          useCustomCampaign = true;
+          campaignPrompt = 'Create a professional follow-up email sequence to re-engage prospects who have gone quiet. Be respectful of their time while reminding them of the value you can provide. Include a soft call-to-action and make it easy for them to respond or schedule a conversation.';
           break;
         default:
           endpoint = ENDPOINTS.enrollNurture;
       }
       
-      for (const contact of selectedContactsList) {
+      if (useCustomCampaign) {
         try {
-          await apiCall(endpoint, {
-            email: contact.email,
-            name: contact.name,
-            workflow: workflow,
-            contact_id: contact.contact_id || contact.id || contact.email
+          await apiCall(ENDPOINTS.customEmailCampaign, {
+            campaign_name: workflow === 'nurture' ? 'Lead Nurture Sequence' : 'Follow-up Sequence',
+            description: campaignPrompt,
+            email_count: 3,
+            tone: 'professional',
+            schedule_start_date: new Date().toISOString(),
+            selected_contacts: selectedContactsList.map(c => c.contact_id || c.id || c.email)
           });
           
-          const currentWorkflows = contact.workflow_status ? 
-            contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
-          if (!currentWorkflows.includes(workflow)) {
-            currentWorkflows.push(workflow);
-            contact.workflow_status = currentWorkflows.join(',');
+          for (const contact of selectedContactsList) {
+            const currentWorkflows = contact.workflow_status ? 
+              contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
+            if (!currentWorkflows.includes(workflow)) {
+              currentWorkflows.push(workflow);
+              contact.workflow_status = currentWorkflows.join(',');
+            }
+            contact.last_emailed_date = new Date().toISOString();
           }
           
-          contact.last_emailed_date = new Date().toISOString();
-          
         } catch (workflowError) {
-          console.error(`Error enrolling ${contact.email} in ${workflow}:`, workflowError);
+          console.error(`Error enrolling in ${workflow}:`, workflowError);
+        }
+      } else {
+        for (const contact of selectedContactsList) {
+          try {
+            await apiCall(endpoint, {
+              email: contact.email,
+              name: contact.name,
+              workflow: workflow,
+              contact_id: contact.contact_id || contact.id || contact.email
+            });
+            
+            const currentWorkflows = contact.workflow_status ? 
+              contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
+            if (!currentWorkflows.includes(workflow)) {
+              currentWorkflows.push(workflow);
+              contact.workflow_status = currentWorkflows.join(',');
+            }
+            
+            contact.last_emailed_date = new Date().toISOString();
+            
+          } catch (workflowError) {
+            console.error(`Error enrolling ${contact.email} in ${workflow}:`, workflowError);
+          }
         }
       }
-    }
-    
+    }    
     showStatus(`Enrolled ${selectedContactsList.length} contacts in ${selectedWorkflows.length} workflows`, false);
     selectedContacts.clear();
     updateSelectedCount();
@@ -2734,7 +2865,6 @@ function showStatus(message, isError = false) {
 }
 
 function setupEventListeners() {
-  document.getElementById('generateBtn').addEventListener('click', generateNewContacts);
   document.getElementById('expandContactBtn').addEventListener('click', expandFirstSelectedContact);
   document.getElementById('addContactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -2778,6 +2908,7 @@ document.getElementById('customCampaignForm').addEventListener('submit', async (
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
   document.getElementById('enrollWorkflowsBtn').addEventListener('click', enrollInWorkflows);
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
+  document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContacts);
   let searchTimeout;
   document.getElementById('searchFilter').addEventListener('input', () => {
@@ -2997,6 +3128,27 @@ function startCallTimer() {
 // WebRTC Client - Global
 let telnyxClient = null;
 let currentCall = null;
+
+// Format phone number to E.164 format for Telnyx
+function formatPhoneE164(phoneNumber) {
+  if (!phoneNumber) return null;
+  
+  // Remove all non-digit characters except leading +
+  let cleaned = phoneNumber.replace(/[^\d+]/g, '');
+  
+  // Remove leading + if present (we'll add it back)
+  if (cleaned.startsWith('+')) {
+    cleaned = cleaned.substring(1);
+  }
+  
+  // If it doesn't start with country code, assume US (1)
+  if (cleaned.length === 10) {
+    cleaned = '1' + cleaned;
+  }
+  
+  // Add the + prefix
+  return '+' + cleaned;
+}
 
 async function initializeTelnyxWebRTC() {
   if (telnyxClient) return;
@@ -3232,8 +3384,8 @@ await new Promise(resolve => {
     document.getElementById('callStatus').textContent = 'Calling...';
     
     currentCall = telnyxClient.newCall({
-      destinationNumber: contact.phone_number,
-      callerNumber: window.userVVNumber,
+      destinationNumber: formatPhoneE164(contact.phone_number),
+      callerNumber: formatPhoneE164(window.userVVNumber),
       audio: true,
       video: false
     });
@@ -3317,7 +3469,7 @@ async function hangupCall() {
     if (notes && currentCallContact) {
       await apiCall(ENDPOINTS.updateContact, {
         contact_id: currentCallContact.contact_id || currentCallContact.id,
-        conversation_summary: (currentCallContact.conversation_summary || '') + '\n\n' + 
+        customer_journey: (currentCallContact.customer_journey || '') + '\n\n' + 
           `Call ${new Date().toLocaleDateString()}: ${notes}`
       });
     }
@@ -3356,6 +3508,9 @@ window.startTour = startTour;
 window.expandFirstSelectedContact = expandFirstSelectedContact;
 window.showCustomCampaignModal = showCustomCampaignModal;
 window.closeCustomCampaignModal = closeCustomCampaignModal;
+  window.showLookAlikeModal = showLookAlikeModal;
+window.closeLookAlikeModal = closeLookAlikeModal;
+window.generateLookAlikeContacts = generateLookAlikeContacts;
 window.createMeetingForContact = createMeetingForContact;
 window.createSMSForContact = createSMSForContact;
 window.makeCallToContact = makeCallToContact;
@@ -3372,4 +3527,4 @@ document.addEventListener('DOMContentLoaded', init);
 
 </script> 
 </body>
-</html> 
+</html>
