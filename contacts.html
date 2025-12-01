@@ -3129,6 +3129,27 @@ function startCallTimer() {
 let telnyxClient = null;
 let currentCall = null;
 
+// Format phone number to E.164 format for Telnyx
+function formatPhoneE164(phoneNumber) {
+  if (!phoneNumber) return null;
+  
+  // Remove all non-digit characters except leading +
+  let cleaned = phoneNumber.replace(/[^\d+]/g, '');
+  
+  // Remove leading + if present (we'll add it back)
+  if (cleaned.startsWith('+')) {
+    cleaned = cleaned.substring(1);
+  }
+  
+  // If it doesn't start with country code, assume US (1)
+  if (cleaned.length === 10) {
+    cleaned = '1' + cleaned;
+  }
+  
+  // Add the + prefix
+  return '+' + cleaned;
+}
+
 async function initializeTelnyxWebRTC() {
   if (telnyxClient) return;
   
@@ -3363,8 +3384,8 @@ await new Promise(resolve => {
     document.getElementById('callStatus').textContent = 'Calling...';
     
     currentCall = telnyxClient.newCall({
-      destinationNumber: contact.phone_number,
-      callerNumber: window.userVVNumber,
+      destinationNumber: formatPhoneE164(contact.phone_number),
+      callerNumber: formatPhoneE164(window.userVVNumber),
       audio: true,
       video: false
     });
