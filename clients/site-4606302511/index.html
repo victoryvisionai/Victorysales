@@ -1,11 +1,17 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Victory Vision | Growth Blueprint for Louisiana Businesses</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/svgs/brands/algolia.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <meta property="og:title" content="Victory Vision | Growth Blueprint for Louisiana Businesses" />
+  <meta property="og:description" content="Marketing intelligence platform combining premium Louisiana billboards with AI-powered attribution. Cut your CPL & grow smarter with Victory Vision." />
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1712345678/i10_billboard_sample.jpg" />
+  <meta property="og:url" content="https://www.victoryvision.app" />
+  <meta name="description" content="Maximize your marketing ROI with Victory Vision—Louisiana's AI-powered billboard + attribution platform built for $3M–$250M organizations ready to grow.">
+  <meta name="theme-color" content="#0a3161">
   <style>
     :root {
       --vv-navy: #0a3161;
@@ -13,13 +19,11 @@
       --vv-red: #bb133e;
       --font-sans: 'Inter', sans-serif;
     }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: var(--font-sans);
       background-color: var(--vv-white);
@@ -27,81 +31,91 @@
       line-height: 1.6;
       scroll-behavior: smooth;
     }
-
     header {
       position: relative;
       height: 100vh;
       overflow: hidden;
     }
-
     header video {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
     .overlay {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(10,49,97,0.6);
+      inset: 0;
+      background: rgba(10,49,97,0.7);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       color: var(--vv-white);
       padding: 2rem;
     }
-
-    .overlay h1 {
-      max-width: 800px;
-      font-size: 2.75rem;
+    .hero-headline {
+      font-size: 3rem;
       font-weight: 700;
-      line-height: 1.3;
+      max-width: 900px;
+      line-height: 1.25;
+      margin-bottom: 1rem;
     }
-
+    .hero-subhead {
+      font-size: 1.5rem;
+      font-weight: 400;
+      max-width: 800px;
+      margin-bottom: 2rem;
+    }
+    .hero-cta {
+      background-color: var(--vv-red);
+      color: white;
+      font-size: 1.125rem;
+      font-weight: 600;
+      padding: 1rem 2rem;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+    .hero-cta:hover {
+      background-color: #a20f36;
+    }
     nav {
       background: var(--vv-white);
       padding: 1.5rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-
     nav img {
       width: 140px;
     }
-
     main {
       padding: 4rem 2rem;
       max-width: 1200px;
       margin: 0 auto;
     }
-
     .section {
       margin-bottom: 4rem;
     }
-
     .section h2 {
       font-size: 2rem;
       font-weight: 700;
       margin-bottom: 1rem;
     }
-
     .section p {
       max-width: 800px;
       font-size: 1.125rem;
     }
-
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 2rem;
       align-items: center;
     }
-
     .badge {
       display: inline-block;
       background-color: var(--vv-red);
@@ -114,26 +128,42 @@
       margin-bottom: 1rem;
       letter-spacing: 0.05em;
     }
-
     .quote {
       background: #f4f7fa;
       padding: 2rem;
       border-left: 4px solid var(--vv-red);
       margin-top: 2rem;
     }
-
+    .testimonial-section {
+      background-color: #f9fafb;
+      padding: 4rem 2rem;
+      border-top: 1px solid #e0e6ed;
+    }
+    .testimonial {
+      margin-bottom: 2rem;
+    }
+    .testimonial strong {
+      display: block;
+      margin-top: 1rem;
+    }
     .platform-diagram {
       background: linear-gradient(to right, var(--vv-navy), #122f4a);
       border-radius: 16px;
       padding: 3rem;
       color: white;
     }
-
     .platform-diagram h3 {
       font-size: 1.75rem;
       margin-bottom: 1rem;
     }
-
+    .platform-diagram ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .platform-diagram li {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
     .cta {
       background-color: var(--vv-red);
       color: white;
@@ -141,24 +171,20 @@
       padding: 3rem 2rem;
       border-radius: 10px;
     }
-
     .cta h2 {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
-
     .cta p {
       font-size: 1.125rem;
       max-width: 640px;
       margin: 0 auto 2rem;
     }
-
     .cta form {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
     .cta input,
     .cta button {
       padding: 1rem;
@@ -169,38 +195,44 @@
       border: none;
       border-radius: 4px;
     }
-
     .cta input {
       color: #333;
     }
-
     .cta button {
       background-color: var(--vv-navy);
       color: white;
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .cta button:hover {
       background-color: #061f3c;
     }
-
+    .visual-anchor {
+      margin-top: 4rem;
+      text-align: center;
+    }
+    .visual-anchor img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 1rem;
+      height: auto;
+    }
     footer {
       background-color: var(--vv-navy);
       color: var(--vv-white);
       text-align: center;
       padding: 2rem;
+      font-size: 0.95rem;
     }
-
+    footer a {
+      color: var(--vv-white);
+      text-decoration: underline;
+    }
     @media screen and (min-width: 768px) {
-      .overlay h1 {
-        font-size: 3.5rem;
+      .hero-headline {
+        font-size: 4rem;
       }
-
-      .section h2 {
-        font-size: 2.25rem;
-      }
-
+      .section h2,
       .cta h2 {
         font-size: 2.25rem;
       }
@@ -209,81 +241,87 @@
 </head>
 <body>
   <header>
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline aria-label="Promotional video for Victory Vision">
       <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1764557581/viral_campaign_undefined_1764557580.mp4" type="video/mp4">
+      Your browser does not support the video tag.
     </video>
     <div class="overlay">
-      <h1>Unify Billboard Power with AI Clarity.<br>Introducing the Growth Blueprint for Louisiana Enterprises.</h1>
+      <h1 class="hero-headline">Unify Billboard Power<br>with AI-Powered Precision</h1>
+      <p class="hero-subhead">Victory Vision delivers transparent marketing ROI by blending premium I-10 billboard reach with real-time AI attribution for Louisiana businesses ready to scale.</p>
+      <a href="#book-now" class="hero-cta">Request Your Free Growth Blueprint</a>
     </div>
   </header>
 
   <nav>
-    <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision logo">
+    <a href="#"><img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision logo"></a>
   </nav>
 
   <main>
     <section class="section">
       <div class="badge">About Us</div>
-      <h2>Data-Driven Marketing Meets Premium Visibility</h2>
-      <p>
-        Victory Vision is Louisiana's premier marketing intelligence platform transforming how growth-minded businesses track, optimize, and scale their advertising investments. By integrating strategic I-10 digital billboard placements with AI-powered attribution and lead nurturing, we provide unparalleled visibility into true marketing ROI—across TV, radio, search, social, and outdoor channels. Founded by a media-and-finance executive with 20+ years of industry leadership, Victory Vision uniquely equips mid-market businesses with performance clarity and lead precision.
-      </p>
+      <h2>Marketing Intelligence Engineered for Mid-Market Growth</h2>
+      <p>Victory Vision is Louisiana’s first fully integrated performance marketing intelligence platform built for established companies investing over $25K/month in media. We combine strategic billboard placements—targeted along the bustling I-10 corridor—with AI-powered multi-touch attribution, lead nurturing automations, and real-time ROI dashboards. Founded by a media and finance executive with 20+ years of industry credibility, our system empowers decision-makers to achieve absolute campaign transparency and maximize revenue outcomes across TV, radio, display, search, and social channels.</p>
     </section>
 
     <section class="section">
       <div class="badge">The Opportunity</div>
-      <h2>For CEOs & Marketing Leaders Who Demand Results</h2>
-      <p>
-        You lead a growth-driven enterprise in Louisiana. You invest over $25K/month into media but lack insight into what drives conversions—or worse, you’re leaking leads due to fragmented tools. Victory Vision changes that. Our Growth Blueprint was designed for CEOs, CMOs, and Heads of Growth across key industries—from law and healthcare to auto and financial services—all united by one goal: transforming visibility into measurable revenue. Our clients don’t just advertise—they optimize.
-      </p>
+      <h2>For Growth-Minded Leaders Who Refuse Blind Spots</h2>
+      <p>You’re a CEO, CMO, or Head of Growth at a Louisiana enterprise generating $3M–$250M annually. You believe in marketing. But fragmented tools and soft metrics keep you from making bold, ROI-optimized decisions. Our Growth Blueprint is designed for bold brands in law, healthcare, financial services, auto, and home improvement. We don’t guess—we measure. And we convert. Tap into strategic media intelligence without adding another dashboard nightmare.</p>
+    </section>
+
+    <section class="visual-anchor">
+      <h2>Real I-10 Billboards. Real Louisiana Reach.</h2>
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1712345678/i10_billboard_sample.jpg" alt="I-10 Billboard in Louisiana">
     </section>
 
     <section class="section grid-2">
       <div>
         <div class="badge">Platform Features</div>
-        <h2>AI Attribution + Billboard Brilliance</h2>
-        <p>
-          Our integrated platform pairs high-traffic I-10 billboard campaigns with real-time AI marketing intelligence. Every campaign is tracked from impression to sale. Leads are auto-nurtured. Touchpoints are mapped. Reporting is instant. With multi-touch attribution, campaign optimization tools, and audience behavior analytics on one unified dashboard, Victory Vision helps you reclaim wasted marketing spend and convert more leads across every channel.
-        </p>
+        <h2>From Impressions to Closed Leads—All Tracked</h2>
+        <p>With Victory Vision, every media impression connects to pipeline activity. Our system features I-10 billboard campaign integration, AI-driven lead scoring, multi-channel tracking, geo-tagged analytics, SDR-caliber nurturing automation, and executive-level dashboards that let leadership finally see what's working—and eliminate what isn't. Spend smarter across every channel with a platform purpose-built for data-driven execution.</p>
       </div>
       <div class="platform-diagram">
         <h3>One Platform. Endless ROI Clarity.</h3>
         <ul>
-          <li>🚀 I-10 Billboard Integration</li>
-          <li>📈 Multi-Channel Attribution</li>
-          <li>🤖 AI Lead Scoring & Nurturing</li>
-          <li>📊 Real-time ROI Dashboard</li>
-          <li>🎯 Campaign-Level Optimization</li>
+          <li>🚀 I-10 Billboard Campaign Integration</li>
+          <li>📈 Cross-Channel Viewer & Viewer-to-Lead Tracking</li>
+          <li>🤖 AI Lead Scoring + Nurture Engagement Paths</li>
+          <li>📊 Instant ROI Dashboards for C-Suite</li>
+          <li>🎯 Precision Audience Segments & Trend Analysis</li>
         </ul>
       </div>
     </section>
 
-    <section class="section">
-      <div class="badge">Real Results</div>
-      <h2>What our partners are saying</h2>
-      <div class="quote">
-        <blockquote>
-          “We cut our cost per lead by 23% within 60 days. Victory Vision gave us eyes into our media ROI that we never had before — we now know exactly what’s working.”<br>
-          <strong>— CMO, Multi-location Personal Injury Firm, Baton Rouge</strong>
-        </blockquote>
+    <section class="testimonial-section">
+      <div class="badge">Success Stories</div>
+      <h2>Partners Who See Results, Fast</h2>
+      <div class="testimonial">
+        <blockquote>“We cut our cost per lead by 23% within 60 days. Victory Vision gave us eyes into our media ROI that we never had before — we now know exactly what’s working.”</blockquote>
+        <strong>— CMO, Multi-location Personal Injury Firm, Baton Rouge</strong>
+      </div>
+      <div class="testimonial">
+        <blockquote>“Victory Vision tied our billboard campaigns to phone inquiries and closed deals—we had no idea how much business we were leaving on the table.”</blockquote>
+        <strong>— Managing Partner, Regional Auto Dealership Group</strong>
       </div>
     </section>
 
     <section class="section cta" id="book-now">
-      <h2>Secure Your Growth Blueprint Consultation</h2>
-      <p>We’re offering just 30 complimentary sessions to qualified Louisiana businesses. Let’s discover how Victory Vision can lower your cost per lead and scale your marketing ROI through data and visibility.</p>
+      <h2>Only 30 Growth Blueprints Available</h2>
+      <p>Claim your complimentary strategic session and discover how Victory Vision can help reduce your cost per lead by over 20%, optimize omni-channel campaigns, and unlock full-funnel attribution visibility.</p>
       <form action="#" method="POST">
         <input type="text" name="name" placeholder="Full Name" required>
         <input type="email" name="email" placeholder="Business Email" required>
         <input type="text" name="company" placeholder="Company Name" required>
-        <button type="submit">Request My Blueprint Session</button>
+        <button type="submit">Request My Growth Blueprint</button>
       </form>
     </section>
   </main>
 
   <footer>
     <p>&copy; 2024 Victory Vision™ | Growth Blueprint Platform | All Rights Reserved</p>
+    <p>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener noreferrer">Build your free AI website at Victory Vision</a></p>
   </footer>
+
+  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=8bdcfe476ba869d09e0233a56e61cd220b6d324a" width="1" height="1" style="display:none;" alt="tracking pixel">
 </body>
 </html>
-```
