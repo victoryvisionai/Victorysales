@@ -820,7 +820,7 @@
         <div style="margin-bottom: 15px;">
           <strong style="color: #0A3161;">📄 Upload CSV:</strong>
           <p style="margin: 5px 0 0 0; color: #6699cc; font-size: 0.9rem; line-height: 1.5;">
-            Bulk import contacts from a CSV file. Required columns: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">email</code>, <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">name</code>. Optional: address, title, domain, phone, linkedin, company, city, industry, tags, customer_journey, logo_url.
+            Bulk import contacts from a CSV file. Required columns: <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">email</code>, <code style="background: #f0f0f0; padding: 2px 6px; border-radius: 3px;">name</code>. Optional: address, title, domain, phone, linkedin, company, city, industry, tags, customer_journey, last_opened_date, logo_url.
           </p>
         </div>
         
@@ -1554,6 +1554,7 @@ const availableColumns = {
   last_emailed_date: 'Last Emailed',
   linkedin: 'LinkedIn',
   tags: 'Tags',
+  last_opened_date: 'Last Opened'
   customer_journey:'Customer Journey',
   personal_summary: 'Personal Summary',
   company_summary: 'Company Summary',
@@ -2237,6 +2238,7 @@ function editContact(contactId) {
   document.getElementById('annual_revenue').value = contact.annual_revenue || '';
   document.getElementById('employee_count').value = contact.employee_count || '';
   document.getElementById('client_won_date').value = contact.client_won_date || '';
+  document.getElementById('last_opened_date').value = contact.last_opened_date || '';
   document.getElementById('customer_journey').value = contact.customer_journey || '';
   document.getElementById('personal_summary').value = contact.personal_summary || '';
   document.getElementById('company_summary').value = contact.company_summary || '';
