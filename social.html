@@ -1161,6 +1161,46 @@
         margin: 5% auto;
       }
     }
+    
+    /* Link attachment styling */
+    .attach-link-btn {
+      background: #0A3161;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    .attach-link-btn:hover {
+      background: #062342;
+      transform: translateY(-1px);
+    }
+    
+    /* Social Plan modal styling */
+    .plan-period-btn {
+      background: #f0f0f0;
+      color: #333;
+      border: 2px solid transparent;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    .plan-period-btn:hover {
+      border-color: #0A3161;
+    }
+    
+    .plan-period-btn.active {
+      background: #0A3161;
+      color: white;
+      border-color: #0A3161;
+    }
   </style>
 </head>
 <body>
@@ -1269,6 +1309,8 @@
         <div class="schedule-options">
           <button class="success" onclick="postNow()">📤 Post Now</button>
           <button id="scheduleBtn">⏰ Schedule</button>
+          <button class="secondary" onclick="openLearnModal()" id="learnBtn" style="display:none;">📚 Learn from Post</button>
+          <button class="secondary" onclick="openSocialPlanModal()" id="socialPlanBtn" style="display:none;">📅 Social Plan</button>
     <!--      <button class="secondary" onclick="saveDraft()">💾 Save Draft</button>  --> 
         </div>
       </div>
@@ -1417,6 +1459,17 @@
         </div>
       </div>
       
+      <!-- Link Attachment Section -->
+      <div class="form-group">
+        <label>Add Link</label>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button type="button" class="attach-link-btn" onclick="openLinkModal()">
+            🔗 Attach Page Link
+          </button>
+          <div id="selectedLinkDisplay" style="font-size: 12px; color: #666;"></div>
+        </div>
+      </div>
+      
       <div class="form-group">
         <label for="modalHashtags">Hashtags</label>
         <input type="text" id="modalHashtags" placeholder="#hashtag1 #hashtag2 #hashtag3">
@@ -1509,6 +1562,134 @@
   </div>
 </div>
 
+<!-- Link Selection Modal -->
+<div id="linkModal" class="post-modal">
+  <div class="post-modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2 class="modal-title">🔗 Select Page to Link</h2>
+      <button class="modal-close" onclick="closeLinkModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <input type="text" id="linkSearch" placeholder="Search pages..." oninput="filterLinkList()">
+      </div>
+      <div id="linkList" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px;">
+        <div style="padding: 20px; text-align: center; color: #999;">Loading pages...</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeLinkModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Learn Modal -->
+<div id="learnModal" class="post-modal">
+  <div class="post-modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">📚 Learn from Top Post</h2>
+      <button class="modal-close" onclick="closeLearnModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Select Post to Analyze</label>
+        <div id="topPostDisplay" style="background: #f8f9fa; padding: 15px; border-radius: 6px; border: 1px solid #ddd; cursor: pointer;" 
+             onclick="openPostSelector()">
+          <div id="topPostPreview" style="color: #666;">Loading your top performing post...</div>
+          <div style="font-size: 11px; color: #999; margin-top: 5px;">Click to select different post</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Analysis Focus (optional)</label>
+        <textarea id="learnPrompt" placeholder="e.g., 'What made this post perform well?' or leave blank for auto-analysis" style="height: 80px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeLearnModal()">Cancel</button>
+      <button class="btn-primary" onclick="startLearnAnalysis()">🔍 Analyze Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- Post Selector Modal (for Learn) -->
+<div id="postSelectorModal" class="post-modal">
+  <div class="post-modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">📋 Select Post to Learn From</h2>
+      <button class="modal-close" onclick="closePostSelector()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <input type="text" id="postSearch" placeholder="Search posts..." oninput="filterPostList()">
+      </div>
+      <div id="postList" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px;">
+        <div style="padding: 20px; text-align: center; color: #999;">Loading posts...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Social Plan Modal -->
+<div id="socialPlanModal" class="post-modal">
+  <div class="post-modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">📅 Create Social Media Plan</h2>
+      <button class="modal-close" onclick="closeSocialPlanModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Planning Period</label>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(7)" data-period="7">
+            📅 7 Days
+          </button>
+          <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(14)" data-period="14">
+            📅 14 Days
+          </button>
+          <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(30)" data-period="30">
+            📅 30 Days
+          </button>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="includeWeekend" checked>
+          Post on Saturdays & Sundays
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label for="planKeyIdeas">Key Ideas to Cover (optional)</label>
+        <textarea id="planKeyIdeas" placeholder="e.g., 'New product launch, customer success stories, industry trends'" style="height: 80px;"></textarea>
+      </div>
+      
+      <div class="form-group" style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 15px;">
+        <label style="font-weight: 600; margin-bottom: 12px; display: block;">Content Options</label>
+        
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 10px;">
+          <input type="checkbox" id="useExistingMedia" checked>
+          Use existing images/videos from platform
+        </label>
+        
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 10px;">
+          <input type="checkbox" id="useUploadedVideos" checked>
+          Use uploaded videos/media
+        </label>
+        
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+          <input type="checkbox" id="aiCreateVideos">
+          AI create new videos (uses ~50% monthly credits)
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSocialPlanModal()">Cancel</button>
+      <button class="btn-primary" onclick="startSocialPlan()" id="createPlanBtn" style="opacity: 0.5; cursor: not-allowed;" disabled>Create Plan</button>
+    </div>
+  </div>
+</div>
+
 <!-- File Browser Modal -->
 <div id="fileBrowserModal" class="file-browser-modal">
   <div class="file-browser-content">
@@ -1553,7 +1734,10 @@
     optimizeContent: 'https://victoryvision.app.n8n.cloud/webhook/social/optimize',
     uploadMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/upload',
     updatePost: 'https://victoryvision.app.n8n.cloud/webhook/social/update',
-    deletePost: 'https://victoryvision.app.n8n.cloud/webhook/social/delete'
+    deletePost: 'https://victoryvision.app.n8n.cloud/webhook/social/delete',
+    getPages: 'https://victoryvision.app.n8n.cloud/webhook/pages/get',
+    socialLearn: 'https://victoryvision.app.n8n.cloud/webhook/social/learn',
+    socialPlan: 'https://victoryvision.app.n8n.cloud/webhook/social/plan'
   };
   
   let CUSTOMER_ID = null;
@@ -1752,6 +1936,15 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
       updateAIToggleDisplay();
       
       updateCreditsDisplay();
+      
+      // Show/hide team features based on role
+      if (userData && userData.role && userData.role.trim()) {
+        document.getElementById('learnBtn').style.display = 'block';
+        document.getElementById('socialPlanBtn').style.display = 'block';
+      } else {
+        document.getElementById('learnBtn').style.display = 'none';
+        document.getElementById('socialPlanBtn').style.display = 'none';
+      }
     } catch (error) {
       console.error('Error loading user data:', error);
       showStatus('Error loading user data: ' + error.message, true);
@@ -1879,12 +2072,311 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     const hashtags = document.getElementById('modalHashtags').value;
     
     let content = modalContent.value;
+    
+    // Add link if selected
+    if (selectedLink && selectedLink.url) {
+      content += '\n\nLearn more at: ' + selectedLink.url;
+    }
+    
     if (hashtags.trim()) {
       content += '\n\n' + hashtags;
     }
     
     postContent.value = content;
+    selectedLink = { name: '', url: '' }; // Reset after posting
+    document.getElementById('selectedLinkDisplay').textContent = '';
     closePostModal();
+  }
+
+  // Link Selection Functions
+  let selectedLink = { name: '', url: '' };
+  let allPages = [];
+
+  function openLinkModal() {
+    loadPagesForLinking();
+    document.getElementById('linkModal').style.display = 'block';
+  }
+
+  function closeLinkModal() {
+    document.getElementById('linkModal').style.display = 'none';
+  }
+
+  async function loadPagesForLinking() {
+    try {
+      showStatus('Loading pages...', false);
+      const response = await apiCall(ENDPOINTS.getPages);
+      
+      if (response && response.pages && Array.isArray(response.pages)) {
+        allPages = response.pages;
+        renderLinkList(allPages);
+      } else {
+        document.getElementById('linkList').innerHTML = '<div style="padding: 20px; color: #999;">No pages found.</div>';
+      }
+    } catch (error) {
+      console.error('Error loading pages:', error);
+      document.getElementById('linkList').innerHTML = '<div style="padding: 20px; color: red;">Error loading pages.</div>';
+    }
+  }
+
+  function renderLinkList(pages) {
+    const linkList = document.getElementById('linkList');
+    
+    if (pages.length === 0) {
+      linkList.innerHTML = '<div style="padding: 20px; color: #999;">No pages available.</div>';
+      return;
+    }
+    
+    linkList.innerHTML = pages.map((page, idx) => `
+      <div style="padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s;" 
+           onmouseover="this.style.background='#f8f9fa'" 
+           onmouseout="this.style.background='white'"
+           onclick="selectLink('${(page.name || page.page_name || 'Page ' + (idx + 1)).replace(/'/g, "\\'")}', '${(page.URL || page.campaign_URL || '').replace(/'/g, "\\'")}')"  >
+        <strong>${page.name || page.page_name || 'Untitled Page'}</strong>
+        <div style="font-size: 11px; color: #999; margin-top: 2px;">${page.URL || page.campaign_URL || 'No URL'}</div>
+      </div>
+    `).join('');
+  }
+
+  function filterLinkList() {
+    const searchTerm = document.getElementById('linkSearch').value.toLowerCase();
+    const filtered = allPages.filter(p => {
+      const name = (p.name || p.page_name || '').toLowerCase();
+      const url = (p.URL || p.campaign_URL || '').toLowerCase();
+      return name.includes(searchTerm) || url.includes(searchTerm);
+    });
+    renderLinkList(filtered);
+  }
+
+  function selectLink(name, url) {
+    selectedLink = { name, url };
+    document.getElementById('selectedLinkDisplay').textContent = `✓ ${name}`;
+    closeLinkModal();
+  }
+
+  // Learn Modal Functions
+  let selectedPostForLearn = null;
+  let allPublishedPosts = [];
+
+  function openLearnModal() {
+    loadTopPost();
+    document.getElementById('learnModal').style.display = 'block';
+  }
+
+  function closeLearnModal() {
+    document.getElementById('learnModal').style.display = 'none';
+  }
+
+  function openPostSelector() {
+    loadPostsForSelection();
+    document.getElementById('postSelectorModal').style.display = 'block';
+  }
+
+  function closePostSelector() {
+    document.getElementById('postSelectorModal').style.display = 'none';
+  }
+
+  async function loadTopPost() {
+    try {
+      // Load all posts and find one with highest engagements
+      const response = await apiCall(ENDPOINTS.getSocial);
+      
+      if (response && Array.isArray(response)) {
+        allPublishedPosts = response;
+      } else if (response && response.posts && Array.isArray(response.posts)) {
+        allPublishedPosts = response.posts;
+      } else {
+        allPublishedPosts = [];
+      }
+
+      if (allPublishedPosts.length > 0) {
+        // Sort by engagements to find top post
+        const topPost = allPublishedPosts.sort((a, b) => 
+          (parseInt(b.engagements) || 0) - (parseInt(a.engagements) || 0)
+        )[0];
+        
+        selectedPostForLearn = topPost;
+        displayTopPost(topPost);
+      } else {
+        document.getElementById('topPostPreview').innerHTML = '<div style="color: #999;">No posts yet. Create some posts first.</div>';
+      }
+    } catch (error) {
+      console.error('Error loading top post:', error);
+      document.getElementById('topPostPreview').innerHTML = '<div style="color: red;">Error loading posts.</div>';
+    }
+  }
+
+  function displayTopPost(post) {
+    const preview = document.getElementById('topPostPreview');
+    preview.innerHTML = `
+      <strong>${post.platform || 'Unknown'}</strong>
+      <div style="margin-top: 8px; font-size: 13px;">${(post.message || post.content || '').substring(0, 100)}...</div>
+      <div style="margin-top: 5px; font-size: 11px; color: #999;">
+        👍 ${post.engagements || 0} | 🔗 ${post.clicks || 0} | ↗️ ${post.shares || 0}
+      </div>
+    `;
+  }
+
+  async function loadPostsForSelection() {
+    if (allPublishedPosts.length === 0) {
+      document.getElementById('postList').innerHTML = '<div style="padding: 20px; color: #999;">No posts available.</div>';
+      return;
+    }
+
+    const sorted = allPublishedPosts.sort((a, b) => 
+      new Date(b.created_at || 0) - new Date(a.created_at || 0)
+    );
+
+    renderPostList(sorted);
+  }
+
+  function renderPostList(posts) {
+    const postList = document.getElementById('postList');
+    
+    postList.innerHTML = posts.map((post, idx) => `
+      <div style="padding: 12px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s;" 
+           onmouseover="this.style.background='#f8f9fa'" 
+           onmouseout="this.style.background='white'"
+           onclick="selectPostForLearn(${idx})">
+        <strong>${post.platform || 'Unknown'}</strong>
+        <div style="font-size: 12px; color: #666; margin-top: 4px;">${(post.message || post.content || '').substring(0, 80)}...</div>
+        <div style="font-size: 11px; color: #999; margin-top: 3px;">
+          👍 ${post.engagements || 0} | 🔗 ${post.clicks || 0} | ↗️ ${post.shares || 0}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterPostList() {
+    const searchTerm = document.getElementById('postSearch').value.toLowerCase();
+    const filtered = allPublishedPosts.filter(p => {
+      const content = (p.message || p.content || '').toLowerCase();
+      const platform = (p.platform || '').toLowerCase();
+      return content.includes(searchTerm) || platform.includes(searchTerm);
+    });
+    renderPostList(filtered);
+  }
+
+  function selectPostForLearn(index) {
+    if (allPublishedPosts.length > index) {
+      selectedPostForLearn = allPublishedPosts[index];
+      displayTopPost(selectedPostForLearn);
+      closePostSelector();
+    }
+  }
+
+  async function startLearnAnalysis() {
+    if (!selectedPostForLearn) {
+      showStatus('Please select a post first', true);
+      return;
+    }
+
+    try {
+      showStatus('Starting AI analysis... (results in 3-8 minutes)', false);
+      
+      const prompt = document.getElementById('learnPrompt').value || 
+        `Analyze what made this ${selectedPostForLearn.platform} post perform well. Focus on content, timing, platform fit, and engagement drivers.`;
+
+      const result = await apiCall(ENDPOINTS.socialLearn, {
+        post_id: selectedPostForLearn.id,
+        post_content: selectedPostForLearn.message || selectedPostForLearn.content,
+        post_platform: selectedPostForLearn.platform,
+        post_metrics: {
+          engagements: selectedPostForLearn.engagements,
+          clicks: selectedPostForLearn.clicks,
+          shares: selectedPostForLearn.shares
+        },
+        analysis_prompt: prompt
+      });
+
+      if (result.success !== false) {
+        showStatus('Analysis queued! Notes will update in 3-8 minutes', true);
+        closeLearnModal();
+        document.getElementById('learnPrompt').value = '';
+      } else {
+        showStatus('Error starting analysis. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error starting learn analysis:', error);
+      showStatus('Error: ' + error.message, true);
+    }
+  }
+
+  // Social Plan Functions
+  let selectedPlanPeriod = null;
+
+  function openSocialPlanModal() {
+    selectedPlanPeriod = null;
+    document.getElementById('planKeyIdeas').value = '';
+    document.getElementById('includeWeekend').checked = true;
+    document.getElementById('useExistingMedia').checked = true;
+    document.getElementById('useUploadedVideos').checked = true;
+    document.getElementById('aiCreateVideos').checked = false;
+    document.getElementById('createPlanBtn').disabled = true;
+    document.getElementById('createPlanBtn').style.opacity = '0.5';
+    
+    // Clear active period buttons
+    document.querySelectorAll('.plan-period-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    document.getElementById('socialPlanModal').style.display = 'block';
+  }
+
+  function closeSocialPlanModal() {
+    document.getElementById('socialPlanModal').style.display = 'none';
+  }
+
+  function selectPlanPeriod(days) {
+    selectedPlanPeriod = days;
+    
+    // Update button states
+    document.querySelectorAll('.plan-period-btn').forEach(btn => {
+      if (parseInt(btn.dataset.period) === days) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    
+    // Enable create button
+    document.getElementById('createPlanBtn').disabled = false;
+    document.getElementById('createPlanBtn').style.opacity = '1';
+    document.getElementById('createPlanBtn').style.cursor = 'pointer';
+  }
+
+  async function startSocialPlan() {
+    if (!selectedPlanPeriod) {
+      showStatus('Please select a planning period', true);
+      return;
+    }
+
+    try {
+      showStatus('Creating social media plan...', false);
+      
+      const planConfig = {
+        days: selectedPlanPeriod,
+        include_weekends: document.getElementById('includeWeekend').checked,
+        key_ideas: document.getElementById('planKeyIdeas').value,
+        use_existing_media: document.getElementById('useExistingMedia').checked,
+        use_uploaded_videos: document.getElementById('useUploadedVideos').checked,
+        ai_create_videos: document.getElementById('aiCreateVideos').checked
+      };
+
+      const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
+
+      if (result.success !== false) {
+        showStatus('Social plan created! Check your drafts section.', true);
+        closeSocialPlanModal();
+        
+        // Reload drafts to show new content
+        await loadSocialPosts();
+      } else {
+        showStatus('Error creating plan. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error creating social plan:', error);
+      showStatus('Error: ' + error.message, true);
+    }
   }
 
   // Schedule Modal Functions
