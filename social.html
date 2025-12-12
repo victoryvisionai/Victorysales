@@ -1306,11 +1306,14 @@
           </div>
         </div>
         
-        <div class="schedule-options">
+ <div class="schedule-options">
           <button class="success" onclick="postNow()">📤 Post Now</button>
           <button id="scheduleBtn">⏰ Schedule</button>
-          <button class="secondary" onclick="openLearnModal()" id="learnBtn" style="display:none;">📚 Learn from Post</button>
-          <button class="secondary" onclick="openSocialPlanModal()" id="socialPlanBtn" style="display:none;">📅 Social Plan</button>
+          <button id="learnBtn" style="display:none;" class="secondary" onclick="openLearnModal()">📚 Learn</button>
+          <button id="planBtn" style="display:none;" class="secondary" onclick="openPlanModal()">📅 Plan</button>
+          <button id="requestReviewBtn" style="display:none;" class="secondary" onclick="requestReview()">⏳ Request Review</button>
+          <button id="approveBtn" style="display:none;" class="secondary" onclick="approvePost()">✅ Approve</button>
+          <button id="rejectBtn" style="display:none;" class="secondary" onclick="rejectPost()">❌ Reject</button>
     <!--      <button class="secondary" onclick="saveDraft()">💾 Save Draft</button>  --> 
         </div>
       </div>
@@ -1742,7 +1745,9 @@
   
   let CUSTOMER_ID = null;
   let authToken = null;
-  let userCredits = { social_credits: 0 };
+  let CURRENT_TEAM_ROLE = null;
+  let COMPANY_ID = null;
+  let userCredits = { credits: 0 };
   let aiPostEnabled = false;
   let selectedPlatforms = ['linkedin'];
   let calendarCollapsed = false;
@@ -1911,8 +1916,7 @@
     };
   }
 
-  // Load user data and credits
-  async function loadUserData() {
+async function loadUserData() {
     try {
       const response = await apiCall(ENDPOINTS.getUserData);
       console.log('Raw response:', response);
@@ -1923,6 +1927,11 @@
       userCredits = {
         social_credits: userData.social_credits || 0
       };
+      
+      // Capture team role and company
+      CURRENT_TEAM_ROLE = userData.team_role || null;
+      COMPANY_ID = userData.company_id || null;
+      console.log('Team role:', CURRENT_TEAM_ROLE, 'Company:', COMPANY_ID);
       
       // Update subscription medallion
       const medallion = document.getElementById('subscriptionMedallion');
@@ -1937,20 +1946,54 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
       
       updateCreditsDisplay();
       
-      // Show/hide team features based on role
-      if (userData && userData.role && userData.role.trim()) {
-        document.getElementById('learnBtn').style.display = 'block';
-        document.getElementById('socialPlanBtn').style.display = 'block';
-      } else {
-        document.getElementById('learnBtn').style.display = 'none';
-        document.getElementById('socialPlanBtn').style.display = 'none';
-      }
+      // Update UI based on team role
+      updateTeamRoleUI();
     } catch (error) {
       console.error('Error loading user data:', error);
       showStatus('Error loading user data: ' + error.message, true);
     }
   }
 
+  // Update UI based on team role
+  function updateTeamRoleUI() {
+    // Creator: can create, learn, plan - but needs review from reviewer/admin
+    if (CURRENT_TEAM_ROLE === 'creator') {
+      document.getElementById('learnBtn').style.display = 'block';
+      document.getElementById('planBtn').style.display = 'block';
+      document.getElementById('requestReviewBtn').style.display = 'block';
+      document.getElementById('approveBtn').style.display = 'none';
+      document.getElementById('rejectBtn').style.display = 'none';
+      return;
+    }
+    
+    // Reviewer: can review and approve/reject
+    if (CURRENT_TEAM_ROLE === 'reviewer') {
+      document.getElementById('learnBtn').style.display = 'block';
+      document.getElementById('planBtn').style.display = 'block';
+      document.getElementById('requestReviewBtn').style.display = 'none';
+      document.getElementById('approveBtn').style.display = 'block';
+      document.getElementById('rejectBtn').style.display = 'block';
+      return;
+    }
+    
+    // Admin: can do everything
+    if (CURRENT_TEAM_ROLE === 'admin') {
+      document.getElementById('learnBtn').style.display = 'block';
+      document.getElementById('planBtn').style.display = 'block';
+      document.getElementById('requestReviewBtn').style.display = 'none';
+      document.getElementById('approveBtn').style.display = 'block';
+      document.getElementById('rejectBtn').style.display = 'block';
+      return;
+    }
+    
+    // No role: hide everything
+    document.getElementById('learnBtn').style.display = 'none';
+    document.getElementById('planBtn').style.display = 'none';
+    document.getElementById('requestReviewBtn').style.display = 'none';
+    document.getElementById('approveBtn').style.display = 'none';
+    document.getElementById('rejectBtn').style.display = 'none';
+  }
+  
   // Load campaign files for media browser - Fixed to POST
   async function loadCampaignFiles() {
     try {
@@ -1967,7 +2010,7 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
   function updateCreditsDisplay() {
     const socialCreditsElement = document.getElementById('socialCredits');
     if (socialCreditsElement) {
-      socialCreditsElement.textContent = userCredits.social_credits;
+      socialCreditsElement.textContent = userCredits.credits;
     }
   }
 
@@ -2117,7 +2160,58 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
       document.getElementById('linkList').innerHTML = '<div style="padding: 20px; color: red;">Error loading pages.</div>';
     }
   }
+// Learn from Post modal
+  function openLearnModal() {
+    // TODO: Open Learn modal
+    alert('Learn modal - analyze top posts');
+  }
 
+  // Social Plan modal
+  function openPlanModal() {
+    // TODO: Open Plan modal
+    alert('Plan modal - generate content for 7/14/30 days');
+  }
+
+  // Request Review - creator saves post as pending_review
+  function requestReview() {
+    if (!postContent.value.trim()) {
+      showStatus('Please enter content first', true);
+      return;
+    }
+    
+    const reviewRequest = {
+      content: postContent.value,
+      platforms: selectedPlatforms,
+      status: 'pending_review',
+      requested_by: CUSTOMER_ID,
+      company_id: COMPANY_ID,
+      created_at: new Date().toISOString()
+    };
+    
+    console.log('Requesting review:', reviewRequest);
+    showStatus('Post submitted for review. Waiting for reviewer approval.', false);
+    
+    // TODO: Call n8n webhook to save as pending_review
+    // For now just clear
+    postContent.value = '';
+  }
+
+  // Approve Post - reviewer/admin changes status to approved/published
+  function approvePost() {
+    // TODO: Get selected post that is pending_review
+    // Update its status to 'published'
+    alert('Post approved and published');
+  }
+
+  // Reject Post - reviewer/admin changes status to rejected with comment
+  function rejectPost() {
+    const comment = prompt('Why are you rejecting this post?');
+    if (comment) {
+      // TODO: Get selected post and update status to 'rejected'
+      // Store comment in review_comment field
+      alert('Post rejected. Comment: ' + comment);
+    }
+  }
   function renderLinkList(pages) {
     const linkList = document.getElementById('linkList');
     
