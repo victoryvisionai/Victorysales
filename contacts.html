@@ -2486,43 +2486,35 @@ function formatCityState(contact) {
   return contact.city || contact.location || 'N/A';
 }
 
-// Extract clean city name from mixed formats
 function extractCityName(contact) {
-  if (!contact || !contact.city) return 'N/A';
+  if (!contact || !contact.address) return 'N/A';
   
-  let cityName = contact.city.trim();
+  let address = contact.address.toString().trim();
   
-  // If empty after trim, return N/A
+  if (!address) return 'N/A';
+  
+  // Split by comma to get city (first part)
+  let parts = address.split(',');
+  
+  if (parts.length === 0) return 'N/A';
+  
+  let cityName = parts[0].trim();
+  
   if (!cityName) return 'N/A';
   
-  // If only numbers (zipcode), return N/A
+  // Reject if only numbers (zipcode)
   if (/^\d+$/.test(cityName)) {
     return 'N/A';
   }
   
-  // If it's just a state abbreviation (2 letters), return N/A
+  // Reject if only 2 uppercase letters (state code)
   if (/^[A-Z]{2}$/.test(cityName)) {
-    return 'N/A';
-  }
-  
-  // Remove zipcode at the end (5 digits)
-  cityName = cityName.replace(/\s*\d{5}$/, '').trim();
-  
-  // Take first part if comma exists (e.g., "Columbus, OH" -> "Columbus")
-  if (cityName.includes(',')) {
-    cityName = cityName.split(',')[0].trim();
-  }
-  
-  // Remove state code if it appears at the end as 2-letter abbrev
-  cityName = cityName.replace(/\s+[A-Z]{2}$/, '').trim();
-  
-  // Final check: if result is empty or just numbers, return N/A
-  if (!cityName || /^\d+$/.test(cityName)) {
     return 'N/A';
   }
   
   return cityName;
 }
+
 function formatCellValue(contact, column) {
   const value = contact[column];
   
