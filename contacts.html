@@ -2550,8 +2550,7 @@ function extractCityName(contact) {
       break;
     }
     
-    // Check if this part CONTAINS a state name (e.g., "California", "Massachusetts", "North Carolina")
-    // and extract the abbreviation
+    // Check if this part CONTAINS a state name (e.g., "California", "Massachusetts", "North Carolina") and extract the abbreviation
     for (let [stateName, abbrev] of Object.entries(stateAbbreviations)) {
       if (partLower.includes(stateName)) {
         stateAbbrv = abbrev;
@@ -2600,36 +2599,7 @@ function extractCityName(contact) {
     return cityName;
   }
 }  
-  // Fallback: if we didn't find a state, assume "City, State" format
-  // City is first part
-  if (!cityName) {
-    cityName = parts[0];
-  }
   
-  if (!cityName) return 'N/A';
-  
-  cityName = cityName.trim();
-  
-  // Clean up city name
-  // Remove street indicators
-  cityName = cityName.replace(/^\d+\s+/, ''); // Remove leading numbers (street address)
-  cityName = cityName.replace(/^(St|Street|Ave|Avenue|Road|Rd|Blvd|Boulevard|Lane|Ln|Dr|Drive|Court|Ct|Square|Sq|Trail|Tr|Parkway|Pkwy|Circle|Cir|Plaza|Pl)\s+/i, '');
-  cityName = cityName.replace(/,\s*(Suite|Ste|Apt|Apartment|Unit|Floor|Fl)\b.*$/i, ''); // Remove suite/apt info
-  cityName = cityName.trim();
-  
-  if (!cityName) return 'N/A';
-  
-  // Reject if only numbers
-  if (/^\d+$/.test(cityName)) return 'N/A';
-  
-  // Reject if only 2 uppercase letters (state code)
-  if (/^[A-Z]{2}$/.test(cityName)) return 'N/A';
-  
-  // Reject if looks like a suite/floor number
-  if (/^(Suite|Ste|Apt|Apartment|Unit|Floor|Fl)\b/i.test(cityName)) return 'N/A';
-  
-  return cityName;
-}
 function formatCellValue(contact, column) {
   const value = contact[column];
   
