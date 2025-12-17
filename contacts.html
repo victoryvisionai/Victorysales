@@ -2493,28 +2493,112 @@ function extractCityName(contact) {
   
   if (!address) return 'N/A';
   
-  // Split by comma to get city (first part)
-  let parts = address.split(',');
+  // Remove common suffixes that aren't part of city name
+  address = address.replace(/\s+area$/i, ''); // Remove " area"
+  address = address.replace(/\s+USA?$/i, ''); // Remove " USA" or " US"
+  address = address.replace(/,\s*USA?$/i, ''); // Remove ", USA" or ", US"
+  address = address.replace(/,\s*United States$/i, ''); // Remove ", United States"
+  address = address.trim();
+  
+  // Split by commas
+  let parts = address.split(',').map(part => part.trim()).filter(part => part);
   
   if (parts.length === 0) return 'N/A';
   
-  let cityName = parts[0].trim();
+  // If only 1 part, it might be just a city name or something else - risky, return N/A
+  if (parts.length === 1) return 'N/A';
+  
+  // Now we have multiple parts
+  // Pattern 1: "City, State" (2 parts)
+  //   → City is index 0
+  // Pattern 2: "City, State, Country" (3 parts)
+  //   → City is index 0
+  // Pattern 3: "Street, City, State" (3+ parts)
+  //   → City is index 1
+  // Pattern 4: "Street, Unit, City, State" (4+ parts)
+  //   → City is probably index 2 or the part before state
+  
+  let cityName = null;
+  
+  // Strategy: Find the city by looking for the part BEFORE the state
+  // States are either 2-letter codes (CA, NY, TX) or full names (California, Texas, etc.)
+  
+  // Common 2-letter state codes
+  const stateAbbreviations = [
+    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+    'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+    'DC', 'PR', 'VI'
+  ];
+  
+  // Common full state names
+  const stateNames = [
+    'alabama', 'alaska', 'arizona', 'arkansas', 'california', 'colorado',
+    'connecticut', 'delaware', 'florida', 'georgia', 'hawaii', 'idaho',
+    'illinois', 'indiana', 'iowa', 'kansas', 'kentucky', 'louisiana',
+    'maine', 'maryland', 'massachusetts', 'michigan', 'minnesota', 'mississippi',
+    'missouri', 'montana', 'nebraska', 'nevada', 'hampshire', 'jersey',
+    'mexico', 'york', 'carolina', 'dakota', 'ohio', 'oklahoma',
+    'oregon', 'pennsylvania', 'rhode', 'tennessee', 'texas', 'utah',
+    'vermont', 'virginia', 'washington', 'wisconsin', 'wyoming'
+  ];
+  
+  // Look backwards from the end to find where the state is
+  for (let i = parts.length - 1; i > 0; i--) {
+    let part = parts[i];
+    
+    // Check if this part looks like a state (2 uppercase letters or state name)
+    if (stateAbbreviations.includes(part.toUpperCase())) {
+      // Found a state abbreviation, city should be at i-1
+      cityName = parts[i - 1];
+      break;
+    }
+    
+    // Check if part starts with a state name
+    let partLower = part.toLowerCase();
+    for (let stateName of stateNames) {
+      if (partLower.includes(stateName)) {
+        // Found a state name, city should be at i-1
+        cityName = parts[i - 1];
+        break;
+      }
+    }
+    
+    if (cityName) break;
+  }
+  
+  // Fallback: if we didn't find a state, assume "City, State" format
+  // City is first part
+  if (!cityName) {
+    cityName = parts[0];
+  }
   
   if (!cityName) return 'N/A';
   
-  // Reject if only numbers (zipcode)
-  if (/^\d+$/.test(cityName)) {
-    return 'N/A';
-  }
+  cityName = cityName.trim();
+  
+  // Clean up city name
+  // Remove street indicators
+  cityName = cityName.replace(/^\d+\s+/, ''); // Remove leading numbers (street address)
+  cityName = cityName.replace(/^(St|Street|Ave|Avenue|Road|Rd|Blvd|Boulevard|Lane|Ln|Dr|Drive|Court|Ct|Square|Sq|Trail|Tr|Parkway|Pkwy|Circle|Cir|Plaza|Pl)\s+/i, '');
+  cityName = cityName.replace(/,\s*(Suite|Ste|Apt|Apartment|Unit|Floor|Fl)\b.*$/i, ''); // Remove suite/apt info
+  cityName = cityName.trim();
+  
+  if (!cityName) return 'N/A';
+  
+  // Reject if only numbers
+  if (/^\d+$/.test(cityName)) return 'N/A';
   
   // Reject if only 2 uppercase letters (state code)
-  if (/^[A-Z]{2}$/.test(cityName)) {
-    return 'N/A';
-  }
+  if (/^[A-Z]{2}$/.test(cityName)) return 'N/A';
+  
+  // Reject if looks like a suite/floor number
+  if (/^(Suite|Ste|Apt|Apartment|Unit|Floor|Fl)\b/i.test(cityName)) return 'N/A';
   
   return cityName;
 }
-
 function formatCellValue(contact, column) {
   const value = contact[column];
   
