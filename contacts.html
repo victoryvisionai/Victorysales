@@ -2485,11 +2485,48 @@ function formatCityState(contact) {
     }
   }
   
-  return contact.city || contact.location || 'N/A';
+return contact.city || contact.location || 'N/A';
 }
 
-function formatCellValue(contact, column) {
-  const value = contact[column];
+// Extract clean city name from mixed formats
+function extractCityName(contact) {
+  if (!contact || !contact.city) return 'N/A';
+  
+  let cityName = contact.city.trim();
+  
+  // If empty after trim, return N/A
+  if (!cityName) return 'N/A';
+  
+  // If only numbers (zipcode), return N/A
+  if (/^\d+$/.test(cityName)) {
+    return 'N/A';
+  }
+  
+  // If it's just a state abbreviation (2 letters), return N/A
+  if (/^[A-Z]{2}$/.test(cityName)) {
+    return 'N/A';
+  }
+  
+  // Remove zipcode at the end (5 digits)
+  cityName = cityName.replace(/\s*\d{5}$/, '').trim();
+  
+  // Take first part if comma exists (e.g., "Columbus, OH" -> "Columbus")
+  if (cityName.includes(',')) {
+    cityName = cityName.split(',')[0].trim();
+  }
+  
+  // Remove state code if it appears at the end as 2-letter abbrev
+  cityName = cityName.replace(/\s+[A-Z]{2}$/, '').trim();
+  
+  // Final check: if result is empty or just numbers, return N/A
+  if (!cityName || /^\d+$/.test(cityName)) {
+    return 'N/A';
+  }
+  
+  return cityName;
+}
+
+function formatCellValue(contact, column) {  const value = contact[column];
   
   switch (column) {
     case 'name':
@@ -2740,7 +2777,7 @@ function getSelectedWorkflows() {
 
 function populateFilterOptions() {
   const industries = [...new Set(allContacts.map(c => c.industry).filter(Boolean))].sort();
-  const cities = [...new Set(allContacts.map(c => c.city).filter(Boolean))].sort();
+  const cities = [...new Set(allContacts.map(c => extractCityName(c)).filter(c => c !== 'N/A'))].sort();
   const schools = [...new Set(allContacts.map(c => c.school_name).filter(Boolean))].sort();
   const tags = [...new Set(allContacts.flatMap(c => (c.tags || '').split(',').filter(tag => tag.trim())))].sort();
   
@@ -2781,6 +2818,7 @@ function applyFilters() {
         contact.company || '',
         contact.email || '',
         contact.industry || '',
+        extractCityName(contact) || '',
         contact.tags || ''
       ].join(' ').toLowerCase();
       
@@ -2790,7 +2828,7 @@ function applyFilters() {
     }
 
     if (industry && contact.industry !== industry) return false;
-    if (city && contact.city !== city) return false;
+    if (city && extractCityName(contact) !== city) return false;
     if (school && contact.school_name !== school) return false;
 
     if (revenue) {
