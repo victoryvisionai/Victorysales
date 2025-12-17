@@ -2548,7 +2548,7 @@ function formatCellValue(contact, column) {  const value = contact[column];
     case 'tags':
       return formatTags(value);
     case 'city':
-      return formatCityState(contact);
+      return extractCityName(contact);
     case 'aiemail':
     case 'newsletter':
       return value ? '✅' : '❌';
@@ -2577,7 +2577,7 @@ function formatCellValue(contact, column) {
     case 'client_won_date':
       return formatDate(value);
     case 'city':
-        return formatCityState(contact);
+        return extractCityName(contact);
     case 'tags':
       return formatTags(value);
     case 'aiemail':
