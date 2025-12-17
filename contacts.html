@@ -2884,6 +2884,66 @@ function showStatus(message, isError = false) {
   setTimeout(() => statusDiv.style.display = 'none', 5000);
 }
 
+function setupEventListeners() {
+  document.getElementById('expandContactBtn').addEventListener('click', expandFirstSelectedContact);
+  
+  document.getElementById('addContactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const contactId = e.target.getAttribute('data-contact-id');
+    if (contactId) {
+      await handleContactForm(formData, true, contactId);
+    } else {
+      await handleContactForm(formData, false);
+    }
+  });
+  
+  document.getElementById('customCampaignForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (selectedContacts.size === 0) {
+      showStatus('Please select contacts to send the campaign to', true);
+      return;
+    }
+    
+    // ✅ Get contact objects and filter for emails FIRST
+    const selectedContactsList = Array.from(selectedContacts).map(id => 
+      allContacts.find(c => c.contact_id === id || c.id === id || c.email === id)
+    ).filter(c => c && c.email);
+    
+    // ✅ Validate we have contacts with emails
+    if (selectedContactsList.length === 0) {
+      showStatus('Please select contacts with email addresses', true);
+      return;
+    }
+    
+    // ✅ Warn if some contacts were skipped
+    const skippedCount = selectedContacts.size - selectedContactsList.length;
+    if (skippedCount > 0) {
+      showStatus(`ℹ️ ${skippedCount} contact(s) without emails will be skipped`, false);
+    }
+    
+    const formData = new FormData(e.target);
+    const campaignData = {
+      campaign_name: formData.get('campaignName'),
+      description: formData.get('campaignDescription'),
+      email_count: parseInt(formData.get('emailCount')),
+      tone: formData.get('emailTone'),
+      schedule_start_date: formData.get('scheduleStartDate'),
+      selected_contacts: selectedContactsList.map(c => c.contact_id || c.id || c.email),
+      customer_id: CUSTOMER_ID
+    };
+    
+    try {
+      await apiCall(ENDPOINTS.customEmailCampaign, campaignData);
+      showStatus(`Custom email campaign "${campaignData.campaign_name}" scheduled successfully! (${selectedContactsList.length} contacts)`, false);
+      closeCustomCampaignModal();
+      selectedContacts.clear();
+      updateSelectedCount();
+    } catch (error) {
+      showStatus('Error creating campaign: ' + error.message, true);
+    }
+  });
   
   document.getElementById('refreshBtn').addEventListener('click', loadContacts);
   document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
@@ -2893,25 +2953,27 @@ function showStatus(message, isError = false) {
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
   document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContacts);
+  
   let searchTimeout;
   document.getElementById('searchFilter').addEventListener('input', () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(applyFilters, 300);
   });
-['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'workflowFilter', 'tagsFilter', 'createdFromFilter', 'createdToFilter'].forEach(id => {
+  
+  ['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'workflowFilter', 'tagsFilter', 'createdFromFilter', 'createdToFilter'].forEach(id => {
     const element = document.getElementById(id);
     if (element) element.addEventListener('change', applyFilters);
   });
+  
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       closeModal();
       closeAddContactModal();
       closeCustomCampaignModal();
     }
-  });
+  }); 
   setupCSVUpload();
 }
-
 async function init() {
   console.log('========== INIT STARTING ==========');
   try {
