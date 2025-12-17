@@ -2884,43 +2884,6 @@ function showStatus(message, isError = false) {
   setTimeout(() => statusDiv.style.display = 'none', 5000);
 }
 
-function setupEventListeners() {
-  document.getElementById('expandContactBtn').addEventListener('click', expandFirstSelectedContact);
-  document.getElementById('addContactForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const contactId = e.target.getAttribute('data-contact-id');
-    if (contactId) {
-      await handleContactForm(formData, true, contactId);
-    } else {
-      await handleContactForm(formData, false);
-    }
-  });
-document.getElementById('customCampaignForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  if (selectedContacts.size === 0) {
-    showStatus('Please select contacts to send the campaign to', true);
-    return;
-  }
-  const formData = new FormData(e.target);
-  const campaignData = {
-    campaign_name: formData.get('campaignName'),
-    description: formData.get('campaignDescription'),
-    email_count: parseInt(formData.get('emailCount')),
-    tone: formData.get('emailTone'),
-    schedule_start_date: formData.get('scheduleStartDate'), // ✅ ADD THIS
-    selected_contacts: Array.from(selectedContacts)
-  };
-  try {
-    await apiCall(ENDPOINTS.customEmailCampaign, campaignData);
-    showStatus(`Custom email campaign "${campaignData.campaign_name}" scheduled successfully!`, false);
-    closeCustomCampaignModal();
-    selectedContacts.clear();
-    updateSelectedCount();
-  } catch (error) {
-    showStatus('Error creating campaign: ' + error.message, true);
-  }
-});
   
   document.getElementById('refreshBtn').addEventListener('click', loadContacts);
   document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
