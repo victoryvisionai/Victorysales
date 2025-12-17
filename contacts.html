@@ -2485,7 +2485,7 @@ function formatCityState(contact) {
     }
   }
   
-return contact.city || contact.location || 'N/A';
+  return contact.city || contact.location || 'N/A';
 }
 
 // Extract clean city name from mixed formats
@@ -2524,37 +2524,6 @@ function extractCityName(contact) {
   }
   
   return cityName;
-}
-
-function formatCellValue(contact, column) {  const value = contact[column];
-  
-  switch (column) {
-    case 'name':
-      return `<span class="contact-name">${value || 'N/A'}</span>`;
-    case 'annual_revenue':
-      return `<span class="revenue-cell">${formatRevenue(value)}</span>`;
-    case 'workflow_status':
-      return formatWorkflowBadges(value);
-    case 'linkedin':
-      return value ? `<a href="${value}" target="_blank" style="color: #0A3161;" onclick="event.stopPropagation();">View</a>` : 'N/A';
-    case 'email':
-      return value ? `<a href="mailto:${value}" style="color: #0A3161;" onclick="event.stopPropagation();">${value}</a>` : 'N/A';
-    case 'created':
-      return formatDateTime(value);
-    case 'last_responded':
-    case 'last_emailed_date':
-    case 'client_won_date':
-      return formatDate(value);
-    case 'tags':
-      return formatTags(value);
-    case 'city':
-      return extractCityName(contact);
-    case 'aiemail':
-    case 'newsletter':
-      return value ? '✅' : '❌';
-    default:
-      return value || 'N/A';
-  }
 }
 function formatCellValue(contact, column) {
   const value = contact[column];
