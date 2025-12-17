@@ -2494,10 +2494,10 @@ function extractCityName(contact) {
   if (!address) return 'N/A';
   
   // Remove common suffixes that aren't part of city name
-  address = address.replace(/\s+area$/i, ''); // Remove " area"
-  address = address.replace(/\s+USA?$/i, ''); // Remove " USA" or " US"
-  address = address.replace(/,\s*USA?$/i, ''); // Remove ", USA" or ", US"
-  address = address.replace(/,\s*United States$/i, ''); // Remove ", United States"
+  address = address.replace(/\s+area$/i, '');
+  address = address.replace(/\s+USA?$/i, '');
+  address = address.replace(/,\s*USA?$/i, '');
+  address = address.replace(/,\s*United States$/i, '');
   address = address.trim();
   
   // Split by commas
@@ -2505,26 +2505,27 @@ function extractCityName(contact) {
   
   if (parts.length === 0) return 'N/A';
   
-  // If only 1 part, it might be just a city name or something else - risky, return N/A
   if (parts.length === 1) return 'N/A';
   
-  // Now we have multiple parts
-  // Pattern 1: "City, State" (2 parts)
-  //   → City is index 0
-  // Pattern 2: "City, State, Country" (3 parts)
-  //   → City is index 0
-  // Pattern 3: "Street, City, State" (3+ parts)
-  //   → City is index 1
-  // Pattern 4: "Street, Unit, City, State" (4+ parts)
-  //   → City is probably index 2 or the part before state
-  
-  let cityName = null;
-  
-  // Strategy: Find the city by looking for the part BEFORE the state
-  // States are either 2-letter codes (CA, NY, TX) or full names (California, Texas, etc.)
+  // State abbreviations map (2-letter code)
+  const stateAbbreviations = {
+    'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 
+    'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 
+    'florida': 'FL', 'georgia': 'GA', 'hawaii': 'HI', 'idaho': 'ID', 
+    'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA', 'kansas': 'KS', 
+    'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD', 
+    'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 
+    'missouri': 'MO', 'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 
+    'hampshire': 'NH', 'jersey': 'NJ', 'mexico': 'NM', 'york': 'NY', 
+    'carolina': 'NC', 'dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK', 
+    'oregon': 'OR', 'pennsylvania': 'PA', 'rhode': 'RI', 'tennessee': 'TN', 
+    'texas': 'TX', 'utah': 'UT', 'vermont': 'VT', 'virginia': 'VA', 
+    'washington': 'WA', 'wisconsin': 'WI', 'wyoming': 'WY', 
+    'columbia': 'DC', 'puerto rico': 'PR', 'virgin islands': 'VI'
+  };
   
   // Common 2-letter state codes
-  const stateAbbreviations = [
+  const stateAbbreviationsList = [
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
     'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
     'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
@@ -2533,42 +2534,72 @@ function extractCityName(contact) {
     'DC', 'PR', 'VI'
   ];
   
-  // Common full state names
-  const stateNames = [
-    'alabama', 'alaska', 'arizona', 'arkansas', 'california', 'colorado',
-    'connecticut', 'delaware', 'florida', 'georgia', 'hawaii', 'idaho',
-    'illinois', 'indiana', 'iowa', 'kansas', 'kentucky', 'louisiana',
-    'maine', 'maryland', 'massachusetts', 'michigan', 'minnesota', 'mississippi',
-    'missouri', 'montana', 'nebraska', 'nevada', 'hampshire', 'jersey',
-    'mexico', 'york', 'carolina', 'dakota', 'ohio', 'oklahoma',
-    'oregon', 'pennsylvania', 'rhode', 'tennessee', 'texas', 'utah',
-    'vermont', 'virginia', 'washington', 'wisconsin', 'wyoming'
-  ];
+  let cityName = null;
+  let stateAbbrv = null;
   
   // Look backwards from the end to find where the state is
   for (let i = parts.length - 1; i > 0; i--) {
     let part = parts[i];
+    let partUpper = part.toUpperCase();
+    let partLower = part.toLowerCase();
     
-    // Check if this part looks like a state (2 uppercase letters or state name)
-    if (stateAbbreviations.includes(part.toUpperCase())) {
-      // Found a state abbreviation, city should be at i-1
+    // Check if this part IS a state abbreviation (e.g., "CA", "NY", "TX")
+    if (stateAbbreviationsList.includes(partUpper) && partUpper.length === 2) {
+      stateAbbrv = partUpper;
       cityName = parts[i - 1];
       break;
     }
     
-    // Check if part starts with a state name
-    let partLower = part.toLowerCase();
-    for (let stateName of stateNames) {
+    // Check if this part CONTAINS a state name (e.g., "California", "Massachusetts", "North Carolina")
+    // and extract the abbreviation
+    for (let [stateName, abbrev] of Object.entries(stateAbbreviations)) {
       if (partLower.includes(stateName)) {
-        // Found a state name, city should be at i-1
+        stateAbbrv = abbrev;
         cityName = parts[i - 1];
         break;
       }
     }
     
-    if (cityName) break;
+    if (cityName && stateAbbrv) break;
   }
   
+  // Fallback: if we didn't find a state, use first part and try to extract state from anywhere
+  if (!cityName) {
+    cityName = parts[0];
+    
+    // Try to find state in any part
+    for (let part of parts) {
+      let partUpper = part.toUpperCase();
+      if (stateAbbreviationsList.includes(partUpper) && partUpper.length === 2) {
+        stateAbbrv = partUpper;
+        break;
+      }
+    }
+  }
+  
+  if (!cityName) return 'N/A';
+  
+  cityName = cityName.trim();
+  
+  // Clean up city name
+  cityName = cityName.replace(/^\d+\s+/, '');
+  cityName = cityName.replace(/^(St|Street|Ave|Avenue|Road|Rd|Blvd|Boulevard|Lane|Ln|Dr|Drive|Court|Ct|Square|Sq|Trail|Tr|Parkway|Pkwy|Circle|Cir|Plaza|Pl)\s+/i, '');
+  cityName = cityName.replace(/,\s*(Suite|Ste|Apt|Apartment|Unit|Floor|Fl)\b.*$/i, '');
+  cityName = cityName.trim();
+  
+  if (!cityName) return 'N/A';
+  
+  if (/^\d+$/.test(cityName)) return 'N/A';
+  if (/^[A-Z]{2}$/.test(cityName)) return 'N/A';
+  if (/^(Suite|Ste|Apt|Apartment|Unit|Floor|Fl)\b/i.test(cityName)) return 'N/A';
+  
+  // Return format: "City, ST" or just "City" if no state found
+  if (stateAbbrv) {
+    return `${cityName}, ${stateAbbrv}`;
+  } else {
+    return cityName;
+  }
+}  
   // Fallback: if we didn't find a state, assume "City, State" format
   // City is first part
   if (!cityName) {
