@@ -1310,8 +1310,8 @@
           <button class="success" onclick="postNow()">📤 Post Now</button>
           <button id="scheduleBtn">⏰ Schedule</button>
           <button id="learnBtn" style="display:none;" class="secondary" onclick="openLearnModal()">📚 Learn</button>
-          <button id="planBtn" style="display:none;" class="secondary" onclick="openPlanModal()">📅 Plan</button>
-          <button id="requestReviewBtn" style="display:none;" class="secondary" onclick="requestReview()">⏳ Request Review</button>
+   <button id="planBtn" style="display:none;" class="secondary" onclick="openSocialPlanModal()">📅 Plan</button>      
+   <button id="requestReviewBtn" style="display:none;" class="secondary" onclick="requestReview()">⏳ Request Review</button>
           <button id="approveBtn" style="display:none;" class="secondary" onclick="approvePost()">✅ Approve</button>
           <button id="rejectBtn" style="display:none;" class="secondary" onclick="rejectPost()">❌ Reject</button>
     <!--      <button class="secondary" onclick="saveDraft()">💾 Save Draft</button>  --> 
@@ -1766,7 +1766,7 @@
   let currentDate = new Date();
   let performanceThresholds = { high: 0, medium: 0, low: 0 };
   let currentEditingDraft = null;
-
+ let currentPostStatus = null;
   // DOM elements
   const socialContainer = document.getElementById('socialContainer');
   const platformFilter = document.getElementById('platformFilter');
@@ -2165,13 +2165,125 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     // TODO: Open Learn modal
     alert('Learn modal - analyze top posts');
   }
+// Approve Post - reviewer approves and publishes post
+  function approvePost() {
+    if (!currentEditingDraft) {
+      showStatus('No post selected to approve', true);
+      return;
+    }
 
-  // Social Plan modal
-  function openPlanModal() {
-    // TODO: Open Plan modal
-    alert('Plan modal - generate content for 7/14/30 days');
+    const button = document.getElementById('approveBtn');
+    if (button) {
+      button.disabled = true;
+      button.innerHTML = '⏳ Approving...';
+    }
+
+    try {
+      showStatus('Approving and publishing post...', false);
+      
+      const updateData = {
+        post_id: currentEditingDraft.id,
+        status: 'published',
+        approved_at: new Date().toISOString(),
+        approved_by: CUSTOMER_ID
+      };
+
+      apiCall(ENDPOINTS.updatePost, updateData).then(result => {
+        if (result.success !== false) {
+          showStatus('✅ Post approved and published!', false);
+          postContent.value = '';
+          attachedFiles = [];
+          updateAttachmentDisplay();
+          loadSocialPosts();
+          
+          // Hide approve/reject buttons
+          document.getElementById('approveBtn').style.display = 'none';
+          document.getElementById('rejectBtn').style.display = 'none';
+        } else {
+          showStatus('Error approving post. Try again.', true);
+        }
+      }).catch(error => {
+        console.error('Error approving post:', error);
+        showStatus('Error: ' + error.message, true);
+      }).finally(() => {
+        if (button) {
+          button.disabled = false;
+          button.innerHTML = '✅ Approve';
+        }
+      });
+    } catch (error) {
+      console.error('Error in approvePost:', error);
+      showStatus('Error: ' + error.message, true);
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = '✅ Approve';
+      }
+    }
   }
 
+  // Reject Post - reviewer rejects post with optional feedback
+  function rejectPost() {
+    if (!currentEditingDraft) {
+      showStatus('No post selected to reject', true);
+      return;
+    }
+
+    const feedbackMessage = prompt('Rejection reason (optional):', 'Could you revise this?');
+    
+    if (feedbackMessage === null) {
+      // User clicked Cancel
+      return;
+    }
+
+    const button = document.getElementById('rejectBtn');
+    if (button) {
+      button.disabled = true;
+      button.innerHTML = '⏳ Rejecting...';
+    }
+
+    try {
+      showStatus('Rejecting post...', false);
+      
+      const updateData = {
+        post_id: currentEditingDraft.id,
+        status: 'rejected',
+        rejection_reason: feedbackMessage,
+        rejected_at: new Date().toISOString(),
+        rejected_by: CUSTOMER_ID
+      };
+
+      apiCall(ENDPOINTS.updatePost, updateData).then(result => {
+        if (result.success !== false) {
+          showStatus('❌ Post rejected. Feedback sent to creator.', false);
+          postContent.value = '';
+          attachedFiles = [];
+          updateAttachmentDisplay();
+          loadSocialPosts();
+          
+          // Hide approve/reject buttons
+          document.getElementById('approveBtn').style.display = 'none';
+          document.getElementById('rejectBtn').style.display = 'none';
+        } else {
+          showStatus('Error rejecting post. Try again.', true);
+        }
+      }).catch(error => {
+        console.error('Error rejecting post:', error);
+        showStatus('Error: ' + error.message, true);
+      }).finally(() => {
+        if (button) {
+          button.disabled = false;
+          button.innerHTML = '❌ Reject';
+        }
+      });
+    } catch (error) {
+      console.error('Error in rejectPost:', error);
+      showStatus('Error: ' + error.message, true);
+      if (button) {
+        button.disabled = false;
+        button.innerHTML = '❌ Reject';
+      }
+    }
+  }
   // Request Review - creator saves post as pending_review
   function requestReview() {
     if (!postContent.value.trim()) {
