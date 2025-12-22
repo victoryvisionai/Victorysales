@@ -606,7 +606,10 @@
       gap: 10px;
       margin-top: 15px;
     }
-
+ @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     /* Media Upload Section */
     .media-upload-section {
       background: white;
@@ -1703,22 +1706,95 @@
       <h2 class="modal-title">📅 Create Social Media Plan</h2>
       <button class="modal-close" onclick="closeSocialPlanModal()">×</button>
     </div>
+    
     <div class="modal-body">
-      <div class="form-group">
-        <label>Planning Period</label>
-        <div style="display: flex; gap: 10px;">
-          <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(7)" data-period="7">
-            📅 7 Days
-          </button>
-          <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(14)" data-period="14">
-            📅 14 Days
-          </button>
-          <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(30)" data-period="30">
-            📅 30 Days
-          </button>
+      <!-- Loading Spinner -->
+      <div id="planLoadingState" style="display: none; text-align: center; padding: 60px 40px;">
+        <div style="display: inline-block; width: 50px; height: 50px; border: 4px solid #f3f3f3; border-top: 4px solid #0A3161; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 20px; color: #333; font-weight: 500;">Generating your social media plan...</p>
+        <small style="color: #999;">This may take 30-60 seconds</small>
+      </div>
+
+      <!-- Form (shown initially) -->
+      <div id="planFormSection">
+        <div class="form-group">
+          <label>Planning Period</label>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(7)" data-period="7">
+              📅 7 Days
+            </button>
+            <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(14)" data-period="14">
+              📅 14 Days
+            </button>
+            <button type="button" class="plan-period-btn" onclick="selectPlanPeriod(30)" data-period="30">
+              📅 30 Days
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="includeWeekend" checked>
+            Post on Saturdays & Sundays
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label for="planKeyIdeas">Key Ideas to Cover (optional)</label>
+          <textarea id="planKeyIdeas" placeholder="e.g., 'New product launch, customer success stories, industry trends'" style="height: 80px;"></textarea>
+        </div>
+        
+        <div class="form-group" style="border-top: 1px solid #ddd; padding-top: 15px; margin-top: 15px;">
+          <label style="font-weight: 600; margin-bottom: 12px; display: block;">Content Options</label>
+          
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 10px;">
+            <input type="checkbox" id="useExistingMedia" checked>
+            Use existing images/videos from platform
+          </label>
+          
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 10px;">
+            <input type="checkbox" id="useUploadedVideos" checked>
+            Use uploaded videos/media
+          </label>
+          
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="aiCreateVideos">
+            AI create new videos (uses ~50% monthly credits)
+          </label>
         </div>
       </div>
+
+      <!-- Plan Preview Section -->
+      <div id="planPreviewSection" style="display: none;">
+        <h3 style="margin: 0 0 15px 0; color: #0A3161; font-size: 16px;">📋 Plan Preview</h3>
+        <div id="postsList" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; padding: 15px; background: #f8f9fa; margin-bottom: 15px;"></div>
+        <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; border-left: 4px solid #0A3161;">
+          <strong style="color: #0A3161; display: block; margin-bottom: 8px;">Plan Summary:</strong>
+          <div id="planSummary" style="font-size: 13px; color: #666;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-top: 1px solid #eee; background: #f8f9fa;">
+      <div style="font-size: 13px; color: #999;">
+        <span id="planCreditEstimate">Select a period to see credit estimate</span>
+      </div>
       
+      <!-- Create Plan Buttons (shown initially) -->
+      <div id="createPlanButtons" style="display: flex; gap: 10px;">
+        <button class="btn-secondary" onclick="closeSocialPlanModal()" style="padding: 10px 20px; background: white; border: 1px solid #ddd; color: #333; border-radius: 6px; cursor: pointer; font-weight: 500;">Cancel</button>
+        <button class="btn-primary" onclick="startSocialPlan()" id="createPlanBtn" style="padding: 10px 20px; background: #0A3161; color: white; border: none; border-radius: 6px; cursor: not-allowed; font-weight: 600; opacity: 0.5;" disabled>📅 Create Plan</button>
+      </div>
+      
+      <!-- Approval Buttons (shown after preview) -->
+      <div id="approvePlanButtons" style="display: none; gap: 10px;">
+        <button onclick="rejectPlan()" style="padding: 10px 20px; background: white; border: 2px solid #dc3545; color: #dc3545; border-radius: 6px; cursor: pointer; font-weight: 600;">❌ Reject Plan</button>
+        <button onclick="approvePlan()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">✅ Approve & Schedule</button>
+      </div>
+    </div>
+  </div>
+</div>
       <div class="form-group">
         <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
           <input type="checkbox" id="includeWeekend" checked>
@@ -1831,7 +1907,8 @@
     deletePost: 'https://victoryvision.app.n8n.cloud/webhook/social/delete',
     getPages: 'https://victoryvision.app.n8n.cloud/webhook/pages/get',
     socialLearn: 'https://victoryvision.app.n8n.cloud/webhook/social/learn',
-    socialPlan: 'https://victoryvision.app.n8n.cloud/webhook/social/plan'
+    socialPlan: 'https://victoryvision.app.n8n.cloud/webhook/social/plan',
+    socialPlanApproval: 'https://victoryvision.app.n8n.cloud/webhook/social/plan-approval'
   };
   
   let CUSTOMER_ID = null;
@@ -1858,6 +1935,7 @@
   let performanceThresholds = { high: 0, medium: 0, low: 0 };
   let currentEditingDraft = null;
  let currentPostStatus = null;
+   let pendingPlanData = null;
   // DOM elements
   const socialContainer = document.getElementById('socialContainer');
   const platformFilter = document.getElementById('platformFilter');
@@ -2777,8 +2855,210 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     document.getElementById('createPlanBtn').style.opacity = '0.5';
     document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
   }
-  
- async function startSocialPlan() {
+
+ function displayPlanForApproval(planData) {
+    pendingPlanData = planData;
+    document.getElementById('planLoadingState').style.display = 'none';
+    document.getElementById('planPreviewSection').style.display = 'block';
+    document.getElementById('createPlanButtons').style.display = 'none';
+    document.getElementById('approvePlanButtons').style.display = 'flex';
+    
+    document.querySelectorAll('.plan-period-btn, #planKeyIdeas, input[type="checkbox"]').forEach(el => {
+      el.disabled = true;
+      el.style.opacity = '0.6';
+    });
+
+    const postsList = document.getElementById('postsList');
+    postsList.innerHTML = planData.posts.map((post, idx) => `
+      <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161;">
+        <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${post.post_index}: ${post.title}</div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${post.message.substring(0, 100)}...</div>
+        <div style="font-size: 11px; color: #999;">📅 ${post.post_at} • 📸 ${post.media_type}</div>
+      </div>
+    `).join('');
+
+    const summary = planData.summary;
+    document.getElementById('planSummary').innerHTML = `
+      <div><strong>${planData.total_posts} posts</strong> from ${summary.date_range.start} to ${summary.date_range.end}</div>
+      <div style="margin-top: 8px;">Media: ${Object.entries(summary.by_media_type).map(([type, count]) => `${count} ${type}`).join(', ')}</div>
+    `;
+  }
+
+  function approvePlan() {
+    if (!pendingPlanData) { showStatus('No plan to approve', true); return; }
+    const button = document.querySelector('#approvePlanButtons button:nth-child(2)');
+    button.disabled = true;
+    button.innerHTML = '⏳ Scheduling...';
+    fetch(ENDPOINTS.socialPlanApproval, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        plan_id: pendingPlanData.plan_id,
+        decision: 'approved',
+        posts: pendingPlanData.posts,
+        timestamp: new Date().toISOString()
+      })
+    }).then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      showStatus('✅ Plan approved! Posts scheduled.', false);
+      setTimeout(() => { resetPlanModal(); closeSocialPlanModal(); loadSocialPosts(); }, 1500);
+    }).catch(error => {
+      console.error('Error:', error);
+      showStatus('Error: ' + error.message, true);
+      button.disabled = false;
+      button.innerHTML = '✅ Approve & Schedule';
+    });
+  }
+
+  function rejectPlan() {
+    if (!pendingPlanData) { showStatus('No plan to reject', true); return; }
+    const feedback = prompt('Why reject?', '');
+    if (feedback === null) return;
+    const button = document.querySelector('#approvePlanButtons button:nth-child(1)');
+    button.disabled = true;
+    button.innerHTML = '⏳ Rejecting...';
+    fetch(ENDPOINTS.socialPlanApproval, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        plan_id: pendingPlanData.plan_id,
+        decision: 'rejected',
+        feedback: feedback,
+        timestamp: new Date().toISOString()
+      })
+    }).then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      showStatus('Plan rejected. Try again.', false);
+      setTimeout(() => { resetPlanModal(); }, 1500);
+    }).catch(error => {
+      console.error('Error:', error);
+      showStatus('Error: ' + error.message, true);
+      button.disabled = false;
+      button.innerHTML = '❌ Reject Plan';
+    });
+  }
+
+  function resetPlanModal() {
+    pendingPlanData = null;
+    document.getElementById('planPreviewSection').style.display = 'none';
+    document.getElementById('planLoadingState').style.display = 'none';
+    document.getElementById('createPlanButtons').style.display = 'flex';
+    document.getElementById('approvePlanButtons').style.display = 'none';
+    document.querySelectorAll('.plan-period-btn, #planKeyIdeas, input[type="checkbox"]').forEach(el => {
+      el.disabled = false;
+      el.style.opacity = '1';
+    });
+    selectedPlanPeriod = null;
+    document.getElementById('planKeyIdeas').value = '';
+    document.getElementById('includeWeekend').checked = true;
+    document.getElementById('useExistingMedia').checked = true;
+    document.getElementById('useUploadedVideos').checked = true;
+    document.getElementById('aiCreateVideos').checked = false;
+    document.getElementById('createPlanBtn').disabled = true;
+    document.getElementById('createPlanBtn').style.opacity = '0.5';
+    document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
+  }
+
+  function displayPlanForApproval(planData) {
+    pendingPlanData = planData;
+    document.getElementById('planLoadingState').style.display = 'none';
+    document.getElementById('planFormSection').style.display = 'none';
+    document.getElementById('planPreviewSection').style.display = 'block';
+    document.getElementById('createPlanButtons').style.display = 'none';
+    document.getElementById('approvePlanButtons').style.display = 'flex';
+    
+    const postsList = document.getElementById('postsList');
+    postsList.innerHTML = planData.posts.map((post, idx) => `
+      <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161;">
+        <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${post.post_index}: ${post.title}</div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${post.message.substring(0, 100)}...</div>
+        <div style="font-size: 11px; color: #999;">📅 ${post.post_at} • 📸 ${post.media_type}</div>
+      </div>
+    `).join('');
+
+    const summary = planData.summary;
+    document.getElementById('planSummary').innerHTML = `
+      <div><strong>${planData.total_posts} posts</strong> from ${summary.date_range.start} to ${summary.date_range.end}</div>
+      <div style="margin-top: 8px;">Media: ${Object.entries(summary.by_media_type).map(([type, count]) => `${count} ${type}`).join(', ')}</div>
+    `;
+  }
+
+  function approvePlan() {
+    if (!pendingPlanData) { showStatus('No plan to approve', true); return; }
+    const button = document.querySelector('#approvePlanButtons button:nth-child(2)');
+    button.disabled = true;
+    button.innerHTML = '⏳ Scheduling...';
+    fetch(ENDPOINTS.socialPlanApproval, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        plan_id: pendingPlanData.plan_id,
+        decision: 'approved',
+        posts: pendingPlanData.posts,
+        timestamp: new Date().toISOString()
+      })
+    }).then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      showStatus('✅ Plan approved! Posts scheduled.', false);
+      setTimeout(() => { resetPlanModal(); closeSocialPlanModal(); loadSocialPosts(); }, 1500);
+    }).catch(error => {
+      console.error('Error:', error);
+      showStatus('Error: ' + error.message, true);
+      button.disabled = false;
+      button.innerHTML = '✅ Approve & Schedule';
+    });
+  }
+
+  function rejectPlan() {
+    if (!pendingPlanData) { showStatus('No plan to reject', true); return; }
+    const feedback = prompt('Why reject?', '');
+    if (feedback === null) return;
+    const button = document.querySelector('#approvePlanButtons button:nth-child(1)');
+    button.disabled = true;
+    button.innerHTML = '⏳ Rejecting...';
+    fetch(ENDPOINTS.socialPlanApproval, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        plan_id: pendingPlanData.plan_id,
+        decision: 'rejected',
+        feedback: feedback,
+        timestamp: new Date().toISOString()
+      })
+    }).then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      showStatus('Plan rejected. Try again.', false);
+      setTimeout(() => { resetPlanModal(); }, 1500);
+    }).catch(error => {
+      console.error('Error:', error);
+      showStatus('Error: ' + error.message, true);
+      button.disabled = false;
+      button.innerHTML = '❌ Reject Plan';
+    });
+  }
+
+  function resetPlanModal() {
+    pendingPlanData = null;
+    document.getElementById('planFormSection').style.display = 'block';
+    document.getElementById('planLoadingState').style.display = 'none';
+    document.getElementById('planPreviewSection').style.display = 'none';
+    document.getElementById('createPlanButtons').style.display = 'flex';
+    document.getElementById('approvePlanButtons').style.display = 'none';
+    selectedPlanPeriod = null;
+    document.getElementById('planKeyIdeas').value = '';
+    document.getElementById('includeWeekend').checked = true;
+    document.getElementById('useExistingMedia').checked = true;
+    document.getElementById('useUploadedVideos').checked = true;
+    document.getElementById('aiCreateVideos').checked = false;
+    document.getElementById('createPlanBtn').disabled = true;
+    document.getElementById('createPlanBtn').style.opacity = '0.5';
+    document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
+  }
+  async function startSocialPlan() {
     if (!selectedPlanPeriod) {
       showStatus('Please select a planning period', true);
       return;
