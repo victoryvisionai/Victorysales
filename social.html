@@ -2804,6 +2804,11 @@ async function rejectPlan() {
     document.getElementById('createPlanBtn').style.opacity = '0.5';
     document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
   }
+  async function startSocialPlan() {
+    if (!selectedPlanPeriod) {
+      showStatus('Please select a planning period', true);
+      return;
+    }
     const button = document.getElementById('createPlanBtn');
     button.disabled = true;
     button.innerHTML = '⏳ Creating Plan...';
