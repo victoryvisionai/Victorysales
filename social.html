@@ -2826,25 +2826,8 @@ async function startSocialPlan() {
 
     const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
     
-    console.log('Plan response:', result);
-
-    if (result && result.body && result.body.posts && result.body.posts.length > 0) {
-      displayPlanForApproval(result.body);
-      showStatus('Plan generated! Review and approve below.', false);
-    } else if (Array.isArray(result) && result.length > 0) {
-      const planData = {
-        plan_id: `plan_${Date.now()}`,
-        created_at: new Date().toISOString(),
-        total_posts: result.length,
-        status: 'pending_approval',
-        posts: result,
-        summary: {
-          by_platform: {},
-          by_media_type: {},
-          date_range: { start: null, end: null }
-        }
-      };
-      displayPlanForApproval(planData);
+    if (result && result.posts && result.posts.length > 0) {
+      displayPlanForApproval(result);
       showStatus('Plan generated! Review and approve below.', false);
     } else {
       console.error('Invalid response format:', result);
