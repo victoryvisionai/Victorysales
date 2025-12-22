@@ -2702,7 +2702,7 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     `;
   }
 
-  function approvePlan() {
+ async function approvePlan() {
     if (!pendingPlanData) {
       showStatus('No plan to approve', true);
       return;
@@ -2742,7 +2742,7 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     });
   }
 
-  function rejectPlan() {
+async function rejectPlan() {
     if (!pendingPlanData) {
       showStatus('No plan to reject', true);
       return;
