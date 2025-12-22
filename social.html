@@ -2832,6 +2832,23 @@ async function startSocialPlan() {
 
       if (result.body && result.body.posts) {
         displayPlanForApproval(result.body);
+if (Array.isArray(result)) {
+  // Response is array of posts, need to reconstruct
+  const planData = {
+    plan_id: `plan_${Date.now()}`,
+    created_at: new Date().toISOString(),
+    total_posts: result.length,
+    status: 'pending_approval',
+    posts: result,
+    summary: {
+      by_platform: {},
+      by_media_type: {},
+      date_range: { start: null, end: null }
+    }
+  };
+  displayPlanForApproval(planData);
+} else if (result.body && result.body.posts) {
+  displayPlanForApproval(result.body);
         showStatus('Plan generated! Review and approve below.', false);
       } else {
         showStatus('Error creating plan', true);
