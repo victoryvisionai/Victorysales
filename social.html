@@ -2666,36 +2666,37 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     document.getElementById('createPlanBtn').style.cursor = 'pointer';
   }
 // Plan approval workflow
-    function displayPlanForApproval(planData) {
-    pendingPlanData = planData;
-    document.getElementById('planLoadingState').style.display = 'none';
-    document.getElementById('planPreviewSection').style.display = 'block';
-    document.getElementById('createPlanButtons').style.display = 'none';
-    document.getElementById('approvePlanButtons').style.display = 'flex';
+function displayPlanForApproval(planData) {
+  pendingPlanData = planData;
+  document.getElementById('planLoadingState').style.display = 'none';
+  document.getElementById('planFormSection').style.display = 'none';
+  document.getElementById('planPreviewSection').style.display = 'block';
+  document.getElementById('createPlanButtons').style.display = 'none';
+  document.getElementById('approvePlanButtons').style.display = 'flex';
+
+  const postsList = document.getElementById('postsList');
+  postsList.innerHTML = planData.posts.map((post, idx) => {
+    const title = post.title || 'Untitled Post';
+    const message = post.message || post.content || 'No message';
+    const messagePreview = typeof message === 'string' ? message.substring(0, 100) : 'No message';
+    const postDate = post.post_at || new Date().toISOString();
+    const mediaType = post.media_type || 'none';
     
-    // Disable form inputs
-    document.querySelectorAll('.plan-period-btn, #planKeyIdeas, input[type="checkbox"]').forEach(el => {
-      el.disabled = true;
-      el.style.opacity = '0.6';
-    });
-
-    // Display posts
-    const postsList = document.getElementById('postsList');
-    postsList.innerHTML = planData.posts.map((post, idx) => `
-      <div>
-        <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${post.post_index}: ${post.title}</div>
-        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${post.message.substring(0, 80)}...</div>
-        <div style="font-size: 11px; color: #999;">📅 ${post.post_at} • 📸 ${post.media_type}</div>
+    return `
+      <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161;">
+        <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${idx + 1}: ${title}</div>
+        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${messagePreview}...</div>
+        <div style="font-size: 11px; color: #999;">📅 ${postDate} • 📸 ${mediaType}</div>
       </div>
-    `).join('');
-
-    // Display summary
-    const summary = planData.summary;
-    document.getElementById('planSummary').innerHTML = `
-      <div><strong>${planData.total_posts} posts</strong> from ${summary.date_range.start} to ${summary.date_range.end}</div>
-      <div style="margin-top: 5px;">Media: ${Object.entries(summary.by_media_type).map(([type, count]) => `${count} ${type}`).join(', ')}</div>
     `;
-  }
+  }).join('');
+
+  const summary = planData.summary || {};
+  document.getElementById('planSummary').innerHTML = `
+    <div><strong>${planData.total_posts || 0} posts</strong> from ${summary.date_range?.start || 'N/A'} to ${summary.date_range?.end || 'N/A'}</div>
+    <div style="margin-top: 8px;">Media: ${Object.entries(summary.by_media_type || {}).map(([type, count]) => `${count} ${type}`).join(', ') || 'N/A'}</div>
+  `;
+}
  async function approvePlan() {
     if (!pendingPlanData) {
       showStatus('No plan to approve', true);
