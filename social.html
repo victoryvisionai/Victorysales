@@ -2805,65 +2805,63 @@ async function rejectPlan() {
     document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
   }
 async function startSocialPlan() {
-    if (!selectedPlanPeriod) {
-      showStatus('Please select a planning period', true);
-      return;
-    }
+  if (!selectedPlanPeriod) {
+    showStatus('Please select a planning period', true);
+    return;
+  }
 
-    const button = document.getElementById('createPlanBtn');
-    button.disabled = true;
-    button.innerHTML = '⏳ Creating Plan...';
-    document.getElementById('planLoadingState').style.display = 'block';
+  const button = document.getElementById('createPlanBtn');
+  button.disabled = true;
+  button.innerHTML = '⏳ Creating Plan...';
+  document.getElementById('planLoadingState').style.display = 'block';
 
-    try {
-      showStatus('Creating social media plan...', false);
-      
-      const planConfig = {
-        days: selectedPlanPeriod,
-        include_weekends: document.getElementById('includeWeekend').checked,
-        key_ideas: document.getElementById('planKeyIdeas').value,
-        use_existing_media: document.getElementById('useExistingMedia').checked,
-        use_uploaded_videos: document.getElementById('useUploadedVideos').checked,
-        ai_create_videos: document.getElementById('aiCreateVideos').checked,
-        customer_id: CUSTOMER_ID
+  try {
+    showStatus('Creating social media plan...', false);
+    
+    const planConfig = {
+      days: selectedPlanPeriod,
+      include_weekends: document.getElementById('includeWeekend').checked,
+      key_ideas: document.getElementById('planKeyIdeas').value,
+      use_existing_media: document.getElementById('useExistingMedia').checked,
+      use_uploaded_videos: document.getElementById('useUploadedVideos').checked,
+      ai_create_videos: document.getElementById('aiCreateVideos').checked,
+      customer_id: CUSTOMER_ID
+    };
+
+    const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
+
+    if (Array.isArray(result)) {
+      const planData = {
+        plan_id: `plan_${Date.now()}`,
+        created_at: new Date().toISOString(),
+        total_posts: result.length,
+        status: 'pending_approval',
+        posts: result,
+        summary: {
+          by_platform: {},
+          by_media_type: {},
+          date_range: { start: null, end: null }
+        }
       };
-
-      const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
-
-      if (result.body && result.body.posts) {
-        displayPlanForApproval(result.body);
-if (Array.isArray(result)) {
-  // Response is array of posts, need to reconstruct
-  const planData = {
-    plan_id: `plan_${Date.now()}`,
-    created_at: new Date().toISOString(),
-    total_posts: result.length,
-    status: 'pending_approval',
-    posts: result,
-    summary: {
-      by_platform: {},
-      by_media_type: {},
-      date_range: { start: null, end: null }
-    }
-  };
-  displayPlanForApproval(planData);
-} else if (result.body && result.body.posts) {
-  displayPlanForApproval(result.body);
-        showStatus('Plan generated! Review and approve below.', false);
-      } else {
-        showStatus('Error creating plan', true);
-        resetPlanModal();
-        button.disabled = false;
-        button.innerHTML = '📅 Create Plan';
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      showStatus('Error: ' + error.message, true);
+      displayPlanForApproval(planData);
+      showStatus('Plan generated! Review and approve below.', false);
+    } else if (result.body && result.body.posts) {
+      displayPlanForApproval(result.body);
+      showStatus('Plan generated! Review and approve below.', false);
+    } else {
+      showStatus('Error creating plan', true);
       resetPlanModal();
       button.disabled = false;
       button.innerHTML = '📅 Create Plan';
     }
+  } catch (error) {
+    console.error('Error:', error);
+    showStatus('Error: ' + error.message, true);
+    resetPlanModal();
+    button.disabled = false;
+    button.innerHTML = '📅 Create Plan';
   }
+}
   // Schedule Modal Functions
   function openScheduleModal() {
     if (!postContent.value.trim()) {
