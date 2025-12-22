@@ -1825,25 +1825,7 @@
  AI create new videos (uses ~50% monthly credits)
         </label>
       </div>
-      
-      <!-- Loading Spinner -->
-      <div id="planLoadingState">
-        <div class="spinner"></div>
-        <p>Generating your social media plan...</p>
-        <small>This may take 30-60 seconds</small>
-      </div>
-      
-      <!-- Plan Preview Section -->
-      <div id="planPreviewSection">
-        <h3>📋 Plan Preview</h3>
-        <div id="postsList"></div>
-        <div style="background: #e3f2fd; padding: 12px; border-left: 4px solid #0A3161; border-radius: 6px;">
-          <strong style="color: #0A3161; display: block; margin-bottom: 8px;">Plan Summary:</strong>
-          <div id="planSummary"></div>
-        </div>
-      </div>
-    </div>
-  
+        
 <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 20px; border-top: 1px solid #eee; background: #f8f9fa; border-radius: 0 0 12px 12px;">
       <div style="font-size: 13px; color: #999;">
         <span id="planCreditEstimate">Select a period to see credit estimate</span>
@@ -2854,34 +2836,6 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
   }
 
- function displayPlanForApproval(planData) {
-    pendingPlanData = planData;
-    document.getElementById('planLoadingState').style.display = 'none';
-    document.getElementById('planPreviewSection').style.display = 'block';
-    document.getElementById('createPlanButtons').style.display = 'none';
-    document.getElementById('approvePlanButtons').style.display = 'flex';
-    
-    document.querySelectorAll('.plan-period-btn, #planKeyIdeas, input[type="checkbox"]').forEach(el => {
-      el.disabled = true;
-      el.style.opacity = '0.6';
-    });
-
-    const postsList = document.getElementById('postsList');
-    postsList.innerHTML = planData.posts.map((post, idx) => `
-      <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161;">
-        <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${post.post_index}: ${post.title}</div>
-        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${post.message.substring(0, 100)}...</div>
-        <div style="font-size: 11px; color: #999;">📅 ${post.post_at} • 📸 ${post.media_type}</div>
-      </div>
-    `).join('');
-
-    const summary = planData.summary;
-    document.getElementById('planSummary').innerHTML = `
-      <div><strong>${planData.total_posts} posts</strong> from ${summary.date_range.start} to ${summary.date_range.end}</div>
-      <div style="margin-top: 8px;">Media: ${Object.entries(summary.by_media_type).map(([type, count]) => `${count} ${type}`).join(', ')}</div>
-    `;
-  }
-
   function approvePlan() {
     if (!pendingPlanData) { showStatus('No plan to approve', true); return; }
     const button = document.querySelector('#approvePlanButtons button:nth-child(2)');
@@ -2957,30 +2911,6 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     document.getElementById('createPlanBtn').disabled = true;
     document.getElementById('createPlanBtn').style.opacity = '0.5';
     document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
-  }
-
-  function displayPlanForApproval(planData) {
-    pendingPlanData = planData;
-    document.getElementById('planLoadingState').style.display = 'none';
-    document.getElementById('planFormSection').style.display = 'none';
-    document.getElementById('planPreviewSection').style.display = 'block';
-    document.getElementById('createPlanButtons').style.display = 'none';
-    document.getElementById('approvePlanButtons').style.display = 'flex';
-    
-    const postsList = document.getElementById('postsList');
-    postsList.innerHTML = planData.posts.map((post, idx) => `
-      <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161;">
-        <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${post.post_index}: ${post.title}</div>
-        <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${post.message.substring(0, 100)}...</div>
-        <div style="font-size: 11px; color: #999;">📅 ${post.post_at} • 📸 ${post.media_type}</div>
-      </div>
-    `).join('');
-
-    const summary = planData.summary;
-    document.getElementById('planSummary').innerHTML = `
-      <div><strong>${planData.total_posts} posts</strong> from ${summary.date_range.start} to ${summary.date_range.end}</div>
-      <div style="margin-top: 8px;">Media: ${Object.entries(summary.by_media_type).map(([type, count]) => `${count} ${type}`).join(', ')}</div>
-    `;
   }
 
   function approvePlan() {
