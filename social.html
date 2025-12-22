@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif;result.body
       margin: 0;
       padding: 0;
       background-color: #f5f5f5;
@@ -2825,8 +2825,13 @@ async function startSocialPlan() {
     };
 
     const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
+    
+    console.log('Plan response:', result);
 
-    if (Array.isArray(result)) {
+    if (result && result.body && result.body.posts && result.body.posts.length > 0) {
+      displayPlanForApproval(result.body);
+      showStatus('Plan generated! Review and approve below.', false);
+    } else if (Array.isArray(result) && result.length > 0) {
       const planData = {
         plan_id: `plan_${Date.now()}`,
         created_at: new Date().toISOString(),
@@ -2841,11 +2846,9 @@ async function startSocialPlan() {
       };
       displayPlanForApproval(planData);
       showStatus('Plan generated! Review and approve below.', false);
-    } else if (result.body && result.body.posts) {
-      displayPlanForApproval(result.body);
-      showStatus('Plan generated! Review and approve below.', false);
     } else {
-      showStatus('Error creating plan', true);
+      console.error('Invalid response format:', result);
+      showStatus('Error: Invalid response format', true);
       resetPlanModal();
       button.disabled = false;
       button.innerHTML = '📅 Create Plan';
