@@ -2804,11 +2804,12 @@ async function rejectPlan() {
     document.getElementById('createPlanBtn').style.opacity = '0.5';
     document.querySelectorAll('.plan-period-btn').forEach(btn => btn.classList.remove('active'));
   }
-  async function startSocialPlan() {
+async function startSocialPlan() {
     if (!selectedPlanPeriod) {
       showStatus('Please select a planning period', true);
       return;
     }
+
     const button = document.getElementById('createPlanBtn');
     button.disabled = true;
     button.innerHTML = '⏳ Creating Plan...';
@@ -2832,11 +2833,6 @@ async function rejectPlan() {
       if (result.body && result.body.posts) {
         displayPlanForApproval(result.body);
         showStatus('Plan generated! Review and approve below.', false);
-      } else if (result.success !== false) {
-        showStatus('✅ Plan created!', true);
-        resetPlanModal();
-        closeSocialPlanModal();
-        await loadSocialPosts();
       } else {
         showStatus('Error creating plan', true);
         resetPlanModal();
