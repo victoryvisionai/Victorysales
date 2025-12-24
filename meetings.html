@@ -53,10 +53,23 @@
       margin-bottom: 20px;
     }
 
-    .logo-image {
-      max-height: 80px;
-      width: auto;
-      display: block;
+    .logo-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .logo-text-main {
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: 3px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .meeting-title {
@@ -380,9 +393,9 @@
         padding: 20px;
       }
 
-      .logo-image {
-        max-height: 50px;
-        width: auto;
+      .logo-text-main {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
       }
       
       .meeting-title {
@@ -410,7 +423,9 @@
 <div class="meeting-container">
   <div class="meeting-header">
     <div class="header-top">
-      <img src="https://raw.githubusercontent.com/victoryvisioni/Victorysales/main/logo.jpg" alt="Victory Vision Logo" class="logo-image">
+      <div class="logo-brand">
+        <div class="logo-text-main">VICTORY VISION</div>
+      </div>
     </div>
     <h1 class="meeting-title">Join Your Meeting</h1>
     <p class="meeting-subtitle">Video conferencing powered by Victory Vision</p>
@@ -569,7 +584,7 @@ function extractNameFromEmail(email) {
   };
 }
 
-// Check if meeting is within 24 hours
+// Check if meeting is upcoming (in the future or within past 24 hours for ongoing meetings)
 function isWithin24Hours(meetingTime) {
   if (!meetingTime) return false;
   
@@ -580,12 +595,14 @@ function isWithin24Hours(meetingTime) {
   if (isNaN(meetingDate.getTime())) return false;
   
   // Calculate difference in milliseconds
-  const diffMs = Math.abs(meetingDate.getTime() - now.getTime());
+  const diffMs = meetingDate.getTime() - now.getTime();
   
-  // 24 hours = 86400000 milliseconds
+  // Show meetings that are:
+  // - In the future (upcoming)
+  // - Or started within the past 24 hours (ongoing/recent)
   const oneDayMs = 24 * 60 * 60 * 1000;
   
-  return diffMs <= oneDayMs;
+  return diffMs >= -oneDayMs;  // Meeting start time is in future OR within past 24 hours
 }
 
 // Format time remaining
