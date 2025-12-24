@@ -42,34 +42,20 @@
       color: white;
       padding: 30px;
       text-align: center;
-      position: relative;
     }
 
-    .header-top {
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-
-    .logo-brand {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-
-    .logo-text-main {
-      font-size: 2rem;
-      font-weight: 800;
-      color: white;
-      letter-spacing: 3px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      margin: 0 auto 20px;
+      font-weight: bold;
+      color: #0a3161;
+      font-size: 24px;
     }
 
     .meeting-title {
@@ -154,56 +140,9 @@
       box-shadow: none;
     }
 
-    .signup-promo {
-      background: linear-gradient(135deg, rgba(187,19,62,0.1), rgba(10,49,97,0.1));
-      border: 2px solid #bb133e;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 30px 0;
-      text-align: center;
-    }
-
-    .signup-promo h3 {
-      color: #bb133e;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
-
-    .signup-promo p {
-      color: #2d3748;
-      font-size: 0.95rem;
-      margin-bottom: 15px;
-    }
-
-    .signup-btn {
-      background: linear-gradient(135deg, #bb133e, #9d1134);
-      color: white;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .signup-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(187,19,62,0.3);
-    }
-
     .meetings-list {
       margin-top: 30px;
       display: none;
-    }
-
-    .meetings-header {
-      color: #2d3748;
-      font-weight: 600;
-      font-size: 1.1rem;
-      margin-bottom: 15px;
     }
 
     .meeting-item {
@@ -224,53 +163,15 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .meeting-item.disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .meeting-item.disabled:hover {
-      border-color: #e2e8f0;
-      background: #f7fafc;
-      transform: none;
-      box-shadow: none;
-    }
-
     .meeting-title-item {
-      color: #0a3161;
-      margin-bottom: 8px;
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    .meeting-company {
-      color: #bb133e;
-      font-size: 0.9rem;
-      font-weight: 600;
+      color: #2d3748;
       margin-bottom: 5px;
+      font-weight: 600;
     }
 
     .meeting-attendees {
       color: #718096;
       font-size: 0.9rem;
-      margin-top: 8px;
-    }
-
-    .meeting-time {
-      color: #2d3748;
-      font-size: 0.9rem;
-      margin-top: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .time-badge {
-      background: #edf2f7;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      color: #2d3748;
     }
 
     .video-container {
@@ -317,15 +218,6 @@
       border-radius: 8px;
       margin: 20px 0;
       border-left: 4px solid #38a169;
-    }
-
-    .no-meetings {
-      background: #edf2f7;
-      color: #2d3748;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      margin: 20px 0;
     }
 
     .back-btn {
@@ -392,11 +284,6 @@
       .meeting-header {
         padding: 20px;
       }
-
-      .logo-text-main {
-        font-size: 1.5rem;
-        letter-spacing: 2px;
-      }
       
       .meeting-title {
         font-size: 1.5rem;
@@ -409,12 +296,6 @@
       .video-container {
         height: 300px;
       }
-
-      .control-btn {
-        padding: 10px 16px;
-        margin: 5px;
-        font-size: 0.9rem;
-      }
     }
   </style>
 </head>
@@ -422,13 +303,10 @@
 
 <div class="meeting-container">
   <div class="meeting-header">
-    <div class="header-top">
-      <div class="logo-brand">
-        <div class="logo-text-main">VICTORY VISION</div>
-      </div>
-    </div>
-    <h1 class="meeting-title">Join Your Meeting</h1>
-    <p class="meeting-subtitle">Video conferencing powered by Victory Vision</p>
+  <div class="logo">VV</div>
+<img src="https://raw.githubusercontent.com/victoryvisioni/Victorysales/main/logo.jpg" alt="Victory Vision" style="max-height: 80px; width: auto; margin-bottom: 15px;">
+    <h1 class="meeting-title">Victory Vision Meeting</h1>
+    <p class="meeting-subtitle">Join your scheduled video conference</p>
   </div>
 
   <div class="meeting-content">
@@ -444,14 +322,9 @@
           required
         >
       </div>
-      <button id="findMeetingBtn" class="join-btn">Find My Meeting</button>
-    </div>
-
-    <!-- Signup Promotion -->
-    <div id="signupPromo" class="signup-promo">
-      <h3>Ready to Automate Your Growth?</h3>
-      <p>Join Victory Vision for practical AI insights, proven playbooks, and real-world examples leaders use to scale smarter.</p>
-      <a href="https://victoryvision.app.n8n.cloud/webhook/emails/newslettersignup" class="signup-btn">Sign Up for Newsletter</a>
+      <button id="findMeetingBtn" class="join-btn">
+        Find My Meeting
+      </button>
     </div>
 
     <!-- Loading State -->
@@ -460,13 +333,15 @@
       <span>Finding your meetings...</span>
     </div>
 
-    <!-- Messages -->
+    <!-- Error Message -->
     <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+    <!-- Success Message -->
     <div id="successMessage" class="success-message" style="display: none;"></div>
 
     <!-- Meetings List -->
     <div id="meetingsList" class="meetings-list">
-      <div class="meetings-header">Your Upcoming Meetings</div>
+      <h3 style="margin-bottom: 20px; color: #2d3748;">Click to join your meeting:</h3>
       <div id="meetingsContainer"></div>
       <button id="backBtn" class="back-btn">Back to Email Entry</button>
     </div>
@@ -511,7 +386,6 @@ const backBtn = document.getElementById('backBtn');
 const videoContainer = document.getElementById('videoContainer');
 const dailyContainer = document.getElementById('dailyContainer');
 const meetingControls = document.getElementById('meetingControls');
-const signupPromo = document.getElementById('signupPromo');
 
 // Control buttons
 const muteBtn = document.getElementById('muteBtn');
@@ -556,76 +430,7 @@ function isValidEmail(email) {
   return emailRegex.test(email);
 }
 
-// Extract company and person name from email
-function extractNameFromEmail(email) {
-  const parts = email.split('@');
-  if (parts.length !== 2) return { person: email, company: 'N/A' };
-  
-  const domain = parts[1].toLowerCase();
-  const localPart = parts[0];
-  
-  // Check if it's a Gmail/common provider
-  const commonProviders = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'icloud.com', 'mail.com'];
-  
-  if (commonProviders.includes(domain)) {
-    // For Gmail addresses, try to extract name from local part
-    const nameParts = localPart.split(/[._-]/);
-    const person = nameParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
-    return { person: person || localPart, company: 'Personal' };
-  }
-  
-  // For business emails, extract company and person
-  const companyName = domain.split('.')[0];
-  const person = localPart.split(/[._-]/)[0];
-  
-  return {
-    person: person.charAt(0).toUpperCase() + person.slice(1),
-    company: companyName.charAt(0).toUpperCase() + companyName.slice(1)
-  };
-}
-
-// Check if meeting is upcoming (in the future or within past 24 hours for ongoing meetings)
-function isWithin24Hours(meetingTime) {
-  if (!meetingTime) return false;
-  
-  const now = new Date();
-  const meetingDate = new Date(meetingTime);
-  
-  // Check if time is valid
-  if (isNaN(meetingDate.getTime())) return false;
-  
-  // Calculate difference in milliseconds
-  const diffMs = meetingDate.getTime() - now.getTime();
-  
-  // Show meetings that are:
-  // - In the future (upcoming)
-  // - Or started within the past 24 hours (ongoing/recent)
-  const oneDayMs = 24 * 60 * 60 * 1000;
-  
-  return diffMs >= -oneDayMs;  // Meeting start time is in future OR within past 24 hours
-}
-
-// Format time remaining
-function getTimeRemaining(meetingTime) {
-  const now = new Date();
-  const meetingDate = new Date(meetingTime);
-  const diffMs = meetingDate.getTime() - now.getTime();
-  
-  if (diffMs < 0) {
-    const pastMins = Math.floor(Math.abs(diffMs) / (1000 * 60));
-    if (pastMins < 60) return `Started ${pastMins} min ago`;
-    const pastHours = Math.floor(pastMins / 60);
-    return `Started ${pastHours} hour${pastHours > 1 ? 's' : ''} ago`;
-  }
-  
-  const futureMs = diffMs;
-  const futureMins = Math.floor(futureMs / (1000 * 60));
-  if (futureMins < 60) return `In ${futureMins} min`;
-  const futureHours = Math.floor(futureMins / 60);
-  return `In ${futureHours} hour${futureHours > 1 ? 's' : ''}`;
-}
-
-// Find meetings for the user (case-insensitive)
+// Find meetings for the user
 async function findMeetings() {
   const email = emailInput.value.trim();
   
@@ -643,17 +448,16 @@ async function findMeetings() {
   
   // Show loading state
   emailForm.style.display = 'none';
-  signupPromo.style.display = 'none';
   loadingState.style.display = 'flex';
   
   try {
-    console.log('Searching for email (case-insensitive):', email);
+    console.log('Searching for email:', email);
     
-    // Query meeting_invites table - case-insensitive email match using LOWER()
+    // Query meeting_invites table - simple email match
     const { data: meetingInvites, error } = await supabaseClient
       .from('meeting_invites')
       .select('*')
-      .ilike('email', email.toLowerCase());
+      .like('email', email);
 
     console.log('Query result:', { meetingInvites, error });
 
@@ -663,37 +467,23 @@ async function findMeetings() {
       console.error('Database error:', error);
       showError('Database error: ' + error.message);
       emailForm.style.display = 'block';
-      signupPromo.style.display = 'block';
       return;
     }
 
     if (!meetingInvites || meetingInvites.length === 0) {
       showError('No meetings found for: ' + email);
       emailForm.style.display = 'block';
-      signupPromo.style.display = 'block';
       return;
     }
 
-    // Filter meetings to only show those within 24 hours
-    const filteredMeetings = meetingInvites.filter(invite => {
-      return isWithin24Hours(invite.meeting_time || invite.start_time);
-    });
-
-    if (filteredMeetings.length === 0) {
-      meetingsContainer.innerHTML = '<div class="no-meetings">No meetings scheduled within the next 24 hours.</div>';
-      meetingsList.style.display = 'block';
-      return;
-    }
-
-    currentMeetings = filteredMeetings;
-    displayMeetings(filteredMeetings);
+    currentMeetings = meetingInvites;
+    displayMeetings(meetingInvites);
     
   } catch (error) {
     console.error('Error finding meetings:', error);
     loadingState.style.display = 'none';
     showError('Error: ' + error.message);
     emailForm.style.display = 'block';
-    signupPromo.style.display = 'block';
   }
 }
 
@@ -704,30 +494,17 @@ function displayMeetings(meetingInvites) {
   meetingInvites.forEach((invite, index) => {
     const meetingItem = document.createElement('div');
     meetingItem.className = 'meeting-item';
-    
-    // Extract company and person name
-    const { person, company } = extractNameFromEmail(invite.email);
-    
-    // Get time remaining
-    const meetingTime = invite.meeting_time || invite.start_time;
-    const timeRemaining = getTimeRemaining(meetingTime);
-    
-    // Parse room URL for meeting details if available
-    let meetingDetails = 'Meeting Room';
-    if (invite.room_url) {
-      const parts = invite.room_url.split('-');
-      if (parts.length > 1) {
-        meetingDetails = parts[1]?.replace(/([A-Z])/g, ' $1').trim() || 'Meeting Room';
-      }
-    }
-    
     meetingItem.innerHTML = `
-      <div class="meeting-title-item">${invite.name || meetingDetails}</div>
-      <div class="meeting-company">${company}</div>
-      <div class="meeting-attendees">Contact: ${person}</div>
-      <div class="meeting-time">
-        📅 ${new Date(meetingTime).toLocaleDateString()} at ${new Date(meetingTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        <span class="time-badge">${timeRemaining}</span>
+      <div class="meeting-title-item">${invite.name || 'Victory Vision Meeting'}</div>
+      <div class="meeting-attendees">
+        Link: Link: ${invite.room_url ? (() => {
+  const parts = invite.room_url.split('-');
+  const name = parts[1]?.replace(/([A-Z])/g, ' $1').trim() || 'N/A';
+  const date = `${parts[2]}/${parts[3]}/${parts[4]}`;
+  const time = parts[5]?.replace(/(\d+)(AM|PM)/, '$1 $2');
+  return `${name} - ${date} at ${time} ${parts[6] || ''}`;
+})() : 'N/A'}
+${invite.room_url ? '' : '<br>⚠️ No room information available'}
       </div>
     `;
     
@@ -735,8 +512,8 @@ function displayMeetings(meetingInvites) {
       meetingItem.addEventListener('click', () => joinMeeting(invite));
       meetingItem.style.cursor = 'pointer';
     } else {
-      meetingItem.classList.add('disabled');
-      meetingItem.innerHTML += '<div class="meeting-attendees" style="margin-top: 8px; color: #e53e3e;">⚠️ No room link available</div>';
+      meetingItem.style.opacity = '0.6';
+      meetingItem.style.cursor = 'not-allowed';
     }
     
     meetingsContainer.appendChild(meetingItem);
@@ -765,13 +542,10 @@ async function joinMeeting(invite) {
       showParticipantsBar: true,
     });
 
-    // Extract name from email for display
-    const { person } = extractNameFromEmail(invite.email);
-
     // Join the meeting
     await callFrame.join({
       url: invite.room_url,
-      userName: invite.name || person || userEmail.split('@')[0],
+      userName: invite.name || userEmail.split('@')[0],
     });
 
     loadingState.style.display = 'none';
@@ -812,7 +586,7 @@ async function toggleVideo() {
   try {
     if (isVideoOff) {
       await callFrame.setLocalVideo(true);
-      videoBtn.textContent = 'Stop Video';
+      videoBtn.textContent = 'Video';
       isVideoOff = false;
     } else {
       await callFrame.setLocalVideo(false);
@@ -842,7 +616,6 @@ async function leaveMeeting() {
 // Show email form (reset to initial state)
 function showEmailForm() {
   emailForm.style.display = 'block';
-  signupPromo.style.display = 'block';
   meetingsList.style.display = 'none';
   videoContainer.style.display = 'none';
   meetingControls.style.display = 'none';
