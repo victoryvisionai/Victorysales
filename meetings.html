@@ -475,8 +475,24 @@ async function findMeetings() {
       return;
     }
 
-    currentMeetings = meetingInvites;
-    displayMeetings(meetingInvites);
+    // Filter to only show meetings within ±24 hours
+    const now = new Date();
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    const filteredMeetings = meetingInvites.filter(invite => {
+      const meetingTime = new Date(invite.meeting_time || invite.start_time);
+      if (isNaN(meetingTime.getTime())) return false;
+      const diffMs = meetingTime.getTime() - now.getTime();
+      return diffMs >= -oneDayMs && diffMs <= oneDayMs;
+    });
+
+    if (filteredMeetings.length === 0) {
+      showError('No meetings scheduled within the next 24 hours');
+      emailForm.style.display = 'block';
+      return;
+    }
+
+    currentMeetings = filteredMeetings;
+    displayMeetings(filteredMeetings);
     
   } catch (error) {
     console.error('Error finding meetings:', error);
