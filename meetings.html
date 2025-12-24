@@ -479,7 +479,7 @@ async function findMeetings() {
     const now = new Date();
     const oneDayMs = 24 * 60 * 60 * 1000;
     const filteredMeetings = meetingInvites.filter(invite => {
-      const meetingTime = new Date(invite.meeting_time || invite.start_time);
+      const meetingTime = new Date(invite.meeting_time || invite.start_at);
       if (isNaN(meetingTime.getTime())) return false;
       const diffMs = meetingTime.getTime() - now.getTime();
       return diffMs >= -oneDayMs && diffMs <= oneDayMs;
