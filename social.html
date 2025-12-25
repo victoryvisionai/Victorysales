@@ -2558,8 +2558,7 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
 
   function renderPostList(posts) {
     const postList = document.getElementById('postList');
-    
- postsList.innerHTML = planData.posts.map((post, idx) => `
+ postsList.innerHTML = posts.map((post, idx) => `
   <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161;">
     <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${idx + 1}: ${post.title || 'Untitled'}</div>
     <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${(post.message || post.content || 'No message').substring(0, 100)}...</div>
