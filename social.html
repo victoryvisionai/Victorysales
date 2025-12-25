@@ -2675,7 +2675,7 @@ function displayPlanForApproval(planData) {
   document.getElementById('approvePlanButtons').style.display = 'flex';
 
   const postsList = document.getElementById('postsList');
-  postsList.innerHTML = planData.posts.map((post, idx) => {
+  postsList.innerHTML = (planData.campaigns || planData.posts || []).map((post, idx) => {
     const title = post.title || 'Untitled Post';
     const message = post.message || post.content || 'No message';
     const messagePreview = typeof message === 'string' ? message.substring(0, 100) : 'No message';
@@ -2691,11 +2691,12 @@ function displayPlanForApproval(planData) {
     `;
   }).join('');
 
-  const summary = planData.summary || {};
-  document.getElementById('planSummary').innerHTML = `
-    <div><strong>${planData.total_posts || 0} posts</strong> from ${summary.date_range?.start || 'N/A'} to ${summary.date_range?.end || 'N/A'}</div>
-    <div style="margin-top: 8px;">Media: ${Object.entries(summary.by_media_type || {}).map(([type, count]) => `${count} ${type}`).join(', ') || 'N/A'}</div>
-  `;
+const summary = planData.metadata || {};
+const campaignData = planData.campaigns || planData.posts || [];
+document.getElementById('planSummary').innerHTML = `
+  <div><strong>${planData.total_campaigns || campaignData.length || 0} posts</strong> across ${(summary.platforms || []).length || 1} platform(s)</div>
+  <div style="margin-top: 8px;">Platforms: ${(summary.platforms || ['N/A']).join(', ')}</div>
+`;
 }
  async function approvePlan() {
     if (!pendingPlanData) {
@@ -2718,7 +2719,7 @@ function displayPlanForApproval(planData) {
         customer_id: CUSTOMER_ID,
         plan_id: pendingPlanData.plan_id,
         decision: 'approved',
-        posts: pendingPlanData.posts,
+        posts: pendingPlanData.campaigns || pendingPlanData.posts || [],
         timestamp: new Date().toISOString()
       })
     }).then(r => {
