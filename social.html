@@ -2827,7 +2827,7 @@ async function startSocialPlan() {
 
     const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
     
-    if (result && result.posts && result.posts.length > 0) {
+   if (result && (result.campaigns || result.posts) && (result.campaigns || result.posts).length > 0) {
       displayPlanForApproval(result);
       showStatus('Plan generated! Review and approve below.', false);
     } else {
