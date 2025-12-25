@@ -2690,13 +2690,18 @@ function displayPlanForApproval(planData) {
       </div>
     `;
   }).join('');
-
-const summary = planData.metadata || {};
-const campaignData = planData.campaigns || planData.posts || [];
-document.getElementById('planSummary').innerHTML = `
-  <div><strong>${planData.total_campaigns || campaignData.length || 0} posts</strong> across ${(summary.platforms || []).length || 1} platform(s)</div>
-  <div style="margin-top: 8px;">Platforms: ${(summary.platforms || ['N/A']).join(', ')}</div>
-`;
+  
+  const campaignsList = planData.campaigns || planData.posts || [];
+  const mediaTypes = {};
+  campaignsList.forEach(post => {
+    const type = post.media_type || 'none';
+    mediaTypes[type] = (mediaTypes[type] || 0) + 1;
+  });
+  
+  document.getElementById('planSummary').innerHTML = `
+    <div><strong>${planData.total_campaigns || campaignsList.length || 0} posts</strong> planned</div>
+    <div style="margin-top: 8px;">Media: ${Object.entries(mediaTypes).map(([type, count]) => `${count} ${type}`).join(', ') || 'N/A'}</div>
+  `;
 }
  async function approvePlan() {
     if (!pendingPlanData) {
