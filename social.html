@@ -2558,7 +2558,8 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
 
   function renderPostList(posts) {
     const postList = document.getElementById('postList');
- postsList.innerHTML = posts.map((post, idx) => `
+    
+ postsList.innerHTML = planData.posts.map((post, idx) => `
   <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161;">
     <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${idx + 1}: ${post.title || 'Untitled'}</div>
     <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${(post.message || post.content || 'No message').substring(0, 100)}...</div>
@@ -2689,18 +2690,13 @@ function displayPlanForApproval(planData) {
       </div>
     `;
   }).join('');
-  
-  const campaignsList = planData.campaigns || planData.posts || [];
-  const mediaTypes = {};
-  campaignsList.forEach(post => {
-    const type = post.media_type || 'none';
-    mediaTypes[type] = (mediaTypes[type] || 0) + 1;
-  });
-  
-  document.getElementById('planSummary').innerHTML = `
-    <div><strong>${planData.total_campaigns || campaignsList.length || 0} posts</strong> planned</div>
-    <div style="margin-top: 8px;">Media: ${Object.entries(mediaTypes).map(([type, count]) => `${count} ${type}`).join(', ') || 'N/A'}</div>
-  `;
+
+const summary = planData.metadata || {};
+const campaignData = planData.campaigns || planData.posts || [];
+document.getElementById('planSummary').innerHTML = `
+  <div><strong>${planData.total_campaigns || campaignData.length || 0} posts</strong> across ${(summary.platforms || []).length || 1} platform(s)</div>
+  <div style="margin-top: 8px;">Platforms: ${(summary.platforms || ['N/A']).join(', ')}</div>
+`;
 }
  async function approvePlan() {
     if (!pendingPlanData) {
