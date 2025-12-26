@@ -475,7 +475,6 @@ async function findMeetings() {
       return;
     }
 
-    // Filter to only show meetings within ±24 hours
     const now = new Date();
     const oneDayMs = 24 * 60 * 60 * 1000;
      const filteredMeetings = meetingInvites.filter(invite => {
@@ -487,7 +486,7 @@ async function findMeetings() {
     });
    
     if (filteredMeetings.length === 0) {
-      showError('No meetings scheduled within the next 24 hours');
+      showError('No meetings scheduled within the next week');
       emailForm.style.display = 'block';
       return;
     }
