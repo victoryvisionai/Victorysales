@@ -475,38 +475,70 @@ async function findMeetings() {
       return;
     }
 
-const now = new Date();
+// Replace lines 478-503 with this:
+
+    const now = new Date();
     const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    
     const filteredMeetings = meetingInvites.filter(invite => {
-      if (!invite.room_url) return false; // No room URL = skip
+      if (!invite.room_url) return false;
       
       try {
+        // Parse room_url format: Meeting-Name-MM-DD-YYYY-TIMEAMPM-EST
         const parts = invite.room_url.split('-');
         if (parts.length < 5) return false;
         
-        const month = parts[parts.length - 4]; // MM
-        const day = parts[parts.length - 3];   // DD
-        const year = parts[parts.length - 2];  // YYYY
-        const timeStr = parts[parts.length - 1].replace('EST', '').trim(); // TIME
+        // Find the time part (contains AM or PM)
+        let timeIndex = -1;
+        let timeStr = '';
+        for (let i = 0; i < parts.length; i++) {
+          if (parts[i].includes('AM') || parts[i].includes('PM')) {
+            timeIndex = i;
+            timeStr = parts[i];
+            break;
+          }
+        }
         
-        // Create date string and parse
-        const dateStr = `${year}-${month}-${day}T${timeStr}`;
+        if (timeIndex === -1) return false;
+        
+        // Extract date parts (should be 3 parts before time)
+        const month = parts[timeIndex - 3];
+        const day = parts[timeIndex - 2];
+        const year = parts[timeIndex - 1];
+        
+        // Parse time: 430PM → 4:30 PM, 1130AM → 11:30 AM, 100PM → 1:00 PM
+        let time = timeStr.replace('AM', '').replace('PM', '').trim();
+        const isPM = timeStr.includes('PM');
+        
+        // Add colon for time format
+        if (time.length === 3) {
+          time = time.charAt(0) + ':' + time.substring(1); // 430 → 4:30
+        } else if (time.length === 4) {
+          time = time.substring(0, 2) + ':' + time.substring(2); // 1130 → 11:30
+        }
+        
+        // Build ISO date string
+        const dateStr = `${year}-${month}-${day}T${time}:00`;
         const meetingTime = new Date(dateStr);
         
-        if (isNaN(meetingTime.getTime())) return true; // Show if parsing fails
+        if (isNaN(meetingTime.getTime())) {
+          console.warn('Could not parse meeting time:', invite.room_url);
+          return false;
+        }
+        
         const diffMs = meetingTime.getTime() - now.getTime();
         return diffMs >= -sevenDaysMs && diffMs <= sevenDaysMs;
       } catch (e) {
-        return true; // Show if any error parsing
+        console.error('Error parsing meeting:', invite.room_url, e);
+        return false;
       }
     });
-   
+
     if (filteredMeetings.length === 0) {
-      showError('No meetings scheduled for the next week');
+      showError('No meetings scheduled within the next 7 days');
       emailForm.style.display = 'block';
       return;
     }
-
     currentMeetings = filteredMeetings;
     displayMeetings(filteredMeetings);
     
