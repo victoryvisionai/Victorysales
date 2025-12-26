@@ -475,14 +475,30 @@ async function findMeetings() {
       return;
     }
 
- const now = new Date();
+const now = new Date();
     const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
     const filteredMeetings = meetingInvites.filter(invite => {
-      const meetingTime = new Date(invite.meeting_time || invite.start_at);
-      // Show meeting if it has a valid date OR if date is missing (show all)
-      if (isNaN(meetingTime.getTime())) return true; // Show meetings with invalid/missing dates
-      const diffMs = meetingTime.getTime() - now.getTime();
-      return diffMs >= -sevenDaysMs && diffMs <= sevenDaysMs;
+      if (!invite.room_url) return false; // No room URL = skip
+      
+      try {
+        const parts = invite.room_url.split('-');
+        if (parts.length < 5) return false;
+        
+        const month = parts[parts.length - 4]; // MM
+        const day = parts[parts.length - 3];   // DD
+        const year = parts[parts.length - 2];  // YYYY
+        const timeStr = parts[parts.length - 1].replace('EST', '').trim(); // TIME
+        
+        // Create date string and parse
+        const dateStr = `${year}-${month}-${day}T${timeStr}`;
+        const meetingTime = new Date(dateStr);
+        
+        if (isNaN(meetingTime.getTime())) return true; // Show if parsing fails
+        const diffMs = meetingTime.getTime() - now.getTime();
+        return diffMs >= -sevenDaysMs && diffMs <= sevenDaysMs;
+      } catch (e) {
+        return true; // Show if any error parsing
+      }
     });
    
     if (filteredMeetings.length === 0) {
@@ -505,7 +521,6 @@ async function findMeetings() {
 // Display meetings list
 function displayMeetings(meetingInvites) {
   meetingsContainer.innerHTML = '';
-  
   meetingInvites.forEach((invite, index) => {
     const meetingItem = document.createElement('div');
     meetingItem.className = 'meeting-item';
