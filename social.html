@@ -2556,15 +2556,22 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     renderPostList(sorted);
   }
 
-  function renderPostList(posts) {
+function renderPostList(posts) {
     const postList = document.getElementById('postList');
-postList.innerHTML = posts.map((post, idx) => `
-  <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161; cursor: pointer;" onclick="selectPostForLearn(${idx})">
+    postList.innerHTML = posts.map((post, idx) => {
+      // Find the actual index in allPublishedPosts
+      const actualIdx = allPublishedPosts.findIndex(p => 
+        p.id === post.id || (p.created_at === post.created_at && p.message === post.message)
+      );
+      
+      return `
+  <div style="padding: 12px; margin-bottom: 10px; background: white; border-radius: 6px; border-left: 4px solid #0A3161; cursor: pointer;" onclick="selectPostForLearn(${actualIdx})">
     <div style="font-weight: 600; color: #0A3161; margin-bottom: 5px;">Post ${idx + 1}: ${post.title || 'Untitled'}</div>
     <div style="font-size: 12px; color: #666; margin-bottom: 5px;">${(post.message || post.content || 'No message').substring(0, 100)}...</div>
     <div style="font-size: 11px; color: #999;">📅 ${post.post_at} • 📸 ${post.media_type}</div>
   </div>
-`).join('');
+`;
+    }).join('');
   }
 
   function filterPostList() {
@@ -2576,7 +2583,7 @@ postList.innerHTML = posts.map((post, idx) => `
     });
     renderPostList(filtered);
   }
-
+  
   function selectPostForLearn(index) {
     if (allPublishedPosts.length > index) {
       selectedPostForLearn = allPublishedPosts[index];
