@@ -6,12 +6,13 @@
   <meta name="description" content="Manage your social media posts and analytics."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Social Media</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230A3161' width='100' height='100'/><text x='50' y='65' font-size='60' font-weight='bold' text-anchor='middle' fill='white'>V</text></svg>"> 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;result.body
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       background-color: #f5f5f5;
@@ -3058,12 +3059,19 @@ async function deleteDraft() {
       
       // Add ALL posts with post_at for this day
       const dateKey = currentDateForDay.toISOString().split('T')[0];
-      const postsForDay = allSocialPosts.filter(post => {
-        if (!post.post_at) return false;
-        const postDate = new Date(post.post_at).toISOString().split('T')[0];
-        return postDate === dateKey;
-      });
-      
+    const postsForDay = allSocialPosts.filter(post => {
+  if (!post.post_at) return false;
+  
+  // Validate date before using it - prevents Invalid Date error
+  const postDate = new Date(post.post_at);
+  if (isNaN(postDate.getTime())) {
+    console.warn('Invalid post date:', post.post_at, 'for post ID:', post.id);
+    return false; // Skip posts with invalid dates
+  }
+  
+  const postDateString = postDate.toISOString().split('T')[0];
+  return postDateString === dateKey;
+});  
       postsForDay.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'calendar-post';
