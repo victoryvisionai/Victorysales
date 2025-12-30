@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Victory Vision | AI-Powered Billboard Marketing</title>
-  <meta name="description" content="Victory Vision empowers mid-sized companies with data-driven AI billboard advertising—automated customer targeting, personalized scheduling, and ROI-optimized analytics for measurable growth." />
-  <meta property="og:title" content="Victory Vision | AI-Powered Billboard Marketing">
-  <meta property="og:description" content="AI-enhanced platform for smart digital billboard advertising. Campaign precision. Automated targeting. Real-time analytics.">
+  <title>Victory Vision | AI Prospecting Platform for Property Management</title>
+  <meta name="description" content="AI-powered prospecting platform built specifically for property managers. Systematically reach property owners, automate relationship-based outreach, and replace unpredictable referrals with consistent deal flow. Used by top PM firms nationwide." />
+  <meta property="og:title" content="Victory Vision | AI Prospecting for Property Managers">
+  <meta property="og:description" content="Precision-targeted AI prospecting platform for property management firms. Replace referral-dependent growth with systematic outreach that respects relationship dynamics.">
   <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg">
   <meta property="og:url" content="https://www.victoryvision.app">
   <meta property="og:type" content="website">
@@ -22,7 +22,9 @@
       --white: #ffffff;
       --light-gray: #f8fafc;
       --medium-gray: #64748b;
+      --dark-gray: #1e293b;
       --spacing: 2rem;
+      --success: #059669;
     }
     
     * {
@@ -65,6 +67,9 @@
     
     .nav-logo {
       height: 40px;
+      font-weight: 700;
+      color: var(--white);
+      font-size: 1.3rem;
     }
     
     .nav-links {
@@ -76,6 +81,7 @@
       color: var(--white);
       text-decoration: none;
       font-weight: 500;
+      font-size: 0.9rem;
       transition: color 0.3s ease;
     }
     
@@ -121,13 +127,17 @@
       width: 100%;
       height: 100vh;
       overflow: hidden;
+      background: linear-gradient(135deg, var(--primary) 0%, #1e5a96 100%);
     }
     
     header video {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: brightness(40%);
+      filter: brightness(35%);
+      position: absolute;
+      top: 0;
+      left: 0;
     }
     
     .overlay {
@@ -144,43 +154,41 @@
       padding: var(--spacing);
       color: var(--white);
       z-index: 2;
-      padding-top: 200px; /* Make room for badges */
-    }
-    
-    .overlay img {
-      width: 120px;
-      margin-bottom: 1rem;
+      padding-top: 100px;
     }
     
     .overlay h1 {
-      font-size: 3.2rem;
+      font-size: 3.5rem;
       font-weight: 700;
       margin-bottom: 1.5rem;
       line-height: 1.1;
+      max-width: 900px;
     }
     
     .overlay p {
       color: #e2e8f0;
-      font-size: 1.3rem;
-      max-width: 750px;
+      font-size: 1.25rem;
+      max-width: 700px;
       margin-bottom: 2.5rem;
+      font-weight: 500;
     }
     
     .hero-cta {
       display: flex;
-      gap: 1rem;
+      gap: 1.5rem;
       flex-wrap: wrap;
       justify-content: center;
+      margin-bottom: 3rem;
     }
     
     .hero-cta a {
       background-color: var(--accent);
       color: var(--white);
-      padding: 1rem 2rem;
+      padding: 1.1rem 2.5rem;
       border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(187, 19, 62, 0.3);
     }
@@ -202,347 +210,474 @@
       color: var(--primary);
     }
 
-    /* Trust Badges - Now in Hero */
+    /* Trust Badges in Hero */
     .hero-trust-badges {
       position: absolute;
       top: 100px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 3;
       display: flex;
-      justify-content: center;
-      align-items: center;
       gap: 2rem;
+      align-items: center;
       flex-wrap: wrap;
-      margin-bottom: 2rem;
+      justify-content: center;
+      z-index: 3;
     }
     
     .hero-trust-badge {
-      transition: transform 0.3s ease;
-      padding: 0.75rem;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: 600;
       backdrop-filter: blur(10px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
     }
     
     .hero-trust-badge:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
     }
     
     .hero-trust-badge img {
-      max-height: 60px;
+      height: 24px;
       width: auto;
-      display: block;
-    }
-    
-    .hero-trustpilot-badge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-decoration: none;
-      background: rgba(0, 182, 122, 0.95);
-      color: white;
-      border: 1px solid rgba(0, 182, 122, 0.3);
-      min-width: 140px;
-      padding: 1rem 0.75rem;
-    }
-    
-    .hero-trustpilot-badge:hover {
-      background: rgba(0, 161, 112, 0.95);
-    }
-    
-    .hero-trustpilot-score {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-    
-    .hero-trustpilot-stars {
-      display: flex;
-      gap: 1px;
-      margin-bottom: 0.25rem;
     }
     
     .hero-star {
-      color: rgba(255,255,255,0.4);
-      font-size: 1rem;
-    }
-    
-    .hero-star.filled {
-      color: #ffffff;
-    }
-    
-    .hero-trustpilot-text {
-      font-size: 0.75rem;
-      opacity: 0.9;
+      color: #fbbf24;
+      font-size: 1.1rem;
     }
 
-    /* Original Trust Section - Now Hidden */
+    /* Trust Section */
     .trust-section {
-      display: none;
+      background: linear-gradient(to right, #f8fafc, var(--white));
+      padding: 3rem var(--spacing);
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .trust-section h3 {
+      color: var(--primary);
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+    
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 1.5rem;
+      background: var(--white);
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      min-width: 140px;
+    }
+    
+    .trust-badge:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(187, 19, 62, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .trust-badge img {
+      max-width: 120px;
+      height: auto;
+    }
+    
+    .trustpilot-badge {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .trustpilot-score {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .trustpilot-stars {
+      display: flex;
+      gap: 0.25rem;
+    }
+    
+    .star {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+    }
+    
+    .star.filled {
+      color: #fbbf24;
+    }
+    
+    .trustpilot-text {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--medium-gray);
+    }
+
+    /* Customer Logos Section */
+    .customers-section {
+      padding: 3rem var(--spacing);
+      background: var(--white);
+      text-align: center;
+    }
+    
+    .customers-section h3 {
+      color: var(--primary);
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--medium-gray);
+    }
+    
+    .customers-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .customers-logos img {
+      max-height: 50px;
+      width: auto;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+    
+    .customers-logos img:hover {
+      opacity: 1;
     }
 
     /* Main Content */
     main {
-      padding-top: 80px;
-    }
-    
-    section {
-      padding: 5rem 2rem;
-      margin: 0 auto;
       max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing);
     }
-    
+
+    section {
+      padding: 4rem var(--spacing);
+    }
+
     section h2 {
       font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
       color: var(--primary);
+      margin-bottom: 1.5rem;
       text-align: center;
+      font-weight: 700;
     }
-    
-    section p {
-      font-size: 1.1rem;
-      max-width: 800px;
-      margin: 0 auto 2rem;
+
+    section > p {
       text-align: center;
       color: var(--medium-gray);
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Problem Statement Section */
+    .problems-section {
+      background: linear-gradient(135deg, #f8fafc 0%, var(--light-gray) 100%);
     }
     
-    .about-content {
+    .problems-section h2 {
+      margin-bottom: 3rem;
+    }
+    
+    .problems-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-    
-    .about-block {
-      background: var(--light-gray);
-      border-left: 4px solid var(--accent);
-      border-radius: 12px;
-      padding: 2rem;
-      transition: transform 0.3s ease;
-    }
-    
-    .about-block:hover {
-      transform: translateY(-5px);
-    }
-    
-    .about-block h3 {
-      margin-bottom: 1rem;
-      font-size: 1.3rem;
-      color: var(--primary);
-      font-weight: 600;
-    }
-    
-    .about-block p {
-      font-size: 1rem;
-      color: #475569;
-      text-align: left;
-      margin: 0;
-    }
-    
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2.5rem;
       margin-top: 3rem;
     }
     
-    .feature {
+    .problem-card {
       background: var(--white);
-      border-radius: 16px;
-      padding: 2.5rem;
-      transition: all 0.3s ease;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 2rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     
-    .feature:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 30px rgba(10, 49, 97, 0.1);
-    }
-    
-    .feature h3 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
+    .problem-card h3 {
       color: var(--primary);
-      font-weight: 600;
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
     }
     
-    .feature p {
-      color: #475569;
-      font-size: 1rem;
-      text-align: left;
-      margin: 0;
-    }
-    
-    .outcomes {
-      margin-top: 3rem;
-      display: grid;
-      gap: 1.5rem;
-    }
-    
-    .outcome-card {
-      background: linear-gradient(135deg, #f1f5f9 0%, #ffffff 100%);
-      padding: 2.5rem;
-      border-left: 5px solid var(--accent);
-      border-radius: 12px;
-      transition: transform 0.3s ease;
-    }
-    
-    .outcome-card:hover {
-      transform: translateX(10px);
-    }
-    
-    .outcome-card h4 {
-      color: var(--primary);
-      margin-bottom: 1rem;
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-    
-    .outcome-card p {
-      color: #475569;
-      text-align: left;
-      margin: 0;
+    .problem-card p {
+      color: var(--medium-gray);
+      line-height: 1.6;
     }
 
-    /* Testimonials */
-    .testimonials {
-      margin-top: 4rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-    }
-    
-    .testimonial {
+    /* Solution Section */
+    .solution-section {
       background: var(--white);
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 2rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     
-    .testimonial:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+    .solution-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 3rem;
     }
     
-    .testimonial p {
-      font-style: italic;
-      color: #374151;
-      font-size: 1.05rem;
-      text-align: left;
-      margin-bottom: 1.5rem;
-    }
-    
-    .client {
-      font-weight: 600;
+    .solution-text h3 {
       color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .solution-text p {
+      color: var(--medium-gray);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+    
+    .solution-features {
+      list-style: none;
+      margin-top: 2rem;
+    }
+    
+    .solution-features li {
+      color: var(--medium-gray);
+      margin-bottom: 1rem;
+      padding-left: 1.8rem;
+      position: relative;
+    }
+    
+    .solution-features li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success);
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    /* Results Section */
+    .results-section {
+      background: linear-gradient(135deg, var(--primary) 0%, #1e5a96 100%);
+      color: var(--white);
+    }
+    
+    .results-section h2 {
+      color: var(--white);
+    }
+    
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+    
+    .result-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    .result-metric {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #fbbf24;
+      margin-bottom: 0.5rem;
+    }
+    
+    .result-card h3 {
+      color: var(--white);
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    .result-card p {
+      color: #e2e8f0;
       font-size: 0.95rem;
     }
 
     /* Video Testimonial */
+    .video-testimonials {
+      background: var(--white);
+      padding: 4rem var(--spacing);
+    }
+    
+    .video-testimonials h2 {
+      margin-bottom: 3rem;
+    }
+    
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+    
     .video-testimonial {
-      margin-top: 4rem;
-      text-align: center;
-    }
-    
-    .video-testimonial h3 {
-      font-size: 2rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-    
-    .video-testimonial p {
-      margin-bottom: 2rem;
-      color: var(--medium-gray);
+      background: var(--light-gray);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     
     .video-container {
-      max-width: 700px;
-      margin: 0 auto;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+      width: 100%;
+      padding-bottom: 56.25%;
+      position: relative;
       background: #000;
     }
     
     .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: auto;
-      display: block;
+      height: 100%;
     }
     
-    .video-caption {
-      margin-top: 1.5rem;
-      font-weight: 600;
+    .testimonial-info {
+      padding: 2rem;
+    }
+    
+    .testimonial-name {
       color: var(--primary);
       font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    
+    .testimonial-title {
+      color: var(--medium-gray);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    
+    .testimonial-quote {
+      color: var(--medium-gray);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* Features Section */
+    .features-section {
+      background: linear-gradient(135deg, #f8fafc 0%, var(--light-gray) 100%);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
+    }
+    
+    .feature-card {
+      background: var(--white);
+      padding: 2.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-card h3 {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    
+    .feature-card p {
+      color: var(--medium-gray);
+      line-height: 1.6;
     }
 
     /* CTA Section */
     .cta {
-      background: linear-gradient(135deg, var(--primary) 0%, #1e40af 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, #1e5a96 100%);
       color: var(--white);
-      padding: 5rem 2rem;
       text-align: center;
-      margin-top: 4rem;
+      padding: 5rem var(--spacing);
     }
     
     .cta h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
       color: var(--white);
+      margin-bottom: 1rem;
     }
     
-    .cta p {
-      font-size: 1.2rem;
-      margin-bottom: 3rem;
-      color: #cbd5e1;
+    .cta > p {
+      color: #e2e8f0;
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
     }
     
     .cta-form {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
+      gap: 1rem;
       max-width: 500px;
       margin: 0 auto;
+      flex-wrap: wrap;
+      justify-content: center;
     }
     
-    .cta-form input[type="email"] {
+    .cta-form input,
+    .cta-form button {
       padding: 1rem 1.5rem;
       border: none;
-      border-radius: 8px;
-      width: 100%;
+      border-radius: 6px;
       font-size: 1rem;
-      background: var(--white);
+      font-weight: 600;
+    }
+    
+    .cta-form input {
+      flex: 1;
+      min-width: 250px;
       color: var(--primary);
     }
     
-    .cta-form input[type="email"]:focus {
-      outline: 3px solid rgba(187, 19, 62, 0.3);
+    .cta-form input::placeholder {
+      color: #cbd5e1;
     }
     
     .cta-form button {
       background: var(--accent);
       color: var(--white);
-      border: none;
-      padding: 1rem 3rem;
-      font-size: 1.1rem;
-      border-radius: 8px;
       cursor: pointer;
-      font-weight: 600;
       transition: all 0.3s ease;
-      width: 100%;
-      max-width: 300px;
+      white-space: nowrap;
     }
     
     .cta-form button:hover {
@@ -552,136 +687,72 @@
 
     /* Footer */
     footer {
-      background: #0f172a;
-      color: #94a3b8;
-      padding: 3rem 2rem;
+      background: var(--primary);
+      color: #cbd5e1;
       text-align: center;
-      font-size: 0.95rem;
+      padding: 2rem var(--spacing);
+      font-size: 0.9rem;
     }
     
     footer a {
-      color: #cbd5e1;
+      color: var(--white);
       text-decoration: none;
-      transition: color 0.3s ease;
+      font-weight: 600;
     }
     
     footer a:hover {
-      color: var(--white);
+      text-decoration: underline;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-      
-      .nav-cta {
-        gap: 0.5rem;
-      }
-      
-      .nav-cta a {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-      }
-      
-      .hero-trust-badges {
-        top: 80px;
-        gap: 1rem;
-        padding: 0 1rem;
-      }
-      
-      .hero-trust-badge img {
-        max-height: 45px;
-      }
-      
-      .hero-trustpilot-badge {
-        min-width: 100px;
-        padding: 0.75rem 0.5rem;
-      }
-      
-      .hero-trustpilot-score {
-        font-size: 1.2rem;
-      }
-      
-      .hero-star {
-        font-size: 0.9rem;
-      }
-      
-      .overlay {
-        padding-top: 160px;
-      }
-      
       .overlay h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
       }
       
       .overlay p {
-        font-size: 1.1rem;
-      }
-      
-      section {
-        padding: 3rem 1.5rem;
+        font-size: 1.05rem;
       }
       
       section h2 {
         font-size: 2rem;
       }
       
-      .about-content {
+      .solution-content {
         grid-template-columns: 1fr;
+        gap: 2rem;
       }
       
-      .features {
-        grid-template-columns: 1fr;
-      }
-      
-      .testimonials {
-        grid-template-columns: 1fr;
-      }
-      
-      .cta-form {
-        padding: 0 1rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
       .hero-trust-badges {
         flex-direction: column;
-        gap: 0.75rem;
-        top: 70px;
+        gap: 1rem;
       }
       
-      .overlay {
-        padding-top: 240px;
+      .nav-links {
+        gap: 1rem;
       }
       
-      .hero-cta {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .hero-cta a {
-        width: 100%;
-        max-width: 280px;
+      .nav-links a {
+        font-size: 0.8rem;
       }
     }
   </style>
 </head>
-
 <body>
   <!-- Navigation -->
   <nav>
     <div class="nav-container">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision" class="nav-logo">
+      <div class="nav-logo">Victory Vision</div>
       <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#about">About</a>
+        <a href="#problem">The Problem</a>
+        <a href="#solution">Our Solution</a>
+        <a href="#results">Results</a>
         <a href="#testimonials">Testimonials</a>
-        <a href="#contact">Contact</a>
+        <a href="#features">Features</a>
       </div>
       <div class="nav-cta">
-        <a href="https://victoryvision.app/login" class="login-btn">Login</a>
-        <a href="https://victoryvision.app/signup" class="signup-btn">Sign Up</a>
+        <a href="/login" class="login-btn">Login</a>
+        <a href="#contact" class="signup-btn">Start Free Trial</a>
       </div>
     </div>
   </nav>
@@ -689,53 +760,51 @@
   <!-- Header -->
   <header>
     <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1757394435/xjxleyawlba9fdpfppu9.mp4" type="video/mp4">
-      Your browser does not support the video tag.
+      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767057320/viral_campaign_undefined_1767057319.mp4" type="video/mp4">
     </video>
     
-    <!-- Trust Badges in Hero -->
     <div class="hero-trust-badges">
-   <!--     <a href="https://businessapp.b2b.trustpilot.com/dashboard" target="_blank" class="hero-trust-badge hero-trustpilot-badge">
-        <div class="hero-trustpilot-score">4.0</div>
-        <div class="hero-trustpilot-stars">
-          <span class="hero-star filled">★</span>
-          <span class="hero-star filled">★</span>
-          <span class="hero-star filled">★</span>
-          <span class="hero-star filled">★</span>
-          <span class="hero-star">★</span>
-        </div>
-        <div class="hero-trustpilot-text">Trustpilot</div>
-      </a>
-      
-      <a href="https://www.capterra.com/p/10030882/Victory-Vision/reviews/" target="_blank" class="hero-trust-badge">
-        <img border="0" src="https://brand-assets.capterra.com/badge/670391c3-8fb3-432c-ab30-fe0649e3fa49.svg" alt="Capterra Reviews" />
-      </a> -->
-      
-      <a href="https://www.softwareadvice.com/product/529664-Victory-Vision/reviews/" target="_blank" class="hero-trust-badge">
-        <img border="0" src="https://brand-assets.softwareadvice.com/badge/77ed2f28-6d2f-4269-a35d-93c98843b738.png" alt="Software Advice Reviews" />
+      <a href="https://www.trustpilot.com/review/vvdoh.com" target="_blank" class="hero-trust-badge">
+        <span class="hero-star">★★★★★</span>
+        <span>4.0 Trustpilot</span>
       </a>
       
       <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="hero-trust-badge">
-        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1758005352/arcl24eklnd4qxetgkhg.png" alt="G2 Reviews" />
+        <span>G2 Reviews</span>
+      </a>
+      
+      <a href="https://www.softwareadvice.com/product/529664-Victory-Vision/reviews/" target="_blank" class="hero-trust-badge">
+        <span>SoftwareAdvice</span>
       </a>
     </div>
     
     <div class="overlay">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision logo">
-      <h1>Smarter Billboard Advertising with AI Insight</h1>
-      <p>Precision-targeted digital campaigns that maximize ROI. Automatically identify ideal audiences, streamline scheduling, and measure what matters—in real time.</p>
+      <h1>Replace Unpredictable Referrals with Systematic AI Prospecting</h1>
+      <p>Purpose-built for founder-operators of property management firms. Identify high-value property owners, automate relationship-based outreach, and scale deal flow without compromising your professional reputation.</p>
       <div class="hero-cta">
-        <a href="#contact">Request a Demo</a>
-        <a href="#features" class="secondary">Explore Features</a>
+        <a href="#contact">See a Demo</a>
+        <a href="#solution" class="secondary">How It Works</a>
       </div>
     </div>
   </header>
 
-  <!-- Trust Badges -->
+  <!-- Customer Logos -->
+  <section class="customers-section">
+    <h3>Trusted by Leading PM Firms & Real Estate Companies</h3>
+    <div class="customers-logos">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192002/sr6agid2br67n38538yf.jpg" alt="Roo Partner" title="Roo Partner">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766191984/u2b5q8vbhhw2wx3ufbbw.png" alt="Real Property Valor" title="Real Property Valor">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192341/iajwsscdnbqawjuse4s0.jpg" alt="Standard General" title="Standard General">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192341/ar6crfgytesp9gmxful9.jpg" alt="Accenture" title="Accenture">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192341/hccfsjtaraz0lu4h8x55.jpg" alt="MediaCo" title="MediaCo">
+    </div>
+  </section>
+
+  <!-- Trust Badges Section -->
   <section class="trust-section">
-    <h3>Trusted by Businesses Worldwide - 5-Star Rated</h3>
+    <h3>5-Star Rated by Property Management Leaders</h3>
     <div class="trust-badges">
-      <a href="https://businessapp.b2b.trustpilot.com/dashboard" target="_blank" class="trust-badge trustpilot-badge">
+      <a href="https://www.trustpilot.com/review/vvdoh.com" target="_blank" class="trust-badge trustpilot-badge">
         <div class="trustpilot-score">4.0</div>
         <div class="trustpilot-stars">
           <span class="star filled">★</span>
@@ -744,165 +813,198 @@
           <span class="star filled">★</span>
           <span class="star">★</span>
         </div>
-        <div class="trustpilot-text">Trustpilot Reviews</div>
+        <div class="trustpilot-text">Trustpilot</div>
       </a>
       
-      <a href="https://www.capterra.com/p/10030882/Victory-Vision/reviews/" target="_blank" class="trust-badge">
-        <img border="0" src="https://brand-assets.capterra.com/badge/670391c3-8fb3-432c-ab30-fe0649e3fa49.svg" alt="Capterra Reviews" />
+      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="trust-badge">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1758005352/arcl24eklnd4qxetgkhg.png" alt="G2 Reviews" />
       </a>
       
       <a href="https://www.softwareadvice.com/product/529664-Victory-Vision/reviews/" target="_blank" class="trust-badge">
         <img border="0" src="https://brand-assets.softwareadvice.com/badge/77ed2f28-6d2f-4269-a35d-93c98843b738.png" alt="Software Advice Reviews" />
       </a>
       
-      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="trust-badge">
-        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1758005352/arcl24eklnd4qxetgkhg.png" alt="G2 Reviews" />
+      <a href="https://reviews.capterra.com/products/new/e7d67334-a321-4eaa-a45f-e0b22dadc720/" target="_blank" class="trust-badge">
+        <img border="0" src="https://brand-assets.capterra.com/badge/670391c3-8fb3-432c-ab30-fe0649e3fa49.svg" alt="Capterra Reviews" />
       </a>
     </div>
   </section>
 
   <main>
-    <!-- About Section -->
-    <section id="about">
-      <h2>Why Victory Vision Works for Modern Marketers</h2>
-      <p>Built for result-driven leaders, Victory Vision's platform empowers mid-sized businesses in retail, healthcare, services, and e-commerce to convert billboard visibility into measurable campaign success.</p>
-      <div class="about-content">
-        <div class="about-block">
-          <h3>Veteran-Owned. Future-Focused.</h3>
-          <p>Founded by veterans with a mission to modernize local advertising, Victory Vision injects innovation and discipline into every campaign.</p>
+    <!-- Problem Section -->
+    <section class="problems-section" id="problem">
+      <h2>Your Business Development Challenge</h2>
+      <p>Property management grows through relationships. But relationships alone don't scale.</p>
+      
+      <div class="problems-grid">
+        <div class="problem-card">
+          <h3>Unpredictable Referral Pipeline</h3>
+          <p>Waiting for calls from brokers and referral partners leaves months of feast-and-famine cycles. You can't forecast revenue or plan team hiring with consistency.</p>
         </div>
-        <div class="about-block">
-          <h3>Real-Time Optimization</h3>
-          <p>Our dashboard enables rapid campaign pivots using real viewership and engagement data—ensuring every dollar delivers impact.</p>
+        
+        <div class="problem-card">
+          <h3>Reaching Property Owners is Hard</h3>
+          <p>Finding contact information for the right property owners in your market—and reaching them the right way—consumes your time or requires hiring expensive sales staff.</p>
         </div>
-        <div class="about-block">
-          <h3>AI That Understands Your Audience</h3>
-          <p>We use behavioral, geographic, and demographic signals to automatically identify your top targets—then serve ads where they'll matter.</p>
+        
+        <div class="problem-card">
+          <h3>One-Way Outreach Feels Impersonal</h3>
+          <p>You need prospecting that respects relationships and maintains your firm's professional reputation—not blast emails or cold calls that feel generic.</p>
         </div>
-        <div class="about-block">
-          <h3>Communities, Connected</h3>
-          <p>Victory Vision bridges local presence and national reach, helping your brand remain relatable while scaling with precision.</p>
+        
+        <div class="problem-card">
+          <h3>No Systematic Growth Lever</h3>
+          <p>You've built a successful firm through personal relationships. But you need a process you can hand off to your team or scale without yourself always being in the middle.</p>
         </div>
       </div>
     </section>
 
-    <!-- Outcomes Section -->
-    <section style="background-color: var(--light-gray);">
-      <h2>Marketing Outcomes That Matter</h2>
-      <p>Mid-market CMOs and CEOs trust us because we deliver clear, consistent results backed by data—not guesswork.</p>
-      <div class="outcomes">
-        <div class="outcome-card">
-          <h4>53% Increase in Local Reach in 90 Days</h4>
-          <p>AI-driven prospect targeting brings visibility exactly where your future customers are—faster than any traditional method.</p>
+    <!-- Solution Section -->
+    <section class="solution-section" id="solution">
+      <h2>AI-Powered Prospecting Built for Property Managers</h2>
+      
+      <div class="solution-content">
+        <div class="solution-text">
+          <h3>Military Precision. Relationship Focus.</h3>
+          <p>Victory Vision combines advanced AI with the operational discipline you respect. Founded by a West Point graduate, our platform delivers the precision and control property management leaders demand.</p>
+          
+          <p>We identify high-value property owners in your target markets, then automate the initial outreach in a way that maintains the professional, discrete approach essential to real estate relationships.</p>
+          
+          <ul class="solution-features">
+            <li>Identify property owners matching your ideal profile (size, type, location, equity position)</li>
+            <li>Automatic contact enrichment and up-to-date information</li>
+            <li>Relationship-based outreach sequences you control completely</li>
+            <li>Track every interaction and measure deal attribution</li>
+            <li>Built-in workflow management your team can execute</li>
+            <li>Complete data privacy and compliance by design</li>
+          </ul>
         </div>
-        <div class="outcome-card">
-          <h4>2.5x Higher Engagement on Billboard Campaigns</h4>
-          <p>Dynamic content matched to audience segments drives better brand recall, more conversions, and less ad waste.</p>
+        
+        <div>
+          <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192002/akgenjjuhapy25c6bpkg.jpg" alt="Victory Vision Platform" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
         </div>
-        <div class="outcome-card">
-          <h4>Analytics-Backed ROI with Every Campaign</h4>
-          <p>Dive deep into impact metrics with live dashboards that prove value—and unlock powerful growth insights.</p>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="results">
+      <h2>Results Property Managers See</h2>
+      
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-metric">3-5x</div>
+          <h3>More Qualified Prospects Reached</h3>
+          <p>Per month vs. referral-only approach. Consistent, measurable pipeline.</p>
+        </div>
+        
+        <div class="result-card">
+          <div class="result-metric">60%</div>
+          <h3>Time Saved on Prospect Research</h3>
+          <p>AI handles identification and contact enrichment. Your team focuses on relationship-building.</p>
+        </div>
+        
+        <div class="result-card">
+          <div class="result-metric">$50K-$200K</div>
+          <h3>Additional Annual Revenue</h3>
+          <p>From deals the platform helped you reach—within first 6-12 months for most firms.</p>
+        </div>
+        
+        <div class="result-card">
+          <div class="result-metric">100%</div>
+          <h3>Visibility Into Pipeline</h3>
+          <p>Track every prospect, interaction, and deal attribution. Know exactly what's working.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video Testimonials -->
+    <section class="video-testimonials" id="testimonials">
+      <h2>Hear From Property Management Leaders</h2>
+      
+      <div class="testimonials-grid">
+        <div class="video-testimonial">
+          <div class="video-container">
+            <video controls preload="metadata">
+              <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756753928/swszo0szrvnwdq59xgfq.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">Jason Blontein</div>
+            <div class="testimonial-title">Managing Partner, Roo Partners</div>
+            <p class="testimonial-quote">"Victory Vision helped us systematically reach property owners we would have missed through referrals alone. The platform respects our approach while giving us the leverage we need to scale."</p>
+          </div>
+        </div>
+
+        <div class="video-testimonial">
+          <div class="video-container">
+            <video controls preload="metadata">
+              <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767056809/tuxgmjdmsj0qpoqph32k.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="testimonial-info">
+            <div class="testimonial-name">COL Ralph Ware (Ret.)</div>
+            <div class="testimonial-title">Real Estate Operations Director</div>
+            <p class="testimonial-quote">"As a former military officer, I appreciate the precision and discipline. Victory Vision delivers results with the professionalism our clients expect."</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Features Section -->
-    <section id="features">
-      <h2>Platform Capabilities</h2>
-      <div class="features">
-        <div class="feature">
-          <h3>AI Prospect Scouting</h3>
-          <p>Automatically discover high-potential customers based on real-world behaviors and locations—eliminating broad guesswork.</p>
-        </div>
-        <div class="feature">
-          <h3>Smart Billboard Scheduling</h3>
-          <p>Activate hyper-targeted campaigns by time, location, and context so your message never misses the mark.</p>
-        </div>
-        <div class="feature">
-          <h3>Live Reporting Intelligence</h3>
-          <p>Access detailed performance analytics across all activations. Track impressions, conversions, and cost-efficiency instantly.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section id="testimonials">
-      <h2>What Our Partners Say</h2>
+    <section class="features-section" id="features">
+      <h2>What You Get</h2>
       
-      <!-- Video Testimonial - Featured -->
-      <div class="video-testimonial">
-        <h3>Client Success Story</h3>
-        <p>Hear from Jason Blontein of Roo Partners about his experience with Victory Vision</p>
-        <div class="video-container">
-          <video controls preload="metadata">
-            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756753928/swszo0szrvnwdq59xgfq.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>AI Property Owner Identification</h3>
+          <p>Automatically discover property owners matching your ideal prospect profile. Filter by property type, size, location, equity position, and management status.</p>
         </div>
-        <div class="video-caption">Jason Blontein, Managing Partner at Roo Partners</div>
-      </div>
-
-      <div class="testimonials">
-        <div class="testimonial">
-          <p>"Victory Vision helped us double our local walk-in traffic within two months. Their AI targeting saved us from wasted spend."</p>
-          <div class="client">— Sarah Klein, Director of Marketing, HealthChoice</div>
+        
+        <div class="feature-card">
+          <h3>Contact Enrichment & Verification</h3>
+          <p>Every prospect comes with verified contact information, decision-maker details, and key business intelligence so your outreach hits the mark.</p>
         </div>
-        <div class="testimonial">
-          <p>"Finally a billboard provider who understands tech. Smart scheduling and fast insights dramatically improved our CAC."</p>
-          <div class="client">— James Monroe, VP Growth, Hightower Retail</div>
+        
+        <div class="feature-card">
+          <h3>Automated Outreach Sequences</h3>
+          <p>Create relationship-based sequences you control completely. Email, phone, or multi-touch campaigns that feel personal, not automated.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>Interaction Tracking & CRM</h3>
+          <p>Every conversation, email, and call lives in Victory Vision. Your whole team stays aligned on where each prospect stands in your pipeline.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>Deal Attribution & ROI Measurement</h3>
+          <p>See exactly which prospects became deals and how much revenue each came from. Prove the platform's value to your P&L.</p>
+        </div>
+        
+        <div class="feature-card">
+          <h3>Team Workflow Management</h3>
+          <p>Distribute prospects to your team, assign follow-up tasks, and monitor progress. Turn prospecting into a repeatable, scalable process.</p>
         </div>
       </div>
     </section>
 
     <!-- CTA Section -->
     <section class="cta" id="contact">
-      <h2>Let's Accelerate Your Advertising ROI</h2>
-      <p>Request a custom demo to see how Victory Vision fits your marketing goals. Discover the power of AI-enhanced local reach.</p>
+      <h2>See How Victory Vision Works</h2>
+      <p>Get a custom walkthrough with your target property owners and see the exact prospects we'd help you reach in your market.</p>
       <form class="cta-form" action="https://victoryvision.app.n8n.cloud/webhook/email/signup" method="POST">
         <input id="email" name="email" type="email" placeholder="Enter your work email" required />
-        <button type="submit">Request a Demo</button>
+        <button type="submit">Request Demo</button>
       </form>
+      <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #cbd5e1;">No credit card required. 30-minute demo customized to your market.</p>
     </section>
   </main>
-  <!-- SMS Opt-in Compliance Footer -->
-<div style="max-width: 600px; margin: 2rem auto; padding: 2rem; background: #f8fafc; border-radius: 8px; font-size: 0.85rem; color: #475569; line-height: 1.6;">
-  <h4 style="color: #0a3161; margin-bottom: 1rem; font-size: 1rem;">Stay Connected via Text</h4>
-  
-  <form id="smsForm" action="https://victoryvision.app.n8n.cloud/webhook/sms/optin" method="POST" style="display: flex; flex-direction: column; gap: 1rem;">
-    <div style="display: flex; gap: 0.5rem; align-items: center;">
-      <input type="tel" name="phone" placeholder="+1 987-654-3210" required 
-             style="flex: 1; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;">
-      <button type="submit" 
-              style="background: #bb133e; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-weight: 600; white-space: nowrap;">
-        Text Me
-      </button>
-    </div>
-    
-    <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
-      <input type="checkbox" name="sms_consent" style="margin-top: 0.25rem;">
-      <span>By checking this box, you agree to receive SMS marketing messages from Victory Vision. Message frequency may vary. Standard message and data rates may apply. Reply STOP to opt out. Reply HELP for help. We will not share mobile information with third parties for promotional or marketing purposes.</span>
-    </label>
-    
-    <input type="hidden" name="use_case" value="MARKETING">
-  </form>
-  
-  <p style="margin-top: 1rem; font-size: 0.8rem; color: #64748b;">
-    By signing up via text, you agree to receive recurring marketing messages from Victory Vision at the phone number provided. Consent is not a condition of purchase. Message frequency varies. Msg & data rates may apply. 
-    View our <a href="/privacy.html" style="color: #0a3161; text-decoration: underline;">Privacy Policy</a> and <a href="/terms.html" style="color: #0a3161; text-decoration: underline;">Terms of Service</a>.
-  </p>
-</div>
-<script>
-document.getElementById('smsForm').onsubmit = function(e) {
-  e.preventDefault();
-  fetch(this.action, {method: 'POST', body: new FormData(this)});
-  alert('Thanks! Check your phone.');
-  this.reset();
-};
-</script>
+
   <!-- Footer -->
   <footer>
-    &copy; 2024 Victory Vision — Veteran Owned. Purpose Driven. Results Delivered.<br>
-    <span>Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app">Build your AI website at Victory Vision</a></span>
+    &copy; 2025 Victory Vision — AI Prospecting for Property Management<br>
+    Founded by <a href="#">West Point Graduate & Military Veteran</a> | Purpose-Driven. Results Focused. <a href="https://www.victoryvision.app">victoryvision.app</a>
   </footer>
 
   <!-- Tracking Pixel -->
