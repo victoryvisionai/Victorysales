@@ -2211,8 +2211,9 @@ function selectMediaFileFromCard(cardElement) {
         throw new Error('Insufficient image credits');
       }
       
-      showStatus('Creating image... This may take a few moments.');
-      showProcessing('Creating image...');
+   showStatus('⏳ Creating image... Wait ~2 minutes, then refresh the page.');
+document.getElementById('imageForm').reset();  // <-- Clear the form immediately
+showProcessing('Creating image...');
       
       const imageChat = document.getElementById('imageChat').value;
       if (!imageChat) {
@@ -2284,8 +2285,8 @@ const selectedFile = selectedMediaFiles.video;
 
       if (result.success !== false) {
         hideProcessing();
-        showStatus('Video creation started! It will appear in your media library when ready.');
-      document.getElementById('videoForm').reset();
+     showStatus('⏳ Creating video... Wait ~8 minutes, then refresh the page.');
+document.getElementById('videoForm').reset();
         setDuration(30);
         userCredits.credits--;
         updateCreditsDisplay();
@@ -2338,9 +2339,8 @@ const selectedFile = selectedMediaFiles.video;
       const result = await apiCall(ENDPOINTS.createPresentation, payload);
 
       if (result.success !== false) {
-        hideProcessing();
-        showStatus('Presentation created successfully!');
-        document.getElementById('presentationForm').reset();
+        showStatus(`⏳ Creating presentation... Wait ~8 minute(s), then refresh the page.`);
+document.getElementById('presentationForm').reset();
         userCredits.credits = (userCredits.credits || 0) - 1;
         updateCreditsDisplay();
           selectedMediaFiles.presentation = null;
