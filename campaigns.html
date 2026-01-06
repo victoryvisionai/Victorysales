@@ -561,29 +561,6 @@
     </button>
   </div>
 </header>
-<div id="researchDashboard" class="research-dashboard" style="display: none;">
-  <h3 style="color: #0A3161; margin-top: 0;">Research in Progress</h3>
-  <div class="research-step">
-    <div class="step-status completed">✓</div>
-    <div class="step-text">Analyzed company profile (500+ data points)</div>
-  </div>
-  <div class="research-step">
-    <div class="step-status pending" id="step-trends">○</div>
-    <div class="step-text">Researching 80+ trending topics from Google News & Reddit</div>
-  </div>
-  <div class="research-step">
-    <div class="step-status pending" id="step-generate">○</div>
-    <div class="step-text">Generated campaign themes</div>
-  </div>
-  <div class="research-step">
-    <div class="step-status pending" id="step-videos">○</div>
-    <div class="step-text">Reviewing top videos to create viral video concepts</div>
-  </div>
-  <div class="research-step">
-    <div class="step-status pending" id="step-design">○</div>
-    <div class="step-text">Designing landing pages & social content</div>
-  </div>
-</div>
 <div class="content">
   <header class="page-header">
     <h1 class="page-title">Campaigns</h1>
@@ -676,7 +653,49 @@
     </div>
   </div>
 </div>
-
+<!-- Research Progress Modal -->
+<div id="researchProgressModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Campaign Research in Progress</h2>
+      <span class="close" onclick="closeModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom: 20px;">
+        <div class="field-label">Your Campaign Description</div>
+        <div class="field-value" id="campaignTopicDisplay" style="max-height: 200px; overflow-y: auto;"></div>
+      </div>
+      
+      <div class="research-dashboard" style="display: block; margin: 0; border: none;">
+        <h3 style="color: #0A3161; margin-top: 0;">Research Steps</h3>
+        <div class="research-step">
+          <div class="step-status completed">✓</div>
+          <div class="step-text">Analyzed company profile (500+ data points)</div>
+        </div>
+        <div class="research-step">
+          <div class="step-status pending" id="step-trends">○</div>
+          <div class="step-text">Researching 80+ trending topics from Google News & Reddit</div>
+        </div>
+        <div class="research-step">
+          <div class="step-status pending" id="step-generate">○</div>
+          <div class="step-text">Generated campaign themes</div>
+        </div>
+        <div class="research-step">
+          <div class="step-status pending" id="step-videos">○</div>
+          <div class="step-text">Reviewing top videos to create viral video concepts</div>
+        </div>
+        <div class="research-step">
+          <div class="step-status pending" id="step-design">○</div>
+          <div class="step-text">Designing landing pages & social content</div>
+        </div>
+      </div>
+      
+      <p style="margin-top: 20px; color: #666; text-align: center; font-size: 0.9rem;">
+        ⏱️ Campaign creation takes up to 5 minutes. You can close this window - your campaign will appear in "My Campaigns" when ready.
+      </p>
+    </div>
+  </div>
+</div>
 <footer>
   <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
   <nav>
@@ -1255,16 +1274,15 @@
         <div class="field-label">90 Day Plan</div>
         <div class="field-value">${ninetyDayDisplay}</div>
       </div>
-    `;
-    
+    `;    
     campaignModal.style.display = 'block';
   }
 
-  // Close modal
-  function closeModal() {
-    campaignModal.style.display = 'none';
-    document.getElementById('researchDashboard').style.display = 'none';
-  }
+function closeModal() {
+  campaignModal.style.display = 'none';
+  researchProgressModal.style.display = 'none';
+  document.getElementById('researchDashboard').style.display = 'none';
+}
   // Edit campaign (placeholder)
   function editCampaign(campaignId) {
     showStatus('Edit functionality coming soon!');
@@ -1513,8 +1531,13 @@
       try {
         submitCustomCampaignBtn.disabled = true;
         submitCustomCampaignBtn.textContent = '🔄 Creating Custom Campaign...';
-// Show research dashboard
-        document.getElementById('researchDashboard').style.display = 'block';
+try {
+        submitCustomCampaignBtn.disabled = true;
+        submitCustomCampaignBtn.textContent = '🔄 Creating Custom Campaign...';
+        
+        // Show research progress modal
+        document.getElementById('campaignTopicDisplay').textContent = campaignTopic;
+        document.getElementById('researchProgressModal').style.display = 'block';
 
         // Simulate progress steps
         setTimeout(() => {
@@ -1564,11 +1587,11 @@
         
         const result = await response.json();
         
-        if (result.success !== false) {
+     if (result.success !== false) {
           showStatus('Custom campaign creation started! This will take up to 5 minutes. Refresh the page to see your new campaign.');
           campaignTopicTextarea.value = '';
-          closeModal();
           charCountSpan.textContent = '0';
+          // Modal stays open showing progress, user can close it
           // Refresh user data to update credits
           await loadUserData();
         } else {
