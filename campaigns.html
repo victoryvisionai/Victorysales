@@ -476,8 +476,48 @@
         margin-left: 0;
         margin-top: 10px;
       }
-    }
-  </style>
+  .research-dashboard {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 2px solid #0A3161;
+  }
+  .research-step {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 15px;
+  }
+  .step-status {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-weight: bold;
+    color: white;
+  }
+  .step-status.completed {
+    background: #28a745;
+  }
+  .step-status.inprogress {
+    background: #ffc107;
+    animation: pulse 1.5s infinite;
+  }
+  .step-status.pending {
+    background: #ccc;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .step-text {
+    flex: 1;
+  }
+</style>
 </head>
 <body>
 
@@ -521,7 +561,29 @@
     </button>
   </div>
 </header>
-
+<div id="researchDashboard" class="research-dashboard" style="display: none;">
+  <h3 style="color: #0A3161; margin-top: 0;">Research in Progress</h3>
+  <div class="research-step">
+    <div class="step-status completed">✓</div>
+    <div class="step-text">Analyzed company profile (500+ data points)</div>
+  </div>
+  <div class="research-step">
+    <div class="step-status pending" id="step-trends">○</div>
+    <div class="step-text">Researching 80+ trending topics from Google News & Reddit</div>
+  </div>
+  <div class="research-step">
+    <div class="step-status pending" id="step-generate">○</div>
+    <div class="step-text">Generated campaign themes</div>
+  </div>
+  <div class="research-step">
+    <div class="step-status pending" id="step-videos">○</div>
+    <div class="step-text">Reviewing top videos to create viral video concepts</div>
+  </div>
+  <div class="research-step">
+    <div class="step-status pending" id="step-design">○</div>
+    <div class="step-text">Designing landing pages & social content</div>
+  </div>
+</div>
 <div class="content">
   <header class="page-header">
     <h1 class="page-title">Campaigns</h1>
@@ -1201,8 +1263,8 @@
   // Close modal
   function closeModal() {
     campaignModal.style.display = 'none';
+    document.getElementById('researchDashboard').style.display = 'none';
   }
-
   // Edit campaign (placeholder)
   function editCampaign(campaignId) {
     showStatus('Edit functionality coming soon!');
@@ -1451,6 +1513,36 @@
       try {
         submitCustomCampaignBtn.disabled = true;
         submitCustomCampaignBtn.textContent = '🔄 Creating Custom Campaign...';
+// Show research dashboard
+        document.getElementById('researchDashboard').style.display = 'block';
+
+        // Simulate progress steps
+        setTimeout(() => {
+          document.getElementById('step-trends').className = 'step-status inprogress';
+        }, 500);
+
+        setTimeout(() => {
+          document.getElementById('step-trends').className = 'step-status completed';
+          document.getElementById('step-trends').textContent = '✓';
+          document.getElementById('step-generate').className = 'step-status inprogress';
+        }, 2000);
+
+        setTimeout(() => {
+          document.getElementById('step-generate').className = 'step-status completed';
+          document.getElementById('step-generate').textContent = '✓';
+          document.getElementById('step-videos').className = 'step-status inprogress';
+        }, 4000);
+
+        setTimeout(() => {
+          document.getElementById('step-videos').className = 'step-status completed';
+          document.getElementById('step-videos').textContent = '✓';
+          document.getElementById('step-design').className = 'step-status inprogress';
+        }, 6000);
+
+        setTimeout(() => {
+          document.getElementById('step-design').className = 'step-status completed';
+          document.getElementById('step-design').textContent = '✓';
+        }, 8000);
         
         const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/campaigns/user', {
           method: 'POST',
@@ -1475,6 +1567,7 @@
         if (result.success !== false) {
           showStatus('Custom campaign creation started! This will take up to 5 minutes. Refresh the page to see your new campaign.');
           campaignTopicTextarea.value = '';
+          closeModal();
           charCountSpan.textContent = '0';
           // Refresh user data to update credits
           await loadUserData();
