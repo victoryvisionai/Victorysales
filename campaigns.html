@@ -1535,7 +1535,8 @@ function closeModal() {
         // Show research progress modal
         document.getElementById('campaignTopicDisplay').textContent = campaignTopic;
         document.getElementById('researchProgressModal').style.display = 'block';
-
+campaignTopicTextarea.value = '';
+          charCountSpan.textContent = '0';
         // Simulate progress steps
         setTimeout(() => {
           document.getElementById('step-trends').className = 'step-status inprogress';
@@ -1586,11 +1587,7 @@ function closeModal() {
         
      if (result.success !== false) {
           showStatus('Custom campaign creation started! This will take up to 5 minutes. Refresh the page to see your new campaign.');
-          campaignTopicTextarea.value = '';
-          charCountSpan.textContent = '0';
-          // Modal stays open showing progress, user can close it
-          // Refresh user data to update credits
-          await loadUserData();
+                    await loadUserData();
         } else {
           throw new Error(result.message || 'Custom campaign creation failed');
         }
