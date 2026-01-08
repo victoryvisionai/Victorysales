@@ -965,7 +965,8 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <button id="deselectAllBtn" class="secondary">Deselect All</button>
         <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
         <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
-        <button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button>
+        <!-- <button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button> -->
+        <button id="massSMSBtn" class="success" style="background: #8B4789;">📱 Mass SMS</button>
         <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
         <span id="selectedCount" style="margin-left: 10px; color: #6699cc;">0 selected</span>
       </div>
@@ -1384,7 +1385,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
-<!-- Look Alike Modal -->
+<!-- Look Alike Modal
 <div id="lookAlikeModal" class="modal">
   <div class="modal-content" style="max-width: 500px;">
     <div class="modal-header">
@@ -1435,8 +1436,50 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       </div>
     </div>
   </div>
+</div> -->
+  <!-- Mass SMS Modal -->
+<div id="massSMSModal" class="modal">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h2>📱 Send Mass SMS</h2>
+      <span class="close" onclick="closeMassSMSModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom: 20px; color: #6699cc;">
+        Send a personalized SMS to all selected contacts.
+      </p>
+      
+      <div class="form-group">
+        <label for="massSMSMessage">
+          Message
+          <span class="help-icon">❓
+            <span class="help-tooltip">Your message will be sent to all selected contacts. Keep it concise and professional.</span>
+          </span>
+        </label>
+        <textarea id="massSMSMessage" 
+                  placeholder="Enter your message here..." 
+                  rows="6"
+                  maxlength="320"
+                  style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+        <div style="font-size: 12px; color: #6699cc; margin-top: 5px;">
+          Character count: <span id="smsCharCount">0</span>/320
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="massSMSPersonalize">
+          Personalize messages (use contact's first name)
+        </label>
+      </div>
+      
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <button onclick="closeMassSMSModal()" class="secondary">Cancel</button>
+        <button onclick="sendMassSMS()" class="success" style="background: #8B4789;">📱 Send SMS</button>
+      </div>
+    </div>
+  </div>
 </div>
-  
 <!-- Hidden audio element for WebRTC calls -->
 <audio id="remoteAudio" autoplay playsinline></audio>
 <!-- Call Control Modal -->
@@ -1536,7 +1579,8 @@ const ENDPOINTS = {
   createPresentation: 'https://victoryvision.app.n8n.cloud/webhook/presentations/create',
   createSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/create',
   makeCall: 'https://victoryvision.app.n8n.cloud/webhook/call/make',
-  generateScript: 'https://victoryvision.app.n8n.cloud/webhook/call/script'
+  generateScript: 'https://victoryvision.app.n8n.cloud/webhook/call/script',
+  massSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/mass'
 };
 
 // Global variables
@@ -1948,7 +1992,7 @@ function setupCSVUpload() {
   csvInput.addEventListener('change', handleCSVFile);
 }
 // Look Alike Modal Functions
-function showLookAlikeModal() {
+/*function showLookAlikeModal() {
   if (selectedContacts.size === 0) {
     showStatus('Please select at least one contact to find look-alikes', true);
     return;
@@ -2004,6 +2048,82 @@ async function generateLookAlikeContacts() {
     showStatus('Error: ' + error.message, true);
   }
 }
+*/
+  // Mass SMS Modal Functions
+function showMassSMSModal() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select at least one contact to send SMS', true);
+    return;
+  }
+  document.getElementById('massSMSMessage').value = '';
+  document.getElementById('smsCharCount').textContent = '0';
+  document.getElementById('massSMSPersonalize').checked = true;
+  document.getElementById('massSMSModal').style.display = 'block';
+}
+
+function closeMassSMSModal() {
+  document.getElementById('massSMSModal').style.display = 'none';
+}
+
+async function sendMassSMS() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select contacts first', true);
+    return;
+  }
+  
+  const message = document.getElementById('massSMSMessage').value.trim();
+  if (!message) {
+    showStatus('Please enter a message', true);
+    return;
+  }
+  
+  const personalize = document.getElementById('massSMSPersonalize').checked;
+  
+  try {
+    const selectedContactsList = Array.from(selectedContacts).map(id => 
+      allContacts.find(c => c.contact_id === id || c.id === id || c.email === id)
+    ).filter(c => c);
+    
+    if (selectedContactsList.length === 0) {
+      showStatus('No valid contacts selected', true);
+      return;
+    }
+    
+    showStatus(`Sending SMS to ${selectedContactsList.length} contact(s)...`, false);
+    closeMassSMSModal();
+    
+    const result = await apiCall(ENDPOINTS.massSMS, {
+      contact_ids: selectedContactsList.map(c => c.contact_id || c.id || c.email),
+      customer_id: CUSTOMER_ID,
+      message: message,
+      personalize: personalize
+    });
+    
+    if (result.success !== false) {
+      showStatus(`SMS sent successfully to ${selectedContactsList.length} contact(s)!`, false);
+      
+      selectedContacts.clear();
+      updateSelectedCount();
+    } else {
+      throw new Error(result.message || 'Mass SMS failed');
+    }
+  } catch (error) {
+    console.error('Error sending mass SMS:', error);
+    showStatus('Error sending mass SMS: ' + error.message, true);
+  }
+}
+
+// Character counter for SMS
+document.addEventListener('DOMContentLoaded', () => {
+  const smsTextarea = document.getElementById('massSMSMessage');
+  if (smsTextarea) {
+    smsTextarea.addEventListener('input', () => {
+      const charCount = smsTextarea.value.length;
+      document.getElementById('smsCharCount').textContent = charCount;
+    });
+  }
+});
+  
   async function handleCSVFile(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -3033,7 +3153,8 @@ function setupEventListeners() {
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
   document.getElementById('enrollWorkflowsBtn').addEventListener('click', enrollInWorkflows);
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
-  document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
+  // document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
+  document.getElementById('massSMSBtn').addEventListener('click', showMassSMSModal);
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContacts);
   
   let searchTimeout;
@@ -3635,10 +3756,13 @@ window.startTour = startTour;
 window.expandFirstSelectedContact = expandFirstSelectedContact;
 window.showCustomCampaignModal = showCustomCampaignModal;
 window.closeCustomCampaignModal = closeCustomCampaignModal;
-  window.showLookAlikeModal = showLookAlikeModal;
-window.closeLookAlikeModal = closeLookAlikeModal;
-window.generateLookAlikeContacts = generateLookAlikeContacts;
-window.createMeetingForContact = createMeetingForContact;
+// window.showLookAlikeModal = showLookAlikeModal;
+// window.closeLookAlikeModal = closeLookAlikeModal;
+// window.generateLookAlikeContacts = generateLookAlikeContacts;
+window.showMassSMSModal = showMassSMSModal;
+window.closeMassSMSModal = closeMassSMSModal;
+window.sendMassSMS = sendMassSMS;
+  window.createMeetingForContact = createMeetingForContact;
 window.createSMSForContact = createSMSForContact;
 window.makeCallToContact = makeCallToContact;
 window.closeSMSModal = closeSMSModal;
