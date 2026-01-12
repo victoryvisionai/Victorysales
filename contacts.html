@@ -965,7 +965,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <button id="deselectAllBtn" class="secondary">Deselect All</button>
         <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
         <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
-        <<button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button>
+        <button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button>
         <button id="massSMSBtn" class="success" style="background: #8B4789;">📱 Mass SMS</button>
         <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
         <span id="selectedCount" style="margin-left: 10px; color: #6699cc;">0 selected</span>
@@ -2015,7 +2015,7 @@ async function generateLookAlikeContacts() {
     closeLookAlikeModal();
     
     // Call PhantomBuster workflow
-    const result = await apiCall('https://victoryvision.app.n8n.cloud/webhook/phantombuster/search', {
+  const result = await apiCall(ENDPOINTS.generateContacts, {
       customer_id: CUSTOMER_ID,
       num_leads: leadCount,
       geography: geography,
