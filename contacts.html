@@ -965,7 +965,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <button id="deselectAllBtn" class="secondary">Deselect All</button>
         <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
         <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
-        <!-- <button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button> -->
+        <<button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button>
         <button id="massSMSBtn" class="success" style="background: #8B4789;">📱 Mass SMS</button>
         <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
         <span id="selectedCount" style="margin-left: 10px; color: #6699cc;">0 selected</span>
@@ -1385,7 +1385,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
-<!-- Look Alike Modal
+
 <div id="lookAlikeModal" class="modal">
   <div class="modal-content" style="max-width: 500px;">
     <div class="modal-header">
@@ -1436,7 +1436,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       </div>
     </div>
   </div>
-</div> -->
+</div>
   <!-- Mass SMS Modal -->
 <div id="massSMSModal" class="modal">
   <div class="modal-content" style="max-width: 600px;">
@@ -1991,12 +1991,9 @@ function setupCSVUpload() {
   const csvInput = document.getElementById('csvFileInput');
   csvInput.addEventListener('change', handleCSVFile);
 }
-// Look Alike Modal Functions
-/*function showLookAlikeModal() {
-  if (selectedContacts.size === 0) {
-    showStatus('Please select at least one contact to find look-alikes', true);
-    return;
-  }
+
+function showLookAlikeModal() {
+  // Can select contacts as reference, or use ICP if none selected
   document.getElementById('lookAlikeModal').style.display = 'block';
 }
 
@@ -2005,51 +2002,57 @@ function closeLookAlikeModal() {
 }
 
 async function generateLookAlikeContacts() {
-  if (selectedContacts.size === 0) {
-    showStatus('Please select contacts first', true);
-    return;
-  }
-  
-  const leadCount = parseInt(document.getElementById('lookAlikeCount').value) || 5;
+  const leadCount = parseInt(document.getElementById('lookAlikeCount').value) || 25;
   const geography = document.getElementById('lookAlikeGeography').value.trim() || 'USA';
   
   try {
+    // Get selected contacts if any (optional - for reference)
     const selectedContactsList = Array.from(selectedContacts).map(id => 
       allContacts.find(c => c.contact_id === id || c.id === id || c.email === id)
     ).filter(c => c);
     
-    if (selectedContactsList.length === 0) {
-      showStatus('No valid contacts selected', true);
-      return;
-    }
-    
-    showStatus(`Generating ${leadCount} look-alike contacts in ${geography}...`, false);
+    showStatus(`🔍 Launching PhantomBuster to find ${leadCount} leads in ${geography}...`, false);
     closeLookAlikeModal();
     
-    const result = await apiCall(ENDPOINTS.generateContacts, {
-      contact_ids: selectedContactsList.map(c => c.contact_id || c.id || c.email),
+    // Call PhantomBuster workflow
+    const result = await apiCall('https://victoryvision.app.n8n.cloud/webhook/phantombuster/search', {
+      customer_id: CUSTOMER_ID,
       num_leads: leadCount,
-      geography: geography
+      geography: geography,
+      reference_contacts: selectedContactsList.length > 0 
+        ? selectedContactsList.map(c => ({
+            contact_id: c.contact_id || c.id,
+            title: c.title,
+            company: c.company,
+            industry: c.industry,
+            location: c.location
+          }))
+        : null // Use ICP profile if no contacts selected
     });
     
     if (result.success !== false) {
-      showStatus(`Generating ${leadCount} look-alike contacts in ${geography}! They will appear shortly.`, false);
+      showStatus(`✅ PhantomBuster search launched! Finding ${leadCount} leads in ${geography}. New contacts will appear in 5-10 minutes. Check back soon!`, false);
       
+      // Clear selection
       selectedContacts.clear();
       updateSelectedCount();
       
-      setTimeout(() => loadContacts(), 3000);
+      // Reload contacts after 3 minutes to show progress
+      setTimeout(() => {
+        loadContacts();
+        showStatus('Checking for new leads from PhantomBuster...', false);
+      }, 180000); // 3 minutes
     } else {
-      throw new Error(result.message || 'Look-alike generation failed');
+      throw new Error(result.message || 'PhantomBuster launch failed');
     }
     
   } catch (error) {
-    console.error('Error generating look-alikes:', error);
+    console.error('Error generating leads:', error);
     showStatus('Error: ' + error.message, true);
   }
 }
-*/
-  // Mass SMS Modal Functions
+  
+// Mass SMS Modal Functions
 function showMassSMSModal() {
   if (selectedContacts.size === 0) {
     showStatus('Please select at least one contact to send SMS', true);
@@ -3153,7 +3156,7 @@ function setupEventListeners() {
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
   document.getElementById('enrollWorkflowsBtn').addEventListener('click', enrollInWorkflows);
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
-  // document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
+  document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
   document.getElementById('massSMSBtn').addEventListener('click', showMassSMSModal);
   document.getElementById('deleteSelectedBtn').addEventListener('click', deleteSelectedContacts);
   
@@ -3756,9 +3759,9 @@ window.startTour = startTour;
 window.expandFirstSelectedContact = expandFirstSelectedContact;
 window.showCustomCampaignModal = showCustomCampaignModal;
 window.closeCustomCampaignModal = closeCustomCampaignModal;
-// window.showLookAlikeModal = showLookAlikeModal;
-// window.closeLookAlikeModal = closeLookAlikeModal;
-// window.generateLookAlikeContacts = generateLookAlikeContacts;
+window.showLookAlikeModal = showLookAlikeModal;
+window.closeLookAlikeModal = closeLookAlikeModal;
+window.generateLookAlikeContacts = generateLookAlikeContacts;
 window.showMassSMSModal = showMassSMSModal;
 window.closeMassSMSModal = closeMassSMSModal;
 window.sendMassSMS = sendMassSMS;
