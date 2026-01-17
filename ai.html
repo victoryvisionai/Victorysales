@@ -1201,7 +1201,7 @@ function calculateLeadScore(contact, emails, meetings, meetingInvites) {
   if (totalClicks >= 2) score += 10;
 
   // Conversation summary keywords (+10)
-  const summary = (contact.conversation_summary || '').toLowerCase();
+  const summary = (contact.customer_journey || '').toLowerCase();
   if (summary.includes('schedule') || summary.includes('call') || summary.includes('demo')) {
     score += 10;
   }
@@ -1284,7 +1284,7 @@ function createLeadCard(contact, score, emails, meetings) {
       </div>
       
       <div class="lead-details">
-        <div class="lead-summary">"${sanitizeInput(contact.conversation_summary || 'No conversation summary available')}"</div>
+        <div class="lead-summary">"${sanitizeInput(contact.customer_journey || 'No conversation summary available')}"</div>
         
         <div class="lead-badges">
           ${badges.join('')}
