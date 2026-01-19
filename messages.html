@@ -1313,17 +1313,23 @@ let currentDraftId = null;
 
 async function checkAuthentication() {
   try {
+    console.log('Checking authentication...');
     const { data: { session }, error } = await supabaseClient.auth.getSession();
-    if (error) throw error;
+    
+    if (error) {
+      console.error('Supabase session error:', error);
+      throw error;
+    }
     
     if (!session) {
-      console.log('No active session');
+      console.log('No active session found');
       return false;
     }
     
     authToken = session.access_token;
     CUSTOMER_ID = session.user.email;
     console.log('Authenticated as:', CUSTOMER_ID);
+    console.log('Session expires at:', new Date(session.expires_at * 1000));
     return true;
   } catch (error) {
     console.error('Auth check error:', error);
@@ -1615,15 +1621,15 @@ function showComposeForm(replyTo = null, forwardFrom = null, replyAll = false) {
   composeForm.classList.add('active');
   readingPaneActions.style.display = 'none';
   
-  // CLEAR FORM FASTER - remove all event listeners first
-  const form = document.getElementById('emailComposeForm');
-  const newForm = form.cloneNode(true);
-  form.parentNode.replaceChild(newForm, form);
-  
+  // Clear form
+  document.getElementById('emailComposeForm').reset();
   document.getElementById('composeFrom').value = CUSTOMER_ID;
   attachedFiles = [];
   updateAttachmentDisplay();
   currentDraftId = null;
+  
+  // Hide CC/BCC fields
+  document.getElementById('ccBccFields').classList.remove('active');
   
   if (preloadedContact) {
     document.getElementById('composeTo').value = preloadedContact.email || '';
@@ -1670,9 +1676,6 @@ function showComposeForm(replyTo = null, forwardFrom = null, replyAll = false) {
   
   // AUTO-SIGNATURE - append signature to body
   applySignatureToBody();
-  
-  // Re-attach event listener
-  document.getElementById('emailComposeForm').addEventListener('submit', sendEmail);
 }
 
 function applySignatureToBody() {
@@ -2278,6 +2281,12 @@ function hasCompletedTour() {
 }
 
 function setupEventListeners() {
+  // Attach form submit handler
+  const emailForm = document.getElementById('emailComposeForm');
+  if (emailForm) {
+    emailForm.addEventListener('submit', sendEmail);
+  }
+  
   // Close modals when clicking outside - with delay to prevent instant close
   const modals = document.querySelectorAll('.modal');
   modals.forEach(modal => {
@@ -2285,7 +2294,7 @@ function setupEventListeners() {
       if (event.target === modal) {
         setTimeout(() => {
           modal.style.display = 'none';
-        }, 100);
+        }, 200);
       }
     });
   });
@@ -2494,10 +2503,12 @@ class VictoryVisionChat {
 
 async function init() {
   try {
+    console.log('Initializing Messages page...');
     const isAuthenticated = await checkAuthentication();
     console.log('Authentication status:', isAuthenticated);
     
     if (isAuthenticated) {
+      console.log('User authenticated, setting up page...');
       setupEventListeners();
       
       const contactData = sessionStorage.getItem('messageContact');
@@ -2506,12 +2517,14 @@ async function init() {
         sessionStorage.removeItem('messageContact');
       }
       
+      console.log('Loading data...');
       await Promise.all([
         loadUserData(),
         loadContacts(),
         loadMediaFiles(),
         loadEmails()
       ]);
+      console.log('Data loaded successfully');
       
       if (!hasCompletedTour()) {
         setTimeout(() => startTour(), 1000);
