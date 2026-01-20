@@ -1338,7 +1338,23 @@ async function checkAuthentication() {
 }
 
 function redirectToLogin() {
-  window.location.href = 'https://www.victoryvision.app';
+  console.error('REDIRECT TO LOGIN TRIGGERED');
+  console.error('Stack trace:', new Error().stack);
+  console.error('Current URL:', window.location.href);
+  console.error('Auth Token:', authToken ? 'EXISTS' : 'NULL');
+  console.error('Customer ID:', CUSTOMER_ID);
+  
+  // Add 5 second delay so user can inspect console
+  setTimeout(() => {
+    console.error('Redirecting now...');
+    window.location.href = 'https://www.victoryvision.app';
+  }, 5000);
+  
+  // Show error message
+  const errorDiv = document.createElement('div');
+  errorDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #dc3545; color: white; padding: 30px; border-radius: 8px; z-index: 10000; font-size: 18px; text-align: center;';
+  errorDiv.innerHTML = '<h2>Authentication Error</h2><p>Redirecting to login in 5 seconds...</p><p style="font-size: 14px;">Check console for details (F12)</p>';
+  document.body.appendChild(errorDiv);
 }
 
 function showStatus(message, isError = false) {
@@ -1366,6 +1382,7 @@ async function loadUserData() {
 
 async function loadContacts() {
   try {
+    console.log('Loading contacts...');
     const response = await fetch(ENDPOINTS.loadContacts, {
       method: 'POST',
       headers: {
@@ -1378,14 +1395,20 @@ async function loadContacts() {
     if (response.ok) {
       const data = await response.json();
       contacts = data.contacts || [];
+      console.log('Contacts loaded:', contacts.length);
+    } else {
+      console.warn('Failed to load contacts, status:', response.status);
+      contacts = [];
     }
   } catch (error) {
     console.error('Error loading contacts:', error);
+    contacts = [];
   }
 }
 
 async function loadMediaFiles() {
   try {
+    console.log('Loading media files...');
     const response = await fetch(ENDPOINTS.loadMedia, {
       method: 'POST',
       headers: {
@@ -1398,14 +1421,22 @@ async function loadMediaFiles() {
     if (response.ok) {
       const data = await response.json();
       mediaFiles = data.media || [];
+      console.log('Media files loaded:', mediaFiles.length);
+    } else {
+      console.warn('Failed to load media, status:', response.status);
+      mediaFiles = [];
     }
   } catch (error) {
     console.error('Error loading media:', error);
+    mediaFiles = [];
   }
 }
 
 async function loadEmails() {
   try {
+    console.log('Loading emails for customer:', CUSTOMER_ID);
+    console.log('Using auth token:', authToken ? 'Token exists' : 'NO TOKEN');
+    
     const response = await fetch(ENDPOINTS.loadEmails, {
       method: 'POST',
       headers: {
@@ -1415,8 +1446,12 @@ async function loadEmails() {
       body: JSON.stringify({ customer_id: CUSTOMER_ID })
     });
     
+    console.log('Load emails response status:', response.status);
+    
     if (response.ok) {
       const data = await response.json();
+      console.log('Emails loaded:', data.emails ? data.emails.length : 0);
+      
       allEmails = (data.emails || []).filter(email => {
         // FILTER OUT WARM-UP EMAILS
         const subject = (email.subject || '').toLowerCase();
@@ -1434,13 +1469,24 @@ async function loadEmails() {
         return true;
       });
       
+      console.log('Emails after filtering warm-ups:', allEmails.length);
       applyFilters();
     } else {
-      showStatus('Failed to load emails', true);
+      console.error('Failed to load emails, status:', response.status);
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      
+      // Don't fail completely, just show empty inbox
+      allEmails = [];
+      applyFilters();
+      showStatus('Could not load emails. Please refresh.', true);
     }
   } catch (error) {
     console.error('Error loading emails:', error);
-    showStatus('Error loading emails', true);
+    // Don't fail completely, just show empty inbox
+    allEmails = [];
+    applyFilters();
+    showStatus('Network error loading emails', true);
   }
 }
 
@@ -2281,12 +2327,6 @@ function hasCompletedTour() {
 }
 
 function setupEventListeners() {
-  // Attach form submit handler
-  const emailForm = document.getElementById('emailComposeForm');
-  if (emailForm) {
-    emailForm.addEventListener('submit', sendEmail);
-  }
-  
   // Close modals when clicking outside - with delay to prevent instant close
   const modals = document.querySelectorAll('.modal');
   modals.forEach(modal => {
@@ -2502,75 +2542,125 @@ class VictoryVisionChat {
 }
 
 async function init() {
+  console.log('=== MESSAGES PAGE INITIALIZATION STARTED ===');
+  console.log('Current URL:', window.location.href);
+  console.log('Timestamp:', new Date().toISOString());
+  
   try {
-    console.log('Initializing Messages page...');
+    console.log('Step 1: Checking authentication...');
     const isAuthenticated = await checkAuthentication();
-    console.log('Authentication status:', isAuthenticated);
+    console.log('Authentication result:', isAuthenticated);
     
-    if (isAuthenticated) {
-      console.log('User authenticated, setting up page...');
-      setupEventListeners();
-      
-      const contactData = sessionStorage.getItem('messageContact');
-      if (contactData) {
-        preloadedContact = JSON.parse(contactData);
-        sessionStorage.removeItem('messageContact');
-      }
-      
-      console.log('Loading data...');
-      await Promise.all([
-        loadUserData(),
-        loadContacts(),
-        loadMediaFiles(),
-        loadEmails()
-      ]);
-      console.log('Data loaded successfully');
-      
-      if (!hasCompletedTour()) {
-        setTimeout(() => startTour(), 1000);
-      }
-      
-      if (preloadedContact) {
-        setTimeout(() => showComposeForm(), 500);
-      }
-    } else {
-      console.log('Not authenticated, redirecting to login');
+    if (!isAuthenticated) {
+      console.error('Authentication failed - redirecting to login');
       redirectToLogin();
+      return;
     }
+    
+    console.log('Step 2: User authenticated successfully');
+    console.log('Customer ID:', CUSTOMER_ID);
+    console.log('Auth token length:', authToken ? authToken.length : 0);
+    
+    console.log('Step 3: Setting up event listeners...');
+    setupEventListeners();
+    console.log('Event listeners setup complete');
+    
+    const contactData = sessionStorage.getItem('messageContact');
+    if (contactData) {
+      console.log('Found preloaded contact data');
+      preloadedContact = JSON.parse(contactData);
+      sessionStorage.removeItem('messageContact');
+    }
+    
+    console.log('Step 4: Loading user data...');
+    try {
+      await loadUserData();
+      console.log('User data loaded');
+    } catch (e) {
+      console.error('Error loading user data:', e);
+    }
+    
+    console.log('Step 5: Loading contacts...');
+    try {
+      await loadContacts();
+      console.log('Contacts loaded');
+    } catch (e) {
+      console.error('Error loading contacts:', e);
+    }
+    
+    console.log('Step 6: Loading media files...');
+    try {
+      await loadMediaFiles();
+      console.log('Media files loaded');
+    } catch (e) {
+      console.error('Error loading media files:', e);
+    }
+    
+    console.log('Step 7: Loading emails...');
+    try {
+      await loadEmails();
+      console.log('Emails loaded');
+    } catch (e) {
+      console.error('Error loading emails:', e);
+    }
+    
+    console.log('Step 8: Checking tour status...');
+    if (!hasCompletedTour()) {
+      console.log('Starting tour in 1 second...');
+      setTimeout(() => startTour(), 1000);
+    }
+    
+    if (preloadedContact) {
+      console.log('Opening compose form for preloaded contact...');
+      setTimeout(() => showComposeForm(), 500);
+    }
+    
+    console.log('=== INITIALIZATION COMPLETE ===');
   } catch (error) {
-    console.error('Error initializing:', error);
-    showStatus('Failed to initialize. Please refresh.', true);
+    console.error('=== CRITICAL ERROR IN INIT ===');
+    console.error('Error:', error);
+    console.error('Stack:', error.stack);
+    showStatus('Failed to initialize. Check console (F12) and refresh.', true);
   }
 }
 
 const VVChat = new VictoryVisionChat();
 window.VVChat = VVChat;
 
+// Session check every 5 minutes - with better error handling
 setInterval(async function() {
   try {
+    console.log('Periodic session check...');
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
-      console.log('Session expired, redirecting to login');
+      console.warn('Session expired during periodic check');
       redirectToLogin();
     } else {
       authToken = session.access_token;
+      console.log('Session still valid, expires:', new Date(session.expires_at * 1000));
     }
   } catch (e) {
     console.error('Session check failed:', e);
+    // Don't redirect on check failure, only on confirmed no session
   }
 }, 300000);
 
+// Check auth when page becomes visible again
 document.addEventListener('visibilitychange', async function() {
   if (!document.hidden) {
+    console.log('Page visible again, checking auth...');
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
+        console.warn('No session found on visibility change');
         redirectToLogin();
       } else {
         authToken = session.access_token;
+        console.log('Session refreshed on visibility change');
       }
     } catch (e) {
       console.error('Visibility auth check failed:', e);
+      // Don't redirect on check failure
     }
   }
 });
