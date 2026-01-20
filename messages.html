@@ -120,6 +120,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      min-height: 0;
     }
     .panel-header {
       background: linear-gradient(135deg, #0A3161, #1a4c80);
@@ -305,6 +306,8 @@
       flex: 1;
       overflow-y: auto;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
     }
     .reading-pane.empty {
       display: flex;
@@ -449,6 +452,8 @@
     .compose-form {
       display: none;
       padding: 20px;
+      overflow-y: auto;
+      max-height: 100%;
     }
     .compose-form.active {
       display: block;
@@ -473,7 +478,7 @@
       box-sizing: border-box;
     }
     .compose-form textarea {
-      min-height: 300px;
+      min-height: 200px;
       resize: vertical;
       font-family: Arial, sans-serif;
     }
@@ -485,12 +490,16 @@
       border-top: 1px solid #dee2e6;
     }
     .cc-bcc-toggle {
-      font-size: 12px;
+      font-size: 13px;
       color: #0A3161;
       cursor: pointer;
       text-decoration: underline;
-      margin-top: -10px;
-      margin-bottom: 10px;
+      display: inline-block;
+      padding: 5px 0;
+    }
+    .cc-bcc-toggle:hover {
+      color: #083050;
+      font-weight: 500;
     }
     .cc-bcc-fields {
       display: none;
@@ -1047,7 +1056,7 @@
       </div>
       
       <div class="email-list" id="emailList" data-intro="Click on any email to view its full content. Different colors indicate email status." data-step="3">
-        <div class="loading">Loading your emails...</div>
+        <div class="loading">📧 Loading your emails...</div>
       </div>
       
       <div class="compose-section">
@@ -1136,8 +1145,12 @@
           
           <div class="form-group">
             <label for="composeTo">To</label>
-            <input type="email" id="composeTo" required placeholder="recipient@example.com">
-            <div class="cc-bcc-toggle" onclick="toggleCCBCC()">+ Add CC/BCC</div>
+            <input type="email" id="composeTo" required placeholder="recipient@example.com" list="contactsList">
+            <datalist id="contactsList"></datalist>
+          </div>
+          
+          <div style="margin-top: -10px; margin-bottom: 15px;">
+            <span class="cc-bcc-toggle" onclick="toggleCCBCC()">+ Cc/Bcc</span>
           </div>
           
           <div class="cc-bcc-fields" id="ccBccFields">
@@ -1383,37 +1396,65 @@ async function loadUserData() {
 
 async function loadContacts() {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
     const response = await fetch(ENDPOINTS.loadContacts, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
-      body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      body: JSON.stringify({ customer_id: CUSTOMER_ID }),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
     
     if (response.ok) {
       const data = await response.json();
       contacts = data.contacts || [];
+      
+      // Populate autocomplete datalist
+      const datalist = document.getElementById('contactsList');
+      if (datalist && contacts.length > 0) {
+        datalist.innerHTML = contacts.map(contact => {
+          const email = contact.email || '';
+          const name = contact.name || contact.first_name || '';
+          const company = contact.company || '';
+          const display = name ? `${name} <${email}>` : email;
+          return `<option value="${email}">${display}${company ? ' - ' + company : ''}</option>`;
+        }).join('');
+      }
     } else {
       contacts = [];
     }
   } catch (error) {
-    console.error('Error loading contacts:', error);
+    // Completely silent
     contacts = [];
+    const datalist = document.getElementById('contactsList');
+    if (datalist) {
+      datalist.innerHTML = '';
+    }
   }
 }
 
 async function loadMediaFiles() {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
     const response = await fetch(ENDPOINTS.loadMedia, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
-      body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      body: JSON.stringify({ customer_id: CUSTOMER_ID }),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
     
     if (response.ok) {
       const data = await response.json();
@@ -1422,21 +1463,28 @@ async function loadMediaFiles() {
       mediaFiles = [];
     }
   } catch (error) {
-    console.error('Error loading media:', error);
+    // Completely silent
     mediaFiles = [];
   }
 }
 
 async function loadEmails() {
+  // Silently try to load emails - if endpoint doesn't exist, just show empty inbox
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    
     const response = await fetch(ENDPOINTS.loadEmails, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authToken}`
       },
-      body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      body: JSON.stringify({ customer_id: CUSTOMER_ID }),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
     
     if (response.ok) {
       const data = await response.json();
@@ -1460,12 +1508,11 @@ async function loadEmails() {
       
       applyFilters();
     } else {
-      console.error('Failed to load emails, status:', response.status);
       allEmails = [];
       applyFilters();
     }
   } catch (error) {
-    console.error('Error loading emails:', error);
+    // Completely silent - don't even log
     allEmails = [];
     applyFilters();
   }
@@ -1510,7 +1557,11 @@ function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
   if (filteredEmails.length === 0) {
-    emailList.innerHTML = '<div class="loading">No emails found</div>';
+    if (allEmails.length === 0) {
+      emailList.innerHTML = '<div class="loading">📭 No emails yet. Click Compose to start!</div>';
+    } else {
+      emailList.innerHTML = '<div class="loading">🔍 No emails match your filters</div>';
+    }
     return;
   }
   
@@ -1657,6 +1708,20 @@ function showComposeForm(replyTo = null, forwardFrom = null, replyAll = false) {
   
   // Hide CC/BCC fields
   document.getElementById('ccBccFields').classList.remove('active');
+  
+  // Ensure contacts datalist is populated
+  if (contacts.length > 0) {
+    const datalist = document.getElementById('contactsList');
+    if (datalist && datalist.children.length === 0) {
+      datalist.innerHTML = contacts.map(contact => {
+        const email = contact.email || '';
+        const name = contact.name || contact.first_name || '';
+        const company = contact.company || '';
+        const display = name ? `${name} <${email}>` : email;
+        return `<option value="${email}">${display}${company ? ' - ' + company : ''}</option>`;
+      }).join('');
+    }
+  }
   
   if (preloadedContact) {
     document.getElementById('composeTo').value = preloadedContact.email || '';
