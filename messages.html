@@ -1279,8 +1279,8 @@
 </div>
 
 <script>
-const SUPABASE_URL = 'https://mldxohfugjqevjpaagky.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1sZHhvaGZ1Z2pxZXZqcGFhZ2t5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMxNjYzODEsImV4cCI6MjA0ODc0MjM4MX0.Xqpo2UOmGeZ4R4RV8l6WKmZo35G7EbG79zjRR18ZCgo';
+const SUPABASE_URL = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const ENDPOINTS = {
@@ -1318,19 +1318,25 @@ async function checkAuthentication() {
     
     if (error) {
       console.error('Supabase session error:', error);
-      throw error;
-    }
-    
-    if (!session) {
-      console.log('No active session found');
       return false;
     }
     
-    authToken = session.access_token;
-    CUSTOMER_ID = session.user.email;
-    console.log('Authenticated as:', CUSTOMER_ID);
-    console.log('Session expires at:', new Date(session.expires_at * 1000));
-    return true;
+    if (session && session.user) {
+      // Validate session data
+      if (!session.user.email) {
+        console.error('No email in session');
+        return false;
+      }
+      
+      authToken = session.access_token;
+      CUSTOMER_ID = session.user.email;
+      console.log('Authenticated as:', CUSTOMER_ID);
+      console.log('Session expires at:', new Date(session.expires_at * 1000));
+      return true;
+    }
+    
+    console.log('No active session found');
+    return false;
   } catch (error) {
     console.error('Auth check error:', error);
     return false;
@@ -1344,17 +1350,12 @@ function redirectToLogin() {
   console.error('Auth Token:', authToken ? 'EXISTS' : 'NULL');
   console.error('Customer ID:', CUSTOMER_ID);
   
-  // Add 5 second delay so user can inspect console
-  setTimeout(() => {
-    console.error('Redirecting now...');
-    window.location.href = 'https://www.victoryvision.app';
-  }, 5000);
+  // Clear all session data
+  localStorage.removeItem('vv_session');
+  sessionStorage.clear();
   
-  // Show error message
-  const errorDiv = document.createElement('div');
-  errorDiv.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #dc3545; color: white; padding: 30px; border-radius: 8px; z-index: 10000; font-size: 18px; text-align: center;';
-  errorDiv.innerHTML = '<h2>Authentication Error</h2><p>Redirecting to login in 5 seconds...</p><p style="font-size: 14px;">Check console for details (F12)</p>';
-  document.body.appendChild(errorDiv);
+  // Redirect to login
+  window.location.href = 'https://www.victoryvision.app';
 }
 
 function showStatus(message, isError = false) {
@@ -1382,7 +1383,6 @@ async function loadUserData() {
 
 async function loadContacts() {
   try {
-    console.log('Loading contacts...');
     const response = await fetch(ENDPOINTS.loadContacts, {
       method: 'POST',
       headers: {
@@ -1395,9 +1395,7 @@ async function loadContacts() {
     if (response.ok) {
       const data = await response.json();
       contacts = data.contacts || [];
-      console.log('Contacts loaded:', contacts.length);
     } else {
-      console.warn('Failed to load contacts, status:', response.status);
       contacts = [];
     }
   } catch (error) {
@@ -1408,7 +1406,6 @@ async function loadContacts() {
 
 async function loadMediaFiles() {
   try {
-    console.log('Loading media files...');
     const response = await fetch(ENDPOINTS.loadMedia, {
       method: 'POST',
       headers: {
@@ -1421,9 +1418,7 @@ async function loadMediaFiles() {
     if (response.ok) {
       const data = await response.json();
       mediaFiles = data.media || [];
-      console.log('Media files loaded:', mediaFiles.length);
     } else {
-      console.warn('Failed to load media, status:', response.status);
       mediaFiles = [];
     }
   } catch (error) {
@@ -1434,9 +1429,6 @@ async function loadMediaFiles() {
 
 async function loadEmails() {
   try {
-    console.log('Loading emails for customer:', CUSTOMER_ID);
-    console.log('Using auth token:', authToken ? 'Token exists' : 'NO TOKEN');
-    
     const response = await fetch(ENDPOINTS.loadEmails, {
       method: 'POST',
       headers: {
@@ -1446,11 +1438,8 @@ async function loadEmails() {
       body: JSON.stringify({ customer_id: CUSTOMER_ID })
     });
     
-    console.log('Load emails response status:', response.status);
-    
     if (response.ok) {
       const data = await response.json();
-      console.log('Emails loaded:', data.emails ? data.emails.length : 0);
       
       allEmails = (data.emails || []).filter(email => {
         // FILTER OUT WARM-UP EMAILS
@@ -1469,24 +1458,16 @@ async function loadEmails() {
         return true;
       });
       
-      console.log('Emails after filtering warm-ups:', allEmails.length);
       applyFilters();
     } else {
       console.error('Failed to load emails, status:', response.status);
-      const errorText = await response.text();
-      console.error('Error response:', errorText);
-      
-      // Don't fail completely, just show empty inbox
       allEmails = [];
       applyFilters();
-      showStatus('Could not load emails. Please refresh.', true);
     }
   } catch (error) {
     console.error('Error loading emails:', error);
-    // Don't fail completely, just show empty inbox
     allEmails = [];
     applyFilters();
-    showStatus('Network error loading emails', true);
   }
 }
 
@@ -2542,125 +2523,79 @@ class VictoryVisionChat {
 }
 
 async function init() {
-  console.log('=== MESSAGES PAGE INITIALIZATION STARTED ===');
-  console.log('Current URL:', window.location.href);
-  console.log('Timestamp:', new Date().toISOString());
-  
   try {
-    console.log('Step 1: Checking authentication...');
     const isAuthenticated = await checkAuthentication();
-    console.log('Authentication result:', isAuthenticated);
     
     if (!isAuthenticated) {
-      console.error('Authentication failed - redirecting to login');
+      console.log('Not authenticated, redirecting to login');
       redirectToLogin();
       return;
     }
     
-    console.log('Step 2: User authenticated successfully');
-    console.log('Customer ID:', CUSTOMER_ID);
-    console.log('Auth token length:', authToken ? authToken.length : 0);
-    
-    console.log('Step 3: Setting up event listeners...');
+    console.log('User authenticated, initializing page...');
     setupEventListeners();
-    console.log('Event listeners setup complete');
     
     const contactData = sessionStorage.getItem('messageContact');
     if (contactData) {
-      console.log('Found preloaded contact data');
       preloadedContact = JSON.parse(contactData);
       sessionStorage.removeItem('messageContact');
     }
     
-    console.log('Step 4: Loading user data...');
-    try {
-      await loadUserData();
-      console.log('User data loaded');
-    } catch (e) {
-      console.error('Error loading user data:', e);
-    }
+    // Load all data
+    await Promise.all([
+      loadUserData(),
+      loadContacts(),
+      loadMediaFiles(),
+      loadEmails()
+    ]);
     
-    console.log('Step 5: Loading contacts...');
-    try {
-      await loadContacts();
-      console.log('Contacts loaded');
-    } catch (e) {
-      console.error('Error loading contacts:', e);
-    }
+    console.log('Messages page loaded successfully');
     
-    console.log('Step 6: Loading media files...');
-    try {
-      await loadMediaFiles();
-      console.log('Media files loaded');
-    } catch (e) {
-      console.error('Error loading media files:', e);
-    }
-    
-    console.log('Step 7: Loading emails...');
-    try {
-      await loadEmails();
-      console.log('Emails loaded');
-    } catch (e) {
-      console.error('Error loading emails:', e);
-    }
-    
-    console.log('Step 8: Checking tour status...');
     if (!hasCompletedTour()) {
-      console.log('Starting tour in 1 second...');
       setTimeout(() => startTour(), 1000);
     }
     
     if (preloadedContact) {
-      console.log('Opening compose form for preloaded contact...');
       setTimeout(() => showComposeForm(), 500);
     }
-    
-    console.log('=== INITIALIZATION COMPLETE ===');
   } catch (error) {
-    console.error('=== CRITICAL ERROR IN INIT ===');
-    console.error('Error:', error);
-    console.error('Stack:', error.stack);
-    showStatus('Failed to initialize. Check console (F12) and refresh.', true);
+    console.error('Error initializing:', error);
+    showStatus('Failed to initialize. Please refresh.', true);
   }
 }
 
 const VVChat = new VictoryVisionChat();
 window.VVChat = VVChat;
 
-// Session check every 5 minutes - with better error handling
+// Session check every 5 minutes
 setInterval(async function() {
   try {
-    console.log('Periodic session check...');
     const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
+    if (!session || !session.user) {
       console.warn('Session expired during periodic check');
       redirectToLogin();
     } else {
       authToken = session.access_token;
-      console.log('Session still valid, expires:', new Date(session.expires_at * 1000));
+      CUSTOMER_ID = session.user.email;
     }
   } catch (e) {
     console.error('Session check failed:', e);
-    // Don't redirect on check failure, only on confirmed no session
   }
 }, 300000);
 
 // Check auth when page becomes visible again
 document.addEventListener('visibilitychange', async function() {
   if (!document.hidden) {
-    console.log('Page visible again, checking auth...');
     try {
       const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        console.warn('No session found on visibility change');
+      if (!session || !session.user) {
         redirectToLogin();
       } else {
         authToken = session.access_token;
-        console.log('Session refreshed on visibility change');
+        CUSTOMER_ID = session.user.email;
       }
     } catch (e) {
       console.error('Visibility auth check failed:', e);
-      // Don't redirect on check failure
     }
   }
 });
