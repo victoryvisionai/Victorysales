@@ -1301,7 +1301,7 @@ const ENDPOINTS = {
   saveDraft: 'https://victoryvision.app.n8n.cloud/webhook/emails/draft',
   loadEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
   aiAssist: 'https://victoryvision.app.n8n.cloud/webhook/emails/ai-assist',
-  generateCampaign: 'https://victoryvision.app.n8n.cloud/webhook/email/generate-campaign',
+  generateCampaign: 'https://victoryvision.app.n8n.cloud/webhook/emails/generate-campaign',
   scheduleEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/schedule',
   deleteEmail: 'https://victoryvision.app.n8n.cloud/webhook/emails/delete',
   markRead: 'https://victoryvision.app.n8n.cloud/webhook/emails/mark-read',
@@ -1413,7 +1413,15 @@ async function loadContacts() {
     
     if (response.ok) {
       const data = await response.json();
-      contacts = data.contacts || [];
+      
+      // Handle both array response and object with contacts property
+      if (Array.isArray(data)) {
+        contacts = data;
+      } else if (data.contacts && Array.isArray(data.contacts)) {
+        contacts = data.contacts;
+      } else {
+        contacts = [];
+      }
       
       // Populate autocomplete datalist
       const datalist = document.getElementById('contactsList');
@@ -1426,6 +1434,8 @@ async function loadContacts() {
           return `<option value="${email}">${display}${company ? ' - ' + company : ''}</option>`;
         }).join('');
       }
+      
+      console.log('Loaded contacts:', contacts.length);
     } else {
       contacts = [];
     }
@@ -1458,7 +1468,17 @@ async function loadMediaFiles() {
     
     if (response.ok) {
       const data = await response.json();
-      mediaFiles = data.media || [];
+      
+      // Handle both array response and object with media property
+      if (Array.isArray(data)) {
+        mediaFiles = data;
+      } else if (data.media && Array.isArray(data.media)) {
+        mediaFiles = data.media;
+      } else {
+        mediaFiles = [];
+      }
+      
+      console.log('Loaded media files:', mediaFiles.length);
     } else {
       mediaFiles = [];
     }
@@ -1489,7 +1509,17 @@ async function loadEmails() {
     if (response.ok) {
       const data = await response.json();
       
-      allEmails = (data.emails || []).filter(email => {
+      // Handle both array response and object with emails property
+      let emailsArray = [];
+      if (Array.isArray(data)) {
+        // Direct array response from n8n
+        emailsArray = data;
+      } else if (data.emails && Array.isArray(data.emails)) {
+        // Object with emails property
+        emailsArray = data.emails;
+      }
+      
+      allEmails = emailsArray.filter(email => {
         // FILTER OUT WARM-UP EMAILS
         const subject = (email.subject || '').toLowerCase();
         const tags = (email.tags || []).map(t => t.toLowerCase());
@@ -1506,6 +1536,7 @@ async function loadEmails() {
         return true;
       });
       
+      console.log('Loaded emails:', allEmails.length);
       applyFilters();
     } else {
       allEmails = [];
