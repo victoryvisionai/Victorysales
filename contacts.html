@@ -1640,7 +1640,7 @@ const availableColumns = {
 };
 
 // Default visible columns
-let visibleColumns = ['last_responded','num_emails_opened','last_opened_date','last_emailed_date','num_links_clicked','last_called','name','title','company', 'email','phone','industry','tags','city','created'];
+let visibleColumns = ['last_responded','num_emails_opened','last_opened_date','last_emailed_date','num_links_clicked','last_called','name','title','company', 'email','phone_number','industry','tags','city','created'];
 // Rate limiting
 const rateLimiter = {
   calls: [],
@@ -3209,7 +3209,7 @@ function setupEventListeners() {
       phone: contact.phone_number,
       company: contact.company
     };
-  }).filter(c => c.phone); // Only contacts with phone numbers
+  }).filter(c => c.phone_number); // Only contacts with phone numbers
   
   if (contactsToCall.length === 0) {
     showStatus('No selected contacts have phone numbers', true);
