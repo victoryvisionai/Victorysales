@@ -222,7 +222,20 @@
   outline: none;
   box-shadow: 0 0 0 3px rgba(10, 49, 97, 0.1);
 }
+#massCallButton {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: white;
+  font-weight: bold;
+}
 
+#massCallButton:hover {
+  background: linear-gradient(135deg, #047857, #065f46);
+}
+
+#massCallButton:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
 /* Better button spacing */
 .modal-body button {
   transition: all 0.2s;
@@ -970,11 +983,11 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <button id="deleteSelectedBtn" class="danger">🗑️ Delete Selected</button>
         <span id="selectedCount" style="margin-left: 10px; color: #6699cc;">0 selected</span>
       </div>
-      <div class="bulk-actions-right">
+<div class="bulk-actions-right">
         <button id="expandContactBtn" class="success" style="background: #17a2b8;">🔍 Expand Contact</button>
+        <button id="massCallButton" onclick="startMassCall()" class="success" style="background: linear-gradient(135deg, #059669, #047857); color: white; font-weight: bold; margin-left: 10px;">📞 Mass Call Selected</button>
       </div>
     </div>
-
     <!-- Contacts Table -->
     <div class="table-container" data-intro="Your contacts database with sortable columns. Click any contact to view detailed information and send personal messages." data-step="7">
       <table class="contacts-table">
@@ -3180,6 +3193,140 @@ function setupEventListeners() {
   }); 
   setupCSVUpload();
 }
+
+  async function startMassCall() {
+  if (selectedContacts.size === 0) {
+    showStatus('Please select contacts to call', true);
+    return;
+  }
+  
+  const contactsToCall = Array.from(selectedContacts).map(id => {
+    const contact = allContacts.find(c => c.id === id);
+    return {
+      id: contact.id,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+      company: contact.company
+    };
+  }).filter(c => c.phone); // Only contacts with phone numbers
+  
+  if (contactsToCall.length === 0) {
+    showStatus('No selected contacts have phone numbers', true);
+    return;
+  }
+  
+  const confirmed = confirm(`Start mass calling ${contactsToCall.length} contacts?\n\nCalls will be made sequentially with AMD.\nHuman answers → connect to you\nVoicemail → leave message`);
+  
+  if (!confirmed) return;
+  
+  // Disable button during operation
+  document.getElementById('massCallButton').disabled = true;
+  showStatus(`Starting mass call for ${contactsToCall.length} contacts...`, false);
+  
+  try {
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/calls/mass-dial', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contacts: contactsToCall,
+        customer_id: CUSTOMER_ID,
+        voicemail_url: 'https://victoryvision.app/voicemail-drops/standard.mp3' // You can make this configurable later
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showStatus(`Mass call initiated! Dialing ${contactsToCall.length} contacts...`, false);
+      
+      // Show live status modal
+      showMassCallStatus(result.session_id);
+    } else {
+      throw new Error(result.message || 'Failed to start mass call');
+    }
+    
+  } catch (error) {
+    console.error('Error starting mass call:', error);
+    showStatus('Error starting mass call: ' + error.message, true);
+  } finally {
+    document.getElementById('massCallButton').disabled = false;
+  }
+}
+
+// Show live status of mass calling
+function showMassCallStatus(sessionId) {
+  const modal = document.createElement('div');
+  modal.id = 'massCallStatusModal';
+  modal.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    z-index: 10000;
+    width: 90%;
+    max-width: 500px;
+  `;
+  
+  modal.innerHTML = `
+    <h2 style="color: #0A3161; margin-bottom: 20px;">Mass Call in Progress</h2>
+    <div id="massCallStatusContent">
+      <p>Initializing...</p>
+    </div>
+    <button onclick="closeMassCallStatus()" style="margin-top: 20px; padding: 10px 20px; background: #bb133e; color: white; border: none; border-radius: 6px; cursor: pointer;">
+      Close & Run in Background
+    </button>
+  `;
+  
+  document.body.appendChild(modal);
+  
+  // Poll for status updates
+  const statusInterval = setInterval(async () => {
+    try {
+      const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/calls/mass-dial-status?session_id=${sessionId}`);
+      const status = await response.json();
+      
+      document.getElementById('massCallStatusContent').innerHTML = `
+        <div style="margin-bottom: 15px;">
+          <strong>Progress:</strong> ${status.completed}/${status.total} calls
+        </div>
+        <div style="margin-bottom: 15px;">
+          <strong>Current:</strong> ${status.current_contact || 'Waiting...'}
+        </div>
+        <div style="margin-bottom: 15px;">
+          <strong>Humans Reached:</strong> ${status.humans_reached}
+        </div>
+        <div style="margin-bottom: 15px;">
+          <strong>Voicemails Left:</strong> ${status.voicemails_left}
+        </div>
+        <div style="margin-bottom: 15px;">
+          <strong>No Answer:</strong> ${status.no_answer}
+        </div>
+      `;
+      
+      if (status.completed === status.total) {
+        clearInterval(statusInterval);
+        showStatus('Mass call completed!', false);
+        await loadContacts(); // Refresh to show updated call logs
+      }
+      
+    } catch (error) {
+      console.error('Error fetching mass call status:', error);
+    }
+  }, 3000); // Poll every 3 seconds
+}
+
+function closeMassCallStatus() {
+  const modal = document.getElementById('massCallStatusModal');
+  if (modal) modal.remove();
+}
+  
 async function init() {
   console.log('========== INIT STARTING ==========');
   try {
