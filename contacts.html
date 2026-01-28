@@ -2156,7 +2156,7 @@ async function generateLookAlikeContacts() {
     });
     
     if (result.success !== false) {
-      showStatus(`✅ PhantomBuster search launched! Finding ${leadCount} leads in ${geography}. New contacts will appear in 5-10 minutes. Check back soon!`, false);
+      showStatus(`✅ Victory Vision search launched! Finding ${leadCount} leads in ${geography}. New contacts will appear in 5-10 minutes. Check back soon!`, false);
       
       // Clear selection
       selectedContacts.clear();
@@ -2165,10 +2165,10 @@ async function generateLookAlikeContacts() {
       // Reload contacts after 3 minutes
       setTimeout(() => {
         loadContacts();
-        showStatus('Checking for new leads from PhantomBuster...', false);
+        showStatus('Checking for new leads from Victory Vision...', false);
       }, 180000);
     } else {
-      throw new Error(result.message || 'PhantomBuster launch failed');
+      throw new Error(result.message || 'Victory Vision Search launch failed');
     }
     
   } catch (error) {
