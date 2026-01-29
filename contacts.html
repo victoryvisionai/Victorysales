@@ -1928,7 +1928,6 @@ function toggleCampaignMode() {
   document.getElementById('templateMode').style.display = useTemplates ? 'block' : 'none';
 }
 
-// AI suggest campaign description
 async function aiSuggestCampaign() {
   try {
     showStatus('🤖 AI is analyzing your contacts and suggesting a campaign...', false);
@@ -1937,7 +1936,7 @@ async function aiSuggestCampaign() {
       allContacts.find(c => c.id === id)
     ).filter(c => c);
     
-    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/campaign-suggest', {
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/campaign', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -1953,16 +1952,24 @@ async function aiSuggestCampaign() {
     
     const result = await response.json();
     
-    if (result.campaign_description) {
-      document.getElementById('campaignDescription').value = result.campaign_description;
-      showStatus('✅ AI campaign suggestion loaded!', false);
+    console.log('Campaign AI Response:', result);
+    
+    // Handle the response - look for prompt field
+    const campaignPrompt = result.prompt || result.campaign_description || '';
+    
+    if (!campaignPrompt) {
+      throw new Error('No campaign prompt returned from AI');
     }
+    
+    // Put the prompt in the campaignDescription textarea
+    document.getElementById('campaignDescription').value = campaignPrompt;
+    showStatus('✅ AI campaign prompt loaded! Review and edit as needed.', false);
+    
   } catch (error) {
     console.error('Error getting AI suggestion:', error);
-    showStatus('Error getting AI suggestion', true);
+    showStatus('Error getting AI suggestion: ' + error.message, true);
   }
 }
-
 async function loadEmailTemplates() {
   try {
     const emailCount = parseInt(document.getElementById('emailCount').value);
