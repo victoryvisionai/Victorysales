@@ -1930,6 +1930,9 @@ function toggleCampaignMode() {
 
 async function aiSuggestCampaign() {
   try {
+    // Save current selection state
+    const savedSelection = new Set(selectedContacts);
+    
     showStatus('🤖 AI is analyzing your contacts and suggesting a campaign...', false);
     
     const selectedContactsList = Array.from(selectedContacts).map(id => 
@@ -1957,13 +1960,9 @@ async function aiSuggestCampaign() {
     const result = await response.json();
     
     console.log('Campaign AI Response:', result);
-    console.log('Response type:', typeof result);
-    console.log('Is array:', Array.isArray(result));
     
-    // Handle array response from n8n (when using "All Incoming Items")
+    // Handle array response from n8n
     const data = Array.isArray(result) ? result[0] : result;
-    
-    // Look for prompt in various possible locations
     const campaignPrompt = data?.prompt || data?.campaign_description || data?.message || '';
     
     if (!campaignPrompt || campaignPrompt.length < 50) {
@@ -1973,14 +1972,25 @@ async function aiSuggestCampaign() {
     
     // Put the prompt in the campaignDescription textarea
     document.getElementById('campaignDescription').value = campaignPrompt;
+    
+    // Restore selection state
+    selectedContacts = savedSelection;
+    updateSelectedCount();
+    
+    // Re-check checkboxes in the UI
+    document.querySelectorAll('.contact-checkbox').forEach(checkbox => {
+      if (savedSelection.has(checkbox.dataset.id)) {
+        checkbox.checked = true;
+      }
+    });
+    
     showStatus('✅ AI campaign prompt loaded! Review and edit as needed.', false);
     
   } catch (error) {
     console.error('Error getting AI suggestion:', error);
     showStatus('Error getting AI suggestion: ' + error.message, true);
   }
-}
-  
+}  
   async function loadEmailTemplates() {
   try {
     const emailCount = parseInt(document.getElementById('emailCount').value);
