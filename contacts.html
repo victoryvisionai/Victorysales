@@ -1950,14 +1950,24 @@ async function aiSuggestCampaign() {
       })
     });
     
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
     const result = await response.json();
     
     console.log('Campaign AI Response:', result);
+    console.log('Response type:', typeof result);
+    console.log('Is array:', Array.isArray(result));
     
-    // Handle the response - look for prompt field
-    const campaignPrompt = result.prompt || result.campaign_description || '';
+    // Handle array response from n8n (when using "All Incoming Items")
+    const data = Array.isArray(result) ? result[0] : result;
     
-    if (!campaignPrompt) {
+    // Look for prompt in various possible locations
+    const campaignPrompt = data?.prompt || data?.campaign_description || data?.message || '';
+    
+    if (!campaignPrompt || campaignPrompt.length < 50) {
+      console.error('No valid prompt found. Data received:', data);
       throw new Error('No campaign prompt returned from AI');
     }
     
@@ -1970,7 +1980,8 @@ async function aiSuggestCampaign() {
     showStatus('Error getting AI suggestion: ' + error.message, true);
   }
 }
-async function loadEmailTemplates() {
+  
+  async function loadEmailTemplates() {
   try {
     const emailCount = parseInt(document.getElementById('emailCount').value);
     const tone = document.getElementById('emailTone').value;
