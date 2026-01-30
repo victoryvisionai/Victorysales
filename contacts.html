@@ -2015,10 +2015,23 @@ async function aiSuggestCampaign() {
     
     const result = await response.json();
     
-    // Check if templates exist and are in the right format
-    if (!result.templates || !Array.isArray(result.templates) || result.templates.length === 0) {
-      throw new Error('No templates returned from AI');
-    }
+   const result = await response.json();
+
+console.log('Raw templates response:', result);
+
+// Handle n8n array wrapper
+const data = Array.isArray(result) ? result[0] : result;
+
+console.log('Extracted data:', data);
+
+// Check if templates exist and are in the right format
+if (!data || !data.templates || !Array.isArray(data.templates) || data.templates.length === 0) {
+  console.error('Invalid response format. Full result:', result);
+  throw new Error('No templates returned from AI');
+}
+
+// Use data.templates instead of result.templates
+const templates = data.templates;
     
     // Display templates
    // Add loading indicator
