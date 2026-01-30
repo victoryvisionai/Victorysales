@@ -1998,17 +1998,27 @@ async function aiSuggestCampaign() {
     
     showStatus(`🤖 Generating ${emailCount} email templates... This will take about 30 seconds.`, false);
     
-    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/templates', {
+const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/templates', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         customer_id: CUSTOMER_ID,
         num_emails: emailCount,
         tone: tone,
-        campaign_description: document.getElementById('campaignDescription').value
+        campaign_description: document.getElementById('campaignDescription').value,
+        contacts: Array.from(selectedContacts).map(id => {
+          const contact = allContacts.find(c => c.id === id);
+          return contact ? {
+            id: contact.id,
+            name: contact.name,
+            title: contact.title,
+            company: company,
+            industry: contact.industry,
+            email: contact.email
+          } : null;
+        }).filter(c => c !== null)
       })
-    });
-    
+    });    
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }    
