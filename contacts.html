@@ -2011,12 +2011,8 @@ async function aiSuggestCampaign() {
     
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const result = await response.json();
-    
+    }    
    const result = await response.json();
-
 console.log('Raw templates response:', result);
 
 // Handle n8n array wrapper
