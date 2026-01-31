@@ -1320,6 +1320,86 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
               📧 Load Templates
             </button>
           </div>
+
+async function scheduleSelectedCampaign() {
+  try {
+    // Get the start date from the form
+    const startDate = document.getElementById('scheduleStartDate').value;
+    
+    if (!startDate) {
+      showStatus('❌ Please select a start date', true);
+      return;
+    }
+    
+    // Collect selected variations
+    const selectedEmails = [];
+    const emailDivs = document.querySelectorAll('#emailTemplateContainer > div');
+    
+    emailDivs.forEach((div, emailIndex) => {
+      const selectedRadio = div.querySelector(`input[name="email_${emailIndex}_selection"]:checked`);
+      
+      if (!selectedRadio) {
+        throw new Error(`Please select a variation for Email ${emailIndex + 1}`);
+      }
+      
+      const varIndex = selectedRadio.value === 'A' ? 0 : selectedRadio.value === 'B' ? 1 : 2;
+      
+      const subject = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="subject"]`).value;
+      const body = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="body"]`).value;
+      
+      // Calculate send time: first email at start date, then +48 hours for each subsequent
+      const sendDate = new Date(startDate);
+      sendDate.setHours(sendDate.getHours() + (emailIndex * 48));
+      
+      selectedEmails.push({
+        sequence_number: emailIndex + 1,
+        subject: subject,
+        body: body,
+        scheduled_time: sendDate.toISOString(),
+        delay_hours: emailIndex * 48
+      });
+    });
+    
+    if (selectedEmails.length === 0) {
+      showStatus('❌ No emails selected', true);
+      return;
+    }
+    
+    showStatus(`📅 Scheduling ${selectedEmails.length} emails...`, false);
+    
+    // Send to emails/schedule webhook
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/schedule', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        campaign_name: document.getElementById('campaignName').value,
+        contact_ids: Array.from(selectedContacts),
+        start_date: startDate,
+        emails: selectedEmails
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const result = await response.json();
+    
+    if (result.success !== false) {
+      showStatus(`✅ Campaign scheduled! ${selectedEmails.length} emails will be sent starting ${new Date(startDate).toLocaleDateString()}`, false);
+      closeCustomCampaignModal();
+      selectedContacts.clear();
+      updateSelectedCount();
+    } else {
+      throw new Error(result.message || 'Failed to schedule campaign');
+    }
+    
+  } catch (error) {
+    console.error('Error scheduling campaign:', error);
+    showStatus(`❌ Error: ${error.message}`, true);
+  }
+}
           
           <div id="emailTemplateContainer"></div>
         </div>
@@ -2072,12 +2152,20 @@ container.innerHTML = `
         console.error(`Email ${index + 1} has no variations`);
         return;
       }
-      
       emailDiv.innerHTML = `
-        <h4>Email ${index + 1}</h4>
-        ${emailSet.variations.map((variation, varIndex) => `
-          <div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px;">
-            <label><strong>Variation ${String.fromCharCode(65 + varIndex)}:</strong></label>
+  <h4>Email ${emailSet.email_number}</h4>
+  ${emailSet.variations.map((variation, varIndex) => `
+    <div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; position: relative;">
+      <div style="position: absolute; top: 10px; right: 10px;">
+        <input type="radio" 
+               name="email_${index}_selection" 
+               value="${variation.variation}"
+               id="select_${index}_${varIndex}"
+               style="width: 20px; height: 20px; cursor: pointer;">
+        <label for="select_${index}_${varIndex}" style="margin-left: 5px; cursor: pointer;">Select this variant</label>
+      </div>
+      <label><strong>Variation ${variation.variation}:</strong></label>
+            
             <div style="margin: 5px 0;">
               <strong>Subject:</strong> 
               <input type="text" value="${escapeHtml(variation.subject)}" 
@@ -2100,7 +2188,14 @@ container.innerHTML = `
     });
     
     showStatus('✅ Email templates loaded! Edit as needed, then save.', false);
-    
+    // After the forEach loop that creates emailDiv elements
+const sendButton = document.createElement('button');
+sendButton.type = 'button';
+sendButton.className = 'success';
+sendButton.style.cssText = 'background: #28a745; margin-top: 20px; padding: 12px 24px; width: 100%;';
+sendButton.textContent = '✅ Schedule Selected Campaign';
+sendButton.onclick = scheduleSelectedCampaign;
+container.appendChild(sendButton);
   } catch (error) {
     console.error('Error loading templates:', error);
     showStatus(`❌ Error: ${error.message}`, true);
