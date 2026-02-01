@@ -2018,7 +2018,6 @@ async function loadEmailTemplates() {
     const tone = document.getElementById('emailTone').value;
 
     showStatus(`⏳ Generating ${emailCount} email templates... This may take up to 60 seconds.`, false, true);
-
     const container = document.getElementById('emailTemplateContainer');
     container.innerHTML = `
       <div style="text-align: center; padding: 40px;">
@@ -2079,11 +2078,9 @@ if (!data || !data.templates || !Array.isArray(data.templates) || data.templates
 const templates = data.templates;
     
     // Display templates
-   // Add loading indicator
     document.getElementById('loadTemplatesBtn').disabled = false;
     document.getElementById('loadTemplatesBtn').style.opacity = '1';
-    const container = document.getElementById('emailTemplateContainer');
-    container.innerHTML = '';
+       container.innerHTML = '';
     
     templates.forEach((emailSet, index) => {
       const emailDiv = document.createElement('div');
