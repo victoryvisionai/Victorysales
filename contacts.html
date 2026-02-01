@@ -2061,6 +2061,7 @@ container.innerHTML = `
     }
   </style>
 `;
+   container.innerHTML = '';
     templates.forEach((emailSet, index) => {
       const emailDiv = document.createElement('div');
       emailDiv.style.marginBottom = '20px';
@@ -2148,7 +2149,7 @@ async function scheduleSelectedCampaign() {
     
     // Collect selected variations
     const selectedEmails = [];
-    const emailDivs = document.querySelectorAll('#emailTemplateContainer > div');
+    const emailDivs = document.querySelectorAll('#emailTemplateContainer > div:has(input[type="radio"])');
     
     emailDivs.forEach((div, emailIndex) => {
       const selectedRadio = div.querySelector(`input[name="email_${emailIndex}_selection"]:checked`);
