@@ -2183,8 +2183,8 @@ async function scheduleSelectedCampaign() {
     
     showStatus(`📅 Scheduling ${selectedEmails.length} emails...`, false);
     
-    // Send to emails/schedule webhook
-    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/schedule', {
+    // Send to emails/template-schedule webhook
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/template-schedule', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
