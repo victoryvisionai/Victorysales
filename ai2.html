@@ -1241,12 +1241,21 @@
         icon.classList.add('expanded');
       }
     }
-
-    // Initialize page
+// Initialize page
     async function init() {
-      await checkAuth();
-      await loadDashboard();
-      setupEventListeners();
+      try {
+        const isAuthenticated = await checkAuthentication();
+        
+        if (isAuthenticated) {
+          setupEventListeners();
+          await loadDashboard();
+        } else {
+          redirectToLogin();
+        }
+      } catch (e) {
+        console.error('Initialization failed:', e);
+        redirectToLogin();
+      }
     }
 
 async function checkAuthentication() {
@@ -1321,7 +1330,7 @@ async function checkAuthentication() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             enabled: enabled,
-            customer_id: currentUser ? currentUser.email : null,
+           customer_id: CUSTOMER_ID,
             toggled_at: new Date().toISOString()
           })
         });
@@ -1361,7 +1370,7 @@ async function checkAuthentication() {
         const { data: contacts } = await supabaseClient
           .from('contacts')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created', startDate.toISOString());
 
         // Calculate Victory Vision funnel stages
@@ -1381,7 +1390,7 @@ async function checkAuthentication() {
         const { data: smsData } = await supabaseClient
           .from('SMS')
           .select('contact')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
         
         const uniqueSmsContacts = new Set(smsData?.map(s => s.contact).filter(Boolean));
@@ -1432,7 +1441,7 @@ async function checkAuthentication() {
         const { data: searches } = await supabaseClient
           .from('searches')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statSearches').textContent = searches?.length || 0;
@@ -1441,7 +1450,7 @@ async function checkAuthentication() {
         const { data: emails } = await supabaseClient
           .from('email')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('sent_at', startDate.toISOString());
         
         document.getElementById('statEmails').textContent = emails?.length || 0;
@@ -1450,7 +1459,7 @@ async function checkAuthentication() {
         const { data: calls } = await supabaseClient
           .from('calls')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statCalls').textContent = calls?.length || 0;
@@ -1459,7 +1468,7 @@ async function checkAuthentication() {
         const { data: meetings } = await supabaseClient
           .from('meetings')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statMeetings').textContent = meetings?.length || 0;
@@ -1468,7 +1477,7 @@ async function checkAuthentication() {
         const { data: victories } = await supabaseClient
           .from('victories')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statVictories').textContent = victories?.length || 0;
@@ -1485,7 +1494,7 @@ async function checkAuthentication() {
         const { data: allEmails } = await supabaseClient
           .from('email')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('sent_at', startDate.toISOString());
 
         // Separate AI vs manual
@@ -1513,7 +1522,7 @@ async function checkAuthentication() {
         const { data: allSms } = await supabaseClient
           .from('SMS')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
 
         const aiSms = allSms?.filter(s => s.campaign) || [];
@@ -1526,7 +1535,7 @@ async function checkAuthentication() {
         const { data: allCalls } = await supabaseClient
           .from('calls')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
 
         // For now, assume all calls are manual (AI calling would be tagged differently)
@@ -1554,13 +1563,13 @@ async function checkAuthentication() {
         const { data: meetings } = await supabaseClient
           .from('meetings')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
 
         const { data: victories } = await supabaseClient
           .from('victories')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString());
 
         document.getElementById('meetingsBooked').textContent = meetings?.length || 0;
@@ -1602,7 +1611,7 @@ async function checkAuthentication() {
         const { data: emails } = await supabaseClient
           .from('email')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('sent_at', startDate.toISOString())
           .order('sent_at', { ascending: false })
           .limit(10);
@@ -1610,7 +1619,7 @@ async function checkAuthentication() {
         const { data: calls } = await supabaseClient
           .from('calls')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString())
           .order('created_at', { ascending: false })
           .limit(10);
@@ -1618,7 +1627,7 @@ async function checkAuthentication() {
         const { data: meetings } = await supabaseClient
           .from('meetings')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .gte('created_at', startDate.toISOString())
           .order('created_at', { ascending: false })
           .limit(10);
@@ -1699,7 +1708,7 @@ async function checkAuthentication() {
         const { data: contacts } = await supabaseClient
           .from('contacts')
           .select('*')
-          .eq('customer_id', currentUser.email)
+          .eq('customer_id', CUSTOMER_ID)
           .order('created', { ascending: false });
 
         if (!contacts || contacts.length === 0) {
