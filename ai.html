@@ -1521,6 +1521,14 @@ async function loadPerformanceMetrics(startDate) {
         allMeetings = [];
       }
     }
+
+console.log('🔍 First meeting object:', allMeetings[0]);
+console.log('🔍 Meeting date fields:', {
+  created_at: allMeetings[0]?.created_at,
+  start_at: allMeetings[0]?.start_at,
+  created: allMeetings[0]?.created,
+  startDate: allMeetings[0]?.startDate
+});
     
     // Rest of the function stays the same...
     const emails = allEmails.filter(e => 
