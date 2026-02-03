@@ -1198,43 +1198,66 @@
       localStorage.removeItem('vv_session');
       window.location.href = 'login.html';
     }
-
-    // API call function with authentication
-    async function apiCall(endpoint, data = {}) {
-      try {
-        const url = endpoint.includes('/user/get') ? 
-          `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
-          endpoint;
-        
-        const requestOptions = {
-          method: endpoint.includes('/user/get') ? 'GET' : 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Customer-ID': CUSTOMER_ID,
-            'Authorization': authToken ? `Bearer ${authToken}` : ''
-          }
-        };
-
-        if (!endpoint.includes('/user/get')) {
-          requestOptions.body = JSON.stringify({
-            customer_id: CUSTOMER_ID,
-            ...data
-          });
-        }
-
-        const response = await fetch(url, requestOptions);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        return await response.json();
-      } catch (error) {
-        console.error('API call failed:', error);
-        throw error;
+// API call function with authentication
+async function apiCall(endpoint, data = {}) {
+  try {
+    const url = endpoint.includes('/user/get') ? 
+      `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
+      endpoint;
+    
+    const requestOptions = {
+      method: endpoint.includes('/user/get') ? 'GET' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID,
+        'Authorization': authToken ? `Bearer ${authToken}` : ''
       }
+    };
+
+    if (!endpoint.includes('/user/get')) {
+      requestOptions.body = JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        ...data
+      });
     }
 
+    console.log('📡 Calling:', endpoint);
+    const response = await fetch(url, requestOptions);
+    
+    console.log('📡 Response status:', response.status, response.statusText);
+    
+    if (!response.ok) {
+      console.warn(`HTTP ${response.status} for ${endpoint}`);
+      return null;
+    }
+
+    // Get response as text first
+    const text = await response.text();
+    console.log('📡 Response text length:', text.length, 'chars');
+    
+    // Check if response has content
+    if (!text || text.trim() === '') {
+      console.warn(`⚠️ Empty response from ${endpoint}`);
+      return null;
+    }
+
+    // Try to parse JSON
+    try {
+      const parsed = JSON.parse(text);
+      console.log('✅ Parsed response from', endpoint, ':', parsed);
+      return parsed;
+    } catch (parseError) {
+      console.error('❌ JSON parse error for', endpoint);
+      console.error('Response text:', text.substring(0, 200));
+      return null;
+    }
+
+  } catch (error) {
+    console.error('❌ API call failed:', endpoint, error);
+    return null;
+  }
+}
+   
     async function loadUserData() {
       try {
         const response = await apiCall(ENDPOINTS.getUserData);
@@ -1434,67 +1457,97 @@
       }
     }
 
-    // Load performance metrics
-    async function loadPerformanceMetrics(startDate) {
+// Load performance metrics
+async function loadPerformanceMetrics(startDate) {
+  try {
+    // Load emails via webhook if needed
+    if (!allEmails || allEmails.length === 0) {
       try {
-        // Load emails via webhook if needed
-        if (!allEmails || allEmails.length === 0) {
-          try {
-            const emailsResponse = await apiCall(ENDPOINTS.getEmails);
-            allEmails = Array.isArray(emailsResponse) ? emailsResponse : 
-                        emailsResponse.emails || [];
-          } catch (e) {
-            console.warn('Could not load emails:', e);
+        const emailsResponse = await apiCall(ENDPOINTS.getEmails);
+        
+        if (emailsResponse) {
+          // Handle different response formats
+          if (emailsResponse.emails && Array.isArray(emailsResponse.emails)) {
+            allEmails = emailsResponse.emails;
+          } else if (Array.isArray(emailsResponse)) {
+            allEmails = emailsResponse;
+          } else {
+            console.warn('⚠️ Unexpected emails format, setting to empty array');
             allEmails = [];
           }
+          console.log('✅ Loaded emails:', allEmails.length);
+        } else {
+          console.warn('⚠️ No emails response');
+          allEmails = [];
         }
-        
-        // Load meetings via webhook if needed
-        if (!allMeetings || allMeetings.length === 0) {
-          try {
-            const meetingsResponse = await apiCall(ENDPOINTS.getMeetings);
-            allMeetings = Array.isArray(meetingsResponse) ? meetingsResponse : 
-                          meetingsResponse.meetings || [];
-          } catch (e) {
-            console.warn('Could not load meetings:', e);
-            allMeetings = [];
-          }
-        }
-        
-        // Filter by date
-        const emails = allEmails.filter(e => 
-          e.sent_at && new Date(e.sent_at) >= startDate
-        );
-        
-        const meetings = allMeetings.filter(m => 
-          m.created_at && new Date(m.created_at) >= startDate
-        );
-        
-        // Estimate searches from contacts created
-        const searches = allContacts.filter(c => 
-          c.created && new Date(c.created) >= startDate
-        ).length;
-        
-        // Estimate calls from contacts
-        const calls = allContacts.filter(c => 
-          c.last_called && new Date(c.last_called) >= startDate
-        ).length;
-        
-        // Victories from contacts
-        const victories = allContacts.filter(c => 
-          c.client_won_date && new Date(c.client_won_date) >= startDate
-        ).length;
-        
-        document.getElementById('statSearches').textContent = searches || 0;
-        document.getElementById('statEmails').textContent = emails?.length || 0;
-        document.getElementById('statCalls').textContent = calls || 0;
-        document.getElementById('statMeetings').textContent = meetings?.length || 0;
-        document.getElementById('statVictories').textContent = victories || 0;
-
-      } catch (error) {
-        console.error('Error loading performance metrics:', error);
+      } catch (e) {
+        console.error('❌ Email load error:', e);
+        allEmails = [];
       }
     }
+    
+    // Load meetings via webhook if needed
+    if (!allMeetings || allMeetings.length === 0) {
+      try {
+        const meetingsResponse = await apiCall(ENDPOINTS.getMeetings);
+        
+        if (meetingsResponse) {
+          // Handle different response formats
+          if (meetingsResponse.meetings && Array.isArray(meetingsResponse.meetings)) {
+            allMeetings = meetingsResponse.meetings;
+          } else if (Array.isArray(meetingsResponse)) {
+            allMeetings = meetingsResponse;
+          } else {
+            console.warn('⚠️ Unexpected meetings format, setting to empty array');
+            allMeetings = [];
+          }
+          console.log('✅ Loaded meetings:', allMeetings.length);
+        } else {
+          console.warn('⚠️ No meetings response');
+          allMeetings = [];
+        }
+      } catch (e) {
+        console.error('❌ Meeting load error:', e);
+        allMeetings = [];
+      }
+    }
+    
+    // Rest of the function stays the same...
+    const emails = allEmails.filter(e => 
+      e.sent_at && new Date(e.sent_at) >= startDate
+    );
+    
+    const meetings = allMeetings.filter(m => 
+      m.created_at && new Date(m.created_at) >= startDate
+    );
+    
+    const searches = allContacts.filter(c => 
+      c.created && new Date(c.created) >= startDate
+    ).length;
+    
+    const calls = allContacts.filter(c => 
+      c.last_called && new Date(c.last_called) >= startDate
+    ).length;
+    
+    const victories = allContacts.filter(c => 
+      c.client_won_date && new Date(c.client_won_date) >= startDate
+    ).length;
+    
+    document.getElementById('statSearches').textContent = searches || 0;
+    document.getElementById('statEmails').textContent = emails?.length || 0;
+    document.getElementById('statCalls').textContent = calls || 0;
+    document.getElementById('statMeetings').textContent = meetings?.length || 0;
+    document.getElementById('statVictories').textContent = victories || 0;
+
+  } catch (error) {
+    console.error('❌ Error loading performance metrics:', error);
+    document.getElementById('statSearches').textContent = 0;
+    document.getElementById('statEmails').textContent = 0;
+    document.getElementById('statCalls').textContent = 0;
+    document.getElementById('statMeetings').textContent = 0;
+    document.getElementById('statVictories').textContent = 0;
+  }
+}
 
     // Load attribution data
     async function loadAttributionData(startDate) {
