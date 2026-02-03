@@ -1611,11 +1611,21 @@ async function loadPerformanceMetrics(startDate) {
           `${emails?.length > 0 ? ((totalReplies / emails.length) * 100).toFixed(1) : 0}% reply rate`;
 
         // Conversion metrics
-        const meetings = allMeetings.filter(m => 
-          m.created_at && new Date(m.created_at) >= startDate
-        );
+        const meetings = allMeetings.filter(m => {
+  // Check different possible date fields in meetings
+  const meetingDate = m.created_at || m.start_at || m.created || m.startDate;
+  if (!meetingDate) return false;
+  
+  try {
+    return new Date(meetingDate) >= startDate;
+  } catch (e) {
+    return false;
+  }
+});
 
-        const victories = allContacts.filter(c => 
+console.log('📊 Meetings in time window:', meetings.length, 'out of', allMeetings.length, 'total');
+
+const victories = allContacts.filter(c => 
           c.client_won_date && new Date(c.client_won_date) >= startDate
         );
 
