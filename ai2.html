@@ -9,8 +9,6 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -849,33 +847,30 @@
   <!-- Navigation Bar -->
   <div class="navbar">
     <div class="logo">
-    <a href="/"><img src="logo.jpg" alt="Victory Vision Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'" style="height:50px;width:auto;"></a>
+      <a href="/"><img src="https://res.cloudinary.com/dbybrrfg9/image/upload/v1737846639/1731533912990_aiyigq.png" alt="Victory Vision Logo"></a>
     </div>
-   <nav>
+    <nav>
       <ul>
-        <li><a href="companyprofile">Profile</a></li>
-        <li><a href="campaigns">Campaigns</a></li>
-        <li><a href="media">Media</a></li>
-        <li><a href="pages">Pages</a></li>
-        <li><a href="social">Social</a></li>
-        <li><a href="contacts">Contacts</a></li>
-        <li><a href="ads">Ads</a></li>
-        <li><a href="messages">Messages</a></li>
-        <li><a href="ai" class="active">AI SDR</a></li>
-        <li><a href="settings">Settings</a></li>
+        <li><a href="/profile">Profile</a></li>
+        <li><a href="/campaigns">Campaigns</a></li>
+        <li><a href="/media">Media</a></li>
+        <li><a href="/pages">Pages</a></li>
+        <li><a href="/social">Social</a></li>
+        <li><a href="/contacts">Contacts</a></li>
+        <li><a href="/ads">Ads</a></li>
+        <li><a href="/messages">Messages</a></li>
+        <li><a href="/meetings">Meetings</a></li>
+        <li><a href="/ai" class="active">AI SDR</a></li>
+        <li><a href="/analytics">Analytics</a></li>
+        <li><a href="/settings">Settings</a></li>
       </ul>
     </nav>
-<div class="user-info">
+    <div class="user-info">
+      <div id="userSubscription" class="subscription-medallion bronze">BRONZE</div>
       <span id="userEmail">Loading...</span>
-      <button onclick="startTour()" style="background: #28a745; color:white; border:none; padding: 6px 12px; border-radius:4px; font-size: 11px; margin-left: 10px; cursor:pointer;" id="tourButton">
-        📖 Take Tour
-      </button>
-      <div id="userSubscription" class="subscription-medallion bronze">
-        <span class="plan-name">Bronze</span>
-      </div>
     </div>
   </div>
-  
+
   <div class="container">
     <!-- Page Header -->
     <div class="page-header">
@@ -1221,11 +1216,11 @@
 
   <script>
     // Initialize Supabase
-  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
-    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-    let CUSTOMER_ID = null;
-    let authToken = null;
+    const SUPABASE_URL = 'https://pswktqafmmeueeskwzmj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzd2t0cWFmbW1ldWVlc2t3em1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxNjk1MTYsImV4cCI6MjAzMzc0NTUxNn0.tpBjrp-bsRzF8tScNO9_KjsIwZrspAXuBKUNTIZrfOY';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentUser = null;
     let currentTimeWindow = 30; // days
 
     // Toggle outreach details
@@ -1241,76 +1236,41 @@
         icon.classList.add('expanded');
       }
     }
-// Initialize page
+
+    // Initialize page
     async function init() {
-      try {
-        const isAuthenticated = await checkAuthentication();
-
-if (isAuthenticated) {
-          await loadUserData();
-          setupEventListeners();
-          await loadDashboard();
-        } else {
-          redirectToLogin();
-        }
-      } catch (e) {
-        console.error('Initialization failed:', e);
-        redirectToLogin();
-      }
+      await checkAuth();
+      await loadDashboard();
+      setupEventListeners();
     }
 
-async function checkAuthentication() {
-      try {
-        const { data: { session }, error } = await supabaseClient.auth.getSession();
+    // Check authentication
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = '/';
+        return;
+      }
+
+      // Load user profile
+      const { data: profile } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', user.email)
+        .single();
+
+      if (profile) {
+        currentUser = profile;
+        document.getElementById('userEmail').textContent = profile.email;
         
-        if (error) {
-          console.error('Auth error:', error);
-          return false;
-        }
-
-        if (session && session.user) {
-          CUSTOMER_ID = session.user.email;
-          authToken = session.access_token;
-          
-          const userEmailEl = document.getElementById('userEmail');
-          if (userEmailEl) {
-            userEmailEl.textContent = CUSTOMER_ID;
-          }
-          
-          return true;
-        }
-
-        return false;
-      } catch (e) {
-        console.error('Auth check error:', e);
-        return false;
+        // Update subscription badge
+        const subPlan = profile.subscription_plan || 'bronze';
+        const badge = document.getElementById('userSubscription');
+        badge.className = `subscription-medallion ${subPlan.toLowerCase()}`;
+        badge.textContent = subPlan.toUpperCase();
       }
     }
 
-    function redirectToLogin() {
-      window.location.href = 'login.html';
-    }
-  async function loadUserData() {
-      try {
-        const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/user/get?customer_id=' + encodeURIComponent(CUSTOMER_ID));
-        const data = await response.json();
-        const userData = Array.isArray(data) ? data[0] : data;
-        
-        if (userData) {
-          const subPlan = userData.subscription_plan || 'bronze';
-          const badge = document.getElementById('userSubscription');
-          if (badge) {
-            badge.className = `subscription-medallion ${subPlan.toLowerCase()}`;
-            const planNameEl = badge.querySelector('.plan-name');
-            if (planNameEl) {
-              planNameEl.textContent = subPlan.charAt(0).toUpperCase() + subPlan.slice(1);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error loading user data:', error);
-      }
-    }  
     // Setup event listeners
     function setupEventListeners() {
       // Time window selector
@@ -1338,44 +1298,25 @@ async function checkAuthentication() {
         });
       });
     }
-    
-     // Toggle Auto SDR
-     async function toggleAutoSDR(enabled) {
-     const toggle = document.getElementById('autoSdrToggle');
-      // Immediately revert the checkbox — we'll re-set it only on success
-      toggle.checked = !enabled;
 
+    // Toggle Auto SDR
+    async function toggleAutoSDR(enabled) {
       try {
-        const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/aisdr/toggle', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            enabled: enabled,
-           customer_id: CUSTOMER_ID,
-            toggled_at: new Date().toISOString()
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Webhook returned ${response.status}`);
-        }
-
-        // Success — commit the toggle state
-        toggle.checked = enabled;
-        console.log(`AI SDR ${enabled ? 'enabled' : 'disabled'} — webhook confirmed`);
-
+        const endpoint = enabled ? '/ai/auto-sdr/on' : '/ai/auto-sdr/off';
+        // This would call your n8n workflow
+        // For now, just update the UI
+        console.log(`AI SDR ${enabled ? 'enabled' : 'disabled'}`);
       } catch (error) {
         console.error('Error toggling Auto SDR:', error);
-        // Toggle stays reverted, show alert so you know it failed
-        alert(`Failed to ${enabled ? 'enable' : 'disable'} AI SDR: ${error.message}`);
       }
     }
+
     // Load dashboard data
     async function loadDashboard() {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - currentTimeWindow);
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - currentTimeWindow);
 
-    await Promise.all([
+      await Promise.all([
         loadFunnelData(startDate),
         loadPerformanceMetrics(startDate),
         loadAttributionData(startDate),
@@ -1388,10 +1329,10 @@ async function checkAuthentication() {
     async function loadFunnelData(startDate) {
       try {
         // Get contacts by stage
-        const { data: contacts } = await supabaseClient
+        const { data: contacts } = await supabase
           .from('contacts')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created', startDate.toISOString());
 
         // Calculate Victory Vision funnel stages
@@ -1408,10 +1349,10 @@ async function checkAuthentication() {
         const called = contacts?.filter(c => c.number_call_attempts > 0 || c.last_called).length || 0;
         
         // Get SMS count from SMS table
-        const { data: smsData } = await supabaseClient
+        const { data: smsData } = await supabase
           .from('SMS')
           .select('contact')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
         
         const uniqueSmsContacts = new Set(smsData?.map(s => s.contact).filter(Boolean));
@@ -1459,46 +1400,46 @@ async function checkAuthentication() {
     async function loadPerformanceMetrics(startDate) {
       try {
         // Searches
-        const { data: searches } = await supabaseClient
+        const { data: searches } = await supabase
           .from('searches')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statSearches').textContent = searches?.length || 0;
 
         // Emails
-        const { data: emails } = await supabaseClient
+        const { data: emails } = await supabase
           .from('email')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('sent_at', startDate.toISOString());
         
         document.getElementById('statEmails').textContent = emails?.length || 0;
 
         // Calls
-        const { data: calls } = await supabaseClient
+        const { data: calls } = await supabase
           .from('calls')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statCalls').textContent = calls?.length || 0;
 
         // Meetings
-        const { data: meetings } = await supabaseClient
+        const { data: meetings } = await supabase
           .from('meetings')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statMeetings').textContent = meetings?.length || 0;
 
         // Victories
-        const { data: victories } = await supabaseClient
+        const { data: victories } = await supabase
           .from('victories')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
         
         document.getElementById('statVictories').textContent = victories?.length || 0;
@@ -1512,10 +1453,10 @@ async function checkAuthentication() {
     async function loadAttributionData(startDate) {
       try {
         // Get all emails
-        const { data: allEmails } = await supabaseClient
+        const { data: allEmails } = await supabase
           .from('email')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('sent_at', startDate.toISOString());
 
         // Separate AI vs manual
@@ -1540,10 +1481,10 @@ async function checkAuthentication() {
         document.getElementById('manualEmailsRate').textContent = `${manualEmailOpenRate}% open rate`;
 
         // Get SMS data
-        const { data: allSms } = await supabaseClient
+        const { data: allSms } = await supabase
           .from('SMS')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
 
         const aiSms = allSms?.filter(s => s.campaign) || [];
@@ -1553,10 +1494,10 @@ async function checkAuthentication() {
         document.getElementById('manualSms').textContent = manualSms.length;
 
         // Get calls data
-        const { data: allCalls } = await supabaseClient
+        const { data: allCalls } = await supabase
           .from('calls')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
 
         // For now, assume all calls are manual (AI calling would be tagged differently)
@@ -1581,16 +1522,16 @@ async function checkAuthentication() {
           `${allEmails?.length > 0 ? ((totalReplies / allEmails.length) * 100).toFixed(1) : 0}% reply rate`;
 
         // Conversion metrics
-        const { data: meetings } = await supabaseClient
+        const { data: meetings } = await supabase
           .from('meetings')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
 
-        const { data: victories } = await supabaseClient
+        const { data: victories } = await supabase
           .from('victories')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
 
         document.getElementById('meetingsBooked').textContent = meetings?.length || 0;
@@ -1629,26 +1570,26 @@ async function checkAuthentication() {
         const timelineContainer = document.getElementById('timelineContainer');
         
         // Get recent activities
-        const { data: emails } = await supabaseClient
+        const { data: emails } = await supabase
           .from('email')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('sent_at', startDate.toISOString())
           .order('sent_at', { ascending: false })
           .limit(10);
 
-        const { data: calls } = await supabaseClient
+        const { data: calls } = await supabase
           .from('calls')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString())
           .order('created_at', { ascending: false })
           .limit(10);
 
-        const { data: meetings } = await supabaseClient
+        const { data: meetings } = await supabase
           .from('meetings')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString())
           .order('created_at', { ascending: false })
           .limit(10);
@@ -1726,10 +1667,10 @@ async function checkAuthentication() {
         tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading leads...</td></tr>';
 
         // Get contacts
-        const { data: contacts } = await supabaseClient
+        const { data: contacts } = await supabase
           .from('contacts')
           .select('*')
-          .eq('customer_id', CUSTOMER_ID)
+          .eq('customer_id', currentUser.email)
           .order('created', { ascending: false });
 
         if (!contacts || contacts.length === 0) {
@@ -1864,7 +1805,7 @@ async function checkAuthentication() {
     async function togglePriority(contactId, addPriority) {
       try {
         // Get current contact
-        const { data: contact } = await supabaseClient
+        const { data: contact } = await supabase
           .from('contacts')
           .select('tags')
           .eq('id', contactId)
@@ -1881,7 +1822,7 @@ async function checkAuthentication() {
         }
 
         // Update contact
-        await supabaseClient
+        await supabase
           .from('contacts')
           .update({ tags })
           .eq('id', contactId);
@@ -1921,54 +1862,8 @@ async function checkAuthentication() {
     }
 
     // Initialize on page load
-    // Tour
-    function startTour() {
-      introJs().setOptions({
-        showProgress: true,
-        showBullets: false,
-        exitOnOverlayClick: false,
-        nextLabel: 'Next →',
-        prevLabel: '← Back',
-        doneLabel: 'Complete!',
-        skipLabel: 'Skip'
-      }).start();
-    }
-// Session keepalive
-    setInterval(async function() {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) window.location.href = 'login.html';
-      } catch (e) {
-        console.error('Session check failed:', e);
-        window.location.href = 'login.html';
-      }
-    }, 300000);
-// Tour
-    function startTour() {
-      introJs().setOptions({
-        showProgress: true,
-        showBullets: false,
-        exitOnOverlayClick: false,
-        nextLabel: 'Next →',
-        prevLabel: '← Back',
-        doneLabel: 'Complete!',
-        skipLabel: 'Skip'
-      }).start();
-    }
-
-    // Session keepalive
-    setInterval(async function() {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) window.location.href = 'login.html';
-      } catch (e) {
-        console.error('Session check failed:', e);
-        window.location.href = 'login.html';
-      }
-    }, 300000);
-
-    // Initialize on page load
     document.addEventListener('DOMContentLoaded', init);
   </script>
+
 </body>
 </html>
