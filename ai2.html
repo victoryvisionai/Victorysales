@@ -1248,33 +1248,32 @@
       setupEventListeners();
     }
 
-    // Check authentication
+  // Check authentication
     async function checkAuth() {
-      const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) {
-        window.location.href = '/';
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+      if (error || !session || !session.user) {
+        window.location.href = 'login.html';
         return;
       }
 
-      // Load user profile
-      const { data: profile } = await supabaseClient
-        .from('users')
-        .select('*')
-        .eq('email', user.email)
-        .single();
+      currentUser = { email: session.user.email };
+      document.getElementById('userEmail').textContent = session.user.email;
 
-      if (profile) {
-        currentUser = profile;
-        document.getElementById('userEmail').textContent = profile.email;
-        
-        // Update subscription badge
-        const subPlan = profile.subscription_plan || 'bronze';
-        const badge = document.getElementById('userSubscription');
-        badge.className = `subscription-medallion ${subPlan.toLowerCase()}`;
-        badge.textContent = subPlan.toUpperCase();
+      try {
+        const res = await fetch('https://victoryvision.app.n8n.cloud/webhook/user/get?customer_id=' + encodeURIComponent(session.user.email));
+        const userData = await res.json();
+        const user = Array.isArray(userData) ? userData[0] : userData;
+        if (user) {
+          const subPlan = user.subscription_plan || 'bronze';
+          const badge = document.getElementById('userSubscription');
+          badge.className = `subscription-medallion ${subPlan.toLowerCase()}`;
+          badge.querySelector('.plan-name').textContent = subPlan.charAt(0).toUpperCase() + subPlan.slice(1);
+        }
+      } catch (e) {
+        console.error('Could not load user profile:', e);
       }
     }
-
     // Setup event listeners
     function setupEventListeners() {
       // Time window selector
