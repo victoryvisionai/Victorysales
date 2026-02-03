@@ -1221,10 +1221,11 @@
 
   <script>
     // Initialize Supabase
-  const SUPABASE_URL = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    let currentUser = null;
+  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    let CUSTOMER_ID = null;
+    let authToken = null;
     let currentTimeWindow = 30; // days
 
     // Toggle outreach details
@@ -1248,32 +1249,38 @@
       setupEventListeners();
     }
 
-  // Check authentication
-    async function checkAuth() {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-      if (error || !session || !session.user) {
-        window.location.href = 'login.html';
-        return;
-      }
-
-      currentUser = { email: session.user.email };
-      document.getElementById('userEmail').textContent = session.user.email;
-
+async function checkAuthentication() {
       try {
-        const res = await fetch('https://victoryvision.app.n8n.cloud/webhook/user/get?customer_id=' + encodeURIComponent(session.user.email));
-        const userData = await res.json();
-        const user = Array.isArray(userData) ? userData[0] : userData;
-        if (user) {
-          const subPlan = user.subscription_plan || 'bronze';
-          const badge = document.getElementById('userSubscription');
-          badge.className = `subscription-medallion ${subPlan.toLowerCase()}`;
-          badge.querySelector('.plan-name').textContent = subPlan.charAt(0).toUpperCase() + subPlan.slice(1);
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        
+        if (error) {
+          console.error('Auth error:', error);
+          return false;
         }
+
+        if (session && session.user) {
+          CUSTOMER_ID = session.user.email;
+          authToken = session.access_token;
+          
+          const userEmailEl = document.getElementById('userEmail');
+          if (userEmailEl) {
+            userEmailEl.textContent = CUSTOMER_ID;
+          }
+          
+          return true;
+        }
+
+        return false;
       } catch (e) {
-        console.error('Could not load user profile:', e);
+        console.error('Auth check error:', e);
+        return false;
       }
     }
+
+    function redirectToLogin() {
+      window.location.href = 'login.html';
+    }
+    
     // Setup event listeners
     function setupEventListeners() {
       // Time window selector
