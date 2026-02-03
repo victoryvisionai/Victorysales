@@ -1420,8 +1420,18 @@ async function apiCall(endpoint, data = {}) {
         }
 
         // Meetings - contacts with meeting_date
-        const meetings = contacts?.filter(c => c.meeting_date).length || 0;
-        
+    // Meetings - use the actual meetings data instead of contacts
+const meetingsInPeriod = allMeetings.filter(m => {
+  const meetingDate = m.created_at || m.start_at || m.created || m.startDate;
+  if (!meetingDate) return false;
+  try {
+    return new Date(meetingDate) >= startDate;
+  } catch (e) {
+    return false;
+  }
+}).length;
+
+const meetings = meetingsInPeriod || 0;    
         // Follow Up - contacts with follow-up indicators in customer_journey
         const followup = contacts?.filter(c => 
           c.customer_journey?.toLowerCase().includes('follow') ||
