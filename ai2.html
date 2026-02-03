@@ -1221,9 +1221,8 @@
   <script>
     // Initialize Supabase
   const SUPABASE_URL = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let currentUser = null;
     let currentTimeWindow = 30; // days
 
@@ -1250,14 +1249,14 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
     // Check authentication
     async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await supabaseClient.auth.getUser();
       if (!user) {
         window.location.href = '/';
         return;
       }
 
       // Load user profile
-      const { data: profile } = await supabase
+      const { data: profile } = await supabaseClient
         .from('users')
         .select('*')
         .eq('email', user.email)
@@ -1352,7 +1351,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     async function loadFunnelData(startDate) {
       try {
         // Get contacts by stage
-        const { data: contacts } = await supabase
+        const { data: contacts } = await supabaseClient
           .from('contacts')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1372,7 +1371,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         const called = contacts?.filter(c => c.number_call_attempts > 0 || c.last_called).length || 0;
         
         // Get SMS count from SMS table
-        const { data: smsData } = await supabase
+        const { data: smsData } = await supabaseClient
           .from('SMS')
           .select('contact')
           .eq('customer_id', currentUser.email)
@@ -1423,7 +1422,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     async function loadPerformanceMetrics(startDate) {
       try {
         // Searches
-        const { data: searches } = await supabase
+        const { data: searches } = await supabaseClient
           .from('searches')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1432,7 +1431,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         document.getElementById('statSearches').textContent = searches?.length || 0;
 
         // Emails
-        const { data: emails } = await supabase
+        const { data: emails } = await supabaseClient
           .from('email')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1441,7 +1440,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         document.getElementById('statEmails').textContent = emails?.length || 0;
 
         // Calls
-        const { data: calls } = await supabase
+        const { data: calls } = await supabaseClient
           .from('calls')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1450,7 +1449,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         document.getElementById('statCalls').textContent = calls?.length || 0;
 
         // Meetings
-        const { data: meetings } = await supabase
+        const { data: meetings } = await supabaseClient
           .from('meetings')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1459,7 +1458,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         document.getElementById('statMeetings').textContent = meetings?.length || 0;
 
         // Victories
-        const { data: victories } = await supabase
+        const { data: victories } = await supabaseClient
           .from('victories')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1476,7 +1475,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     async function loadAttributionData(startDate) {
       try {
         // Get all emails
-        const { data: allEmails } = await supabase
+        const { data: allEmails } = await supabaseClient
           .from('email')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1504,7 +1503,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         document.getElementById('manualEmailsRate').textContent = `${manualEmailOpenRate}% open rate`;
 
         // Get SMS data
-        const { data: allSms } = await supabase
+        const { data: allSms } = await supabaseClient
           .from('SMS')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1517,7 +1516,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         document.getElementById('manualSms').textContent = manualSms.length;
 
         // Get calls data
-        const { data: allCalls } = await supabase
+        const { data: allCalls } = await supabaseClient
           .from('calls')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1545,13 +1544,13 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
           `${allEmails?.length > 0 ? ((totalReplies / allEmails.length) * 100).toFixed(1) : 0}% reply rate`;
 
         // Conversion metrics
-        const { data: meetings } = await supabase
+        const { data: meetings } = await supabaseClient
           .from('meetings')
           .select('*')
           .eq('customer_id', currentUser.email)
           .gte('created_at', startDate.toISOString());
 
-        const { data: victories } = await supabase
+        const { data: victories } = await supabaseClient
           .from('victories')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1593,7 +1592,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         const timelineContainer = document.getElementById('timelineContainer');
         
         // Get recent activities
-        const { data: emails } = await supabase
+        const { data: emails } = await supabaseClient
           .from('email')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1601,7 +1600,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
           .order('sent_at', { ascending: false })
           .limit(10);
 
-        const { data: calls } = await supabase
+        const { data: calls } = await supabaseClient
           .from('calls')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1609,7 +1608,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
           .order('created_at', { ascending: false })
           .limit(10);
 
-        const { data: meetings } = await supabase
+        const { data: meetings } = await supabaseClient
           .from('meetings')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1690,7 +1689,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         tbody.innerHTML = '<tr><td colspan="5" class="loading"><div class="spinner"></div>Loading leads...</td></tr>';
 
         // Get contacts
-        const { data: contacts } = await supabase
+        const { data: contacts } = await supabaseClient
           .from('contacts')
           .select('*')
           .eq('customer_id', currentUser.email)
@@ -1828,7 +1827,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     async function togglePriority(contactId, addPriority) {
       try {
         // Get current contact
-        const { data: contact } = await supabase
+        const { data: contact } = await supabaseClient
           .from('contacts')
           .select('tags')
           .eq('id', contactId)
@@ -1845,7 +1844,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         }
 
         // Update contact
-        await supabase
+        await supabaseClient
           .from('contacts')
           .update({ tags })
           .eq('id', contactId);
@@ -1900,7 +1899,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 // Session keepalive
     setInterval(async function() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) window.location.href = 'login.html';
       } catch (e) {
         console.error('Session check failed:', e);
@@ -1923,7 +1922,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
     // Session keepalive
     setInterval(async function() {
       try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+        const { data: { session } } = await supabaseClientClient.auth.getSession();
         if (!session) window.location.href = 'login.html';
       } catch (e) {
         console.error('Session check failed:', e);
