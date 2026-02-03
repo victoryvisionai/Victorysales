@@ -1907,6 +1907,31 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
         window.location.href = 'login.html';
       }
     }, 300000);
+// Tour
+    function startTour() {
+      introJs().setOptions({
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        nextLabel: 'Next →',
+        prevLabel: '← Back',
+        doneLabel: 'Complete!',
+        skipLabel: 'Skip'
+      }).start();
+    }
+
+    // Session keepalive
+    setInterval(async function() {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) window.location.href = 'login.html';
+      } catch (e) {
+        console.error('Session check failed:', e);
+        window.location.href = 'login.html';
+      }
+    }, 300000);
+
+    // Initialize on page load
     document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
