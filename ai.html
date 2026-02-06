@@ -1421,6 +1421,7 @@
       getEmails: 'https://victoryvision.app.n8n.cloud/webhook/emails/get',
       getMeetings: 'https://victoryvision.app.n8n.cloud/webhook/meetings/get',
       toggleAutoSDR: 'https://victoryvision.app.n8n.cloud/webhook/aisdr/toggle',
+      getPlans: 'https://victoryvision.app.n8n.cloud/webhook/plans/get', 
       updateContact: 'https://victoryvision.app.n8n.cloud/webhook/contacts/update'
     };
 
@@ -2213,28 +2214,8 @@ async function loadPlans() {
   container.innerHTML = '<p class="loading-text">Loading plans...</p>';
   
   try {
-    // Use the same userEmail variable that's already in your file
-    if (typeof userEmail === 'undefined' || !userEmail) {
-      container.innerHTML = '<p class="loading-text" style="color: #ef4444;">Please log in to view plans.</p>';
-      return;
-    }
-    
-    const customerId = userEmail;
-    
-    // Fetch plans from webhook endpoint
-    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/plans/get', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        customer_id: customerId
-      })
-    });
-    
-    if (!response.ok) throw new Error('Failed to fetch plans');
-    
-    const plans = await response.json();
+    // Use the same apiCall pattern as contacts/get
+    const plans = await apiCall(ENDPOINTS.getPlans);
     
     if (!plans || plans.length === 0) {
       container.innerHTML = '<p class="no-plans">No plans generated yet. Check back soon! 🤖</p>';
