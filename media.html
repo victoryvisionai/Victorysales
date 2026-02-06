@@ -2211,11 +2211,21 @@ function selectMediaFileFromCard(cardElement) {
         throw new Error('Insufficient image credits');
       }
       
-   showStatus('⏳ Creating image... Wait ~2 minutes, then refresh the page.');
-document.getElementById('imageForm').reset();  // <-- Clear the form immediately
 showProcessing('Creating image...');
-      
-      const imageChat = document.getElementById('imageChat').value;
+
+const imageChat = document.getElementById('imageChat').value;  // ← GET VALUE FIRST
+if (!imageChat) {
+  hideProcessing();
+  throw new Error('Please provide an image description');
+}
+
+showStatus('⏳ Creating image... Wait ~2 minutes, then refresh the page.');
+document.getElementById('imageForm').reset();  // ← THEN CLEAR THE FORM
+
+const payload = {
+  id: CUSTOMER_ID,
+  chat: imageChat
+};
       if (!imageChat) {
         hideProcessing();
         throw new Error('Please provide an image description');
