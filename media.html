@@ -2230,14 +2230,7 @@ const payload = {
         hideProcessing();
         throw new Error('Please provide an image description');
       }
-      
-      const payload = {
-        id: CUSTOMER_ID,
-        chat: imageChat
-      };
-
       const result = await apiCall(ENDPOINTS.createImage, payload);
-      
       if (result.success !== false) {
         hideProcessing();
         showStatus('Image created successfully!');
