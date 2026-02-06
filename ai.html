@@ -2213,7 +2213,14 @@ async function loadPlans() {
   container.innerHTML = '<p class="loading-text">Loading plans...</p>';
   
   try {
-    const customerId = supabaseUser.email; // or however you get customer_id
+    // Get current user
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      container.innerHTML = '<p class="loading-text" style="color: #ef4444;">Please log in to view plans.</p>';
+      return;
+    }
+    
+    const customerId = session.user.email;
     
     // Fetch plans from webhook endpoint
     const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/plans/get', {
@@ -2242,8 +2249,7 @@ async function loadPlans() {
     console.error('Error loading plans:', error);
     container.innerHTML = '<p class="loading-text" style="color: #ef4444;">Error loading plans. Please try again.</p>';
   }
-}
-// Render individual plan
+}// Render individual plan
 function renderPlan(plan) {
   const planData = typeof plan.plan === 'string' ? JSON.parse(plan.plan) : plan.plan;
   const actions = planData.plan || [];
@@ -2374,8 +2380,11 @@ async function executePlan(event, planId, customerId) {
 }
 
 // Load plans when page loads
-document.addEventListener('DOMContentLoaded', () => {
-  if (supabaseUser) {
+// Load plans when page loads - wait for auth
+document.addEventListener('DOMContentLoaded', async () => {
+  // Wait for Supabase session to be established
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
     loadPlans();
   }
 });
