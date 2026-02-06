@@ -2218,7 +2218,6 @@ if (!imageChat) {
   hideProcessing();
   throw new Error('Please provide an image description');
 }
-
 showStatus('⏳ Creating image... Wait ~2 minutes, then refresh the page.');
 document.getElementById('imageForm').reset();  // ← THEN CLEAR THE FORM
 
@@ -2287,9 +2286,10 @@ const selectedFile = selectedMediaFiles.video;
     const result = await apiCall(ENDPOINTS.createVideo, payload);
 
       if (result.success !== false) {
-        hideProcessing();
-     showStatus('⏳ Creating video... Wait ~8 minutes, then refresh the page.');
-document.getElementById('videoForm').reset();
+hideProcessing();
+document.getElementById('videoForm').reset();  // ← Clear form first
+alert('🎬 Video is processing!\n\nThis takes about 8 minutes.\n\nPlease refresh the page after waiting.');
+showStatus('⏳ Creating video... Wait ~8 minutes, then refresh the page.');
         setDuration(30);
         userCredits.credits--;
         updateCreditsDisplay();
