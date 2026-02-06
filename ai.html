@@ -2232,49 +2232,54 @@ async function loadPlans() {
 }
 // Render individual plan
 function renderPlan(plan) {
-  const planData = typeof plan.plan === 'string' ? JSON.parse(plan.plan) : plan.plan;
-  const actions = planData.plan || [];
-  const startDate = new Date(plan.start).toLocaleDateString();
-  const endDate = new Date(plan.end).toLocaleDateString();
+  // Parse the plan actions array
+  const actions = typeof plan.plan === 'string' ? JSON.parse(plan.plan) : plan.plan;
+  
+  // Format dates
+  const startDate = plan.start ? new Date(plan.start).toLocaleDateString() : 'N/A';
+  const endDate = plan.end ? new Date(plan.end).toLocaleDateString() : startDate;
+  
+  // Get plan metadata from the first action (if available)
+  const firstAction = actions && actions.length > 0 ? actions[0] : {};
+  const planId = firstAction.plan_id || plan.plan_id || plan.id;
   
   return `
     <div class="plan-card" id="plan-${plan.id}">
-      <div class="plan-header" onclick="togglePlan(${plan.id})">
+      <div class="plan-header" onclick="togglePlan('${plan.id}')">
         <div class="plan-header-left">
-          <div class="plan-date">📅 ${startDate} ${startDate !== endDate ? '→ ' + endDate : ''}</div>
-          <div class="plan-description">${plan.description || planData.plan_description || 'AI Generated Plan'}</div>
+          <div class="plan-date">📅 ${startDate}${startDate !== endDate ? ' → ' + endDate : ''}</div>
+          <div class="plan-description">${plan.description || 'AI Generated Plan'}</div>
           <div class="plan-stats">
-            <span class="plan-stat">🎯 ${actions.length} actions</span>
-            <span class="plan-stat">💰 ${plan.credits || planData.credits || 0} credits</span>
-            <span class="plan-stat">📈 ~${plan.estimate_conversion || planData.estimate_conversion || 0} conversions</span>
+            <span class="plan-stat">🎯 ${actions ? actions.length : 0} actions</span>
+            <span class="plan-stat">💰 ${plan.credits || 0} credits</span>
+            <span class="plan-stat">📈 ~${plan.estimate_conversions || 0} conversions</span>
           </div>
         </div>
         <div class="plan-header-right">
-          <button class="execute-btn" onclick="executePlan(event, ${plan.id}, '${plan.customer_id}')" 
-                  ${plan.actual_conversion ? 'disabled' : ''}>
-            ${plan.actual_conversion ? '✅ Executed' : '▶️ Execute Plan'}
+          <button class="execute-btn" onclick="executePlan(event, '${plan.id}', '${plan.customer_id}')" 
+                  ${plan.actual_conversions ? 'disabled' : ''}>
+            ${plan.actual_conversions ? '✅ Executed' : '▶️ Execute Plan'}
           </button>
           <span class="expand-icon">▼</span>
         </div>
       </div>
       
       <div class="plan-body">
-        ${planData.victory_insights ? `
+        ${plan.lessons_learned ? `
           <div class="plan-insights">
-            <h4>💡 Victory Insights</h4>
-            <p>${planData.victory_insights}</p>
+            <h4>💡 Lessons Learned</h4>
+            <p>${plan.lessons_learned}</p>
           </div>
         ` : ''}
         
         <div class="actions-grid">
-          ${actions.slice(0, 15).map(action => renderAction(action)).join('')}
-          ${actions.length > 15 ? `<p style="text-align: center; color: #6b7280; font-size: 0.9rem;">...and ${actions.length - 15} more actions</p>` : ''}
+          ${actions && actions.length > 0 ? actions.slice(0, 15).map(action => renderAction(action)).join('') : '<p>No actions in this plan</p>'}
+          ${actions && actions.length > 15 ? `<p style="text-align: center; color: #6b7280; font-size: 0.9rem;">...and ${actions.length - 15} more actions</p>` : ''}
         </div>
       </div>
     </div>
   `;
 }
-
 // Render individual action
 function renderAction(action) {
   const priorityClass = action.conversion_probability === 'high' ? 'priority-high' : 
@@ -2312,12 +2317,12 @@ function renderAction(action) {
   `;
 }
 
-// Toggle plan expansion
 function togglePlan(planId) {
   const card = document.getElementById(`plan-${planId}`);
-  card.classList.toggle('expanded');
+  if (card) {
+    card.classList.toggle('expanded');
+  }
 }
-
 // Execute plan
 async function executePlan(event, planId, customerId) {
   event.stopPropagation(); // Prevent card expansion
@@ -2340,7 +2345,7 @@ async function executePlan(event, planId, customerId) {
       },
       body: JSON.stringify({
         customer_id: customerId,
-        id: planId
+   id: String(planId)
       })
     });
     
