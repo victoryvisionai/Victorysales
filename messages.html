@@ -1439,6 +1439,13 @@ async function loadUserData() {
     userSignature = savedSignature;
     updateSignaturePreview();
   }
+}  
+  // Load user signature from localStorage
+  const savedSignature = localStorage.getItem(`signature_${CUSTOMER_ID}`);
+  if (savedSignature) {
+    userSignature = savedSignature;
+    updateSignaturePreview();
+  }
   
   // Fetch user data from Supabase to get subscription plan
   try {
@@ -2120,35 +2127,34 @@ async function aiAssist(action) {
     showStatus('AI assistance error', true);
   }
 }
-async function toggleAutoReply(enabled) {
+
+  async function toggleAutoReply(enabled) {
   try {
-    showStatus(enabled ? '🤖 Enabling AI Auto-Reply...' : '⏸️ Disabling AI Auto-Reply...');
+    const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/aireply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify({ 
+        customer_id: CUSTOMER_ID,
+        aireply: enabled
+      })
+    });
     
-    // Update in Supabase
-    const { error } = await supabaseClient
-      .from('users')
-      .update({ aireply: enabled })
-      .eq('email', CUSTOMER_ID);
-    
-    if (error) {
-      console.error('Error updating auto-reply:', error);
-      showStatus('Failed to update auto-reply setting', true);
-      // Revert toggle
+    if (response.ok) {
+      showStatus(enabled ? '✅ Auto-Reply enabled!' : '⏸️ Auto-Reply disabled');
+    } else {
+      showStatus('Failed to update auto-reply', true);
       document.getElementById('autoReplyToggle').checked = !enabled;
-      return;
     }
-    
-    // Update local state
-    window.userAutoReply = enabled;
-    
-    showStatus(enabled ? '✅ Auto-Reply enabled!' : '⏸️ Auto-Reply disabled');
   } catch (error) {
-    console.error('Error toggling auto-reply:', error);
-    showStatus('Auto-reply update error', true);
-    // Revert toggle
+    console.error('Error:', error);
+    showStatus('Auto-reply error', true);
     document.getElementById('autoReplyToggle').checked = !enabled;
   }
 }
+  
 async function markAsRead() {
   if (!currentEmail) return;
   
