@@ -1439,35 +1439,15 @@ async function loadUserData() {
     userSignature = savedSignature;
     updateSignaturePreview();
   }
-}  
-  // Load user signature from localStorage
-  const savedSignature = localStorage.getItem(`signature_${CUSTOMER_ID}`);
-  if (savedSignature) {
-    userSignature = savedSignature;
-    updateSignaturePreview();
-  }
-  
-  // Fetch user data from Supabase to get subscription plan
-  try {
-    const { data: userData, error } = await supabaseClient
-      .from('users')
-      .select('subscription_plan, aireply')
-      .eq('email', CUSTOMER_ID)
-      .single();
-    
-    if (userData && !error) {
-      // Update medallion based on subscription_plan
-      updateSubscriptionMedallion(userData.subscription_plan);
-      
-      // Store aireply status and update toggle
-      window.userAutoReply = userData.aireply || false;
-      const autoReplyToggle = document.getElementById('autoReplyToggle');
-      if (autoReplyToggle) {
-        autoReplyToggle.checked = window.userAutoReply;
-      }
+} 
+      // Load auto-reply from localStorage
+  const savedAutoReply = localStorage.getItem(`aireply_${CUSTOMER_ID}`);
+  if (savedAutoReply) {
+    window.userAutoReply = savedAutoReply === 'true';
+    const autoReplyToggle = document.getElementById('autoReplyToggle');
+    if (autoReplyToggle) {
+      autoReplyToggle.checked = window.userAutoReply;
     }
-  } catch (error) {
-    console.error('Error loading user data:', error);
   }
 }
 
