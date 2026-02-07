@@ -1755,20 +1755,16 @@ function getEmailPreview(email) {
 function selectEmail(emailId) {
   currentEmail = allEmails.find(e => e.id === emailId);
   if (!currentEmail) return;
+  alert('Email selected: ' + currentEmail.subject);
   
   const readingPane = document.getElementById('readingPane');
   const emailView = document.getElementById('emailViewTemplate');
   const composeForm = document.getElementById('composeForm');
   const readingPaneActions = document.getElementById('readingPaneActions');
   
-// Show reading pane
+  // Show reading pane
   composeForm.classList.remove('active');
-  
-  // Hide the empty state message and show email view
-  const emptyMessage = readingPane.querySelector('div');
-  if (emptyMessage) emptyMessage.style.display = 'none';
   readingPane.classList.remove('empty');
-  
   emailView.classList.add('active');
   if (readingPaneActions) readingPaneActions.style.display = 'flex';
   
