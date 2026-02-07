@@ -1666,7 +1666,7 @@ function renderEmailList() {
     return;
   }
   
-const sortedEmails = [...filteredEmails].sort((a, b) => {
+  const sortedEmails = [...filteredEmails].sort((a, b) => {
     return new Date(b.created_at || b.sent_at) - new Date(a.created_at || a.sent_at);
   });
   
@@ -1721,7 +1721,8 @@ const sortedEmails = [...filteredEmails].sort((a, b) => {
   
   emailList.innerHTML = html;
 }
-  function getEmailDisplayName(email) {
+
+function getEmailDisplayName(email) {
   if (email.inbound) {
     return email.from || 'Unknown Sender';
   } else if (email.draft) {
@@ -1750,12 +1751,10 @@ function getEmailPreview(email) {
   const body = email.body || '';
   return body.length > 150 ? body.substring(0, 150) + '...' : body;
 }
+
 function selectEmail(emailId) {
   currentEmail = allEmails.find(e => e.id === emailId);
   if (!currentEmail) return;
-  
-  // Update list selection
-  renderEmailList();
   
   const readingPane = document.getElementById('readingPane');
   const emailView = document.getElementById('emailViewTemplate');
@@ -1786,11 +1785,7 @@ function selectEmail(emailId) {
   
   document.getElementById('viewBody').textContent = currentEmail.body || 'No content';
   
-  // Mark as read if inbound
-  if (currentEmail.inbound && !currentEmail.opened) {
-    markAsRead();
-  }
-}  // SHOW ATTACHMENTS WITH DOWNLOAD
+  // Show attachments
   const attachmentsSection = document.getElementById('viewAttachments');
   const attachmentsList = document.getElementById('attachmentsList');
   
@@ -1809,10 +1804,14 @@ function selectEmail(emailId) {
   } else {
     attachmentsSection.style.display = 'none';
   }
+  
+  // Update list selection and mark as read
   renderEmailList();
-  if (!currentEmail.opened && currentEmail.inbound) {
+  
+  if (currentEmail.inbound && !currentEmail.opened) {
     markAsRead();
   }
+}
 function formatFileSize(bytes) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
