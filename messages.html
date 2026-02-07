@@ -316,17 +316,6 @@
       color: #666;
       font-size: 1.1rem;
     }
-    .empty-message {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-    }
-    .reading-pane:not(.empty) .empty-message {
-      display: none;
-    }
-    
     .email-view {
       display: none;
     }
@@ -1138,48 +1127,14 @@
       </div>
       
       <div class="reading-pane empty" id="readingPane">
-        <div class="empty-message">
+        <div>
           <h3>📧 Select an email to read</h3>
           <p>Choose an email from the list to view its content here</p>
         </div>
-        
-        <!-- Email View Template -->
-        <div class="email-view" id="emailViewTemplate">
-          <div class="email-view-header">
-            <div class="email-view-subject" id="viewSubject"></div>
-            <div class="email-view-meta">
-              <span class="meta-label">From:</span>
-              <span class="meta-value" id="viewFrom"></span>
-              <span class="meta-label">To:</span>
-              <span class="meta-value" id="viewTo"></span>
-              <span class="meta-label">CC:</span>
-              <span class="meta-value" id="viewCC">-</span>
-              <span class="meta-label">BCC:</span>
-              <span class="meta-value" id="viewBCC">-</span>
-              <span class="meta-label">Date:</span>
-              <span class="meta-value" id="viewDate"></span>
-              <span class="meta-label">Status:</span>
-              <span class="meta-value" id="viewStatus"></span>
-            </div>
-          </div>
-          
-          <div id="viewAttachments" class="attachments-section" style="display: none;">
-            <h4>📎 Attachments</h4>
-            <div id="attachmentsList"></div>
-          </div>
-          
-          <div class="email-view-body" id="viewBody"></div>
-          
-          <div class="email-actions">
-            <button onclick="replyToEmail()" class="btn-primary">↩️ Reply</button>
-            <button onclick="replyAllToEmail()" class="btn-primary">↩️ Reply All</button>
-            <button onclick="forwardEmail()" class="btn-secondary">➡️ Forward</button>
-            <button onclick="markAsRead()" class="btn-secondary">✓ Mark Read</button>
-            <button onclick="deleteEmail()" class="btn-danger">🗑️ Delete</button>
-            <button onclick="openEmailModal()" class="btn-secondary">📋 Details</button>
-          </div>
-        </div>
       </div>
+      
+      <!-- Email View Template -->
+      <div class="email-view" id="emailViewTemplate">
         <div class="email-view-header">
           <div class="email-view-subject" id="viewSubject"></div>
           <div class="email-view-meta">
@@ -1213,6 +1168,7 @@
           <button onclick="deleteEmail()" class="btn-danger">🗑️ Delete</button>
           <button onclick="openEmailModal()" class="btn-secondary">📋 Details</button>
         </div>
+      </div>
       
       <!-- Compose Form -->
       <div class="compose-form" id="composeForm" data-intro="Compose new emails with AI assistance. Choose from different AI tones and styles to match your communication goals." data-step="5">
@@ -1805,9 +1761,14 @@ function selectEmail(emailId) {
   const composeForm = document.getElementById('composeForm');
   const readingPaneActions = document.getElementById('readingPaneActions');
   
-  // Show reading pane
+// Show reading pane
   composeForm.classList.remove('active');
+  
+  // Hide the empty state message and show email view
+  const emptyMessage = readingPane.querySelector('div');
+  if (emptyMessage) emptyMessage.style.display = 'none';
   readingPane.classList.remove('empty');
+  
   emailView.classList.add('active');
   if (readingPaneActions) readingPaneActions.style.display = 'flex';
   
