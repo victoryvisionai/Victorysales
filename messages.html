@@ -2001,7 +2001,6 @@ async function aiAssist(action) {
   
   try {
     showStatus('🤖 AI is working...');
-    
     const response = await fetch(ENDPOINTS.aiAssist, {
       method: 'POST',
       headers: {
@@ -2013,18 +2012,25 @@ async function aiAssist(action) {
     
     if (response.ok) {
       const result = await response.json();
+      console.log('AI Assist Response:', result); // Debug log
+      
+      // Handle both response formats from n8n
+      const emailBody = result.email_body_plain || result.body || result.content || '';
+      const emailSubject = result.email_subject || result.subject || '';
       
       if (action === 'generate') {
-        document.getElementById('composeBody').value = result.body;
-        if (result.subject) {
-          document.getElementById('composeSubject').value = result.subject;
+        document.getElementById('composeBody').value = emailBody;
+        if (emailSubject) {
+          document.getElementById('composeSubject').value = emailSubject;
         }
       } else if (action === 'improve' || action === 'format') {
-        document.getElementById('composeBody').value = result.body;
+        document.getElementById('composeBody').value = emailBody;
       }
       
       showStatus('✨ AI assistance applied!');
     } else {
+      const errorText = await response.text();
+      console.error('AI Assist failed:', errorText);
       showStatus('AI assistance failed', true);
     }
   } catch (error) {
@@ -2032,7 +2038,6 @@ async function aiAssist(action) {
     showStatus('AI assistance error', true);
   }
 }
-
 async function generateAIEmails() {
   try {
     showStatus('🤖 Generating AI email campaign...');
