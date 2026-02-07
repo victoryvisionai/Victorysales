@@ -1809,14 +1809,11 @@ function selectEmail(emailId) {
   } else {
     attachmentsSection.style.display = 'none';
   }
-  
   renderEmailList();
-  
   if (!currentEmail.opened && currentEmail.inbound) {
     markAsRead();
   }
 }
-
 function formatFileSize(bytes) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
