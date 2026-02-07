@@ -2015,7 +2015,7 @@ async function aiAssist(action) {
       console.log('AI Assist Response:', result); // Debug log
       
       // Handle both response formats from n8n
-      const emailBody = result.email_body_plain || result.body || result.content || '';
+      const emailBody = result.email_body_html || result.body || result.content || '';
       const emailSubject = result.email_subject || result.subject || '';
       
       if (action === 'generate') {
