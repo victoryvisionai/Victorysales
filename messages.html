@@ -1915,7 +1915,11 @@ function showComposeForm(replyTo = null, forwardFrom = null, replyAll = false) {
   }
   
   if (preloadedContact) {
-    document.getElementById('composeTo').value = preloadedContact.email || '';
+let to = document.getElementById('composeTo').value;
+// Extract email if in "Name <email>" format
+if (to.includes('<') && to.includes('>')) {
+  to = to.match(/<([^>]+)>/)[1];
+}
     document.getElementById('composeSubject').value = `Re: ${preloadedContact.company || preloadedContact.name}`;
     preloadedContact = null;
   }
