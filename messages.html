@@ -1472,11 +1472,8 @@ if (data && data.email) {
       if (autoReplyToggle) {
         autoReplyToggle.checked = window.userAutoReply;
       }
-    } 
+    }
   
-  catch (error) {
-    console.error('Error loading user data:', error);
-    
     // Fallback to localStorage if webhook fails
     const savedSignature = localStorage.getItem(`signature_${CUSTOMER_ID}`);
     if (savedSignature) {
