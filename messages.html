@@ -1451,36 +1451,38 @@ function showStatus(message, isError = false) {
     const data = await response.json();
     console.log('🔍 loadUserData: Full data received =', data);
     
-    if (data) {
+   if (data && data.length > 0) {
+      const user = data[0]; // Get the first object from the array
+      
       // Set signature
-      if (data.signature) {
-        console.log('✅ Setting signature:', data.signature);
-        userSignature = data.signature;
-        localStorage.setItem(`signature_${CUSTOMER_ID}`, data.signature);
+      if (user.signature) {
+        console.log('✅ Setting signature:', user.signature);
+        userSignature = user.signature;
+        localStorage.setItem(`signature_${CUSTOMER_ID}`, user.signature);
         updateSignaturePreview();
       } else {
         console.log('❌ No signature in data');
       }
       
       // Set vv_email
-      if (data.vv_email) {
-        console.log('✅ Setting vv_email:', data.vv_email);
-        window.userVVEmail = data.vv_email;
-        localStorage.setItem(`vv_email_${CUSTOMER_ID}`, data.vv_email);
+      if (user.vv_email) {
+        console.log('✅ Setting vv_email:', user.vv_email);
+        window.userVVEmail = user.vv_email;
+        localStorage.setItem(`vv_email_${CUSTOMER_ID}`, user.vv_email);
       } else {
         console.log('❌ No vv_email in data');
       }
       
       // Set subscription plan
-      if (data.subscription_plan) {
-        console.log('✅ Setting subscription_plan:', data.subscription_plan);
-        updateSubscriptionMedallion(data.subscription_plan);
+      if (user.subscription_plan) {
+        console.log('✅ Setting subscription_plan:', user.subscription_plan);
+        updateSubscriptionMedallion(user.subscription_plan);
       } else {
         console.log('❌ No subscription_plan in data');
       }
       
       // Set auto-reply
-      window.userAutoReply = data.aireply || false;
+      window.userAutoReply = user.aireply || false;
       console.log('✅ Setting aireply:', window.userAutoReply);
       localStorage.setItem(`aireply_${CUSTOMER_ID}`, window.userAutoReply);
       const autoReplyToggle = document.getElementById('autoReplyToggle');
@@ -1490,10 +1492,6 @@ function showStatus(message, isError = false) {
     } else {
       console.log('❌ No data returned from webhook');
     }
-  } catch (error) {
-    console.error('💥 Error loading user data:', error);
-  }
-}
   
   function updateSubscriptionMedallion(plan) {
   const medallion = document.getElementById('subscriptionMedallion');
