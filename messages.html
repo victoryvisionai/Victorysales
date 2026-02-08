@@ -1446,7 +1446,7 @@ const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/user/g
     
     const data = await response.json();
     
-if (data && data.email) {
+if (data) {
       // Set signature
       if (data.signature) {
         userSignature = data.signature;
@@ -1473,7 +1473,9 @@ if (data && data.email) {
         autoReplyToggle.checked = window.userAutoReply;
       }
     }
-  
+    catch (error) {
+    console.error('Error loading user data:', error);
+    
     // Fallback to localStorage if webhook fails
     const savedSignature = localStorage.getItem(`signature_${CUSTOMER_ID}`);
     if (savedSignature) {
