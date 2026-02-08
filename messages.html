@@ -1428,11 +1428,14 @@ function showStatus(message, isError = false) {
     statusDiv.classList.remove('show');
   }, 3000);
 }
-async function loadUserData() {
+
+  async function loadUserData() {
   const userEmailSpan = document.getElementById('userEmail');
   if (userEmailSpan && CUSTOMER_ID) {
     userEmailSpan.textContent = CUSTOMER_ID;
   }
+  
+  console.log('🔍 loadUserData: Starting, CUSTOMER_ID =', CUSTOMER_ID);
   
   // Fetch user data from webhook
   try {
@@ -1443,40 +1446,56 @@ async function loadUserData() {
       }
     });
     
+    console.log('🔍 loadUserData: Response status =', response.status);
+    
     const data = await response.json();
+    console.log('🔍 loadUserData: Full data received =', data);
     
     if (data) {
       // Set signature
       if (data.signature) {
+        console.log('✅ Setting signature:', data.signature);
         userSignature = data.signature;
         localStorage.setItem(`signature_${CUSTOMER_ID}`, data.signature);
         updateSignaturePreview();
+      } else {
+        console.log('❌ No signature in data');
       }
       
       // Set vv_email
       if (data.vv_email) {
+        console.log('✅ Setting vv_email:', data.vv_email);
         window.userVVEmail = data.vv_email;
         localStorage.setItem(`vv_email_${CUSTOMER_ID}`, data.vv_email);
+      } else {
+        console.log('❌ No vv_email in data');
       }
       
       // Set subscription plan
       if (data.subscription_plan) {
+        console.log('✅ Setting subscription_plan:', data.subscription_plan);
         updateSubscriptionMedallion(data.subscription_plan);
+      } else {
+        console.log('❌ No subscription_plan in data');
       }
       
       // Set auto-reply
       window.userAutoReply = data.aireply || false;
+      console.log('✅ Setting aireply:', window.userAutoReply);
       localStorage.setItem(`aireply_${CUSTOMER_ID}`, window.userAutoReply);
       const autoReplyToggle = document.getElementById('autoReplyToggle');
       if (autoReplyToggle) {
         autoReplyToggle.checked = window.userAutoReply;
       }
+    } else {
+      console.log('❌ No data returned from webhook');
     }
   } catch (error) {
-    console.error('Error loading user data:', error);
+    console.error('💥 Error loading user data:', error);
   }
 }
-function updateSubscriptionMedallion(plan) {
+  
+  function updateSubscriptionMedallion(plan) {
   const medallion = document.getElementById('subscriptionMedallion');
   const planName = medallion.querySelector('.plan-name');
   
