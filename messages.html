@@ -1451,7 +1451,11 @@ async function loadUserData() {
       autoReplyToggle.checked = window.userAutoReply;
     }
   }
-
+// Load VV email from localStorage
+const savedVVEmail = localStorage.getItem(`vv_email_${CUSTOMER_ID}`);
+if (savedVVEmail) {
+  window.userVVEmail = savedVVEmail;
+}
 function updateSubscriptionMedallion(plan) {
   const medallion = document.getElementById('subscriptionMedallion');
   const planName = medallion.querySelector('.plan-name');
@@ -1848,7 +1852,7 @@ function showComposeForm(replyTo = null, forwardFrom = null, replyAll = false) {
   
   // Clear form
   document.getElementById('emailComposeForm').reset();
-  document.getElementById('composeFrom').value = CUSTOMER_ID;
+  document.getElementById('composeFrom').value = window.userVVEmail;
   attachedFiles = [];
   updateAttachmentDisplay();
   currentDraftId = null;
