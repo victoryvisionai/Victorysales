@@ -1840,11 +1840,11 @@ function showComposeForm(replyTo = null, forwardFrom = null, replyAll = false) {
   const composeForm = document.getElementById('composeForm');
   const readingPaneTitle = document.getElementById('readingPaneTitle');
   const readingPaneActions = document.getElementById('readingPaneActions');
-  
-  emailView.classList.remove('active');
-  readingPane.classList.remove('empty');
-  composeForm.classList.add('active');
-  readingPaneActions.style.display = 'none';
+
+  readingPane.style.display = 'none';
+  emailView.style.display = 'none';
+  composeForm.style.display = 'block';
+  if (readingPaneActions) readingPaneActions.style.display = 'none';
   
   // Clear form
   document.getElementById('emailComposeForm').reset();
