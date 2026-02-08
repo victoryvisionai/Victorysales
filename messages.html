@@ -1437,7 +1437,7 @@ async function loadUserData() {
   
   // Fetch user data from webhook
   try {
-const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/user/get?email=${CUSTOMER_ID}`, {
+const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/user/get?customer_id=${CUSTOMER_ID}`, {
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json'
@@ -1921,18 +1921,11 @@ function showComposeForm(replyTo = null, forwardFrom = null, replyAll = false) {
     document.getElementById('composeSubject').value = `Re: ${preloadedContact.company || preloadedContact.name}`;
     preloadedContact = null;
   }
-  
-  if (replyTo) {
+ if (replyTo) {
     // Reply mode
     document.getElementById('composeTo').value = replyTo.from || '';
-    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.subject || '').replace(/^re:\s*/i, '');
-    
-    // IMPROVED TEMPLATE with company name and context
-    const companyName = replyTo.from ? replyTo.from.split('@')[1].split('.')[0] : 'there';
-    const context = getConversationContext();
-    
-    document.getElementById('composeBody').value = `\n\n${context}\n\n--- Original Message ---\nFrom: ${replyTo.from}\nDate: ${new Date(replyTo.created_at).toLocaleString()}\nSubject: ${replyTo.subject}\n\n${replyTo.body}`;
-    readingPaneTitle.textContent = '↩️ Reply to Email';
+    document.getElementById('composeSubject').value = 'Re: ' + (replyTo.subject || '').replace(/^re:\s*/i, ''); 
+    document.getElementById('composeBody').value = `\n\n\n--- Original Message ---\nFrom: ${replyTo.from}\nDate: ${new Date(replyTo.created_at).toLocaleString()}\nSubject: ${replyTo.subject}\n\n${replyTo.body}`;   readingPaneTitle.textContent = '↩️ Reply to Email';
     currentMode = 'reply';
     
     // REPLY ALL - add CC recipients
