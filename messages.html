@@ -1655,7 +1655,6 @@ function clearFilters() {
   document.getElementById('emailStatus').value = '';
   applyFilters();
 }
-
 function renderEmailList() {
   const emailList = document.getElementById('emailList');
   
@@ -1668,60 +1667,45 @@ function renderEmailList() {
     return;
   }
   
-  const sortedEmails = [...filteredEmails].sort((a, b) => {
-    return new Date(b.created_at || b.sent_at) - new Date(a.created_at || a.sent_at);
-  });
+  // Clear the container
+  emailList.innerHTML = '';
   
-  // Group emails by thread
-  const threadGroups = new Map();
-  sortedEmails.forEach(email => {
-    const cleanSubject = (email.subject || '').replace(/^(re:|fwd?:)\s*/i, '').trim().toLowerCase();
-    if (!threadGroups.has(cleanSubject)) {
-      threadGroups.set(cleanSubject, []);
-    }
-    threadGroups.get(cleanSubject).push(email);
-  });
-  
-  let html = '';
-  
-  threadGroups.forEach((emails, subject) => {
-    html += '<div class="email-thread">';
+  // Build each email using createElement (NOT string concatenation)
+  filteredEmails.forEach((email, index) => {
+    const isSelected = currentEmail && currentEmail.id === email.id;
+    const isUnread = !email.opened && email.inbound;
+    const sender = email.inbound ? (email.from || 'Unknown') : (email.to || 'Unknown');
     
-    emails.forEach((email, index) => {
-      const classes = ['email-item'];
-      if (currentEmail && currentEmail.id === email.id) classes.push('selected');
-      if (!email.opened && email.inbound) classes.push('unread');
-      if (email.draft) classes.push('draft');
-      else if (email.inbound) classes.push('inbound');
-      else if (email.replied) classes.push('replied');
-      else classes.push('sent');
-      
-      const badges = [];
-      if (email.draft) badges.push('<span class="badge draft">Draft</span>');
-      if (email.inbound && !email.draft) badges.push('<span class="badge inbound">Received</span>');
-      if (!email.inbound && !email.draft) badges.push('<span class="badge sent">Sent</span>');
-      if (email.replied) badges.push('<span class="badge replied">Replied</span>');
-      if (email.opened) badges.push('<span class="badge opened">Opened</span>');
-      
-      const threadIndicator = emails.length > 1 ? `<span class="thread-indicator">(${index + 1}/${emails.length})</span>` : '';
-      
-      html += `
-        <div class="${classes.join(' ')}" onclick="selectEmail('${email.id}')">
-          <div class="email-header">
-            <div class="email-from">${getEmailDisplayName(email)}${threadIndicator}</div>
-            <div class="email-date">${formatDate(email.created_at || email.sent_at)}</div>
-          </div>
-          <div class="email-subject">${email.subject || '(No subject)'}</div>
-          <div class="email-preview">${getEmailPreview(email)}</div>
-          <div class="email-badges">${badges.join('')}</div>
-        </div>
-      `;
-    });
+    // Create DOM element
+    const emailDiv = document.createElement('div');
+    emailDiv.className = `email-item ${isSelected ? 'selected' : ''} ${isUnread ? 'unread' : ''}`;
+    if (email.draft) emailDiv.classList.add('draft');
+    else if (email.inbound) emailDiv.classList.add('inbound');
+    else if (email.replied) emailDiv.classList.add('replied');
+    else emailDiv.classList.add('sent');
     
-    html += '</div>';
+    // THIS IS THE CRITICAL LINE - use .onclick property, not HTML attribute
+    emailDiv.onclick = () => selectEmail(email.id);
+    
+    const badges = [];
+    if (email.draft) badges.push('<span class="badge draft">Draft</span>');
+    if (email.inbound && !email.draft) badges.push('<span class="badge inbound">Received</span>');
+    if (!email.inbound && !email.draft) badges.push('<span class="badge sent">Sent</span>');
+    if (email.replied) badges.push('<span class="badge replied">Replied</span>');
+    if (email.opened) badges.push('<span class="badge opened">Opened</span>');
+    
+    emailDiv.innerHTML = `
+      <div class="email-header">
+        <div class="email-from">${sender}</div>
+        <div class="email-date">${formatDate(email.created_at || email.sent_at)}</div>
+      </div>
+      <div class="email-subject">${email.subject || '(No subject)'}</div>
+      <div class="email-preview">${getEmailPreview(email)}</div>
+      <div class="email-badges">${badges.join('')}</div>
+    `;
+    
+    emailList.appendChild(emailDiv);
   });
-  
-  emailList.innerHTML = html;
 }
 
 function getEmailDisplayName(email) {
@@ -1757,17 +1741,18 @@ function getEmailPreview(email) {
 function selectEmail(emailId) {
   currentEmail = allEmails.find(e => e.id === emailId);
   if (!currentEmail) return;
-  alert('Email selected: ' + currentEmail.subject);
   
+  // Hide empty state, show email view using style.display
   const readingPane = document.getElementById('readingPane');
-  const emailView = document.getElementById('emailViewTemplate');
-  const composeForm = document.getElementById('composeForm');
-  const readingPaneActions = document.getElementById('readingPaneActions');
+  readingPane.style.display = 'none';
   
-  // Show reading pane
-  composeForm.classList.remove('active');
-  readingPane.classList.remove('empty');
-  emailView.classList.add('active');
+  const composeForm = document.getElementById('composeForm');
+  composeForm.style.display = 'none';
+  
+  const emailView = document.getElementById('emailViewTemplate');
+  emailView.style.display = 'block';
+  
+  const readingPaneActions = document.getElementById('readingPaneActions');
   if (readingPaneActions) readingPaneActions.style.display = 'flex';
   
   // Populate email view
@@ -1792,7 +1777,7 @@ function selectEmail(emailId) {
   const attachmentsSection = document.getElementById('viewAttachments');
   const attachmentsList = document.getElementById('attachmentsList');
   
-  if (currentEmail.attachments && currentEmail.attachments.length > 0) {
+  if (attachmentsSection && attachmentsList && currentEmail.attachments && currentEmail.attachments.length > 0) {
     attachmentsList.innerHTML = currentEmail.attachments.map(att => `
       <div class="attachment-item">
         <span class="attachment-icon">📎</span>
@@ -1804,7 +1789,7 @@ function selectEmail(emailId) {
       </div>
     `).join('');
     attachmentsSection.style.display = 'block';
-  } else {
+  } else if (attachmentsSection) {
     attachmentsSection.style.display = 'none';
   }
   
@@ -1814,8 +1799,7 @@ function selectEmail(emailId) {
   if (currentEmail.inbound && !currentEmail.opened) {
     markAsRead();
   }
-}
-function formatFileSize(bytes) {
+}function formatFileSize(bytes) {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
