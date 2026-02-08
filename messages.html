@@ -1082,7 +1082,7 @@
             <option value="draft">Drafts</option>
           </select>
         </div>
-        <div class="form-group">
+    <div class="form-group" style="display: none;">
           <label for="emailStatus">Status</label>
           <select id="emailStatus" onchange="applyFilters()">
             <option value="">All Status</option>
@@ -1669,9 +1669,14 @@ function renderEmailList() {
   
   // Clear the container
   emailList.innerHTML = '';
-  
-  // Build each email using createElement (NOT string concatenation)
-  filteredEmails.forEach((email, index) => {
+
+  // Sort emails by date (newest first)
+const sortedEmails = [...filteredEmails].sort((a, b) => {
+  return new Date(b.created_at || b.sent_at) - new Date(a.created_at || a.sent_at);
+});
+
+// Build each email using createElement (NOT string concatenation)
+sortedEmails.forEach((email, index) => {
     const isSelected = currentEmail && currentEmail.id === email.id;
     const isUnread = !email.opened && email.inbound;
     const sender = email.inbound ? (email.from || 'Unknown') : (email.to || 'Unknown');
