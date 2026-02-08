@@ -1438,7 +1438,7 @@ async function loadUserData() {
   // Fetch user data from webhook
   try {
     const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/user/get', {
-      method: 'POST',
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ customer_id: CUSTOMER_ID })
     });
