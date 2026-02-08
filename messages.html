@@ -1446,34 +1446,35 @@ const response = await fetch(`https://victoryvision.app.n8n.cloud/webhook/user/g
     
     const data = await response.json();
     
-    if (data && data.user) {
+if (data && data.email) {
       // Set signature
-      if (data.user.signature) {
-        userSignature = data.user.signature;
-        localStorage.setItem(`signature_${CUSTOMER_ID}`, data.user.signature);
+      if (data.signature) {
+        userSignature = data.signature;
+        localStorage.setItem(`signature_${CUSTOMER_ID}`, data.signature);
         updateSignaturePreview();
       }
       
       // Set vv_email
-      if (data.user.vv_email) {
-        window.userVVEmail = data.user.vv_email;
-        localStorage.setItem(`vv_email_${CUSTOMER_ID}`, data.user.vv_email);
+      if (data.vv_email) {
+        window.userVVEmail = data.vv_email;
+        localStorage.setItem(`vv_email_${CUSTOMER_ID}`, data.vv_email);
       }
       
       // Set subscription plan
-      if (data.user.subscription_plan) {
-        updateSubscriptionMedallion(data.user.subscription_plan);
+      if (data.subscription_plan) {
+        updateSubscriptionMedallion(data.subscription_plan);
       }
       
       // Set auto-reply
-      window.userAutoReply = data.user.aireply || false;
+      window.userAutoReply = data.aireply || false;
       localStorage.setItem(`aireply_${CUSTOMER_ID}`, window.userAutoReply);
       const autoReplyToggle = document.getElementById('autoReplyToggle');
       if (autoReplyToggle) {
         autoReplyToggle.checked = window.userAutoReply;
       }
-    }
-  } catch (error) {
+    } 
+  
+  catch (error) {
     console.error('Error loading user data:', error);
     
     // Fallback to localStorage if webhook fails
