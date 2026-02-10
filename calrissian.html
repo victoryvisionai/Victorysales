@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Victory Vision Admin Dashboard - User Management & Engagement Tracking"/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision - Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    :root {
+      --navy: #0A3161;
+      --navy-light: #1a4c80;
+      --navy-dark: #06203f;
+      --red: #bb133e;
+      --red-light: #d91a4a;
+      --orange: #fd7e14;
+      --green: #22c55e;
+      --green-dark: #16a34a;
+      --yellow: #eab308;
+      --bg: #0c1421;
+      --bg-card: #111c2e;
+      --bg-card-hover: #162640;
+      --border: #1e3a5f;
+      --text: #e2e8f0;
+      --text-dim: #8899b0;
+      --text-bright: #f8fafc;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── AUTH LOADING ─── */
+    .auth-loading {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+    .auth-loading .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid var(--border);
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .auth-loading p { margin-top: 16px; color: var(--text-dim); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── TOP BAR ─── */
+    .topbar {
+      background: var(--navy-dark);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-left {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .topbar-left .logo {
+      font-weight: 700; font-size: 18px; color: var(--text-bright);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topbar-left .logo .badge {
+      background: var(--red);
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .topbar-right {
+      display: flex; align-items: center; gap: 16px;
+    }
+    .topbar-right span { font-size: 13px; color: var(--text-dim); }
+    .btn-signout {
+      background: var(--red); color: white;
+      border: none; padding: 6px 14px; border-radius: 6px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-signout:hover { background: var(--red-light); }
+
+    /* ─── LAYOUT ─── */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: calc(100vh - 53px);
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      background: var(--navy-dark);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      display: flex; flex-direction: column;
+    }
+    .sidebar-section {
+      padding: 0 16px; margin-bottom: 24px;
+    }
+    .sidebar-section-title {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--text-dim); margin-bottom: 8px;
+      padding: 0 12px;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px;
+      color: var(--text-dim); text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      transition: all 0.15s; cursor: pointer; border: none;
+      background: none; width: 100%; text-align: left;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .sidebar-link.active { background: rgba(253,126,20,0.12); color: var(--orange); }
+    .sidebar-link .icon { font-size: 18px; width: 22px; text-align: center; }
+    .sidebar-link .count-badge {
+      margin-left: auto;
+      background: var(--red);
+      color: white; font-size: 11px; font-weight: 700;
+      padding: 1px 7px; border-radius: 10px;
+      min-width: 20px; text-align: center;
+    }
+
+    /* ─── USER SELECTOR (sidebar) ─── */
+    .user-selector {
+      padding: 16px; border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+    .user-selector label {
+      display: block; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--text-dim); margin-bottom: 6px;
+    }
+    .user-selector select {
+      width: 100%; padding: 8px 10px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text); border-radius: 6px; font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .user-selector select:focus { outline: none; border-color: var(--orange); }
+
+    /* ─── MAIN CONTENT ─── */
+    .main {
+      padding: 28px 32px;
+      overflow-y: auto;
+      max-height: calc(100vh - 53px);
+    }
+
+    /* ─── SECTION PANELS ─── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .panel-header {
+      margin-bottom: 24px;
+    }
+    .panel-header h1 {
+      font-size: 26px; font-weight: 700; color: var(--text-bright);
+      margin-bottom: 4px;
+    }
+    .panel-header p { font-size: 14px; color: var(--text-dim); }
+
+    /* ─── METRIC CARDS ─── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .metric-card:hover { border-color: var(--navy-light); transform: translateY(-2px); }
+    .metric-card .metric-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-dim); text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 8px;
+    }
+    .metric-card .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px; font-weight: 700;
+      color: var(--text-bright);
+    }
+    .metric-card .metric-change {
+      font-size: 12px; margin-top: 6px;
+    }
+    .metric-card .metric-change.up { color: var(--green); }
+    .metric-card .metric-change.down { color: var(--red); }
+    .metric-card .metric-change.neutral { color: var(--text-dim); }
+
+    /* ─── CARDS / TABLES ─── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: 16px; font-weight: 700;
+      color: var(--text-bright); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title .icon { font-size: 20px; }
+
+    table {
+      width: 100%; border-collapse: collapse;
+    }
+    th, td {
+      text-align: left; padding: 12px 14px;
+      font-size: 13px; border-bottom: 1px solid var(--border);
+    }
+    th {
+      font-weight: 700; color: var(--text-dim);
+      font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td { color: var(--text); }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    tr:last-child td { border-bottom: none; }
+
+    /* ─── STATUS BADGES ─── */
+    .badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 11px;
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .badge-red { background: rgba(187,19,62,0.15); color: var(--red-light); }
+    .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .badge-orange { background: rgba(253,126,20,0.15); color: var(--orange); }
+
+    /* ─── PLAN BADGES ─── */
+    .plan-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .plan-bronze { background: linear-gradient(135deg, rgba(205,127,50,0.2), rgba(160,82,45,0.2)); color: #CD7F32; border: 1px solid rgba(205,127,50,0.3); }
+    .plan-silver { background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(128,128,128,0.2)); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.3); }
+    .plan-gold { background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.2)); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
+
+    /* ─── TIME WINDOW TOGGLE ─── */
+    .time-windows {
+      display: flex; gap: 4px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .time-btn {
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-dim); padding: 6px 14px;
+      border-radius: 6px; font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .time-btn:hover { border-color: var(--navy-light); color: var(--text); }
+    .time-btn.active { background: var(--orange); border-color: var(--orange); color: #000; }
+
+    /* ─── ONBOARDING CHECKLIST ─── */
+    .checklist-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; border-radius: 8px;
+      border: 1px solid var(--border); margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+    .checklist-item:hover { border-color: var(--navy-light); }
+    .checklist-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .checklist-icon.pass { background: rgba(34,197,94,0.15); color: var(--green); }
+    .checklist-icon.fail { background: rgba(187,19,62,0.15); color: var(--red-light); }
+    .checklist-icon.pending { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .checklist-label {
+      font-size: 14px; font-weight: 500; color: var(--text);
+    }
+    .checklist-status {
+      margin-left: auto; font-size: 12px; font-weight: 600;
+    }
+
+    /* ─── EDIT FORM ─── */
+    .edit-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .field-group {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .field-group label {
+      font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-dim);
+    }
+    .field-group input,
+    .field-group select {
+      padding: 10px 12px; border-radius: 6px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .field-group input:focus,
+    .field-group select:focus {
+      outline: none; border-color: var(--orange);
+    }
+
+    .btn-primary {
+      background: var(--orange); color: #000;
+      border: none; padding: 10px 24px; border-radius: 6px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: background 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-primary:hover { background: #e67012; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 24px; border-radius: 6px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-secondary:hover { border-color: var(--text-dim); }
+
+    /* ─── CHART CONTAINER ─── */
+    .chart-container {
+      position: relative; height: 280px;
+      margin-top: 12px;
+    }
+
+    /* ─── TWO COLUMN ─── */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* ─── SPARKLINE BAR ─── */
+    .spark-bar-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .spark-bar-row:last-child { border-bottom: none; }
+    .spark-bar-label { font-size: 13px; color: var(--text-dim); min-width: 90px; }
+    .spark-bar-track {
+      flex: 1; height: 8px; background: rgba(255,255,255,0.06);
+      border-radius: 4px; overflow: hidden;
+    }
+    .spark-bar-fill {
+      height: 100%; border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+    .spark-bar-fill.green { background: var(--green); }
+    .spark-bar-fill.orange { background: var(--orange); }
+    .spark-bar-fill.red { background: var(--red); }
+    .spark-bar-fill.blue { background: #3b82f6; }
+    .spark-bar-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-bright); min-width: 50px; text-align: right;
+    }
+
+    /* ─── STATUS MESSAGE ─── */
+    .status-toast {
+      position: fixed; bottom: 24px; right: 24px;
+      padding: 14px 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 600;
+      z-index: 9000; transform: translateY(100px);
+      opacity: 0; transition: all 0.3s ease;
+    }
+    .status-toast.visible { transform: translateY(0); opacity: 1; }
+    .status-toast.success { background: var(--green-dark); color: white; }
+    .status-toast.error { background: var(--red); color: white; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .sidebar {
+        flex-direction: row; overflow-x: auto;
+        border-right: none; border-bottom: 1px solid var(--border);
+        padding: 10px 16px;
+      }
+      .sidebar-section { display: flex; gap: 4px; margin-bottom: 0; padding: 0; }
+      .sidebar-section-title { display: none; }
+      .user-selector { margin-top: 0; border-top: none; padding: 0 16px; }
+      .user-selector select { min-width: 180px; }
+      .main { padding: 20px 16px; max-height: none; }
+      .two-col { grid-template-columns: 1fr; }
+      .edit-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Auth Loading -->
+<div id="authLoading" class="auth-loading">
+  <div class="spinner"></div>
+  <p>Verifying admin access...</p>
+</div>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">
+      <img src="logo.jpg" alt="VV" style="height:32px;" 
+           onerror="this.style.display='none'"/>
+      Victory Vision <span class="badge">Admin</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span id="adminEmail"></span>
+    <a href="companyprofile" style="color:var(--text-dim);font-size:13px;text-decoration:none;">← Back to App</a>
+    <button class="btn-signout" onclick="signOut()">Sign Out</button>
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Overview</div>
+      <button class="sidebar-link active" onclick="showPanel('overview')">
+        <span class="icon">📊</span> Dashboard
+      </button>
+      <button class="sidebar-link" onclick="showPanel('users')">
+        <span class="icon">👥</span> All Users
+        <span class="count-badge" id="totalUsersBadge">0</span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Management</div>
+      <button class="sidebar-link" onclick="showPanel('engagement')">
+        <span class="icon">📈</span> Engagement
+      </button>
+      <button class="sidebar-link" onclick="showPanel('onboarding')">
+        <span class="icon">🚀</span> Onboarding
+      </button>
+      <button class="sidebar-link" onclick="showPanel('churn')">
+        <span class="icon">⚠️</span> Churn Risk
+        <span class="count-badge" id="churnRiskBadge" style="background:var(--yellow);color:#000;">0</span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Actions</div>
+      <button class="sidebar-link" onclick="showPanel('edit-user')">
+        <span class="icon">✏️</span> Edit User
+      </button>
+    </div>
+
+    <!-- User Selector -->
+    <div class="user-selector">
+      <label>Select User</label>
+      <select id="userDropdown" onchange="selectUser(this.value)">
+        <option value="">-- All Users --</option>
+      </select>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════════ OVERVIEW PANEL ═══════════════════════════════════ -->
+    <div id="panel-overview" class="panel active">
+      <div class="panel-header">
+        <h1>Platform Overview</h1>
+        <p>Real-time health of the Victory Vision platform</p>
+      </div>
+
+      <div class="metrics-row" id="overviewMetrics">
+        <div class="metric-card">
+          <div class="metric-label">Total Users</div>
+          <div class="metric-value" id="metricTotalUsers">—</div>
+          <div class="metric-change neutral" id="metricUsersChange"></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Active (30d)</div>
+          <div class="metric-value" id="metricActiveUsers">—</div>
+          <div class="metric-change neutral" id="metricActiveChange"></div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Paid Subscribers</div>
+          <div class="metric-value" id="metricPaidUsers">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">MRR</div>
+          <div class="metric-value" id="metricMRR">—</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Churn Risk</div>
+          <div class="metric-value" id="metricChurnRisk">—</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title"><span class="icon">📊</span> Users by Plan</div>
+          <div class="chart-container">
+            <canvas id="chartPlanDist"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">📈</span> Signups (Last 30 Days)</div>
+          <div class="chart-container">
+            <canvas id="chartSignups"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">🏆</span> Platform Activity (All Users)</div>
+        <div id="platformActivity">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ USERS PANEL ═══════════════════════════════════ -->
+    <div id="panel-users" class="panel">
+      <div class="panel-header">
+        <h1>All Users</h1>
+        <p>Complete user roster with subscription status and activity</p>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Plan</th>
+              <th>Status</th>
+              <th>Months Subscribed</th>
+              <th>Contacts</th>
+              <th>Emails Sent</th>
+              <th>Campaigns</th>
+              <th>Last Active</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <tr><td colspan="9" style="text-align:center;color:var(--text-dim);">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ ENGAGEMENT PANEL ═══════════════════════════════════ -->
+    <div id="panel-engagement" class="panel">
+      <div class="panel-header">
+        <h1 id="engagementTitle">Platform Engagement</h1>
+        <p id="engagementSubtitle">Track user actions across time windows</p>
+      </div>
+
+      <div class="time-windows" id="timeWindows">
+        <button class="time-btn" data-window="1" onclick="setTimeWindow(1)">1d</button>
+        <button class="time-btn" data-window="3" onclick="setTimeWindow(3)">3d</button>
+        <button class="time-btn" data-window="5" onclick="setTimeWindow(5)">5d</button>
+        <button class="time-btn active" data-window="7" onclick="setTimeWindow(7)">7d</button>
+        <button class="time-btn" data-window="14" onclick="setTimeWindow(14)">14d</button>
+        <button class="time-btn" data-window="30" onclick="setTimeWindow(30)">30d</button>
+        <button class="time-btn" data-window="90" onclick="setTimeWindow(90)">90d</button>
+        <button class="time-btn" data-window="180" onclick="setTimeWindow(180)">180d</button>
+      </div>
+
+      <div class="metrics-row" id="engagementMetrics">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-title"><span class="icon">📊</span> Rows Added by Table</div>
+          <div class="chart-container">
+            <canvas id="chartEngagement"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="icon">📋</span> Activity Breakdown</div>
+          <div id="activityBreakdown">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ ONBOARDING PANEL ═══════════════════════════════════ -->
+    <div id="panel-onboarding" class="panel">
+      <div class="panel-header">
+        <h1 id="onboardingTitle">Onboarding Status</h1>
+        <p>Select a user from the sidebar to view their onboarding checklist</p>
+      </div>
+
+      <div id="onboardingContent">
+        <div class="card">
+          <div class="card-title"><span class="icon">📋</span> Onboarding Checklist</div>
+          <div id="onboardingChecklist">
+            <p style="color:var(--text-dim);font-size:14px;">Select a user from the dropdown below to view their onboarding status.</p>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top:20px;">
+          <div class="card">
+            <div class="card-title"><span class="icon">📧</span> Email System Health</div>
+            <div id="emailHealth">
+              <p style="color:var(--text-dim);font-size:14px;">Select a user to check email sending status.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><span class="icon">🔗</span> OAuth Integrations</div>
+            <div id="oauthStatus">
+              <p style="color:var(--text-dim);font-size:14px;">Select a user to check OAuth connection status.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ CHURN RISK PANEL ═══════════════════════════════════ -->
+    <div id="panel-churn" class="panel">
+      <div class="panel-header">
+        <h1>Churn Risk Monitor</h1>
+        <p>Users with declining activity or engagement red flags</p>
+      </div>
+
+      <div class="card" style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Plan</th>
+              <th>Risk Level</th>
+              <th>Days Since Active</th>
+              <th>Months Subscribed</th>
+              <th>Reason</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="churnTableBody">
+            <tr><td colspan="7" style="text-align:center;color:var(--text-dim);">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ EDIT USER PANEL ═══════════════════════════════════ -->
+    <div id="panel-edit-user" class="panel">
+      <div class="panel-header">
+        <h1>Edit User</h1>
+        <p>Manage credits, subscription plan, and account status</p>
+      </div>
+
+      <div id="editUserContent">
+        <div class="card">
+          <p style="color:var(--text-dim);font-size:14px;">Select a user from the sidebar dropdown to edit their account.</p>
+        </div>
+      </div>
+
+      <div id="editUserForm" style="display:none;">
+        <div class="card">
+          <div class="card-title"><span class="icon">👤</span> User: <span id="editUserEmail" style="color:var(--orange);"></span></div>
+          
+          <div class="edit-grid">
+            <div class="field-group">
+              <label>Subscription Plan</label>
+              <select id="editPlan">
+                <option value="Bronze">Bronze ($99/mo)</option>
+                <option value="Silver">Silver ($299/mo)</option>
+                <option value="Gold">Gold ($799/mo)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Subscription Status</label>
+              <select id="editStatus">
+                <option value="trial">Trial</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Campaign Credits</label>
+              <input type="number" id="editCampaignCredits" min="0" />
+            </div>
+            <div class="field-group">
+              <label>Video Credits</label>
+              <input type="number" id="editVideoCredits" min="0" />
+            </div>
+            <div class="field-group">
+              <label>Image Credits</label>
+              <input type="number" id="editImageCredits" min="0" />
+            </div>
+            <div class="field-group">
+              <label>Contact Credits</label>
+              <input type="number" id="editContactCredits" min="0" />
+            </div>
+            <div class="field-group">
+              <label>Social Credits</label>
+              <input type="number" id="editSocialCredits" min="0" />
+            </div>
+            <div class="field-group">
+              <label>Email Credits</label>
+              <input type="number" id="editEmailCredits" min="0" />
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;margin-top:20px;">
+            <button class="btn-primary" onclick="saveUserEdits()">💾 Save Changes</button>
+            <button class="btn-secondary" onclick="selectUser('')">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Status Toast -->
+<div id="statusToast" class="status-toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG & STATE
+// ═══════════════════════════════════════════════════════
+const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const sb = supabase.createClient(supabaseUrl, supabaseKey);
+
+// Admin whitelist — add your admin emails here
+const ADMIN_EMAILS = [
+  'andrew@victoryvision.app',
+  'andrew@platinumpropertymanagement.com'
+];
+
+let allUsers = [];
+let selectedUserId = null;
+let currentTimeWindow = 7;
+let charts = {};
+
+// ═══════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════
+async function checkAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session || !session.user) {
+    window.location.href = 'login.html';
+    return false;
+  }
+  const email = session.user.email;
+  if (!ADMIN_EMAILS.includes(email.toLowerCase())) {
+    alert('Access denied. Admin privileges required.');
+    window.location.href = 'companyprofile.html';
+    return false;
+  }
+  document.getElementById('adminEmail').textContent = email;
+  return true;
+}
+
+function signOut() {
+  sb.auth.signOut().then(() => { window.location.href = 'login.html'; });
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA LOADING
+// ═══════════════════════════════════════════════════════
+async function loadAllData() {
+  try {
+    // Load all users
+    const { data: users, error } = await sb.from('users').select('*');
+    if (error) throw error;
+    allUsers = users || [];
+
+    document.getElementById('totalUsersBadge').textContent = allUsers.length;
+    populateUserDropdown();
+    renderOverview();
+    renderUsersTable();
+    renderChurnRisk();
+    renderEngagement();
+  } catch (e) {
+    console.error('Failed to load data:', e);
+    toast('Failed to load data: ' + e.message, 'error');
+  }
+}
+
+function populateUserDropdown() {
+  const dd = document.getElementById('userDropdown');
+  dd.innerHTML = '<option value="">-- All Users --</option>';
+  allUsers.forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u.email || u.id;
+    opt.textContent = `${u.company_name || u.email || u.id}`;
+    dd.appendChild(opt);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// OVERVIEW PANEL
+// ═══════════════════════════════════════════════════════
+function renderOverview() {
+  const total = allUsers.length;
+  const active30 = allUsers.filter(u => {
+    const lastActive = getLastActive(u);
+    return lastActive && daysSince(lastActive) <= 30;
+  }).length;
+  const paid = allUsers.filter(u => u.subscription_status === 'active').length;
+  const churnRisk = allUsers.filter(u => isChurnRisk(u)).length;
+
+  document.getElementById('metricTotalUsers').textContent = total;
+  document.getElementById('metricActiveUsers').textContent = active30;
+  document.getElementById('metricPaidUsers').textContent = paid;
+  document.getElementById('metricChurnRisk').textContent = churnRisk;
+  document.getElementById('churnRiskBadge').textContent = churnRisk;
+
+  // Calculate MRR
+  let mrr = 0;
+  allUsers.forEach(u => {
+    if (u.subscription_status === 'active') {
+      if (u.subscription_plan === 'Gold') mrr += 799;
+      else if (u.subscription_plan === 'Silver') mrr += 299;
+      else mrr += 99;
+    }
+  });
+  document.getElementById('metricMRR').textContent = '$' + mrr.toLocaleString();
+
+  // Active percent
+  const activePct = total > 0 ? Math.round((active30 / total) * 100) : 0;
+  document.getElementById('metricActiveChange').textContent = activePct + '% of total';
+
+  renderPlanChart();
+  renderSignupsChart();
+  renderPlatformActivity();
+}
+
+function renderPlanChart() {
+  const counts = { Bronze: 0, Silver: 0, Gold: 0, Trial: 0 };
+  allUsers.forEach(u => {
+    if (u.subscription_status === 'trial') counts.Trial++;
+    else if (u.subscription_plan === 'Gold') counts.Gold++;
+    else if (u.subscription_plan === 'Silver') counts.Silver++;
+    else counts.Bronze++;
+  });
+
+  if (charts.planDist) charts.planDist.destroy();
+  charts.planDist = new Chart(document.getElementById('chartPlanDist'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Bronze', 'Silver', 'Gold', 'Trial'],
+      datasets: [{
+        data: [counts.Bronze, counts.Silver, counts.Gold, counts.Trial],
+        backgroundColor: ['#CD7F32', '#C0C0C0', '#FFD700', '#3b82f6'],
+        borderColor: '#111c2e',
+        borderWidth: 3
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#8899b0', font: { family: 'DM Sans' } } }
+      }
+    }
+  });
+}
+
+function renderSignupsChart() {
+  // Group users by signup date (last 30 days)
+  const now = new Date();
+  const days = [];
+  const counts = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    days.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    counts.push(allUsers.filter(u => {
+      const created = u.created_at || u.signup_date;
+      return created && created.startsWith(key);
+    }).length);
+  }
+
+  if (charts.signups) charts.signups.destroy();
+  charts.signups = new Chart(document.getElementById('chartSignups'), {
+    type: 'bar',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'Signups',
+        data: counts,
+        backgroundColor: 'rgba(253,126,20,0.6)',
+        borderColor: '#fd7e14',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: {
+        x: { ticks: { color: '#8899b0', font: { size: 10 }, maxTicksLimit: 10 }, grid: { display: false } },
+        y: { ticks: { color: '#8899b0', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
+      },
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
+
+function renderPlatformActivity() {
+  const container = document.getElementById('platformActivity');
+  // Aggregate counts across all users
+  const tables = [
+    { label: 'Contacts', key: 'contacts_count', color: 'blue' },
+    { label: 'Emails Sent', key: 'emails_sent_count', color: 'green' },
+    { label: 'Campaigns', key: 'campaigns_count', color: 'orange' },
+    { label: 'SMS Sent', key: 'sms_count', color: 'blue' },
+    { label: 'Calls Made', key: 'calls_count', color: 'green' },
+    { label: 'Meetings', key: 'meetings_count', color: 'orange' },
+    { label: 'Victories', key: 'victories_count', color: 'green' },
+  ];
+
+  // Use row counts or fallback
+  let html = '';
+  tables.forEach(t => {
+    let total = 0;
+    allUsers.forEach(u => { total += (u[t.key] || 0); });
+    const max = Math.max(total, 1);
+    const pct = Math.min((total / Math.max(max * 2, 10)) * 100, 100);
+    html += `
+      <div class="spark-bar-row">
+        <span class="spark-bar-label">${t.label}</span>
+        <div class="spark-bar-track">
+          <div class="spark-bar-fill ${t.color}" style="width:${pct}%"></div>
+        </div>
+        <span class="spark-bar-value">${total.toLocaleString()}</span>
+      </div>`;
+  });
+  container.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+// USERS TABLE
+// ═══════════════════════════════════════════════════════
+function renderUsersTable() {
+  const tbody = document.getElementById('usersTableBody');
+  if (allUsers.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-dim);">No users found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = allUsers.map(u => {
+    const plan = u.subscription_plan || 'Bronze';
+    const status = u.subscription_status || 'trial';
+    const lastActive = getLastActive(u);
+    const daysSinceActive = lastActive ? daysSince(lastActive) : '—';
+    const months = getMonthsSubscribed(u);
+
+    return `<tr>
+      <td>
+        <div style="font-weight:600;color:var(--text-bright);">${u.company_name || '—'}</div>
+        <div style="font-size:12px;color:var(--text-dim);">${u.email || u.id}</div>
+      </td>
+      <td><span class="plan-badge plan-${plan.toLowerCase()}">${plan}</span></td>
+      <td>${statusBadge(status)}</td>
+      <td style="font-family:'JetBrains Mono';font-size:13px;">${months}</td>
+      <td style="font-family:'JetBrains Mono';font-size:13px;">${u.contacts_count || 0}</td>
+      <td style="font-family:'JetBrains Mono';font-size:13px;">${u.emails_sent_count || 0}</td>
+      <td style="font-family:'JetBrains Mono';font-size:13px;">${u.campaigns_count || 0}</td>
+      <td style="font-size:12px;color:var(--text-dim);">${lastActive ? timeAgo(lastActive) : 'Never'}</td>
+      <td>
+        <button class="btn-primary" style="padding:5px 12px;font-size:11px;" 
+                onclick="selectUserAndEdit('${u.email || u.id}')">Edit</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function statusBadge(status) {
+  const map = {
+    active: 'badge-green',
+    trial: 'badge-blue',
+    inactive: 'badge-red',
+    cancelled: 'badge-red'
+  };
+  return `<span class="badge ${map[status] || 'badge-yellow'}">${status}</span>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// ENGAGEMENT PANEL
+// ═══════════════════════════════════════════════════════
+function setTimeWindow(days) {
+  currentTimeWindow = days;
+  document.querySelectorAll('.time-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.window) === days);
+  });
+  renderEngagement();
+}
+
+async function renderEngagement() {
+  const window = currentTimeWindow;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - window);
+  const cutoffISO = cutoff.toISOString();
+
+  // If a specific user is selected, filter for them
+  const userId = selectedUserId;
+  const title = document.getElementById('engagementTitle');
+  const subtitle = document.getElementById('engagementSubtitle');
+
+  if (userId) {
+    const user = allUsers.find(u => (u.email || u.id) === userId);
+    title.textContent = `Engagement: ${user?.company_name || userId}`;
+    subtitle.textContent = `Activity in the last ${window} days`;
+  } else {
+    title.textContent = 'Platform Engagement';
+    subtitle.textContent = `Activity across all users — last ${window} days`;
+  }
+
+  // Query actual table counts
+  const tables = ['contacts', 'emails', 'campaigns', 'meetings', 'calls', 'sms'];
+  const results = {};
+
+  for (const table of tables) {
+    try {
+      let query = sb.from(table).select('id, created_at', { count: 'exact', head: true })
+        .gte('created_at', cutoffISO);
+      if (userId) {
+        query = query.or(`user_id.eq.${userId},customer_id.eq.${userId},email.eq.${userId}`);
+      }
+      const { count, error } = await query;
+      results[table] = error ? 0 : (count || 0);
+    } catch {
+      results[table] = 0;
+    }
+  }
+
+  // Also try victories table
+  try {
+    let query = sb.from('victories').select('id', { count: 'exact', head: true })
+      .gte('created_at', cutoffISO);
+    if (userId) {
+      query = query.or(`user_id.eq.${userId},customer_id.eq.${userId}`);
+    }
+    const { count } = await query;
+    results.victories = count || 0;
+  } catch {
+    results.victories = 0;
+  }
+
+  // Render metrics
+  const metricsContainer = document.getElementById('engagementMetrics');
+  const totalActions = Object.values(results).reduce((a, b) => a + b, 0);
+  metricsContainer.innerHTML = `
+    <div class="metric-card">
+      <div class="metric-label">Total Actions (${window}d)</div>
+      <div class="metric-value">${totalActions.toLocaleString()}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Contacts Added</div>
+      <div class="metric-value">${results.contacts || 0}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Emails Sent</div>
+      <div class="metric-value">${results.emails || 0}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Campaigns</div>
+      <div class="metric-value">${results.campaigns || 0}</div>
+    </div>
+  `;
+
+  // Chart
+  if (charts.engagement) charts.engagement.destroy();
+  const tableLabels = Object.keys(results).map(k => k.charAt(0).toUpperCase() + k.slice(1));
+  const tableValues = Object.values(results);
+  charts.engagement = new Chart(document.getElementById('chartEngagement'), {
+    type: 'bar',
+    data: {
+      labels: tableLabels,
+      datasets: [{
+        label: `Rows added (${window}d)`,
+        data: tableValues,
+        backgroundColor: ['#3b82f6', '#22c55e', '#fd7e14', '#8b5cf6', '#ef4444', '#06b6d4', '#eab308'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      indexAxis: 'y',
+      scales: {
+        x: { ticks: { color: '#8899b0' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true },
+        y: { ticks: { color: '#8899b0', font: { size: 13 } }, grid: { display: false } }
+      },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Activity breakdown
+  const breakdown = document.getElementById('activityBreakdown');
+  const maxVal = Math.max(...tableValues, 1);
+  breakdown.innerHTML = Object.entries(results).map(([key, val]) => {
+    const colors = { contacts: 'blue', emails: 'green', campaigns: 'orange', meetings: 'blue', calls: 'green', sms: 'orange', victories: 'green' };
+    const pct = (val / maxVal) * 100;
+    return `
+      <div class="spark-bar-row">
+        <span class="spark-bar-label">${key.charAt(0).toUpperCase() + key.slice(1)}</span>
+        <div class="spark-bar-track">
+          <div class="spark-bar-fill ${colors[key] || 'blue'}" style="width:${pct}%"></div>
+        </div>
+        <span class="spark-bar-value">${val}</span>
+      </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// ONBOARDING PANEL
+// ═══════════════════════════════════════════════════════
+async function renderOnboarding(userId) {
+  if (!userId) {
+    document.getElementById('onboardingChecklist').innerHTML = '<p style="color:var(--text-dim);font-size:14px;">Select a user from the dropdown to view their onboarding status.</p>';
+    document.getElementById('emailHealth').innerHTML = '<p style="color:var(--text-dim);font-size:14px;">Select a user to check email sending status.</p>';
+    document.getElementById('oauthStatus').innerHTML = '<p style="color:var(--text-dim);font-size:14px;">Select a user to check OAuth connection status.</p>';
+    return;
+  }
+
+  const user = allUsers.find(u => (u.email || u.id) === userId);
+  if (!user) return;
+
+  document.getElementById('onboardingTitle').textContent = `Onboarding: ${user.company_name || userId}`;
+
+  // Build checklist
+  const checks = [
+    {
+      label: 'Company Profile Complete',
+      pass: !!(user.company_name && user.company_description && user.product_descriptions),
+      detail: user.company_name ? `"${user.company_name}"` : 'Missing'
+    },
+    {
+      label: 'Logo Uploaded',
+      pass: !!user.logo_URL,
+      detail: user.logo_URL ? 'Uploaded' : 'Missing'
+    },
+    {
+      label: 'Brand Colors Set',
+      pass: !!user.brand_colors,
+      detail: user.brand_colors || 'Not set'
+    },
+    {
+      label: 'Goals Configured',
+      pass: !!(user.goals && (typeof user.goals === 'object' ? Object.keys(user.goals).length > 0 : user.goals.length > 0)),
+      detail: user.goals ? 'Configured' : 'No goals set'
+    },
+    {
+      label: 'Subscription Active',
+      pass: user.subscription_status === 'active',
+      detail: `${user.subscription_plan || 'None'} — ${user.subscription_status || 'Unknown'}`
+    },
+    {
+      label: 'First Campaign Created',
+      pass: (user.campaigns_count || 0) > 0,
+      detail: `${user.campaigns_count || 0} campaigns`
+    },
+    {
+      label: 'Contacts Added',
+      pass: (user.contacts_count || 0) > 0,
+      detail: `${user.contacts_count || 0} contacts`
+    },
+    {
+      label: 'First Email Sent',
+      pass: (user.emails_sent_count || 0) > 0,
+      detail: `${user.emails_sent_count || 0} emails sent`
+    }
+  ];
+
+  const completedCount = checks.filter(c => c.pass).length;
+  const pct = Math.round((completedCount / checks.length) * 100);
+
+  document.getElementById('onboardingChecklist').innerHTML = `
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+      <div style="flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+        <div style="width:${pct}%;height:100%;background:${pct === 100 ? 'var(--green)' : 'var(--orange)'};border-radius:4px;transition:width 0.5s;"></div>
+      </div>
+      <span style="font-family:'JetBrains Mono';font-size:14px;font-weight:700;color:var(--text-bright);">${pct}%</span>
+    </div>
+    ${checks.map(c => `
+      <div class="checklist-item">
+        <div class="checklist-icon ${c.pass ? 'pass' : 'fail'}">${c.pass ? '✓' : '✗'}</div>
+        <span class="checklist-label">${c.label}</span>
+        <span class="checklist-status" style="color:${c.pass ? 'var(--green)' : 'var(--text-dim)'}">${c.detail}</span>
+      </div>
+    `).join('')}
+  `;
+
+  // Email health check
+  renderEmailHealth(user);
+
+  // OAuth status
+  renderOAuthStatus(user);
+}
+
+function renderEmailHealth(user) {
+  const container = document.getElementById('emailHealth');
+  const emailsSent = user.emails_sent_count || 0;
+  const hasMailgun = !!(user.mailgun_domain || user.email_domain);
+  const emailConfirmed = user.email_confirmed !== false;
+
+  const checks = [
+    { label: 'Email Sending Enabled', pass: emailsSent > 0 || hasMailgun, detail: emailsSent > 0 ? `${emailsSent} sent` : (hasMailgun ? 'Domain configured' : 'Not configured') },
+    { label: 'Email Domain Verified', pass: hasMailgun, detail: user.mailgun_domain || user.email_domain || 'No domain' },
+    { label: 'Email Confirmed', pass: emailConfirmed, detail: emailConfirmed ? 'Confirmed' : 'Not confirmed' },
+    { label: 'Opens Tracking', pass: !!user.track_opens, detail: user.track_opens ? 'Enabled' : 'Disabled' },
+  ];
+
+  container.innerHTML = checks.map(c => `
+    <div class="checklist-item">
+      <div class="checklist-icon ${c.pass ? 'pass' : 'fail'}">${c.pass ? '✓' : '✗'}</div>
+      <span class="checklist-label">${c.label}</span>
+      <span class="checklist-status" style="color:${c.pass ? 'var(--green)' : 'var(--text-dim)'}">${c.detail}</span>
+    </div>
+  `).join('');
+}
+
+function renderOAuthStatus(user) {
+  const container = document.getElementById('oauthStatus');
+  const integrations = [
+    { label: 'Calendly Connected', key: 'calendly_token', reminder: 'Email Reminders' },
+    { label: 'LinkedIn Connected', key: 'linkedin_token', reminder: 'Email Reminders' },
+    { label: 'Google Connected', key: 'google_token', reminder: 'Calendar Sync' },
+    { label: 'Stripe Connected', key: 'stripe_customer_id', reminder: 'Billing' },
+  ];
+
+  container.innerHTML = integrations.map(i => {
+    const connected = !!user[i.key];
+    return `
+      <div class="checklist-item">
+        <div class="checklist-icon ${connected ? 'pass' : 'pending'}">${connected ? '✓' : '○'}</div>
+        <span class="checklist-label">${i.label}</span>
+        <span class="checklist-status" style="color:${connected ? 'var(--green)' : 'var(--yellow)'}">${connected ? 'Connected' : 'Not connected'}</span>
+      </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// CHURN RISK
+// ═══════════════════════════════════════════════════════
+function isChurnRisk(user) {
+  if (user.subscription_status === 'inactive' || user.subscription_status === 'cancelled') return false;
+  const lastActive = getLastActive(user);
+  if (!lastActive) return true;
+  const days = daysSince(lastActive);
+  if (days >= 14) return true;
+  if (user.subscription_status === 'trial' && days >= 5) return true;
+  return false;
+}
+
+function getChurnReason(user) {
+  const lastActive = getLastActive(user);
+  if (!lastActive) return 'No recorded activity';
+  const days = daysSince(lastActive);
+  if (days >= 30) return `Inactive ${days} days`;
+  if (days >= 14) return `Declining engagement (${days}d inactive)`;
+  if (user.subscription_status === 'trial' && days >= 5) return 'Trial user going cold';
+  if ((user.campaigns_count || 0) === 0) return 'No campaigns created';
+  return 'Low engagement signals';
+}
+
+function getChurnLevel(user) {
+  const lastActive = getLastActive(user);
+  if (!lastActive) return 'high';
+  const days = daysSince(lastActive);
+  if (days >= 30) return 'high';
+  if (days >= 14) return 'medium';
+  return 'low';
+}
+
+function renderChurnRisk() {
+  const atRisk = allUsers.filter(u => isChurnRisk(u));
+  const tbody = document.getElementById('churnTableBody');
+
+  if (atRisk.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--green);">🎉 No users at churn risk!</td></tr>';
+    return;
+  }
+
+  // Sort by risk level
+  const levelOrder = { high: 0, medium: 1, low: 2 };
+  atRisk.sort((a, b) => levelOrder[getChurnLevel(a)] - levelOrder[getChurnLevel(b)]);
+
+  tbody.innerHTML = atRisk.map(u => {
+    const level = getChurnLevel(u);
+    const lastActive = getLastActive(u);
+    const days = lastActive ? daysSince(lastActive) : '—';
+    const levelBadge = level === 'high' ? 'badge-red' : (level === 'medium' ? 'badge-yellow' : 'badge-orange');
+
+    return `<tr>
+      <td>
+        <div style="font-weight:600;color:var(--text-bright);">${u.company_name || '—'}</div>
+        <div style="font-size:12px;color:var(--text-dim);">${u.email || u.id}</div>
+      </td>
+      <td><span class="plan-badge plan-${(u.subscription_plan || 'bronze').toLowerCase()}">${u.subscription_plan || 'Bronze'}</span></td>
+      <td><span class="badge ${levelBadge}">${level}</span></td>
+      <td style="font-family:'JetBrains Mono';font-size:13px;">${days}</td>
+      <td style="font-family:'JetBrains Mono';font-size:13px;">${getMonthsSubscribed(u)}</td>
+      <td style="font-size:13px;color:var(--text-dim);">${getChurnReason(u)}</td>
+      <td>
+        <button class="btn-primary" style="padding:5px 12px;font-size:11px;" 
+                onclick="selectUserAndEdit('${u.email || u.id}')">View</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// EDIT USER
+// ═══════════════════════════════════════════════════════
+function selectUser(userId) {
+  selectedUserId = userId || null;
+  document.getElementById('userDropdown').value = userId || '';
+
+  if (userId) {
+    const user = allUsers.find(u => (u.email || u.id) === userId);
+    if (user) {
+      loadEditForm(user);
+      renderOnboarding(userId);
+      renderEngagement();
+    }
+  } else {
+    document.getElementById('editUserContent').style.display = 'block';
+    document.getElementById('editUserForm').style.display = 'none';
+    renderOnboarding(null);
+    renderEngagement();
+  }
+}
+
+function selectUserAndEdit(userId) {
+  selectedUserId = userId;
+  document.getElementById('userDropdown').value = userId;
+  const user = allUsers.find(u => (u.email || u.id) === userId);
+  if (user) {
+    loadEditForm(user);
+    renderOnboarding(userId);
+    showPanelDirect('edit-user');
+  }
+}
+
+function showPanelDirect(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+}
+
+function loadEditForm(user) {
+  document.getElementById('editUserContent').style.display = 'none';
+  document.getElementById('editUserForm').style.display = 'block';
+  document.getElementById('editUserEmail').textContent = user.email || user.id;
+
+  document.getElementById('editPlan').value = user.subscription_plan || 'Bronze';
+  document.getElementById('editStatus').value = user.subscription_status || 'trial';
+  document.getElementById('editCampaignCredits').value = user.campaign_credits || 0;
+  document.getElementById('editVideoCredits').value = user.video_credits || 0;
+  document.getElementById('editImageCredits').value = user.image_credits || 0;
+  document.getElementById('editContactCredits').value = user.contact_credits || 0;
+  document.getElementById('editSocialCredits').value = user.social_credits || 0;
+  document.getElementById('editEmailCredits').value = user.email_credits || 0;
+}
+
+async function saveUserEdits() {
+  if (!selectedUserId) return;
+
+  const updates = {
+    subscription_plan: document.getElementById('editPlan').value,
+    subscription_status: document.getElementById('editStatus').value,
+    campaign_credits: parseInt(document.getElementById('editCampaignCredits').value) || 0,
+    video_credits: parseInt(document.getElementById('editVideoCredits').value) || 0,
+    image_credits: parseInt(document.getElementById('editImageCredits').value) || 0,
+    contact_credits: parseInt(document.getElementById('editContactCredits').value) || 0,
+    social_credits: parseInt(document.getElementById('editSocialCredits').value) || 0,
+    email_credits: parseInt(document.getElementById('editEmailCredits').value) || 0,
+  };
+
+  try {
+    const { error } = await sb.from('users').update(updates)
+      .eq('email', selectedUserId);
+    
+    if (error) throw error;
+
+    toast('User updated successfully!', 'success');
+    // Refresh data
+    await loadAllData();
+    selectUser(selectedUserId);
+  } catch (e) {
+    console.error('Save failed:', e);
+    toast('Failed to save: ' + e.message, 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════
+function getLastActive(user) {
+  const dates = [
+    user.last_active, user.updated_at, user.last_login,
+    user.last_emailed_date, user.last_campaign_date
+  ].filter(Boolean).map(d => new Date(d));
+  
+  if (dates.length === 0) return null;
+  return new Date(Math.max(...dates));
+}
+
+function daysSince(date) {
+  if (!date) return Infinity;
+  const d = date instanceof Date ? date : new Date(date);
+  return Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function timeAgo(date) {
+  const d = date instanceof Date ? date : new Date(date);
+  const days = daysSince(d);
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return `${days}d ago`;
+  if (days < 30) return `${Math.floor(days / 7)}w ago`;
+  return `${Math.floor(days / 30)}mo ago`;
+}
+
+function getMonthsSubscribed(user) {
+  const created = user.subscription_start || user.created_at || user.signup_date;
+  if (!created) return '—';
+  const months = Math.max(1, Math.floor(daysSince(new Date(created)) / 30));
+  return months;
+}
+
+function toast(message, type) {
+  const el = document.getElementById('statusToast');
+  el.textContent = message;
+  el.className = `status-toast ${type} visible`;
+  setTimeout(() => { el.classList.remove('visible'); }, 3500);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('authLoading').style.display = 'flex';
+
+  const isAdmin = await checkAuth();
+  if (!isAdmin) return;
+
+  document.getElementById('authLoading').style.display = 'none';
+  await loadAllData();
+});
+
+// Session keepalive
+setInterval(async () => {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) window.location.href = 'login.html';
+  } catch (e) {
+    console.error('Session check failed:', e);
+  }
+}, 300000);
+</script>
+</body>
+</html>
