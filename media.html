@@ -2288,7 +2288,8 @@ const selectedFile = selectedMediaFiles.video;
       if (result.success !== false) {
 hideProcessing();
 document.getElementById('videoForm').reset();  // ← Clear form first
-alert('🎬 Video is processing!\n\nThis takes about 8 minutes.\n\nPlease refresh the page after waiting.');
+document.getElementById('videoChat').value = '';
+        alert('🎬 Video is processing!\n\nThis takes about 8 minutes.\n\nPlease refresh the page after waiting.');
 showStatus('⏳ Creating video... Wait ~8 minutes, then refresh the page.');
         setDuration(30);
         userCredits.credits--;
