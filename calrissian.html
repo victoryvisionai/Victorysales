@@ -739,19 +739,13 @@ const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-// Admin whitelist — add your admin emails here
-const ADMIN_EMAILS = [
-  'andrew@victoryvision.app',
-  'andrew@platinumpropertymanagement.com'
-];
-
 let allUsers = [];
 let selectedUserId = null;
 let currentTimeWindow = 7;
 let charts = {};
 
 // ═══════════════════════════════════════════════════════
-// AUTH
+// AUTH (standard login — add admin whitelist later)
 // ═══════════════════════════════════════════════════════
 async function checkAuth() {
   const { data: { session } } = await sb.auth.getSession();
@@ -759,13 +753,7 @@ async function checkAuth() {
     window.location.href = 'login.html';
     return false;
   }
-  const email = session.user.email;
-  if (!ADMIN_EMAILS.includes(email.toLowerCase())) {
-    alert('Access denied. Admin privileges required.');
-    window.location.href = 'companyprofile.html';
-    return false;
-  }
-  document.getElementById('adminEmail').textContent = email;
+  document.getElementById('adminEmail').textContent = session.user.email;
   return true;
 }
 
