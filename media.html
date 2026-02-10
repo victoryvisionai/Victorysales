@@ -2847,15 +2847,16 @@ function escapeHtml(text) {
       await createImage();
     });
 
-// Video creation form
-    document.getElementById('videoForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      formData.append('chat', document.getElementById('videoChat').value);
-      formData.append('duration', document.getElementById('videoDuration').value);
-      await createVideo(formData);
-    });
-
+document.getElementById('videoForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const chatValue = document.getElementById('videoChat').value;  // ← GET VALUE FIRST
+  const formData = new FormData(e.target);
+  formData.append('chat', chatValue);  // ← USE SAVED VALUE
+  formData.append('duration', document.getElementById('videoDuration').value);
+  document.getElementById('videoChat').value = '';  // ← CLEAR IMMEDIATELY
+  await createVideo(formData);
+});
+    
 // Presentation creation form
     document.getElementById('presentationForm').addEventListener('submit', async (e) => {
       e.preventDefault();
