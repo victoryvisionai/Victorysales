@@ -1,1473 +1,792 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Victory Vision Admin Dashboard - User Management & Engagement Tracking"/>
-  <meta name="author" content="Victory Vision"/>
   <title>Victory Vision - Admin Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;600&display=swap');
+    :root{--navy:#0A3161;--navy-dark:#06203f;--red:#bb133e;--orange:#fd7e14;--green:#22c55e;--green-dark:#16a34a;--yellow:#eab308;--bg:#0c1421;--bg-card:#111c2e;--border:#1e3a5f;--text:#e2e8f0;--text-dim:#8899b0;--text-bright:#f8fafc}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    .auth-loading{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+    .spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .8s linear infinite}
+    .mini-spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .6s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    :root {
-      --navy: #0A3161;
-      --navy-light: #1a4c80;
-      --navy-dark: #06203f;
-      --red: #bb133e;
-      --red-light: #d91a4a;
-      --orange: #fd7e14;
-      --green: #22c55e;
-      --green-dark: #16a34a;
-      --yellow: #eab308;
-      --bg: #0c1421;
-      --bg-card: #111c2e;
-      --bg-card-hover: #162640;
-      --border: #1e3a5f;
-      --text: #e2e8f0;
-      --text-dim: #8899b0;
-      --text-bright: #f8fafc;
-      --shadow: 0 4px 24px rgba(0,0,0,0.3);
-    }
+    /* TOPBAR */
+    .topbar{background:var(--navy-dark);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;justify-content:space-between}
+    .topbar .logo{font-weight:700;font-size:18px;color:var(--text-bright);display:flex;align-items:center;gap:8px}
+    .topbar .logo .badge{background:var(--red);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:1px}
+    .topbar-right{display:flex;align-items:center;gap:16px}
+    .topbar-right span{font-size:13px;color:var(--text-dim)}
+    .btn-sign{background:var(--red);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* LAYOUT */
+    .layout{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 53px)}
+    .sidebar{background:var(--navy-dark);border-right:1px solid var(--border);padding:20px 0;display:flex;flex-direction:column}
+    .sb-section{padding:0 16px;margin-bottom:20px}
+    .sb-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:6px;padding:0 12px}
+    .sb-link{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:var(--text-dim);font-size:14px;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:.15s}
+    .sb-link:hover{background:rgba(255,255,255,.05);color:var(--text)}
+    .sb-link.active{background:rgba(253,126,20,.12);color:var(--orange)}
+    .sb-link .ic{font-size:17px;width:22px;text-align:center}
+    .sb-link .ct{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:10px}
+    .user-sel{padding:14px 16px;border-top:1px solid var(--border);margin-top:auto}
+    .user-sel label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:4px}
+    .user-sel select{width:100%;padding:8px;background:var(--bg-card);border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:13px;font-family:inherit}
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
+    /* MAIN */
+    .main{padding:28px 32px;overflow-y:auto;max-height:calc(100vh - 53px)}
+    .panel{display:none}.panel.active{display:block}
+    .ph h1{font-size:24px;font-weight:700;color:var(--text-bright);margin-bottom:4px}
+    .ph p{font-size:14px;color:var(--text-dim);margin-bottom:20px}
 
-    /* ─── AUTH LOADING ─── */
-    .auth-loading {
-      position: fixed; inset: 0;
-      background: var(--bg);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 9999;
-    }
-    .auth-loading .spinner {
-      width: 48px; height: 48px;
-      border: 4px solid var(--border);
-      border-top-color: var(--orange);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    .auth-loading p { margin-top: 16px; color: var(--text-dim); }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    /* METRICS */
+    .mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+    .mcard{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:.15s}
+    .mcard:hover{border-color:#2a5080;transform:translateY(-1px)}
+    .mcard .ml{font-size:11px;font-weight:600;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+    .mcard .mv{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--text-bright)}
+    .mcard .ms{font-size:11px;color:var(--text-dim);margin-top:4px}
 
-    /* ─── TOP BAR ─── */
-    .topbar {
-      background: var(--navy-dark);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 32px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .topbar-left {
-      display: flex; align-items: center; gap: 16px;
-    }
-    .topbar-left .logo {
-      font-weight: 700; font-size: 18px; color: var(--text-bright);
-      display: flex; align-items: center; gap: 8px;
-    }
-    .topbar-left .logo .badge {
-      background: var(--red);
-      font-size: 10px; font-weight: 700;
-      padding: 2px 8px; border-radius: 4px;
-      text-transform: uppercase; letter-spacing: 1px;
-    }
-    .topbar-right {
-      display: flex; align-items: center; gap: 16px;
-    }
-    .topbar-right span { font-size: 13px; color: var(--text-dim); }
-    .btn-signout {
-      background: var(--red); color: white;
-      border: none; padding: 6px 14px; border-radius: 6px;
-      font-size: 12px; font-weight: 600; cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-signout:hover { background: var(--red-light); }
+    /* CARDS & TABLES */
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px}
+    .ct-title{font-size:15px;font-weight:700;color:var(--text-bright);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    table{width:100%;border-collapse:collapse}
+    th,td{text-align:left;padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border)}
+    th{font-weight:700;color:var(--text-dim);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(255,255,255,.02)}
 
-    /* ─── LAYOUT ─── */
-    .admin-layout {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: calc(100vh - 53px);
-    }
+    /* BADGES */
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
+    .b-green{background:rgba(34,197,94,.15);color:var(--green)}
+    .b-blue{background:rgba(59,130,246,.15);color:#60a5fa}
+    .b-red{background:rgba(187,19,62,.15);color:#d91a4a}
+    .b-yellow{background:rgba(234,179,8,.15);color:var(--yellow)}
+    .plan-badge{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
+    .plan-bronze{background:linear-gradient(135deg,rgba(205,127,50,.2),rgba(160,82,45,.2));color:#CD7F32;border:1px solid rgba(205,127,50,.3)}
+    .plan-silver{background:linear-gradient(135deg,rgba(192,192,192,.2),rgba(128,128,128,.2));color:#C0C0C0;border:1px solid rgba(192,192,192,.3)}
+    .plan-gold{background:linear-gradient(135deg,rgba(255,215,0,.2),rgba(255,165,0,.2));color:#FFD700;border:1px solid rgba(255,215,0,.3)}
 
-    /* ─── SIDEBAR ─── */
-    .sidebar {
-      background: var(--navy-dark);
-      border-right: 1px solid var(--border);
-      padding: 20px 0;
-      display: flex; flex-direction: column;
-    }
-    .sidebar-section {
-      padding: 0 16px; margin-bottom: 24px;
-    }
-    .sidebar-section-title {
-      font-size: 10px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--text-dim); margin-bottom: 8px;
-      padding: 0 12px;
-    }
-    .sidebar-link {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px; border-radius: 8px;
-      color: var(--text-dim); text-decoration: none;
-      font-size: 14px; font-weight: 500;
-      transition: all 0.15s; cursor: pointer; border: none;
-      background: none; width: 100%; text-align: left;
-    }
-    .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); }
-    .sidebar-link.active { background: rgba(253,126,20,0.12); color: var(--orange); }
-    .sidebar-link .icon { font-size: 18px; width: 22px; text-align: center; }
-    .sidebar-link .count-badge {
-      margin-left: auto;
-      background: var(--red);
-      color: white; font-size: 11px; font-weight: 700;
-      padding: 1px 7px; border-radius: 10px;
-      min-width: 20px; text-align: center;
-    }
+    /* TIME BTNS */
+    .tw{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px}
+    .tb{background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+    .tb.active{background:var(--orange);border-color:var(--orange);color:#000}
 
-    /* ─── USER SELECTOR (sidebar) ─── */
-    .user-selector {
-      padding: 16px; border-top: 1px solid var(--border);
-      margin-top: auto;
-    }
-    .user-selector label {
-      display: block; font-size: 10px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1.5px;
-      color: var(--text-dim); margin-bottom: 6px;
-    }
-    .user-selector select {
-      width: 100%; padding: 8px 10px;
-      background: var(--bg-card); border: 1px solid var(--border);
-      color: var(--text); border-radius: 6px; font-size: 13px;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .user-selector select:focus { outline: none; border-color: var(--orange); }
+    /* SPARK BARS */
+    .sbar{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+    .sbar:last-child{border-bottom:none}
+    .sbar-l{font-size:13px;color:var(--text-dim);min-width:110px}
+    .sbar-t{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
+    .sbar-f{height:100%;border-radius:4px;transition:width .5s}
+    .sbar-v{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--text-bright);min-width:45px;text-align:right}
+    .c-blue{background:#3b82f6}.c-green{background:var(--green)}.c-orange{background:var(--orange)}.c-purple{background:#8b5cf6}.c-cyan{background:#06b6d4}.c-yellow{background:var(--yellow)}.c-red{background:var(--red)}
 
-    /* ─── MAIN CONTENT ─── */
-    .main {
-      padding: 28px 32px;
-      overflow-y: auto;
-      max-height: calc(100vh - 53px);
-    }
+    /* CHARTS */
+    .chart-box{position:relative;height:260px;margin-top:10px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 
-    /* ─── SECTION PANELS ─── */
-    .panel { display: none; }
-    .panel.active { display: block; }
+    /* CHECKLIST */
+    .chk{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px}
+    .chk-i{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+    .chk-i.ok{background:rgba(34,197,94,.15);color:var(--green)}
+    .chk-i.no{background:rgba(187,19,62,.15);color:#d91a4a}
+    .chk-i.wait{background:rgba(234,179,8,.15);color:var(--yellow)}
+    .chk-s{margin-left:auto;font-size:12px;font-weight:600}
 
-    .panel-header {
-      margin-bottom: 24px;
-    }
-    .panel-header h1 {
-      font-size: 26px; font-weight: 700; color: var(--text-bright);
-      margin-bottom: 4px;
-    }
-    .panel-header p { font-size: 14px; color: var(--text-dim); }
+    /* FORMS */
+    .fg{display:flex;flex-direction:column;gap:4px}
+    .fg label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-dim)}
+    .fg input,.fg select,.fg textarea{padding:9px 11px;border-radius:6px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-size:14px;font-family:inherit}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--orange)}
+    .eg{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .btn{border:none;padding:10px 22px;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+    .btn-p{background:var(--orange);color:#000}.btn-p:hover{background:#e67012}
+    .btn-s{background:transparent;color:var(--text);border:1px solid var(--border)}.btn-s:hover{border-color:var(--text-dim)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
 
-    /* ─── METRIC CARDS ─── */
-    .metrics-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px; margin-bottom: 28px;
-    }
-    .metric-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px; padding: 20px;
-      transition: border-color 0.2s, transform 0.15s;
-    }
-    .metric-card:hover { border-color: var(--navy-light); transform: translateY(-2px); }
-    .metric-card .metric-label {
-      font-size: 12px; font-weight: 600;
-      color: var(--text-dim); text-transform: uppercase;
-      letter-spacing: 0.5px; margin-bottom: 8px;
-    }
-    .metric-card .metric-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 32px; font-weight: 700;
-      color: var(--text-bright);
-    }
-    .metric-card .metric-change {
-      font-size: 12px; margin-top: 6px;
-    }
-    .metric-card .metric-change.up { color: var(--green); }
-    .metric-card .metric-change.down { color: var(--red); }
-    .metric-card .metric-change.neutral { color: var(--text-dim); }
+    /* ASSUME ROLE ACTION CARDS */
+    .action-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:16px}
+    .action-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:default}
+    .action-card h3{font-size:14px;color:var(--text-bright);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .action-card p{font-size:12px;color:var(--text-dim);margin-bottom:12px}
+    .action-card .btn{width:100%;text-align:center;font-size:13px;padding:8px}
+    .action-result{margin-top:10px;padding:10px;border-radius:6px;font-size:12px;font-family:'JetBrains Mono',monospace;display:none;max-height:120px;overflow-y:auto;word-break:break-all}
+    .action-result.show{display:block}
+    .action-result.ok{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+    .action-result.err{background:rgba(187,19,62,.1);color:#d91a4a;border:1px solid rgba(187,19,62,.2)}
 
-    /* ─── CARDS / TABLES ─── */
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px; padding: 24px;
-      margin-bottom: 20px;
-    }
-    .card-title {
-      font-size: 16px; font-weight: 700;
-      color: var(--text-bright); margin-bottom: 16px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .card-title .icon { font-size: 20px; }
+    /* TOAST */
+    .toast{position:fixed;bottom:24px;right:24px;padding:14px 24px;border-radius:10px;font-size:14px;font-weight:600;z-index:9000;transform:translateY(100px);opacity:0;transition:.3s}
+    .toast.vis{transform:translateY(0);opacity:1}
+    .toast.ok{background:var(--green-dark);color:#fff}
+    .toast.err{background:var(--red);color:#fff}
 
-    table {
-      width: 100%; border-collapse: collapse;
-    }
-    th, td {
-      text-align: left; padding: 12px 14px;
-      font-size: 13px; border-bottom: 1px solid var(--border);
-    }
-    th {
-      font-weight: 700; color: var(--text-dim);
-      font-size: 11px; text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    td { color: var(--text); }
-    tr:hover td { background: rgba(255,255,255,0.02); }
-    tr:last-child td { border-bottom: none; }
-
-    /* ─── STATUS BADGES ─── */
-    .badge {
-      display: inline-block; padding: 3px 10px;
-      border-radius: 20px; font-size: 11px;
-      font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
-    .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
-    .badge-red { background: rgba(187,19,62,0.15); color: var(--red-light); }
-    .badge-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
-    .badge-orange { background: rgba(253,126,20,0.15); color: var(--orange); }
-
-    /* ─── PLAN BADGES ─── */
-    .plan-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 12px; border-radius: 20px;
-      font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .plan-bronze { background: linear-gradient(135deg, rgba(205,127,50,0.2), rgba(160,82,45,0.2)); color: #CD7F32; border: 1px solid rgba(205,127,50,0.3); }
-    .plan-silver { background: linear-gradient(135deg, rgba(192,192,192,0.2), rgba(128,128,128,0.2)); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.3); }
-    .plan-gold { background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,165,0,0.2)); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
-
-    /* ─── TIME WINDOW TOGGLE ─── */
-    .time-windows {
-      display: flex; gap: 4px; flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-    .time-btn {
-      background: var(--bg-card); border: 1px solid var(--border);
-      color: var(--text-dim); padding: 6px 14px;
-      border-radius: 6px; font-size: 12px; font-weight: 600;
-      cursor: pointer; transition: all 0.15s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .time-btn:hover { border-color: var(--navy-light); color: var(--text); }
-    .time-btn.active { background: var(--orange); border-color: var(--orange); color: #000; }
-
-    /* ─── ONBOARDING CHECKLIST ─── */
-    .checklist-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 16px; border-radius: 8px;
-      border: 1px solid var(--border); margin-bottom: 8px;
-      transition: border-color 0.2s;
-    }
-    .checklist-item:hover { border-color: var(--navy-light); }
-    .checklist-icon {
-      width: 28px; height: 28px;
-      border-radius: 50%; display: flex;
-      align-items: center; justify-content: center;
-      font-size: 14px; flex-shrink: 0;
-    }
-    .checklist-icon.pass { background: rgba(34,197,94,0.15); color: var(--green); }
-    .checklist-icon.fail { background: rgba(187,19,62,0.15); color: var(--red-light); }
-    .checklist-icon.pending { background: rgba(234,179,8,0.15); color: var(--yellow); }
-    .checklist-label {
-      font-size: 14px; font-weight: 500; color: var(--text);
-    }
-    .checklist-status {
-      margin-left: auto; font-size: 12px; font-weight: 600;
-    }
-
-    /* ─── EDIT FORM ─── */
-    .edit-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .field-group {
-      display: flex; flex-direction: column; gap: 4px;
-    }
-    .field-group label {
-      font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.5px;
-      color: var(--text-dim);
-    }
-    .field-group input,
-    .field-group select {
-      padding: 10px 12px; border-radius: 6px;
-      background: var(--bg); border: 1px solid var(--border);
-      color: var(--text); font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .field-group input:focus,
-    .field-group select:focus {
-      outline: none; border-color: var(--orange);
-    }
-
-    .btn-primary {
-      background: var(--orange); color: #000;
-      border: none; padding: 10px 24px; border-radius: 6px;
-      font-size: 14px; font-weight: 700; cursor: pointer;
-      transition: background 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .btn-primary:hover { background: #e67012; }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .btn-secondary {
-      background: transparent; color: var(--text);
-      border: 1px solid var(--border);
-      padding: 10px 24px; border-radius: 6px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .btn-secondary:hover { border-color: var(--text-dim); }
-
-    /* ─── CHART CONTAINER ─── */
-    .chart-container {
-      position: relative; height: 280px;
-      margin-top: 12px;
-    }
-
-    /* ─── TWO COLUMN ─── */
-    .two-col {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    /* ─── SPARKLINE BAR ─── */
-    .spark-bar-row {
-      display: flex; align-items: center; gap: 12px;
-      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-    .spark-bar-row:last-child { border-bottom: none; }
-    .spark-bar-label { font-size: 13px; color: var(--text-dim); min-width: 90px; }
-    .spark-bar-track {
-      flex: 1; height: 8px; background: rgba(255,255,255,0.06);
-      border-radius: 4px; overflow: hidden;
-    }
-    .spark-bar-fill {
-      height: 100%; border-radius: 4px;
-      transition: width 0.6s ease;
-    }
-    .spark-bar-fill.green { background: var(--green); }
-    .spark-bar-fill.orange { background: var(--orange); }
-    .spark-bar-fill.red { background: var(--red); }
-    .spark-bar-fill.blue { background: #3b82f6; }
-    .spark-bar-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px; font-weight: 600;
-      color: var(--text-bright); min-width: 50px; text-align: right;
-    }
-
-    /* ─── STATUS MESSAGE ─── */
-    .status-toast {
-      position: fixed; bottom: 24px; right: 24px;
-      padding: 14px 24px; border-radius: 10px;
-      font-size: 14px; font-weight: 600;
-      z-index: 9000; transform: translateY(100px);
-      opacity: 0; transition: all 0.3s ease;
-    }
-    .status-toast.visible { transform: translateY(0); opacity: 1; }
-    .status-toast.success { background: var(--green-dark); color: white; }
-    .status-toast.error { background: var(--red); color: white; }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 1024px) {
-      .admin-layout { grid-template-columns: 1fr; }
-      .sidebar {
-        flex-direction: row; overflow-x: auto;
-        border-right: none; border-bottom: 1px solid var(--border);
-        padding: 10px 16px;
-      }
-      .sidebar-section { display: flex; gap: 4px; margin-bottom: 0; padding: 0; }
-      .sidebar-section-title { display: none; }
-      .user-selector { margin-top: 0; border-top: none; padding: 0 16px; }
-      .user-selector select { min-width: 180px; }
-      .main { padding: 20px 16px; max-height: none; }
-      .two-col { grid-template-columns: 1fr; }
-      .edit-grid { grid-template-columns: 1fr; }
+    @media(max-width:1024px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border);padding:10px 16px}
+      .sb-section{display:flex;gap:4px;margin-bottom:0;padding:0}.sb-title{display:none}
+      .user-sel{margin-top:0;border-top:none;padding:0 16px}
+      .main{padding:20px 16px;max-height:none}
+      .two-col,.eg{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
+<div id="authLoading" class="auth-loading"><div class="spinner"></div><p>Verifying access...</p></div>
 
-<!-- Auth Loading -->
-<div id="authLoading" class="auth-loading">
-  <div class="spinner"></div>
-  <p>Verifying admin access...</p>
-</div>
-
-<!-- Top Bar -->
 <div class="topbar">
-  <div class="topbar-left">
-    <div class="logo">
-      <img src="logo.jpg" alt="VV" style="height:32px;" 
-           onerror="this.style.display='none'"/>
-      Victory Vision <span class="badge">Admin</span>
-    </div>
+  <div class="logo">
+    <img src="logo.jpg" alt="VV" style="height:32px" onerror="this.style.display='none'"/>
+    Victory Vision <span class="badge">Admin</span>
   </div>
   <div class="topbar-right">
     <span id="adminEmail"></span>
-    <a href="companyprofile" style="color:var(--text-dim);font-size:13px;text-decoration:none;">← Back to App</a>
-    <button class="btn-signout" onclick="signOut()">Sign Out</button>
+    <a href="companyprofile" style="color:var(--text-dim);font-size:13px;text-decoration:none">← App</a>
+    <button class="btn-sign" onclick="signOut()">Sign Out</button>
   </div>
 </div>
 
-<!-- Main Layout -->
-<div class="admin-layout">
+<div class="layout">
+<aside class="sidebar">
+  <div class="sb-section">
+    <div class="sb-title">Overview</div>
+    <button class="sb-link active" data-p="overview" onclick="nav('overview',this)"><span class="ic">📊</span>Dashboard</button>
+    <button class="sb-link" data-p="users" onclick="nav('users',this)"><span class="ic">👥</span>All Users<span class="ct" id="badgeTotal">0</span></button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Management</div>
+    <button class="sb-link" data-p="engagement" onclick="nav('engagement',this)"><span class="ic">📈</span>Engagement</button>
+    <button class="sb-link" data-p="onboarding" onclick="nav('onboarding',this)"><span class="ic">🚀</span>Onboarding</button>
+    <button class="sb-link" data-p="churn" onclick="nav('churn',this)"><span class="ic">⚠️</span>Churn Risk<span class="ct" id="badgeChurn" style="background:var(--yellow);color:#000">0</span></button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Actions</div>
+    <button class="sb-link" data-p="edit" onclick="nav('edit',this)"><span class="ic">✏️</span>Edit User</button>
+    <button class="sb-link" data-p="assume" onclick="nav('assume',this)"><span class="ic">🎭</span>Assume Role</button>
+  </div>
+  <div class="user-sel">
+    <label>Select User</label>
+    <select id="userDD" onchange="pickUser(this.value)"><option value="">-- All Users --</option></select>
+  </div>
+</aside>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Overview</div>
-      <button class="sidebar-link active" onclick="showPanel('overview')">
-        <span class="icon">📊</span> Dashboard
-      </button>
-      <button class="sidebar-link" onclick="showPanel('users')">
-        <span class="icon">👥</span> All Users
-        <span class="count-badge" id="totalUsersBadge">0</span>
-      </button>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Management</div>
-      <button class="sidebar-link" onclick="showPanel('engagement')">
-        <span class="icon">📈</span> Engagement
-      </button>
-      <button class="sidebar-link" onclick="showPanel('onboarding')">
-        <span class="icon">🚀</span> Onboarding
-      </button>
-      <button class="sidebar-link" onclick="showPanel('churn')">
-        <span class="icon">⚠️</span> Churn Risk
-        <span class="count-badge" id="churnRiskBadge" style="background:var(--yellow);color:#000;">0</span>
-      </button>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Actions</div>
-      <button class="sidebar-link" onclick="showPanel('edit-user')">
-        <span class="icon">✏️</span> Edit User
-      </button>
-    </div>
+<main class="main">
 
-    <!-- User Selector -->
-    <div class="user-selector">
-      <label>Select User</label>
-      <select id="userDropdown" onchange="selectUser(this.value)">
-        <option value="">-- All Users --</option>
-      </select>
-    </div>
-  </aside>
-
-  <!-- Main Content Area -->
-  <main class="main">
-
-    <!-- ═══════════════════════════════════ OVERVIEW PANEL ═══════════════════════════════════ -->
-    <div id="panel-overview" class="panel active">
-      <div class="panel-header">
-        <h1>Platform Overview</h1>
-        <p>Real-time health of the Victory Vision platform</p>
-      </div>
-
-      <div class="metrics-row" id="overviewMetrics">
-        <div class="metric-card">
-          <div class="metric-label">Total Users</div>
-          <div class="metric-value" id="metricTotalUsers">—</div>
-          <div class="metric-change neutral" id="metricUsersChange"></div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">Active (30d)</div>
-          <div class="metric-value" id="metricActiveUsers">—</div>
-          <div class="metric-change neutral" id="metricActiveChange"></div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">Paid Subscribers</div>
-          <div class="metric-value" id="metricPaidUsers">—</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">MRR</div>
-          <div class="metric-value" id="metricMRR">—</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">Churn Risk</div>
-          <div class="metric-value" id="metricChurnRisk">—</div>
-        </div>
-      </div>
-
-      <div class="two-col">
-        <div class="card">
-          <div class="card-title"><span class="icon">📊</span> Users by Plan</div>
-          <div class="chart-container">
-            <canvas id="chartPlanDist"></canvas>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title"><span class="icon">📈</span> Signups (Last 30 Days)</div>
-          <div class="chart-container">
-            <canvas id="chartSignups"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title"><span class="icon">🏆</span> Platform Activity (All Users)</div>
-        <div id="platformActivity">
-          <!-- filled by JS -->
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════ USERS PANEL ═══════════════════════════════════ -->
-    <div id="panel-users" class="panel">
-      <div class="panel-header">
-        <h1>All Users</h1>
-        <p>Complete user roster with subscription status and activity</p>
-      </div>
-      <div class="card" style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Plan</th>
-              <th>Status</th>
-              <th>Months Subscribed</th>
-              <th>Contacts</th>
-              <th>Emails Sent</th>
-              <th>Campaigns</th>
-              <th>Last Active</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="usersTableBody">
-            <tr><td colspan="9" style="text-align:center;color:var(--text-dim);">Loading...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════ ENGAGEMENT PANEL ═══════════════════════════════════ -->
-    <div id="panel-engagement" class="panel">
-      <div class="panel-header">
-        <h1 id="engagementTitle">Platform Engagement</h1>
-        <p id="engagementSubtitle">Track user actions across time windows</p>
-      </div>
-
-      <div class="time-windows" id="timeWindows">
-        <button class="time-btn" data-window="1" onclick="setTimeWindow(1)">1d</button>
-        <button class="time-btn" data-window="3" onclick="setTimeWindow(3)">3d</button>
-        <button class="time-btn" data-window="5" onclick="setTimeWindow(5)">5d</button>
-        <button class="time-btn active" data-window="7" onclick="setTimeWindow(7)">7d</button>
-        <button class="time-btn" data-window="14" onclick="setTimeWindow(14)">14d</button>
-        <button class="time-btn" data-window="30" onclick="setTimeWindow(30)">30d</button>
-        <button class="time-btn" data-window="90" onclick="setTimeWindow(90)">90d</button>
-        <button class="time-btn" data-window="180" onclick="setTimeWindow(180)">180d</button>
-      </div>
-
-      <div class="metrics-row" id="engagementMetrics">
-        <!-- filled by JS -->
-      </div>
-
-      <div class="two-col">
-        <div class="card">
-          <div class="card-title"><span class="icon">📊</span> Rows Added by Table</div>
-          <div class="chart-container">
-            <canvas id="chartEngagement"></canvas>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title"><span class="icon">📋</span> Activity Breakdown</div>
-          <div id="activityBreakdown">
-            <!-- filled by JS -->
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════ ONBOARDING PANEL ═══════════════════════════════════ -->
-    <div id="panel-onboarding" class="panel">
-      <div class="panel-header">
-        <h1 id="onboardingTitle">Onboarding Status</h1>
-        <p>Select a user from the sidebar to view their onboarding checklist</p>
-      </div>
-
-      <div id="onboardingContent">
-        <div class="card">
-          <div class="card-title"><span class="icon">📋</span> Onboarding Checklist</div>
-          <div id="onboardingChecklist">
-            <p style="color:var(--text-dim);font-size:14px;">Select a user from the dropdown below to view their onboarding status.</p>
-          </div>
-        </div>
-
-        <div class="two-col" style="margin-top:20px;">
-          <div class="card">
-            <div class="card-title"><span class="icon">📧</span> Email System Health</div>
-            <div id="emailHealth">
-              <p style="color:var(--text-dim);font-size:14px;">Select a user to check email sending status.</p>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-title"><span class="icon">🔗</span> OAuth Integrations</div>
-            <div id="oauthStatus">
-              <p style="color:var(--text-dim);font-size:14px;">Select a user to check OAuth connection status.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════ CHURN RISK PANEL ═══════════════════════════════════ -->
-    <div id="panel-churn" class="panel">
-      <div class="panel-header">
-        <h1>Churn Risk Monitor</h1>
-        <p>Users with declining activity or engagement red flags</p>
-      </div>
-
-      <div class="card" style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Plan</th>
-              <th>Risk Level</th>
-              <th>Days Since Active</th>
-              <th>Months Subscribed</th>
-              <th>Reason</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="churnTableBody">
-            <tr><td colspan="7" style="text-align:center;color:var(--text-dim);">Loading...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════ EDIT USER PANEL ═══════════════════════════════════ -->
-    <div id="panel-edit-user" class="panel">
-      <div class="panel-header">
-        <h1>Edit User</h1>
-        <p>Manage credits, subscription plan, and account status</p>
-      </div>
-
-      <div id="editUserContent">
-        <div class="card">
-          <p style="color:var(--text-dim);font-size:14px;">Select a user from the sidebar dropdown to edit their account.</p>
-        </div>
-      </div>
-
-      <div id="editUserForm" style="display:none;">
-        <div class="card">
-          <div class="card-title"><span class="icon">👤</span> User: <span id="editUserEmail" style="color:var(--orange);"></span></div>
-          
-          <div class="edit-grid">
-            <div class="field-group">
-              <label>Subscription Plan</label>
-              <select id="editPlan">
-                <option value="Bronze">Bronze ($99/mo)</option>
-                <option value="Silver">Silver ($299/mo)</option>
-                <option value="Gold">Gold ($799/mo)</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label>Subscription Status</label>
-              <select id="editStatus">
-                <option value="trial">Trial</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-            <div class="field-group">
-              <label>Campaign Credits</label>
-              <input type="number" id="editCampaignCredits" min="0" />
-            </div>
-            <div class="field-group">
-              <label>Video Credits</label>
-              <input type="number" id="editVideoCredits" min="0" />
-            </div>
-            <div class="field-group">
-              <label>Image Credits</label>
-              <input type="number" id="editImageCredits" min="0" />
-            </div>
-            <div class="field-group">
-              <label>Contact Credits</label>
-              <input type="number" id="editContactCredits" min="0" />
-            </div>
-            <div class="field-group">
-              <label>Social Credits</label>
-              <input type="number" id="editSocialCredits" min="0" />
-            </div>
-            <div class="field-group">
-              <label>Email Credits</label>
-              <input type="number" id="editEmailCredits" min="0" />
-            </div>
-          </div>
-
-          <div style="display:flex;gap:12px;margin-top:20px;">
-            <button class="btn-primary" onclick="saveUserEdits()">💾 Save Changes</button>
-            <button class="btn-secondary" onclick="selectUser('')">Cancel</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
+<!-- ═══════ OVERVIEW ═══════ -->
+<div id="p-overview" class="panel active">
+  <div class="ph"><h1>Platform Overview</h1><p>Real-time health metrics</p></div>
+  <div class="mrow">
+    <div class="mcard"><div class="ml">Total Users</div><div class="mv" id="mTotal">—</div></div>
+    <div class="mcard"><div class="ml">Active (30d)</div><div class="mv" id="mActive">—</div><div class="ms" id="mActivePct"></div></div>
+    <div class="mcard"><div class="ml">Paid</div><div class="mv" id="mPaid">—</div></div>
+    <div class="mcard"><div class="ml">MRR</div><div class="mv" id="mMRR">—</div></div>
+    <div class="mcard"><div class="ml">Churn Risk</div><div class="mv" id="mChurn">—</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card"><div class="ct-title">📊 Users by Plan</div><div class="chart-box"><canvas id="cPlan"></canvas></div></div>
+    <div class="card"><div class="ct-title">📈 Signups (30d)</div><div class="chart-box"><canvas id="cSignups"></canvas></div></div>
+  </div>
+  <div class="card"><div class="ct-title">🏆 Platform Activity (30d)</div><div id="overviewBars"><p style="color:var(--text-dim)"><span class="mini-spin"></span>Loading...</p></div></div>
 </div>
 
-<!-- Status Toast -->
-<div id="statusToast" class="status-toast"></div>
+<!-- ═══════ ALL USERS ═══════ -->
+<div id="p-users" class="panel">
+  <div class="ph"><h1>All Users</h1><p>Full roster</p></div>
+  <div class="card" style="overflow-x:auto">
+    <table><thead><tr><th>User</th><th>Plan</th><th>Status</th><th>Months</th><th>Credits</th><th>Last Active</th><th></th></tr></thead>
+    <tbody id="tblUsers"><tr><td colspan="7" style="text-align:center;color:var(--text-dim)">Loading...</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══════ ENGAGEMENT ═══════ -->
+<div id="p-engagement" class="panel">
+  <div class="ph"><h1 id="engTitle">Platform Engagement</h1><p id="engSub">Rows added across tables</p></div>
+  <div class="tw">
+    <button class="tb" onclick="setWin(1,this)">1d</button>
+    <button class="tb active" onclick="setWin(7,this)">7d</button>
+    <button class="tb" onclick="setWin(14,this)">14d</button>
+    <button class="tb" onclick="setWin(30,this)">30d</button>
+    <button class="tb" onclick="setWin(60,this)">60d</button>
+    <button class="tb" onclick="setWin(90,this)">90d</button>
+  </div>
+  <div class="mrow" id="engMetrics"><p style="color:var(--text-dim)"><span class="mini-spin"></span>Loading stats...</p></div>
+  <div class="two-col">
+    <div class="card"><div class="ct-title">📊 Rows by Table</div><div class="chart-box"><canvas id="cEng"></canvas></div></div>
+    <div class="card"><div class="ct-title">📋 Breakdown</div><div id="engBars"><p style="color:var(--text-dim)"><span class="mini-spin"></span></p></div></div>
+  </div>
+  <div class="card"><div class="ct-title">📧 Email Performance</div><div id="emailPerf"><p style="color:var(--text-dim)"><span class="mini-spin"></span></p></div></div>
+</div>
+
+<!-- ═══════ ONBOARDING ═══════ -->
+<div id="p-onboarding" class="panel">
+  <div class="ph"><h1 id="obTitle">Onboarding Status</h1><p>Select a user to view setup checklist</p></div>
+  <div class="card"><div class="ct-title">📋 Checklist</div><div id="obChecklist"><p style="color:var(--text-dim)">Select a user from the dropdown.</p></div></div>
+  <div class="two-col" style="margin-top:16px">
+    <div class="card"><div class="ct-title">📧 Email Health</div><div id="obEmail"><p style="color:var(--text-dim)">Select a user.</p></div></div>
+    <div class="card"><div class="ct-title">🔗 OAuth Status</div><div id="obOauth"><p style="color:var(--text-dim)">Select a user.</p></div></div>
+  </div>
+</div>
+
+<!-- ═══════ CHURN ═══════ -->
+<div id="p-churn" class="panel">
+  <div class="ph"><h1>Churn Risk Monitor</h1><p>Users with declining engagement</p></div>
+  <div class="card" style="overflow-x:auto">
+    <table><thead><tr><th>User</th><th>Plan</th><th>Risk</th><th>Days Inactive</th><th>Months</th><th>Reason</th><th></th></tr></thead>
+    <tbody id="tblChurn"><tr><td colspan="7" style="text-align:center;color:var(--text-dim)">Loading...</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══════ EDIT USER ═══════ -->
+<div id="p-edit" class="panel">
+  <div class="ph"><h1>Edit User</h1><p>Manage credits, plan, status</p></div>
+  <div id="editPlaceholder" class="card"><p style="color:var(--text-dim)">Select a user from the dropdown.</p></div>
+  <div id="editForm" style="display:none">
+    <div class="card">
+      <div class="ct-title">👤 <span id="editEmail" style="color:var(--orange)"></span></div>
+      <div class="eg">
+        <div class="fg"><label>Plan</label><select id="ePlan"><option value="Bronze">Bronze</option><option value="Silver">Silver</option><option value="Gold">Gold</option></select></div>
+        <div class="fg"><label>Status</label><select id="eStatus"><option value="trial">Trial</option><option value="active">Active</option><option value="inactive">Inactive</option><option value="cancelled">Cancelled</option></select></div>
+        <div class="fg"><label>Campaign Credits</label><input type="number" id="eCamp" min="0"/></div>
+        <div class="fg"><label>Video Credits</label><input type="number" id="eVid" min="0"/></div>
+        <div class="fg"><label>Image Credits</label><input type="number" id="eImg" min="0"/></div>
+        <div class="fg"><label>Contact Credits</label><input type="number" id="eCon" min="0"/></div>
+        <div class="fg"><label>Social Credits</label><input type="number" id="eSoc" min="0"/></div>
+        <div class="fg"><label>Email Credits</label><input type="number" id="eEml" min="0"/></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:18px">
+        <button class="btn btn-p" onclick="saveEdits()">💾 Save</button>
+        <button class="btn btn-s" onclick="clearUser()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ ASSUME ROLE ═══════ -->
+<div id="p-assume" class="panel">
+  <div class="ph">
+    <h1>🎭 Assume Role</h1>
+    <p>Act as a selected user to test their integrations. Calls use <code>user.number</code> and <code>user.email</code>.</p>
+  </div>
+  <div id="assumePlaceholder" class="card"><p style="color:var(--text-dim)">Select a user from the dropdown to assume their role and trigger test actions.</p></div>
+  <div id="assumePanel" style="display:none">
+    <div class="card">
+      <div class="ct-title">Acting as: <span id="assumeUser" style="color:var(--orange)"></span></div>
+      <p style="font-size:13px;color:var(--text-dim);margin-bottom:4px">Phone: <span id="assumePhone" style="color:var(--text-bright)">—</span></p>
+      <p style="font-size:13px;color:var(--text-dim)">Email: <span id="assumeEmail2" style="color:var(--text-bright)">—</span></p>
+    </div>
+    <div class="action-grid">
+
+      <!-- SEND EMAIL -->
+      <div class="action-card">
+        <h3>📧 Send Test Email</h3>
+        <p>Triggers <code>emails/send</code> as this user to their own email.</p>
+        <button class="btn btn-p" id="btnEmail" onclick="assumeAction('email')">Send Test Email</button>
+        <div class="action-result" id="resEmail"></div>
+      </div>
+
+      <!-- SEND SMS -->
+      <div class="action-card">
+        <h3>💬 Send Test SMS</h3>
+        <p>Triggers <code>sms/send</code> to user.number.</p>
+        <button class="btn btn-p" id="btnSms" onclick="assumeAction('sms')">Send Test SMS</button>
+        <div class="action-result" id="resSms"></div>
+      </div>
+
+      <!-- MAKE CALL -->
+      <div class="action-card">
+        <h3>📞 Make Test Call</h3>
+        <p>Triggers <code>call/make</code> to user.number.</p>
+        <button class="btn btn-p" id="btnCall" onclick="assumeAction('call')">Make Test Call</button>
+        <div class="action-result" id="resCall"></div>
+      </div>
+
+      <!-- CREATE CONTACT -->
+      <div class="action-card">
+        <h3>👤 Create Admin Contact</h3>
+        <p>Triggers <code>contacts/create</code> — adds admin as a contact for this user.</p>
+        <button class="btn btn-p" id="btnContact" onclick="assumeAction('contact')">Create Contact</button>
+        <div class="action-result" id="resContact"></div>
+      </div>
+
+      <!-- CHECK OPENS -->
+      <div class="action-card">
+        <h3>👁️ Check Email Opens</h3>
+        <p>Triggers <code>emailopen/get</code> — returns boolean if opens tracking works.</p>
+        <button class="btn btn-p" id="btnOpens" onclick="assumeAction('opens')">Check Opens</button>
+        <div class="action-result" id="resOpens"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════
-// CONFIG & STATE
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
 const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const sb = supabase.createClient(supabaseUrl, supabaseKey);
+const B = 'https://victoryvision.app.n8n.cloud/webhook';
+const EP = {
+  allUsers:    B + '/admin/allusers',
+  stats:       B + '/admin/stats',
+  updateUser:  B + '/user/update',
+  sendEmail:   B + '/emails/send',
+  sendSms:     B + '/sms/send',
+  makeCall:    B + '/call/make',
+  createContact: B + '/contacts/create',
+  emailOpenGet:  B + '/emailopen/get'
+};
 
-let allUsers = [];
-let selectedUserId = null;
-let currentTimeWindow = 7;
-let charts = {};
+let CUSTOMER_ID = null, authToken = null;
+let allUsers = [], selId = null, timeWin = 7, charts = {}, cache = {};
 
-// ═══════════════════════════════════════════════════════
-// AUTH (standard login — add admin whitelist later)
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════
 async function checkAuth() {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session || !session.user) {
-    window.location.href = 'login.html';
-    return false;
-  }
-  document.getElementById('adminEmail').textContent = session.user.email;
+  if (!session?.user) { window.location.href = 'login.html'; return false; }
+  CUSTOMER_ID = session.user.email;
+  authToken = session.access_token;
+  document.getElementById('adminEmail').textContent = CUSTOMER_ID;
   return true;
 }
+function signOut() { sb.auth.signOut().then(() => location.href = 'login.html'); }
 
-function signOut() {
-  sb.auth.signOut().then(() => { window.location.href = 'login.html'; });
+// ═══════════════════════════════════════════════
+// API
+// ═══════════════════════════════════════════════
+const hdrs = () => ({
+  'Content-Type': 'application/json',
+  'X-Customer-ID': CUSTOMER_ID,
+  'Authorization': authToken ? 'Bearer ' + authToken : ''
+});
+async function GET(url) {
+  const r = await fetch(url, { headers: hdrs() });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+async function POST(url, body) {
+  const r = await fetch(url, { method: 'POST', headers: hdrs(), body: JSON.stringify(body) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
 }
 
-// ═══════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════
-function showPanel(id) {
+// ═══════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════
+function nav(id, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  document.getElementById('p-' + id).classList.add('active');
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (id === 'engagement') refreshEng();
 }
 
-// ═══════════════════════════════════════════════════════
-// DATA LOADING
-// ═══════════════════════════════════════════════════════
-async function loadAllData() {
+// ═══════════════════════════════════════════════
+// LOAD USERS (n8n)
+// ═══════════════════════════════════════════════
+async function loadUsers() {
   try {
-    // Load all users
-    const { data: users, error } = await sb.from('users').select('*');
-    if (error) throw error;
-    allUsers = users || [];
-
-    document.getElementById('totalUsersBadge').textContent = allUsers.length;
-    populateUserDropdown();
+    const res = await GET(EP.allUsers);
+    allUsers = Array.isArray(res) ? res : (res.users || [res]);
+    document.getElementById('badgeTotal').textContent = allUsers.length;
+    fillDD();
     renderOverview();
     renderUsersTable();
-    renderChurnRisk();
-    renderEngagement();
+    renderChurn();
+    loadStats(allIds(), 30, 'overview');
   } catch (e) {
-    console.error('Failed to load data:', e);
-    toast('Failed to load data: ' + e.message, 'error');
+    console.error(e);
+    showToast('Failed to load users: ' + e.message, 'err');
   }
 }
-
-function populateUserDropdown() {
-  const dd = document.getElementById('userDropdown');
+function allIds() { return allUsers.map(u => u.id || u.email).filter(Boolean); }
+function fillDD() {
+  const dd = document.getElementById('userDD');
   dd.innerHTML = '<option value="">-- All Users --</option>';
   allUsers.forEach(u => {
-    const opt = document.createElement('option');
-    opt.value = u.email || u.id;
-    opt.textContent = `${u.company_name || u.email || u.id}`;
-    dd.appendChild(opt);
+    const o = document.createElement('option');
+    o.value = u.email || u.id;
+    o.textContent = (u.company_name || u.email || u.id);
+    dd.appendChild(o);
   });
 }
 
-// ═══════════════════════════════════════════════════════
-// OVERVIEW PANEL
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// LOAD STATS (n8n) — expects counts back
+// ═══════════════════════════════════════════════
+async function loadStats(ids, days, ctx) {
+  const k = ids.join(',') + '_' + days;
+  if (cache[k]) { applyStats(cache[k], days, ctx); return cache[k]; }
+  try {
+    const res = await POST(EP.stats, { user_ids: ids, days });
+    const s = Array.isArray(res) ? res[0] : res;
+    cache[k] = s;
+    applyStats(s, days, ctx);
+    return s;
+  } catch (e) {
+    console.error(e);
+    showToast('Stats load failed', 'err');
+    return null;
+  }
+}
+function applyStats(s, days, ctx) {
+  if (!s) return;
+  const tc = s.summary?.table_counts || {};
+  if (ctx === 'overview') renderOverviewBars(tc);
+  if (ctx === 'engagement' || ctx === 'overview') renderEngPanel(s, tc, days);
+}
+
+// ═══════════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════════
 function renderOverview() {
-  const total = allUsers.length;
-  const active30 = allUsers.filter(u => {
-    const lastActive = getLastActive(u);
-    return lastActive && daysSince(lastActive) <= 30;
-  }).length;
+  const tot = allUsers.length;
+  const act = allUsers.filter(u => { const la = lastAct(u); return la && daysAgo(la) <= 30; }).length;
   const paid = allUsers.filter(u => u.subscription_status === 'active').length;
-  const churnRisk = allUsers.filter(u => isChurnRisk(u)).length;
-
-  document.getElementById('metricTotalUsers').textContent = total;
-  document.getElementById('metricActiveUsers').textContent = active30;
-  document.getElementById('metricPaidUsers').textContent = paid;
-  document.getElementById('metricChurnRisk').textContent = churnRisk;
-  document.getElementById('churnRiskBadge').textContent = churnRisk;
-
-  // Calculate MRR
+  const churn = allUsers.filter(isRisk).length;
   let mrr = 0;
-  allUsers.forEach(u => {
-    if (u.subscription_status === 'active') {
-      if (u.subscription_plan === 'Gold') mrr += 799;
-      else if (u.subscription_plan === 'Silver') mrr += 299;
-      else mrr += 99;
-    }
-  });
-  document.getElementById('metricMRR').textContent = '$' + mrr.toLocaleString();
-
-  // Active percent
-  const activePct = total > 0 ? Math.round((active30 / total) * 100) : 0;
-  document.getElementById('metricActiveChange').textContent = activePct + '% of total';
-
+  allUsers.forEach(u => { if (u.subscription_status === 'active') { const p = (u.subscription_plan||'').toLowerCase(); mrr += p==='gold'?799:p==='silver'?299:99; }});
+  document.getElementById('mTotal').textContent = tot;
+  document.getElementById('mActive').textContent = act;
+  document.getElementById('mActivePct').textContent = tot ? Math.round(act/tot*100)+'% of total' : '';
+  document.getElementById('mPaid').textContent = paid;
+  document.getElementById('mMRR').textContent = '$'+mrr.toLocaleString();
+  document.getElementById('mChurn').textContent = churn;
+  document.getElementById('badgeChurn').textContent = churn;
   renderPlanChart();
   renderSignupsChart();
-  renderPlatformActivity();
 }
-
 function renderPlanChart() {
-  const counts = { Bronze: 0, Silver: 0, Gold: 0, Trial: 0 };
-  allUsers.forEach(u => {
-    if (u.subscription_status === 'trial') counts.Trial++;
-    else if (u.subscription_plan === 'Gold') counts.Gold++;
-    else if (u.subscription_plan === 'Silver') counts.Silver++;
-    else counts.Bronze++;
-  });
-
-  if (charts.planDist) charts.planDist.destroy();
-  charts.planDist = new Chart(document.getElementById('chartPlanDist'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Bronze', 'Silver', 'Gold', 'Trial'],
-      datasets: [{
-        data: [counts.Bronze, counts.Silver, counts.Gold, counts.Trial],
-        backgroundColor: ['#CD7F32', '#C0C0C0', '#FFD700', '#3b82f6'],
-        borderColor: '#111c2e',
-        borderWidth: 3
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#8899b0', font: { family: 'DM Sans' } } }
-      }
-    }
+  const c = {Bronze:0,Silver:0,Gold:0,Trial:0};
+  allUsers.forEach(u => { if (u.subscription_status==='trial') c.Trial++; else { const p=(u.subscription_plan||'').toLowerCase(); c[p==='gold'?'Gold':p==='silver'?'Silver':'Bronze']++; }});
+  if (charts.plan) charts.plan.destroy();
+  charts.plan = new Chart(document.getElementById('cPlan'), {
+    type:'doughnut',
+    data:{labels:['Bronze','Silver','Gold','Trial'],datasets:[{data:[c.Bronze,c.Silver,c.Gold,c.Trial],backgroundColor:['#CD7F32','#C0C0C0','#FFD700','#3b82f6'],borderColor:'#111c2e',borderWidth:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8899b0',font:{family:'DM Sans'}}}}}
   });
 }
-
 function renderSignupsChart() {
-  // Group users by signup date (last 30 days)
-  const now = new Date();
-  const days = [];
-  const counts = [];
-  for (let i = 29; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().split('T')[0];
-    days.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-    counts.push(allUsers.filter(u => {
-      const created = u.created_at || u.signup_date;
-      return created && created.startsWith(key);
-    }).length);
-  }
-
+  const now = new Date(), labels=[], data=[];
+  for (let i=29;i>=0;i--) { const d=new Date(now); d.setDate(d.getDate()-i); const k=d.toISOString().split('T')[0]; labels.push(d.toLocaleDateString('en-US',{month:'short',day:'numeric'})); data.push(allUsers.filter(u=>{const c=u.created_at||u.signup_date;return c&&c.startsWith(k);}).length); }
   if (charts.signups) charts.signups.destroy();
-  charts.signups = new Chart(document.getElementById('chartSignups'), {
-    type: 'bar',
-    data: {
-      labels: days,
-      datasets: [{
-        label: 'Signups',
-        data: counts,
-        backgroundColor: 'rgba(253,126,20,0.6)',
-        borderColor: '#fd7e14',
-        borderWidth: 1,
-        borderRadius: 4
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: {
-        x: { ticks: { color: '#8899b0', font: { size: 10 }, maxTicksLimit: 10 }, grid: { display: false } },
-        y: { ticks: { color: '#8899b0', stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true }
-      },
-      plugins: {
-        legend: { display: false }
-      }
-    }
+  charts.signups = new Chart(document.getElementById('cSignups'), {
+    type:'bar',data:{labels,datasets:[{label:'Signups',data,backgroundColor:'rgba(253,126,20,.6)',borderColor:'#fd7e14',borderWidth:1,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{color:'#8899b0',font:{size:10},maxTicksLimit:10},grid:{display:false}},y:{ticks:{color:'#8899b0',stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}},plugins:{legend:{display:false}}}
   });
 }
-
-function renderPlatformActivity() {
-  const container = document.getElementById('platformActivity');
-  // Aggregate counts across all users
-  const tables = [
-    { label: 'Contacts', key: 'contacts_count', color: 'blue' },
-    { label: 'Emails Sent', key: 'emails_sent_count', color: 'green' },
-    { label: 'Campaigns', key: 'campaigns_count', color: 'orange' },
-    { label: 'SMS Sent', key: 'sms_count', color: 'blue' },
-    { label: 'Calls Made', key: 'calls_count', color: 'green' },
-    { label: 'Meetings', key: 'meetings_count', color: 'orange' },
-    { label: 'Victories', key: 'victories_count', color: 'green' },
-  ];
-
-  // Use row counts or fallback
-  let html = '';
-  tables.forEach(t => {
-    let total = 0;
-    allUsers.forEach(u => { total += (u[t.key] || 0); });
-    const max = Math.max(total, 1);
-    const pct = Math.min((total / Math.max(max * 2, 10)) * 100, 100);
-    html += `
-      <div class="spark-bar-row">
-        <span class="spark-bar-label">${t.label}</span>
-        <div class="spark-bar-track">
-          <div class="spark-bar-fill ${t.color}" style="width:${pct}%"></div>
-        </div>
-        <span class="spark-bar-value">${total.toLocaleString()}</span>
-      </div>`;
-  });
-  container.innerHTML = html;
+function renderOverviewBars(tc) {
+  const el = document.getElementById('overviewBars');
+  if (!tc || !Object.keys(tc).length) { el.innerHTML = '<p style="color:var(--text-dim)">No data.</p>'; return; }
+  const cm = {contacts:'c-blue',calls:'c-purple',sms:'c-cyan',emails:'c-green',meetings:'c-yellow',victories:'c-green',campaigns:'c-orange',campaign_files:'c-red'};
+  const mx = Math.max(...Object.values(tc),1);
+  el.innerHTML = Object.entries(tc).map(([k,v])=>{
+    const pct = (v/mx)*100;
+    const lbl = k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    return `<div class="sbar"><span class="sbar-l">${lbl}</span><div class="sbar-t"><div class="sbar-f ${cm[k]||'c-blue'}" style="width:${pct}%"></div></div><span class="sbar-v">${v}</span></div>`;
+  }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // USERS TABLE
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function renderUsersTable() {
-  const tbody = document.getElementById('usersTableBody');
-  if (allUsers.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-dim);">No users found</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = allUsers.map(u => {
-    const plan = u.subscription_plan || 'Bronze';
-    const status = u.subscription_status || 'trial';
-    const lastActive = getLastActive(u);
-    const daysSinceActive = lastActive ? daysSince(lastActive) : '—';
-    const months = getMonthsSubscribed(u);
-
+  const tb = document.getElementById('tblUsers');
+  if (!allUsers.length) { tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-dim)">No users</td></tr>'; return; }
+  tb.innerHTML = allUsers.map(u => {
+    const plan = u.subscription_plan||'Bronze', st = u.subscription_status||'trial';
+    const cr = (u.campaign_credits||0)+(u.video_credits||0)+(u.image_credits||0)+(u.contact_credits||0)+(u.social_credits||0)+(u.email_credits||0);
+    const la = lastAct(u);
     return `<tr>
-      <td>
-        <div style="font-weight:600;color:var(--text-bright);">${u.company_name || '—'}</div>
-        <div style="font-size:12px;color:var(--text-dim);">${u.email || u.id}</div>
-      </td>
+      <td><div style="font-weight:600;color:var(--text-bright)">${esc(u.company_name||'—')}</div><div style="font-size:12px;color:var(--text-dim)">${esc(u.email||u.id)}</div></td>
       <td><span class="plan-badge plan-${plan.toLowerCase()}">${plan}</span></td>
-      <td>${statusBadge(status)}</td>
-      <td style="font-family:'JetBrains Mono';font-size:13px;">${months}</td>
-      <td style="font-family:'JetBrains Mono';font-size:13px;">${u.contacts_count || 0}</td>
-      <td style="font-family:'JetBrains Mono';font-size:13px;">${u.emails_sent_count || 0}</td>
-      <td style="font-family:'JetBrains Mono';font-size:13px;">${u.campaigns_count || 0}</td>
-      <td style="font-size:12px;color:var(--text-dim);">${lastActive ? timeAgo(lastActive) : 'Never'}</td>
-      <td>
-        <button class="btn-primary" style="padding:5px 12px;font-size:11px;" 
-                onclick="selectUserAndEdit('${u.email || u.id}')">Edit</button>
-      </td>
+      <td>${stBadge(st)}</td>
+      <td style="font-family:'JetBrains Mono';font-size:13px">${moSub(u)}</td>
+      <td style="font-family:'JetBrains Mono';font-size:13px">${cr}</td>
+      <td style="font-size:12px;color:var(--text-dim)">${la?ago(la):'Never'}</td>
+      <td><button class="btn btn-p" style="padding:4px 10px;font-size:11px" onclick="pickAndEdit('${esc(u.email||u.id)}')">Edit</button></td>
     </tr>`;
   }).join('');
 }
+function stBadge(s) { const m={active:'b-green',trial:'b-blue',inactive:'b-red',cancelled:'b-red'}; return `<span class="badge ${m[s]||'b-yellow'}">${s}</span>`; }
 
-function statusBadge(status) {
-  const map = {
-    active: 'badge-green',
-    trial: 'badge-blue',
-    inactive: 'badge-red',
-    cancelled: 'badge-red'
-  };
-  return `<span class="badge ${map[status] || 'badge-yellow'}">${status}</span>`;
+// ═══════════════════════════════════════════════
+// ENGAGEMENT
+// ═══════════════════════════════════════════════
+function setWin(d, btn) { timeWin = d; document.querySelectorAll('.tb').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); refreshEng(); }
+async function refreshEng() {
+  const ids = selId ? [selId] : allIds();
+  document.getElementById('engTitle').textContent = selId ? 'Engagement: '+(allUsers.find(u=>(u.email||u.id)===selId)?.company_name||selId) : 'Platform Engagement';
+  document.getElementById('engSub').textContent = `Rows added — last ${timeWin} days`;
+  document.getElementById('engMetrics').innerHTML = '<p style="color:var(--text-dim)"><span class="mini-spin"></span>Loading...</p>';
+  await loadStats(ids, timeWin, 'engagement');
 }
-
-// ═══════════════════════════════════════════════════════
-// ENGAGEMENT PANEL
-// ═══════════════════════════════════════════════════════
-function setTimeWindow(days) {
-  currentTimeWindow = days;
-  document.querySelectorAll('.time-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.window) === days);
+function renderEngPanel(s, tc, days) {
+  if (!s) return;
+  const ta = s.summary?.total_actions||0;
+  document.getElementById('engMetrics').innerHTML = `
+    <div class="mcard"><div class="ml">Total (${days}d)</div><div class="mv">${ta}</div></div>
+    <div class="mcard"><div class="ml">Contacts</div><div class="mv">${s.contacts?.total||0}</div></div>
+    <div class="mcard"><div class="ml">Emails</div><div class="mv">${s.emails?.total||0}</div></div>
+    <div class="mcard"><div class="ml">Campaigns</div><div class="mv">${s.campaigns?.total||0}</div></div>
+    <div class="mcard"><div class="ml">Victories</div><div class="mv">${s.victories?.total||0}</div></div>`;
+  // chart
+  const labels = Object.keys(tc).map(k=>k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()));
+  const vals = Object.values(tc);
+  if (charts.eng) charts.eng.destroy();
+  charts.eng = new Chart(document.getElementById('cEng'), {
+    type:'bar',data:{labels,datasets:[{label:'Rows',data:vals,backgroundColor:['#3b82f6','#8b5cf6','#06b6d4','#22c55e','#eab308','#22c55e','#fd7e14','#ef4444'],borderRadius:6}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{ticks:{color:'#8899b0'},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true},y:{ticks:{color:'#8899b0',font:{size:13}},grid:{display:false}}},plugins:{legend:{display:false}}}
   });
-  renderEngagement();
-}
-
-async function renderEngagement() {
-  const window = currentTimeWindow;
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - window);
-  const cutoffISO = cutoff.toISOString();
-
-  // If a specific user is selected, filter for them
-  const userId = selectedUserId;
-  const title = document.getElementById('engagementTitle');
-  const subtitle = document.getElementById('engagementSubtitle');
-
-  if (userId) {
-    const user = allUsers.find(u => (u.email || u.id) === userId);
-    title.textContent = `Engagement: ${user?.company_name || userId}`;
-    subtitle.textContent = `Activity in the last ${window} days`;
-  } else {
-    title.textContent = 'Platform Engagement';
-    subtitle.textContent = `Activity across all users — last ${window} days`;
-  }
-
-  // Query actual table counts
-  const tables = ['contacts', 'emails', 'campaigns', 'meetings', 'calls', 'sms'];
-  const results = {};
-
-  for (const table of tables) {
-    try {
-      let query = sb.from(table).select('id, created_at', { count: 'exact', head: true })
-        .gte('created_at', cutoffISO);
-      if (userId) {
-        query = query.or(`user_id.eq.${userId},customer_id.eq.${userId},email.eq.${userId}`);
-      }
-      const { count, error } = await query;
-      results[table] = error ? 0 : (count || 0);
-    } catch {
-      results[table] = 0;
-    }
-  }
-
-  // Also try victories table
-  try {
-    let query = sb.from('victories').select('id', { count: 'exact', head: true })
-      .gte('created_at', cutoffISO);
-    if (userId) {
-      query = query.or(`user_id.eq.${userId},customer_id.eq.${userId}`);
-    }
-    const { count } = await query;
-    results.victories = count || 0;
-  } catch {
-    results.victories = 0;
-  }
-
-  // Render metrics
-  const metricsContainer = document.getElementById('engagementMetrics');
-  const totalActions = Object.values(results).reduce((a, b) => a + b, 0);
-  metricsContainer.innerHTML = `
-    <div class="metric-card">
-      <div class="metric-label">Total Actions (${window}d)</div>
-      <div class="metric-value">${totalActions.toLocaleString()}</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Contacts Added</div>
-      <div class="metric-value">${results.contacts || 0}</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Emails Sent</div>
-      <div class="metric-value">${results.emails || 0}</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Campaigns</div>
-      <div class="metric-value">${results.campaigns || 0}</div>
-    </div>
-  `;
-
-  // Chart
-  if (charts.engagement) charts.engagement.destroy();
-  const tableLabels = Object.keys(results).map(k => k.charAt(0).toUpperCase() + k.slice(1));
-  const tableValues = Object.values(results);
-  charts.engagement = new Chart(document.getElementById('chartEngagement'), {
-    type: 'bar',
-    data: {
-      labels: tableLabels,
-      datasets: [{
-        label: `Rows added (${window}d)`,
-        data: tableValues,
-        backgroundColor: ['#3b82f6', '#22c55e', '#fd7e14', '#8b5cf6', '#ef4444', '#06b6d4', '#eab308'],
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      indexAxis: 'y',
-      scales: {
-        x: { ticks: { color: '#8899b0' }, grid: { color: 'rgba(255,255,255,0.04)' }, beginAtZero: true },
-        y: { ticks: { color: '#8899b0', font: { size: 13 } }, grid: { display: false } }
-      },
-      plugins: { legend: { display: false } }
-    }
-  });
-
-  // Activity breakdown
-  const breakdown = document.getElementById('activityBreakdown');
-  const maxVal = Math.max(...tableValues, 1);
-  breakdown.innerHTML = Object.entries(results).map(([key, val]) => {
-    const colors = { contacts: 'blue', emails: 'green', campaigns: 'orange', meetings: 'blue', calls: 'green', sms: 'orange', victories: 'green' };
-    const pct = (val / maxVal) * 100;
-    return `
-      <div class="spark-bar-row">
-        <span class="spark-bar-label">${key.charAt(0).toUpperCase() + key.slice(1)}</span>
-        <div class="spark-bar-track">
-          <div class="spark-bar-fill ${colors[key] || 'blue'}" style="width:${pct}%"></div>
-        </div>
-        <span class="spark-bar-value">${val}</span>
-      </div>`;
+  // bars
+  const mx = Math.max(...vals,1);
+  const cm = {contacts:'c-blue',calls:'c-purple',sms:'c-cyan',emails:'c-green',meetings:'c-yellow',victories:'c-green',campaigns:'c-orange',campaign_files:'c-red'};
+  document.getElementById('engBars').innerHTML = Object.entries(tc).map(([k,v])=>{
+    const lbl = k.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+    return `<div class="sbar"><span class="sbar-l">${lbl}</span><div class="sbar-t"><div class="sbar-f ${cm[k]||'c-blue'}" style="width:${(v/mx)*100}%"></div></div><span class="sbar-v">${v}</span></div>`;
   }).join('');
+  // email perf
+  const em = s.emails||{};
+  document.getElementById('emailPerf').innerHTML = `<div class="mrow" style="margin:0">
+    <div class="mcard"><div class="ml">Sent</div><div class="mv">${em.sent||0}</div></div>
+    <div class="mcard"><div class="ml">Opened</div><div class="mv">${em.opened||0}</div><div class="ms">Rate: ${em.open_rate||0}%</div></div>
+    <div class="mcard"><div class="ml">Replied</div><div class="mv">${em.replied||0}</div><div class="ms">Rate: ${em.reply_rate||0}%</div></div>
+    <div class="mcard"><div class="ml">Drafts</div><div class="mv">${em.drafted||0}</div></div>
+  </div>`;
 }
 
-// ═══════════════════════════════════════════════════════
-// ONBOARDING PANEL
-// ═══════════════════════════════════════════════════════
-async function renderOnboarding(userId) {
-  if (!userId) {
-    document.getElementById('onboardingChecklist').innerHTML = '<p style="color:var(--text-dim);font-size:14px;">Select a user from the dropdown to view their onboarding status.</p>';
-    document.getElementById('emailHealth').innerHTML = '<p style="color:var(--text-dim);font-size:14px;">Select a user to check email sending status.</p>';
-    document.getElementById('oauthStatus').innerHTML = '<p style="color:var(--text-dim);font-size:14px;">Select a user to check OAuth connection status.</p>';
-    return;
-  }
-
-  const user = allUsers.find(u => (u.email || u.id) === userId);
-  if (!user) return;
-
-  document.getElementById('onboardingTitle').textContent = `Onboarding: ${user.company_name || userId}`;
-
-  // Build checklist
+// ═══════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════
+function renderOB(uid) {
+  if (!uid) { ['obChecklist','obEmail','obOauth'].forEach(id => document.getElementById(id).innerHTML='<p style="color:var(--text-dim)">Select a user.</p>'); document.getElementById('obTitle').textContent='Onboarding Status'; return; }
+  const u = allUsers.find(x=>(x.email||x.id)===uid); if (!u) return;
+  document.getElementById('obTitle').textContent = 'Onboarding: '+(u.company_name||uid);
   const checks = [
-    {
-      label: 'Company Profile Complete',
-      pass: !!(user.company_name && user.company_description && user.product_descriptions),
-      detail: user.company_name ? `"${user.company_name}"` : 'Missing'
-    },
-    {
-      label: 'Logo Uploaded',
-      pass: !!user.logo_URL,
-      detail: user.logo_URL ? 'Uploaded' : 'Missing'
-    },
-    {
-      label: 'Brand Colors Set',
-      pass: !!user.brand_colors,
-      detail: user.brand_colors || 'Not set'
-    },
-    {
-      label: 'Goals Configured',
-      pass: !!(user.goals && (typeof user.goals === 'object' ? Object.keys(user.goals).length > 0 : user.goals.length > 0)),
-      detail: user.goals ? 'Configured' : 'No goals set'
-    },
-    {
-      label: 'Subscription Active',
-      pass: user.subscription_status === 'active',
-      detail: `${user.subscription_plan || 'None'} — ${user.subscription_status || 'Unknown'}`
-    },
-    {
-      label: 'First Campaign Created',
-      pass: (user.campaigns_count || 0) > 0,
-      detail: `${user.campaigns_count || 0} campaigns`
-    },
-    {
-      label: 'Contacts Added',
-      pass: (user.contacts_count || 0) > 0,
-      detail: `${user.contacts_count || 0} contacts`
-    },
-    {
-      label: 'First Email Sent',
-      pass: (user.emails_sent_count || 0) > 0,
-      detail: `${user.emails_sent_count || 0} emails sent`
-    }
+    {l:'Company Profile',ok:!!(u.company_name&&u.company_description),d:u.company_name||'Missing'},
+    {l:'Logo Uploaded',ok:!!u.logo_URL,d:u.logo_URL?'Yes':'Missing'},
+    {l:'Brand Colors',ok:!!u.brand_colors,d:u.brand_colors||'Not set'},
+    {l:'Goals Set',ok:!!(u.goals&&(typeof u.goals==='string'?u.goals.length>2:true)),d:u.goals?'Yes':'No'},
+    {l:'Subscription Active',ok:u.subscription_status==='active',d:(u.subscription_plan||'—')+' / '+(u.subscription_status||'—')},
+    {l:'Website Setup',ok:!!(u.website_url||u.domain),d:u.website_url||u.domain||'Not set'}
   ];
-
-  const completedCount = checks.filter(c => c.pass).length;
-  const pct = Math.round((completedCount / checks.length) * 100);
-
-  document.getElementById('onboardingChecklist').innerHTML = `
-    <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">
-      <div style="flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
-        <div style="width:${pct}%;height:100%;background:${pct === 100 ? 'var(--green)' : 'var(--orange)'};border-radius:4px;transition:width 0.5s;"></div>
-      </div>
-      <span style="font-family:'JetBrains Mono';font-size:14px;font-weight:700;color:var(--text-bright);">${pct}%</span>
-    </div>
-    ${checks.map(c => `
-      <div class="checklist-item">
-        <div class="checklist-icon ${c.pass ? 'pass' : 'fail'}">${c.pass ? '✓' : '✗'}</div>
-        <span class="checklist-label">${c.label}</span>
-        <span class="checklist-status" style="color:${c.pass ? 'var(--green)' : 'var(--text-dim)'}">${c.detail}</span>
-      </div>
-    `).join('')}
-  `;
-
-  // Email health check
-  renderEmailHealth(user);
-
-  // OAuth status
-  renderOAuthStatus(user);
+  const done = checks.filter(c=>c.ok).length, pct = Math.round(done/checks.length*100);
+  document.getElementById('obChecklist').innerHTML = `
+    <div style="margin-bottom:14px;display:flex;align-items:center;gap:10px"><div style="flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:${pct===100?'var(--green)':'var(--orange)'};border-radius:4px"></div></div><span style="font-family:'JetBrains Mono';font-size:14px;font-weight:700;color:var(--text-bright)">${pct}%</span></div>
+    ${checks.map(c=>`<div class="chk"><div class="chk-i ${c.ok?'ok':'no'}">${c.ok?'✓':'✗'}</div><span style="font-size:14px">${c.l}</span><span class="chk-s" style="color:${c.ok?'var(--green)':'var(--text-dim)'}">${esc(c.d)}</span></div>`).join('')}`;
+  // email
+  const ec = [{l:'Email Domain',ok:!!(u.mailgun_domain||u.email_domain),d:u.mailgun_domain||u.email_domain||'None'},{l:'Email Confirmed',ok:u.email_confirmed!==false,d:u.email_confirmed!==false?'Yes':'No'},{l:'Opens Tracking',ok:!!u.track_opens,d:u.track_opens?'On':'Off'}];
+  document.getElementById('obEmail').innerHTML = ec.map(c=>`<div class="chk"><div class="chk-i ${c.ok?'ok':'no'}">${c.ok?'✓':'✗'}</div><span style="font-size:14px">${c.l}</span><span class="chk-s" style="color:${c.ok?'var(--green)':'var(--text-dim)'}">${c.d}</span></div>`).join('');
+  // oauth
+  const oa = [{l:'Calendly + Reminders',k:'calendly_token'},{l:'LinkedIn + Reminders',k:'linkedin_token'},{l:'Google Calendar',k:'google_token'},{l:'Stripe Billing',k:'stripe_customer_id'}];
+  document.getElementById('obOauth').innerHTML = oa.map(o=>{const c=!!u[o.k];return `<div class="chk"><div class="chk-i ${c?'ok':'wait'}">${c?'✓':'○'}</div><span style="font-size:14px">${o.l}</span><span class="chk-s" style="color:${c?'var(--green)':'var(--yellow)'}">${c?'Connected':'Not connected'}</span></div>`;}).join('');
 }
 
-function renderEmailHealth(user) {
-  const container = document.getElementById('emailHealth');
-  const emailsSent = user.emails_sent_count || 0;
-  const hasMailgun = !!(user.mailgun_domain || user.email_domain);
-  const emailConfirmed = user.email_confirmed !== false;
-
-  const checks = [
-    { label: 'Email Sending Enabled', pass: emailsSent > 0 || hasMailgun, detail: emailsSent > 0 ? `${emailsSent} sent` : (hasMailgun ? 'Domain configured' : 'Not configured') },
-    { label: 'Email Domain Verified', pass: hasMailgun, detail: user.mailgun_domain || user.email_domain || 'No domain' },
-    { label: 'Email Confirmed', pass: emailConfirmed, detail: emailConfirmed ? 'Confirmed' : 'Not confirmed' },
-    { label: 'Opens Tracking', pass: !!user.track_opens, detail: user.track_opens ? 'Enabled' : 'Disabled' },
-  ];
-
-  container.innerHTML = checks.map(c => `
-    <div class="checklist-item">
-      <div class="checklist-icon ${c.pass ? 'pass' : 'fail'}">${c.pass ? '✓' : '✗'}</div>
-      <span class="checklist-label">${c.label}</span>
-      <span class="checklist-status" style="color:${c.pass ? 'var(--green)' : 'var(--text-dim)'}">${c.detail}</span>
-    </div>
-  `).join('');
-}
-
-function renderOAuthStatus(user) {
-  const container = document.getElementById('oauthStatus');
-  const integrations = [
-    { label: 'Calendly Connected', key: 'calendly_token', reminder: 'Email Reminders' },
-    { label: 'LinkedIn Connected', key: 'linkedin_token', reminder: 'Email Reminders' },
-    { label: 'Google Connected', key: 'google_token', reminder: 'Calendar Sync' },
-    { label: 'Stripe Connected', key: 'stripe_customer_id', reminder: 'Billing' },
-  ];
-
-  container.innerHTML = integrations.map(i => {
-    const connected = !!user[i.key];
-    return `
-      <div class="checklist-item">
-        <div class="checklist-icon ${connected ? 'pass' : 'pending'}">${connected ? '✓' : '○'}</div>
-        <span class="checklist-label">${i.label}</span>
-        <span class="checklist-status" style="color:${connected ? 'var(--green)' : 'var(--yellow)'}">${connected ? 'Connected' : 'Not connected'}</span>
-      </div>`;
+// ═══════════════════════════════════════════════
+// CHURN
+// ═══════════════════════════════════════════════
+function isRisk(u) { if (u.subscription_status==='inactive'||u.subscription_status==='cancelled') return false; const la=lastAct(u); if (!la) return true; const d=daysAgo(la); return d>=14||(u.subscription_status==='trial'&&d>=5); }
+function riskLvl(u) { const la=lastAct(u); if (!la) return 'high'; const d=daysAgo(la); return d>=30?'high':d>=14?'medium':'low'; }
+function riskWhy(u) { const la=lastAct(u); if (!la) return 'No activity'; const d=daysAgo(la); if (d>=30) return d+'d inactive'; if (d>=14) return 'Declining ('+d+'d)'; return 'Trial cold'; }
+function renderChurn() {
+  const at = allUsers.filter(isRisk).sort((a,b)=>({high:0,medium:1,low:2})[riskLvl(a)]-({high:0,medium:1,low:2})[riskLvl(b)]);
+  const tb = document.getElementById('tblChurn');
+  if (!at.length) { tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--green)">🎉 No churn risk!</td></tr>'; return; }
+  tb.innerHTML = at.map(u=>{
+    const lv=riskLvl(u),la=lastAct(u),d=la?daysAgo(la):'—',bg=lv==='high'?'b-red':lv==='medium'?'b-yellow':'b-blue';
+    return `<tr><td><div style="font-weight:600;color:var(--text-bright)">${esc(u.company_name||'—')}</div><div style="font-size:12px;color:var(--text-dim)">${esc(u.email||u.id)}</div></td><td><span class="plan-badge plan-${(u.subscription_plan||'bronze').toLowerCase()}">${u.subscription_plan||'Bronze'}</span></td><td><span class="badge ${bg}">${lv}</span></td><td style="font-family:'JetBrains Mono'">${d}</td><td style="font-family:'JetBrains Mono'">${moSub(u)}</td><td style="font-size:13px;color:var(--text-dim)">${riskWhy(u)}</td><td><button class="btn btn-p" style="padding:4px 10px;font-size:11px" onclick="pickAndEdit('${esc(u.email||u.id)}')">View</button></td></tr>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-// CHURN RISK
-// ═══════════════════════════════════════════════════════
-function isChurnRisk(user) {
-  if (user.subscription_status === 'inactive' || user.subscription_status === 'cancelled') return false;
-  const lastActive = getLastActive(user);
-  if (!lastActive) return true;
-  const days = daysSince(lastActive);
-  if (days >= 14) return true;
-  if (user.subscription_status === 'trial' && days >= 5) return true;
-  return false;
-}
-
-function getChurnReason(user) {
-  const lastActive = getLastActive(user);
-  if (!lastActive) return 'No recorded activity';
-  const days = daysSince(lastActive);
-  if (days >= 30) return `Inactive ${days} days`;
-  if (days >= 14) return `Declining engagement (${days}d inactive)`;
-  if (user.subscription_status === 'trial' && days >= 5) return 'Trial user going cold';
-  if ((user.campaigns_count || 0) === 0) return 'No campaigns created';
-  return 'Low engagement signals';
-}
-
-function getChurnLevel(user) {
-  const lastActive = getLastActive(user);
-  if (!lastActive) return 'high';
-  const days = daysSince(lastActive);
-  if (days >= 30) return 'high';
-  if (days >= 14) return 'medium';
-  return 'low';
-}
-
-function renderChurnRisk() {
-  const atRisk = allUsers.filter(u => isChurnRisk(u));
-  const tbody = document.getElementById('churnTableBody');
-
-  if (atRisk.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--green);">🎉 No users at churn risk!</td></tr>';
-    return;
-  }
-
-  // Sort by risk level
-  const levelOrder = { high: 0, medium: 1, low: 2 };
-  atRisk.sort((a, b) => levelOrder[getChurnLevel(a)] - levelOrder[getChurnLevel(b)]);
-
-  tbody.innerHTML = atRisk.map(u => {
-    const level = getChurnLevel(u);
-    const lastActive = getLastActive(u);
-    const days = lastActive ? daysSince(lastActive) : '—';
-    const levelBadge = level === 'high' ? 'badge-red' : (level === 'medium' ? 'badge-yellow' : 'badge-orange');
-
-    return `<tr>
-      <td>
-        <div style="font-weight:600;color:var(--text-bright);">${u.company_name || '—'}</div>
-        <div style="font-size:12px;color:var(--text-dim);">${u.email || u.id}</div>
-      </td>
-      <td><span class="plan-badge plan-${(u.subscription_plan || 'bronze').toLowerCase()}">${u.subscription_plan || 'Bronze'}</span></td>
-      <td><span class="badge ${levelBadge}">${level}</span></td>
-      <td style="font-family:'JetBrains Mono';font-size:13px;">${days}</td>
-      <td style="font-family:'JetBrains Mono';font-size:13px;">${getMonthsSubscribed(u)}</td>
-      <td style="font-size:13px;color:var(--text-dim);">${getChurnReason(u)}</td>
-      <td>
-        <button class="btn-primary" style="padding:5px 12px;font-size:11px;" 
-                onclick="selectUserAndEdit('${u.email || u.id}')">View</button>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // EDIT USER
-// ═══════════════════════════════════════════════════════
-function selectUser(userId) {
-  selectedUserId = userId || null;
-  document.getElementById('userDropdown').value = userId || '';
-
-  if (userId) {
-    const user = allUsers.find(u => (u.email || u.id) === userId);
-    if (user) {
-      loadEditForm(user);
-      renderOnboarding(userId);
-      renderEngagement();
-    }
-  } else {
-    document.getElementById('editUserContent').style.display = 'block';
-    document.getElementById('editUserForm').style.display = 'none';
-    renderOnboarding(null);
-    renderEngagement();
-  }
+// ═══════════════════════════════════════════════
+function pickUser(uid) {
+  selId = uid||null;
+  document.getElementById('userDD').value = uid||'';
+  if (uid) {
+    const u = allUsers.find(x=>(x.email||x.id)===uid);
+    if (u) { loadEditForm(u); renderOB(uid); renderAssume(u); }
+  } else { clearUser(); }
+  if (document.getElementById('p-engagement').classList.contains('active')) refreshEng();
+}
+function pickAndEdit(uid) { selId=uid; document.getElementById('userDD').value=uid; const u=allUsers.find(x=>(x.email||x.id)===uid); if(u){loadEditForm(u);renderOB(uid);renderAssume(u);nav('edit',document.querySelector('[data-p="edit"]'));} }
+function clearUser() {
+  selId=null; document.getElementById('userDD').value='';
+  document.getElementById('editPlaceholder').style.display='block';
+  document.getElementById('editForm').style.display='none';
+  document.getElementById('assumePlaceholder').style.display='block';
+  document.getElementById('assumePanel').style.display='none';
+  renderOB(null);
+}
+function loadEditForm(u) {
+  document.getElementById('editPlaceholder').style.display='none';
+  document.getElementById('editForm').style.display='block';
+  document.getElementById('editEmail').textContent = u.email||u.id;
+  document.getElementById('ePlan').value = u.subscription_plan||'Bronze';
+  document.getElementById('eStatus').value = u.subscription_status||'trial';
+  document.getElementById('eCamp').value = u.campaign_credits||0;
+  document.getElementById('eVid').value = u.video_credits||0;
+  document.getElementById('eImg').value = u.image_credits||0;
+  document.getElementById('eCon').value = u.contact_credits||0;
+  document.getElementById('eSoc').value = u.social_credits||0;
+  document.getElementById('eEml').value = u.email_credits||0;
+}
+async function saveEdits() {
+  if (!selId) return;
+  try {
+    await POST(EP.updateUser, {
+      customer_id: selId,
+      subscription_plan: document.getElementById('ePlan').value,
+      subscription_status: document.getElementById('eStatus').value,
+      campaign_credits: +document.getElementById('eCamp').value||0,
+      video_credits: +document.getElementById('eVid').value||0,
+      image_credits: +document.getElementById('eImg').value||0,
+      contact_credits: +document.getElementById('eCon').value||0,
+      social_credits: +document.getElementById('eSoc').value||0,
+      email_credits: +document.getElementById('eEml').value||0
+    });
+    showToast('Saved!','ok');
+    cache = {};
+    await loadUsers();
+    pickUser(selId);
+  } catch(e) { showToast('Save failed: '+e.message,'err'); }
 }
 
-function selectUserAndEdit(userId) {
-  selectedUserId = userId;
-  document.getElementById('userDropdown').value = userId;
-  const user = allUsers.find(u => (u.email || u.id) === userId);
-  if (user) {
-    loadEditForm(user);
-    renderOnboarding(userId);
-    showPanelDirect('edit-user');
-  }
+// ═══════════════════════════════════════════════
+// ASSUME ROLE
+// ═══════════════════════════════════════════════
+function renderAssume(u) {
+  document.getElementById('assumePlaceholder').style.display = 'none';
+  document.getElementById('assumePanel').style.display = 'block';
+  document.getElementById('assumeUser').textContent = u.company_name || u.email || u.id;
+  document.getElementById('assumePhone').textContent = u.number || u.phone || u.phone_number || '—';
+  document.getElementById('assumeEmail2').textContent = u.email || '—';
+  // clear previous results
+  document.querySelectorAll('.action-result').forEach(el => { el.className = 'action-result'; el.textContent = ''; });
 }
 
-function showPanelDirect(id) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-}
+async function assumeAction(type) {
+  if (!selId) { showToast('Select a user first','err'); return; }
+  const u = allUsers.find(x => (x.email||x.id) === selId);
+  if (!u) return;
 
-function loadEditForm(user) {
-  document.getElementById('editUserContent').style.display = 'none';
-  document.getElementById('editUserForm').style.display = 'block';
-  document.getElementById('editUserEmail').textContent = user.email || user.id;
+  const userEmail = u.email;
+  const userNumber = u.number || u.phone || u.phone_number;
+  const btnId = 'btn' + type.charAt(0).toUpperCase() + type.slice(1);
+  const resId = 'res' + type.charAt(0).toUpperCase() + type.slice(1);
+  // map type names
+  const idMap = { email:'Email', sms:'Sms', call:'Call', contact:'Contact', opens:'Opens' };
+  const btn = document.getElementById('btn' + idMap[type]);
+  const res = document.getElementById('res' + idMap[type]);
 
-  document.getElementById('editPlan').value = user.subscription_plan || 'Bronze';
-  document.getElementById('editStatus').value = user.subscription_status || 'trial';
-  document.getElementById('editCampaignCredits').value = user.campaign_credits || 0;
-  document.getElementById('editVideoCredits').value = user.video_credits || 0;
-  document.getElementById('editImageCredits').value = user.image_credits || 0;
-  document.getElementById('editContactCredits').value = user.contact_credits || 0;
-  document.getElementById('editSocialCredits').value = user.social_credits || 0;
-  document.getElementById('editEmailCredits').value = user.email_credits || 0;
-}
-
-async function saveUserEdits() {
-  if (!selectedUserId) return;
-
-  const updates = {
-    subscription_plan: document.getElementById('editPlan').value,
-    subscription_status: document.getElementById('editStatus').value,
-    campaign_credits: parseInt(document.getElementById('editCampaignCredits').value) || 0,
-    video_credits: parseInt(document.getElementById('editVideoCredits').value) || 0,
-    image_credits: parseInt(document.getElementById('editImageCredits').value) || 0,
-    contact_credits: parseInt(document.getElementById('editContactCredits').value) || 0,
-    social_credits: parseInt(document.getElementById('editSocialCredits').value) || 0,
-    email_credits: parseInt(document.getElementById('editEmailCredits').value) || 0,
-  };
+  btn.disabled = true;
+  btn.innerHTML = '<span class="mini-spin"></span>Working...';
+  res.className = 'action-result'; res.textContent = '';
 
   try {
-    const { error } = await sb.from('users').update(updates)
-      .eq('email', selectedUserId);
-    
-    if (error) throw error;
+    let response;
+    switch(type) {
+      case 'email':
+        response = await POST(EP.sendEmail, {
+          customer_id: userEmail,
+          to_email: userEmail,
+          subject: '[Admin Test] Email delivery check',
+          body: 'This is an admin test email sent via Assume Role to verify email sending works for this account.',
+          admin_test: true
+        });
+        break;
+      case 'sms':
+        if (!userNumber) throw new Error('No phone number on this user');
+        response = await POST(EP.sendSms, {
+          customer_id: userEmail,
+          to: userNumber,
+          message: '[Admin Test] SMS delivery check for Victory Vision.',
+          admin_test: true
+        });
+        break;
+      case 'call':
+        if (!userNumber) throw new Error('No phone number on this user');
+        response = await POST(EP.makeCall, {
+          customer_id: userEmail,
+          to: userNumber,
+          admin_test: true
+        });
+        break;
+      case 'contact':
+        response = await POST(EP.createContact, {
+          customer_id: userEmail,
+          name: 'Admin Test Contact',
+          email: CUSTOMER_ID,
+          phone_number: '',
+          company: 'Victory Vision Admin',
+          admin_test: true
+        });
+        break;
+      case 'opens':
+        response = await POST(EP.emailOpenGet, {
+          customer_id: userEmail
+        });
+        break;
+    }
 
-    toast('User updated successfully!', 'success');
-    // Refresh data
-    await loadAllData();
-    selectUser(selectedUserId);
-  } catch (e) {
-    console.error('Save failed:', e);
-    toast('Failed to save: ' + e.message, 'error');
+    // Show result
+    const text = typeof response === 'object' ? JSON.stringify(response, null, 2) : String(response);
+    res.className = 'action-result show ok';
+    res.textContent = text;
+    btn.innerHTML = '✓ Done';
+    setTimeout(() => { btn.disabled = false; btn.innerHTML = btn.getAttribute('data-orig') || btn.textContent; }, 3000);
+  } catch(e) {
+    res.className = 'action-result show err';
+    res.textContent = 'Error: ' + e.message;
+    btn.disabled = false;
   }
+
+  // restore button text after delay
+  setTimeout(() => {
+    btn.disabled = false;
+    const labels = { email:'Send Test Email', sms:'Send Test SMS', call:'Make Test Call', contact:'Create Contact', opens:'Check Opens' };
+    btn.textContent = labels[type] || 'Retry';
+  }, 4000);
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // UTILITIES
-// ═══════════════════════════════════════════════════════
-function getLastActive(user) {
-  const dates = [
-    user.last_active, user.updated_at, user.last_login,
-    user.last_emailed_date, user.last_campaign_date
-  ].filter(Boolean).map(d => new Date(d));
-  
-  if (dates.length === 0) return null;
-  return new Date(Math.max(...dates));
+// ═══════════════════════════════════════════════
+function lastAct(u) {
+  const ds = [u.last_active,u.updated_at,u.last_login,u.last_emailed_date,u.last_campaign_date].filter(Boolean).map(d=>new Date(d));
+  return ds.length ? new Date(Math.max(...ds)) : null;
 }
+function daysAgo(d) { return Math.floor((Date.now()-(d instanceof Date?d:new Date(d)).getTime())/864e5); }
+function ago(d) { const n=daysAgo(d); return n===0?'Today':n===1?'Yesterday':n<7?n+'d ago':n<30?Math.floor(n/7)+'w ago':Math.floor(n/30)+'mo ago'; }
+function moSub(u) { const c=u.subscription_start||u.created_at||u.signup_date; return c?Math.max(1,Math.floor(daysAgo(new Date(c))/30)):'—'; }
+function esc(s) { return s?String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'):''; }
+function showToast(m,t) { const el=document.getElementById('toast'); el.textContent=m; el.className='toast '+t+' vis'; setTimeout(()=>el.classList.remove('vis'),3500); }
 
-function daysSince(date) {
-  if (!date) return Infinity;
-  const d = date instanceof Date ? date : new Date(date);
-  return Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
-}
-
-function timeAgo(date) {
-  const d = date instanceof Date ? date : new Date(date);
-  const days = daysSince(d);
-  if (days === 0) return 'Today';
-  if (days === 1) return 'Yesterday';
-  if (days < 7) return `${days}d ago`;
-  if (days < 30) return `${Math.floor(days / 7)}w ago`;
-  return `${Math.floor(days / 30)}mo ago`;
-}
-
-function getMonthsSubscribed(user) {
-  const created = user.subscription_start || user.created_at || user.signup_date;
-  if (!created) return '—';
-  const months = Math.max(1, Math.floor(daysSince(new Date(created)) / 30));
-  return months;
-}
-
-function toast(message, type) {
-  const el = document.getElementById('statusToast');
-  el.textContent = message;
-  el.className = `status-toast ${type} visible`;
-  setTimeout(() => { el.classList.remove('visible'); }, 3500);
-}
-
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('authLoading').style.display = 'flex';
-
-  const isAdmin = await checkAuth();
-  if (!isAdmin) return;
-
+  if (!await checkAuth()) return;
   document.getElementById('authLoading').style.display = 'none';
-  await loadAllData();
+  await loadUsers();
 });
-
-// Session keepalive
-setInterval(async () => {
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) window.location.href = 'login.html';
-  } catch (e) {
-    console.error('Session check failed:', e);
-  }
-}, 300000);
+setInterval(async()=>{try{const{data:{session}}=await sb.auth.getSession();if(!session)location.href='login.html';}catch(e){}},300000);
 </script>
 </body>
 </html>
