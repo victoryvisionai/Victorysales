@@ -2045,7 +2045,9 @@ async function sendEmail(event) {
         await deleteEmailById(currentDraftId);
         currentDraftId = null;
       }
-      
+      // Clear the form fields
+document.getElementById('emailComposeForm').reset();
+attachedFiles = [];
       cancelCompose();
       await loadEmails();
     } else {
