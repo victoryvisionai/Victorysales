@@ -1930,14 +1930,7 @@ document.getElementById('aiSms').textContent = aiSms;
 document.getElementById('manualSms').textContent = manualSms;
 document.getElementById('aiCalls').textContent = aiCallsCount;
 document.getElementById('manualCalls').textContent = manualCallsCount;
-        // Calls - assume all manual for now
-        const allCalls = allContacts.filter(c => 
-          c.last_called && new Date(c.last_called) >= startDate
-        ).length;
-
-        document.getElementById('aiCalls').textContent = 0;
-        document.getElementById('manualCalls').textContent = allCalls || 0;
-
+      
         // Engagement metrics
         const totalEmailOpens = emails.filter(e => e.opened_at || e.opens > 0).length;
         const totalEmailClicks = emails.filter(e => e.clicked_at || e.clicks > 0).length;
@@ -2335,7 +2328,7 @@ function renderPlan(plan) {
         ` : ''}
         
         <div class="actions-grid">
-          ${actions && actions.length > 0 ? actions.slice(0, 15).map((action, i) => renderAction(action, plan.id, i)).join('') : '<p>No actions in this plan</p>'}
+     ${actions && actions.length > 0 ? actions.slice(0, 15).map((action, i) => renderAction(action, plan.id, i)).join('') : '<p>No actions in this plan</p>'}
           ${actions && actions.length > 15 ? `<p style="text-align: center; color: #6b7280; font-size: 0.9rem;">...and ${actions.length - 15} more actions</p>` : ''}
         </div>
       </div>
