@@ -1443,7 +1443,8 @@
     let allSMS = [];
     let allCalls = [];
     let allSearches = [];
-
+    const removedActions = {};
+    
     // API endpoints 
     const ENDPOINTS = {
       getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
@@ -1474,7 +1475,7 @@
           CUSTOMER_ID = session.user.email;
           authToken = session.access_token;
          
-const removedActions = {}; // { planId: Set of action indices } 
+ // { planId: Set of action indices } 
           const userEmailEl = document.getElementById('userEmail');
           if (userEmailEl) {
             userEmailEl.textContent = CUSTOMER_ID;
