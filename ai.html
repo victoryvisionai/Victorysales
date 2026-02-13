@@ -2335,7 +2335,7 @@ function renderPlan(plan) {
         ` : ''}
         
         <div class="actions-grid">
-          ${actions && actions.length > 0 ? actions.slice(0, 15).map(action => renderAction(action)).join('') : '<p>No actions in this plan</p>'}
+          ${actions && actions.length > 0 ? actions.slice(0, 15).map((action, i) => renderAction(action, plan.id, i)).join('') : '<p>No actions in this plan</p>'}
           ${actions && actions.length > 15 ? `<p style="text-align: center; color: #6b7280; font-size: 0.9rem;">...and ${actions.length - 15} more actions</p>` : ''}
         </div>
       </div>
