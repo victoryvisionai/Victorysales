@@ -2111,11 +2111,12 @@ const victories = allContacts.filter(c =>
         });
 
 // Exclude won clients from leads
-let filteredContacts = scoredContacts.filter(c => !c.client_won_date);
+const activeContacts = scoredContacts.filter(c => !c.client_won_date);
+let filteredContacts;
         if (scoreType === 'priority') {
-          filteredContacts = scoredContacts.filter(c => c.tags?.includes('priority'));
+          filteredContacts = activeContacts.filter(c => c.tags?.includes('priority'));
         } else {
-          filteredContacts = scoredContacts.filter(c => c.classification === scoreType);
+          filteredContacts = activeContacts.filter(c => c.classification === scoreType);
         }
 
         // Sort by score
@@ -2346,7 +2347,7 @@ function removeAction(event, planId, actionIndex) {
 }
     
     // Render individual action
-function renderAction(action) {
+function renderAction(action, planId, index) {
   const priorityClass = action.conversion_probability === 'high' ? 'priority-high' : 
                        action.conversion_probability === 'medium' ? 'priority-medium' : 'priority-low';
   
