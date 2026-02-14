@@ -1689,13 +1689,7 @@ async function loadDashboard() {
     // Load funnel data
     async function loadFunnelData(startDate) {
       try {
-        // Load contacts via webhook if not already loaded
-        if (!allContacts || allContacts.length === 0) {
-          const contactsResponse = await apiCall(ENDPOINTS.getContacts);
-          allContacts = Array.isArray(contactsResponse) ? contactsResponse : 
-                       contactsResponse.contacts || [];
-        }
-
+      
         // Filter by date
         const contacts = allContacts.filter(c => 
           c.created && new Date(c.created) >= startDate
@@ -1765,6 +1759,23 @@ const meetings = meetingsInPeriod || 0;
 async function loadPerformanceMetrics(startDate) {
   try {
     // Load emails via webhook if needed
+  async function loadPerformanceMetrics(startDate) {
+  try {
+    // Load contacts first - other functions depend on this
+    if (!allContacts || allContacts.length === 0) {
+      try {
+        const contactsResponse = await apiCall(ENDPOINTS.getContacts);
+        allContacts = Array.isArray(contactsResponse) ? contactsResponse : 
+                     contactsResponse.contacts || [];
+        console.log('✅ Loaded contacts:', allContacts.length);
+      } catch (e) {
+        console.error('Contact load error:', e);
+        allContacts = [];
+      }
+    }
+
+    // Load emails via webhook if needed
+    
     if (!allEmails || allEmails.length === 0) {
       try {
         const emailsResponse = await apiCall(ENDPOINTS.getEmails);
