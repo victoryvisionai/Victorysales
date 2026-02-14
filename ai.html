@@ -1714,16 +1714,11 @@ async function loadDashboard() {
         const emailed = contacts?.filter(c => c.number_emails_sent > 0 || c.last_emailed_date).length || 0;
         const called = contacts?.filter(c => c.number_call_attempts > 0 || c.last_called).length || 0;
         
-        // Load SMS data separately (not in contacts table)
-        let smsContacted = 0;
-        try {
-          // You'll need to add SMS endpoint
-          // For now, estimate from contacts
-          smsContacted = contacts?.filter(c => c.number_sms_sent > 0).length || 0;
-        } catch (e) {
-          console.warn('Could not load SMS data');
-        }
-
+     // SMS count from actual SMS data
+        const smsContacted = allSMS.filter(s => {
+          return s.created_at && new Date(s.created_at) >= startDate;
+        }).length;
+        
         // Meetings - contacts with meeting_date
     // Meetings - use the actual meetings data instead of contacts
 const meetingsInPeriod = allMeetings.filter(m => {
