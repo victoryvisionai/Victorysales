@@ -1586,6 +1586,10 @@ console.log('📡 Calling:', endpoint);
         // Store currentUser for compatibility
         currentUser = userData;
         currentUser.email = CUSTOMER_ID;
+        // Load saved AI feedback if exists
+        if (userData.aifeedback) {
+          displayFeedback(userData.aifeedback);
+        }
         // Set AI SDR toggle from saved state
 const sdrToggle = document.getElementById('autoSdrToggle');
 if (sdrToggle) {
@@ -2446,104 +2450,115 @@ window.addEventListener('load', function() {
   }, 1000);
 });
 
+function displayFeedback(data) {
+  const resultsDiv = document.getElementById('feedbackResults');
+  resultsDiv.style.display = 'block';
+
+  const statusColors = {
+    on_track: { bg: '#f0fdf4', border: '#22c55e', text: '#166534', icon: '🟢' },
+    behind: { bg: '#fffbeb', border: '#f59e0b', text: '#92400e', icon: '🟡' },
+    at_risk: { bg: '#fef2f2', border: '#ef4444', text: '#991b1b', icon: '🔴' },
+    unknown: { bg: '#f8fafc', border: '#94a3b8', text: '#64748b', icon: '⚪' }
+  };
+  const goalStyle = statusColors[data.goal_progress?.status] || statusColors.unknown;
+
+  const impactBadge = (impact) => {
+    const colors = { high: '#ef4444', medium: '#f59e0b', low: '#22c55e' };
+    return `<span style="background:${colors[impact] || '#94a3b8'}; color:white; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600;">${(impact || 'medium').toUpperCase()}</span>`;
+  };
+
+  document.getElementById('feedbackContent').innerHTML = `
+    <div style="background:${goalStyle.bg}; border-left:4px solid ${goalStyle.border}; padding:20px; border-radius:8px; margin-bottom:20px;">
+      <h4 style="color:${goalStyle.text}; margin-bottom:8px;">${goalStyle.icon} Goal Progress: ${(data.goal_progress?.status || 'unknown').replace('_', ' ').toUpperCase()}</h4>
+      <p style="color:${goalStyle.text}; font-size:15px; margin:0;">${data.goal_progress?.message || ''}</p>
+    </div>
+
+    <div style="background:#f8fafc; padding:20px; border-radius:8px; margin-bottom:20px;">
+      <p style="color:#334155; font-size:15px; line-height:1.6; margin:0;">${data.summary || ''}</p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px;">
+      <div style="background:white; border:1px solid #e2e8f0; padding:15px; border-radius:8px; text-align:center;">
+        <div style="font-size:24px; font-weight:700; color:#0A3161;">${data.key_metrics?.emails_sent || 0}</div>
+        <div style="font-size:12px; color:#64748b;">Emails Sent</div>
+        <div style="font-size:11px; color:#10b981; margin-top:4px;">${data.key_metrics?.email_open_rate || '0%'} open · ${data.key_metrics?.email_reply_rate || '0%'} reply</div>
+      </div>
+      <div style="background:white; border:1px solid #e2e8f0; padding:15px; border-radius:8px; text-align:center;">
+        <div style="font-size:24px; font-weight:700; color:#0A3161;">${data.key_metrics?.calls_made || 0}</div>
+        <div style="font-size:12px; color:#64748b;">Calls Made</div>
+        <div style="font-size:11px; color:#10b981; margin-top:4px;">${data.key_metrics?.calls_connected || 0} connected</div>
+      </div>
+      <div style="background:white; border:1px solid #e2e8f0; padding:15px; border-radius:8px; text-align:center;">
+        <div style="font-size:24px; font-weight:700; color:#0A3161;">${data.key_metrics?.meetings_booked || 0}</div>
+        <div style="font-size:12px; color:#64748b;">Meetings</div>
+        <div style="font-size:11px; color:#10b981; margin-top:4px;">${data.key_metrics?.meetings_completed || 0} completed</div>
+      </div>
+    </div>
+
+    <div style="background:#f0fdf4; padding:20px; border-radius:8px; margin-bottom:15px;">
+      <h4 style="color:#166534; margin-bottom:12px;">✅ What's Working</h4>
+      ${(data.whats_working || []).map(item => 
+        `<div style="color:#15803d; padding:8px 0; border-bottom:1px solid #dcfce7; font-size:14px; line-height:1.5;">• ${item}</div>`
+      ).join('') || '<p style="color:#6b7280;">No data yet</p>'}
+    </div>
+
+    <div style="background:#fef2f2; padding:20px; border-radius:8px; margin-bottom:15px;">
+      <h4 style="color:#991b1b; margin-bottom:12px;">⚠️ What Needs Improvement</h4>
+      ${(data.whats_not_working || []).map(item => 
+        `<div style="color:#dc2626; padding:8px 0; border-bottom:1px solid #fecaca; font-size:14px; line-height:1.5;">• ${item}</div>`
+      ).join('') || '<p style="color:#6b7280;">No data yet</p>'}
+    </div>
+
+    <div style="background:#eff6ff; padding:20px; border-radius:8px;">
+      <h4 style="color:#1e40af; margin-bottom:12px;">🎯 Top 5 Actions This Week</h4>
+      ${(data.top_5_actions || []).map((a, i) => `
+        <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid #dbeafe;">
+          <div style="background:#1e40af; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;">${i+1}</div>
+          <div style="flex:1;">
+            <div style="color:#1e3a5f; font-weight:600; font-size:14px; margin-bottom:4px;">${a.action} ${impactBadge(a.impact)}</div>
+            ${a.why ? `<div style="color:#64748b; font-size:13px;">${a.why}</div>` : ''}
+          </div>
+        </div>
+      `).join('') || '<p style="color:#6b7280;">No actions available</p>'}
+    </div>
+
+    <p style="text-align:center; color:#94a3b8; font-size:12px; margin-top:15px;">Analysis generated ${data.generated_at ? new Date(data.generated_at).toLocaleString() : 'N/A'}</p>
+  `;
+}
+
 async function getAIFeedback() {
   const btn = document.getElementById('getFeedbackBtn');
   btn.disabled = true;
-  btn.textContent = '⏳ Analyzing 14 days of data...';
+  btn.textContent = '⏳ Requesting new analysis...';
   
   const resultsDiv = document.getElementById('feedbackResults');
   resultsDiv.style.display = 'block';
-  document.getElementById('feedbackContent').innerHTML = '<div class="spinner"></div><p style="text-align:center;color:#64748b;">AI is analyzing 14 days of data — this may take 3-5 minutes...</p>';
+  document.getElementById('feedbackContent').innerHTML = '<div class="spinner"></div><p style="text-align:center;color:#64748b;">AI analysis requested — this runs in the background and takes 3-5 minutes.<br>Refresh the page shortly to see updated results.</p>';
+  
   try {
- const raw = await apiCall(ENDPOINTS.getFeedback);
-    if (!raw) throw new Error('No response from feedback');
-    const data = Array.isArray(raw) ? raw[0] : raw;
-
-    const statusColors = {
-      on_track: { bg: '#f0fdf4', border: '#22c55e', text: '#166534', icon: '🟢' },
-      behind: { bg: '#fffbeb', border: '#f59e0b', text: '#92400e', icon: '🟡' },
-      at_risk: { bg: '#fef2f2', border: '#ef4444', text: '#991b1b', icon: '🔴' },
-      unknown: { bg: '#f8fafc', border: '#94a3b8', text: '#64748b', icon: '⚪' }
-    };
-    const goalStyle = statusColors[data.goal_progress?.status] || statusColors.unknown;
-
-    const impactBadge = (impact) => {
-      const colors = { high: '#ef4444', medium: '#f59e0b', low: '#22c55e' };
-      return `<span style="background:${colors[impact] || '#94a3b8'}; color:white; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600;">${(impact || 'medium').toUpperCase()}</span>`;
-    };
-
-    document.getElementById('feedbackContent').innerHTML = `
-      <!-- Goal Progress -->
-      <div style="background:${goalStyle.bg}; border-left:4px solid ${goalStyle.border}; padding:20px; border-radius:8px; margin-bottom:20px;">
-        <h4 style="color:${goalStyle.text}; margin-bottom:8px;">${goalStyle.icon} Goal Progress: ${(data.goal_progress?.status || 'unknown').replace('_', ' ').toUpperCase()}</h4>
-        <p style="color:${goalStyle.text}; font-size:15px; margin:0;">${data.goal_progress?.message || ''}</p>
-      </div>
-
-      <!-- Summary -->
-      <div style="background:#f8fafc; padding:20px; border-radius:8px; margin-bottom:20px;">
-        <p style="color:#334155; font-size:15px; line-height:1.6; margin:0;">${data.summary || ''}</p>
-      </div>
-
-      <!-- Key Metrics -->
-      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px;">
-        <div style="background:white; border:1px solid #e2e8f0; padding:15px; border-radius:8px; text-align:center;">
-          <div style="font-size:24px; font-weight:700; color:#0A3161;">${data.key_metrics?.emails_sent || 0}</div>
-          <div style="font-size:12px; color:#64748b;">Emails Sent</div>
-          <div style="font-size:11px; color:#10b981; margin-top:4px;">${data.key_metrics?.email_open_rate || '0%'} open · ${data.key_metrics?.email_reply_rate || '0%'} reply</div>
-        </div>
-        <div style="background:white; border:1px solid #e2e8f0; padding:15px; border-radius:8px; text-align:center;">
-          <div style="font-size:24px; font-weight:700; color:#0A3161;">${data.key_metrics?.calls_made || 0}</div>
-          <div style="font-size:12px; color:#64748b;">Calls Made</div>
-          <div style="font-size:11px; color:#10b981; margin-top:4px;">${data.key_metrics?.calls_connected || 0} connected</div>
-        </div>
-        <div style="background:white; border:1px solid #e2e8f0; padding:15px; border-radius:8px; text-align:center;">
-          <div style="font-size:24px; font-weight:700; color:#0A3161;">${data.key_metrics?.meetings_booked || 0}</div>
-          <div style="font-size:12px; color:#64748b;">Meetings</div>
-          <div style="font-size:11px; color:#10b981; margin-top:4px;">${data.key_metrics?.meetings_completed || 0} completed</div>
-        </div>
-      </div>
-
-      <!-- What's Working -->
-      <div style="background:#f0fdf4; padding:20px; border-radius:8px; margin-bottom:15px;">
-        <h4 style="color:#166534; margin-bottom:12px;">✅ What's Working</h4>
-        ${(data.whats_working || []).map(item => 
-          `<div style="color:#15803d; padding:8px 0; border-bottom:1px solid #dcfce7; font-size:14px; line-height:1.5;">• ${item}</div>`
-        ).join('') || '<p style="color:#6b7280;">No data yet</p>'}
-      </div>
-
-      <!-- What Needs Improvement -->
-      <div style="background:#fef2f2; padding:20px; border-radius:8px; margin-bottom:15px;">
-        <h4 style="color:#991b1b; margin-bottom:12px;">⚠️ What Needs Improvement</h4>
-        ${(data.whats_not_working || []).map(item => 
-          `<div style="color:#dc2626; padding:8px 0; border-bottom:1px solid #fecaca; font-size:14px; line-height:1.5;">• ${item}</div>`
-        ).join('') || '<p style="color:#6b7280;">No data yet</p>'}
-      </div>
-
-      <!-- Top 5 Actions -->
-      <div style="background:#eff6ff; padding:20px; border-radius:8px;">
-        <h4 style="color:#1e40af; margin-bottom:12px;">🎯 Top 5 Actions This Week</h4>
-        ${(data.top_5_actions || []).map((a, i) => `
-          <div style="display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid #dbeafe;">
-            <div style="background:#1e40af; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;">${i+1}</div>
-            <div style="flex:1;">
-              <div style="color:#1e3a5f; font-weight:600; font-size:14px; margin-bottom:4px;">${a.action} ${impactBadge(a.impact)}</div>
-              ${a.why ? `<div style="color:#64748b; font-size:13px;">${a.why}</div>` : ''}
-            </div>
-          </div>
-        `).join('') || '<p style="color:#6b7280;">No actions available</p>'}
-      </div>
-
-      <p style="text-align:center; color:#94a3b8; font-size:12px; margin-top:15px;">Analysis generated ${new Date().toLocaleString()}</p>
-    `;
+    // Fire and forget — don't wait for response
+    fetch(ENDPOINTS.getFeedback, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-Customer-ID': CUSTOMER_ID
+      },
+      body: JSON.stringify({ customer_id: CUSTOMER_ID })
+    }).catch(() => {});
+    
+    btn.textContent = '✅ Analysis requested — refresh page in ~5 min';
+    
   } catch (error) {
     console.error('Feedback error:', error);
-    document.getElementById('feedbackContent').innerHTML = '<p style="color: #ef4444; text-align:center;">Failed to load feedback. Try again.</p>';
+    document.getElementById('feedbackContent').innerHTML = '<p style="color: #ef4444; text-align:center;">Failed to request feedback. Try again.</p>';
+    btn.textContent = '🤖 Get AI Feedback';
   }
   
-  btn.disabled = false;
-  btn.textContent = '🤖 Get AI Feedback';
-}
-    
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = '🤖 Get AI Feedback';
+  }, 10000);
+}    
     // Session management - check every 5 minutes
     setInterval(async function() {
       try {
