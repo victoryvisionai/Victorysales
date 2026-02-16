@@ -2446,14 +2446,19 @@ async function getAIFeedback() {
   
   const resultsDiv = document.getElementById('feedbackResults');
   resultsDiv.style.display = 'block';
-  document.getElementById('feedbackContent').innerHTML = '<div class="spinner"></div><p style="text-align:center;color:#64748b;">AI is reviewing your calls, meetings, emails & contacts...</p>';
-  
+  document.getElementById('feedbackContent').innerHTML = '<div class="spinner"></div><p style="text-align:center;color:#64748b;">AI is analyzing 14 days of data — this may take 3-5 minutes...</p>';
   try {
+ 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 minute timeout
     const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/ai/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_id: CUSTOMER_ID })
+      body: JSON.stringify({ customer_id: CUSTOMER_ID }),
+      signal: controller.signal
     });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) throw new Error('Feedback request failed');
    const raw = await response.json();
