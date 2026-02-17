@@ -1361,6 +1361,10 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
             <label for="scheduleStartDate">Start Date *</label>
             <input type="datetime-local" id="scheduleStartDate" name="scheduleStartDate" required>
           </div>
+          <div class="form-group">
+  <label for="daysBetweenEmails">Days Between Emails</label>
+  <input type="number" id="daysBetweenEmails" value="2" min="1" max="30" style="width: 80px;">
+</div>
         </div>
         
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
@@ -2184,15 +2188,16 @@ async function scheduleSelectedCampaign() {
       const body = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="body"]`).value;
       
       // Calculate send time: first email at start date, then +48 hours for each subsequent
+      const daysBetween = parseInt(document.getElementById('daysBetweenEmails').value) || 2;
       const sendDate = new Date(startDate);
-      sendDate.setHours(sendDate.getHours() + (emailIndex * 48));
+      sendDate.setHours(sendDate.getHours() + (emailIndex * daysBetween * 24));
       
       selectedEmails.push({
         sequence_number: emailIndex + 1,
         subject: subject,
         body: body,
         scheduled_time: sendDate.toISOString(),
-        delay_hours: emailIndex * 48
+        delay_hours: emailIndex * daysBetween * 24
       });
     });
     
@@ -2210,6 +2215,7 @@ async function scheduleSelectedCampaign() {
         campaign_name: document.getElementById('campaignName').value,
         contact_ids: Array.from(selectedContacts),
         start_date: startDate,
+        days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
         emails: selectedEmails
       })
     });
@@ -2225,6 +2231,8 @@ async function scheduleSelectedCampaign() {
       closeCustomCampaignModal();
       selectedContacts.clear();
       updateSelectedCount();
+      renderContactsTable();
+      document.getElementById('selectAllCheckbox').checked = false;
     } else {
       throw new Error(result.message || 'Failed to schedule campaign');
     }
@@ -2265,15 +2273,16 @@ function closeAddContactModal() {
 
 async function handleContactForm(formData, isUpdate = false, contactId = null) {
   try {
-    const contactData = {};
+const contactData = {};
     for (let [key, value] of formData.entries()) {
       if (key === 'aiemail' || key === 'newsletter') {
         contactData[key] = true;
+      } else if (value === '' && (key === 'client_won_date' || key === 'last_called' || key === 'last_opened_date')) {
+        contactData[key] = null;
       } else {
         contactData[key] = value;
       }
-    }
-    
+    }    
     if (!contactData.aiemail) contactData.aiemail = false;
     if (!contactData.newsletter) contactData.newsletter = false;
 
@@ -2371,7 +2380,8 @@ async function generateLookAlikeContacts() {
       // Clear selection
       selectedContacts.clear();
       updateSelectedCount();
-      
+      renderContactsTable();
+      document.getElementById('selectAllCheckbox').checked = false;
       // Reload contacts after 3 minutes
       setTimeout(() => {
         loadContacts();
@@ -2442,6 +2452,8 @@ async function sendMassSMS() {
       
       selectedContacts.clear();
       updateSelectedCount();
+      renderContactsTable();
+      document.getElementById('selectAllCheckbox').checked = false;
     } else {
       throw new Error(result.message || 'Mass SMS failed');
     }
@@ -2553,6 +2565,8 @@ async function enrichSelectedContacts() {
     showStatus(`Enrichment complete! ${selectedContactsList.length} contacts processed.`, false);
     selectedContacts.clear();
     updateSelectedCount();
+    renderContactsTable();
+    document.getElementById('selectAllCheckbox').checked = false;
     setTimeout(() => loadContacts(), 5000);
 
 } catch (error) {
@@ -2788,6 +2802,12 @@ function updateVisibleColumns() {
     visibleColumns.unshift('name');
   }
   
+  // Save to user table
+  apiCall(ENDPOINTS.updateUser || ENDPOINTS.getUserData, {
+    customer_id: CUSTOMER_ID,
+    column_config: JSON.stringify(visibleColumns)
+  }).catch(e => console.warn('Failed to save column config:', e));
+  
   renderTableHeader();
   renderContactsTable();
 }
@@ -2840,7 +2860,7 @@ function sortBy(field) {
     let aVal = a[field] || '';
     let bVal = b[field] || '';
     
-    if (field === 'annual_revenue' || field === 'employee_count') {
+ if (field === 'annual_revenue' || field === 'employee_count' || field === 'num_emails_opened' || field === 'num_links_clicked' || field === 'number_emails_sent' || field === 'number_call_attempts') {
       aVal = parseFloat(aVal.toString().replace(/[^0-9.]/g, '')) || 0;
       bVal = parseFloat(bVal.toString().replace(/[^0-9.]/g, '')) || 0;
     } else if (field === 'last_responded' || field === 'last_emailed_date' || field === 'client_won_date') {
@@ -3218,6 +3238,7 @@ for (const workflow of selectedWorkflows) {
             email_count: 3,
             tone: 'professional',
             schedule_start_date: new Date().toISOString(),
+              days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
             selected_contacts: selectedContactsList.map(c => c.contact_id || c.id || c.email)
           });
           
@@ -3693,6 +3714,11 @@ async function init() {
       
       console.log('Step 5: Loading user data and contacts...');
       await Promise.all([loadUserData(), loadContacts()]);
+if (userData.column_config) {
+  try {
+    visibleColumns = JSON.parse(userData.column_config);
+  } catch(e) {}
+}     
       console.log('Step 6: Data loaded successfully');
       
       // Initialize WebRTC after user data loads
