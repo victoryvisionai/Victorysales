@@ -1867,6 +1867,7 @@ async function loadUserData() {
     // Store user's VV number and Telnyx info
     window.userVVNumber = userData.vvnumber || null;
     window.userConnectionId = userData.number_id || null;
+    window.usercolumn = userData.column_config || null;
 window.userWebRTCUsername = userData.name ? userData.name.replace(/[\s,]+/g, '') : userData.email;
     window.userWebRTCPassword = userData.sip_password
     // Update subscription medallion
@@ -3714,9 +3715,9 @@ async function init() {
       
       console.log('Step 5: Loading user data and contacts...');
       await Promise.all([loadUserData(), loadContacts()]);
-if (userData.column_config) {
+if (window.usercolumn) {
   try {
-    visibleColumns = JSON.parse(userData.column_config);
+    visibleColumns = JSON.parse(window.usercolumn);
   } catch(e) {}
 }     
       console.log('Step 6: Data loaded successfully');
