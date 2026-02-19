@@ -3482,7 +3482,8 @@ function setupEventListeners() {
     email_count: parseInt(formData.get('emailCount')),
     tone: formData.get('emailTone'),
     schedule_start_date: formData.get('scheduleStartDate'),
-    customer_id: CUSTOMER_ID,
+      days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
+customer_id: CUSTOMER_ID,
     selected_contacts: Array.from(selectedContacts)
   };
   
