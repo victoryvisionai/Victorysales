@@ -1712,7 +1712,7 @@ async function loadDashboard() {
      // Outreach breakdown - count from actual data sources, not just new contacts
         // Emails: use allEmails (from emails/get webhook) filtered by date
         const emailsInPeriod = allEmails.filter(e => {
-          const d = e.sent_at || e.created_at || e.created;
+          const d = e.created_at || e.created_at || e.created;
           return d && new Date(d) >= startDate;
         });
         const emailed = emailsInPeriod.length || 0;
@@ -1864,7 +1864,7 @@ if (!allCalls || allCalls.length === 0) {
 }  
     // Rest of the function stays the same...
     const emails = allEmails.filter(e => 
-      e.sent_at && new Date(e.sent_at) >= startDate
+      e.created_at && new Date(e.created_at) >= startDate
     );
     
     const meetings = allMeetings.filter(m => 
@@ -1904,7 +1904,7 @@ if (!allCalls || allCalls.length === 0) {
       try {
         // Filter emails by date
         const emails = allEmails.filter(e => 
-          e.sent_at && new Date(e.sent_at) >= startDate
+          e.created_at && new Date(e.created_at) >= startDate
         );
 
         // Separate AI vs manual
@@ -1929,7 +1929,7 @@ if (!allCalls || allCalls.length === 0) {
         document.getElementById('manualEmailsRate').textContent = `${manualEmailOpenRate}% open rate`;
 
 const smsInPeriod = allSMS.filter(s => {
-  const d = s.sent_at || s.created_at || s.created;
+  const d = s.created_at || s.created_at || s.created;
   return d && new Date(d) >= startDate;
 });
 const aiSms = smsInPeriod.filter(s => s.source === 'ai' || s.campaign).length;
@@ -2020,8 +2020,8 @@ const victories = allContacts.filter(c =>
         
         // Get recent activities from emails
         const recentEmails = allEmails
-          .filter(e => e.sent_at && new Date(e.sent_at) >= startDate)
-          .sort((a, b) => new Date(b.sent_at) - new Date(a.sent_at))
+          .filter(e => e.created_at && new Date(e.created_at) >= startDate)
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
           .slice(0, 10);
 
         const recentMeetings = allMeetings
@@ -2035,7 +2035,7 @@ const victories = allContacts.filter(c =>
         recentEmails?.forEach(e => {
           activities.push({
             type: 'email',
-            time: new Date(e.sent_at),
+            time: new Date(e.created_at),
             title: `Email sent to ${e.to_email || e.to || 'unknown'}`,
             description: e.subject || 'No subject',
             isAi: e.campaign && e.campaign !== 'Direct Message'
