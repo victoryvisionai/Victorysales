@@ -1094,7 +1094,8 @@
     <div class="funnel-section">
       <div class="funnel-header">
         <h2>Victory Vision Sales Funnel</h2>
-        <div class="time-window-selector">
+       <div class="time-window-selector">
+          <button class="time-window-btn" data-window="1">Last 24 hrs</button>
           <button class="time-window-btn" data-window="7">Last 7 days</button>
           <button class="time-window-btn active" data-window="30">Last 30 days</button>
           <button class="time-window-btn" data-window="90">Last 90 days</button>
@@ -1710,9 +1711,10 @@ async function loadDashboard() {
         const leadsFound = contacts?.length || 0;
         
         // Outreach breakdown
-        const emailed = contacts?.filter(c => c.number_emails_sent > 0 || c.last_emailed_date).length || 0;
-        const called = contacts?.filter(c => c.number_call_attempts > 0 || c.last_called).length || 0;
-        
+    // Outreach breakdown - use actual email data, not just contacts created in period
+        const emailedInPeriod = allEmails.filter(e => e.sent_at && new Date(e.sent_at) >= startDate).length;
+        const emailed = emailedInPeriod || allContacts.filter(c => c.last_emailed_date && new Date(c.last_emailed_date) >= startDate).length || 0;
+        const called = allContacts.filter(c => c.last_called && new Date(c.last_called) >= startDate).length || 0;        
      // SMS count from actual SMS data
         const smsContacted = allSMS.filter(s => {
           return s.created_at && new Date(s.created_at) >= startDate;
@@ -2414,6 +2416,15 @@ async function executePlan(event, planId, customerId) {
   button.textContent = '⏳ Executing...';
   
   try {
+    // Get the plan data and filter out removed actions
+    const planCard = document.getElementById(`plan-${planId}`);
+    const remainingActions = Array.from(planCard.querySelectorAll('.action-item'))
+      .map(el => ({
+        index: parseInt(el.dataset.index),
+        planId: el.dataset.plan
+      }));
+    const remainingIndices = remainingActions.map(a => a.index);
+
     const response = await fetch('https://victoryvision.app.n8n.cloud/webhook/plan/execute', {
       method: 'POST',
       headers: {
@@ -2421,7 +2432,9 @@ async function executePlan(event, planId, customerId) {
       },
       body: JSON.stringify({
         customer_id: customerId,
-   id: String(planId)
+        id: String(planId),
+        remaining_action_indices: remainingIndices,
+        removed_action_indices: removedActions[planId] ? Array.from(removedActions[planId]) : []
       })
     });
     
