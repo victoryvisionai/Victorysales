@@ -1720,6 +1720,7 @@ async function loadDashboard() {
         
         // Calls: use allContacts with last_called in date range (not just new contacts)
         const called = allContacts.filter(c => c.last_called && new Date(c.last_called) >= startDate).length || 0; 
+       const outreached = emailed + smsContacted + called;
         // Meetings - contacts with meeting_date
     // Meetings - use the actual meetings data instead of contacts
 const meetingsInPeriod = allMeetings.filter(m => {
