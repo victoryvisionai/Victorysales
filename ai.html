@@ -1709,17 +1709,17 @@ async function loadDashboard() {
 
         // Calculate Victory Vision funnel stages
         const leadsFound = contacts?.length || 0;
+     // Outreach breakdown - count from actual data sources, not just new contacts
+        // Emails: use allEmails (from emails/get webhook) filtered by date
+        const emailsInPeriod = allEmails.filter(e => {
+          const d = e.sent_at || e.created_at || e.created;
+          return d && new Date(d) >= startDate;
+        });
+        const emailed = emailsInPeriod.length || 0;
+        console.log('📧 Emails in period:', emailed, 'from', allEmails.length, 'total. Fields on first:', allEmails[0] ? Object.keys(allEmails[0]) : 'none');
         
-        // Outreach breakdown
-    // Outreach breakdown - use actual email data, not just contacts created in period
-        const emailedInPeriod = allEmails.filter(e => e.sent_at && new Date(e.sent_at) >= startDate).length;
-        const emailed = emailedInPeriod || allContacts.filter(c => c.last_emailed_date && new Date(c.last_emailed_date) >= startDate).length || 0;
-        const called = allContacts.filter(c => c.last_called && new Date(c.last_called) >= startDate).length || 0;        
-     // SMS count from actual SMS data
-        const smsContacted = allSMS.filter(s => {
-          return s.created_at && new Date(s.created_at) >= startDate;
-        }).length;
- const outreached = emailed + smsContacted + called;      
+        // Calls: use allContacts with last_called in date range (not just new contacts)
+        const called = allContacts.filter(c => c.last_called && new Date(c.last_called) >= startDate).length || 0; 
         // Meetings - contacts with meeting_date
     // Meetings - use the actual meetings data instead of contacts
 const meetingsInPeriod = allMeetings.filter(m => {
