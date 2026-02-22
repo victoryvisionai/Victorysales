@@ -1617,6 +1617,7 @@ const ENDPOINTS = {
   createSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/create',
   makeCall: 'https://victoryvision.app.n8n.cloud/webhook/call/make',
   generateScript: 'https://victoryvision.app.n8n.cloud/webhook/call/script',
+  updateUser: 'https://victoryvision.app.n8n.cloud/webhook/user/update',
   massSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/mass'
 };
 
@@ -2725,7 +2726,9 @@ function editContact(contactId) {
   document.getElementById('city').value = contact.city || '';
   document.getElementById('annual_revenue').value = contact.annual_revenue || '';
   document.getElementById('employee_count').value = contact.employee_count || '';
-  document.getElementById('client_won_date').value = contact.client_won_date || '';
+  document.getElementById('client_won_date').value = contact.client_won_date 
+  ? contact.client_won_date.split('T')[0] 
+  : '';
   document.getElementById('last_opened_date').value = contact.last_opened_date || '';
   document.getElementById('last_called').value = contact.last_called || '';
   document.getElementById('customer_journey').value = contact.customer_journey || '';
@@ -2735,6 +2738,9 @@ function editContact(contactId) {
   document.getElementById('personal_priorities').value = contact.personal_priorities || '';
   document.getElementById('company_priorities').value = contact.company_priorities || '';
   document.getElementById('tags').value = contact.tags || '';
+if (document.getElementById('client_ann_est')) {
+  document.getElementById('client_ann_est').value = contact.client_ann_est || '';
+}
   document.getElementById('workflow').value = contact.workflow || '';
   document.getElementById('aiemail').checked = contact.aiemail || false;
   document.getElementById('newsletter').checked = contact.newsletter || false;
@@ -2804,7 +2810,7 @@ function updateVisibleColumns() {
   }
   
   // Save to user table
-  apiCall(ENDPOINTS.updateUser || ENDPOINTS.getUserData, {
+ apiCall(ENDPOINTS.updateUser, {
     customer_id: CUSTOMER_ID,
     column_config: JSON.stringify(visibleColumns)
   }).catch(e => console.warn('Failed to save column config:', e));
@@ -3203,12 +3209,16 @@ async function enrollInWorkflows() {
         c.email === id
       )
     ).filter(c => c && c.email);
-
+// After line 3205:
+const contactsWithoutEmail = Array.from(selectedContacts).length - selectedContactsList.length;
+if (contactsWithoutEmail > 0) {
+  showStatus(`⚠️ ${contactsWithoutEmail} contact(s) skipped - no email address`, true);
+  if (selectedContactsList.length === 0) return;
+}
 for (const workflow of selectedWorkflows) {
       let endpoint;
       let useCustomCampaign = false;
       let campaignPrompt = '';
-      
       switch(workflow) {
         case 'ads':
           endpoint = ENDPOINTS.enrollAds;
@@ -3527,6 +3537,7 @@ customer_id: CUSTOMER_ID,
       closeCustomCampaignModal();
       selectedContacts.clear();
       updateSelectedCount();
+      renderContactsTable(); 
     } else {
       throw new Error(result.message || 'Failed to create campaign');
     }
