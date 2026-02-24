@@ -2246,6 +2246,14 @@ async function scheduleSelectedCampaign() {
 }
 // NEW: Custom Email Campaign Functions
 function showCustomCampaignModal() {
+  const contactsWithEmail = Array.from(selectedContacts).filter(id => {
+    const c = allContacts.find(c => c.contact_id === id || c.id === id);
+    return c && c.email;
+  });
+  if (contactsWithEmail.length === 0) {
+    showStatus('❌ No selected contacts have email addresses', true);
+    return;
+  }
   document.getElementById('customCampaignModal').style.display = 'block';
 // Set default start date to now
   const now = new Date();
@@ -2662,11 +2670,14 @@ function sendEmailToContact(email) {
   closeModal();
 }
 
-// NEW: Contact action functions
+
 async function createMeetingForContact(contactId) {
   const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
   if (!contact) return;
-  
+  if (!contact.email) {
+    showStatus('❌ This contact has no email address', true);
+    return;
+  }
   try {
     await apiCall(ENDPOINTS.enrollMeeting, { 
       contact_id: contactId,
