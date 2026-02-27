@@ -1806,7 +1806,7 @@ async function saveAllData() {
       offer: sanitizeInput(document.getElementById('offer').value),
       calendar: sanitizeInput(document.getElementById('calendar').value),
       ...productImageUrls,
-      goal: goalData
+    ...(goalData !== null ? { goal: goalData } : {})
     };
     
     const result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
