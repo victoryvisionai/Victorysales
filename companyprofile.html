@@ -1650,6 +1650,7 @@ let userData = null;
     const preview = document.getElementById(`productImage${num}Preview`);
     
     fileInput.addEventListener('change', async function() {
+    if (!fileInput) return;
       if (this.files && this.files[0]) {
         const file = this.files[0];
         
@@ -1883,8 +1884,10 @@ document.getElementById('userSchool').value = userData.school || '';
       for (let i = 1; i <= 4; i++) {
         const productImageUrl = userData[`product_image_${i}`];
         if (productImageUrl) {
-          document.getElementById(`productImage${i}Preview`).innerHTML = `<img src="${productImageUrl}" alt="Product image ${i}">`;
-          document.getElementById(`productImage${i}FileName`).textContent = `Current product image ${i} uploaded`;
+       const previewEl = document.getElementById(`productImage${i}Preview`);
+          if (previewEl) previewEl.innerHTML = `<img src="${productImageUrl}" alt="Product image ${i}">`;
+         const fileNameEl = document.getElementById(`productImage${i}FileName`);
+          if (fileNameEl) fileNameEl.textContent = `Current product image ${i} uploaded`;
           uploadedProductImages[`product_image_${i}`] = { url: productImageUrl };
         }
       }
