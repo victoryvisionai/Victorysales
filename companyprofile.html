@@ -984,7 +984,7 @@
     </div>
   </div>
 
-  <!-- Product Images Section
+  <!-- Product Images Section -->
   <div class="card">
     <div class="section-header">
       <h3>Product Images</h3>
@@ -1038,7 +1038,7 @@
       </div>
     </div>
   </div>
--->
+
   <!-- Goal Management Section -->
   <div class="card">
     <div class="section-header">
@@ -1806,7 +1806,7 @@ async function saveAllData() {
       offer: sanitizeInput(document.getElementById('offer').value),
       calendar: sanitizeInput(document.getElementById('calendar').value),
       ...productImageUrls,
-    ...(goalData !== null ? { goal: goalData } : {})
+      goal: goalData
     };
     
     const result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
@@ -1892,11 +1892,8 @@ document.getElementById('userSchool').value = userData.school || '';
     const goalForm = document.querySelector('.goal-form');
     goalForm.reset();
 
-    let goalValue = userData.goal;
-    if (Array.isArray(goalValue) && goalValue.length > 0) {
-      goalValue = goalValue[0]; // unwrap array
-    }
-    userData.goal = goalValue; // store normalized version back
+    // FIXED: Load and display current goal - handle both string and object
+    const goalValue = userData.goal;
     if (goalValue) {
       let goalDisplay = '';
       
