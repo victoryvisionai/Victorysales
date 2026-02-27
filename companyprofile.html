@@ -1531,23 +1531,10 @@ let userData = null;
   document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('authLoading').style.display = 'flex';
     
-    // Prevent redirect loop: track if we already tried redirecting
-    const redirectAttempts = parseInt(sessionStorage.getItem('vv_redirect_attempts') || '0');
-    if (redirectAttempts > 2) {
-      // Too many redirects — stop and show error instead of looping
-      sessionStorage.removeItem('vv_redirect_attempts');
-      document.getElementById('authLoading').innerHTML = '<p style="color:red;padding:20px;">Session error. Please <a href="login.html">click here to log in</a>.</p>';
-      return;
-    }
-
     try {
-      // Give Supabase a moment to restore session from storage before checking
-      await new Promise(resolve => setTimeout(resolve, 300));
-
       const isAuthenticated = await checkAuthentication();
       
       if (isAuthenticated) {
-        sessionStorage.removeItem('vv_redirect_attempts'); // Clear counter on success
         document.getElementById('authLoading').style.display = 'none';
         setupColorPickers();
         setupFileUploads();
@@ -1564,14 +1551,11 @@ let userData = null;
         document.getElementById('productDescription').addEventListener('input', updateTourButtonVisibility);
         document.getElementById('newsletterTitle').addEventListener('input', updateTourButtonVisibility);
       } else {
-        // Only redirect if truly not authenticated (not due to a transient error)
-        sessionStorage.setItem('vv_redirect_attempts', redirectAttempts + 1);
         redirectToLogin();
       }
     } catch (e) {
       console.error('Initialization failed:', e);
-      // Don't redirect on generic errors — show message instead to avoid loop
-      document.getElementById('authLoading').innerHTML = `<p style="color:red;padding:20px;">Failed to load page: ${e.message}. <a href="login.html">Try logging in again</a>.</p>`;
+      redirectToLogin();
     }
   });
 
