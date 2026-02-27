@@ -984,8 +984,7 @@
     </div>
   </div>
 
-  <!-- Product Images Section -->
-  <script type="text/html">
+  <!-- Product Images Section
   <div class="card">
     <div class="section-header">
       <h3>Product Images</h3>
@@ -1039,8 +1038,7 @@
       </div>
     </div>
   </div>
-  </script>
-  
+-->
   <!-- Goal Management Section -->
   <div class="card">
     <div class="section-header">
@@ -1533,10 +1531,23 @@ let userData = null;
   document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('authLoading').style.display = 'flex';
     
+    // Prevent redirect loop: track if we already tried redirecting
+    const redirectAttempts = parseInt(sessionStorage.getItem('vv_redirect_attempts') || '0');
+    if (redirectAttempts > 2) {
+      // Too many redirects — stop and show error instead of looping
+      sessionStorage.removeItem('vv_redirect_attempts');
+      document.getElementById('authLoading').innerHTML = '<p style="color:red;padding:20px;">Session error. Please <a href="login.html">click here to log in</a>.</p>';
+      return;
+    }
+
     try {
+      // Give Supabase a moment to restore session from storage before checking
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       const isAuthenticated = await checkAuthentication();
       
       if (isAuthenticated) {
+        sessionStorage.removeItem('vv_redirect_attempts'); // Clear counter on success
         document.getElementById('authLoading').style.display = 'none';
         setupColorPickers();
         setupFileUploads();
@@ -1553,11 +1564,14 @@ let userData = null;
         document.getElementById('productDescription').addEventListener('input', updateTourButtonVisibility);
         document.getElementById('newsletterTitle').addEventListener('input', updateTourButtonVisibility);
       } else {
+        // Only redirect if truly not authenticated (not due to a transient error)
+        sessionStorage.setItem('vv_redirect_attempts', redirectAttempts + 1);
         redirectToLogin();
       }
     } catch (e) {
       console.error('Initialization failed:', e);
-      redirectToLogin();
+      // Don't redirect on generic errors — show message instead to avoid loop
+      document.getElementById('authLoading').innerHTML = `<p style="color:red;padding:20px;">Failed to load page: ${e.message}. <a href="login.html">Try logging in again</a>.</p>`;
     }
   });
 
@@ -1650,7 +1664,6 @@ let userData = null;
     const preview = document.getElementById(`productImage${num}Preview`);
     
     fileInput.addEventListener('change', async function() {
-    if (!fileInput) return;
       if (this.files && this.files[0]) {
         const file = this.files[0];
         
@@ -1884,10 +1897,8 @@ document.getElementById('userSchool').value = userData.school || '';
       for (let i = 1; i <= 4; i++) {
         const productImageUrl = userData[`product_image_${i}`];
         if (productImageUrl) {
-       const previewEl = document.getElementById(`productImage${i}Preview`);
-          if (previewEl) previewEl.innerHTML = `<img src="${productImageUrl}" alt="Product image ${i}">`;
-         const fileNameEl = document.getElementById(`productImage${i}FileName`);
-          if (fileNameEl) fileNameEl.textContent = `Current product image ${i} uploaded`;
+          document.getElementById(`productImage${i}Preview`).innerHTML = `<img src="${productImageUrl}" alt="Product image ${i}">`;
+          document.getElementById(`productImage${i}FileName`).textContent = `Current product image ${i} uploaded`;
           uploadedProductImages[`product_image_${i}`] = { url: productImageUrl };
         }
       }
