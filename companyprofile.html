@@ -1892,8 +1892,11 @@ document.getElementById('userSchool').value = userData.school || '';
     const goalForm = document.querySelector('.goal-form');
     goalForm.reset();
 
-    // FIXED: Load and display current goal - handle both string and object
-    const goalValue = userData.goal;
+    let goalValue = userData.goal;
+    if (Array.isArray(goalValue) && goalValue.length > 0) {
+      goalValue = goalValue[0]; // unwrap array
+    }
+    userData.goal = goalValue; // store normalized version back
     if (goalValue) {
       let goalDisplay = '';
       
