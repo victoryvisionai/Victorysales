@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI SDR for Property Managers | Automated Outreach | Victory Vision</title>
+  <meta name="description" content="Victory Vision's AI SDR handles first-touch prospecting and follow-up sequences automatically—so property management firms book more owner meetings without hiring a sales rep."/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--primary:#0a3161;--accent:#bb133e;--white:#fff;--light:#f8fafc;--gray:#64748b;--dark:#1e293b;--success:#059669;--border:#e2e8f0}
+    *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Inter',sans-serif;color:var(--dark);background:var(--white);line-height:1.6;overflow-x:hidden}
+    nav{position:fixed;top:0;width:100%;background:rgba(10,49,97,.97);backdrop-filter:blur(10px);padding:.9rem 2rem;z-index:1000}
+    .nav-c{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+    .nav-logo{color:#fff;font-weight:800;font-size:1.15rem;text-decoration:none}
+    .nav-links{display:flex;gap:1.5rem}.nav-links a{color:rgba(255,255,255,.82);text-decoration:none;font-size:.875rem;font-weight:500}
+    .btn-ghost{color:#fff;border:1px solid rgba(255,255,255,.3);padding:.45rem 1.1rem;border-radius:6px;text-decoration:none;font-size:.85rem;font-weight:600}
+    .btn-red{background:var(--accent);color:#fff;padding:.45rem 1.1rem;border-radius:6px;text-decoration:none;font-size:.85rem;font-weight:700}
+    .hero{background:linear-gradient(135deg,var(--primary) 0%,#1a4a7a 100%);padding:8rem 2rem 5rem;text-align:center}
+    .hero .label{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,212,0,.9);margin-bottom:.75rem}
+    .hero h1{font-size:3rem;font-weight:800;color:#fff;max-width:800px;margin:0 auto 1.25rem;line-height:1.08}
+    .hero p{font-size:1.15rem;color:rgba(255,255,255,.82);max-width:640px;margin:0 auto 2.5rem}
+    .hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .btn-primary{background:var(--accent);color:#fff;padding:.9rem 2.2rem;border-radius:8px;text-decoration:none;font-weight:700;font-size:1rem;display:inline-block;transition:all .2s}
+    .btn-primary:hover{background:#a01035;transform:translateY(-2px)}
+    .btn-secondary{background:transparent;border:2px solid #fff;color:#fff;padding:.9rem 2.2rem;border-radius:8px;text-decoration:none;font-weight:600;font-size:1rem;display:inline-block}
+    .btn-secondary:hover{background:#fff;color:var(--primary)}
+    .section{padding:5rem 2rem}.container{max-width:1100px;margin:0 auto}
+    .section-center{text-align:center}
+    h2{font-size:2.2rem;font-weight:800;color:var(--primary);margin-bottom:1rem}
+    .sub{color:var(--gray);font-size:1.05rem;max-width:650px;margin:0 auto 3rem}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+    .card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:2rem;transition:all .2s}
+    .card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-3px)}
+    .card-icon{font-size:2rem;margin-bottom:.75rem}
+    .card h3{color:var(--primary);font-size:1.05rem;font-weight:700;margin-bottom:.6rem}
+    .card p{color:var(--gray);font-size:.9rem;line-height:1.7}
+    .bg-light{background:var(--light)}
+    .sequence-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:2.5rem;max-width:700px;margin:0 auto}
+    .sequence-step{display:flex;align-items:flex-start;gap:1.25rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+    .sequence-step:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .seq-badge{min-width:80px;background:var(--primary);color:#fff;border-radius:6px;padding:.4rem .75rem;font-size:.75rem;font-weight:700;text-align:center}
+    .seq-badge.accent{background:var(--accent)}
+    .seq-badge.success{background:var(--success)}
+    .sequence-step h4{color:var(--primary);font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+    .sequence-step p{color:var(--gray);font-size:.875rem;line-height:1.6}
+    details{border-bottom:1px solid var(--border);padding:1.25rem 0}
+    details summary{font-weight:700;color:var(--primary);cursor:pointer;font-size:1rem;list-style:none;display:flex;justify-content:space-between}
+    details summary::after{content:'+';font-size:1.4rem;color:var(--accent)}
+    details[open] summary::after{content:'−'}
+    details p{color:var(--gray);margin-top:.9rem;line-height:1.7;font-size:.95rem}
+    .cta-strip{background:linear-gradient(135deg,var(--primary) 0%,#1a4a7a 100%);color:#fff;padding:5rem 2rem;text-align:center}
+    .cta-strip h2{color:#fff;font-size:2.2rem;font-weight:800;margin-bottom:1rem}
+    .cta-strip p{color:rgba(255,255,255,.8);font-size:1.05rem;max-width:560px;margin:0 auto 2.5rem}
+    .three-path{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem}
+    .path-link{color:rgba(255,255,255,.7);font-size:.875rem;text-decoration:none}
+    .path-link:hover{color:#fff}
+    footer{background:var(--primary);color:rgba(255,255,255,.65);padding:2rem;text-align:center;font-size:.85rem}
+    footer a{color:rgba(255,255,255,.75);text-decoration:none;margin:0 .75rem}
+    @media(max-width:768px){.grid-3,.grid-2{grid-template-columns:1fr}.nav-links{display:none}.hero h1{font-size:2rem}}
+  </style>
+</head>
+<body>
+<nav><div class="nav-c">
+  <a href="index.html" class="nav-logo">Victory Vision</a>
+  <div class="nav-links">
+    <a href="ai-sales-desk.html">AI Sales Desk</a><a href="pipeline-audit.html">Pipeline Audit</a>
+    <a href="real-estate-services.html">Industries</a>
+  </div>
+  <div style="display:flex;gap:.6rem">
+    <a href="login.html" class="btn-ghost">Login</a>
+    <a href="https://calendly.com/victoryvision/operator-session" target="_blank" class="btn-red">Book Session</a>
+  </div>
+</div></nav>
+
+<div class="hero">
+  <div class="label">Use Case — AI SDR</div>
+  <h1>AI SDR for Property Management Firms</h1>
+  <p>An AI Sales Development Representative that handles first-touch prospecting and 5-step follow-up sequences automatically—so you only invest time in prospects who've raised their hand.</p>
+  <div class="hero-cta">
+    <a href="https://calendly.com/victoryvision/operator-session" target="_blank" class="btn-primary">See the AI SDR in Action</a>
+    <a href="pipeline-audit.html" class="btn-secondary">Get a Free Pipeline Audit</a>
+  </div>
+</div>
+
+<section class="section bg-light section-center"><div class="container">
+  <h2>What an AI SDR Does (and Doesn't Do)</h2>
+  <p class="sub">The AI SDR handles the grinding, repetitive part of sales—so your team focuses on the relationship-building part that actually requires a human.</p>
+  <div class="grid-3">
+    <div class="card"><div class="card-icon">✅</div><h3>AI SDR Does</h3>
+      <p>• Identifies matching property owners<br/>• Writes personalized first-touch messages<br/>• Executes 5-touch follow-up sequences<br/>• Routes interested prospects to your calendar<br/>• Logs every interaction automatically</p>
+    </div>
+    <div class="card"><div class="card-icon">🤝</div><h3>You Do</h3>
+      <p>• Approve outreach templates and tone<br/>• Show up for booked discovery calls<br/>• Build the relationship and close the deal<br/>• Review attribution data and adjust strategy<br/>• Define your ideal owner profile</p>
+    </div>
+    <div class="card"><div class="card-icon">❌</div><h3>Nobody Needs To</h3>
+      <p>• Manually research property owners<br/>• Send individual follow-up emails<br/>• Track who needs a next touch<br/>• Schedule back-and-forth to book calls<br/>• Guess which campaigns are working</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="section section-center"><div class="container">
+  <h2>The AI SDR Sequence</h2>
+  <p class="sub">A typical 7-day AI SDR outreach flow for a property management firm. All steps are automated. All messaging is personalized per prospect.</p>
+  <div class="sequence-box">
+    <div class="sequence-step">
+      <div><div class="seq-badge">Day 1</div></div>
+      <div><h4>Personalized First Touch — Email</h4><p>AI sends a concise, research-backed email to the property owner referencing their specific property, neighborhood trends, or recent market signal. No templates that look like templates.</p></div>
+    </div>
+    <div class="sequence-step">
+      <div><div class="seq-badge">Day 2</div></div>
+      <div><h4>LinkedIn Connection Request</h4><p>AI queues a personalized LinkedIn request with a note that references the email context. Multi-channel approach increases response rates by 37%.</p></div>
+    </div>
+    <div class="sequence-step">
+      <div><div class="seq-badge">Day 3</div></div>
+      <div><h4>Follow-Up Email — Value Add</h4><p>Sends a short follow-up with a specific insight relevant to the owner's portfolio (market vacancy rates, rent trend, comparable data). No ask—just value.</p></div>
+    </div>
+    <div class="sequence-step">
+      <div><div class="seq-badge accent">Day 5</div></div>
+      <div><h4>Direct Booking Offer</h4><p>Clean, frictionless email with a single Calendly link. "15 minutes to see if this is worth your time" framing. No long pitches.</p></div>
+    </div>
+    <div class="sequence-step">
+      <div><div class="seq-badge success">Day 7</div></div>
+      <div><h4>Final Touch — No Hard Feelings</h4><p>Brief wrap-up that leaves the door open. Automatically logs as "nurture" if no response—so they re-enter a slower drip sequence for future quarters.</p></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="section bg-light section-center"><div class="container">
+  <h2>AI SDR FAQ</h2>
+  <div style="max-width:750px;margin:0 auto;text-align:left">
+    <details><summary>How does the AI SDR personalize messages if it's automated?</summary><p>Victory Vision's AI pulls from the prospect's LinkedIn profile, property records, and market data to personalize every message. Each email references the owner's specific properties, local market conditions, or recent relevant news. The output reads like it was researched and written by a knowledgeable human—because the AI is trained on property management industry context.</p></details>
+    <details><summary>Will property owners know they're talking to an AI?</summary><p>The AI SDR sends messages from your email address and LinkedIn profile. Outreach is written in your voice and reviewed by you before going live. Most recipients assume it's personal outreach from you or your team—because the content is specific and relevant, not generic.</p></details>
+    <details><summary>What's the difference between the AI SDR and the full AI Sales Desk?</summary><p>The AI SDR is the outreach automation component. The AI Sales Desk is the full platform—it includes lead identification, contact enrichment, the AI SDR, calendar booking integration, and deal attribution tracking. Think of the SDR as the engine; the Sales Desk is the whole vehicle. <a href="ai-sales-desk.html">Learn more about the full AI Sales Desk →</a></p></details>
+    <details><summary>Can I customize the sequence length and messaging?</summary><p>Yes. You control the number of touches, timing between steps, tone and style of messaging, and which channels to use. Victory Vision provides proven templates as a starting point, and you can modify them completely or build from scratch.</p></details>
+    <details><summary>How do I know if the AI SDR is working?</summary><p>Every sequence has full attribution tracking—open rates, reply rates, meetings booked, and deals closed are all visible in your dashboard. You'll know exactly which message in which sequence is producing results, and can A/B test variations to optimize performance.</p></details>
+  </div>
+</div></section>
+
+<div class="cta-strip">
+  <h2>See the AI SDR Running for Your Firm</h2>
+  <p>Book a 45-minute Operator Session and we'll show you a live demo of the AI SDR sequence personalized for your target market.</p>
+  <a href="https://calendly.com/victoryvision/operator-session" target="_blank" class="btn-primary">Book My Operator Session →</a>
+  <div class="three-path">
+    <a href="https://www.linkedin.com/groups/14135250/" target="_blank" class="path-link">👥 Join the Operator's Edge Group</a>
+    <a href="index.html#playbook" class="path-link">📬 Get the Weekly Playbook</a>
+    <a href="pipeline-audit.html" class="path-link">🔍 Free Pipeline Audit</a>
+  </div>
+</div>
+<footer>
+  <a href="index.html">Home</a><a href="ai-sales-desk.html">AI Sales Desk</a><a href="pipeline-audit.html">Pipeline Audit</a>
+  <a href="real-estate-services.html">Industries</a><br/><br/>
+  © 2025 Victory Vision · <a href="https://www.victoryvision.app">victoryvision.app</a>
+</footer>
+</body></html>
