@@ -1,1015 +1,589 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Victory Vision | AI Prospecting Platform for Property Management</title>
-  <meta name="description" content="AI-powered prospecting platform built specifically for property managers. Systematically reach property owners, automate relationship-based outreach, and replace unpredictable referrals with consistent deal flow. Used by top PM firms nationwide." />
-  <meta property="og:title" content="Victory Vision | AI Prospecting for Property Managers">
-  <meta property="og:description" content="Precision-targeted AI prospecting platform for property management firms. Replace referral-dependent growth with systematic outreach that respects relationship dynamics.">
-  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg">
-  <meta property="og:url" content="https://www.victoryvision.app">
-  <meta property="og:type" content="website">
-  <link rel="icon" href="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4c8.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Victory Vision | AI Sales Desk for Property Managers & Veteran Operators</title>
+  <meta name="description" content="Victory Vision is the AI Sales Desk that replaces unpredictable referrals with systematic pipeline. Automated outreach, follow-up, and booking—built for property management and veteran-owned businesses."/>
+  <meta property="og:title" content="Victory Vision | AI Sales Desk for Property Managers"/>
+  <meta property="og:description" content="Replace shared leads and referral dependency with a systematic AI-powered pipeline. Used by franchise and independent PM firms nationwide."/>
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg"/>
+  <meta property="og:url" content="https://www.victoryvision.app"/>
+  <meta property="og:type" content="website"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Victory Vision",
+    "applicationCategory": "BusinessApplication",
+    "description": "AI Sales Desk for property management firms and veteran-owned businesses. Automates prospecting, follow-up, and meeting booking.",
+    "url": "https://www.victoryvision.app",
+    "offers": { "@type": "Offer", "priceCurrency": "USD" },
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.0", "reviewCount": "24" }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"97225334", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
   <style>
     :root {
-      --primary: #0a3161;
-      --accent: #bb133e;
-      --white: #ffffff;
-      --light-gray: #f8fafc;
-      --medium-gray: #64748b;
-      --dark-gray: #1e293b;
-      --spacing: 2rem;
-      --success: #059669;
+      --primary: #0a3161; --accent: #bb133e; --white: #fff; --light: #f8fafc;
+      --gray: #64748b; --dark: #1e293b; --success: #059669; --border: #e2e8f0;
     }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    html {
-      scroll-behavior: smooth;
-    }
-    
-    body {
-      font-family: 'Inter', sans-serif;
-      color: var(--primary);
-      background-color: var(--white);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--white); line-height: 1.6; overflow-x: hidden; }
 
-    /* Navigation */
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: rgba(10, 49, 97, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      z-index: 1000;
-      transition: all 0.3s ease;
-    }
-    
-    .nav-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .nav-logo {
-      height: 40px;
-      font-weight: 700;
-      color: var(--white);
-      font-size: 1.3rem;
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-    }
-    
-    .nav-links a {
-      color: var(--white);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: color 0.3s ease;
-    }
-    
-    .nav-links a:hover {
-      color: #cbd5e1;
-    }
-    
-    .nav-cta {
-      display: flex;
-      gap: 1rem;
-    }
-    
-    .nav-cta a {
-      padding: 0.6rem 1.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-    
-    .login-btn {
-      color: var(--white);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .login-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    
-    .signup-btn {
-      background: var(--accent);
-      color: var(--white);
-    }
-    
-    .signup-btn:hover {
-      background: #a11034;
-    }
+    /* ── NAV ── */
+    nav { position: fixed; top: 0; width: 100%; background: rgba(10,49,97,0.97); backdrop-filter: blur(10px); padding: 0.9rem 2rem; z-index: 1000; }
+    .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { color: var(--white); font-weight: 800; font-size: 1.15rem; text-decoration: none; letter-spacing: -0.01em; }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,0.82); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-dropdown { position: relative; }
+    .nav-dropdown > a::after { content: ' ▾'; font-size: 0.65rem; }
+    .dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 0; background: var(--primary); border-radius: 8px; padding: 0.5rem 0; min-width: 230px; box-shadow: 0 12px 32px rgba(0,0,0,0.25); }
+    .nav-dropdown:hover .dropdown-menu { display: block; }
+    .dropdown-menu a { display: block; padding: 0.6rem 1.2rem; color: rgba(255,255,255,0.82); font-size: 0.85rem; text-decoration: none; transition: background 0.15s; }
+    .dropdown-menu a:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+    .nav-cta { display: flex; gap: 0.6rem; align-items: center; }
+    .btn-ghost { color: var(--white); border: 1px solid rgba(255,255,255,0.3); padding: 0.45rem 1.1rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: background 0.2s; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+    .btn-nav-red { background: var(--accent); color: var(--white); padding: 0.45rem 1.1rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 700; transition: background 0.2s; }
+    .btn-nav-red:hover { background: #a01035; }
 
-    /* Header */
-    header {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      background: linear-gradient(135deg, var(--primary) 0%, #1e5a96 100%);
-    }
-    
-    header video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(35%);
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    
-    .overlay {
-      position: absolute;
-      top: 0; 
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: var(--spacing);
-      color: var(--white);
-      z-index: 2;
-      padding-top: 100px;
-    }
-    
-    .overlay h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      line-height: 1.1;
-      max-width: 900px;
-    }
-    
-    .overlay p {
-      color: #e2e8f0;
-      font-size: 1.25rem;
-      max-width: 700px;
-      margin-bottom: 2.5rem;
-      font-weight: 500;
-    }
-    
-    .hero-cta {
-      display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 3rem;
-    }
-    
-    .hero-cta a {
-      background-color: var(--accent);
-      color: var(--white);
-      padding: 1.1rem 2.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.05rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(187, 19, 62, 0.3);
-    }
-    
-    .hero-cta a:hover {
-      background-color: #a11034;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(187, 19, 62, 0.4);
-    }
-    
-    .hero-cta a.secondary {
-      background: transparent;
-      border: 2px solid var(--white);
-      box-shadow: none;
-    }
-    
-    .hero-cta a.secondary:hover {
-      background: var(--white);
-      color: var(--primary);
-    }
+    /* ── HERO ── */
+    header { position: relative; width: 100%; min-height: 100vh; overflow: hidden; background: linear-gradient(135deg, var(--primary) 0%, #1e5a96 100%); display: flex; align-items: center; }
+    header video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(28%); }
+    .hero-content { position: relative; z-index: 2; width: 100%; max-width: 1200px; margin: 0 auto; padding: 7rem 2rem 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .hero-left h1 { font-size: 3.2rem; font-weight: 800; color: var(--white); line-height: 1.08; margin-bottom: 1.25rem; letter-spacing: -0.02em; }
+    .hero-left h1 span { color: #fbbf24; }
+    .hero-left p { color: rgba(255,255,255,0.82); font-size: 1.15rem; margin-bottom: 2.5rem; max-width: 520px; line-height: 1.7; }
+    .hero-primary-btn { display: inline-block; background: var(--accent); color: var(--white); padding: 1.05rem 2.5rem; border-radius: 8px; font-weight: 700; font-size: 1.05rem; text-decoration: none; box-shadow: 0 4px 16px rgba(187,19,62,0.35); transition: all 0.2s; }
+    .hero-primary-btn:hover { background: #a01035; transform: translateY(-2px); }
+    .hero-secondary-links { display: flex; gap: 1.5rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .hero-secondary-links a { color: rgba(255,255,255,0.7); font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; transition: color 0.2s; }
+    .hero-secondary-links a:hover { color: var(--white); }
 
-    /* Trust Badges in Hero */
-    .hero-trust-badges {
-      position: absolute;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: center;
-      z-index: 3;
-    }
-    
-    .hero-trust-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 0.6rem 1.2rem;
-      border-radius: 6px;
-      text-decoration: none;
-      color: var(--white);
-      font-size: 0.85rem;
-      font-weight: 600;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s ease;
-    }
-    
-    .hero-trust-badge:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-    
-    .hero-trust-badge img {
-      height: 24px;
-      width: auto;
-    }
-    
-    .hero-star {
-      color: #fbbf24;
-      font-size: 1.1rem;
-    }
+    /* ── LINKEDIN BRIDGE ── */
+    .li-bridge { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; padding: 1.75rem; }
+    .li-bridge .bridge-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.55); margin-bottom: 0.75rem; }
+    .li-bridge h3 { color: var(--white); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .li-bridge p { color: rgba(255,255,255,0.7); font-size: 0.875rem; margin-bottom: 1.25rem; }
+    .bridge-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+    .bridge-action { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1rem; border-radius: 7px; text-decoration: none; font-size: 0.875rem; font-weight: 600; transition: all 0.2s; }
+    .bridge-action.red { background: var(--accent); color: var(--white); }
+    .bridge-action.red:hover { background: #a01035; }
+    .bridge-action.outline { border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.85); background: transparent; }
+    .bridge-action.outline:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+    .bridge-action .icon { font-size: 1.1rem; width: 20px; text-align: center; }
 
-    /* Trust Section */
-    .trust-section {
-      background: linear-gradient(to right, #f8fafc, var(--white));
-      padding: 3rem var(--spacing);
-      text-align: center;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    
-    .trust-section h3 {
-      color: var(--primary);
-      font-size: 1.3rem;
-      margin-bottom: 2rem;
-      font-weight: 600;
-    }
-    
-    .trust-badges {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 2.5rem;
-      flex-wrap: wrap;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .trust-badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem 1.5rem;
-      background: var(--white);
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      min-width: 140px;
-    }
-    
-    .trust-badge:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px rgba(187, 19, 62, 0.1);
-      transform: translateY(-2px);
-    }
-    
-    .trust-badge img {
-      max-width: 120px;
-      height: auto;
-    }
-    
-    .trustpilot-badge {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .trustpilot-score {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
-    
-    .trustpilot-stars {
-      display: flex;
-      gap: 0.25rem;
-    }
-    
-    .star {
-      color: #cbd5e1;
-      font-size: 1.1rem;
-    }
-    
-    .star.filled {
-      color: #fbbf24;
-    }
-    
-    .trustpilot-text {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--medium-gray);
-    }
+    /* ── OPERATOR PROOF STRIP ── */
+    .proof-strip { background: var(--white); border-bottom: 1px solid var(--border); padding: 1.75rem 2rem; }
+    .proof-strip-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+    .proof-text { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--gray); font-weight: 600; white-space: nowrap; }
+    .proof-logos { display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap; }
+    .proof-logos img { max-height: 40px; width: auto; opacity: 0.6; transition: opacity 0.2s; filter: grayscale(30%); }
+    .proof-logos img:hover { opacity: 1; }
+    .proof-badges { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .proof-badge { display: flex; align-items: center; gap: 0.4rem; border: 1px solid var(--border); border-radius: 6px; padding: 0.4rem 0.8rem; font-size: 0.8rem; font-weight: 600; color: var(--primary); text-decoration: none; transition: all 0.2s; }
+    .proof-badge:hover { border-color: var(--accent); color: var(--accent); }
+    .proof-badge .stars { color: #fbbf24; }
 
-    /* Customer Logos Section */
-    .customers-section {
-      padding: 3rem var(--spacing);
-      background: var(--white);
-      text-align: center;
-    }
-    
-    .customers-section h3 {
-      color: var(--primary);
-      font-size: 1.1rem;
-      margin-bottom: 2.5rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--medium-gray);
-    }
-    
-    .customers-logos {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 3rem;
-      flex-wrap: wrap;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .customers-logos img {
-      max-height: 50px;
-      width: auto;
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
-    }
-    
-    .customers-logos img:hover {
-      opacity: 1;
-    }
+    /* ── PROBLEM SECTION ── */
+    .problems { background: var(--light); padding: 5rem 2rem; }
+    .problems-inner { max-width: 1200px; margin: 0 auto; }
+    .problems h2 { font-size: 2.4rem; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 0.75rem; }
+    .problems .sub { text-align: center; color: var(--gray); font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem; }
+    .problems-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .problem-card { background: var(--white); padding: 1.75rem 2rem; border-radius: 10px; border-left: 4px solid var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .problem-card h3 { color: var(--primary); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .problem-card p { color: var(--gray); font-size: 0.93rem; line-height: 1.7; }
 
-    /* Main Content */
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 var(--spacing);
-    }
+    /* ── SOLUTION ── */
+    .solution { padding: 5rem 2rem; background: var(--white); }
+    .solution-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .solution-text .label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; }
+    .solution-text h2 { font-size: 2.2rem; font-weight: 800; color: var(--primary); margin-bottom: 1rem; line-height: 1.15; }
+    .solution-text p { color: var(--gray); margin-bottom: 1rem; line-height: 1.75; }
+    .cred-line { font-size: 0.82rem; font-weight: 700; color: var(--primary); background: var(--light); padding: 0.5rem 1rem; border-radius: 6px; display: inline-block; margin-bottom: 1.5rem; }
+    .feature-list { list-style: none; margin-top: 1.5rem; }
+    .feature-list li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.9rem; color: var(--gray); font-size: 0.95rem; }
+    .feature-list li::before { content: "✓"; color: var(--success); font-weight: 800; margin-top: 0.05rem; flex-shrink: 0; }
+    .solution-image img { width: 100%; border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.12); }
 
-    section {
-      padding: 4rem var(--spacing);
-    }
+    /* ── METRICS ── */
+    .metrics { background: linear-gradient(135deg, var(--primary) 0%, #1a4a7a 100%); padding: 5rem 2rem; }
+    .metrics-inner { max-width: 1100px; margin: 0 auto; }
+    .metrics h2 { font-size: 2.2rem; font-weight: 800; color: var(--white); text-align: center; margin-bottom: 3rem; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+    .metric-card { text-align: center; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 2.5rem 1.5rem; }
+    .metric-num { font-size: 2.8rem; font-weight: 800; color: #fbbf24; margin-bottom: 0.4rem; }
+    .metric-card h3 { color: var(--white); font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .metric-card p { color: rgba(255,255,255,0.65); font-size: 0.875rem; }
 
-    section h2 {
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-      text-align: center;
-      font-weight: 700;
-    }
+    /* ── NEWSLETTER / PLAYBOOK ── */
+    .playbook { background: var(--light); padding: 5rem 2rem; }
+    .playbook-inner { max-width: 900px; margin: 0 auto; background: var(--white); border-radius: 16px; padding: 3.5rem; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .playbook-inner .label { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem; }
+    .playbook-inner h2 { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 0.75rem; }
+    .playbook-inner > p { color: var(--gray); margin-bottom: 2rem; font-size: 1rem; }
+    .playbook-bullets { list-style: none; margin-bottom: 2.5rem; }
+    .playbook-bullets li { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem; font-size: 0.95rem; color: var(--dark); }
+    .playbook-bullets li::before { content: "→"; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+    .playbook-form { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .playbook-form input { flex: 1; min-width: 220px; padding: 0.9rem 1.25rem; border: 1.5px solid var(--border); border-radius: 7px; font-size: 0.95rem; color: var(--dark); outline: none; transition: border-color 0.2s; }
+    .playbook-form input:focus { border-color: var(--primary); }
+    .playbook-form button { background: var(--primary); color: var(--white); border: none; padding: 0.9rem 2rem; border-radius: 7px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+    .playbook-form button:hover { background: #082650; }
+    .playbook-li-link { margin-top: 1rem; font-size: 0.875rem; color: var(--gray); }
+    .playbook-li-link a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    .playbook-li-link a:hover { text-decoration: underline; }
 
-    section > p {
-      text-align: center;
-      color: var(--medium-gray);
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin: 0 auto 3rem;
-    }
+    /* ── TESTIMONIALS ── */
+    .testimonials { padding: 5rem 2rem; background: var(--white); }
+    .testimonials-inner { max-width: 1200px; margin: 0 auto; }
+    .testimonials h2 { font-size: 2.2rem; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 3rem; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
+    .testimonial-card { background: var(--light); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+    .video-wrap { position: relative; padding-bottom: 56.25%; background: #000; }
+    .video-wrap video, .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .testimonial-body { padding: 1.75rem; }
+    .testimonial-name { font-weight: 700; color: var(--primary); font-size: 1rem; }
+    .testimonial-role { color: var(--gray); font-size: 0.85rem; margin-bottom: 0.75rem; }
+    .testimonial-quote { color: var(--gray); font-style: italic; font-size: 0.92rem; line-height: 1.65; }
 
-    /* Problem Statement Section */
-    .problems-section {
-      background: linear-gradient(135deg, #f8fafc 0%, var(--light-gray) 100%);
-    }
-    
-    .problems-section h2 {
-      margin-bottom: 3rem;
-    }
-    
-    .problems-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2.5rem;
-      margin-top: 3rem;
-    }
-    
-    .problem-card {
-      background: var(--white);
-      padding: 2rem;
-      border-radius: 8px;
-      border-left: 4px solid var(--accent);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-    
-    .problem-card h3 {
-      color: var(--primary);
-      font-size: 1.2rem;
-      margin-bottom: 0.8rem;
-    }
-    
-    .problem-card p {
-      color: var(--medium-gray);
-      line-height: 1.6;
-    }
+    /* ── FEATURES ── */
+    .features { background: var(--light); padding: 5rem 2rem; }
+    .features-inner { max-width: 1200px; margin: 0 auto; }
+    .features h2 { font-size: 2.2rem; font-weight: 800; color: var(--primary); text-align: center; margin-bottom: 3rem; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .feature-card { background: var(--white); border-radius: 10px; padding: 2rem; border: 1px solid var(--border); transition: all 0.2s; }
+    .feature-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-3px); }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { color: var(--primary); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .feature-card p { color: var(--gray); font-size: 0.9rem; line-height: 1.65; }
 
-    /* Solution Section */
-    .solution-section {
-      background: var(--white);
-    }
-    
-    .solution-content {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      margin-top: 3rem;
-    }
-    
-    .solution-text h3 {
-      color: var(--primary);
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      font-weight: 600;
-    }
-    
-    .solution-text p {
-      color: var(--medium-gray);
-      margin-bottom: 1rem;
-      line-height: 1.8;
-    }
-    
-    .solution-features {
-      list-style: none;
-      margin-top: 2rem;
-    }
-    
-    .solution-features li {
-      color: var(--medium-gray);
-      margin-bottom: 1rem;
-      padding-left: 1.8rem;
-      position: relative;
-    }
-    
-    .solution-features li:before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: var(--success);
-      font-weight: 700;
-      font-size: 1.2rem;
-    }
+    /* ── SEO PAGES SECTION ── */
+    .explore { padding: 4rem 2rem; background: var(--white); border-top: 1px solid var(--border); }
+    .explore-inner { max-width: 1200px; margin: 0 auto; }
+    .explore h2 { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 2rem; }
+    .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .explore-card { border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; text-decoration: none; transition: all 0.2s; display: flex; flex-direction: column; gap: 0.35rem; }
+    .explore-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(0,0,0,0.07); }
+    .explore-card .ec-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; }
+    .explore-card h3 { font-size: 0.95rem; color: var(--primary); font-weight: 700; }
+    .explore-card p { font-size: 0.82rem; color: var(--gray); }
 
-    /* Results Section */
-    .results-section {
-      background: linear-gradient(135deg, var(--primary) 0%, #1e5a96 100%);
-      color: var(--white);
-    }
-    
-    .results-section h2 {
-      color: var(--white);
-    }
-    
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2.5rem;
-      margin-top: 3rem;
-    }
-    
-    .result-card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2.5rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      text-align: center;
-      backdrop-filter: blur(10px);
-    }
-    
-    .result-metric {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #fbbf24;
-      margin-bottom: 0.5rem;
-    }
-    
-    .result-card h3 {
-      color: var(--white);
-      font-size: 1.1rem;
-      margin-bottom: 0.8rem;
-    }
-    
-    .result-card p {
-      color: #e2e8f0;
-      font-size: 0.95rem;
-    }
+    /* ── FINAL CTA ── */
+    .final-cta { background: linear-gradient(135deg, var(--primary) 0%, #1a4a7a 100%); padding: 6rem 2rem; text-align: center; }
+    .final-cta h2 { font-size: 2.6rem; font-weight: 800; color: var(--white); margin-bottom: 1rem; }
+    .final-cta p { color: rgba(255,255,255,0.8); font-size: 1.1rem; max-width: 560px; margin: 0 auto 2.5rem; }
 
-    /* Video Testimonial */
-    .video-testimonials {
-      background: var(--white);
-      padding: 4rem var(--spacing);
-    }
-    
-    .video-testimonials h2 {
-      margin-bottom: 3rem;
-    }
-    
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 3rem;
-      margin-top: 3rem;
-    }
-    
-    .video-testimonial {
-      background: var(--light-gray);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    .video-container {
-      width: 100%;
-      padding-bottom: 56.25%;
-      position: relative;
-      background: #000;
-    }
-    
-    .video-container video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    
-    .testimonial-info {
-      padding: 2rem;
-    }
-    
-    .testimonial-name {
-      color: var(--primary);
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-    
-    .testimonial-title {
-      color: var(--medium-gray);
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-    }
-    
-    .testimonial-quote {
-      color: var(--medium-gray);
-      font-style: italic;
-      line-height: 1.6;
-    }
+    /* ── FOOTER ── */
+    footer { background: var(--primary); color: rgba(255,255,255,0.65); padding: 3rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2.5rem; }
+    .footer-brand .logo { color: var(--white); font-weight: 800; font-size: 1.1rem; }
+    .footer-brand p { margin-top: 0.75rem; font-size: 0.83rem; line-height: 1.7; max-width: 280px; }
+    .footer-brand .cred { margin-top: 1rem; font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+    .footer-col h4 { color: var(--white); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.84rem; margin-bottom: 0.45rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
+    .footer-bottom a { color: rgba(255,255,255,0.55); text-decoration: none; margin-left: 1.5rem; }
+    .footer-bottom a:hover { color: var(--white); }
 
-    /* Features Section */
-    .features-section {
-      background: linear-gradient(135deg, #f8fafc 0%, var(--light-gray) 100%);
+    @media (max-width: 1024px) {
+      .metrics-grid { grid-template-columns: repeat(2,1fr); }
+      .features-grid { grid-template-columns: repeat(2,1fr); }
     }
-    
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2.5rem;
-      margin-top: 3rem;
-    }
-    
-    .feature-card {
-      background: var(--white);
-      padding: 2.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-    }
-    
-    .feature-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    }
-    
-    .feature-card h3 {
-      color: var(--primary);
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-    
-    .feature-card p {
-      color: var(--medium-gray);
-      line-height: 1.6;
-    }
-
-    /* CTA Section */
-    .cta {
-      background: linear-gradient(135deg, var(--primary) 0%, #1e5a96 100%);
-      color: var(--white);
-      text-align: center;
-      padding: 5rem var(--spacing);
-    }
-    
-    .cta h2 {
-      color: var(--white);
-      margin-bottom: 1rem;
-    }
-    
-    .cta > p {
-      color: #e2e8f0;
-      font-size: 1.1rem;
-      margin-bottom: 2.5rem;
-    }
-    
-    .cta-form {
-      display: flex;
-      gap: 1rem;
-      max-width: 500px;
-      margin: 0 auto;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    
-    .cta-form input,
-    .cta-form button {
-      padding: 1rem 1.5rem;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-    
-    .cta-form input {
-      flex: 1;
-      min-width: 250px;
-      color: var(--primary);
-    }
-    
-    .cta-form input::placeholder {
-      color: #cbd5e1;
-    }
-    
-    .cta-form button {
-      background: var(--accent);
-      color: var(--white);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-    
-    .cta-form button:hover {
-      background: #a11034;
-      transform: translateY(-2px);
-    }
-
-    /* Footer */
-    footer {
-      background: var(--primary);
-      color: #cbd5e1;
-      text-align: center;
-      padding: 2rem var(--spacing);
-      font-size: 0.9rem;
-    }
-    
-    footer a {
-      color: var(--white);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Responsive */
     @media (max-width: 768px) {
-      .overlay h1 {
-        font-size: 2.2rem;
-      }
-      
-      .overlay p {
-        font-size: 1.05rem;
-      }
-      
-      section h2 {
-        font-size: 2rem;
-      }
-      
-      .solution-content {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-      
-      .hero-trust-badges {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      .nav-links {
-        gap: 1rem;
-      }
-      
-      .nav-links a {
-        font-size: 0.8rem;
-      }
+      .hero-content { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 6rem; }
+      .hero-left h1 { font-size: 2.2rem; }
+      .problems-grid { grid-template-columns: 1fr; }
+      .solution-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .metrics-grid { grid-template-columns: repeat(2,1fr); }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .explore-grid { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 480px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      .explore-grid { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr; }
     }
   </style>
-  <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"97225334", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav>
-    <div class="nav-container">
-      <div class="nav-logo">Victory Vision</div>
-      <div class="nav-links">
-        <a href="#problem">The Problem</a>
-        <a href="#solution">Our Solution</a>
-        <a href="#results">Results</a>
-        <a href="#testimonials">Testimonials</a>
-        <a href="#features">Features</a>
-      </div>
-      <div class="nav-cta">
-        <a href="/login" class="login-btn">Login</a>
-        <a href="#contact" class="signup-btn">Start Free Trial</a>
-      </div>
-    </div>
-  </nav>
 
-  <!-- Header -->
-  <header>
-    <video autoplay muted loop playsinline>
-      <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767057320/viral_campaign_undefined_1767057319.mp4" type="video/mp4">
-    </video>
-    
-    <div class="hero-trust-badges">
-      <a href="https://www.trustpilot.com/review/vvdoh.com" target="_blank" class="hero-trust-badge">
-        <span class="hero-star">★★★★★</span>
-        <span>4.0 Trustpilot</span>
-      </a>
-      
-      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="hero-trust-badge">
-        <span>G2 Reviews</span>
-      </a>
-      
-      <a href="https://reviews.capterra.com/products/new/e7d67334-a321-4eaa-a45f-e0b22dadc720/" target="_blank" class="hero-trust-badge">
-        <span>Capterra</span>
-      </a>
-    </div>
-    
-    <div class="overlay">
-      <h1>Replace Unpredictable Referrals with Systematic AI Prospecting</h1>
-      <p>Purpose-built for founder-operators of property management firms. Identify high-value property owners, automate relationship-based outreach, and scale deal flow without compromising your professional reputation.</p>
-      <div class="hero-cta">
-        <a href="#contact">See a Demo</a>
-        <a href="#solution" class="secondary">How It Works</a>
+<!-- NAV -->
+<nav>
+  <div class="nav-container">
+    <a href="index.html" class="nav-logo">Victory Vision</a>
+    <div class="nav-links">
+      <a href="ai-sales-desk.html">AI Sales Desk</a>
+      <div class="nav-dropdown">
+        <a href="real-estate-services.html">Industries</a>
+        <div class="dropdown-menu">
+          <a href="real-estate-services.html">Real Estate Services</a>
+          <a href="real-estate-services.html#property-management">Property Management</a>
+          <a href="real-estate-services.html#brokerage">Brokerage Teams</a>
+          <a href="real-estate-services.html#escrow">Escrow & Title</a>
+          <a href="real-estate-services.html#appraisal">Appraisal</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="ai-sdr.html">Use Cases</a>
+        <div class="dropdown-menu">
+          <a href="ai-sdr.html">AI SDR</a>
+          <a href="pipeline-audit.html">Pipeline Audit</a>
+          <a href="use-cases-book-owner-meetings.html">Book Owner Meetings</a>
+          <a href="use-cases-followup.html">Follow-Up Automation</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <a href="#">Compare</a>
+        <div class="dropdown-menu">
+          <a href="compare-hubspot.html">vs HubSpot</a>
+          <a href="compare-apollo.html">vs Apollo</a>
+          <a href="compare-clay-instantly.html">vs Clay + Instantly</a>
+        </div>
       </div>
     </div>
-  </header>
-
-  <!-- Customer Logos -->
-  <section class="customers-section">
-    <h3>Trusted by Leading PM Firms & Real Estate Companies</h3>
-    <div class="customers-logos">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192002/sr6agid2br67n38538yf.jpg" alt="Roo Partner" title="Roo Partner">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766191984/u2b5q8vbhhw2wx3ufbbw.png" alt="Real Property Valor" title="Real Property Valor">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192341/iajwsscdnbqawjuse4s0.jpg" alt="Standard General" title="Standard General">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192341/ar6crfgytesp9gmxful9.jpg" alt="Accenture" title="Accenture">
-      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192341/hccfsjtaraz0lu4h8x55.jpg" alt="MediaCo" title="MediaCo">
+    <div class="nav-cta">
+      <a href="login.html" class="btn-ghost">Login</a>
+      <a href="https://calendly.com/victoryvision/operator-session" target="_blank" class="btn-nav-red">Book Operator Session</a>
     </div>
-  </section>
+  </div>
+</nav>
 
-  <!-- Trust Badges Section -->
-  <section class="trust-section">
-    <h3>5-Star Rated by Property Management Leaders</h3>
-    <div class="trust-badges">
-      <a href="https://www.trustpilot.com/review/vvdoh.com" target="_blank" class="trust-badge trustpilot-badge">
-        <div class="trustpilot-score">4.0</div>
-        <div class="trustpilot-stars">
-          <span class="star filled">★</span>
-          <span class="star filled">★</span>
-          <span class="star filled">★</span>
-          <span class="star filled">★</span>
-          <span class="star">★</span>
+<!-- HERO -->
+<header>
+  <video autoplay muted loop playsinline>
+    <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767057320/viral_campaign_undefined_1767057319.mp4" type="video/mp4"/>
+  </video>
+  <div class="hero-content">
+    <div class="hero-left">
+      <h1>Stop Losing Deals to <span>Faster Competitors.</span></h1>
+      <p>Victory Vision is the AI Sales Desk that replaces unpredictable referrals with systematic pipeline—automated prospecting, follow-up, and meeting booking built for property managers and veteran operators.</p>
+      <a href="https://calendly.com/victoryvision/operator-session" target="_blank" class="hero-primary-btn" onclick="window.uetq&&uetq.push('event','book_session',{})">Book a 45-Min Operator Session →</a>
+      <div class="hero-secondary-links">
+        <a href="https://www.linkedin.com/groups/14135250/" target="_blank">🔗 Join the Operator's Edge Group</a>
+        <a href="#playbook">📩 Get the Weekly Playbook</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="li-bridge">
+        <div class="bridge-label">Came from LinkedIn?</div>
+        <h3>Three ways to get started</h3>
+        <p>Pick whichever matches where you are right now.</p>
+        <div class="bridge-actions">
+          <a href="https://calendly.com/victoryvision/operator-session" target="_blank" class="bridge-action red" onclick="window.uetq&&uetq.push('event','book_session',{})">
+            <span class="icon">📅</span> Book a 45-Min Operator Session
+          </a>
+          <a href="https://www.linkedin.com/groups/14135250/" target="_blank" class="bridge-action outline">
+            <span class="icon">👥</span> Join the Operator's Edge Group
+          </a>
+          <a href="#playbook" class="bridge-action outline">
+            <span class="icon">📬</span> Get the Weekly Operator Playbook
+          </a>
         </div>
-        <div class="trustpilot-text">Trustpilot</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- PROOF STRIP -->
+<div class="proof-strip">
+  <div class="proof-strip-inner">
+    <span class="proof-text">Used by franchise &amp; independent PM firms</span>
+    <div class="proof-logos">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192002/sr6agid2br67n38538yf.jpg" alt="Roo Partners"/>
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766191984/u2b5q8vbhhw2wx3ufbbw.png" alt="Real Property Valor"/>
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192341/iajwsscdnbqawjuse4s0.jpg" alt="Standard General"/>
+    </div>
+    <div class="proof-badges">
+      <a href="https://www.trustpilot.com/review/vvdoh.com" target="_blank" class="proof-badge"><span class="stars">★★★★</span> 4.0 Trustpilot</a>
+      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="proof-badge">G2 Reviews</a>
+      <a href="https://reviews.capterra.com/products/new/e7d67334-a321-4eaa-a45f-e0b22dadc720/" target="_blank" class="proof-badge">Capterra</a>
+      <a href="https://www.softwareadvice.com/product/529664-Victory-Vision/reviews/" target="_blank" class="proof-badge">Software Advice</a>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM SECTION -->
+<section class="problems" id="problem">
+  <div class="problems-inner">
+    <h2>Where Pipeline Leaks for Property Managers</h2>
+    <p class="sub">Four gaps that cost you deals every week—and that Victory Vision is built to close.</p>
+    <div class="problems-grid">
+      <div class="problem-card">
+        <h3>⚡ Speed-to-Lead Gap</h3>
+        <p>Shared leads go to whoever responds first. If you're not following up within 5 minutes, you're losing them to faster competitors who are using automation.</p>
+      </div>
+      <div class="problem-card">
+        <h3>📉 Follow-Up Leakage</h3>
+        <p>80% of deals close after the 5th touch. Manual follow-up trails off after the 2nd. Prospects fall through the cracks not because they said no—but because nobody asked again.</p>
+      </div>
+      <div class="problem-card">
+        <h3>📅 Booking Conversion</h3>
+        <p>Getting a property owner on a call requires the right message, the right time, and the right friction reduction. Most teams miss all three. Victory Vision optimizes all three.</p>
+      </div>
+      <div class="problem-card">
+        <h3>📊 Attribution Blindness</h3>
+        <p>You don't know which campaigns are producing deals. So you can't double down on what works or kill what doesn't. Every dollar spent on marketing feels like a guess.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION SECTION -->
+<section class="solution" id="solution">
+  <div class="solution-inner">
+    <div class="solution-text">
+      <div class="label">The Platform</div>
+      <h2>One AI Sales Desk. Every Stage of Your Pipeline.</h2>
+      <div class="cred">West Point '00 · Built by operators, for operators</div>
+      <p>Victory Vision combines AI prospecting, automated follow-up sequences, and calendar booking into a single platform your whole team can run without a full-time sales hire.</p>
+      <p>We identify high-value property owners matching your exact criteria, enrich their contact data, and launch relationship-based outreach sequences—all while tracking every interaction to surface what's actually closing deals.</p>
+      <ul class="feature-list">
+        <li>Identify property owners by type, size, location &amp; equity position</li>
+        <li>Automated multi-touch outreach that feels personal, not blasted</li>
+        <li>AI SDR handles first-touch and follow-up—you close the meetings</li>
+        <li>Direct Calendly integration for frictionless booking</li>
+        <li>Full deal attribution — know which activity produced which revenue</li>
+        <li>Team workflow management — distribute, track, and measure</li>
+      </ul>
+    </div>
+    <div class="solution-image">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192002/akgenjjuhapy25c6bpkg.jpg" alt="Victory Vision Platform Dashboard"/>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics" id="results">
+  <div class="metrics-inner">
+    <h2>Results Operator-Operators See</h2>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-num">3–5×</div>
+        <h3>More Qualified Prospects</h3>
+        <p>Reached per month vs. referral-only approach.</p>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">60%</div>
+        <h3>Time Saved on Research</h3>
+        <p>AI handles identification and enrichment so your team focuses on relationships.</p>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">$50K–$200K</div>
+        <h3>Additional Annual Revenue</h3>
+        <p>From deals the platform helped you reach within the first 6–12 months.</p>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">100%</div>
+        <h3>Pipeline Visibility</h3>
+        <p>Every prospect, interaction, and deal attribution in one dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="testimonials-inner">
+    <h2>Hear From Operator-Operators</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="video-wrap">
+          <video controls preload="metadata">
+            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756753928/swszo0szrvnwdq59xgfq.mp4" type="video/mp4"/>
+          </video>
+        </div>
+        <div class="testimonial-body">
+          <div class="testimonial-name">Jason Blonstein</div>
+          <div class="testimonial-role">Managing Partner, Roo Partners · Executive Recruiter</div>
+          <p class="testimonial-quote">"Victory Vision helped us systematically reach property owners we would have missed through referrals alone. The platform respects our approach while giving us the leverage to scale."</p>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="video-wrap">
+          <video controls preload="metadata">
+            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767056809/tuxgmjdmsj0qpoqph32k.mp4" type="video/mp4"/>
+          </video>
+        </div>
+        <div class="testimonial-body">
+          <div class="testimonial-name">COL Ralph Ware (Ret.)</div>
+          <div class="testimonial-role">Real Estate Operations Director · U.S. Army Veteran</div>
+          <p class="testimonial-quote">"As a former military officer, I appreciate the precision and discipline. Victory Vision delivers results with the professionalism our clients expect."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <h2>What You Get Inside Victory Vision</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>AI Property Owner Identification</h3>
+        <p>Discover owners matching your ideal prospect profile—filtered by property type, size, location, equity position, and management status.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <h3>Contact Enrichment & Verification</h3>
+        <p>Every prospect comes with verified contact info, decision-maker details, and key business intelligence so your outreach hits the mark.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI SDR — First Touch to Follow-Up</h3>
+        <p>AI handles the first 5 touches automatically, in your voice, so you only spend time on prospects who've already shown interest.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3>Frictionless Meeting Booking</h3>
+        <p>Direct Calendly integration inside outreach sequences. Prospects book themselves—you show up for qualified conversations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Deal Attribution & ROI Tracking</h3>
+        <p>See exactly which prospects became deals and how much revenue each produced. Prove the platform's value to your P&amp;L every month.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3>Team Workflow Management</h3>
+        <p>Distribute prospects, assign follow-up tasks, and monitor progress. Turn prospecting into a repeatable, scalable team process.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPERATOR PLAYBOOK NEWSLETTER -->
+<section class="playbook" id="playbook">
+  <div class="playbook-inner">
+    <div class="label">Free Weekly Resource</div>
+    <h2>Operator Playbook: 1 Fix to Book More Meetings</h2>
+    <p>Every week — one tactical, deployable fix for property managers and veteran operators who want more qualified conversations without hiring more headcount.</p>
+    <ul class="playbook-bullets">
+      <li>The 7-day follow-up cadence that doesn't annoy prospects</li>
+      <li>How to stop losing shared leads to faster competitors</li>
+      <li>Templates + scripts you can deploy this week</li>
+    </ul>
+    <form class="playbook-form" action="https://victoryvision.app.n8n.cloud/webhook/emails/newslettersignup" method="GET" onsubmit="window.uetq&&uetq.push('event','newsletter_signup',{})">
+      <input type="email" name="email" id="email" placeholder="Enter your work email" required/>
+      <input type="hidden" name="customer_id" value="glaze@vvdoh.com"/>
+      <button type="submit">Get the Playbook →</button>
+    </form>
+    <p class="playbook-li-link">Prefer LinkedIn? <a href="https://www.linkedin.com/groups/14135250/" target="_blank">Join the Operator's Edge group →</a></p>
+  </div>
+</section>
+
+<!-- EXPLORE PAGES -->
+<section class="explore">
+  <div class="explore-inner">
+    <h2>Explore Victory Vision</h2>
+    <div class="explore-grid">
+      <a href="ai-sales-desk.html" class="explore-card">
+        <span class="ec-label">Platform</span>
+        <h3>What Is an AI Sales Desk?</h3>
+        <p>How Victory Vision replaces a full BDR hire with systematic AI outreach.</p>
       </a>
-      
-      <a href="https://www.g2.com/products/victory-vision-victory-vision/reviews" target="_blank" class="trust-badge">
-        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1758005352/arcl24eklnd4qxetgkhg.png" alt="G2 Reviews" />
+      <a href="pipeline-audit.html" class="explore-card">
+        <span class="ec-label">Free Resource</span>
+        <h3>Get a Free Pipeline Audit</h3>
+        <p>We'll map your current funnel and show you exactly where leads are leaking.</p>
       </a>
-      
-      <a href="https://www.softwareadvice.com/product/529664-Victory-Vision/reviews/" target="_blank" class="trust-badge">
-        <img border="0" src="https://brand-assets.softwareadvice.com/badge/77ed2f28-6d2f-4269-a35d-93c98843b738.png" alt="Software Advice Reviews" />
+      <a href="ai-sdr.html" class="explore-card">
+        <span class="ec-label">Use Case</span>
+        <h3>AI SDR for Property Managers</h3>
+        <p>Automated first-touch and follow-up sequences that run while you sleep.</p>
       </a>
-      
-      <a href="https://reviews.capterra.com/products/new/e7d67334-a321-4eaa-a45f-e0b22dadc720/" target="_blank" class="trust-badge">
-        <img border="0" src="https://brand-assets.capterra.com/badge/670391c3-8fb3-432c-ab30-fe0649e3fa49.svg" alt="Capterra Reviews" />
+      <a href="real-estate-services.html" class="explore-card">
+        <span class="ec-label">Industry</span>
+        <h3>Real Estate Services</h3>
+        <p>PM firms, brokerage teams, escrow, title, and appraisal use cases.</p>
+      </a>
+      <a href="compare-hubspot.html" class="explore-card">
+        <span class="ec-label">Compare</span>
+        <h3>Victory Vision vs HubSpot</h3>
+        <p>Why property managers switch from HubSpot to a purpose-built AI platform.</p>
+      </a>
+      <a href="compare-apollo.html" class="explore-card">
+        <span class="ec-label">Compare</span>
+        <h3>Victory Vision vs Apollo</h3>
+        <p>Data sourcing is only half the problem. Here's what Apollo doesn't do.</p>
+      </a>
+      <a href="use-cases-book-owner-meetings.html" class="explore-card">
+        <span class="ec-label">Use Case</span>
+        <h3>Book More Owner Meetings</h3>
+        <p>The exact workflow that turns cold property owner data into calendar bookings.</p>
+      </a>
+      <a href="use-cases-followup.html" class="explore-card">
+        <span class="ec-label">Use Case</span>
+        <h3>Follow-Up Automation</h3>
+        <p>Stop losing deals to follow-up fatigue. Automate the touches that close.</p>
+      </a>
+      <a href="compare-clay-instantly.html" class="explore-card">
+        <span class="ec-label">Compare</span>
+        <h3>vs Clay + Instantly Stack</h3>
+        <p>All-in-one vs. stitched-together: the real cost comparison.</p>
       </a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <main>
-    <!-- Problem Section -->
-    <section class="problems-section" id="problem">
-      <h2>Your Business Development Challenge</h2>
-      <p>Property management grows through relationships. But relationships alone don't scale.</p>
-      
-      <div class="problems-grid">
-        <div class="problem-card">
-          <h3>Unpredictable Referral Pipeline</h3>
-          <p>Waiting for calls from brokers and referral partners leaves months of feast-and-famine cycles. You can't forecast revenue or plan team hiring with consistency.</p>
-        </div>
-        
-        <div class="problem-card">
-          <h3>Reaching Property Owners is Hard</h3>
-          <p>Finding contact information for the right property owners in your market—and reaching them the right way—consumes your time or requires hiring expensive sales staff.</p>
-        </div>
-        
-        <div class="problem-card">
-          <h3>One-Way Outreach Feels Impersonal</h3>
-          <p>You need prospecting that respects relationships and maintains your firm's professional reputation—not blast emails or cold calls that feel generic.</p>
-        </div>
-        
-        <div class="problem-card">
-          <h3>No Systematic Growth Lever</h3>
-          <p>You've built a successful firm through personal relationships. But you need a process you can hand off to your team or scale without yourself always being in the middle.</p>
-        </div>
-      </div>
-    </section>
+<!-- FINAL CTA -->
+<section class="final-cta" id="contact">
+  <h2>Ready to Systematize Your Pipeline?</h2>
+  <p>Book a 45-minute Operator Session. We'll walk through your current prospecting motion and show you exactly how Victory Vision fills the gaps.</p>
+  <a href="https://calendly.com/victoryvision/operator-session" target="_blank" class="hero-primary-btn" onclick="window.uetq&&uetq.push('event','book_session',{})">Book My Operator Session →</a>
+</section>
 
-    <!-- Solution Section -->
-    <section class="solution-section" id="solution">
-      <h2>AI-Powered Prospecting Built for Property Managers</h2>
-      
-      <div class="solution-content">
-        <div class="solution-text">
-          <h3>Military Precision. Relationship Focus.</h3>
-          <p>Victory Vision combines advanced AI with the operational discipline you respect. Founded by a West Point graduate, our platform delivers the precision and control property management leaders demand.</p>
-          
-          <p>We identify high-value property owners in your target markets, then automate the initial outreach in a way that maintains the professional, discrete approach essential to real estate relationships.</p>
-          
-          <ul class="solution-features">
-            <li>Identify property owners matching your ideal profile (size, type, location, equity position)</li>
-            <li>Automatic contact enrichment and up-to-date information</li>
-            <li>Relationship-based outreach sequences you control completely</li>
-            <li>Track every interaction and measure deal attribution</li>
-            <li>Built-in workflow management your team can execute</li>
-            <li>Complete data privacy and compliance by design</li>
-          </ul>
-        </div>
-        
-        <div>
-          <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1766192002/akgenjjuhapy25c6bpkg.jpg" alt="Victory Vision Platform" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
-        </div>
-      </div>
-    </section>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Victory Vision</div>
+      <p>AI Sales Desk for property management firms and veteran-owned businesses. Replace unpredictable referrals with systematic pipeline.</p>
+      <div class="cred">West Point '00 · Founded by a U.S. Army Veteran</div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="ai-sales-desk.html">AI Sales Desk</a>
+      <a href="ai-sdr.html">AI SDR</a>
+      <a href="pipeline-audit.html">Pipeline Audit</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Start Free Trial</a>
+    </div>
+    <div class="footer-col">
+      <h4>Industries</h4>
+      <a href="real-estate-services.html">Real Estate Services</a>
+      <a href="real-estate-services.html#property-management">Property Management</a>
+      <a href="real-estate-services.html#brokerage">Brokerage Teams</a>
+      <a href="real-estate-services.html#escrow">Escrow &amp; Title</a>
+    </div>
+    <div class="footer-col">
+      <h4>Compare</h4>
+      <a href="compare-hubspot.html">vs HubSpot</a>
+      <a href="compare-apollo.html">vs Apollo</a>
+      <a href="compare-clay-instantly.html">vs Clay + Instantly</a>
+      <a href="use-cases-book-owner-meetings.html">Book Owner Meetings</a>
+      <a href="use-cases-followup.html">Follow-Up Automation</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Victory Vision · AI Prospecting for Property Management · <a href="https://www.victoryvision.app">victoryvision.app</a></p>
+    <div><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+  </div>
+</footer>
 
-    <!-- Results Section -->
-    <section class="results-section" id="results">
-      <h2>Results Property Managers See</h2>
-      
-      <div class="results-grid">
-        <div class="result-card">
-          <div class="result-metric">3-5x</div>
-          <h3>More Qualified Prospects Reached</h3>
-          <p>Per month vs. referral-only approach. Consistent, measurable pipeline.</p>
-        </div>
-        
-        <div class="result-card">
-          <div class="result-metric">60%</div>
-          <h3>Time Saved on Prospect Research</h3>
-          <p>AI handles identification and contact enrichment. Your team focuses on relationship-building.</p>
-        </div>
-        
-        <div class="result-card">
-          <div class="result-metric">$50K-$200K</div>
-          <h3>Additional Annual Revenue</h3>
-          <p>From deals the platform helped you reach—within first 6-12 months for most firms.</p>
-        </div>
-        
-        <div class="result-card">
-          <div class="result-metric">100%</div>
-          <h3>Visibility Into Pipeline</h3>
-          <p>Track every prospect, interaction, and deal attribution. Know exactly what's working.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Video Testimonials -->
-    <section class="video-testimonials" id="testimonials">
-      <h2>Hear From Property Management Leaders</h2>
-      
-      <div class="testimonials-grid">
-        <div class="video-testimonial">
-          <div class="video-container">
-            <video controls preload="metadata">
-              <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756753928/swszo0szrvnwdq59xgfq.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <div class="testimonial-info">
-            <div class="testimonial-name">Jason Blontein</div>
-            <div class="testimonial-title">Managing Partner, Roo Partners</div>
-            <p class="testimonial-quote">"Victory Vision helped us systematically reach property owners we would have missed through referrals alone. The platform respects our approach while giving us the leverage we need to scale."</p>
-          </div>
-        </div>
-
-        <div class="video-testimonial">
-          <div class="video-container">
-            <video controls preload="metadata">
-              <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767056809/tuxgmjdmsj0qpoqph32k.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          </div>
-          <div class="testimonial-info">
-            <div class="testimonial-name">COL Ralph Ware (Ret.)</div>
-            <div class="testimonial-title">Real Estate Operations Director</div>
-            <p class="testimonial-quote">"As a former military officer, I appreciate the precision and discipline. Victory Vision delivers results with the professionalism our clients expect."</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section" id="features">
-      <h2>What You Get</h2>
-      
-      <div class="features-grid">
-        <div class="feature-card">
-          <h3>AI Property Owner Identification</h3>
-          <p>Automatically discover property owners matching your ideal prospect profile. Filter by property type, size, location, equity position, and management status.</p>
-        </div>
-        
-        <div class="feature-card">
-          <h3>Contact Enrichment & Verification</h3>
-          <p>Every prospect comes with verified contact information, decision-maker details, and key business intelligence so your outreach hits the mark.</p>
-        </div>
-        
-        <div class="feature-card">
-          <h3>Automated Outreach Sequences</h3>
-          <p>Create relationship-based sequences you control completely. Email, phone, or multi-touch campaigns that feel personal, not automated.</p>
-        </div>
-        
-        <div class="feature-card">
-          <h3>Interaction Tracking & CRM</h3>
-          <p>Every conversation, email, and call lives in Victory Vision. Your whole team stays aligned on where each prospect stands in your pipeline.</p>
-        </div>
-        
-        <div class="feature-card">
-          <h3>Deal Attribution & ROI Measurement</h3>
-          <p>See exactly which prospects became deals and how much revenue each came from. Prove the platform's value to your P&L.</p>
-        </div>
-        
-        <div class="feature-card">
-          <h3>Team Workflow Management</h3>
-          <p>Distribute prospects to your team, assign follow-up tasks, and monitor progress. Turn prospecting into a repeatable, scalable process.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta" id="contact">
-      <h2>See How Victory Vision Works</h2>
-      <p>Signup for the Victory Vision newsletter to get all the updates on the platform</p>
-      <form class="cta-form" action="https://victoryvision.app.n8n.cloud/webhook/emails/newslettersignup" method="GET">
-        <input id="email" name="email" type="email" placeholder="Enter your work email" required />
-      <input type="hidden" name="customer_id" value="glaze@vvdoh.com" />
-        <button type="submit">Signup for Victory Vision Newsletter</button>
-      </form>
-      <p style="margin-top: 1.5rem; font-size: 0.9rem; color: #cbd5e1;">See how AI is revolutionizing Growth for your market.</p>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    &copy; 2025 Victory Vision — AI Prospecting for Property Management<br>
-    Founded by <a href="#">West Point Graduate & Military Veteran</a> | Purpose-Driven. Results Focused. <a href="https://www.victoryvision.app">victoryvision.app</a>
-  </footer>
-
-  <!-- Tracking Pixel -->
-  <img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=248c598a5c900c13037469175340c1d04b3187b6" width="1" height="1" style="display:none;" alt="Tracking Pixel">
+<img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=248c598a5c900c13037469175340c1d04b3187b6" width="1" height="1" style="display:none" alt=""/>
 </body>
 </html>
