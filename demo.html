@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Demo | Victory Vision — AI Sales Desk for Property Managers</title>
+  <meta name="description" content="Watch Victory Vision live demos, hear from real customers, review pricing, and book your 45-minute Operator Session. No fluff — just actionable insights for your pipeline."/>
+  <meta property="og:title" content="Book a Victory Vision Demo"/>
+  <meta property="og:description" content="See the AI Sales Desk running for your market. Pricing shown. Book your 45-min session."/>
+  <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"/>
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+  <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"97225334",enableAutoSpaTracking:true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
+
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --navy:    #0a3161;
+      --navy-dk: #061d3a;
+      --navy-md: #0f4a82;
+      --red:     #bb133e;
+      --red-dk:  #96102f;
+      --gold:    #f4b942;
+      --white:   #ffffff;
+      --off:     #f5f7fb;
+      --gray:    #5c6880;
+      --gray-lt: #8a96ab;
+      --dark:    #0e1624;
+      --border:  #dbe2ef;
+      --green:   #0d9162;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Sora', sans-serif;
+      color: var(--dark);
+      background: var(--white);
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══ NAV ══ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(6,29,58,0.97);
+      backdrop-filter: blur(14px);
+      padding: 0.8rem 2rem;
+      z-index: 999;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-inner { max-width: 1180px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+    .nav-logo img { height: 32px; width: auto; border-radius: 5px; object-fit: contain; }
+    .nav-logo span { color: #fff; font-weight: 700; font-size: 1.05rem; }
+    .nav-right { display: flex; align-items: center; gap: 1.25rem; }
+    .nav-lnk { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-lnk:hover { color: #fff; }
+    .nav-btn { background: var(--red); color: #fff; padding: 0.5rem 1.35rem; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.85rem; transition: background 0.2s; }
+    .nav-btn:hover { background: var(--red-dk); }
+
+    /* ══ HERO ══ */
+    .hero {
+      background: var(--navy-dk);
+      padding: 6.5rem 2rem 5rem;
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--red), var(--gold), var(--red));
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 55% at 50% -10%, rgba(244,185,66,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 840px; margin: 0 auto; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(244,185,66,0.12); border: 1px solid rgba(244,185,66,0.3);
+      color: var(--gold); padding: 0.35rem 1.1rem; border-radius: 100px;
+      font-size: 0.73rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: blink 1.6s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 5vw, 3.5rem);
+      color: #fff; line-height: 1.09; letter-spacing: -0.02em; margin-bottom: 1.25rem;
+    }
+    .hero h1 em { color: var(--gold); font-style: italic; }
+    .hero-sub { color: rgba(255,255,255,0.68); font-size: 1.08rem; max-width: 560px; margin: 0 auto 2.5rem; }
+
+    .hero-btns { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .btn-red {
+      background: var(--red); color: #fff;
+      padding: 0.95rem 2.4rem; border-radius: 8px; text-decoration: none;
+      font-weight: 700; font-size: 1rem;
+      box-shadow: 0 4px 20px rgba(187,19,62,0.45);
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-red:hover { background: var(--red-dk); transform: translateY(-2px); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.95rem 2.4rem; border-radius: 8px; text-decoration: none;
+      font-weight: 600; font-size: 1rem; transition: all 0.2s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.14); }
+
+    .hero-trust { display: flex; justify-content: center; align-items: center; gap: 1.75rem; flex-wrap: wrap; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); }
+    .ti { display: flex; align-items: center; gap: 0.45rem; color: rgba(255,255,255,0.55); font-size: 0.8rem; font-weight: 500; }
+    .ti .stars { color: var(--gold); letter-spacing: 0.05em; }
+    .tsep { color: rgba(255,255,255,0.18); font-size: 0.7rem; }
+
+    /* ══ LAYOUT ══ */
+    .section { padding: 5.5rem 2rem; }
+    .wrap { max-width: 1180px; margin: 0 auto; }
+    .center { text-align: center; }
+    .eyebrow { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); margin-bottom: 0.7rem; }
+    .sh2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.55rem);
+      color: var(--navy); line-height: 1.15; margin-bottom: 0.9rem; letter-spacing: -0.015em;
+    }
+    .slead { color: var(--gray); font-size: 1.02rem; max-width: 620px; }
+    .center .slead { margin: 0 auto; }
+
+    /* ══ PLATFORM VIDEO ══ */
+    .plat-section { background: var(--off); }
+    .plat-wrap {
+      margin: 3rem auto 0; max-width: 860px;
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 24px 70px rgba(10,49,97,0.22); border: 1px solid var(--border);
+      position: relative; padding-bottom: 56.25%;
+    }
+    .plat-wrap video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+    /* ══ DEMO VIDEOS ══ */
+    .demos-section { background: #fff; }
+    .demos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.75rem; margin-top: 3rem; }
+    .demo-card {
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      background: #fff; transition: all 0.25s; display: flex; flex-direction: column;
+    }
+    .demo-card:hover { box-shadow: 0 14px 40px rgba(10,49,97,0.11); transform: translateY(-5px); }
+    .demo-vid { position: relative; padding-bottom: 56.25%; background: var(--navy-dk); }
+    .demo-vid iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .demo-body { padding: 1.4rem 1.5rem 1.75rem; flex: 1; }
+    .demo-num { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--red); margin-bottom: 0.4rem; }
+    .demo-body h3 { color: var(--navy); font-size: 0.97rem; font-weight: 700; line-height: 1.4; margin-bottom: 0.4rem; }
+    .demo-body p { color: var(--gray); font-size: 0.845rem; line-height: 1.65; }
+
+    /* ══ CALENDLY ══ */
+    .cal-section { background: var(--off); }
+    .cal-layout { display: grid; grid-template-columns: 1fr 1.65fr; gap: 4rem; align-items: start; }
+    .cal-info { position: sticky; top: 88px; }
+    .cal-info .sh2 { font-size: 2rem; }
+    .session-list { list-style: none; margin-top: 2rem; }
+    .session-list li { display: flex; align-items: flex-start; gap: 0.85rem; padding: 1rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .session-list li:last-child { border-bottom: none; }
+    .si-ic { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.05rem; }
+    .si-lbl { color: var(--navy); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem; }
+    .si-desc { color: var(--gray); font-size: 0.825rem; }
+    .guarantee {
+      margin-top: 2rem; background: #fff; border: 1px solid var(--border);
+      border-left: 4px solid var(--gold); border-radius: 10px;
+      padding: 1.25rem 1.5rem; display: flex; gap: 0.9rem; align-items: flex-start;
+    }
+    .g-ic { font-size: 1.6rem; flex-shrink: 0; }
+    .g-ttl { color: var(--navy); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .g-txt { color: var(--gray); font-size: 0.825rem; line-height: 1.6; }
+    .cal-embed {
+      border-radius: 14px; overflow: hidden; border: 1px solid var(--border);
+      box-shadow: 0 10px 40px rgba(10,49,97,0.09); min-height: 700px;
+    }
+
+    /* ══ TESTIMONIALS ══ */
+    .testi-section { background: var(--navy-dk); position: relative; overflow: hidden; }
+    .testi-section::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(15,74,130,0.4) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .testi-inner { position: relative; z-index: 1; }
+    .testi-hdr { text-align: center; margin-bottom: 3.5rem; }
+    .testi-hdr .sh2 { color: #fff; }
+    .testi-hdr .slead { color: rgba(255,255,255,0.55); margin: 0 auto; }
+    .testi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .t-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; overflow: hidden; transition: all 0.25s;
+    }
+    .t-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-4px); }
+    .t-vid { position: relative; padding-bottom: 56.25%; background: rgba(0,0,0,0.4); }
+    .t-vid video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .t-body { padding: 1.75rem 2rem; }
+    .t-stars { color: var(--gold); font-size: 1rem; letter-spacing: 0.04em; margin-bottom: 0.8rem; }
+    .t-quote {
+      color: rgba(255,255,255,0.78); font-size: 0.93rem;
+      line-height: 1.72; font-style: italic; margin-bottom: 1.35rem;
+      font-family: 'DM Serif Display', serif; font-weight: 400;
+    }
+    .t-author { display: flex; align-items: center; gap: 0.85rem; }
+    .t-avatar {
+      width: 44px; height: 44px; border-radius: 50%; background: var(--red);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 0.95rem;
+    }
+    .t-name { color: #fff; font-weight: 700; font-size: 0.9rem; line-height: 1.3; }
+    .t-role { color: rgba(255,255,255,0.45); font-size: 0.78rem; margin-top: 0.1rem; }
+    .t-badge {
+      display: inline-block; margin-top: 0.35rem;
+      background: rgba(187,19,62,0.25); border: 1px solid rgba(187,19,62,0.4);
+      color: rgba(255,255,255,0.75); font-size: 0.68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.07em; padding: 0.18rem 0.6rem; border-radius: 4px;
+    }
+
+    /* ══ PRICING ══ */
+    .pricing-section { background: var(--off); }
+    .pricing-hdr { text-align: center; margin-bottom: 3.5rem; }
+    .pricing-hdr .slead { margin: 0 auto; }
+
+    /* toggle */
+    .billing-toggle {
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+      margin-top: 1.75rem; font-size: 0.875rem; font-weight: 600; color: var(--gray);
+    }
+    .tog-sw {
+      position: relative; width: 50px; height: 26px;
+      background: var(--border); border-radius: 100px; cursor: pointer;
+      transition: background 0.25s; flex-shrink: 0;
+    }
+    .tog-sw.on { background: var(--navy); }
+    .tog-knob {
+      position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+      background: #fff; border-radius: 50%; transition: transform 0.25s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    .tog-sw.on .tog-knob { transform: translateX(24px); }
+    .save-badge {
+      background: #e8f5ee; color: var(--green); font-size: 0.68rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.06em; padding: 0.2rem 0.6rem;
+      border-radius: 100px; border: 1px solid #b3dfc6;
+    }
+    .lbl-mo { font-weight: 700; color: var(--navy); }
+    .lbl-ann { font-weight: 400; }
+
+    /* cards */
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem; align-items: end; margin-top: 2.5rem;
+    }
+    .p-card {
+      background: #fff; border: 2px solid var(--border);
+      border-radius: 14px; padding: 2.25rem 1.75rem;
+      position: relative; transition: all 0.25s;
+    }
+    .p-card:hover { box-shadow: 0 14px 40px rgba(10,49,97,0.1); transform: translateY(-5px); }
+    .p-card.featured {
+      background: var(--navy); border-color: var(--navy);
+      box-shadow: 0 20px 56px rgba(10,49,97,0.3);
+      transform: translateY(-12px); padding-top: 3.25rem;
+    }
+    .p-card.featured:hover { transform: translateY(-16px); }
+    .p-card.enterprise { background: var(--dark); border-color: var(--dark); }
+    .pop-chip {
+      position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: var(--dark);
+      font-size: 0.68rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.08em; padding: 0.28rem 1rem; border-radius: 100px; white-space: nowrap;
+    }
+    .p-tier { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray-lt); margin-bottom: 0.4rem; }
+    .p-card.featured .p-tier { color: rgba(255,255,255,0.4); }
+    .p-card.enterprise .p-tier { color: rgba(255,255,255,0.3); }
+    .p-name { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 1rem; }
+    .p-card.featured .p-name, .p-card.enterprise .p-name { color: #fff; }
+    .p-amt { font-size: 2.6rem; font-weight: 800; color: var(--navy); letter-spacing: -0.03em; line-height: 1; }
+    .p-card.featured .p-amt { color: var(--gold); }
+    .p-card.enterprise .p-amt { color: #fff; font-size: 1.8rem; }
+    .p-per { font-size: 0.82rem; color: var(--gray-lt); margin: 0.3rem 0 0.25rem; }
+    .p-card.featured .p-per { color: rgba(255,255,255,0.4); }
+    .p-card.enterprise .p-per { color: rgba(255,255,255,0.3); }
+    .p-tag { font-size: 0.825rem; color: var(--gray); margin-bottom: 1.75rem; line-height: 1.55; min-height: 3rem; }
+    .p-card.featured .p-tag { color: rgba(255,255,255,0.6); }
+    .p-card.enterprise .p-tag { color: rgba(255,255,255,0.5); }
+    .p-feats { list-style: none; margin-bottom: 2rem; }
+    .p-feats li {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+      font-size: 0.82rem; color: var(--dark); line-height: 1.4;
+    }
+    .p-card.featured .p-feats li { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+    .p-card.enterprise .p-feats li { border-color: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75); }
+    .p-feats li:last-child { border-bottom: none; }
+    .pfc { flex-shrink: 0; margin-top: 0.1rem; font-size: 0.85rem; color: var(--green); }
+    .p-card.featured .pfc { color: var(--gold); }
+    .p-card.enterprise .pfc { color: #6ee7b7; }
+
+    .p-btn { display: block; text-align: center; padding: 0.85rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: all 0.2s; }
+    .p-btn-ol { border: 2px solid var(--border); color: var(--navy); background: transparent; }
+    .p-btn-ol:hover { border-color: var(--navy); background: var(--navy); color: #fff; }
+    .p-btn-red { background: var(--red); color: #fff; box-shadow: 0 4px 16px rgba(187,19,62,0.35); }
+    .p-btn-red:hover { background: var(--red-dk); }
+    .p-btn-dk { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+    .p-btn-dk:hover { background: rgba(255,255,255,0.2); }
+
+    /* annual swap */
+    .mo { display: block; }
+    .ann { display: none; }
+    body.annual .mo { display: none; }
+    body.annual .ann { display: block; }
+
+    .p-note { text-align: center; margin-top: 2.5rem; color: var(--gray); font-size: 0.85rem; }
+    .p-note a { color: var(--navy); font-weight: 600; text-decoration: none; }
+    .p-note a:hover { text-decoration: underline; }
+    .credits-box {
+      max-width: 760px; margin: 2.5rem auto 0;
+      background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--gold);
+      border-radius: 10px; padding: 1.35rem 1.75rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .cb-ic { font-size: 1.75rem; flex-shrink: 0; }
+    .cb-ttl { color: var(--navy); font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .cb-txt { color: var(--gray); font-size: 0.845rem; }
+
+    /* ══ BOTTOM CTA ══ */
+    .book-strip {
+      background: linear-gradient(135deg, var(--red) 0%, #8b0d29 100%);
+      padding: 4.5rem 2rem; text-align: center; position: relative; overflow: hidden;
+    }
+    .book-strip::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(255,255,255,0.06) 0%, transparent 70%);
+    }
+    .book-strip-inner { position: relative; z-index: 1; }
+    .book-strip h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 2.8rem); color: #fff; margin-bottom: 0.75rem;
+    }
+    .book-strip p { color: rgba(255,255,255,0.75); font-size: 1.05rem; max-width: 500px; margin: 0 auto 2.25rem; }
+    .btn-wh {
+      background: #fff; color: var(--red);
+      padding: 1.05rem 2.75rem; border-radius: 9px; text-decoration: none;
+      font-weight: 800; font-size: 1.05rem; display: inline-block;
+      transition: all 0.2s; box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+    }
+    .btn-wh:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.25); }
+    .strip-links { margin-top: 1.5rem; display: flex; justify-content: center; gap: 1.75rem; flex-wrap: wrap; }
+    .strip-link { color: rgba(255,255,255,0.5); font-size: 0.85rem; text-decoration: none; transition: color 0.2s; }
+    .strip-link:hover { color: #fff; }
+
+    /* ══ FOOTER ══ */
+    footer { background: var(--dark); padding: 2.5rem 2rem; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+    footer .fl { margin-bottom: 0.75rem; }
+    footer a { color: rgba(255,255,255,0.55); text-decoration: none; margin: 0 0.85rem; transition: color 0.2s; }
+    footer a:hover { color: #fff; }
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width: 1100px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+      .p-card.featured { transform: none; }
+      .p-card.featured:hover { transform: translateY(-5px); }
+    }
+    @media (max-width: 880px) {
+      .demos-grid { grid-template-columns: 1fr; max-width: 520px; margin-left: auto; margin-right: auto; }
+      .cal-layout { grid-template-columns: 1fr; }
+      .cal-info { position: static; }
+      .testi-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 620px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+      .p-card.featured { transform: none; padding-top: 3.25rem; }
+      .hero { padding: 5.5rem 1.25rem 4rem; }
+      .section { padding: 4rem 1.25rem; }
+      nav { padding: 0.75rem 1.25rem; }
+      .nav-lnk { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAV ════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.jpg" alt="Victory Vision"/>
+      <span>Victory Vision</span>
+    </a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-lnk">← Back to Site</a>
+      <a href="#pricing" class="nav-lnk">Pricing</a>
+      <a href="#testimonials" class="nav-lnk">Testimonials</a>
+      <a href="#calendly" class="nav-btn" onclick="window.uetq&&uetq.push('event','book_nav',{})">Book Session</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════ HERO ════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="pill"><span class="live-dot"></span> Live Platform Demo</div>
+    <h1>See the AI Sales Desk<br/><em>Running for Your Market</em></h1>
+    <p class="hero-sub">Watch real platform demos, hear from property managers who use it daily, review transparent pricing — then book your 45-minute Operator Session.</p>
+    <div class="hero-btns">
+      <a href="#calendly" class="btn-red" onclick="window.uetq&&uetq.push('event','book_hero',{})">📅 Book My 45-Min Session</a>
+      <a href="#demos" class="btn-ghost">▶ Watch Platform Demos</a>
+    </div>
+    <div class="hero-trust">
+      <span class="ti"><span class="stars">★★★★</span>&nbsp;4.0 Trustpilot</span>
+      <span class="tsep">·</span>
+      <span class="ti">G2 Verified Reviews</span>
+      <span class="tsep">·</span>
+      <span class="ti">Capterra Listed</span>
+      <span class="tsep">·</span>
+      <span class="ti">🎖 West Point Founded</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PLATFORM OVERVIEW VIDEO ════ -->
+<section class="section plat-section" id="platform">
+  <div class="wrap center">
+    <div class="eyebrow">Platform Overview</div>
+    <h2 class="sh2">Victory Vision in 90 Seconds</h2>
+    <p class="slead">A quick look at the full platform — from lead identification to booked meetings — before diving into the feature demos below.</p>
+    <div class="plat-wrap">
+      <video controls preload="metadata" poster="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg">
+        <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767057320/viral_campaign_undefined_1767057319.mp4" type="video/mp4"/>
+      </video>
+    </div>
+  </div>
+</section>
+
+<!-- ════ 3 FEATURE DEMO VIDEOS ════ -->
+<section class="section demos-section" id="demos">
+  <div class="wrap">
+    <div class="eyebrow">Feature Demos</div>
+    <h2 class="sh2">Three Core Workflows, Live</h2>
+    <p class="slead">Watch each capability running in real-time — no slides, no mockups, no polished voiceovers over screenshots.</p>
+    <div class="demos-grid">
+
+      <div class="demo-card">
+        <div class="demo-vid">
+          <iframe
+            src="https://www.youtube.com/embed/cTniJ8VFNyg?si=PGWPjFQBErmXmzJ_"
+            title="Find Your Perfect Leads in Seconds with Victory Vision AI"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+        <div class="demo-body">
+          <div class="demo-num">Demo 01 — Lead Discovery</div>
+          <h3>Find Your Perfect Leads in Seconds with Victory Vision AI</h3>
+          <p>Watch the AI identify qualified property owners by type, size, geography, and equity position — in seconds, not hours of manual research.</p>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-vid">
+          <iframe
+            src="https://www.youtube.com/embed/TqtozHTYWvs"
+            title="1-to-1 Custom Email Campaign in Seconds to AI-Sourced Leads"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+        <div class="demo-body">
+          <div class="demo-num">Demo 02 — Email Campaigns</div>
+          <h3>1-to-1 Custom Email Campaign in Seconds to AI-Sourced Leads</h3>
+          <p>See personalized email sequences launch automatically — each one written in your voice, referencing each prospect's specific property and situation.</p>
+        </div>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-vid">
+          <iframe
+            src="https://www.youtube.com/embed/M4g7VBogjog"
+            title="Social Media Automation via Victory Vision AI"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+        <div class="demo-body">
+          <div class="demo-num">Demo 03 — Social Automation</div>
+          <h3>Social Media Automation via Victory Vision AI</h3>
+          <p>Victory Vision generates and schedules brand-consistent social content — so your pipeline runs even when you're not at your desk.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ CALENDLY ════ -->
+<section class="section cal-section" id="calendly">
+  <div class="wrap">
+    <div class="cal-layout">
+
+      <div class="cal-info">
+        <div class="eyebrow">Book Your Session</div>
+        <h2 class="sh2">45-Min Operator Session</h2>
+        <p class="slead">A focused, working session — not a generic sales call. We walk through your specific market and prospecting motion live.</p>
+
+        <ul class="session-list">
+          <li>
+            <span class="si-ic">🗺️</span>
+            <div>
+              <div class="si-lbl">Pipeline Map</div>
+              <div class="si-desc">We map your current outreach motion and find exactly where leads are leaking out of your funnel.</div>
+            </div>
+          </li>
+          <li>
+            <span class="si-ic">🤖</span>
+            <div>
+              <div class="si-lbl">Live Platform Demo</div>
+              <div class="si-desc">See Victory Vision running for your specific market, target property type, and geography — personalized to you.</div>
+            </div>
+          </li>
+          <li>
+            <span class="si-ic">📋</span>
+            <div>
+              <div class="si-lbl">Prioritized Fix List</div>
+              <div class="si-desc">Leave with 3–5 highest-impact changes you can make this month — whether you use Victory Vision or not.</div>
+            </div>
+          </li>
+          <li>
+            <span class="si-ic">💰</span>
+            <div>
+              <div class="si-lbl">Pricing Fit Check</div>
+              <div class="si-desc">We confirm which plan fits your volume and goals before you commit to anything.</div>
+            </div>
+          </li>
+          <li>
+            <span class="si-ic">⏱️</span>
+            <div>
+              <div class="si-lbl">45 Minutes. No Fluff.</div>
+              <div class="si-desc">Focused on your business. You leave with actionable next steps, not a deck to review later.</div>
+            </div>
+          </li>
+        </ul>
+
+        <div class="guarantee">
+          <div class="g-ic">🎖</div>
+          <div>
+            <div class="g-ttl">The Operator's Guarantee</div>
+            <div class="g-txt">If you spend 45 minutes with us and don't walk away with at least one actionable insight that improves your pipeline, we'll send you a $50 Amazon gift card. No strings attached.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendly inline embed — lazy loaded via JS -->
+      <div class="cal-embed" id="cal-embed"></div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ TESTIMONIALS ════ -->
+<section class="section testi-section" id="testimonials">
+  <div class="wrap testi-inner">
+    <div class="testi-hdr">
+      <div class="eyebrow" style="color:var(--gold)">Real Customers. Real Results.</div>
+      <h2 class="sh2">Hear from Operator-Owners</h2>
+      <p class="slead">Property managers and veteran operators share their experience with Victory Vision — in their own words.</p>
+    </div>
+
+    <div class="testi-grid">
+
+      <div class="t-card">
+        <div class="t-vid">
+          <video controls preload="metadata">
+            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1756753928/swszo0szrvnwdq59xgfq.mp4" type="video/mp4"/>
+          </video>
+        </div>
+        <div class="t-body">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-quote">"Victory Vision helped us systematically reach property owners we would have missed through referrals alone. The platform respects our approach while giving us the leverage we need to scale."</p>
+          <div class="t-author">
+            <div class="t-avatar">JB</div>
+            <div>
+              <div class="t-name">Jason Blonstein</div>
+              <div class="t-role">Managing Partner, Roo Partners</div>
+              <div class="t-badge">Executive Recruiter · PE / Industrials</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-card">
+        <div class="t-vid">
+          <video controls preload="metadata">
+            <source src="https://res.cloudinary.com/dv94te4zt/video/upload/v1767056809/tuxgmjdmsj0qpoqph32k.mp4" type="video/mp4"/>
+          </video>
+        </div>
+        <div class="t-body">
+          <div class="t-stars">★★★★★</div>
+          <p class="t-quote">"As a former military officer, I appreciate the precision and discipline built into this platform. Victory Vision delivers results with the professionalism our RPM franchise clients expect."</p>
+          <div class="t-author">
+            <div class="t-avatar">RW</div>
+            <div>
+              <div class="t-name">COL Ralph Ware (Ret.)</div>
+              <div class="t-role">Real Property Management Franchisee</div>
+              <div class="t-badge">U.S. Army Veteran · RPM Franchise Operator</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════ PRICING ════ -->
+<section class="section pricing-section" id="pricing">
+  <div class="wrap">
+    <div class="pricing-hdr">
+      <div class="eyebrow">Transparent Pricing</div>
+      <h2 class="sh2">Self-Qualify Before You Book</h2>
+      <p class="slead">No pricing surprises on the call. Pick the tier that matches your volume and goals — upgrade, downgrade, or cancel anytime.</p>
+
+      <div class="billing-toggle">
+        <span class="lbl-mo" id="lbl-mo">Monthly</span>
+        <div class="tog-sw" id="billing-tog" onclick="toggleBilling()">
+          <div class="tog-knob"></div>
+        </div>
+        <span class="lbl-ann" id="lbl-ann">Annual &nbsp;<span class="save-badge">Save 10%</span></span>
+      </div>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- BRONZE $99 -->
+      <div class="p-card">
+        <div class="p-tier">Entry</div>
+        <div class="p-name">Bronze</div>
+        <div class="p-amt mo">$99</div>
+        <div class="p-amt ann">$89</div>
+        <div class="p-per mo">/month · billed monthly</div>
+        <div class="p-per ann">/month · billed annually</div>
+        <div class="p-tag">Get started with AI lead generation and basic campaign automation.</div>
+        <ul class="p-feats">
+          <li><span class="pfc">✓</span> 100 Image Credits</li>
+          <li><span class="pfc">✓</span> 20 Video Credits</li>
+          <li><span class="pfc">✓</span> 50 Lead Credits</li>
+          <li><span class="pfc">✓</span> 10 Campaign Credits</li>
+          <li><span class="pfc">✓</span> 25 Social Credits</li>
+          <li><span class="pfc">✓</span> Basic Support</li>
+        </ul>
+        <a href="https://calendly.com/victoryvision/45-mins" target="_blank" class="p-btn p-btn-ol"
+           onclick="window.uetq&&uetq.push('event','pricing_bronze',{})">Get Started →</a>
+      </div>
+
+      <!-- SILVER $450 -->
+      <div class="p-card">
+        <div class="p-tier">Growth</div>
+        <div class="p-name">Silver</div>
+        <div class="p-amt mo">$450</div>
+        <div class="p-amt ann">$405</div>
+        <div class="p-per mo">/month · billed monthly</div>
+        <div class="p-per ann">/month · billed annually</div>
+        <div class="p-tag">Full outreach automation with advanced analytics for growing PM firms.</div>
+        <ul class="p-feats">
+          <li><span class="pfc">✓</span> 500 Image Credits</li>
+          <li><span class="pfc">✓</span> 100 Video Credits</li>
+          <li><span class="pfc">✓</span> 200 Lead Credits</li>
+          <li><span class="pfc">✓</span> 50 Campaign Credits</li>
+          <li><span class="pfc">✓</span> 100 Social Credits</li>
+          <li><span class="pfc">✓</span> Priority Support</li>
+          <li><span class="pfc">✓</span> Advanced Analytics</li>
+        </ul>
+        <a href="https://calendly.com/victoryvision/45-mins" target="_blank" class="p-btn p-btn-ol"
+           onclick="window.uetq&&uetq.push('event','pricing_silver',{})">Get Started →</a>
+      </div>
+
+      <!-- GOLD $1250 — FEATURED -->
+      <div class="p-card featured">
+        <div class="pop-chip">Most Popular</div>
+        <div class="p-tier">Scale</div>
+        <div class="p-name">Gold</div>
+        <div class="p-amt mo">$1,250</div>
+        <div class="p-amt ann">$1,125</div>
+        <div class="p-per mo">/month · billed monthly</div>
+        <div class="p-per ann">/month · billed annually</div>
+        <div class="p-tag">Unlimited campaigns and white-label options for high-volume operators.</div>
+        <ul class="p-feats">
+          <li><span class="pfc">✓</span> Unlimited Image Credits</li>
+          <li><span class="pfc">✓</span> 500 Video Credits</li>
+          <li><span class="pfc">✓</span> 1,000 Lead Credits</li>
+          <li><span class="pfc">✓</span> Unlimited Campaigns</li>
+          <li><span class="pfc">✓</span> 500 Social Posts</li>
+          <li><span class="pfc">✓</span> 24/7 Dedicated Support</li>
+          <li><span class="pfc">✓</span> White-Label Options</li>
+          <li><span class="pfc">✓</span> Custom Integrations</li>
+        </ul>
+        <a href="https://calendly.com/victoryvision/45-mins" target="_blank" class="p-btn p-btn-red"
+           onclick="window.uetq&&uetq.push('event','pricing_gold',{})">Book a Demo →</a>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="p-card enterprise">
+        <div class="p-tier">Enterprise</div>
+        <div class="p-name">Enterprise</div>
+        <div class="p-amt">Contact Us</div>
+        <div class="p-per">Custom pricing · volume discounts</div>
+        <div class="p-tag">For agencies, franchise groups, and multi-market operators with custom needs.</div>
+        <ul class="p-feats">
+          <li><span class="pfc">✓</span> Everything in Gold</li>
+          <li><span class="pfc">✓</span> Role-based approvals</li>
+          <li><span class="pfc">✓</span> Inline comments</li>
+          <li><span class="pfc">✓</span> Calendar rescheduling</li>
+          <li><span class="pfc">✓</span> Custom integrations</li>
+          <li><span class="pfc">✓</span> Dedicated account manager</li>
+          <li><span class="pfc">✓</span> SLA guarantees</li>
+          <li><span class="pfc">✓</span> Priority development</li>
+        </ul>
+        <a href="https://calendly.com/victoryvision/45-mins" target="_blank" class="p-btn p-btn-dk"
+           onclick="window.uetq&&uetq.push('event','pricing_enterprise',{})">Contact Sales →</a>
+      </div>
+
+    </div>
+
+    <p class="p-note">All plans include a <strong>14-day free trial</strong>. No credit card required to start. &nbsp;·&nbsp; <a href="https://calendly.com/victoryvision/45-mins" target="_blank">Questions? Book a session →</a></p>
+
+    <div class="credits-box">
+      <div class="cb-ic">💳</div>
+      <div>
+        <div class="cb-ttl">Need more credits? Top up anytime.</div>
+        <div class="cb-txt">All plans allow you to purchase additional image, video, lead, campaign, or social credits à la carte — no plan upgrade required. Scale outreach volume exactly when and as much as you need.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════ BOTTOM CTA ════ -->
+<div class="book-strip">
+  <div class="book-strip-inner">
+    <h2>Ready to See It Running for Your Market?</h2>
+    <p>Book your 45-minute Operator Session. We'll walk through your pipeline live and show you exactly where Victory Vision fills the gaps.</p>
+    <a href="https://calendly.com/victoryvision/45-mins" target="_blank" class="btn-wh"
+       onclick="window.uetq&&uetq.push('event','book_bottom',{})">
+      📅 Book My Operator Session →
+    </a>
+    <div class="strip-links">
+      <a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7434384460013379584" target="_blank" class="strip-link">Subscribe to Operator Playbook (LinkedIn)</a>
+      <a href="https://www.linkedin.com/groups/14135250/" target="_blank" class="strip-link">Join the Operator's Edge Group</a>
+      <a href="pipeline-audit.html" class="strip-link">Get a Free Pipeline Audit</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FOOTER ════ -->
+<footer>
+  <div class="fl">
+    <a href="index.html">Home</a>
+    <a href="ai-sales-desk.html">AI Sales Desk</a>
+    <a href="ai-sdr.html">AI SDR</a>
+    <a href="pipeline-audit.html">Pipeline Audit</a>
+    <a href="real-estate-services.html">Industries</a>
+    <a href="compare-hubspot.html">vs HubSpot</a>
+    <a href="compare-apollo.html">vs Apollo</a>
+    <a href="login.html">Login</a>
+  </div>
+  <p>© 2025 Victory Vision &nbsp;·&nbsp; AI Prospecting for Property Management &nbsp;·&nbsp; <a href="https://www.victoryvision.app">victoryvision.app</a></p>
+  <p style="margin-top:0.5rem">Founded by a West Point Graduate &amp; U.S. Army Veteran &nbsp;·&nbsp; <a href="privacy.html">Privacy</a> &nbsp;·&nbsp; <a href="terms.html">Terms</a></p>
+</footer>
+
+<!-- ════ SCRIPTS ════ -->
+<script>
+  /* ── Annual/Monthly toggle ── */
+  function toggleBilling() {
+    const tog = document.getElementById('billing-tog');
+    const lblMo = document.getElementById('lbl-mo');
+    const lblAnn = document.getElementById('lbl-ann');
+    tog.classList.toggle('on');
+    const isAnnual = tog.classList.contains('on');
+    document.body.classList.toggle('annual', isAnnual);
+    if (isAnnual) {
+      lblMo.style.cssText = 'font-weight:400;color:inherit';
+      lblAnn.style.cssText = 'font-weight:700;color:var(--navy)';
+    } else {
+      lblMo.style.cssText = 'font-weight:700;color:var(--navy)';
+      lblAnn.style.cssText = 'font-weight:400;color:inherit';
+    }
+  }
+
+  /* ── Lazy-load Calendly when scrolled into view ── */
+  (function () {
+    const embed = document.getElementById('cal-embed');
+    let loaded = false;
+
+    function initCal() {
+      if (loaded) return;
+      loaded = true;
+      if (window.Calendly) {
+        window.Calendly.initInlineWidget({
+          url: 'https://calendly.com/victoryvision/45-mins',
+          parentElement: embed,
+          utm: { utmSource: 'victoryvision_demo' }
+        });
+      } else {
+        /* fallback: plain iframe if widget.js not ready */
+        embed.innerHTML = '<iframe src="https://calendly.com/victoryvision/45-mins?embed_domain=victoryvision.app&embed_type=Inline" width="100%" height="700" frameborder="0" style="min-height:700px;border:none;border-radius:14px;"></iframe>';
+      }
+    }
+
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) { initCal(); obs.disconnect(); }
+      }, { rootMargin: '300px' });
+      obs.observe(embed);
+    } else {
+      initCal();
+    }
+
+    /* Track successful Calendly bookings via postMessage */
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.event === 'calendly.event_scheduled') {
+        window.uetq && uetq.push('event', 'calendly_booked', {});
+      }
+    });
+  })();
+
+  /* ── Smooth anchor scroll with nav offset ── */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+<img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=demo_v2" width="1" height="1" style="display:none" alt=""/>
+</body>
+</html>
