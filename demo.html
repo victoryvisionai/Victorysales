@@ -10,8 +10,6 @@
   <meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet"/>
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
   <script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"97225334",enableAutoSpaTracking:true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
 
   <style>
@@ -180,11 +178,11 @@
     .g-ttl { color: var(--navy); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
     .g-txt { color: var(--gray); font-size: 0.825rem; line-height: 1.6; }
     .cal-embed {
-      border-radius: 14px; overflow: visible; border: 1px solid var(--border);
+      border-radius: 14px; border: 1px solid var(--border);
       box-shadow: 0 10px 40px rgba(10,49,97,0.09);
-      min-height: 1050px; height: auto;
+      min-height: 700px; height: 700px; overflow: hidden; transition: height 0.3s ease;
     }
-    .cal-embed .calendly-inline-widget { min-height: 1050px !important; height: auto !important; }
+    .cal-embed iframe { display: block; width: 100%; height: 100%; border: none; border-radius: 14px; }
 
     /* ══ TESTIMONIALS ══ */
     .testi-section { background: var(--navy-dk); position: relative; overflow: hidden; }
@@ -796,7 +794,7 @@
     }
   }
 
-  /* ── Lazy-load Calendly when scrolled into view ── */
+  /* ── Calendly iframe embed ── */
   (function () {
     const embed = document.getElementById('cal-embed');
     let loaded = false;
@@ -804,42 +802,41 @@
     function initCal() {
       if (loaded) return;
       loaded = true;
-      if (window.Calendly) {
-        window.Calendly.initInlineWidget({
-          url: 'https://calendly.com/victoryvision/45-mins',
-          parentElement: embed,
-          utm: { utmSource: 'victoryvision_demo' }
-        });
-        // Let Calendly resize naturally via postMessage
-        window.addEventListener('message', function(e) {
-          if (e.origin === 'https://calendly.com' && e.data && e.data.event === 'calendly.page_height') {
-            var h = Math.max(e.data.payload.height, 900);
-            embed.style.minHeight = h + 'px';
-            var widget = embed.querySelector('.calendly-inline-widget');
-            if (widget) widget.style.height = h + 'px';
-          }
-        });
-      } else {
-        /* fallback: plain iframe if widget.js not ready */
-        embed.innerHTML = '<iframe src="https://calendly.com/victoryvision/45-mins?embed_domain=victoryvision.app&embed_type=Inline&hide_gdpr_banner=1" width="100%" height="1050" frameborder="0" scrolling="no" style="min-height:1050px;height:1050px;border:none;border-radius:14px;display:block;"></iframe>';
-      }
+
+      // Use a plain iframe — most reliable, no internal scrollbar
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://calendly.com/victoryvision/45-mins?embed_domain=victoryvision.app&embed_type=Inline&hide_gdpr_banner=1';
+      iframe.scrolling = 'no';
+      iframe.frameBorder = '0';
+      iframe.style.cssText = 'display:block;width:100%;height:700px;border:none;border-radius:14px;';
+      embed.style.height = '700px';
+      embed.appendChild(iframe);
+
+      // Listen for Calendly height messages and resize the iframe + container
+      window.addEventListener('message', function(e) {
+        if (e.origin !== 'https://calendly.com') return;
+        var d = e.data;
+        if (d && d.event === 'calendly.page_height') {
+          var h = Math.max(parseInt(d.payload.height) || 700, 650) + 'px';
+          iframe.style.height = h;
+          embed.style.height = h;
+        }
+        if (d && d.event === 'calendly.event_scheduled') {
+          window.uetq && uetq.push('event', 'calendly_booked', {});
+          window.gtag && gtag('event', 'conversion', { send_to: 'AW-16965842202' });
+        }
+      });
     }
 
+    // Lazy load when section is near viewport
     if ('IntersectionObserver' in window) {
-      const obs = new IntersectionObserver(function(entries) {
+      var obs = new IntersectionObserver(function(entries) {
         if (entries[0].isIntersecting) { initCal(); obs.disconnect(); }
-      }, { rootMargin: '300px' });
+      }, { rootMargin: '400px' });
       obs.observe(embed);
     } else {
       initCal();
     }
-
-    /* Track successful Calendly bookings via postMessage */
-    window.addEventListener('message', function(e) {
-      if (e.data && e.data.event === 'calendly.event_scheduled') {
-        window.uetq && uetq.push('event', 'calendly_booked', {});
-      }
-    });
   })();
 
   /* ── Smooth anchor scroll with nav offset ── */
