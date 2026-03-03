@@ -180,9 +180,11 @@
     .g-ttl { color: var(--navy); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.2rem; }
     .g-txt { color: var(--gray); font-size: 0.825rem; line-height: 1.6; }
     .cal-embed {
-      border-radius: 14px; overflow: hidden; border: 1px solid var(--border);
-      box-shadow: 0 10px 40px rgba(10,49,97,0.09); min-height: 700px;
+      border-radius: 14px; overflow: visible; border: 1px solid var(--border);
+      box-shadow: 0 10px 40px rgba(10,49,97,0.09);
+      min-height: 1050px; height: auto;
     }
+    .cal-embed .calendly-inline-widget { min-height: 1050px !important; height: auto !important; }
 
     /* ══ TESTIMONIALS ══ */
     .testi-section { background: var(--navy-dk); position: relative; overflow: hidden; }
@@ -808,9 +810,18 @@
           parentElement: embed,
           utm: { utmSource: 'victoryvision_demo' }
         });
+        // Let Calendly resize naturally via postMessage
+        window.addEventListener('message', function(e) {
+          if (e.origin === 'https://calendly.com' && e.data && e.data.event === 'calendly.page_height') {
+            var h = Math.max(e.data.payload.height, 900);
+            embed.style.minHeight = h + 'px';
+            var widget = embed.querySelector('.calendly-inline-widget');
+            if (widget) widget.style.height = h + 'px';
+          }
+        });
       } else {
         /* fallback: plain iframe if widget.js not ready */
-        embed.innerHTML = '<iframe src="https://calendly.com/victoryvision/45-mins?embed_domain=victoryvision.app&embed_type=Inline" width="100%" height="700" frameborder="0" style="min-height:700px;border:none;border-radius:14px;"></iframe>';
+        embed.innerHTML = '<iframe src="https://calendly.com/victoryvision/45-mins?embed_domain=victoryvision.app&embed_type=Inline&hide_gdpr_banner=1" width="100%" height="1050" frameborder="0" scrolling="no" style="min-height:1050px;height:1050px;border:none;border-radius:14px;display:block;"></iframe>';
       }
     }
 
