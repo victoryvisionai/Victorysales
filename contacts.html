@@ -1661,12 +1661,13 @@ const availableColumns = {
   client_won_date: 'Client Won Date',
   num_emails_opened: '#Opens',
   newsletter: 'Newsletter',
+  linkedin_connection: 'LinkedIn Connection',
   client_ann_est: 'Est. Revenue to Me'
 };
 
 // Default visible columns
-let visibleColumns = ['last_responded','num_emails_opened','last_opened_date','last_emailed_date','num_links_clicked','last_called','name','title','company', 'email','phone_number','industry','tags','city','created'];
-// Rate limiting
+let visibleColumns = ['created','last_responded','num_emails_opened','last_opened_date','last_emailed_date','num_links_clicked','last_called','name','title','company','email','phone_number','industry','tags','city','linkedin_connection'];
+  // Rate limiting
 const rateLimiter = {
   calls: [],
   maxCalls: 100,
@@ -1693,23 +1694,10 @@ function sanitizeInput(value) {
 
 function formatDateTime(dateString) {
   if (!dateString || dateString === 'null' || dateString === '') return 'Never';
-  
   const date = new Date(dateString);
-  
-  // Check if date is valid
   if (isNaN(date.getTime())) return dateString;
-  
-  // Format: MM/DD/YYYY HH:MM AM/PM
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
-  
-  let hours = date.getHours();
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
-  
-  return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`;
+  return date.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+    + ' ' + date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true }).toLowerCase();
 }
 // Draggable columns functionality
 let draggedColumn = null;
@@ -1868,7 +1856,19 @@ async function loadUserData() {
     // Store user's VV number and Telnyx info
     window.userVVNumber = userData.vvnumber || null;
     window.userConnectionId = userData.number_id || null;
-    window.usercolumn = userData.column_config || null;
+ window.usercolumn = userData.column_config || null;
+if (userData.column_config) {
+  try {
+    const saved = typeof userData.column_config === 'string'
+      ? JSON.parse(userData.column_config)
+      : userData.column_config;
+    if (Array.isArray(saved) && saved.length > 0) {
+      visibleColumns = saved;
+    }
+  } catch(e) {
+    console.warn('Could not parse column_config:', e);
+  }
+}
 window.userWebRTCUsername = userData.name ? userData.name.replace(/[\s,]+/g, '') : userData.email;
     window.userWebRTCPassword = userData.sip_password
     // Update subscription medallion
@@ -2820,12 +2820,11 @@ function updateVisibleColumns() {
     visibleColumns.unshift('name');
   }
   
-  // Save to user table
- apiCall(ENDPOINTS.columnUser, {
-    customer_id: CUSTOMER_ID,
-    column_config: JSON.stringify(visibleColumns)
-  }).catch(e => console.warn('Failed to save column config:', e));
-  
+ fetch('https://victoryvision.app.n8n.cloud/webhook/user/columns', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ customer_id: CUSTOMER_ID, columns: visibleColumns })
+}).catch(e => console.warn('Failed to save column config:', e));  
   renderTableHeader();
   renderContactsTable();
 }
@@ -3120,6 +3119,8 @@ function formatCellValue(contact, column) {
         return extractCityName(contact);
     case 'tags':
       return formatTags(value);
+  case 'linkedin_connection':
+      return value ? '✅ Connected' : '—';
     case 'aiemail':
     case 'newsletter':
       return value ? '✅' : '❌';
@@ -3159,17 +3160,17 @@ function formatDate(dateStr) {
   if (!dateStr) return 'Never';
   const date = new Date(dateStr);
   const now = new Date();
-  const diffTime = Math.abs(now - date);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffMs = now - date;
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
   
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 1) return 'Today';
+  if (diffDays < 2) return 'Yesterday';
+  if (diffDays < 7) return `${Math.floor(diffDays)} days ago`;
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
   
-  return date.toLocaleDateString();
+  return date.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })
+    + ' ' + date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true }).toLowerCase();
 }
-
 function toggleContactSelection(contactId) {
   if (selectedContacts.has(contactId)) {
     selectedContacts.delete(contactId);
@@ -3394,10 +3395,9 @@ function applyFilters() {
     }
 
     if (workflow) {
-      const contactWorkflows = (contact.workflow_status || '').split(',').filter(w => w.trim() && w !== 'null');
-      if (!contactWorkflows.includes(workflow)) return false;
-    }
-
+  const contactWorkflows = (contact.workflow_status || '').toLowerCase().split(',').map(w => w.trim()).filter(w => w && w !== 'null');
+  if (!contactWorkflows.includes(workflow.toLowerCase())) return false;
+}
     if (tags) {
       const contactTags = (contact.tags || '').split(',').filter(t => t.trim());
       if (!contactTags.includes(tags)) return false;
@@ -3496,17 +3496,16 @@ function setupEventListeners() {
   
   const useTemplates = document.getElementById('useTemplates').checked;
   const formData = new FormData(e.target);
-  
   let campaignData = {
     campaign_name: formData.get('campaignName'),
     email_count: parseInt(formData.get('emailCount')),
     tone: formData.get('emailTone'),
     schedule_start_date: formData.get('scheduleStartDate'),
-      days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
-customer_id: CUSTOMER_ID,
-    selected_contacts: Array.from(selectedContacts)
+    days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
+    customer_id: CUSTOMER_ID,
+    selected_contacts: Array.from(selectedContacts),
+    message: document.getElementById('campaignDescription').value
   };
-  
   if (useTemplates) {
     // Collect edited templates
     const templates = [];
