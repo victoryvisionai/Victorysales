@@ -957,13 +957,8 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         <label for="workflowFilter">Workflow</label>
         <select id="workflowFilter">
           <option value="">All Workflows</option>
-          <option value="ads">Ad Outreach</option>
-          <option value="nurture">Lead Nurture</option>
-          <option value="meeting">Meeting Request</option>
-          <option value="followup">Follow-up</option>
         </select>
-      </div>
-      
+      </div>      
     <div class="form-group">
         <label for="tagsFilter">Tags</label>
         <select id="tagsFilter">
@@ -1356,10 +1351,14 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
               <option value="formal">Formal</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label for="scheduleStartDate">Start Date *</label>
-            <input type="datetime-local" id="scheduleStartDate" name="scheduleStartDate" required>
+            <input type="datetime-local" id="scheduleStartDate" name="scheduleStartDate">
+            <button type="button" id="aiChooseTimeBtn" data-active="false"
+              onclick="toggleAITime()"
+              style="margin-top:6px; width:100%; padding:6px 10px; background:#f0f4ff; border:1px solid #c5d3f0; border-radius:4px; cursor:pointer; font-size:12px; color:#0a3161;">
+              🤖 Let AI choose best delivery time
+            </button>
           </div>
           <div class="form-group">
   <label for="daysBetweenEmails">Days Between Emails</label>
@@ -2260,7 +2259,16 @@ function showCustomCampaignModal() {
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // Adjust for timezone
   document.getElementById('scheduleStartDate').value = now.toISOString().slice(0, 16);
 }
-
+function toggleAITime() {
+  const btn = document.getElementById('aiChooseTimeBtn');
+  const dateInput = document.getElementById('scheduleStartDate');
+  const isActive = btn.dataset.active === 'true';
+  btn.dataset.active = isActive ? 'false' : 'true';
+  btn.style.background = isActive ? '#f0f4ff' : '#0a3161';
+  btn.style.color = isActive ? '#0a3161' : 'white';
+  dateInput.disabled = !isActive;
+  dateInput.required = isActive;
+}
 function closeCustomCampaignModal() {
   const modal = document.getElementById('customCampaignModal');
   modal.style.display = 'none';
@@ -2820,11 +2828,13 @@ function updateVisibleColumns() {
     visibleColumns.unshift('name');
   }
   
- fetch('https://victoryvision.app.n8n.cloud/webhook/user/columns', {
+ console.log('Saving columns:', visibleColumns);
+fetch('https://victoryvision.app.n8n.cloud/webhook/user/columns', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ customer_id: CUSTOMER_ID, columns: visibleColumns })
-}).catch(e => console.warn('Failed to save column config:', e));  
+}).then(r => console.log('Column save response:', r.status))
+  .catch(e => console.warn('Failed to save column config:', e));
   renderTableHeader();
   renderContactsTable();
 }
@@ -3325,13 +3335,16 @@ function populateFilterOptions() {
   const cities = [...new Set(allContacts.map(c => extractCityName(c)).filter(c => c !== 'N/A'))].sort();
   const schools = [...new Set(allContacts.map(c => c.school_name).filter(Boolean))].sort();
   const tags = [...new Set(allContacts.flatMap(c => (c.tags || '').split(',').filter(tag => tag.trim())))].sort();
-  
+  const workflows = [...new Set(allContacts.flatMap(c =>
+    (c.workflow_status || '').split(',').map(w => w.trim()).filter(w => w && w !== 'null')
+  ))].sort();
+
   populateSelect('industryFilter', industries);
   populateSelect('cityFilter', cities);
   populateSelect('schoolFilter', schools);
   populateSelect('tagsFilter', tags);
+  populateSelect('workflowFilter', workflows);
 }
-
 function populateSelect(selectId, options) {
   const select = document.getElementById(selectId);
   const currentValue = select.value;
@@ -3496,15 +3509,17 @@ function setupEventListeners() {
   
   const useTemplates = document.getElementById('useTemplates').checked;
   const formData = new FormData(e.target);
+ const aiChooseTime = document.getElementById('aiChooseTimeBtn').dataset.active === 'true';
   let campaignData = {
     campaign_name: formData.get('campaignName'),
     email_count: parseInt(formData.get('emailCount')),
     tone: formData.get('emailTone'),
-    schedule_start_date: formData.get('scheduleStartDate'),
+    schedule_start_date: aiChooseTime ? null : formData.get('scheduleStartDate'),
     days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
     customer_id: CUSTOMER_ID,
     selected_contacts: Array.from(selectedContacts),
-    message: document.getElementById('campaignDescription').value
+    message: document.getElementById('campaignDescription').value,
+    ai_choose_time: aiChooseTime
   };
   if (useTemplates) {
     // Collect edited templates
