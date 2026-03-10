@@ -2382,7 +2382,7 @@ async function sendVVCampaign() {
   };
   try {
     showStatus('⏳ Sending Victory Vision campaign…', false, true);
-    const r = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/usergenerated', {
+    const r = await fetch('https://victoryvision.app.n8n.cloud/webhook/emails/victoryvisioncampaigns', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
