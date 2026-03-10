@@ -2013,6 +2013,7 @@ async function aiSuggestCampaign() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         customer_id: CUSTOMER_ID,
+        message: document.getElementById('campaignDescription').value,
         contacts: selectedContactsList.map(c => ({
           name: c.name,
           title: c.title,
