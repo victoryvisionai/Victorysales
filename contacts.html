@@ -955,7 +955,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         </select>
       </div>
       <div class="form-group">
-        <label for="campaignFilter">campaign</label>
+        <label for="campaignFilter">Campaign</label>
         <select id="campaignFilter">
           <option value="">All campaigns</option>
         </select>
@@ -3283,7 +3283,7 @@ function formatCellValue(contact, column) {
     case 'annual_revenue':
       return `<span class="revenue-cell">${formatRevenue(value)}</span>`;
     case 'campaigns':
-      return formatcampaignBadges(value);
+      return formatCampaignBadges(value);
     case 'linkedin':
       return value ? `<a href="${value}" target="_blank" style="color: #0A3161;" onclick="event.stopPropagation();">View</a>` : 'N/A';
     case 'email':
