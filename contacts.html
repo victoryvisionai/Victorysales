@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Manage your contacts and email workflows."/>
+  <meta name="description" content="Manage your contacts and email campaigns."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Contacts</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -342,20 +342,20 @@
       gap: 10px;
       align-items: center;
     }
-    .workflow-section {
+    .campaign-section {
       background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 15px;
       border: 2px solid #bb133e;
     }
-    .workflow-list {
+    .campaign-list {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 10px;
       margin-bottom: 15px;
     }
-    .workflow-item {
+    .campaign-item {
       display: flex;
       align-items: center;
       gap: 8px;
@@ -365,15 +365,15 @@
       border-radius: 6px;
       transition: all 0.2s ease;
     }
-    .workflow-item:hover {
+    .campaign-item:hover {
       background: #f0f8ff;
       border-color: #0A3161;
     }
-    .workflow-item input[type="checkbox"] {
+    .campaign-item input[type="checkbox"] {
       width: auto;
       margin: 0;
     }
-    .workflow-item label {
+    .campaign-item label {
       margin: 0;
       cursor: pointer;
       flex: 1;
@@ -458,7 +458,7 @@
       color: #28a745;
       font-weight: 600;
     }
-    .workflow-badge {
+    .campaign-badge {
       background: #e3f2fd;
       color: #1976d2;
       padding: 2px 6px;
@@ -468,7 +468,7 @@
       display: inline-block;
       margin: 1px;
     }
-    .workflow-badge.active {
+    .campaign-badge.active {
       background: #28a745;
       color: white;
     }
@@ -724,7 +724,7 @@
       .filter-section {
         grid-template-columns: repeat(2, 1fr);
       }
-      .workflow-list {
+      .campaign-list {
         grid-template-columns: 1fr;
       }
       .bulk-actions {
@@ -800,7 +800,7 @@
 <div class="content">
  <header class="page-header">
     <h1 class="page-title">Contact Management</h1>
-    <p class="page-subtitle">Generate new contacts and manage your prospect database with AI workflows</p>
+    <p class="page-subtitle">Generate new contacts and manage your prospect database with AI campaigns</p>
   </header>
 
   <!-- Lead Generation Section - COMPACT -->
@@ -877,29 +877,29 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       <h3>👥 Your Contacts Database</h3>
     </div>
     
-    <!-- Email Workflows Section -->
-    <div class="workflow-section" data-intro="Select email workflows to enroll your contacts. Choose multiple workflows and then use the 'Enroll in Workflows' button to automate your outreach." data-step="3">
-      <h4 style="margin: 0 0 15px 0; color: #0A3161;">📧 Available Email Workflows</h4>
-      <div class="workflow-list" id="workflowList">
-        <div class="workflow-item">
-          <input type="checkbox" id="workflow_ads" value="ads">
-          <label for="workflow_ads">📺 Ad Outreach - Share hyper personalized ads</label>
+    <!-- Email Campaigns Section -->
+    <div class="campaign-section" data-intro="Select email campaigns to enroll your contacts. Choose multiple campaigns and then use the 'Enroll in campaigns' button to automate your outreach." data-step="3">
+      <h4 style="margin: 0 0 15px 0; color: #0A3161;">📧 Available Email campaigns</h4>
+      <div class="campaign-list" id="campaignList">
+        <div class="campaign-item">
+          <input type="checkbox" id="campaign_ads" value="ads">
+          <label for="campaign_ads">📺 Ad Outreach - Share hyper personalized ads</label>
         </div>
-        <div class="workflow-item">
-          <input type="checkbox" id="workflow_nurture" value="nurture">
-          <label for="workflow_nurture">🌱 Lead Nurture - Educational content sequence</label>
+        <div class="campaign-item">
+          <input type="checkbox" id="campaign_nurture" value="nurture">
+          <label for="campaign_nurture">🌱 Lead Nurture - Educational content sequence</label>
         </div>
-        <div class="workflow-item">
-          <input type="checkbox" id="workflow_meeting" value="meeting">
-          <label for="workflow_meeting">📅 Schedule Meeting Request</label>
+        <div class="campaign-item">
+          <input type="checkbox" id="campaign_meeting" value="meeting">
+          <label for="campaign_meeting">📅 Schedule Meeting Request</label>
         </div>
-        <div class="workflow-item">
-          <input type="checkbox" id="workflow_followup" value="followup">
-          <label for="workflow_followup">🔄 Follow-up Sequence - Re-engage prospects</label>
+        <div class="campaign-item">
+          <input type="checkbox" id="campaign_followup" value="followup">
+          <label for="campaign_followup">🔄 Follow-up Sequence - Re-engage prospects</label>
         </div>
-    <div class="workflow-item">
-          <input type="checkbox" id="workflow_newsletter" value="newsletter">
-          <label for="workflow_newsletter">📰 Newsletter - Send to newsletter subscribers</label>
+    <div class="campaign-item">
+          <input type="checkbox" id="campaign_newsletter" value="newsletter">
+          <label for="campaign_newsletter">📰 Newsletter - Send to newsletter subscribers</label>
         </div>
       </div>
       
@@ -955,9 +955,9 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         </select>
       </div>
       <div class="form-group">
-        <label for="workflowFilter">Workflow</label>
-        <select id="workflowFilter">
-          <option value="">All Workflows</option>
+        <label for="campaignFilter">campaign</label>
+        <select id="campaignFilter">
+          <option value="">All campaigns</option>
         </select>
       </div>      
     <div class="form-group">
@@ -978,11 +978,11 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       <button id="clearFiltersBtn" class="secondary">Clear Filters</button>
       </div>
     <!-- Bulk Actions -->
-    <div class="bulk-actions" data-intro="Select multiple contacts and perform bulk actions like enrolling in workflows, enriching data, or deleting contacts." data-step="6">
+    <div class="bulk-actions" data-intro="Select multiple contacts and perform bulk actions like enrolling in campaigns, enriching data, or deleting contacts." data-step="6">
       <div class="bulk-actions-left">
         <button id="selectAllBtn" class="secondary">Select All</button>
         <button id="deselectAllBtn" class="secondary">Deselect All</button>
-        <button id="enrollWorkflowsBtn" class="success">📧 Enroll in Workflows</button>
+        <button id="enrollCampaignsBtn" class="success">📧 Enroll in campaigns</button>
         <button id="enrichContactsBtn" class="success">🔍 Enrich Selected</button>
         <button id="lookAlikeBtn" class="success" style="background: #17a2b8;">🔎 Look Alike</button>
         <button id="massSMSBtn" class="success" style="background: #8B4789;">📱 Mass SMS</button>
@@ -1237,13 +1237,13 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
             <input type="text" id="tags" name="tags" placeholder="hot-lead, decision-maker, interested">
           </div>
           <div class="form-group">
-            <label for="workflow">
-              Current Workflow
+            <label for="campaign">
+              Current campaign
               <span class="help-icon">❓
-                <span class="help-tooltip">Select which automated email workflow this contact should be enrolled in.</span>
+                <span class="help-tooltip">Select which automated email campaign this contact should be enrolled in.</span>
               </span>
             </label>
-            <select id="workflow" name="workflow">
+            <select id="campaign" name="campaign">
               <option value="">None</option>
               <option value="ads">Ad Outreach</option>
               <option value="nurture">Lead Nurture</option>
@@ -1693,7 +1693,7 @@ const availableColumns = {
   employee_count: 'Employees',
   city: 'City',
   num_links_clicked: '#Clicks',
-  workflow_status: 'Active Workflows',
+  campaigns: 'Active campaigns',
   last_responded: 'Responded',
   last_emailed_date: 'Last Emailed',
   linkedin: 'LinkedIn',
@@ -1964,7 +1964,7 @@ async function loadContacts() {
     
     allContacts = allContacts.map((contact, index) => ({
       ...contact,
-      workflow_status: contact.workflow_status || null,
+      campaigns: contact.campaigns || null,
       contact_id: contact.id || contact.contact_id || contact.email || `contact_${index}`
     }));
     
@@ -2929,7 +2929,7 @@ function editContact(contactId) {
 if (document.getElementById('client_ann_est')) {
   document.getElementById('client_ann_est').value = contact.client_ann_est || '';
 }
-  document.getElementById('workflow').value = contact.workflow || '';
+  document.getElementById('campaign').value = contact.campaign || '';
   document.getElementById('aiemail').checked = contact.aiemail || false;
   document.getElementById('newsletter').checked = contact.newsletter || false;
   
@@ -3282,8 +3282,8 @@ function formatCellValue(contact, column) {
       return `<span class="contact-name">${value || 'N/A'}</span>`;
     case 'annual_revenue':
       return `<span class="revenue-cell">${formatRevenue(value)}</span>`;
-    case 'workflow_status':
-      return formatWorkflowBadges(value);
+    case 'campaigns':
+      return formatcampaignBadges(value);
     case 'linkedin':
       return value ? `<a href="${value}" target="_blank" style="color: #0A3161;" onclick="event.stopPropagation();">View</a>` : 'N/A';
     case 'email':
@@ -3319,20 +3319,19 @@ function formatRevenue(revenue) {
   return `${num}`;
 }
 
-function formatWorkflowBadges(workflows) {
-  if (!workflows || workflows === 'null' || workflows === '') {
+function formatCampaignBadges(campaigns) {
+  if (!campaigns || campaigns === 'null' || campaigns === '') {
     return '<span style="color: #999; font-style: italic;">None</span>';
   }
-  
-  return workflows.split(',')
+  return campaigns.split(',')
     .filter(w => w.trim() && w.trim() !== 'null')
-    .map(workflow => `<span class="workflow-badge active">${workflow.trim()}</span>`)
+    .map(campaign => `<span class="campaign-badge active">${campaign.trim()}</span>`)
     .join(' ') || '<span style="color: #999; font-style: italic;">None</span>';
 }
 
 function formatTags(tags) {
   if (!tags) return 'N/A';
-  return tags.split(',').map(tag => `<span class="workflow-badge">${tag.trim()}</span>`).join(' ');
+  return tags.split(',').map(tag => `<span class="campaign-badge">${tag.trim()}</span>`).join(' ');
 }
 
 function formatDate(dateStr) {
@@ -3379,16 +3378,16 @@ function updateSelectedCount() {
   document.getElementById('selectAllCheckbox').checked = selectedContacts.size === filteredContacts.length && filteredContacts.length > 0;
 }
 
-async function enrollInWorkflows() {
-  const selectedWorkflows = getSelectedWorkflows();
+async function enrollInCampaigns() {
+  const selectedCampaigns = getSelectedCampaigns();
   
   if (selectedContacts.size === 0) {
     showStatus('Please select contacts to enroll', true);
     return;
   }
   
-  if (selectedWorkflows.length === 0) {
-    showStatus('Please select at least one workflow', true);
+  if (selectedCampaigns.length === 0) {
+    showStatus('Please select at least one campaign', true);
     return;
   }
   
@@ -3406,11 +3405,11 @@ if (contactsWithoutEmail > 0) {
   showStatus(`⚠️ ${contactsWithoutEmail} contact(s) skipped - no email address`, true);
   if (selectedContactsList.length === 0) return;
 }
-for (const workflow of selectedWorkflows) {
+for (const campaign of selectedCampaigns) {
       let endpoint;
       let useCustomCampaign = false;
       let campaignPrompt = '';
-      switch(workflow) {
+      switch(campaign) {
         case 'ads':
           endpoint = ENDPOINTS.enrollAds;
           break;
@@ -3434,7 +3433,7 @@ for (const workflow of selectedWorkflows) {
       if (useCustomCampaign) {
         try {
           await apiCall(ENDPOINTS.customEmailCampaign, {
-            campaign_name: workflow === 'nurture' ? 'Lead Nurture Sequence' : 'Follow-up Sequence',
+            campaign_name: campaign === 'nurture' ? 'Lead Nurture Sequence' : 'Follow-up Sequence',
             description: campaignPrompt,
             email_count: 3,
             tone: 'professional',
@@ -3444,17 +3443,17 @@ for (const workflow of selectedWorkflows) {
           });
           
           for (const contact of selectedContactsList) {
-            const currentWorkflows = contact.workflow_status ? 
-              contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
-            if (!currentWorkflows.includes(workflow)) {
-              currentWorkflows.push(workflow);
-              contact.workflow_status = currentWorkflows.join(',');
+            const currentCampaigns = contact.campaigns ? 
+              contact.campaigns.split(',').filter(w => w.trim() && w !== 'null') : [];
+            if (!currentCampaigns.includes(campaign)) {
+              currentCampaigns.push(campaign);
+              contact.campaigns = currentCampaigns.join(',');
             }
             contact.last_emailed_date = new Date().toISOString();
           }
           
-        } catch (workflowError) {
-          console.error(`Error enrolling in ${workflow}:`, workflowError);
+        } catch (campaignError) {
+          console.error(`Error enrolling in ${campaign}:`, campaignError);
         }
       } else {
         for (const contact of selectedContactsList) {
@@ -3462,40 +3461,40 @@ for (const workflow of selectedWorkflows) {
             await apiCall(endpoint, {
               email: contact.email,
               name: contact.name,
-              workflow: workflow,
+              campaign: campaign,
               contact_id: contact.contact_id || contact.id || contact.email
             });
             
-            const currentWorkflows = contact.workflow_status ? 
-              contact.workflow_status.split(',').filter(w => w.trim() && w !== 'null') : [];
-            if (!currentWorkflows.includes(workflow)) {
-              currentWorkflows.push(workflow);
-              contact.workflow_status = currentWorkflows.join(',');
+            const currentCampaigns = contact.campaigns ? 
+              contact.campaigns.split(',').filter(w => w.trim() && w !== 'null') : [];
+            if (!currentCampaigns.includes(campaign)) {
+              currentCampaigns.push(campaign);
+              contact.campaigns = currentCampaigns.join(',');
             }
             
             contact.last_emailed_date = new Date().toISOString();
             
-          } catch (workflowError) {
-            console.error(`Error enrolling ${contact.email} in ${workflow}:`, workflowError);
+          } catch (campaignError) {
+            console.error(`Error enrolling ${contact.email} in ${campaign}:`, campaignError);
           }
         }
       }
     }    
-    showStatus(`Enrolled ${selectedContactsList.length} contacts in ${selectedWorkflows.length} workflows`, false);
+    showStatus(`Enrolled ${selectedContactsList.length} contacts in ${selectedCampaigns.length} campaigns`, false);
     selectedContacts.clear();
     updateSelectedCount();
     renderContactsTable();
     
-    document.querySelectorAll('#workflowList input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('#campaignList input[type="checkbox"]').forEach(cb => cb.checked = false);
     
   } catch (error) {
-    console.error('Error enrolling in workflows:', error);
-    showStatus('Error enrolling contacts in workflows: ' + error.message, true);
+    console.error('Error enrolling in campaigns:', error);
+    showStatus('Error enrolling contacts in campaigns: ' + error.message, true);
   }
 }
 
-function getSelectedWorkflows() {
-  return Array.from(document.querySelectorAll('#workflowList input[type="checkbox"]:checked'))
+function getSelectedCampaigns() {
+  return Array.from(document.querySelectorAll('#campaignList input[type="checkbox"]:checked'))
     .map(cb => cb.value);
 }
 
@@ -3504,15 +3503,15 @@ function populateFilterOptions() {
   const cities = [...new Set(allContacts.map(c => extractCityName(c)).filter(c => c !== 'N/A'))].sort();
   const schools = [...new Set(allContacts.map(c => c.school_name).filter(Boolean))].sort();
   const tags = [...new Set(allContacts.flatMap(c => (c.tags || '').split(',').filter(tag => tag.trim())))].sort();
-  const workflows = [...new Set(allContacts.flatMap(c =>
-    (c.workflow_status || '').split(',').map(w => w.trim()).filter(w => w && w !== 'null')
+  const campaigns = [...new Set(allContacts.flatMap(c =>
+    (c.campaigns || '').split(',').map(w => w.trim()).filter(w => w && w !== 'null')
   ))].sort();
 
   populateSelect('industryFilter', industries);
   populateSelect('cityFilter', cities);
   populateSelect('schoolFilter', schools);
   populateSelect('tagsFilter', tags);
-  populateSelect('workflowFilter', workflows);
+  populateSelect('campaignFilter', campaigns);
 }
 function populateSelect(selectId, options) {
   const select = document.getElementById(selectId);
@@ -3533,7 +3532,7 @@ function applyFilters() {
   const city = document.getElementById('cityFilter').value;
   const revenue = document.getElementById('revenueFilter').value;
   const school = document.getElementById('schoolFilter').value;
-  const workflow = document.getElementById('workflowFilter').value;
+  const campaign = document.getElementById('campaignFilter').value;
   const tags = document.getElementById('tagsFilter').value;
   const createdFrom = document.getElementById('createdFromFilter').value;
   const createdTo = document.getElementById('createdToFilter').value;
@@ -3576,9 +3575,9 @@ function applyFilters() {
       }
     }
 
-    if (workflow) {
-  const contactWorkflows = (contact.workflow_status || '').toLowerCase().split(',').map(w => w.trim()).filter(w => w && w !== 'null');
-  if (!contactWorkflows.includes(workflow.toLowerCase())) return false;
+    if (campaign) {
+  const contactCampaigns = (contact.campaigns || '').toLowerCase().split(',').map(w => w.trim()).filter(w => w && w !== 'null');
+  if (!contactCampaigns.includes(campaign.toLowerCase())) return false;
 }
     if (tags) {
       const contactTags = (contact.tags || '').split(',').filter(t => t.trim());
@@ -3614,7 +3613,7 @@ function clearFilters() {
   document.getElementById('cityFilter').value = '';
   document.getElementById('revenueFilter').value = '';
   document.getElementById('schoolFilter').value = '';
-  document.getElementById('workflowFilter').value = '';
+  document.getElementById('campaignFilter').value = '';
   document.getElementById('tagsFilter').value = '';
   document.getElementById('createdFromFilter').value = '';
   document.getElementById('createdToFilter').value = '';
@@ -3744,7 +3743,7 @@ function setupEventListeners() {
   document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
   document.getElementById('selectAllBtn').addEventListener('click', selectAll);
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
-  document.getElementById('enrollWorkflowsBtn').addEventListener('click', enrollInWorkflows);
+  document.getElementById('enrollCampaignsBtn').addEventListener('click', enrollInCampaigns);
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
   document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
   document.getElementById('massSMSBtn').addEventListener('click', showMassSMSModal);
@@ -3756,7 +3755,7 @@ function setupEventListeners() {
     searchTimeout = setTimeout(applyFilters, 300);
   });
   
-  ['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'workflowFilter', 'tagsFilter', 'createdFromFilter', 'createdToFilter'].forEach(id => {
+  ['industryFilter', 'cityFilter', 'revenueFilter', 'schoolFilter', 'campaignFilter', 'tagsFilter', 'createdFromFilter', 'createdToFilter'].forEach(id => {
     const element = document.getElementById(id);
     if (element) element.addEventListener('change', applyFilters);
   });
