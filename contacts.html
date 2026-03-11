@@ -1764,24 +1764,23 @@ function makeColumnsDraggable() {
     
     header.addEventListener('dragend', (e) => {
       header.style.opacity = '1';
+       draggedColumn = null;
     });
     
     header.addEventListener('dragover', (e) => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
     });
-    
     header.addEventListener('drop', (e) => {
       e.preventDefault();
+      e.stopPropagation();
       const targetIndex = Array.from(headers).indexOf(header);
       
       if (draggedColumn !== null && draggedColumn !== targetIndex) {
-        // Reorder visibleColumns array
         const movedColumn = visibleColumns[draggedColumn];
         visibleColumns.splice(draggedColumn, 1);
         visibleColumns.splice(targetIndex, 0, movedColumn);
-        
-        // Re-render table
+        draggedColumn = null;
         renderTableHeader();
         renderContactsTable();
         makeColumnsDraggable();
