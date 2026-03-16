@@ -11,610 +11,208 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
-    .navbar {
-      background-color: #0A3161;
-      color: white;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .navbar nav ul {
-      display: flex;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-    .navbar nav ul li {
-      margin: 0 10px;
-    }
-    .navbar nav ul li a {
-      color: white;
-      text-decoration: none;
-    }
-    .navbar .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .navbar .logout-btn {
-      background: #BB133E;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .navbar .logout-btn:hover {
-      background: #9e1034;
-    }
-    /* Subscription medallion */
-    .subscription-medallion {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      border: none;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .subscription-medallion.bronze {
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-    }
-    .subscription-medallion.silver {
-      background: linear-gradient(45deg, #C0C0C0, #808080);
-    }
-    .subscription-medallion.gold {
-      background: linear-gradient(45deg, #FFD700, #FFA500);
-    }
-    .subscription-medallion:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-    .subscription-medallion .plan-name {
-      font-weight: bold;
-    }
-    .logo img {
-      height: 60px;
-      width: auto;
-      max-height: 100px;
-    }
-    .content {
-      padding: 20px 4px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .page-header {
-      margin-bottom: 30px;
-    }
-    .page-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 0.5rem;
-    }
-    .page-subtitle {
-      font-size: 1.1rem;
-      color: white;
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      padding: 10px 15px;
-      border-radius: 6px;
-      display: inline-block;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .section-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 15px;
-      margin: -20px -20px 20px -20px;
-      border-radius: 8px 8px 0 0;
-    }
-    .create-page-section {
-      margin-bottom: 30px;
-    }
-    .create-page-btn {
-      background: linear-gradient(135deg, #28a745, #20c997);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      width: 100%;
-      margin-top: 20px;
-    }
-    .create-page-btn:hover {
-      background: linear-gradient(135deg, #218838, #1e7e34);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    }
-    .create-page-btn:disabled {
-      background: #6c757d;
-      cursor: not-allowed;
-      transform: none;
-    }
-    .filter-section {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 15px;
-      align-items: end;
-      margin-bottom: 20px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #333;
-    }
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    .form-group textarea {
-      resize: vertical;
-    }
-    button {
-      background: #0A3161;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      margin: 5px 5px 0 0;
-    }
-    button:hover {
-      background: #083050;
-    }
-    button.secondary {
-      background: #6c757d;
-    }
-    button.secondary:hover {
-      background: #5a6268;
-    }
-    button.danger {
-      background: #dc3545;
-    }
-    button.danger:hover {
-      background: #c82333;
-    }
-    button.success {
-      background: #28a745;
-    }
-    button.success:hover {
-      background: #218838;
-    }
-    .pages-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    .page-card {
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
-    }
-    .page-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-    .page-card.expanded {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90vw;
-      max-width: 800px;
-      height: 90vh;
-      z-index: 1000;
-      overflow-y: auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .page-preview {
-      position: relative;
-      height: 150px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #dee2e6;
-      overflow: hidden;
-    }
-    .page-card.expanded .page-preview {
-      height: 200px;
-    }
-    .page-thumbnail {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .page-preview-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: #999;
-      font-size: 2rem;
-      flex-direction: column;
-    }
-    .page-preview-placeholder small {
-      font-size: 0.7rem;
-      margin-top: 5px;
-      color: #666;
-    }
-    .page-status {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-    .page-status.active {
-      background: #28a745;
-      color: white;
-    }
-    .page-status.inactive {
-      background: #6c757d;
-      color: white;
-    }
-    .page-card-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 12px;
-    }
-    .page-card.expanded .page-card-header {
-      padding: 15px;
-    }
-    .page-card-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      line-height: 1.2;
-    }
-    .page-card.expanded .page-card-title {
-      font-size: 1.3rem;
-      margin-bottom: 8px;
-    }
-    .page-url {
-      font-size: 0.8rem;
-      opacity: 0.9;
-      font-family: monospace;
-      word-break: break-all;
-      line-height: 1.2;
-    }
-    .page-card.expanded .page-url {
-      font-size: 0.9rem;
-    }
-    .page-info {
-      padding: 12px;
-    }
-    .page-card.expanded .page-info {
-      padding: 15px;
-    }
-    .page-description {
-      font-size: 0.8rem;
-      color: #777;
-      line-height: 1.3;
-      margin-bottom: 12px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .page-card.expanded .page-description {
-      font-size: 0.9rem;
-      -webkit-line-clamp: unset;
-      display: block;
-      overflow: visible;
-      margin-bottom: 15px;
-    }
-    .page-meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-      font-size: 0.7rem;
-      color: #666;
-    }
-    .page-card.expanded .page-meta {
-      font-size: 0.8rem;
-      margin-bottom: 15px;
-    }
-    .meta-item {
-      display: flex;
-      flex-direction: column;
-    }
-    .meta-label {
-      font-weight: 600;
-      color: #0A3161;
-    }
-    .page-actions {
-      display: flex;
-      gap: 6px;
-      padding: 0 12px 12px;
-    }
-    .page-card.expanded .page-actions {
-      padding: 0 15px 15px;
-      gap: 8px;
-    }
-    .btn-small {
-      padding: 6px 10px;
-      font-size: 11px;
-      flex: 1;
-    }
-    .page-card.expanded .btn-small {
-      padding: 8px 12px;
-      font-size: 12px;
-    }
-    .edit-chat-container {
-      margin-top: 8px;
-      padding: 12px;
-      background: #f8f9fa;
-      border-radius: 6px;
-      border: 1px solid #dee2e6;
-      display: none;
-    }
-    .page-card.expanded .edit-chat-container {
-      display: block;
-      margin-top: 15px;
-      padding: 15px;
-    }
-    .edit-chat-input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      min-height: 50px;
-      resize: vertical;
-      box-sizing: border-box;
-    }
-    .page-card.expanded .edit-chat-input {
-      padding: 10px;
-      margin-bottom: 10px;
-      min-height: 60px;
-    }
-    .edit-chat-btn {
-      background: #17a2b8;
-      color: white;
-      padding: 6px 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .page-card.expanded .edit-chat-btn {
-      padding: 8px 16px;
-      font-size: 14px;
-    }
-    .edit-chat-btn:hover {
-      background: #138496;
-    }
-    .edit-chat-btn:disabled {
-      background: #6c757d;
-      cursor: not-allowed;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.7);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      font-size: 16px;
-      display: none;
-      z-index: 1001;
-    }
-    .page-card.expanded .close-btn {
-      display: block;
-    }
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 999;
-      display: none;
-    }
-    .modal-overlay.show {
-      display: block;
-    }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      font-size: 1.1rem;
-      color: #666;
-    }
-    .loading::before {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #ddd;
-      border-top: 2px solid #0A3161;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 0.5rem;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #666;
-    }
-    .empty-state h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      color: #0A3161;
-    }
-    .status-message {
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-      display: none;
-    }
-    .status-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .status-error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    .auth-loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      flex-direction: column;
-    }
-    .auth-loading .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0A3161;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
-    footer {
-      background: #0A3161;
-      color: #fff;
-      text-align: center;
-      padding: 15px;
-      margin-top: 20px;
-    }
-    footer a {
-      color: #fff;
-      margin-right: 15px;
-      text-decoration: none;
-    }
-    
-    /* Intro.js custom styling */
-    .introjs-tooltip {
-      max-width: 350px;
-      font-size: 14px;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+    .navbar { background-color: #0A3161; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar nav ul { display: flex; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+    .navbar nav ul li { margin: 0 10px; }
+    .navbar nav ul li a { color: white; text-decoration: none; }
+    .navbar .user-info { display: flex; align-items: center; gap: 10px; }
+    .subscription-medallion { display: flex; align-items: center; gap: 8px; background: linear-gradient(45deg, #CD7F32, #A0522D); color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: none; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .subscription-medallion.bronze { background: linear-gradient(45deg, #CD7F32, #A0522D); }
+    .subscription-medallion.silver { background: linear-gradient(45deg, #C0C0C0, #808080); }
+    .subscription-medallion.gold { background: linear-gradient(45deg, #FFD700, #FFA500); }
+    .subscription-medallion:hover { opacity: 0.9; transform: translateY(-1px); }
+    .logo img { height: 60px; width: auto; }
+    .content { padding: 20px 4px; max-width: 1400px; margin: 0 auto; }
+    .page-header { margin-bottom: 30px; }
+    .page-title { font-size: 2.5rem; font-weight: bold; color: #0A3161; margin-bottom: 0.5rem; }
+    .page-subtitle { font-size: 1.1rem; color: white; background: linear-gradient(135deg, #0A3161, #1a4c80); padding: 10px 15px; border-radius: 6px; display: inline-block; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
+    .section-header { background: linear-gradient(135deg, #0A3161, #1a4c80); color: white; padding: 15px; margin: -20px -20px 20px -20px; border-radius: 8px 8px 0 0; }
+    .section-header h3 { margin: 0; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+    .form-group textarea { resize: vertical; }
+    button { background: #0A3161; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 5px 5px 0 0; }
+    button:hover { background: #083050; }
+    button.secondary { background: #6c757d; }
+    button.secondary:hover { background: #5a6268; }
+    button.danger { background: #dc3545; }
+    button.danger:hover { background: #c82333; }
+    button.success { background: #28a745; }
 
-    .introjs-button {
-      background: #0A3161 !important;
-      border: 1px solid #0A3161 !important;
-      color: white !important;
-      padding: 8px 15px !important;
-      border-radius: 4px !important;
-    }
+    /* Page type buttons */
+    .page-type-btns { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .page-type-btn { flex: 1; min-width: 160px; padding: 18px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 15px; font-weight: bold; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .page-type-btn .btn-icon { font-size: 28px; }
+    .page-type-btn .btn-label { font-size: 11px; opacity: 0.85; font-weight: normal; }
+    .page-type-btn.landing { background: linear-gradient(135deg, #0A3161, #1a4c80); color: white; }
+    .page-type-btn.lead-magnet { background: linear-gradient(135deg, #BB133E, #e0294f); color: white; }
+    .page-type-btn.newsletter { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+    .page-type-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
 
-    .introjs-button:hover {
-      background: #083050 !important;
-      border-color: #083050 !important;
-    }
+    /* Create panels */
+    .create-panel { display: none; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin-top: 10px; background: #f8f9fa; }
+    .create-panel.active { display: block; }
 
-    .introjs-skipbutton {
-      background: #6c757d !important;
-      border-color: #6c757d !important;
-    }
+    /* Slug row */
+    .slug-row { display: flex; align-items: stretch; }
+    .slug-prefix { color: #555; font-size: 12px; white-space: nowrap; font-family: monospace; background: #e9ecef; padding: 8px; border-radius: 4px 0 0 4px; border: 1px solid #ddd; border-right: none; display: flex; align-items: center; }
+    .slug-input { flex: 1; border-radius: 0 4px 4px 0 !important; font-family: monospace; }
 
-    .introjs-progressbar {
-      background-color: #0A3161 !important;
-    }
-    
-    /* Mobile responsive */
+    /* Toggle */
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .toggle-row label { margin: 0; }
+    .toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; transition: .3s; border-radius: 24px; }
+    .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .3s; border-radius: 50%; }
+    input:checked + .toggle-slider { background: #0A3161; }
+    input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+    /* Lead magnet picker */
+    .lead-magnet-list { max-height: 240px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: white; }
+    .lm-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.15s; }
+    .lm-item:hover { background: #f0f4ff; }
+    .lm-item.selected { background: #e8f0ff; border-left: 3px solid #0A3161; }
+    .lm-item:last-child { border-bottom: none; }
+    .lm-thumb { width: 48px; height: 36px; object-fit: cover; border-radius: 4px; background: #eee; flex-shrink: 0; }
+    .lm-info { flex: 1; min-width: 0; }
+    .lm-name { font-weight: bold; font-size: 13px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lm-meta { font-size: 11px; color: #888; }
+    .lm-clicks { font-size: 12px; font-weight: bold; color: #BB133E; white-space: nowrap; }
+
+    /* Lead magnet modal */
+    .lm-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
+    .lm-modal.show { display: flex; }
+    .lm-modal-content { background: white; border-radius: 10px; padding: 24px; width: 90%; max-width: 560px; max-height: 80vh; overflow-y: auto; }
+    .lm-modal-content h3 { margin: 0 0 6px 0; color: #0A3161; }
+
+    /* Filter section */
+    .filter-section { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px; }
+    .filter-section .form-group { flex: 1; min-width: 150px; margin-bottom: 0; }
+
+    /* Pages grid */
+    .pages-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .page-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; position: relative; }
+    .page-card:hover { transform: translateY(-4px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .page-card.expanded { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90vw; max-width: 860px; height: 90vh; z-index: 1000; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .page-preview { position: relative; height: 150px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; overflow: hidden; }
+    .page-card.expanded .page-preview { height: 200px; }
+    .page-thumbnail { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .page-preview-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 2rem; flex-direction: column; }
+    .page-preview-placeholder small { font-size: 0.7rem; margin-top: 5px; }
+    .page-status { position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+    .page-status.active { background: #28a745; color: white; }
+    .page-type-badge { position: absolute; top: 10px; left: 10px; padding: 3px 7px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+    .page-type-badge.landing { background: #0A3161; color: white; }
+    .page-type-badge.lead_magnet { background: #BB133E; color: white; }
+    .page-type-badge.newsletter { background: #28a745; color: white; }
+    .ab-badge { position: absolute; bottom: 10px; left: 10px; background: #6610f2; color: white; padding: 3px 7px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+    .page-card-header { background: linear-gradient(135deg, #0A3161, #1a4c80); color: white; padding: 12px; }
+    .page-card.expanded .page-card-header { padding: 15px; }
+    .page-card-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; line-height: 1.2; }
+    .page-card.expanded .page-card-title { font-size: 1.3rem; margin-bottom: 8px; }
+    .page-url { font-size: 0.8rem; opacity: 0.9; font-family: monospace; word-break: break-all; }
+    .page-info { padding: 12px; }
+    .page-card.expanded .page-info { padding: 15px; }
+    .page-description { font-size: 0.8rem; color: #777; line-height: 1.3; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .page-card.expanded .page-description { -webkit-line-clamp: unset; display: block; overflow: visible; margin-bottom: 15px; font-size: 0.9rem; }
+    .page-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 0.7rem; color: #666; }
+    .page-card.expanded .page-meta { font-size: 0.8rem; }
+    .meta-item { display: flex; flex-direction: column; }
+    .meta-label { font-weight: 600; color: #0A3161; }
+    .page-actions { display: flex; gap: 6px; padding: 0 12px 12px; flex-wrap: wrap; }
+    .page-card.expanded .page-actions { padding: 0 15px 15px; gap: 8px; }
+    .btn-small { padding: 6px 10px; font-size: 11px; flex: 1; }
+    .page-card.expanded .btn-small { padding: 8px 12px; font-size: 12px; }
+
+    /* Analytics */
+    .analytics-section { display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6; }
+    .page-card.expanded .analytics-section { display: block; }
+    .analytics-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .analytics-header h4 { margin: 0; color: #0A3161; font-size: 14px; }
+    .time-windows { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tw-btn { padding: 4px 10px; font-size: 11px; background: #e9ecef; color: #555; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; margin: 0; transition: all 0.15s; }
+    .tw-btn.active { background: #0A3161; color: white; border-color: #0A3161; }
+    .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    .stat-box { background: white; border-radius: 6px; padding: 10px; text-align: center; border: 1px solid #e0e0e0; }
+    .stat-box .stat-val { font-size: 22px; font-weight: bold; color: #0A3161; }
+    .stat-box .stat-lbl { font-size: 10px; color: #888; margin-top: 2px; }
+    .stat-box.revenue .stat-val { color: #28a745; }
+    .stat-box.conversions .stat-val { color: #BB133E; }
+    .sources-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .source-chip { background: white; border: 1px solid #ddd; border-radius: 12px; padding: 4px 10px; font-size: 11px; color: #555; }
+    .source-chip span { font-weight: bold; color: #0A3161; }
+    .ab-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .ab-panel { background: white; border-radius: 6px; padding: 12px; border: 2px solid #e0e0e0; }
+    .ab-panel.variant-a { border-color: #0A3161; }
+    .ab-panel.variant-b { border-color: #BB133E; }
+    .ab-panel h5 { margin: 0 0 8px 0; font-size: 13px; }
+    .ab-panel.variant-a h5 { color: #0A3161; }
+    .ab-panel.variant-b h5 { color: #BB133E; }
+
+    /* Edit chat */
+    .edit-chat-container { margin-top: 8px; padding: 12px; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6; display: none; }
+    .page-card.expanded .edit-chat-container { display: block; margin-top: 15px; padding: 15px; }
+    .edit-chat-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px; min-height: 50px; resize: vertical; box-sizing: border-box; }
+    .edit-chat-btn { background: #17a2b8; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .edit-chat-btn:hover { background: #138496; }
+    .edit-chat-btn:disabled { background: #6c757d; cursor: not-allowed; }
+    .close-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; display: none; z-index: 1001; padding: 0; line-height: 30px; }
+    .page-card.expanded .close-btn { display: block; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+    .modal-overlay.show { display: block; }
+    .loading { text-align: center; padding: 3rem; font-size: 1.1rem; color: #666; }
+    .loading::before { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid #ddd; border-top: 2px solid #0A3161; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.5rem; vertical-align: middle; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 4rem 2rem; color: #666; }
+    .empty-state h3 { font-size: 1.5rem; margin-bottom: 10px; color: #0A3161; }
+    .status-message { padding: 10px; border-radius: 4px; margin: 10px 0; display: none; }
+    .status-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .status-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .auth-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; }
+    .auth-loading .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0A3161; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+    footer { background: #0A3161; color: #fff; text-align: center; padding: 15px; margin-top: 20px; }
+    footer a { color: #fff; margin-right: 15px; text-decoration: none; }
+    .introjs-button { background: #0A3161 !important; border: 1px solid #0A3161 !important; color: white !important; padding: 8px 15px !important; border-radius: 4px !important; }
+    .introjs-progressbar { background-color: #0A3161 !important; }
     @media (max-width: 768px) {
-      .content {
-        padding: 10px 5px;
-      }
-      .page-title {
-        font-size: 2rem;
-      }
-      .filter-section {
-        grid-template-columns: 1fr;
-      }
-      .pages-grid {
-        grid-template-columns: 1fr;
-      }
-      .create-page-btn {
-        padding: 15px 30px;
-        font-size: 16px;
-      }
-      .page-card.expanded {
-        width: 95vw;
-        height: 95vh;
-      }
-      .navbar {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .navbar nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
+      .content { padding: 10px 5px; }
+      .page-title { font-size: 2rem; }
+      .pages-grid { grid-template-columns: 1fr; }
+      .page-card.expanded { width: 95vw; height: 95vh; }
+      .navbar { flex-direction: column; gap: 10px; }
+      .analytics-grid { grid-template-columns: repeat(2, 1fr); }
+      .ab-compare { grid-template-columns: 1fr; }
+      .page-type-btns { flex-direction: column; }
     }
   </style>
 </head>
 <body>
 
-<!-- Authentication Loading Screen -->
 <div id="authLoading" class="auth-loading">
   <div class="spinner"></div>
   <p>Verifying authentication...</p>
 </div>
 
-<!-- Modal Overlay -->
 <div id="modalOverlay" class="modal-overlay"></div>
+
+<!-- Lead Magnet Picker Modal -->
+<div id="lmModal" class="lm-modal">
+  <div class="lm-modal-content">
+    <h3>🧲 Select Lead Magnet File</h3>
+    <p style="color:#666;font-size:13px;margin-top:0;margin-bottom:14px;">Files marked as lead magnets, sorted by clicks.</p>
+    <div id="lmList" class="lead-magnet-list">
+      <div style="padding:20px;text-align:center;color:#999;">Loading...</div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
+      <button class="secondary" onclick="closeLmModal()">Cancel</button>
+      <button style="background:#BB133E;" onclick="confirmLmSelection()">Use Selected File</button>
+    </div>
+  </div>
+</div>
 
 <header class="navbar">
   <div class="logo">
@@ -623,7 +221,7 @@
   </div>
   <nav>
     <ul>
-   <li><a href="companyprofile">Profile</a></li>
+      <li><a href="companyprofile">Profile</a></li>
       <li><a href="campaigns">Campaigns</a></li>
       <li><a href="media">Media</a></li>
       <li><a href="pages">Pages</a></li>
@@ -638,9 +236,7 @@
   </nav>
   <div class="user-info">
     <span id="userEmail"></span>
-    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
-      📖 Take Tour
-    </button>
+    <button onclick="startTour()" style="background:#28a745;padding:6px 12px;font-size:11px;margin-left:10px;">📖 Tour</button>
     <button id="subscriptionMedallion" class="subscription-medallion bronze" onclick="window.location.href='settings'">
       <span class="plan-name">Bronze</span>
     </button>
@@ -653,61 +249,147 @@
     <p class="page-subtitle">Manage your campaign landing pages</p>
   </header>
 
-  <!-- Create Page Section -->
-  <section class="card" data-intro="Generate AI-powered landing pages from your video content. Select a video and our AI will create an optimized landing page with your content." data-step="1">
-    <div class="section-header">
-      <h3>📄 Create New Landing Page</h3>
+  <!-- Create Section -->
+  <section class="card" data-intro="Create AI-powered landing pages. Choose a standard landing page, a lead magnet page, or a newsletter signup page." data-step="1">
+    <div class="section-header"><h3>📄 Create New Page</h3></div>
+
+    <div class="page-type-btns">
+      <button class="page-type-btn landing" onclick="selectPageType('landing')" data-intro="Create a standard campaign landing page with a header video." data-step="2">
+        <span class="btn-icon">📄</span>
+        <span>Landing Page</span>
+        <span class="btn-label">Campaign page + video</span>
+      </button>
+      <button class="page-type-btn lead-magnet" onclick="selectPageType('lead_magnet')" data-intro="Create a lead magnet page. Pick a file marked as a lead magnet." data-step="3">
+        <span class="btn-icon">🧲</span>
+        <span>Lead Magnet</span>
+        <span class="btn-label">Gated content download</span>
+      </button>
+      <button class="page-type-btn newsletter" onclick="selectPageType('newsletter')" data-intro="Create a newsletter signup page." data-step="4">
+        <span class="btn-icon">📧</span>
+        <span>Newsletter</span>
+        <span class="btn-label">Subscriber signup page</span>
+      </button>
     </div>
-    
-    <div class="form-group">
-      <label for="headerVideoSelect">Select Header Video *</label>
-      <select id="headerVideoSelect" required data-intro="Choose a video from your media library to use as the header for your new landing page. If you don't see videos here, create some campaigns first." data-step="2">
-        <option value="">Choose a video from your media library</option>
-      </select>
-      <small style="color: #666;">Select an existing video to use as the header for your landing page</small>
+
+    <!-- Landing Page Panel -->
+    <div id="panel_landing" class="create-panel">
+      <div class="form-group">
+        <label for="headerVideoSelect">Select Header Video *</label>
+        <select id="headerVideoSelect" data-intro="Choose a video from your media library." data-step="5">
+          <option value="">Choose a video from your media library</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="pageTitle">Page Title</label>
+        <input type="text" id="pageTitle" placeholder="Enter page title (optional)">
+      </div>
+      <div class="form-group">
+        <label for="pageDescription">Page Description</label>
+        <textarea id="pageDescription" placeholder="Enter page description (optional)" style="height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Custom URL Slug</label>
+        <div class="slug-row">
+          <span class="slug-prefix" id="slugPrefix">yoursite.victoryvision.app/</span>
+          <input type="text" id="slugLanding" class="slug-input" placeholder="my-page" oninput="sanitizeSlug(this)">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle"><input type="checkbox" id="abTestLanding"><span class="toggle-slider"></span></label>
+        <label for="abTestLanding" style="font-weight:bold;color:#333;">Create A/B Test variant</label>
+      </div>
+      <button id="createPageBtn" style="background:linear-gradient(135deg,#0A3161,#1a4c80);width:100%;margin-top:10px;padding:15px;font-size:16px;font-weight:bold;border-radius:8px;" data-intro="Click to generate your landing page." data-step="6">
+        📄 Create Landing Page
+      </button>
     </div>
-    
-    <div class="form-group">
-      <label for="pageTitle">Page Title</label>
-      <input type="text" id="pageTitle" placeholder="Enter page title (optional)" data-intro="Add a custom title for your landing page, or leave blank to auto-generate one based on your campaign." data-step="3">
+
+    <!-- Lead Magnet Panel -->
+    <div id="panel_lead_magnet" class="create-panel">
+      <div class="form-group">
+        <label>Select Lead Magnet File *</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="lmSelectedName" readonly placeholder="No file selected" style="flex:1;background:#f8f9fa;cursor:pointer;" onclick="openLmModal()">
+          <button type="button" style="white-space:nowrap;background:#BB133E;margin:0;" onclick="openLmModal()">🧲 Browse</button>
+        </div>
+        <input type="hidden" id="lmSelectedId">
+      </div>
+      <div class="form-group">
+        <label for="lmTitle">Page Title</label>
+        <input type="text" id="lmTitle" placeholder="Enter page title (optional)">
+      </div>
+      <div class="form-group">
+        <label for="lmDescription">Page Description</label>
+        <textarea id="lmDescription" placeholder="Describe what the visitor gets..." style="height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Custom URL Slug</label>
+        <div class="slug-row">
+          <span class="slug-prefix" id="slugPrefixLm">yoursite.victoryvision.app/</span>
+          <input type="text" id="slugLeadMagnet" class="slug-input" placeholder="free-guide" oninput="sanitizeSlug(this)">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle"><input type="checkbox" id="abTestLm"><span class="toggle-slider"></span></label>
+        <label for="abTestLm" style="font-weight:bold;color:#333;">Create A/B Test variant</label>
+      </div>
+      <button onclick="createLeadMagnetPage()" style="background:linear-gradient(135deg,#BB133E,#e0294f);width:100%;margin-top:10px;padding:15px;font-size:16px;font-weight:bold;border-radius:8px;">
+        🧲 Create Lead Magnet Page
+      </button>
     </div>
-    
-    <div class="form-group">
-      <label for="pageDescription">Page Description</label>
-      <textarea id="pageDescription" placeholder="Enter page description (optional)" style="height: 80px;" data-intro="Provide additional context for your landing page content, or leave blank for AI-generated content." data-step="4"></textarea>
+
+    <!-- Newsletter Panel -->
+    <div id="panel_newsletter" class="create-panel">
+      <div class="form-group">
+        <label for="nlTitle">Newsletter Name *</label>
+        <input type="text" id="nlTitle" placeholder="e.g. The Operator's Playbook">
+      </div>
+      <div class="form-group">
+        <label for="nlDescription">What subscribers get</label>
+        <textarea id="nlDescription" placeholder="Describe your newsletter..." style="height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Custom URL Slug</label>
+        <div class="slug-row">
+          <span class="slug-prefix" id="slugPrefixNl">yoursite.victoryvision.app/</span>
+          <input type="text" id="slugNewsletter" class="slug-input" placeholder="newsletter" oninput="sanitizeSlug(this)">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle"><input type="checkbox" id="abTestNl"><span class="toggle-slider"></span></label>
+        <label for="abTestNl" style="font-weight:bold;color:#333;">Create A/B Test variant</label>
+      </div>
+      <button onclick="createNewsletterPage()" style="background:linear-gradient(135deg,#28a745,#20c997);width:100%;margin-top:10px;padding:15px;font-size:16px;font-weight:bold;border-radius:8px;">
+        📧 Create Newsletter Page
+      </button>
     </div>
-    
-    <button id="createPageBtn" class="create-page-btn" data-intro="Click here to generate your AI-powered landing page. The page will be optimized for conversions and include your video content." data-step="5">
-      📄 Create Landing Page
-    </button>
-    
-    <p style="margin-top: 15px; color: #666; font-size: 0.9rem;">
-      Landing pages are automatically created with campaigns, or create custom pages here.
-    </p>
   </section>
 
   <!-- Filter Section -->
   <section class="card">
-    <div class="section-header">
-      <h3>📄 My Landing Pages</h3>
-    </div>
-    
+    <div class="section-header"><h3>📄 My Pages</h3></div>
     <div class="filter-section">
       <div class="form-group">
         <label for="searchFilter">Search</label>
-        <input type="text" id="searchFilter" placeholder="Search pages..." data-intro="Search through your landing pages by title, description, or URL to quickly find specific pages." data-step="6">
+        <input type="text" id="searchFilter" placeholder="Search pages..." data-intro="Search your pages by title, description, or URL." data-step="7">
+      </div>
+      <div class="form-group">
+        <label for="typeFilter">Type</label>
+        <select id="typeFilter">
+          <option value="">All Types</option>
+          <option value="landing">Landing</option>
+          <option value="lead_magnet">Lead Magnet</option>
+          <option value="newsletter">Newsletter</option>
+        </select>
       </div>
       <button id="refreshPages">🔄 Refresh</button>
-      <button id="clearFilters" class="secondary">Clear Filters</button>
+      <button id="clearFilters" class="secondary">Clear</button>
     </div>
   </section>
 
-  <!-- Pages Grid -->
-  <section id="pagesContainer" data-intro="Your created landing pages appear here. Click any page to view details, edit with AI assistance, track performance metrics, or manage settings." data-step="7">
-    <div class="loading">Loading your landing pages...</div>
+  <section id="pagesContainer" data-intro="Your pages appear here. Click any card to expand it and access analytics, AI editing, and more." data-step="8">
+    <div class="loading">Loading your pages...</div>
   </section>
 
-  <!-- Status Messages -->
   <div id="statusMessage" class="status-message"></div>
 </div>
 
@@ -720,168 +402,71 @@
 </footer>
 
 <script>
-  // Supabase configuration
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-  
-  let CUSTOMER_ID = null;
-  let authToken = null;
+
+  let CUSTOMER_ID = '';
+  let authToken = '';
+  let userVVDomain = '';
   let userCredits = {};
-
-  // n8n webhook endpoints
-  const ENDPOINTS = {
-    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
-    pagesGet: 'https://victoryvision.app.n8n.cloud/webhook/pages/get',
-    pagesCreate: 'https://victoryvision.app.n8n.cloud/webhook/pages/creates',
-    pagesUpdate: 'https://victoryvision.app.n8n.cloud/webhook/pages/update',
-    pagesRemove: 'https://victoryvision.app.n8n.cloud/webhook/pages/remove',
-    mediaGet: 'https://victoryvision.app.n8n.cloud/webhook/media/get'
-  };
-
-  // Tour completion tracking
-  function completeTour() {
-    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
-  }
-
-  // Check if tour has been completed for this page
-  function hasCompletedTour() {
-    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
-  }
-
-  // Start tour function
-  function startTour() {
-    introJs().setOptions({
-      showProgress: true,
-      showBullets: false,
-      exitOnOverlayClick: false,
-      nextLabel: 'Next →',
-      prevLabel: '← Back',
-      doneLabel: 'Complete!',
-      skipLabel: 'Skip Tour'
-    }).oncomplete(completeTour).onexit(completeTour).start();
-  }
-
-  // Rate limiting for security
-  const rateLimiter = {
-    calls: [],
-    maxCalls: 20,
-    windowMs: 60000,
-    
-    canMakeCall: function() {
-      const now = Date.now();
-      const windowStart = now - this.windowMs;
-      this.calls = this.calls.filter(time => time > windowStart);
-      
-      if (this.calls.length >= this.maxCalls) {
-        return false;
-      }
-      
-      this.calls.push(now);
-      return true;
-    }
-  };
-
-  // Input sanitization
-  function sanitizeInput(value) {
-    if (typeof value !== 'string') return value;
-    
-    return value
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/javascript:/gi, '')
-      .replace(/on\w+\s*=/gi, '')
-      .replace(/data:/gi, '')
-      .trim();
-  }
-
-  // Email validation
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  // Generate request ID
-  function generateRequestId() {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  }
-
-  // State management
   let allPages = [];
   let filteredPages = [];
   let availableVideos = [];
+  let leadMagnetFiles = [];
+  let selectedLmFile = null;
   let expandedCard = null;
+  const analyticsCache = {};
 
-  // DOM elements
-  const pagesContainer = document.getElementById('pagesContainer');
-  const searchFilter = document.getElementById('searchFilter');
-  const refreshPagesBtn = document.getElementById('refreshPages');
-  const clearFiltersBtn = document.getElementById('clearFilters');
-  const createPageBtn = document.getElementById('createPageBtn');
-  const modalOverlay = document.getElementById('modalOverlay');
+  const ENDPOINTS = {
+    getUserData:      'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    pagesGet:         'https://victoryvision.app.n8n.cloud/webhook/pages/get',
+    pagesCreate:      'https://victoryvision.app.n8n.cloud/webhook/pages/creates',
+    pagesUpdate:      'https://victoryvision.app.n8n.cloud/webhook/pages/update',
+    pagesRemove:      'https://victoryvision.app.n8n.cloud/webhook/pages/remove',
+    pagesLeadMagnet:  'https://victoryvision.app.n8n.cloud/webhook/pages/lead-magnet-create',
+    pagesNewsletter:  'https://victoryvision.app.n8n.cloud/webhook/pages/newsletter-create',
+    pagesAnalytics:   'https://victoryvision.app.n8n.cloud/webhook/pages/analytics',
+    mediaGet:         'https://victoryvision.app.n8n.cloud/webhook/media/get'
+  };
 
-  // Enhanced authentication with validation
-  async function checkAuthentication() {
-    try {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      
-      if (error) {
-        console.error('Auth error:', error);
-        return false;
-      }
+  // ─── Tour ────────────────────────────────────────────────────────────────────
+  function completeTour() { localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true'); }
+  function hasCompletedTour() { return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true'; }
+  function startTour() {
+    introJs().setOptions({ showProgress: true, showBullets: false, exitOnOverlayClick: false,
+      nextLabel: 'Next →', prevLabel: '← Back', doneLabel: 'Complete!', skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
 
-      if (session && session.user) {
-        // Validate session data
-        if (!isValidEmail(session.user.email)) {
-          console.error('Invalid email format in session');
-          return false;
-        }
-        
-        CUSTOMER_ID = session.user.email;
-        authToken = session.access_token;
-        document.getElementById('userEmail').textContent = CUSTOMER_ID;
-        return true;
-      }
-
-      return false;
-    } catch (e) {
-      console.error('Auth check error:', e);
-      return false;
+  // ─── Rate limiter ────────────────────────────────────────────────────────────
+  const rateLimiter = {
+    calls: [], maxCalls: 20, windowMs: 60000,
+    canMakeCall() {
+      const now = Date.now();
+      this.calls = this.calls.filter(t => t > now - this.windowMs);
+      if (this.calls.length >= this.maxCalls) return false;
+      this.calls.push(now); return true;
     }
+  };
+
+  function sanitizeInput(value) {
+    if (typeof value !== 'string') return value;
+    return value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/javascript:/gi, '').replace(/on\w+\s*=/gi, '').replace(/data:/gi, '').trim();
+  }
+  function generateRequestId() { return Math.random().toString(36).substring(2,15) + Math.random().toString(36).substring(2,15); }
+  function escHtml(str) {
+    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
   }
 
-  function redirectToLogin() {
-    // Clear all session data
-    localStorage.removeItem('vv_session');
-    sessionStorage.clear();
-    
-    // Redirect
-    window.location.href = 'login.html';
-  }
-
-  async function logout() {
+  // ─── API Call ────────────────────────────────────────────────────────────────
+  async function apiCall(endpoint, data, method) {
+    method = method || 'POST';
+    data = data || null;
     try {
-      await supabaseClient.auth.signOut();
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    } catch (e) {
-      console.error('Logout error:', e);
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    }
-  }
-
-  // Enhanced API call with security features
-  async function apiCall(endpoint, data = null, method = 'POST') {
-    try {
-      // Rate limiting check
-      if (!rateLimiter.canMakeCall()) {
-        throw new Error('Too many requests. Please wait before trying again.');
-      }
-
-      // Validate endpoint
-      if (!endpoint.startsWith('https://victoryvision.app.n8n.cloud/webhook/')) {
-        throw new Error('Invalid endpoint');
-      }
+      if (!rateLimiter.canMakeCall()) throw new Error('Too many requests. Please wait.');
+      if (!endpoint.startsWith('https://victoryvision.app.n8n.cloud/webhook/')) throw new Error('Invalid endpoint');
 
       const headers = {
         'X-Customer-ID': CUSTOMER_ID,
@@ -889,671 +474,528 @@
         'X-Timestamp': new Date().toISOString(),
         'X-User-Agent': 'VictoryVision/1.0'
       };
-      
-      if (authToken) {
-        headers['Authorization'] = `Bearer ${authToken}`;
-      }
+      if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
 
-      let url = endpoint;
-      let body = null;
-
+      var url = endpoint, body = null;
       if (method === 'GET') {
-        url = `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
+        url = endpoint + '?customer_id=' + encodeURIComponent(CUSTOMER_ID);
       } else {
         headers['Content-Type'] = 'application/json';
-        
-        // Sanitize input data
-        const sanitizedData = {};
-        if (data) {
-          for (const [key, value] of Object.entries(data)) {
-            sanitizedData[key] = sanitizeInput(value);
-          }
-        }
-        
-        body = JSON.stringify({
-          ...sanitizedData,
-          customer_id: CUSTOMER_ID,
-          timestamp: new Date().toISOString(),
-          request_id: generateRequestId()
-        });
+        var sanitizedData = {};
+        if (data) { for (var k in data) { sanitizedData[k] = sanitizeInput(String(data[k] == null ? '' : data[k])); } }
+        body = JSON.stringify(Object.assign({}, sanitizedData, { customer_id: CUSTOMER_ID, timestamp: new Date().toISOString(), request_id: generateRequestId() }));
       }
 
-      const response = await fetch(url, {
-        method: method,
-        headers: headers,
-        body: body,
-        mode: 'cors',
-        credentials: 'omit',
-        signal: AbortSignal.timeout(30000) // 30 second timeout
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
-
-      return await response.json();
+      var response = await fetch(url, { method: method, headers: headers, body: body, mode: 'cors', credentials: 'omit', signal: AbortSignal.timeout(30000) });
+      if (!response.ok) { var t = await response.text(); throw new Error('HTTP ' + response.status + ': ' + t); }
+      var text = await response.text();
+      return text ? JSON.parse(text) : { success: true };
     } catch (error) {
       console.error('API call failed:', error);
-      
-      if (error.message.includes('401') || error.message.includes('403')) {
-        showStatus('Session expired. Please log in again.', true);
-        setTimeout(redirectToLogin, 2000);
-      }
-      
+      if (error.message.indexOf('401') > -1 || error.message.indexOf('403') > -1) { showStatus('Session expired. Please log in again.', true); setTimeout(redirectToLogin, 2000); }
       throw error;
     }
   }
 
-  // Load user data and update medallion
+  // ─── Auth ────────────────────────────────────────────────────────────────────
+  async function checkAuthentication() {
+    try {
+      var result = await supabaseClient.auth.getSession();
+      var session = result.data.session;
+      if (!session || !session.user) return false;
+      CUSTOMER_ID = session.user.email;
+      authToken = session.access_token;
+      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+      return true;
+    } catch(e) { console.error('Auth error:', e); return false; }
+  }
+  function redirectToLogin() { window.location.href = 'index.html'; }
+  async function logout() { await supabaseClient.auth.signOut(); redirectToLogin(); }
+
+  // ─── User data ───────────────────────────────────────────────────────────────
   async function loadUserData() {
     try {
-      const response = await apiCall(ENDPOINTS.getUserData, null, 'GET');
-      console.log('Raw response:', response);
-      
-      // Get the first element from the array (n8n returns array)
-      const userData = Array.isArray(response) ? response[0] : response;
-      console.log('User data (first element):', userData);
-      
-      userCredits = {
-        image_credits: userData.image_credits || 0,
-        video_credits: userData.video_credits || 0,
-        contact_credits: userData.contact_credits || 0,
-        campaign_credits: userData.campaign_credits || 0,
-        social_credits: userData.social_credits || 0
-      };
-      
-      // Update subscription medallion - use exact case from API
+      var response = await apiCall(ENDPOINTS.getUserData, null, 'GET');
+      var userData = Array.isArray(response) ? response[0] : response;
+      userVVDomain = userData.vv_domain || '';
+      var prefix = userVVDomain ? userVVDomain.replace(/\/$/, '') + '/' : 'yoursite.victoryvision.app/';
+      document.querySelectorAll('.slug-prefix').forEach(function(el) { el.textContent = prefix; });
       updateSubscriptionMedallion(userData.subscription_plan || 'Bronze');
-      
       return userData;
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      updateSubscriptionMedallion('Bronze'); // Fallback
-      throw error;
-    }
+    } catch(e) { console.error('Error loading user data:', e); updateSubscriptionMedallion('Bronze'); }
   }
 
-  // Update subscription medallion
   function updateSubscriptionMedallion(plan) {
-    const medallion = document.getElementById('subscriptionMedallion');
-    const planName = medallion.querySelector('.plan-name');
-    
-    // Validate plan value
-    const validPlans = ['Bronze', 'Silver', 'Gold'];
-    const safePlan = validPlans.includes(plan) ? plan : 'Bronze';
-    
-    medallion.className = `subscription-medallion ${safePlan.toLowerCase()}`;
-    planName.textContent = safePlan;
+    var medallion = document.getElementById('subscriptionMedallion');
+    var validPlans = ['Bronze','Silver','Gold'];
+    var safePlan = validPlans.indexOf(plan) > -1 ? plan : 'Bronze';
+    medallion.className = 'subscription-medallion ' + safePlan.toLowerCase();
+    medallion.querySelector('.plan-name').textContent = safePlan;
   }
 
-  // Load available videos
+  // ─── Videos ──────────────────────────────────────────────────────────────────
   async function loadAvailableVideos() {
     try {
-      console.log('Loading available videos...');
-      const data = await apiCall(ENDPOINTS.mediaGet);
-      console.log('Media response from n8n:', data);
-      
-      let allMedia = [];
-      if (Array.isArray(data)) {
-        allMedia = data;
-      } else if (data && Array.isArray(data.media)) {
-        allMedia = data.media;
-      } else if (data && Array.isArray(data.files)) {
-        allMedia = data.files;
-      } else {
-        console.log('Unexpected media response structure:', data);
-        allMedia = [];
-      }
-
-      availableVideos = allMedia.filter(file => {
-        const hasURL = file && file.URL;
-        const isVideo = file.file_type && 
-          (file.file_type.toLowerCase().includes('video') || 
-           file.file_type.toLowerCase().includes('mp4') ||
-           file.mime_type && file.mime_type.toLowerCase().includes('video'));
-        
-        return hasURL && isVideo;
+      var data = await apiCall(ENDPOINTS.mediaGet);
+      var allMedia = Array.isArray(data) ? data : (data && data.media ? data.media : (data && data.files ? data.files : []));
+      availableVideos = allMedia.filter(function(f) {
+        return f && f.URL && f.file_type && (f.file_type.toLowerCase().indexOf('video') > -1 || f.file_type.toLowerCase().indexOf('mp4') > -1 || (f.mime_type && f.mime_type.toLowerCase().indexOf('video') > -1));
       });
-
-      console.log('Filtered videos:', availableVideos);
       populateVideoDropdown();
-      
-    } catch (error) {
-      console.error('Error loading videos:', error);
-      showStatus('Error loading videos: ' + error.message, true);
-    }
+    } catch(e) { console.error('Error loading videos:', e); }
   }
 
-  // Populate video dropdown
   function populateVideoDropdown() {
-    const dropdown = document.getElementById('headerVideoSelect');
-    dropdown.innerHTML = '<option value="">Choose a video from your media library</option>';
-    
-    if (availableVideos.length === 0) {
-      const option = document.createElement('option');
-      option.value = '';
-      option.textContent = 'No videos available - create some campaigns first';
-      option.disabled = true;
-      dropdown.appendChild(option);
-      return;
-    }
-
-    availableVideos.forEach((video) => {
-      const option = document.createElement('option');
-      option.value = video.id;
-      const displayName = `${video.name || 'Untitled'} (${video.campaign_name || 'Unknown Campaign'})`;
-      option.textContent = displayName;
-      dropdown.appendChild(option);
+    var dd = document.getElementById('headerVideoSelect');
+    dd.innerHTML = '<option value="">Choose a video from your media library</option>';
+    if (!availableVideos.length) { dd.innerHTML += '<option disabled>No videos available — create campaigns first</option>'; return; }
+    availableVideos.forEach(function(v) {
+      var o = document.createElement('option');
+      o.value = v.id;
+      o.textContent = (v.name || 'Untitled') + ' (' + (v.campaign_name || 'Unknown') + ')';
+      dd.appendChild(o);
     });
   }
 
-  // Load pages from n8n webhook
-  async function loadPages() {
+  // ─── Lead magnet files ────────────────────────────────────────────────────────
+  async function loadLeadMagnetFiles() {
     try {
-      const data = await apiCall(ENDPOINTS.pagesGet);
-      console.log('Raw pages response from n8n:', data);
-      
-      // Handle response from n8n webhook
-      if (Array.isArray(data)) {
-        allPages = data;
-      } else if (data && Array.isArray(data.pages)) {
-        allPages = data.pages;
-      } else {
-        console.log('Unexpected response structure:', data);
-        allPages = [];
-      }
+      var data = await apiCall(ENDPOINTS.mediaGet);
+      var allMedia = Array.isArray(data) ? data : (data && data.media ? data.media : (data && data.files ? data.files : []));
+      leadMagnetFiles = allMedia
+        .filter(function(f) { return f && (f.lead_magnet === true || f.lead_magnet === 'true'); })
+        .sort(function(a,b) { return (parseFloat(b.clicks)||0) - (parseFloat(a.clicks)||0); });
+    } catch(e) { console.error('Error loading lead magnet files:', e); }
+  }
 
-      // Map fields and clean up problematic content
-      allPages = allPages.map(page => ({
-        ...page,
-        title: (page.name || page.title || 'Untitled Page').replace(/['"'>]/g, ''),
-        url: cleanUrl(page.URL || page.google_page_url || page.url),
-        description: cleanDescription(page.body || page.description || 'No description available'),
-        id: page.id,
-        campaign_id: page.campaign_id,
-        customer_id: page.customer_id,
-        created_at: page.created_at,
-        thumbnail_URL: page.thumbnail_URL || null,
-        status: 'active' // Default to active since they're published pages
-      }));
-
-      console.log(`Loaded and mapped ${allPages.length} pages:`, allPages);
-      filteredPages = [...allPages];
-      
-    } catch (error) {
-      console.error('Error loading pages:', error);
-      allPages = [];
-      filteredPages = [];
-      showStatus('Error loading pages: ' + error.message, true);
+  function openLmModal() {
+    var list = document.getElementById('lmList');
+    if (!leadMagnetFiles.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:#999;">No lead magnet files found.<br><small>Go to Media and mark files as lead magnets first.</small></div>';
+    } else {
+      list.innerHTML = leadMagnetFiles.map(function(f) {
+        var isImg = f.file_type && f.file_type.toLowerCase().indexOf('image') > -1;
+        var thumb = isImg && f.URL ? '<img class="lm-thumb" src="' + escHtml(f.URL) + '" onerror="this.style.display=\'none\'">' : '<div class="lm-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🧲</div>';
+        var sel = selectedLmFile && selectedLmFile.id == f.id ? ' selected' : '';
+        return '<div class="lm-item' + sel + '" onclick="selectLmFile(\'' + f.id + '\',\'' + escHtml(f.name||'') + '\',\'' + escHtml(f.URL||'') + '\',this)">' +
+          thumb +
+          '<div class="lm-info"><div class="lm-name">' + escHtml(f.name||'Untitled') + '</div><div class="lm-meta">' + escHtml(f.campaign_name||'No campaign') + ' &middot; ' + escHtml(f.file_type||'file') + '</div></div>' +
+          '<div class="lm-clicks">👆 ' + parseFloat(f.clicks||0).toLocaleString() + '</div></div>';
+      }).join('');
     }
+    document.getElementById('lmModal').classList.add('show');
   }
 
-  // Clean URL by removing problematic characters
-  function cleanUrl(url) {
-    if (!url || url === 'NULL' || url === 'null') {
-      return 'No URL set';
-    }
-    return url.replace(/['"'>]/g, '').trim();
+  function selectLmFile(id, name, url, el) {
+    selectedLmFile = { id: id, name: name, url: url };
+    document.querySelectorAll('.lm-item').forEach(function(i) { i.classList.remove('selected'); });
+    if (el) el.classList.add('selected');
   }
 
-  // Clean description by removing HTML artifacts and problematic characters
-  function cleanDescription(description) {
-    if (!description) return 'No description available';
-    
-    return description
-      .replace(/'''/g, '') // Remove triple quotes first
-      .replace(/['"'>]/g, '') // Remove quotes and brackets
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .replace(/\s+/g, ' ') // Normalize whitespace
-      .trim()
-      .substring(0, 200); // Limit length
+  function closeLmModal() { document.getElementById('lmModal').classList.remove('show'); }
+
+  function confirmLmSelection() {
+    if (!selectedLmFile) { showStatus('Please select a file.', true); return; }
+    document.getElementById('lmSelectedName').value = selectedLmFile.name;
+    document.getElementById('lmSelectedId').value = selectedLmFile.id;
+    closeLmModal();
   }
 
-  // Create new page
+  // ─── Page type selector ───────────────────────────────────────────────────────
+  function selectPageType(type) {
+    document.querySelectorAll('.create-panel').forEach(function(p) { p.classList.remove('active'); });
+    var panel = document.getElementById('panel_' + type);
+    if (panel) { panel.classList.add('active'); panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  }
+
+  function sanitizeSlug(input) {
+    input.value = input.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-{2,}/g, '-').replace(/^-|-$/g, '');
+  }
+
+  // ─── Create pages ─────────────────────────────────────────────────────────────
   async function createPage() {
+    var btn = document.getElementById('createPageBtn');
     try {
-      const selectedVideoId = document.getElementById('headerVideoSelect').value;
-      const pageTitle = document.getElementById('pageTitle').value.trim();
-      const pageDescription = document.getElementById('pageDescription').value.trim();
-
-      if (!selectedVideoId) {
-        showStatus('Please select a header video for your landing page', true);
-        return;
-      }
-
-      createPageBtn.disabled = true;
-      createPageBtn.textContent = '🔄 Creating Page...';
-      
-      const result = await apiCall(ENDPOINTS.pagesCreate, {
-        campaigns_file_id: selectedVideoId,
-        title: pageTitle || '',
-        description: pageDescription || ''
-      });
-      
+      var selectedVideoId = document.getElementById('headerVideoSelect').value;
+      var pageTitle = document.getElementById('pageTitle').value.trim();
+      var pageDescription = document.getElementById('pageDescription').value.trim();
+      var slug = document.getElementById('slugLanding').value.trim();
+      var abTest = document.getElementById('abTestLanding').checked;
+      if (!selectedVideoId) { showStatus('Please select a header video.', true); return; }
+      btn.disabled = true; btn.textContent = '🔄 Creating Page...';
+      var result = await apiCall(ENDPOINTS.pagesCreate, { campaigns_file_id: selectedVideoId, title: pageTitle, description: pageDescription, slug: slug, ab_test: String(abTest), page_type: 'landing' });
       if (result && result.success !== false) {
         showStatus('Landing page created successfully!');
         document.getElementById('headerVideoSelect').value = '';
         document.getElementById('pageTitle').value = '';
         document.getElementById('pageDescription').value = '';
-        await loadPages();
-        applyFilters();
-      } else {
-        throw new Error(result?.message || 'Page creation failed');
-      }
-      
-    } catch (error) {
-      console.error('Error creating page:', error);
-      showStatus('Error creating page: ' + error.message, true);
-    } finally {
-      createPageBtn.disabled = false;
-      createPageBtn.textContent = '📄 Create Landing Page';
-    }
+        document.getElementById('slugLanding').value = '';
+        document.getElementById('abTestLanding').checked = false;
+        await loadPages(); applyFilters();
+      } else { throw new Error(result && result.message ? result.message : 'Page creation failed'); }
+    } catch(e) { console.error(e); showStatus('Error creating page: ' + e.message, true);
+    } finally { btn.disabled = false; btn.textContent = '📄 Create Landing Page'; }
   }
 
-  // Update page with chat input
-  async function updatePageWithChat(pageId, chatInput) {
+  async function createLeadMagnetPage() {
     try {
-      if (!chatInput.trim()) {
-        showStatus('Please enter your changes', true);
-        return;
-      }
-
-      showStatus('Updating page...');
-      
-      const result = await apiCall(ENDPOINTS.pagesUpdate, {
-        page_id: pageId,
-        chat: chatInput.trim()
-      });
-      
+      var lmId = document.getElementById('lmSelectedId').value;
+      var title = document.getElementById('lmTitle').value.trim();
+      var description = document.getElementById('lmDescription').value.trim();
+      var slug = document.getElementById('slugLeadMagnet').value.trim();
+      var abTest = document.getElementById('abTestLm').checked;
+      if (!lmId) { showStatus('Please select a lead magnet file.', true); return; }
+      showStatus('Creating lead magnet page...');
+      var result = await apiCall(ENDPOINTS.pagesLeadMagnet, { campaigns_file_id: lmId, title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'lead_magnet' });
       if (result && result.success !== false) {
-        showStatus('Page updated successfully!');
-        await loadPages();
-        applyFilters();
-        return result.new_page_id || pageId;
-      } else {
-        throw new Error(result?.message || 'Page update failed');
-      }
-      
-    } catch (error) {
-      console.error('Error updating page:', error);
-      showStatus('Error updating page: ' + error.message, true);
-      return null;
-    }
+        showStatus('Lead magnet page created!');
+        document.getElementById('lmSelectedName').value = '';
+        document.getElementById('lmSelectedId').value = '';
+        document.getElementById('lmTitle').value = '';
+        document.getElementById('lmDescription').value = '';
+        document.getElementById('slugLeadMagnet').value = '';
+        document.getElementById('abTestLm').checked = false;
+        selectedLmFile = null;
+        await loadPages(); applyFilters();
+      } else { throw new Error(result && result.message ? result.message : 'Creation failed'); }
+    } catch(e) { console.error(e); showStatus('Error: ' + e.message, true); }
   }
 
-  // Delete page
-  async function deletePage(pageId) {
-    if (!confirm('Are you sure you want to delete this page?')) {
-      return;
-    }
-
+  async function createNewsletterPage() {
     try {
-      const result = await apiCall(ENDPOINTS.pagesRemove, {
-        id: pageId
+      var title = document.getElementById('nlTitle').value.trim();
+      var description = document.getElementById('nlDescription').value.trim();
+      var slug = document.getElementById('slugNewsletter').value.trim();
+      var abTest = document.getElementById('abTestNl').checked;
+      if (!title) { showStatus('Please enter a newsletter name.', true); return; }
+      showStatus('Creating newsletter page...');
+      var result = await apiCall(ENDPOINTS.pagesNewsletter, { title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'newsletter' });
+      if (result && result.success !== false) {
+        showStatus('Newsletter page created!');
+        document.getElementById('nlTitle').value = '';
+        document.getElementById('nlDescription').value = '';
+        document.getElementById('slugNewsletter').value = '';
+        document.getElementById('abTestNl').checked = false;
+        await loadPages(); applyFilters();
+      } else { throw new Error(result && result.message ? result.message : 'Creation failed'); }
+    } catch(e) { console.error(e); showStatus('Error: ' + e.message, true); }
+  }
+
+  // ─── Load pages ───────────────────────────────────────────────────────────────
+  async function loadPages() {
+    try {
+      var data = await apiCall(ENDPOINTS.pagesGet);
+      var raw = Array.isArray(data) ? data : (data && data.pages ? data.pages : []);
+      allPages = raw.map(function(page) {
+        return Object.assign({}, page, {
+          title: (page.name || page.title || 'Untitled Page').replace(/['"'>]/g, ''),
+          url: cleanUrl(page.URL || page.google_page_url || page.url),
+          description: cleanDescription(page.body || page.description || ''),
+          page_type: page.page_type || 'landing',
+          slug: page.slug || '',
+          ab_test: page.ab_test || false,
+          ab_variant: page.ab_variant || null,
+          subscribers: page.subscribers || 0,
+          revenue: page.revenue || 0,
+          views: page.views || 0,
+          conversions: page.conversions || 0,
+          visitor_sources: page.visitor_sources || null,
+          status: 'active'
+        });
       });
-      
-      if (result && (result.success !== false)) {
-        showStatus('Page deleted successfully!');
-        closeExpandedCard(); // Close modal if open
-        await loadPages();
-        applyFilters();
-      } else {
-        throw new Error(result?.message || 'Page deletion failed');
-      }
-      
-    } catch (error) {
-      console.error('Error deleting page:', error);
-      showStatus('Error deleting page: ' + error.message, true);
-    }
+      filteredPages = allPages.slice();
+    } catch(e) { console.error(e); allPages = []; filteredPages = []; showStatus('Error loading pages: ' + e.message, true); }
   }
 
-  // Expand/collapse card functionality
-  function toggleCardExpansion(cardElement, pageId) {
-    if (expandedCard && expandedCard !== cardElement) {
-      // Close any other expanded card
-      expandedCard.classList.remove('expanded');
-    }
-
-    if (cardElement.classList.contains('expanded')) {
-      // Close this card
-      cardElement.classList.remove('expanded');
-      expandedCard = null;
-      modalOverlay.classList.remove('show');
-    } else {
-      // Expand this card
-      cardElement.classList.add('expanded');
-      expandedCard = cardElement;
-      modalOverlay.classList.add('show');
-    }
+  function cleanUrl(url) {
+    if (!url || url === 'NULL' || url === 'null') return 'No URL set';
+    return url.replace(/['"'>]/g, '').trim();
+  }
+  function cleanDescription(description) {
+    if (!description) return 'No description available';
+    return description.replace(/'''/g,'').replace(/['"'>]/g,'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim().substring(0, 200);
   }
 
-  // Close expanded card
-  function closeExpandedCard() {
-    if (expandedCard) {
-      expandedCard.classList.remove('expanded');
-      expandedCard = null;
-      modalOverlay.classList.remove('show');
-    }
-  }
-
-  // Apply filters
+  // ─── Filters ──────────────────────────────────────────────────────────────────
   function applyFilters() {
-    const searchTerm = searchFilter.value.toLowerCase();
-
-    filteredPages = allPages.filter(page => {
+    var searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+    var typeVal = document.getElementById('typeFilter').value;
+    filteredPages = allPages.filter(function(page) {
+      if (typeVal && page.page_type !== typeVal) return false;
       if (searchTerm) {
-        const searchableText = [
-          page.title || '',
-          page.description || '',
-          page.url || ''
-        ].join(' ').toLowerCase();
-        
-        if (!searchableText.includes(searchTerm)) {
-          return false;
-        }
+        var text = [page.title, page.description, page.url, page.campaign_name || ''].join(' ').toLowerCase();
+        if (text.indexOf(searchTerm) === -1) return false;
       }
       return true;
     });
-
     renderPagesGrid();
   }
 
-  // Clear filters
   function clearFilters() {
-    searchFilter.value = '';
-    applyFilters();
+    document.getElementById('searchFilter').value = '';
+    document.getElementById('typeFilter').value = '';
+    filteredPages = allPages.slice();
+    renderPagesGrid();
   }
 
-  // Render pages grid
+  // ─── Render ───────────────────────────────────────────────────────────────────
   function renderPagesGrid() {
-    if (filteredPages.length === 0) {
-      if (allPages.length === 0) {
-        showEmptyState();
-      } else {
-        showNoResultsState();
-      }
-      return;
-    }
-
-    const grid = document.createElement('div');
+    var container = document.getElementById('pagesContainer');
+    if (!filteredPages.length) { showEmptyState(); return; }
+    container.innerHTML = '';
+    var grid = document.createElement('div');
     grid.className = 'pages-grid';
-
-    filteredPages.forEach(page => {
-      const card = createPageCard(page);
-      grid.appendChild(card);
-    });
-
-    pagesContainer.innerHTML = '';
-    pagesContainer.appendChild(grid);
+    filteredPages.forEach(function(page) { grid.appendChild(createPageCard(page)); });
+    container.appendChild(grid);
   }
 
-  // Create page card with thumbnail_URL support
   function createPageCard(page) {
-    const card = document.createElement('div');
+    var card = document.createElement('div');
     card.className = 'page-card';
 
-    let createdDate = 'Unknown';
-    if (page.created_at) {
-      try {
-        createdDate = new Date(page.created_at).toLocaleDateString();
-      } catch (e) {
-        createdDate = page.created_at;
-      }
-    }
+    var createdDate = 'Unknown';
+    if (page.created_at) { try { createdDate = new Date(page.created_at).toLocaleDateString(); } catch(e) { createdDate = page.created_at; } }
 
-    const statusClass = page.status === 'active' ? 'active' : 'inactive';
-    const pageTitle = page.title || 'Untitled Page';
-    const pageUrl = page.url || 'No URL set';
-    const pageDescription = page.description || 'No description available';
-    
-    // Use thumbnail_URL from n8n webhook response
-    let previewContent;
-    if (page.thumbnail_URL && page.thumbnail_URL !== 'null' && page.thumbnail_URL !== 'NULL') {
-      previewContent = `<img src="${page.thumbnail_URL}" alt="Website preview" class="page-thumbnail" 
-                          onerror="this.parentElement.innerHTML='<div class=\\'page-preview-placeholder\\'>📄<br><small>Preview unavailable</small></div>'">`;
-    } else {
-      previewContent = `<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>`;
-    }
+    var typeLabels = { landing: 'Landing', lead_magnet: 'Lead Magnet', newsletter: 'Newsletter' };
+    var typeLabel = typeLabels[page.page_type] || page.page_type;
+    var pageUrl = page.url || 'No URL set';
 
-    card.innerHTML = `
-      <button class="close-btn" onclick="event.stopPropagation(); closeExpandedCard();">&times;</button>
-      <div class="page-preview">
-        ${previewContent}
-        <div class="page-status ${statusClass}">${page.status.toUpperCase()}</div>
-      </div>
-      <div class="page-card-header">
-        <div class="page-card-title">${pageTitle}</div>
-        <div class="page-url">${pageUrl}</div>
-      </div>
-      <div class="page-info">
-        <p class="page-description">${pageDescription}</p>
-        <div class="page-meta">
-          <div class="meta-item">
-            <span class="meta-label">Created:</span>
-            ${createdDate}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Views:</span>
-            ${page.views || '0'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Conversions:</span>
-            ${page.conversions || '0'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Campaign:</span>
-            ${page.campaign_name || 'None'}
-          </div>
-        </div>
-        
-        <!-- Edit Chat Interface -->
-        <div class="edit-chat-container" data-intro="Use AI to edit your landing page by describing the changes you want. Our AI will understand your request and update the page accordingly." data-step="8">
-          <label style="font-weight: bold; color: #0A3161; margin-bottom: 5px; display: block;">✏️ Edit Page with AI:</label>
-          <textarea 
-            class="edit-chat-input" 
-            placeholder="Describe what changes you want to make to this page..."
-            id="chatInput_${page.id}"
-          ></textarea>
-          <button 
-            class="edit-chat-btn" 
-            onclick="event.stopPropagation(); handlePageEdit('${page.id}')"
-            id="editBtn_${page.id}"
-          >
-            🤖 Update Page
-          </button>
-        </div>
-      </div>
-      <div class="page-actions">
-        <button onclick="event.stopPropagation(); viewPage('${pageUrl}')" class="btn-small secondary">View</button>
-        <button onclick="event.stopPropagation(); copyPageUrl('${pageUrl}')" class="btn-small">Copy URL</button>
-        <button onclick="event.stopPropagation(); deletePage('${page.id}')" class="btn-small danger">Delete</button>
-      </div>
-    `;
+    var previewContent = (page.thumbnail_URL && page.thumbnail_URL !== 'null' && page.thumbnail_URL !== 'NULL')
+      ? '<img src="' + page.thumbnail_URL + '" alt="Page preview" class="page-thumbnail" onerror="this.parentElement.innerHTML=\'<div class=\\\'page-preview-placeholder\\\'>📄<br><small>Preview unavailable</small></div>\'">'
+      : '<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>';
 
-    // Add click handler for expansion
-    card.addEventListener('click', (e) => {
-      // Don't expand if clicking on buttons or inputs
-      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-        return;
-      }
+    var twButtons = ['1D','7D','30D','90D','ALL'].map(function(w) {
+      return '<button class="tw-btn ' + (w==='7D'?'active':'') + '" onclick="event.stopPropagation(); loadAnalytics(\'' + page.id + '\',\'' + w + '\',this)">' + w + '</button>';
+    }).join('');
+
+    card.innerHTML =
+      '<button class="close-btn" onclick="event.stopPropagation(); closeExpandedCard();">&times;</button>' +
+      '<div class="page-preview">' +
+        previewContent +
+        '<div class="page-status active">ACTIVE</div>' +
+        '<div class="page-type-badge ' + page.page_type + '">' + typeLabel + '</div>' +
+        (page.ab_test ? '<div class="ab-badge">A/B ' + (page.ab_variant||'') + '</div>' : '') +
+      '</div>' +
+      '<div class="page-card-header">' +
+        '<div class="page-card-title">' + escHtml(page.title||'Untitled') + '</div>' +
+        '<div class="page-url">' + escHtml(pageUrl) + '</div>' +
+      '</div>' +
+      '<div class="page-info">' +
+        '<p class="page-description">' + escHtml(page.description||'No description available') + '</p>' +
+        '<div class="page-meta">' +
+          '<div class="meta-item"><span class="meta-label">Created:</span>' + createdDate + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Views:</span>' + (page.views||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Conversions:</span>' + (page.conversions||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Subscribers:</span>' + (page.subscribers||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Revenue:</span>$' + parseFloat(page.revenue||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Campaign:</span>' + escHtml(page.campaign_name||'None') + '</div>' +
+        '</div>' +
+        '<div class="analytics-section" id="analytics_' + page.id + '">' +
+          '<div class="analytics-header">' +
+            '<h4>📊 Analytics</h4>' +
+            '<div class="time-windows">' + twButtons + '</div>' +
+          '</div>' +
+          '<div id="analytics_data_' + page.id + '"><div style="text-align:center;color:#999;padding:20px;font-size:13px;">Click a time window to load analytics</div></div>' +
+        '</div>' +
+        '<div class="edit-chat-container">' +
+          '<label style="font-weight:bold;color:#0A3161;margin-bottom:5px;display:block;">✏️ Edit Page with AI:</label>' +
+          '<textarea class="edit-chat-input" placeholder="Describe what changes you want..." id="chatInput_' + page.id + '"></textarea>' +
+          '<button class="edit-chat-btn" onclick="event.stopPropagation(); handlePageEdit(\'' + page.id + '\')" id="editBtn_' + page.id + '">🤖 Update Page</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="page-actions">' +
+        '<button onclick="event.stopPropagation(); viewPage(\'' + escHtml(pageUrl) + '\')" class="btn-small secondary">👁 View</button>' +
+        '<button onclick="event.stopPropagation(); copyPageUrl(\'' + escHtml(pageUrl) + '\')" class="btn-small">🔗 Copy URL</button>' +
+        '<button onclick="event.stopPropagation(); deletePage(\'' + page.id + '\')" class="btn-small danger">🗑 Delete</button>' +
+      '</div>';
+
+    card.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       toggleCardExpansion(card, page.id);
     });
 
     return card;
   }
 
-  // Handle page edit with chat input
-  async function handlePageEdit(pageId) {
-    const chatInput = document.getElementById(`chatInput_${pageId}`).value;
-    const editBtn = document.getElementById(`editBtn_${pageId}`);
-    
-    if (!chatInput.trim()) {
-      showStatus('Please describe what changes you want to make', true);
-      return;
-    }
-
+  // ─── Analytics ────────────────────────────────────────────────────────────────
+  async function loadAnalytics(pageId, window, btnEl) {
+    btnEl.closest('.time-windows').querySelectorAll('.tw-btn').forEach(function(b) { b.classList.remove('active'); });
+    btnEl.classList.add('active');
+    var container = document.getElementById('analytics_data_' + pageId);
+    container.innerHTML = '<div style="text-align:center;padding:16px;color:#999;font-size:13px;">Loading...</div>';
     try {
-      editBtn.disabled = true;
-      editBtn.textContent = '🔄 Updating...';
-      
-      const newPageId = await updatePageWithChat(pageId, chatInput);
-      
-      if (newPageId) {
-        document.getElementById(`chatInput_${pageId}`).value = '';
-        showStatus('Page updated successfully!');
-      }
-      
-    } finally {
-      editBtn.disabled = false;
-      editBtn.textContent = '🤖 Update Page';
+      if (analyticsCache[pageId] && analyticsCache[pageId][window]) { renderAnalyticsData(pageId, analyticsCache[pageId][window]); return; }
+      var data = await apiCall(ENDPOINTS.pagesAnalytics, { page_id: pageId, window: window });
+      if (!analyticsCache[pageId]) analyticsCache[pageId] = {};
+      analyticsCache[pageId][window] = data;
+      renderAnalyticsData(pageId, data);
+    } catch(e) {
+      container.innerHTML = '<div style="text-align:center;padding:16px;color:#dc3545;font-size:13px;">Could not load analytics: ' + e.message + '</div>';
     }
   }
 
-  // View page in new tab
+  function renderAnalyticsData(pageId, data) {
+    var container = document.getElementById('analytics_data_' + pageId);
+    var d = (Array.isArray(data) ? data[0] : data) || {};
+    var visitors = parseInt(d.visitors || d.views || 0);
+    var clicks   = parseFloat(d.clicks || 0);
+    var subs     = parseInt(d.subscribers || 0);
+    var convs    = parseInt(d.conversions || 0);
+    var revenue  = parseFloat(d.revenue || 0);
+    var ctr      = visitors > 0 ? ((clicks/visitors)*100).toFixed(1)+'%' : '—';
+    var sources  = d.visitor_sources || {};
+    var hasAB    = d.ab_a || d.ab_b;
+
+    var sourceHtml = '';
+    if (Object.keys(sources).length) {
+      var chips = ['email','social','ads','direct','unknown'].map(function(s) {
+        return sources[s] ? '<div class="source-chip">' + s + ' <span>' + sources[s].toLocaleString() + '</span></div>' : '';
+      }).join('');
+      sourceHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin-bottom:4px;">Visitor Sources</div><div class="sources-row">' + chips + '</div>';
+    }
+
+    var abHtml = '';
+    if (hasAB) {
+      abHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">A/B Test Results</div>' +
+        '<div class="ab-compare">' +
+          '<div class="ab-panel variant-a"><h5>Variant A</h5>' +
+            '<div style="font-size:12px;">Views: <b>' + ((d.ab_a && d.ab_a.views)||0).toLocaleString() + '</b></div>' +
+            '<div style="font-size:12px;">CTR: <b>' + (d.ab_a && d.ab_a.ctr ? (d.ab_a.ctr*100).toFixed(1)+'%' : '—') + '</b></div>' +
+            '<div style="font-size:12px;">Conv: <b>' + ((d.ab_a && d.ab_a.conversions)||0).toLocaleString() + '</b></div>' +
+          '</div>' +
+          '<div class="ab-panel variant-b"><h5>Variant B</h5>' +
+            '<div style="font-size:12px;">Views: <b>' + ((d.ab_b && d.ab_b.views)||0).toLocaleString() + '</b></div>' +
+            '<div style="font-size:12px;">CTR: <b>' + (d.ab_b && d.ab_b.ctr ? (d.ab_b.ctr*100).toFixed(1)+'%' : '—') + '</b></div>' +
+            '<div style="font-size:12px;">Conv: <b>' + ((d.ab_b && d.ab_b.conversions)||0).toLocaleString() + '</b></div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    container.innerHTML =
+      '<div class="analytics-grid">' +
+        '<div class="stat-box"><div class="stat-val">' + visitors.toLocaleString() + '</div><div class="stat-lbl">Visitors</div></div>' +
+        '<div class="stat-box"><div class="stat-val">' + clicks.toLocaleString() + '</div><div class="stat-lbl">Clicks</div></div>' +
+        '<div class="stat-box"><div class="stat-val">' + ctr + '</div><div class="stat-lbl">CTR</div></div>' +
+        '<div class="stat-box"><div class="stat-val">' + subs.toLocaleString() + '</div><div class="stat-lbl">Subscribers</div></div>' +
+        '<div class="stat-box conversions"><div class="stat-val">' + convs.toLocaleString() + '</div><div class="stat-lbl">Conversions</div></div>' +
+        '<div class="stat-box revenue"><div class="stat-val">$' + revenue.toLocaleString() + '</div><div class="stat-lbl">Revenue</div></div>' +
+      '</div>' +
+      sourceHtml + abHtml;
+  }
+
+  // ─── Card expand ─────────────────────────────────────────────────────────────
+  function toggleCardExpansion(cardElement, pageId) {
+    if (expandedCard && expandedCard !== cardElement) expandedCard.classList.remove('expanded');
+    if (cardElement.classList.contains('expanded')) {
+      cardElement.classList.remove('expanded'); expandedCard = null;
+      document.getElementById('modalOverlay').classList.remove('show');
+    } else {
+      cardElement.classList.add('expanded'); expandedCard = cardElement;
+      document.getElementById('modalOverlay').classList.add('show');
+      var twBtn = cardElement.querySelector('.tw-btn.active');
+      if (twBtn) loadAnalytics(pageId, twBtn.textContent.trim(), twBtn);
+    }
+  }
+
+  function closeExpandedCard() {
+    if (expandedCard) { expandedCard.classList.remove('expanded'); expandedCard = null; }
+    document.getElementById('modalOverlay').classList.remove('show');
+  }
+
+  // ─── Page actions ─────────────────────────────────────────────────────────────
+  async function handlePageEdit(pageId) {
+    var chatInput = document.getElementById('chatInput_' + pageId);
+    var editBtn = document.getElementById('editBtn_' + pageId);
+    if (!chatInput.value.trim()) { showStatus('Please describe what changes you want.', true); return; }
+    try {
+      editBtn.disabled = true; editBtn.textContent = '🔄 Updating...';
+      var result = await apiCall(ENDPOINTS.pagesUpdate, { id: pageId, chat_input: chatInput.value });
+      if (result && result.success !== false) { chatInput.value = ''; showStatus('Page updated successfully!'); await loadPages(); applyFilters(); }
+      else { throw new Error(result && result.message ? result.message : 'Update failed'); }
+    } catch(e) { showStatus('Error: ' + e.message, true); }
+    finally { editBtn.disabled = false; editBtn.textContent = '🤖 Update Page'; }
+  }
+
+  async function deletePage(pageId) {
+    if (!confirm('Are you sure you want to delete this page?')) return;
+    try {
+      var result = await apiCall(ENDPOINTS.pagesRemove, { id: pageId });
+      if (result && result.success !== false) { showStatus('Page deleted successfully!'); closeExpandedCard(); await loadPages(); applyFilters(); }
+      else { throw new Error(result && result.message ? result.message : 'Delete failed'); }
+    } catch(e) { showStatus('Error deleting page: ' + e.message, true); }
+  }
+
   function viewPage(url) {
-    if (url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    } else {
-      showStatus('No URL available for this page', true);
-    }
+    if (url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') window.open(url, '_blank', 'noopener,noreferrer');
+    else showStatus('No URL available for this page', true);
   }
 
-  // Copy page URL to clipboard
   function copyPageUrl(url) {
-    if (url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') {
-      navigator.clipboard.writeText(url).then(() => {
-        showStatus('Page URL copied to clipboard!');
-      }).catch(() => {
-        showStatus('Failed to copy URL', true);
-      });
-    } else {
-      showStatus('No URL available for this page', true);
-    }
+    if (url && url !== 'No URL set') navigator.clipboard.writeText(url).then(function() { showStatus('URL copied!'); }).catch(function() { showStatus('Failed to copy URL', true); });
+    else showStatus('No URL available', true);
   }
 
+  // ─── UI helpers ───────────────────────────────────────────────────────────────
   function showEmptyState() {
-    pagesContainer.innerHTML = `
-      <div class="empty-state">
-        <h3>No landing pages yet</h3>
-        <p>Click "Create New Landing Page" above to get started!</p>
-      </div>
-    `;
+    document.getElementById('pagesContainer').innerHTML = '<div class="empty-state"><h3>No pages yet</h3><p>Choose a page type above to get started!</p></div>';
   }
 
-  function showNoResultsState() {
-    pagesContainer.innerHTML = `
-      <div class="empty-state">
-        <h3>No pages match your filters</h3>
-        <p>Try adjusting your search criteria or clearing the filters.</p>
-      </div>
-    `;
+  function showStatus(message, isError) {
+    isError = isError || false;
+    var div = document.getElementById('statusMessage');
+    div.textContent = message;
+    div.className = 'status-message ' + (isError ? 'status-error' : 'status-success');
+    div.style.display = 'block';
+    setTimeout(function() { div.style.display = 'none'; }, 5000);
   }
 
-  function showStatus(message, isError = false) {
-    const statusDiv = document.getElementById('statusMessage');
-    statusDiv.textContent = message;
-    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
-    statusDiv.style.display = 'block';
-    
-    setTimeout(() => {
-      statusDiv.style.display = 'none';
-    }, 5000);
-  }
-
-  // Event listeners
+  // ─── Event listeners ─────────────────────────────────────────────────────────
   function setupEventListeners() {
-    createPageBtn.addEventListener('click', createPage);
-    
-    refreshPagesBtn.addEventListener('click', async () => {
-      await Promise.all([
-        loadAvailableVideos(),
-        loadPages()
-      ]);
+    document.getElementById('createPageBtn').addEventListener('click', createPage);
+    document.getElementById('refreshPages').addEventListener('click', async function() {
+      await Promise.all([loadAvailableVideos(), loadLeadMagnetFiles(), loadPages()]);
       applyFilters();
     });
-    
-    clearFiltersBtn.addEventListener('click', clearFilters);
-
-    // Close modal when clicking overlay
-    modalOverlay.addEventListener('click', closeExpandedCard);
-
-    // Close modal on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && expandedCard) {
-        closeExpandedCard();
-      }
-    });
-
-    let searchTimeout;
-    searchFilter.addEventListener('input', () => {
+    document.getElementById('clearFilters').addEventListener('click', clearFilters);
+    document.getElementById('modalOverlay').addEventListener('click', closeExpandedCard);
+    document.getElementById('typeFilter').addEventListener('change', applyFilters);
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && expandedCard) closeExpandedCard(); });
+    var searchTimeout;
+    document.getElementById('searchFilter').addEventListener('input', function() {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(applyFilters, 300);
     });
   }
 
-  // Initialize page
+  // ─── Init ─────────────────────────────────────────────────────────────────────
   async function init() {
     try {
       document.getElementById('authLoading').style.display = 'flex';
-      
-      const isAuthenticated = await checkAuthentication();
-      
+      var isAuthenticated = await checkAuthentication();
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
-        await Promise.all([
-          loadUserData(),
-          loadAvailableVideos(),
-          loadPages()
-        ]);
+        await Promise.all([loadUserData(), loadAvailableVideos(), loadLeadMagnetFiles(), loadPages()]);
         setupEventListeners();
         applyFilters();
-        
-        // Auto-start tour for new users
-        if (!hasCompletedTour()) {
-          setTimeout(() => {
-            startTour();
-          }, 1000);
-        }
-      } else {
-        redirectToLogin();
-      }
-    } catch (error) {
-      console.error('Error initializing page:', error);
-      showStatus('Failed to load pages. Please refresh the page.', true);
+        if (!hasCompletedTour()) setTimeout(startTour, 1000);
+      } else { redirectToLogin(); }
+    } catch(e) {
+      console.error('Init error:', e);
+      showStatus('Failed to load. Please refresh.', true);
       document.getElementById('authLoading').style.display = 'none';
     }
   }
 
-  // Enhanced security checks
   setInterval(async function() {
-    try {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        console.log('Session expired, redirecting to login');
-        redirectToLogin();
-      }
-    } catch (e) {
-      console.error('Session check failed:', e);
-    }
-  }, 300000); // Check every 5 minutes
+    try { var r = await supabaseClient.auth.getSession(); if (!r.data.session) redirectToLogin(); } catch(e) { console.error(e); }
+  }, 300000);
 
   document.addEventListener('visibilitychange', async function() {
     if (!document.hidden) {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          redirectToLogin();
-        } else {
-          authToken = session.access_token;
-        }
-      } catch (e) {
-        console.error('Visibility auth check failed:', e);
-      }
+      try { var r = await supabaseClient.auth.getSession(); if (!r.data.session) redirectToLogin(); else authToken = r.data.session.access_token; } catch(e) { console.error(e); }
     }
   });
 
-  // Make functions globally available
   window.closeExpandedCard = closeExpandedCard;
   window.handlePageEdit = handlePageEdit;
   window.viewPage = viewPage;
@@ -1561,8 +1003,16 @@
   window.deletePage = deletePage;
   window.logout = logout;
   window.startTour = startTour;
+  window.loadAnalytics = loadAnalytics;
+  window.openLmModal = openLmModal;
+  window.closeLmModal = closeLmModal;
+  window.confirmLmSelection = confirmLmSelection;
+  window.selectLmFile = selectLmFile;
+  window.selectPageType = selectPageType;
+  window.sanitizeSlug = sanitizeSlug;
+  window.createLeadMagnetPage = createLeadMagnetPage;
+  window.createNewsletterPage = createNewsletterPage;
 
-  // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
