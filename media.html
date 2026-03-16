@@ -1354,6 +1354,16 @@
           <option value="presentation">Presentations</option>
         </select>
       </div>
+     <div class="form-group">
+  <label for="performanceFilter">Performance</label>
+  <select id="performanceFilter">
+    <option value="">All</option>
+    <option value="engagement_desc">Engagement ↓</option>
+    <option value="engagement_asc">Engagement ↑</option>
+    <option value="ctr_desc">CTR ↓</option>
+    <option value="revenue_desc">Revenue ↓</option>
+  </select>
+</div>
       <div class="form-group">
         <label for="campaignFilter">Campaign</label>
         <select id="campaignFilter">
@@ -1477,6 +1487,7 @@
   const mediaContainer = document.getElementById('mediaContainer');
   const searchFilter = document.getElementById('searchFilter');
   const fileTypeFilter = document.getElementById('fileTypeFilter');
+  const performanceFilter = document.getElementById('performanceFilter');
   const campaignFilter = document.getElementById('campaignFilter');
   const dateFromFilter = document.getElementById('dateFromFilter');
   const dateToFilter = document.getElementById('dateToFilter');
@@ -1825,6 +1836,10 @@
       console.log('Raw response:', response);
       
       const userData = response[0];
+      window.currentUser = {
+  company_id: userData.company_id || null,
+  team_role: userData.team_role || null
+};
       console.log('User data (first element):', userData);
       
       userCredits = {
@@ -2367,57 +2382,42 @@ document.getElementById('campaignImageSelect').value = '';
     }
   }
 
-  // Apply filters
-  function applyFilters() {
-    const searchTerm = searchFilter.value.toLowerCase();
-    const fileType = fileTypeFilter.value;
-    const campaignId = campaignFilter.value;
-    const dateFrom = dateFromFilter.value ? new Date(dateFromFilter.value) : null;
-    const dateTo = dateToFilter.value ? new Date(dateToFilter.value) : null;
+function applyFilters() {
+  const searchTerm = searchFilter.value.toLowerCase();
+  const fileType = fileTypeFilter.value;
+  const campaignId = campaignFilter.value;
+  const dateFrom = dateFromFilter.value ? new Date(dateFromFilter.value) : null;
+  const dateTo = dateToFilter.value ? new Date(dateToFilter.value) : null;
+  const perfSort = performanceFilter ? performanceFilter.value : '';
 
-    filteredMediaFiles = allMediaFiles.filter(file => {
-      // File type filter
-      if (fileType && !getFileType(file.file_type).includes(fileType)) {
-        return false;
-      }
+  filteredMediaFiles = allMediaFiles.filter(file => {
+    if (file.archive) return false;
+    if (fileType && !getFileType(file.file_type).includes(fileType)) return false;
+    if (campaignId && file.campaign_id !== campaignId) return false;
+    if (file.created_at) {
+      const fileDate = new Date(file.created_at);
+      if (dateFrom && fileDate < dateFrom) return false;
+      if (dateTo && fileDate > dateTo) return false;
+    }
+    if (searchTerm) {
+      const searchableText = [file.name || '', file.prompt || ''].join(' ').toLowerCase();
+      if (!searchableText.includes(searchTerm)) return false;
+    }
+    return true;
+  });
 
-      // Campaign filter
-      if (campaignId && file.campaign_id !== campaignId) {
-        return false;
-      }
+  if (perfSort === 'engagement_desc') filteredMediaFiles.sort((a,b) => (b.engagement_rate||0) - (a.engagement_rate||0));
+  else if (perfSort === 'engagement_asc') filteredMediaFiles.sort((a,b) => (a.engagement_rate||0) - (b.engagement_rate||0));
+  else if (perfSort === 'ctr_desc') filteredMediaFiles.sort((a,b) => (b.click_through_rate||0) - (a.click_through_rate||0));
+  else if (perfSort === 'revenue_desc') filteredMediaFiles.sort((a,b) => (b.revenue_attributed||0) - (a.revenue_attributed||0));
 
-      // Date filters
-      if (file.created_at) {
-        const fileDate = new Date(file.created_at);
-        if (dateFrom && fileDate < dateFrom) {
-          return false;
-        }
-        if (dateTo && fileDate > dateTo) {
-          return false;
-        }
-      }
-
-      // Search filter
-      if (searchTerm) {
-        const searchableText = [
-          file.name || '',
-          file.prompt || ''
-        ].join(' ').toLowerCase();
-        
-        if (!searchableText.includes(searchTerm)) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-
-    renderMediaDisplay();
-  }
+  renderMediaDisplay();
+}
 
   // Clear filters
   function clearFilters() {
     searchFilter.value = '';
+ performanceFilter.value = '';
     fileTypeFilter.value = '';
     campaignFilter.value = '';
     dateFromFilter.value = '';
@@ -2552,26 +2552,26 @@ function escapeHtml(text) {
       }
     }
 
-    card.innerHTML = `
-      <div class="media-preview">
-        ${renderMediaPreview(file, previewUrl)}
-        ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
-      </div>
-      <div class="media-info">
-        <h3 class="media-title">${file.name || 'Untitled'}</h3>
-        <p class="media-description">${file.prompt || 'No description available'}</p>
-        <div class="media-meta">
-          <div class="meta-item">
-            <span class="meta-label">Created:</span>
-            ${createdDate}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Size:</span>
-            ${file.file_size || 'N/A'}
-          </div>
-        </div>
-      </div>
-    `;
+card.innerHTML = `
+  <div class="media-preview">
+    ${renderMediaPreview(file, previewUrl)}
+    ${file.name !== 'logo.jpg' ? `<div class="media-type-badge ${fileType}">${fileType.toUpperCase()}</div>` : ''}
+    ${file.lead_magnet ? `<div style="position:absolute;top:8px;left:8px;background:#bb133e;color:white;font-size:10px;font-weight:bold;padding:2px 6px;border-radius:3px;">🧲 LEAD MAGNET</div>` : ''}
+  </div>
+  <div class="media-info">
+    <h3 class="media-title">${file.name || 'Untitled'}</h3>
+    <p class="media-description">${file.prompt || 'No description available'}</p>
+    <div class="media-meta">
+      <div class="meta-item"><span class="meta-label">Created:</span> ${createdDate}</div>
+      <div class="meta-item"><span class="meta-label">Size:</span> ${file.file_size || 'N/A'}</div>
+    </div>
+    <div class="media-meta" style="margin-top:6px;font-size:11px;color:#555;gap:8px;display:flex;flex-wrap:wrap;">
+      <span>📊 Eng: ${file.engagement_rate != null ? (file.engagement_rate*100).toFixed(1)+'%' : '—'}</span>
+      <span>🖱️ CTR: ${file.click_through_rate != null ? (file.click_through_rate*100).toFixed(1)+'%' : '—'}</span>
+      <span>💰 Rev: ${file.revenue_attributed != null ? '$'+Number(file.revenue_attributed).toLocaleString() : '—'}</span>
+    </div>
+  </div>
+`;
     return card;
   }
 
@@ -2655,7 +2655,33 @@ function escapeHtml(text) {
           <div class="modal-value">${file.prompt || 'N/A'}</div>
         </div>
       </div>
-      
+      <div class="modal-field">
+  <div class="modal-label">Performance:</div>
+  <div class="modal-value">
+    📊 Engagement: ${file.engagement_rate != null ? (file.engagement_rate*100).toFixed(1)+'%' : '—'} &nbsp;
+    🖱️ CTR: ${file.click_through_rate != null ? (file.click_through_rate*100).toFixed(1)+'%' : '—'} &nbsp;
+    💰 Revenue: ${file.revenue_attributed != null ? '$'+Number(file.revenue_attributed).toLocaleString() : '—'}
+  </div>
+</div>
+<div class="modal-field">
+  <div class="modal-label">Lead Magnet:</div>
+  <div class="modal-value">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+      <input type="checkbox" id="leadMagnetToggle" ${file.lead_magnet ? 'checked' : ''} onchange="toggleLeadMagnet('${file.id}', this.checked)">
+      Use as lead magnet
+    </label>
+  </div>
+</div>
+<div class="modal-field">
+  <div class="modal-label">Move to Campaign:</div>
+  <div class="modal-value" style="display:flex;gap:8px;align-items:center;">
+    <select id="moveCampaignSelect" style="flex:1;">
+      <option value="">-- Select Campaign --</option>
+      ${campaigns.map(c => `<option value="${c.id}" ${file.campaign_id === c.id ? 'selected' : ''}>${c.name || c.id}</option>`).join('')}
+    </select>
+    <button onclick="moveToCampaign('${file.id}')" style="background:#0a3161;color:white;padding:4px 10px;border:none;border-radius:4px;cursor:pointer;">Move</button>
+  </div>
+</div>
       <!-- Edit Mode -->
       <div id="editMode" class="edit-mode">
         <div class="modal-edit-field">
@@ -2674,13 +2700,15 @@ function escapeHtml(text) {
         </div>
       </div>
       
-      <div class="modal-actions">
-        <button id="editBtn" onclick="toggleEditMode()">📝 Edit</button>
-        <button id="saveBtn" onclick="saveFileChanges('${file.id}')" style="display: none; background: #28a745;">💾 Save</button>
-        <button id="cancelBtn" onclick="cancelEdit()" style="display: none; background: #6c757d;">❌ Cancel</button>
-        <button onclick="downloadFile('${file.URL}', '${file.name}')" style="background: #17a2b8;">📥 Download</button>
-        <button onclick="deleteFile('${file.id}', '${fileType}')" style="background: #dc3545;">🗑️ Delete</button>
-      </div>
+   <div class="modal-actions">
+  <button id="editBtn" onclick="toggleEditMode()">📝 Edit</button>
+  <button id="saveBtn" onclick="saveFileChanges('${file.id}')" style="display:none;background:#28a745;">💾 Save</button>
+  <button id="cancelBtn" onclick="cancelEdit()" style="display:none;background:#6c757d;">❌ Cancel</button>
+  <button onclick="downloadFile('${file.URL}', '${file.name}')" style="background:#17a2b8;">📥 Download</button>
+  <button onclick="archiveFile('${file.id}')" style="background:#6c757d;">🗄️ Archive</button>
+  ${window.currentUser && window.currentUser.company_id ? `<button onclick="shareWithTeam('${file.id}')" style="background:#6610f2;color:white;">👥 Share</button>` : ''}
+  <button onclick="deleteFile('${file.id}', '${fileType}')" style="background:#dc3545;">🗑️ Delete</button>
+</div>
     `;
     
     modal.style.display = 'block';
@@ -2723,6 +2751,8 @@ function escapeHtml(text) {
       const result = await apiCall(ENDPOINTS.updateMedia, {
         id: fileId,
         name: newName,
+      lead_magnet: document.getElementById('leadMagnetToggle') ? document.getElementById('leadMagnetToggle').checked : false,
+campaign_id: document.getElementById('moveCampaignSelect') ? document.getElementById('moveCampaignSelect').value || null : null,
         campaign_name: newCampaignName,
         prompt: newPrompt
       });
@@ -2782,7 +2812,53 @@ function escapeHtml(text) {
         });
     }
   }
+async function toggleLeadMagnet(fileId, isChecked) {
+  try {
+    await apiCall(ENDPOINTS.updateMedia, { id: fileId, lead_magnet: isChecked });
+    const fileIndex = allMediaFiles.findIndex(f => f.id === fileId);
+    if (fileIndex !== -1) allMediaFiles[fileIndex].lead_magnet = isChecked;
+    showStatus(isChecked ? 'Marked as lead magnet!' : 'Lead magnet removed.');
+    applyFilters();
+  } catch(e) { showStatus('Error updating lead magnet: ' + e.message, true); }
+}
 
+async function moveToCampaign(fileId) {
+  const select = document.getElementById('moveCampaignSelect');
+  const campaignId = select.value;
+  if (!campaignId) { showStatus('Please select a campaign.', true); return; }
+  const campaign = campaigns.find(c => c.id === campaignId);
+  try {
+    await apiCall(ENDPOINTS.updateMedia, { id: fileId, campaign_id: campaignId, campaign_name: campaign ? campaign.name : '' });
+    const fileIndex = allMediaFiles.findIndex(f => f.id === fileId);
+    if (fileIndex !== -1) { allMediaFiles[fileIndex].campaign_id = campaignId; allMediaFiles[fileIndex].campaign_name = campaign ? campaign.name : ''; }
+    showStatus('Moved to campaign: ' + (campaign ? campaign.name : campaignId));
+    applyFilters();
+  } catch(e) { showStatus('Error moving file: ' + e.message, true); }
+}
+
+async function archiveFile(fileId) {
+  if (!confirm('Archive this file? It will be hidden from your library.')) return;
+  try {
+    await apiCall(ENDPOINTS.updateMedia, { id: fileId, archive: true });
+    const fileIndex = allMediaFiles.findIndex(f => f.id === fileId);
+    if (fileIndex !== -1) allMediaFiles[fileIndex].archive = true;
+    showStatus('File archived.');
+    closeModal();
+    applyFilters();
+  } catch(e) { showStatus('Error archiving file: ' + e.message, true); }
+}
+
+function shareWithTeam(fileId) {
+  // Only shown when company_id is not null (team context)
+  const file = allMediaFiles.find(f => f.id === fileId);
+  if (!file) return;
+  const shareUrl = file.URL;
+  if (navigator.share) {
+    navigator.share({ title: file.name, url: shareUrl });
+  } else {
+    navigator.clipboard.writeText(shareUrl).then(() => showStatus('Link copied to clipboard for sharing!'));
+  }
+}
   // Close modal when clicking outside
   window.onclick = function(event) {
     const modal = document.getElementById('mediaModal');
@@ -2933,6 +3009,10 @@ document.getElementById('videoForm').addEventListener('submit', async (e) => {
   window.closeModal = closeModal;
   window.deleteFile = deleteFile;
   window.downloadFile = downloadFile;
+  window.toggleLeadMagnet = toggleLeadMagnet;
+window.moveToCampaign = moveToCampaign;
+window.archiveFile = archiveFile;
+window.shareWithTeam = shareWithTeam;
   window.startTour = startTour;
   window.toggleEditMode = toggleEditMode;
   window.saveFileChanges = saveFileChanges;
