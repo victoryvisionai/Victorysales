@@ -32,6 +32,8 @@
     --color-primary: #0a3161;
     --color-white: #ffffff;
     --color-accent: #bb133e;
+    --hero-badge-bg: #fff3f6;
+    --hero-badge-color: #bb133e;
   }
   /* Header */
   header {
@@ -49,7 +51,6 @@
   }
   /* Hero */
   #hero {
-    background: var(--color-primary);
     background: linear-gradient(135deg, #0a3161 0%, #092951 100%);
     color: var(--color-white);
     padding: 4rem 1.5rem 4rem 1.5rem;
@@ -60,30 +61,77 @@
     max-width: 720px;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
   }
   #hero h1 {
-    font-size: 2.75rem;
+    font-size: 2.5rem;
     font-weight: 900;
-    max-width: 620px;
-    margin-bottom: 1rem;
+    max-width: 600px;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+  }
+  #hero .hero-subheadline {
+    font-size: 1rem;
+    color: #ffeef2;
+    margin-bottom: 1.5rem;
+    background: rgba(187,19,62,0.10);
+    display: inline-block;
+    padding: 0.25em 1.2em;
+    border-radius: 3em;
+    font-weight: 700;
+    letter-spacing: .01em;
   }
   #hero p {
-    font-size: 1.25rem;
+    font-size: 1.18rem;
     font-weight: 500;
-    max-width: 520px;
-    margin-bottom: 3rem;
+    max-width: 510px;
+    margin-bottom: 1.5rem;
     line-height: 1.4;
+    color: #f6f9fc;
+  }
+  #hero .hero-benefit-bar {
+    margin-bottom: 2.2rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.75em;
+    flex-wrap: wrap;
+  }
+  #hero .hero-badge {
+    background: var(--hero-badge-bg);
+    color: var(--hero-badge-color);
+    font-size: 0.97rem;
+    font-weight: 700;
+    padding: 0.37em 1.1em;
+    border-radius: 2em;
+    box-shadow: 0 2px 8px rgba(187,19,62,0.14);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.01em;
+    display: inline-block;
+  }
+  #hero .hero-badge + .hero-badge {
+    margin-left: 0.35em;
   }
   #hero button {
     background-color: var(--color-accent);
     color: var(--color-white);
     border: none;
-    font-size: 1.125rem;
-    padding: 0.85rem 2.5rem;
+    font-size: 1.14rem;
+    padding: 0.93rem 2.3rem 0.93rem 2.3rem;
     border-radius: 4px;
     box-shadow: 0 6px 15px rgba(187,19,62,0.5);
     transition: background-color 0.3s ease;
     font-family: inherit;
+    letter-spacing: .01em;
+    position: relative;
+  }
+  #hero .cta-support {
+    display: block;
+    font-size: 0.97rem;
+    color: #ffb4c2;
+    font-weight: 600;
+    margin-top: 0.65em;
+    margin-bottom: 0;
+    letter-spacing: 0.01em;
   }
   #hero button:hover,
   #hero button:focus {
@@ -172,6 +220,17 @@
     background: #f7f9fc;
     padding: 3rem 1.5rem 5rem 1.5rem;
   }
+  #form-section .form-lead-text {
+    text-align: center;
+    margin-bottom: 1.7rem;
+    color: #0a3161;
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
   form {
     max-width: 440px;
     margin: 0 auto;
@@ -211,17 +270,38 @@
     box-shadow: 0 5px 12px rgb(10 49 97 / 0.35);
     transition: background-color 0.3s ease;
     font-family: inherit;
+    letter-spacing: .01em;
+    margin-bottom: 0.2em;
   }
   button[type="submit"]:hover,
   button[type="submit"]:focus {
     background-color: #08264b;
     outline: none;
   }
+  .form-cta-microcopy {
+    text-align: center;
+    font-size: 0.97rem;
+    color: #bb133e;
+    font-weight: 600;
+    margin-top: 0.13em;
+    margin-bottom: 0;
+    letter-spacing: 0.01em;
+  }
   #privacy {
-    font-size: 0.9rem;
+    font-size: 0.89rem;
     color: #697480;
     text-align: center;
-    margin-top: 0.5rem;
+    margin-top: 0.6rem;
+    margin-bottom: 0.17rem;
+  }
+  #privacy-trust {
+    font-size: 0.9rem;
+    color: #929db1;
+    text-align: center;
+    margin-top: 0.25rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
   }
   /* Final CTA reinforcement */
   #final-cta {
@@ -265,6 +345,7 @@
     box-shadow: 0 4px 12px rgba(187, 19, 62, 0.55);
     font-family: inherit;
     white-space: nowrap;
+    letter-spacing: .01em;
   }
   #sticky-cta-bar button:hover,
   #sticky-cta-bar button:focus {
@@ -272,26 +353,141 @@
     outline: none;
   }
   /* Responsive */
-  @media (max-width: 480px) {
+  @media (max-width: 700px) {
+    #hero {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      max-width: 98vw;
+    }
+    #benefits, #offer, #final-cta, #social-proof {
+      max-width: 98vw;
+      padding-left: 0.7rem;
+      padding-right: 0.7rem;
+    }
+  }
+  @media (max-width: 540px) {
     #hero h1 {
-      font-size: 1.9rem;
+      font-size: 1.45rem;
+      margin-bottom: 0.25rem;
+    }
+    #hero .hero-subheadline {
+      font-size: 0.95rem;
+      padding-left: 1em;
+      padding-right: 1em;
+      margin-bottom: 1.05rem;
     }
     #hero p {
+      font-size: 0.96rem;
+      margin-bottom: 1.25rem;
+    }
+    #hero button {
       font-size: 1rem;
+      padding: 0.93rem 1.25rem 0.93rem 1.25rem;
+    }
+    #hero .hero-badge {
+      font-size: 0.89rem;
+      padding-left: 0.8em;
+      padding-right: 0.8em;
+    }
+    #hero .cta-support {
+      font-size: 0.89rem;
+    }
+    #benefits li {
+      font-size: 1rem;
+    }
+    #final-cta {
+      font-size: 1rem;
+      padding-left: 0.6rem;
+      padding-right: 0.6rem;
+    }
+    #form-section {
+      padding-left: 0.7rem;
+      padding-right: 0.7rem;
+    }
+    .form-lead-text {
+      font-size: 1rem;
+    }
+    button[type="submit"] {
+      font-size: 1rem;
+    }
+    #sticky-cta-bar {
+      padding: 0.33rem 0.5rem !important;
+    }
+    #sticky-cta-bar button {
+      font-size: 0.97rem;
+      padding: 0.55rem 1.1rem;
+    }
+  }
+  @media (max-width: 400px) {
+    #hero h1 {
+      font-size: 1.07rem;
+    }
+    #hero .hero-badge {
+      font-size: 0.76rem;
+      padding-left: 0.52em;
+      padding-right: 0.52em;
+    }
+    #hero p {
+      font-size: 0.85rem;
+    }
+    .form-lead-text {
+      font-size: 0.91rem;
     }
   }
 </style>
+<script type="text/javascript">
+_linkedin_partner_id = "8929812";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script>
+<script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"97225334", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
+<!-- Google Tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-16965842202"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-16965842202');
+gtag('config', 'GT-WF4ZXWLR');
+</script>
 </head>
 <body>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=8929812&fmt=gif" />
+</noscript>
 <header>
   <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision logo" width="180" height="40" />
 </header>
 
 <main>
   <section id="hero" role="banner" aria-label="Lead magnet introduction">
-    <h1>Scale Your Property Management Growth Faster with AI</h1>
-    <p>Victory Vision helps ambitious, growth-minded companies generate more qualified opportunities, automate critical follow-up, and scale revenue more efficiently.</p>
-    <button type="button" id="scrollToFormBtn" aria-label="Get the Scale presentation now">Get the Presentation</button>
+    <h1>Unlock Predictable Growth with AI: <br /> Get the 8-Slide <strong>SCALE</strong> Presentation</h1>
+    <div class="hero-subheadline">
+      Instantly download a concise, actionable presentation made for property management founders ready to scale faster and book more meetings.
+    </div>
+    <p>
+      Discover how to transform disconnected sales and marketing into a high-performance, AI-powered revenue engine—built for owner-led property management companies seeking real growth without extra chaos, complexity, or staff.
+    </p>
+    <div class="hero-benefit-bar" aria-hidden="true">
+      <span class="hero-badge">Free. No Pitch.</span>
+      <span class="hero-badge">Tailored for $2M–$10M revenue founders</span>
+      <span class="hero-badge">Immediate Download</span>
+      <span class="hero-badge">Founder-Friendly. Actionable.</span>
+    </div>
+    <button type="button" id="scrollToFormBtn" aria-label="Get the SCALE presentation now">
+      Get the Presentation
+    </button>
+    <span class="cta-support">Receive your growth roadmap &mdash; no sales pitch, no spam.</span>
   </section>
 
   <section id="benefits" aria-label="Benefits of Victory Vision AI platform">
@@ -300,12 +496,14 @@
       <li>Automate follow-up to reduce lost leads and revenue leakage</li>
       <li>Scale growth predictably without adding chaos or overhead</li>
       <li>Gain clear insights into what's driving meetings and revenue</li>
-      <li>Turn scattered sales and marketing efforts into a streamlined AI-powered engine</li>
+      <li>Turn scattered sales and marketing into a streamlined AI-powered engine</li>
     </ul>
   </section>
 
   <section id="offer" aria-label="Lead magnet offer details">
-    <p>By submitting your info, you’ll receive <strong>an 8-slide presentation</strong> that reveals exactly how the Victory Vision platform harnesses AI to help property management founders like you scale faster, book more qualified meetings, and improve follow-up — all with less manual work and more clarity.</p>
+    <p>
+      By submitting your info, you'll get <strong>free, instant access to the exclusive 8-slide SCALE presentation</strong>—designed specifically for ambitious property management business owners. Learn exactly how founder-led teams are using Victory Vision's AI platform to book more qualified meetings, automate follow-up, and scale revenue, all with less manual work and sharper visibility.
+    </p>
   </section>
 
   <section id="social-proof" aria-label="Industry social proof">
@@ -321,14 +519,17 @@
   </section>
 
   <section id="form-section" aria-label="Lead capture form to get presentation">
+    <div class="form-lead-text">
+      Get your free, no-fluff presentation for founder-led property management companies ($2M–$10M revenue). See step-by-step how to scale meetings and revenue with AI—immediate download, no waiting.
+    </div>
     <form id="leadForm" action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission" method="POST" novalidate>
       <label for="name">Full Name</label>
       <input type="text" id="name" name="name" placeholder="Your full name" required autocomplete="name" />
 
-      <label for="email">Professional Email</label>
-      <input type="email" id="email" name="professional_email" placeholder="Your business email" required autocomplete="email" />
+      <label for="email">Business Email</label>
+      <input type="email" id="email" name="professional_email" placeholder="you@company.com" required autocomplete="email" />
 
-      <input type="hidden" id="page_id" name="page_id" value="" />
+      <input type="hidden" id="page_id" name="page_id" value="b96e0d4d49da15f148c5d48f26dda6ba635eba95" />
       <input type="hidden" id="variant_id" name="variant_id" value="" />
       <input type="hidden" id="session_id" name="session_id" value="" />
       <input type="hidden" id="source_url" name="source_url" value="" />
@@ -340,20 +541,26 @@
       <input type="hidden" id="utm_content" name="utm_content" value="" />
       <input type="hidden" id="lead_magnet_name" name="lead_magnet_name" value="SCALE" />
 
-      <button type="submit" aria-label="Submit to receive the Scale presentation and book a call">Get the Presentation</button>
+      <button type="submit" aria-label="Submit to receive the SCALE presentation and book a call">Get the Presentation</button>
+      <div class="form-cta-microcopy">Instant download &ndash; proven for founder-led growth. No pitching. No spam ever.</div>
       <p id="privacy">We respect your privacy. Your information is safe and never shared.</p>
+      <div id="privacy-trust">We use limited session info to personalize your experience and prevent duplicate submissions—never shared or sold. No cold calls or mailing list spam, ever.</div>
     </form>
   </section>
 
   <section id="final-cta" aria-label="Final call to action">
-    <p>Get your personalized roadmap to scale faster, book more qualified meetings, and grow with less friction — powered by AI with Victory Vision.</p>
+    <p>
+      Start scaling your property management company with clarity, efficiency, and measurable results. Get the 8-slide roadmap trusted by ambitious founders to book more meetings, improve follow-up, and accelerate revenue—powered by Victory Vision AI.
+    </p>
   </section>
 </main>
 
 <footer></footer>
 
 <div id="sticky-cta-bar" aria-live="polite" class="hidden">
-  <button type="button" id="stickyCTABtn" aria-label="Scroll to sign up form to get the Scale presentation">Get the Presentation</button>
+  <button type="button" id="stickyCTABtn" aria-label="Scroll to sign up form to get the SCALE presentation">
+    Get the Presentation
+  </button>
 </div>
 
 <div id="vv-chatbot-root"></div>
@@ -364,7 +571,7 @@
 
   (function() {
 
-    const pageId = '';
+    const pageId = 'b96e0d4d49da15f148c5d48f26dda6ba635eba95';
     const form = document.getElementById('leadForm');
 
     function getParameterByName(name) {
@@ -514,5 +721,7 @@
     });
   })();
 </script>
+<img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=b96e0d4d49da15f148c5d48f26dda6ba635eba95" width="1" height="1" alt="" style="display:none;" loading="eager">
+<footer style="text-align:center;padding:1.5rem 1rem;font-size:0.95rem;border-top:1px solid #e7eef7;color:#444;font-family:sans-serif;">Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener" style="color:#bb133e;font-weight:bold;text-decoration:underline;">Build your free AI website at Victory Vision</a></footer>
 </body>
 </html>
