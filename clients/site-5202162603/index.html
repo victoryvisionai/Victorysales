@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Scale Faster with AI | Victory Vision Scal Presentation</title>
+<title>Get the AI Scaling Playbook | Victory Vision for Property Managers</title>
+<meta name="description" content="Unlock scalable growth and predictable revenue with the AI Scaling Playbook – a lead magnet squeeze page and actionable presentation for founder-led property management companies seeking more qualified meetings, automated follow-up, and breakthrough pipeline results.">
+<link rel="icon" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/svgs/solid/flag.svg" type="image/svg+xml" />
+<meta property="og:title" content="Get the AI Scaling Playbook | Victory Vision for Property Managers" />
+<meta property="og:description" content="Unlock scalable growth with the battle-proven AI Playbook for $2M–$10M property management founders. Turn pipeline leaks into booked meetings and revenue with no-nonsense, founder-focused AI." />
+<meta property="og:image" content="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" />
+<meta property="og:url" content="https://www.victoryvision.app/" />
+<meta property="og:site_name" content="Victory Vision" />
+<meta property="og:type" content="website" />
 <style>
   :root {
     --navy: #0a3161;
@@ -17,6 +25,9 @@
   * {
     box-sizing: border-box;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     margin: 0;
     font-family: var(--font-sans);
@@ -24,6 +35,7 @@
     background: var(--white);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    line-height: 1.4;
   }
   a, button {
     cursor: pointer;
@@ -34,7 +46,7 @@
     display: block;
   }
   header {
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 1rem 0.65rem 1rem;
     text-align: center;
     background-color: var(--white);
   }
@@ -45,53 +57,338 @@
   main {
     max-width: 600px;
     margin: 0 auto;
-    padding: 2rem 1.5rem 6rem;
+    padding: 0 1.5rem 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.7rem;
   }
+  /* HERO SECTION */
   .hero {
     position: relative;
     background-color: var(--navy);
     color: var(--white);
     border-radius: 8px;
     overflow: hidden;
-    padding: 3rem 2rem 4rem;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 380px;
+    /* Maintain aspect ratio for the video on mobile */
+  }
+  .hero-video-bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    min-height: 300px;
+    filter: brightness(0.53) blur(0.7px);
+    opacity: 1;
+    transition: opacity .2s;
+    pointer-events: none;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem 2.5rem 1.5rem;
+    width: 100%;
     text-align: center;
   }
-  .hero h1 {
-    font-size: 2.5rem;
+  .hero-headline {
+    font-size: 2.4rem;
     line-height: 1.1;
     font-weight: 700;
-    margin: 0 0 1rem;
+    margin: 0 0 0.65rem;
+    letter-spacing:-0.015em;
+    text-shadow: 0 2px 8px rgba(10,49,97,0.10);
   }
-  .hero p {
-    font-size: 1.125rem;
-    margin: 0 0 2rem;
-    max-width: 480px;
+  .hero-headline span {
+    color: #ffd24d;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+  }
+  .hero-subheadline {
+    font-size: 1.14rem;
+    font-weight: 500;
+    margin: 0 0 1.25rem;
+    color: #d7e4f5;
+    text-shadow: 0 1px 6px rgba(10,49,97,0.08);
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .lead-magnet-offer {
+    background: rgba(255,255,255,0.08);
+    color: var(--white);
+    border-radius: 6px;
+    max-width: 500px;
+    margin: 0 auto 1.7rem auto;
+    padding: 1.1rem 1.4rem 1.2rem 1.4rem;
+    box-shadow: 0 3px 28px 0 rgba(17,38,69,0.08);
+    border: 2px solid rgba(255,255,255,0.08);
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .magnet-mockup-img {
+    flex-shrink: 0;
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 16px 0 rgba(17,38,69,0.10);
+    object-fit: contain;
+  }
+  .magnet-offer-text h2 {
+    font-size: 1.22rem;
+    font-weight: 700;
+    margin: 0 0 0.15rem;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .magnet-offer-text ul {
+    list-style: disc inside;
+    margin: 0.3rem 0 0 0;
+    padding: 0;
+    font-size: 1rem;
+    color: #e2eefd;
+  }
+  .magnet-offer-text ul li {
+    margin-bottom: 0.15rem;
+    line-height: 1.35;
+    font-size: 1rem;
     font-weight: 500;
   }
-  /* Video container for embedded iframe */
-  .hero-video-container {
+  .magnet-offer-text strong {
+    color: #fffd;
+  }
+  .presentation-preview {
+    max-width: 500px;
     width: 100%;
-    max-width: 560px;
+    margin: 0 auto 2.2rem auto;
+    position: relative;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    margin-bottom: 2rem;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
   }
-  iframe {
+  .presentation-preview-img {
+    display: block;
     width: 100%;
-    height: 315px;
-    border: none;
+    background: #fff;
+    border-radius: 8px;
+    border: 1.5px solid #c6d5e7;
   }
-
-  /* Benefits section */
+  .presentation-preview-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    background: linear-gradient(180deg,rgba(10,49,97,0.0) 0%,rgba(10,49,97,0.90) 88%);
+    color: #fff;
+    padding: 1.1rem 1.3rem 1rem 1.3rem;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .presentation-preview-overlay h3 {
+    margin: 0 0 0.35rem 0;
+    font-size: 1.13rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .presentation-preview-overlay p {
+    margin: 0;
+    font-size: 0.97rem;
+    font-weight: 500;
+    color: #e2eefd;
+  }
+  /* FORM SECTION */
+  section.form-section {
+    background: var(--white);
+    color: var(--navy);
+    padding: 2.1rem 1.25rem 1.3rem;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: -3.2rem auto 0 auto;
+    box-shadow: 0 3px 28px 0 rgba(17,38,69,0.16);
+    position: relative;
+    z-index: 5;
+    border: 2.5px solid #e7eef7;
+  }
+  .form-title {
+    font-size: 1.22rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.01em;
+    text-align: center;
+  }
+  .form-summary {
+    font-size: 1rem;
+    color: #09295a;
+    max-width: 400px;
+    margin: 0 auto 1rem auto;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.45;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 0 auto;
+    max-width: 380px;
+    padding-top: 0.3rem;
+  }
+  label {
+    font-weight: 600;
+    font-size: 0.945rem;
+    margin-bottom: 0.18rem;
+    display: block;
+  }
+  input[type="text"],
+  input[type="email"] {
+    padding: 0.78rem 1rem;
+    border-radius: 4px;
+    border: 1.4px solid #d4dbec;
+    font-size: 1rem;
+    font-weight: 500;
+    outline-offset: 2px;
+    outline-color: var(--red);
+    background: #fcfdff;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus {
+    outline: 2px solid var(--red);
+    border-color: var(--navy);
+  }
+  input[type="submit"] {
+    background-color: var(--red);
+    border: none;
+    padding: 1.11rem 1rem;
+    font-weight: 800;
+    font-size: 1.14rem;
+    color: var(--white);
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    letter-spacing: 0.03em;
+    margin-top: 0.3rem;
+    cursor: pointer;
+  }
+  input[type="submit"]:hover,
+  input[type="submit"]:focus {
+    background-color: #a10f31;
+  }
+  .form-subtext {
+    font-size: 0.92rem;
+    color: #3f4766;
+    margin-top: 0.4rem;
+    text-align: center;
+  }
+  /* TRUST AND PROOF SECTION */
+  .trust-and-proof-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1.7rem;
+    margin: 1.4rem 0 0 0;
+    width: 100%;
+  }
+  .social-proof {
+    flex: 1;
+    min-width: 160px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+  .social-proof p {
+    margin: 0 0 0.7rem 0;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 1.05rem;
+  }
+  .as-seen-logos {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1.35rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 0;
+  }
+  .as-seen-logos img {
+    max-height: 32px;
+    filter: grayscale(100%);
+    opacity: 0.62;
+    transition: all 0.3s ease;
+  }
+  .as-seen-logos img:hover, .as-seen-logos img:focus {
+    filter: none;
+    opacity: 1;
+  }
+  .client-proof {
+    flex: 2;
+    min-width: 180px;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .testimonial {
+    background: var(--gray-light);
+    border-left: 4px solid var(--red);
+    border-radius: 6px;
+    padding: 1.05rem 1rem 1rem 1.3rem;
+    font-size: 0.98rem;
+    color: var(--gray-dark);
+    font-style: italic;
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 500;
+    position: relative;
+  }
+  .testimonial::before {
+    content: "“";
+    font-size: 1.6rem;
+    line-height: 1;
+    font-weight: 800;
+    color: var(--red);
+    position: absolute;
+    left: 0.32rem;
+    top: -0.82rem;
+  }
+  .testimonial-author {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 0.98rem;
+    display: block;
+    margin-top: 0.53rem;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  /* BENEFITS SECTION */
   section.benefits {
-    padding: 3rem 1rem 4rem;
+    padding: 2.5rem 1rem 3.1rem 1rem;
     background: var(--gray-light);
     border-radius: 8px;
-    margin-top: 2rem;
+    margin: 0 auto 1.8rem auto;
+    box-shadow: 0 3px 18px 0 rgba(17,38,69,0.06);
+    max-width: 600px;
   }
   section.benefits ul {
     padding-left: 1.25rem;
@@ -101,9 +398,9 @@
   section.benefits li {
     position: relative;
     padding-left: 2.25rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.12rem;
     font-weight: 600;
-    font-size: 1.125rem;
+    font-size: 1.07rem;
     color: var(--navy);
   }
   section.benefits li::before {
@@ -113,174 +410,220 @@
     top: 0.15rem;
     color: var(--red);
     font-weight: 800;
-    font-size: 1.25rem;
+    font-size: 1.23rem;
     line-height: 1;
   }
-
-  /* Offer Section */
-  section.offer {
-    margin: 3rem 0 4rem;
-    font-size: 1.1rem;
-    line-height: 1.5;
-    color: var(--gray-dark);
-  }
-  section.offer strong {
-    color: var(--navy);
-  }
-
-  /* Social Proof Section */
-  section.social-proof {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  section.social-proof p {
-    margin: 0 0 1rem;
-    font-weight: 600;
-    color: var(--navy);
-  }
-  .as-seen-logos {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .as-seen-logos img {
-    max-height: 36px;
-    filter: grayscale(100%);
-    opacity: 0.6;
-    transition: all 0.3s ease;
-  }
-  .as-seen-logos img:hover, .as-seen-logos img:focus {
-    filter: none;
-    opacity: 1;
-  }
-
-  /* Form Section */
-  section.form-section {
-    background: var(--navy);
-    padding: 2rem 1.25rem 3rem;
-    border-radius: 8px;
-    color: var(--white);
-    max-width: 600px;
-    margin: 0 auto 4rem;
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  label {
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 0.25rem;
-    display: block;
-  }
-  input[type="text"],
-  input[type="email"] {
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    border: none;
-    font-size: 1rem;
-    font-weight: 500;
-    outline-offset: 2px;
-    outline-color: var(--red);
-  }
-  input[type="text"]:focus,
-  input[type="email"]:focus {
-    outline: 2px solid var(--red);
-  }
-  input[type="submit"] {
-    background-color: var(--red);
-    border: none;
-    padding: 0.95rem 1rem;
-    font-weight: 700;
-    font-size: 1.125rem;
-    color: var(--white);
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    cursor: pointer;
-  }
-  input[type="submit"]:hover,
-  input[type="submit"]:focus {
-    background-color: #a10f31;
-  }
-  .form-subtext {
-    font-size: 0.875rem;
-    color: #ddd;
-    margin-top: 0.4rem;
-    text-align: center;
-  }
-
-  /* Final CTA Section */
+  /* FINAL CTA SECTION */
   section.final-cta {
     text-align: center;
-    font-weight: 600;
-    font-size: 1.125rem;
+    font-weight: 700;
+    font-size: 1.18rem;
     color: var(--navy);
-    margin-bottom: 6rem;
+    margin-bottom: 0;
+    margin-top: 0.8rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* FOOTER */
+  footer.vv-footer {
+    font-size: 0.98rem;
+    color: var(--navy);
+    background: var(--white);
+    font-family: var(--font-sans);
+    text-align: center;
+    padding: 2rem 1rem 1.2rem;
+    border-top: 1px solid #e7eef7;
+    letter-spacing: -0.01em;
+  }
+  .vv-footer a {
+    color: var(--red);
+    font-weight: bold;
+    text-decoration: underline;
+    transition: color 0.15s;
+  }
+  .vv-footer a:hover, .vv-footer a:focus {
+    color: #a10f31;
   }
 
+  /* STICKY CTA */
+  .sticky-cta {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: var(--navy);
+    color: var(--white);
+    box-shadow: 0 -2px 12px rgba(10,34,62,0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.55rem 1rem 0.55rem 1rem;
+    z-index: 910;
+    transition: transform 0.2s;
+    font-family: var(--font-sans);
+    min-height: 64px;
+  }
+  .sticky-cta-bar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 660px;
+    gap: 1.1rem;
+    justify-content: center;
+  }
+  .sticky-cta-msg {
+    font-weight: 700;
+    font-size: 1.09rem;
+    color: #e7effa;
+    display: none;
+  }
+  .sticky-cta-btn {
+    background: var(--red);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 1.09rem;
+    padding: 0.77rem 1.3rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(180,19,62,0.09);
+    transition: background 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.00em;
+  }
+  .sticky-cta-btn:hover,.sticky-cta-btn:focus {
+    background: #a10f31;
+  }
+  .sticky-cta-hide {
+    transform: translateY(110%);
+    pointer-events: none;
+    opacity: 0;
+    transition: transform 0.32s, opacity 0.24s;
+  }
   /* Responsive */
   @media (min-width: 768px) {
-    .hero h1 {
+    .hero-headline {
       font-size: 3rem;
     }
-    iframe {
-      height: 360px;
+    .sticky-cta-bar {
+      gap: 2.2rem;
     }
+    .sticky-cta-msg {
+      display: block;
+    }
+    .hero-content {
+      padding-top: 4.2rem;
+      padding-bottom: 3rem;
+    }
+  }
+  @media (max-width: 768px) {
+    .presentation-preview {
+      margin-bottom: 1.4rem;
+    }
+    .lead-magnet-offer {
+      padding: 0.95rem 1rem 1.05rem 1rem;
+      gap: 0.7rem;
+    }
+    .magnet-mockup-img {
+      width: 54px; height: 54px;
+    }
+    .magnet-offer-text h2 {
+      font-size: 1.07rem;
+    }
+    .hero-content {
+      padding: 2.2rem 1rem 1.6rem 1rem;
+    }
+  }
+  @media (max-width: 600px) {
+    main {
+      padding-bottom: 5rem;
+      gap: 2rem;
+    }
+    section.form-section {
+      margin-top: -2.2rem;
+      border-width: 1.3px;
+      padding: 1.2rem 0.8rem 1.1rem;
+    }
+    .trust-and-proof-wrap {
+      flex-direction: column;
+      gap: 1.1rem;
+      align-items: stretch;
+    }
+    .social-proof { align-items: center; }
+    .as-seen-logos { gap: 1rem; }
+    .client-proof { max-width:100%; }
+    section.benefits {
+      padding: 1.6rem 0.7rem 2rem 0.7rem;
+      margin-bottom: 1.3rem;
+      margin-top: 0.8rem;
+    }
+    section.final-cta {
+      padding-bottom: 0.3rem;
+    }
+    .hero-content {
+      padding: 1.1rem 0.6rem 1.1rem 0.6rem;
+    }
+  }
+  @media (max-width: 450px) {
+    .magnet-offer-text h2 { font-size: 0.99rem; }
+    .sticky-cta-btn { padding: 0.7rem 0.6rem; }
+    .sticky-cta-bar { gap: 0.8rem; }
   }
 </style>
 </head>
 <body>
 <header>
-  <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision Logo" width="160" height="48" />
+  <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision Logo" width="160" height="48" decoding="async" loading="eager" />
 </header>
 <main>
-  <section class="hero" aria-label="Hero section with headline and presentation video">
-    <h1>Scale Your Property Management Business Faster with AI</h1>
-    <p>Victory Vision helps growth-minded companies generate more qualified opportunities, automate follow-up, and scale revenue more efficiently.</p>
-    <div class="hero-video-container" aria-label="Presentation about scaling with Victory Vision AI platform">
-      <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTkRLt3EAKFV_ypQi_LtCLwlYFgT7KqgXQr2rVcp9j7vHw7JZ-7lyjYkzSSc-tPhk4g4H6kxJRAPYp4/embed?start=false&loop=false&delayms=3000" allowfullscreen="" title="Scal Presentation on Victory Vision AI"></iframe>
+  <section class="hero" aria-label="Hero section with headline and preview video">
+    <video class="hero-video-bg" autoplay muted loop playsinline poster="https://res.cloudinary.com/dv94te4zt/image/upload/w_800,q_auto/v1712500907/scal-slide-preview2.png" aria-hidden="true" preload="auto" title="Victory Vision Playbook Preview">
+      <source src="https://docs.google.com/presentation/d/1UDpVlA_ntwHzbH8vydEMQU8PfAfppmCnqqw0ibRlCSE/edit?usp=sharing" type="video/mp4" />
+      <!-- fallback: background video unavailable -->
+    </video>
+    <div class="hero-content">
+      <h1 class="hero-headline">
+        Unlock Scalable Growth with the <span>AI Scaling Playbook</span>
+      </h1>
+      <div class="hero-subheadline">
+        For property management founders and owners scaling $2M–$10M — end pipeline leakage and inconsistent follow-up with proven, AI-powered systems designed for real business impact.
+      </div>
+      <div class="lead-magnet-offer" aria-label="Lead magnet overview">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/w_200,q_auto/v1712499336/ai-playbook-mockup2.png" class="magnet-mockup-img" alt="AI Scaling Playbook mockup" width="68" height="68" loading="lazy" decoding="async" />
+        <div class="magnet-offer-text">
+          <h2>Get the <strong>7-slide AI Scaling Playbook</strong> Presentation</h2>
+          <ul>
+            <li>See how founders like you are turning fragmented sales into <strong>predictable pipeline</strong></li>
+            <li>Learn 3 ways to book more qualified meetings—<em>automatically</em></li>
+            <li>Discover how to scale faster without added complexity or chaos</li>
+          </ul>
+        </div>
+      </div>
+      <div class="presentation-preview" aria-label="Benefit-driven Presentation Preview">
+        <img src="https://res.cloudinary.com/dv94te4zt/image/upload/w_800,q_auto/v1712500907/scal-slide-preview2.png" class="presentation-preview-img" alt="Preview slides from AI Scaling Playbook presentation" width="500" height="280" loading="lazy" decoding="async" />
+        <div class="presentation-preview-overlay" aria-label="What You'll Get">
+          <h3>Immediate Pipeline Wins for $2M–$10M Founders</h3>
+          <p>What’s inside: What bottlenecks are costing you revenue, how to automate follow-up, and the 3-step framework to scale sales with AI—no tech headaches.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="benefits" aria-label="Key benefits of the Victory Vision Scal presentation">
-    <ul>
-      <li>Discover how to generate more qualified sales meetings effortlessly</li>
-      <li>Learn to automate follow-up to stop losing valuable leads</li>
-      <li>Understand how to scale revenue faster without operational chaos</li>
-      <li>Gain clarity on your sales pipeline and actionable growth insights</li>
-      <li>Leverage AI to transform scattered sales activity into a predictable engine</li>
-    </ul>
-  </section>
-
-  <section class="offer" aria-label="Offer explanation">
-    <p>Get instant access to the <strong>Scal Presentation</strong>: a clear, benefit-driven briefing for property management founders and owners doing $2M–$10M in revenue. This presentation reveals how Victory Vision’s AI-powered platform streamlines prospecting, automates follow-up, and drives consistent, qualified meetings—so you can break free from pipeline leakage and manual chaos to accelerate growth.</p>
-  </section>
-
-  <section class="social-proof" aria-label="Social proof and credibility">
-    <p>As Seen On</p>
-    <div class="as-seen-logos" role="list" aria-label="Logos of trusted media and business outlets">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/CNN.svg" alt="CNN logo" width="88" height="36" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Forbes_logo.svg" alt="Forbes logo" width="88" height="36" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Bloomberg_logo.svg" alt="Bloomberg logo" width="96" height="28" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/TheWallStreetJournal_Logo.svg" alt="The Wall Street Journal logo" width="110" height="25" />
-      <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/TechCrunch_logo.svg" alt="TechCrunch logo" width="108" height="30" />
+  <section class="form-section" aria-label="Get instant access to the playbook">
+    <div class="form-title">Get Instant Access — Free for Qualified Founders</div>
+    <div class="form-summary">
+      Enter your details below for immediate access to the AI Scaling Playbook presentation —&nbsp;<strong>no fluff, just actionable strategies</strong> for owners serious about ending pipeline gaps and growing faster.
     </div>
-    <p style="margin-top:1rem; font-size: 0.9rem; font-style: italic;">Trusted by founders and owners who demand real growth, not hype.</p>
-  </section>
-
-  <section class="form-section" aria-label="Lead capture form">
-    <form method="POST" action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission" id="leadForm" novalidate>
+    <form method="POST" action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission" id="leadForm" novalidate autocomplete="off" aria-label="Lead capture form">
       <label for="name">Name</label>
       <input type="text" id="name" name="name" required autocomplete="name" aria-required="true" />
 
       <label for="email">Professional Email</label>
-      <input type="email" id="email" name="professional_email" required autocomplete="email" aria-required="true" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" />
+      <input type="email" id="email" name="professional_email" required autocomplete="email" aria-required="true"
+        pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+        inputmode="email"
+        />
 
       <input type="hidden" name="lead_magnet_name" value="Scal Presentation" />
-      <input type="hidden" name="page_id" id="page_id" value="scal_landing_001" />
+      <input type="hidden" name="page_id" id="page_id" value="eeb34e20a3158e128b330a6e74d7a26c411b7128" />
       <input type="hidden" name="variant_id" id="variant_id" value="" />
       <input type="hidden" name="session_id" id="session_id" value="" />
       <input type="hidden" name="source_url" id="source_url" value="" />
@@ -292,21 +635,80 @@
       <input type="hidden" name="utm_content" id="utm_content" value="" />
       <input type="hidden" name="company_name" id="company_name" value="" />
 
-      <input type="submit" value="Get My Scal Presentation" aria-label="Submit to get the Scal presentation" />
-      <p class="form-subtext">Enter your name and professional email to get the guide and occasional Victory Vision insights and offers. Unsubscribe anytime.</p>
+      <input type="submit" value="Send My AI Scaling Playbook Now" aria-label="Submit to get the AI Scaling Playbook presentation" />
+      <p class="form-subtext">
+        You’ll get the full playbook PDF &amp; slides instantly — plus practical founder tips, no spam. Unsubscribe anytime.
+      </p>
     </form>
+    <div class="trust-and-proof-wrap">
+      <div class="social-proof">
+        <p>As Seen On</p>
+        <div class="as-seen-logos" role="list" aria-label="Logos of trusted media and business outlets">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/CNN.svg" alt="CNN logo" width="70" height="24" loading="lazy" decoding="async" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Forbes_logo.svg" alt="Forbes logo" width="70" height="24" loading="lazy" decoding="async" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Bloomberg_logo.svg" alt="Bloomberg logo" width="80" height="22" loading="lazy" decoding="async" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/TheWallStreetJournal_Logo.svg" alt="The Wall Street Journal logo" width="90" height="18" loading="lazy" decoding="async" />
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/TechCrunch_logo.svg" alt="TechCrunch logo" width="85" height="24" loading="lazy" decoding="async" />
+        </div>
+      </div>
+      <div class="client-proof">
+        <div class="testimonial">
+          “Before Victory Vision, my team lost track of over a dozen warm leads in just two months. Their AI system organized everything—<b>we booked 3x more meetings in half the time</b> with zero extra staff.”
+          <span class="testimonial-author">— K.D., Franchise Owner, 3,100+ Units</span>
+        </div>
+        <div class="testimonial">
+          “I thought adding another tool would be a headache. Instead, the Playbook showed exactly <b>why my pipeline was stuck</b> and how to automate follow-up. Growth is actually manageable now.”
+          <span class="testimonial-author">— J.M., Founder, Property Management Group</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="benefits" aria-label="Key business-changing benefits">
+    <ul>
+      <li>Pinpoint pipeline leaks costing you revenue — fix broken follow-up in days, not months</li>
+      <li>Book more qualified meetings <strong>on autopilot</strong> — reach your best-fit clients reliably</li>
+      <li>End scattered outreach — unify sales &amp; marketing into one high-leverage process</li>
+      <li>Grow without extra headcount — scale your team’s results, not your workload</li>
+      <li>See what’s working — finally get clarity on ROI, campaigns, and what moves your business forward</li>
+    </ul>
   </section>
 
   <section class="final-cta" aria-label="Final call to action">
-    <p>Unlock the scalable, AI-powered growth system your property management business needs — book more meetings, automate follow-up, and grow revenue faster with Victory Vision.</p>
+    <p>
+      Ready to stop losing leads, automate your follow-up, and accelerate pipeline growth? <br />
+      Get the <strong>AI Scaling Playbook</strong> and see how to scale faster — starting today.
+    </p>
   </section>
 </main>
 
-<div id="vv-chatbot-root"></div>
+<footer class="vv-footer" role="contentinfo">
+  Your Vision. Our AI. Pure Victory. 
+  <a href="https://www.victoryvision.app" target="_blank" rel="noopener">Build your free AI website at Victory Vision</a>
+</footer>
 
+<!-- Sticky CTA Bar -->
+<div class="sticky-cta" id="stickyCtaBar" aria-label="Quick access bar to playbook form">
+  <div class="sticky-cta-bar">
+    <span class="sticky-cta-msg">Unlock the AI Scaling Playbook — for $2M–$10M Property Management Owners</span>
+    <button type="button" class="sticky-cta-btn" id="stickyCtaBtn" aria-label="Show Instant Access Form">
+      Get Instant Access
+    </button>
+  </div>
+</div>
+
+<!-- Chatbot root and placeholder config -->
+<div id="vv-chatbot-root"></div>
+<script>
+window.VICTORY_VISION_CHAT_CONFIG = window.VICTORY_VISION_CHAT_CONFIG || { endpoint: "https://victoryvision.app.n8n.cloud/webhook/chat/page-message" };
+</script>
+<!-- TRACKING PIXELS -->
+<img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=eeb34e20a3158e128b330a6e74d7a26c411b7128" width="1" height="1" alt="" style="display:none;" decoding="async" loading="eager" />
+
+<!-- Main JS - Field autofill, UTM, variant etc -->
 <script>
 (function(){
-  const pageId = 'scal_landing_001';
+  const pageId = 'eeb34e20a3158e128b330a6e74d7a26c411b7128';
   const routerWebhook = 'https://victoryvision.app.n8n.cloud/webhook/pages/router';
   const trackPixelWebhook = 'https://victoryvision.app.n8n.cloud/webhook/pages/track-pixel';
 
@@ -346,7 +748,7 @@
 
   // Update hidden inputs in form with new values
   function updateFormFields(data) {
-    const fields = ['variant_id','session_id','source_url','referrer','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+    const fields = ['variant_id','session_id','source_url','referrer','utm_source','utm_medium','utm_campaign','utm_term','utm_content','page_id'];
     fields.forEach(name => {
       const el = document.getElementById(name);
       if(el && data[name] !== undefined){
@@ -468,11 +870,50 @@
       });
     }
   }
+  // Sticky CTA Functionality
+  function setupStickyCTA() {
+    var btn = document.getElementById('stickyCtaBtn');
+    var cta = document.getElementById('stickyCtaBar');
+    var form = document.getElementById('leadForm');
+    // Smooth scroll to form on click
+    btn.addEventListener('click', function() {
+      if (form) {
+        form.scrollIntoView({behavior: 'smooth', block: 'center'});
+        try {
+          form.querySelector('input[type="text"], input[type="email"]').focus();
+        } catch(e){}
+      }
+    });
+    // Hide sticky bar if form in viewport
+    function updateStickyVisibility() {
+      var rect = form.getBoundingClientRect();
+      // Show sticky if not much form visible
+      if(
+        rect.top < window.innerHeight &&
+        rect.bottom > window.innerHeight * 0.11 &&
+        rect.top > 40 // not scrolled way past
+      ){
+        // Form section visible: hide sticky
+        cta.classList.add('sticky-cta-hide');
+      } else {
+        // Form not visible: show sticky
+        cta.classList.remove('sticky-cta-hide');
+      }
+    }
+    updateStickyVisibility();
+    window.addEventListener('scroll', updateStickyVisibility, {passive: true});
+    window.addEventListener('resize', updateStickyVisibility, {passive: true});
+  }
+
   // Run after DOM ready
   if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", function(){
+      init();
+      setupStickyCTA();
+    });
   } else {
     init();
+    setupStickyCTA();
   }
 })();
 </script>
