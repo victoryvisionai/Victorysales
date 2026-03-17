@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scale Faster with AI | Victory Vision Scal Presentation</title>
+<style>
+  :root {
+    --navy: #0a3161;
+    --white: #ffffff;
+    --red: #bb133e;
+    --gray-dark: #2e2e2e;
+    --gray-light: #f7f8fa;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    color: var(--navy);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a, button {
+    cursor: pointer;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  header {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    background-color: var(--white);
+  }
+  header img {
+    max-height: 48px;
+    margin: 0 auto;
+  }
+  main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+  }
+  .hero {
+    position: relative;
+    background-color: var(--navy);
+    color: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 3rem 2rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    font-weight: 700;
+    margin: 0 0 1rem;
+  }
+  .hero p {
+    font-size: 1.125rem;
+    margin: 0 0 2rem;
+    max-width: 480px;
+    font-weight: 500;
+  }
+  /* Video container for embedded iframe */
+  .hero-video-container {
+    width: 100%;
+    max-width: 560px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    margin-bottom: 2rem;
+  }
+  iframe {
+    width: 100%;
+    height: 315px;
+    border: none;
+  }
+
+  /* Benefits section */
+  section.benefits {
+    padding: 3rem 1rem 4rem;
+    background: var(--gray-light);
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+  section.benefits ul {
+    padding-left: 1.25rem;
+    margin: 0;
+    list-style: none;
+  }
+  section.benefits li {
+    position: relative;
+    padding-left: 2.25rem;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--navy);
+  }
+  section.benefits li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    top: 0.15rem;
+    color: var(--red);
+    font-weight: 800;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  /* Offer Section */
+  section.offer {
+    margin: 3rem 0 4rem;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: var(--gray-dark);
+  }
+  section.offer strong {
+    color: var(--navy);
+  }
+
+  /* Social Proof Section */
+  section.social-proof {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  section.social-proof p {
+    margin: 0 0 1rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .as-seen-logos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .as-seen-logos img {
+    max-height: 36px;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+  }
+  .as-seen-logos img:hover, .as-seen-logos img:focus {
+    filter: none;
+    opacity: 1;
+  }
+
+  /* Form Section */
+  section.form-section {
+    background: var(--navy);
+    padding: 2rem 1.25rem 3rem;
+    border-radius: 8px;
+    color: var(--white);
+    max-width: 600px;
+    margin: 0 auto 4rem;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+  input[type="text"],
+  input[type="email"] {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    outline-offset: 2px;
+    outline-color: var(--red);
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus {
+    outline: 2px solid var(--red);
+  }
+  input[type="submit"] {
+    background-color: var(--red);
+    border: none;
+    padding: 0.95rem 1rem;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--white);
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+  }
+  input[type="submit"]:hover,
+  input[type="submit"]:focus {
+    background-color: #a10f31;
+  }
+  .form-subtext {
+    font-size: 0.875rem;
+    color: #ddd;
+    margin-top: 0.4rem;
+    text-align: center;
+  }
+
+  /* Final CTA Section */
+  section.final-cta {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: var(--navy);
+    margin-bottom: 6rem;
+  }
+
+  /* Responsive */
+  @media (min-width: 768px) {
+    .hero h1 {
+      font-size: 3rem;
+    }
+    iframe {
+      height: 360px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision Logo" width="160" height="48" />
+</header>
+<main>
+  <section class="hero" aria-label="Hero section with headline and presentation video">
+    <h1>Scale Your Property Management Business Faster with AI</h1>
+    <p>Victory Vision helps growth-minded companies generate more qualified opportunities, automate follow-up, and scale revenue more efficiently.</p>
+    <div class="hero-video-container" aria-label="Presentation about scaling with Victory Vision AI platform">
+      <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vTkRLt3EAKFV_ypQi_LtCLwlYFgT7KqgXQr2rVcp9j7vHw7JZ-7lyjYkzSSc-tPhk4g4H6kxJRAPYp4/embed?start=false&loop=false&delayms=3000" allowfullscreen="" title="Scal Presentation on Victory Vision AI"></iframe>
+    </div>
+  </section>
+
+  <section class="benefits" aria-label="Key benefits of the Victory Vision Scal presentation">
+    <ul>
+      <li>Discover how to generate more qualified sales meetings effortlessly</li>
+      <li>Learn to automate follow-up to stop losing valuable leads</li>
+      <li>Understand how to scale revenue faster without operational chaos</li>
+      <li>Gain clarity on your sales pipeline and actionable growth insights</li>
+      <li>Leverage AI to transform scattered sales activity into a predictable engine</li>
+    </ul>
+  </section>
+
+  <section class="offer" aria-label="Offer explanation">
+    <p>Get instant access to the <strong>Scal Presentation</strong>: a clear, benefit-driven briefing for property management founders and owners doing $2M–$10M in revenue. This presentation reveals how Victory Vision’s AI-powered platform streamlines prospecting, automates follow-up, and drives consistent, qualified meetings—so you can break free from pipeline leakage and manual chaos to accelerate growth.</p>
+  </section>
+
+  <section class="social-proof" aria-label="Social proof and credibility">
+    <p>As Seen On</p>
+    <div class="as-seen-logos" role="list" aria-label="Logos of trusted media and business outlets">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/CNN.svg" alt="CNN logo" width="88" height="36" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Forbes_logo.svg" alt="Forbes logo" width="88" height="36" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Bloomberg_logo.svg" alt="Bloomberg logo" width="96" height="28" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/TheWallStreetJournal_Logo.svg" alt="The Wall Street Journal logo" width="110" height="25" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/TechCrunch_logo.svg" alt="TechCrunch logo" width="108" height="30" />
+    </div>
+    <p style="margin-top:1rem; font-size: 0.9rem; font-style: italic;">Trusted by founders and owners who demand real growth, not hype.</p>
+  </section>
+
+  <section class="form-section" aria-label="Lead capture form">
+    <form method="POST" action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission" id="leadForm" novalidate>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required autocomplete="name" aria-required="true" />
+
+      <label for="email">Professional Email</label>
+      <input type="email" id="email" name="professional_email" required autocomplete="email" aria-required="true" pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" />
+
+      <input type="hidden" name="lead_magnet_name" value="Scal Presentation" />
+      <input type="hidden" name="page_id" id="page_id" value="scal_landing_001" />
+      <input type="hidden" name="variant_id" id="variant_id" value="" />
+      <input type="hidden" name="session_id" id="session_id" value="" />
+      <input type="hidden" name="source_url" id="source_url" value="" />
+      <input type="hidden" name="referrer" id="referrer" value="" />
+      <input type="hidden" name="utm_source" id="utm_source" value="" />
+      <input type="hidden" name="utm_medium" id="utm_medium" value="" />
+      <input type="hidden" name="utm_campaign" id="utm_campaign" value="" />
+      <input type="hidden" name="utm_term" id="utm_term" value="" />
+      <input type="hidden" name="utm_content" id="utm_content" value="" />
+      <input type="hidden" name="company_name" id="company_name" value="" />
+
+      <input type="submit" value="Get My Scal Presentation" aria-label="Submit to get the Scal presentation" />
+      <p class="form-subtext">Enter your name and professional email to get the guide and occasional Victory Vision insights and offers. Unsubscribe anytime.</p>
+    </form>
+  </section>
+
+  <section class="final-cta" aria-label="Final call to action">
+    <p>Unlock the scalable, AI-powered growth system your property management business needs — book more meetings, automate follow-up, and grow revenue faster with Victory Vision.</p>
+  </section>
+</main>
+
+<div id="vv-chatbot-root"></div>
+
+<script>
+(function(){
+  const pageId = 'scal_landing_001';
+  const routerWebhook = 'https://victoryvision.app.n8n.cloud/webhook/pages/router';
+  const trackPixelWebhook = 'https://victoryvision.app.n8n.cloud/webhook/pages/track-pixel';
+
+  // Extract UTM params and source URL
+  function getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      utm_source: params.get('utm_source') || '',
+      utm_medium: params.get('utm_medium') || '',
+      utm_campaign: params.get('utm_campaign') || '',
+      utm_term: params.get('utm_term') || '',
+      utm_content: params.get('utm_content') || '',
+      source_url: window.location.href || ''
+    };
+  }
+
+  // Get referrer safely
+  const referrer = document.referrer || '';
+
+  // Try to read from localStorage - session_id and variant_id
+  function readStoredIds() {
+    return {
+      session_id: localStorage.getItem('vv_session_id') || '',
+      variant_id: localStorage.getItem('vv_variant_id') || ''
+    };
+  }
+
+  // Write to localStorage - session_id and variant_id
+  function storeIds(session_id, variant_id) {
+    if(session_id){
+      localStorage.setItem('vv_session_id', session_id);
+    }
+    if(variant_id){
+      localStorage.setItem('vv_variant_id', variant_id);
+    }
+  }
+
+  // Update hidden inputs in form with new values
+  function updateFormFields(data) {
+    const fields = ['variant_id','session_id','source_url','referrer','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+    fields.forEach(name => {
+      const el = document.getElementById(name);
+      if(el && data[name] !== undefined){
+        el.value = data[name];
+      }
+    });
+  }
+
+  // Send pixel tracking event
+  function sendTrackPixel(data) {
+    fetch(trackPixelWebhook, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        page_id: data.page_id,
+        variant_id: data.variant_id,
+        session_id: data.session_id,
+        source_url: data.source_url,
+        referrer: data.referrer,
+        utm_source: data.utm_source,
+        utm_medium: data.utm_medium,
+        utm_campaign: data.utm_campaign,
+        utm_term: data.utm_term,
+        utm_content: data.utm_content
+      }),
+      keepalive: true
+    }).catch(() => {/*silent*/});
+  }
+
+  // Main initialization
+  async function init() {
+    const qs = getQueryParams();
+    const stored = readStoredIds();
+
+    // Update source_url and referrer in stored data if empty
+    if(!stored.session_id) stored.session_id = '';
+    if(!stored.variant_id) stored.variant_id = '';
+
+    const routerPayload = {
+      page_id: pageId,
+      source_url: qs.source_url,
+      referrer: referrer,
+      utm_source: qs.utm_source,
+      utm_medium: qs.utm_medium,
+      utm_campaign: qs.utm_campaign,
+      utm_term: qs.utm_term,
+      utm_content: qs.utm_content,
+      session_id: stored.session_id || ''
+    };
+
+    try {
+      const response = await fetch(routerWebhook, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(routerPayload)
+      });
+      if(response.ok){
+        const respJson = await response.json();
+        if(respJson.variant_id) stored.variant_id = respJson.variant_id;
+        if(respJson.session_id) stored.session_id = respJson.session_id;
+        // Store updated ids
+        storeIds(stored.session_id, stored.variant_id);
+
+        // Update form hidden inputs
+        updateFormFields({
+          variant_id: stored.variant_id,
+          session_id: stored.session_id,
+          source_url: qs.source_url,
+          referrer: referrer,
+          utm_source: qs.utm_source,
+          utm_medium: qs.utm_medium,
+          utm_campaign: qs.utm_campaign,
+          utm_term: qs.utm_term,
+          utm_content: qs.utm_content,
+          page_id: pageId
+        });
+
+        // Fire track pixel
+        sendTrackPixel({
+          page_id: pageId,
+          variant_id: stored.variant_id,
+          session_id: stored.session_id,
+          source_url: qs.source_url,
+          referrer: referrer,
+          utm_source: qs.utm_source,
+          utm_medium: qs.utm_medium,
+          utm_campaign: qs.utm_campaign,
+          utm_term: qs.utm_term,
+          utm_content: qs.utm_content
+        });
+      } else {
+        // Fall back to update form with best effort
+        updateFormFields({
+          variant_id: stored.variant_id,
+          session_id: stored.session_id,
+          source_url: qs.source_url,
+          referrer: referrer,
+          utm_source: qs.utm_source,
+          utm_medium: qs.utm_medium,
+          utm_campaign: qs.utm_campaign,
+          utm_term: qs.utm_term,
+          utm_content: qs.utm_content,
+          page_id: pageId
+        });
+      }
+    } catch(e){
+      // On error, still update form fields with best effort
+      updateFormFields({
+        variant_id: stored.variant_id,
+        session_id: stored.session_id,
+        source_url: qs.source_url,
+        referrer: referrer,
+        utm_source: qs.utm_source,
+        utm_medium: qs.utm_medium,
+        utm_campaign: qs.utm_campaign,
+        utm_term: qs.utm_term,
+        utm_content: qs.utm_content,
+        page_id: pageId
+      });
+    }
+  }
+  // Run after DOM ready
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
