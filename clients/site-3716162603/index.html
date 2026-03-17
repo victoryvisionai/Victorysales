@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scal Presentation - Scale Your Business with Victory Vision AI</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap');
+  :root {
+    --color-primary: #0a3161;
+    --color-secondary: #bb133e;
+    --color-white: #ffffff;
+    --color-lightgray: #f7f9fc;
+    --color-darkgray: #4a4a4a;
+    --max-width: 640px;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin:0;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+  }
+  img.logo {
+    max-height: 48px;
+    margin-bottom: 24px;
+  }
+  header.hero {
+    width: 100%;
+    max-width: var(--max-width);
+    text-align: center;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 48px 24px 72px;
+  }
+  header.hero h1 {
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin: 0 0 16px;
+    line-height: 1.2;
+  }
+  header.hero p.subheadline {
+    font-weight: 500;
+    font-size: 1.125rem;
+    margin: 0 0 32px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+  }
+  .hero-video-wrapper {
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right:0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    pointer-events: none;
+  }
+  .hero-video-wrapper iframe,
+  .hero-video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.3);
+  }
+  form#lead-form {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  form#lead-form label {
+    display: block;
+    width: 100%;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    color: var(--color-white);
+    text-align: left;
+  }
+  form#lead-form input[type="text"],
+  form#lead-form input[type="email"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  form#lead-form input[type="text"] {
+    background-color: #ffffff;
+    color: var(--color-primary);
+  }
+  form#lead-form input[type="email"] {
+    background-color: #ffffff;
+    color: var(--color-primary);
+  }
+  form#lead-form button[type="submit"] {
+    background: var(--color-secondary);
+    color: var(--color-white);
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1.125rem;
+    cursor: pointer;
+    flex: 1 1 100%;
+    padding: 16px;
+    transition: background-color 0.3s ease;
+    max-width: 220px;
+    outline-offset: 3px;
+  }
+  form#lead-form button[type="submit"]:hover,
+  form#lead-form button[type="submit"]:focus {
+    background: #9f102f;
+  }
+  section.benefits {
+    max-width: var(--max-width);
+    margin-bottom: 48px;
+  }
+  section.benefits ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+  section.benefits li {
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+  }
+  section.benefits li span.desc {
+    display: block;
+    font-weight: 400;
+    color: var(--color-darkgray);
+    font-size: 0.95rem;
+    margin-top: 4px;
+    max-width: 520px;
+  }
+  section.offer {
+    max-width: var(--max-width);
+    text-align: center;
+    font-size: 1rem;
+    color: var(--color-darkgray);
+    margin-bottom: 48px;
+    padding: 0 16px;
+  }
+  section.offer strong {
+    color: var(--color-primary);
+  }
+  section.social-proof {
+    max-width: var(--max-width);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  section.social-proof p {
+    font-weight: 600;
+    color: var(--color-darkgray);
+    margin-bottom: 18px;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+  }
+  .logos {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .logos img {
+    max-height: 28px;
+    max-width: 120px;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+  }
+  .logos img:hover,
+  .logos img:focus {
+    opacity: 1;
+  }
+  section.final-cta {
+    max-width: var(--max-width);
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    margin-bottom: 64px;
+    padding: 0 16px;
+  }
+  .form-note {
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    max-width: 480px;
+    margin: 12px auto 0;
+    text-align: center;
+    font-weight: 400;
+    opacity: 0.8;
+  }
+  a.privacy-policy {
+    color: var(--color-primary);
+    text-decoration: underline;
+    font-weight: 500;
+  }
+  @media (min-width: 600px) {
+    form#lead-form {
+      flex-wrap: nowrap;
+      gap: 16px;
+    }
+    form#lead-form label {
+      font-size: 1rem;
+    }
+    form#lead-form input[type="text"],
+    form#lead-form input[type="email"] {
+      width: 200px;
+      font-size: 1rem;
+    }
+    form#lead-form button[type="submit"] {
+      flex: 0 0 auto;
+      max-width: none;
+      padding: 0 32px;
+      font-size: 1.125rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header class="hero" role="banner" aria-label="Scal presentation hero section with Victory Vision logo and headline">
+  <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision logo" class="logo" width="180" height="48" />
+  <h1>Scale Your Business Faster with AI</h1>
+  <p class="subheadline">Victory Vision helps growth-minded property management and real estate companies generate more qualified opportunities, automate follow-up, and scale revenue efficiently—without adding overhead or chaos.</p>
+  <div class="hero-video-wrapper" aria-hidden="true">
+    <iframe
+      src="https://docs.google.com/presentation/d/e/2PACX-1vSZQUmosthJ_pHGE3pFdmzveQbm3U3XdnsaRFchHknmQ2vOjyavNnpSG6XKl4pG4jGShWj7hEnlOXVM/embed?start=false&loop=false&delayms=3000"
+      allowfullscreen
+      frameborder="0"
+      allow="autoplay"
+      title="Scal Presentation Overview Video"
+    ></iframe>
+  </div>
+  <form
+    id="lead-form"
+    method="POST"
+    action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission"
+    aria-label="Scal presentation access form"
+    novalidate
+  >
+    <div>
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" autocomplete="name" required aria-required="true" />
+    </div>
+    <div>
+      <label for="email">Professional Email</label>
+      <input type="email" id="email" name="professional_email" autocomplete="email" required aria-required="true" />
+    </div>
+    <!-- Hidden inputs for tracking -->
+    <input type="hidden" name="lead_magnet_name" value="Scal Presentation" />
+    <input type="hidden" name="page_id" value="scal_lp_001" />
+    <input type="hidden" name="variant_id" />
+    <input type="hidden" name="session_id" />
+    <input type="hidden" name="source_url" />
+    <input type="hidden" name="referrer" />
+    <input type="hidden" name="utm_source" />
+    <input type="hidden" name="utm_medium" />
+    <input type="hidden" name="utm_campaign" />
+    <input type="hidden" name="utm_term" />
+    <input type="hidden" name="utm_content" />
+    <input type="hidden" name="company_name" value="Victory Vision" />
+    <button type="submit" aria-label="Get access to the Scal presentation">Get the Presentation</button>
+  </form>
+  <p class="form-note">Enter your name and professional email to get the presentation and occasional Victory Vision insights. Unsubscribe anytime.</p>
+</header>
+
+<section class="benefits" aria-labelledby="benefits-title">
+  <h2 id="benefits-title" class="sr-only">Benefits of the Scal Presentation</h2>
+  <ul>
+    <li>
+      <strong>Book More Qualified Meetings</strong>
+      <span class="desc">Easily identify and engage the right prospects to fill your calendar with high-value opportunities.</span>
+    </li>
+    <li>
+      <strong>Automate Follow-Up and Reduce Leakage</strong>
+      <span class="desc">Stop losing leads with consistent, AI-powered follow-up that keeps your pipeline moving.</span>
+    </li>
+    <li>
+      <strong>Scale Without Adding Chaos</strong>
+      <span class="desc">Grow revenue efficiently with processes that don’t require more headcount or manual work.</span>
+    </li>
+    <li>
+      <strong>Gain Clear ROI & Make Smarter Decisions</strong>
+      <span class="desc">Know exactly which campaigns and outreach bring revenue, so you invest where it counts.</span>
+    </li>
+    <li>
+      <strong>Simplify and Organize Your Sales Engine</strong>
+      <span class="desc">Turn scattered sales activities into a single, AI-powered growth system with clarity and speed.</span>
+    </li>
+  </ul>
+</section>
+
+<section class="offer" role="region" aria-label="Description of the Scal presentation offer">
+  <p>
+    <strong>What You Get:</strong> Immediate access to an 8-slide presentation crafted specifically for property management and real estate business owners doing $2M–$10M annually. Discover how Victory Vision’s AI-powered platform solves the real bottlenecks holding your growth back by generating more qualified leads, automating follow-up, and scaling revenue faster—without complexity or confusion.
+  </p>
+  <p>
+    This no-fluff guide delivers practical, actionable insights to help you break through pipeline challenges and consistently book the right meetings that turn into revenue.
+  </p>
+</section>
+
+<section class="social-proof" aria-label="As seen on logos and trust statement">
+  <p>As Seen On</p>
+  <div class="logos" role="list" aria-label="Media logos">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/TechCrunch_logo.svg" alt="TechCrunch logo" loading="lazy" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Forbes_logo.svg" alt="Forbes logo" loading="lazy" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Inc._magazine_logo.svg" alt="Inc Magazine logo" loading="lazy" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/CNBC_logo.svg" alt="CNBC logo" loading="lazy" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Wired_logo.svg" alt="Wired logo" loading="lazy" />
+  </div>
+  <p style="margin-top:1rem; font-weight: 500; font-size: 0.9rem; color: var(--color-darkgray); max-width: 480px; margin-left:auto; margin-right:auto;">
+    Trusted by ambitious founders in property management and real estate sectors who want predictable, scalable growth with less hassle.
+  </p>
+</section>
+
+<section class="form-section" aria-labelledby="form-section-title" style="max-width: var(--max-width); width: 100%; margin-bottom: 64px;">
+  <h2 id="form-section-title" class="sr-only">Access the Scal presentation</h2>
+  <form
+    id="lead-form-2"
+    method="POST"
+    action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission"
+    aria-label="Access Scal presentation form"
+    novalidate
+  >
+    <div style="display:flex; flex-wrap:wrap; gap: 12px; justify-content:center;">
+      <div style="flex:1 1 200px; min-width: 200px;">
+        <label for="name2">Full Name</label>
+        <input type="text" id="name2" name="name" autocomplete="name" required aria-required="true" />
+      </div>
+      <div style="flex:1 1 250px; min-width: 250px;">
+        <label for="email2">Professional Email</label>
+        <input type="email" id="email2" name="professional_email" autocomplete="email" required aria-required="true" />
+      </div>
+      <div style="flex-basis: 100%; text-align:center; margin-top: 8px;">
+        <button type="submit" aria-label="Get access to the Scal presentation" 
+          style="background: var(--color-secondary); color: var(--color-white); font-weight: 700; font-size: 1.125rem; border:none; border-radius:6px; padding: 16px 40px; cursor:pointer; max-width: 280px; width: 100%; transition: background-color 0.3s ease;">
+          Get the Presentation
+        </button>
+      </div>
+    </div>
+    <!-- Hidden inputs -->
+    <input type="hidden" name="lead_magnet_name" value="Scal Presentation" />
+    <input type="hidden" name="page_id" value="scal_lp_001" />
+    <input type="hidden" name="variant_id" />
+    <input type="hidden" name="session_id" />
+    <input type="hidden" name="source_url" />
+    <input type="hidden" name="referrer" />
+    <input type="hidden" name="utm_source" />
+    <input type="hidden" name="utm_medium" />
+    <input type="hidden" name="utm_campaign" />
+    <input type="hidden" name="utm_term" />
+    <input type="hidden" name="utm_content" />
+    <input type="hidden" name="company_name" value="Victory Vision" />
+  </form>
+  <p class="form-note" style="max-width: none; margin-top: 12px;">Enter your name and professional email to get the presentation and occasional Victory Vision insights. Unsubscribe anytime. <a href="/privacy-policy" class="privacy-policy" target="_blank" rel="noopener">Privacy Policy</a></p>
+</section>
+
+<section class="final-cta" role="region" aria-label="Final call to action">
+  <p>Break the bottleneck holding back your growth — scale faster with Victory Vision’s AI-powered platform that turns your pipeline into a reliable, revenue-driving engine.</p>
+</section>
+
+<div id="vv-chatbot-root"></div>
+
+<script>
+  (() => {
+    const formElems = [
+      document.querySelector('form#lead-form'),
+      document.querySelector('form#lead-form-2'),
+    ].filter(Boolean);
+    const pageId = 'scal_lp_001';
+
+    // Utility to get URL params utm and source_url
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        utm_source: params.get('utm_source') || '',
+        utm_medium: params.get('utm_medium') || '',
+        utm_campaign: params.get('utm_campaign') || '',
+        utm_term: params.get('utm_term') || '',
+        utm_content: params.get('utm_content') || '',
+        source_url: window.location.href,
+      };
+    }
+    function setInputValueSafe(el, value) {
+      if (el) el.value = value || '';
+    }
+    // Read values and set inputs for a form
+    function populateFormHiddenFields(form, data) {
+      setInputValueSafe(form.querySelector('input[name="page_id"]'), data.page_id);
+      setInputValueSafe(form.querySelector('input[name="source_url"]'), data.source_url);
+      setInputValueSafe(form.querySelector('input[name="referrer"]'), data.referrer);
+      setInputValueSafe(form.querySelector('input[name="utm_source"]'), data.utm_source);
+      setInputValueSafe(form.querySelector('input[name="utm_medium"]'), data.utm_medium);
+      setInputValueSafe(form.querySelector('input[name="utm_campaign"]'), data.utm_campaign);
+      setInputValueSafe(form.querySelector('input[name="utm_term"]'), data.utm_term);
+      setInputValueSafe(form.querySelector('input[name="utm_content"]'), data.utm_content);
+      setInputValueSafe(form.querySelector('input[name="variant_id"]'), data.variant_id);
+      setInputValueSafe(form.querySelector('input[name="session_id"]'), data.session_id);
+    }
+
+    // Read localStorage for session_id and variant_id
+    const savedVariantId = localStorage.getItem('variant_id') || '';
+    const savedSessionId = localStorage.getItem('session_id') || '';
+
+    const referrer = document.referrer || '';
+    const urlParams = getUrlParams();
+
+    const routerPayload = {
+      page_id: pageId,
+      source_url: urlParams.source_url,
+      referrer: referrer,
+      utm_source: urlParams.utm_source,
+      utm_medium: urlParams.utm_medium,
+      utm_campaign: urlParams.utm_campaign,
+      utm_term: urlParams.utm_term,
+      utm_content: urlParams.utm_content,
+      session_id: savedSessionId,
+    };
+
+    // Call router webhook
+    fetch('https://victoryvision.app.n8n.cloud/webhook/pages/router', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(routerPayload),
+      credentials: 'omit'
+    })
+    .then(res => res.ok ? res.json() : Promise.reject('Router fetch failed'))
+    .then(data => {
+      if (data) {
+        if (data.variant_id) {
+          localStorage.setItem('variant_id', data.variant_id);
+        }
+        if (data.session_id) {
+          localStorage.setItem('session_id', data.session_id);
+        }
+        // Update for form population
+        routerPayload.variant_id = data.variant_id || '';
+        routerPayload.session_id = data.session_id || '';
+      }
+    })
+    .catch(() => {
+      // fallback to saved
+      routerPayload.variant_id = savedVariantId;
+      routerPayload.session_id = savedSessionId;
+    })
+    .finally(() => {
+      // Populate all forms hidden inputs with final values
+      formElems.forEach(form => {
+        populateFormHiddenFields(form, routerPayload);
+      });
+
+      // Fire pageview tracking pixel
+      const trackPayload = {
+        page_id: pageId,
+        variant_id: routerPayload.variant_id || '',
+        session_id: routerPayload.session_id || '',
+        source_url: routerPayload.source_url,
+        referrer: routerPayload.referrer,
+        utm_source: routerPayload.utm_source,
+        utm_medium: routerPayload.utm_medium,
+        utm_campaign: routerPayload.utm_campaign,
+        utm_term: routerPayload.utm_term,
+        utm_content: routerPayload.utm_content,
+      };
+      fetch('https://victoryvision.app.n8n.cloud/webhook/pages/track-pixel', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(trackPayload),
+        credentials: 'omit'
+      }).catch(() => { /* silently ignore tracking failure */ });
+    });
+  })();
+</script>
+</body>
+</html>
