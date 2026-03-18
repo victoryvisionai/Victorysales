@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Scale Revenue Faster with AI-Powered Growth - Victory Vision</title>
+<style>
+  :root {
+    --color-primary: #0a3161;
+    --color-accent: #ffffff;
+    --color-highlight: #bb133e;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--color-accent);
+    color: var(--color-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  header {
+    background: var(--color-accent);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  header img {
+    max-height: 40px;
+    width: auto;
+    display: block;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem 6rem;
+  }
+
+  section {
+    margin-bottom: 3.5rem;
+  }
+
+  /* Hero */
+  .hero {
+    background: var(--color-primary);
+    color: var(--color-accent);
+    padding: 5rem 1.5rem 5.5rem;
+    text-align: center;
+    border-radius: 0 0 0 4rem;
+    box-shadow: inset 0 0 40px #0a3161dd;
+  }
+  .hero h1 {
+    margin: 0 0 1rem;
+    font-size: 2.25rem;
+    font-weight: 900;
+    line-height: 1.1;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero p {
+    margin: 0 auto 2.5rem;
+    font-weight: 500;
+    font-size: 1.125rem;
+    max-width: 540px;
+    opacity: 0.85;
+  }
+  .btn-primary {
+    background: var(--color-highlight);
+    color: var(--color-accent);
+    border: none;
+    padding: 0.9rem 2.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.4);
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background: #960f2d;
+    outline: none;
+  }
+
+  /* Benefits */
+  .benefits {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 4px 20px rgb(10 49 97 / 0.1);
+  }
+  .benefits h2 {
+    margin-top: 0;
+    font-weight: 900;
+    font-size: 1.75rem;
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+  .benefits ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .benefits li {
+    font-weight: 600;
+    font-size: 1.125rem;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-left: 2.4rem;
+    color: var(--color-primary);
+  }
+  .benefits li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-highlight);
+    font-weight: 900;
+    font-size: 1.375rem;
+    line-height: 1;
+    user-select: none;
+  }
+
+  /* Offer */
+  .offer {
+    background: #f5f8fb;
+    border-radius: 1rem;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgb(10 49 97 / 0.06);
+  }
+  .offer h3 {
+    margin-top: 0;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 0.75rem;
+  }
+  .offer p {
+    font-size: 1.075rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+
+  /* Form Section */
+  #form-section {
+    background: var(--color-accent);
+    border: 2px solid var(--color-primary);
+    border-radius: 1rem;
+    padding: 2.5rem 2.5rem 3rem;
+    max-width: 460px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 8px 20px rgb(10 49 97 / 0.12);
+  }
+  #form-section h2 {
+    font-weight: 900;
+    font-size: 1.75rem;
+    color: var(--color-primary);
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 1.75rem;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  label {
+    font-weight: 700;
+    font-size: 0.925rem;
+    color: var(--color-primary);
+    display: block;
+    margin-bottom: 0.25rem;
+    user-select: none;
+  }
+  input[type="text"],
+  input[type="email"] {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.375rem;
+    border: 1.5px solid #b0bac8;
+    color: var(--color-primary);
+    outline-offset: 2px;
+    transition:
+      border-color 0.3s ease,
+      box-shadow 0.3s ease;
+    width: 100%;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus {
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 5px 2px rgba(187,19,62,0.3);
+  }
+  input::placeholder {
+    color: #929dad;
+  }
+  button[type="submit"] {
+    background: var(--color-highlight);
+    border: none;
+    padding: 1rem 0;
+    font-weight: 900;
+    font-size: 1.125rem;
+    border-radius: 9999px;
+    color: var(--color-accent);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.5);
+  }
+  button[type="submit"]:hover,
+  button[type="submit"]:focus {
+    background: #960f2d;
+    outline: none;
+  }
+  .privacy-line {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #4a5968;
+    margin-top: 0.8rem;
+    text-align: center;
+    user-select: none;
+  }
+
+  /* Final CTA Reinforcement */
+  .final-cta {
+    text-align: center;
+    max-width: 660px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 5rem;
+    user-select: none;
+  }
+
+  /* Sticky CTA Bar */
+  #sticky-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--color-primary);
+    padding: 1rem 1.5rem;
+    box-shadow: 0 -4px 12px rgb(10 49 97 / 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease, opacity 0.25s ease;
+    z-index: 9999;
+  }
+  #sticky-cta.hidden {
+    transform: translateY(120%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  #sticky-cta button {
+    background: var(--color-highlight);
+    color: var(--color-accent);
+    border: none;
+    padding: 0.85rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.5);
+    user-select: none;
+  }
+  #sticky-cta button:hover,
+  #sticky-cta button:focus {
+    background: #960f2d;
+    outline: none;
+  }
+
+  /* Responsive */
+  @media (min-width: 600px) {
+    .hero h1 {
+      font-size: 3rem;
+      max-width: 720px;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      max-width: 620px;
+    }
+    main {
+      padding: 2rem 3rem 7rem;
+    }
+    #form-section {
+      padding: 3rem 3rem 3.5rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision Logo" width="176" height="40" />
+</header>
+<main>
+  <section class="hero" aria-label="Hero Section - Scale Revenue Faster with AI">
+    <h1>Scale Your Property Management Business with AI-Powered Precision</h1>
+    <p>Victory Vision helps growth-minded companies generate more qualified opportunities, automate follow-up, and scale revenue faster without wasted time or complexity.</p>
+    <button class="btn-primary" id="hero-cta" type="button" aria-label="Get the Presentation">Get the Presentation</button>
+  </section>
+
+  <section class="benefits" aria-labelledby="benefits-heading">
+    <h2 id="benefits-heading">Unlock Predictable Growth with Victory Vision</h2>
+    <ul>
+      <li>Consistently generate more qualified opportunities tailored to your target market</li>
+      <li>Automate follow-up with precision to reduce lead leakage and missed revenue</li>
+      <li>Book more qualified meetings without adding headcount or operational chaos</li>
+      <li>Gain clear insights into which campaigns and messages drive real revenue</li>
+      <li>Streamline your sales process by replacing scattered tools with one AI-powered engine</li>
+    </ul>
+  </section>
+
+  <section class="offer" aria-label="Offer Section">
+    <h3>What You’ll Receive</h3>
+    <p>
+      Access a professionally designed 8-slide <strong>presentation</strong> that reveals how Victory Vision’s AI-powered growth platform transforms scattered sales and marketing into a high-performance engine — delivering faster, more efficient scaling for property management companies earning $2M to $10M annually.
+    </p>
+  </section>
+
+  <section id="form-section" aria-labelledby="form-heading">
+    <h2 id="form-heading">Access Your Scale Revenue Faster with AI Presentation</h2>
+    <form id="lead-form" method="POST" action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission" novalidate autocomplete="off" aria-describedby="privacy-text">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" placeholder="Enter your full name" autocomplete="name" required />
+
+      <label for="email">Professional Email</label>
+      <input type="email" id="email" name="professional_email" placeholder="you@example.com" autocomplete="email" required />
+
+      <input type="hidden" id="page_id" name="page_id" value="" />
+      <input type="hidden" id="variant_id" name="variant_id" value="" />
+      <input type="hidden" id="session_id" name="session_id" value="" />
+      <input type="hidden" id="source_url" name="source_url" value="" />
+      <input type="hidden" id="referrer" name="referrer" value="" />
+      <input type="hidden" id="utm_source" name="utm_source" value="" />
+      <input type="hidden" id="utm_medium" name="utm_medium" value="" />
+      <input type="hidden" id="utm_campaign" name="utm_campaign" value="" />
+      <input type="hidden" id="utm_term" name="utm_term" value="" />
+      <input type="hidden" id="utm_content" name="utm_content" value="" />
+      <input type="hidden" id="lead_magnet_name" name="lead_magnet_name" value="SCALE1" />
+
+      <button type="submit" aria-label="Submit to get the Victory Vision presentation">Access the Presentation</button>
+    </form>
+    <p id="privacy-text" class="privacy-line">Your information is safe. We respect your privacy and never share your details.</p>
+  </section>
+
+  <section class="final-cta" aria-label="Call To Action - Final Reminder">
+    Ready to scale faster with AI-powered growth? Get clarity, book more qualified meetings, and grow your property management business without extra chaos or guesswork.
+  </section>
+</main>
+
+<div id="sticky-cta" class="" aria-hidden="true">
+  <button type="button" id="sticky-btn" aria-label="Get the Presentation - Scroll to Form">Get the Presentation</button>
+</div>
+
+<div id="vv-chatbot-root"></div>
+<script>
+  window.VICTORY_VISION_CHAT_CONFIG = window.VICTORY_VISION_CHAT_CONFIG || {
+    endpoint: "https://victoryvision.app.n8n.cloud/webhook/chat/page-message"
+  };
+</script>
+
+<script>
+  (() => {
+    const pageId = '';
+    const variantIdKey = 'vv_variant_id';
+    const sessionIdKey = 'vv_session_id';
+
+    const form = document.getElementById('lead-form');
+    const pageIdInput = document.getElementById('page_id');
+    const variantIdInput = document.getElementById('variant_id');
+    const sessionIdInput = document.getElementById('session_id');
+    const sourceUrlInput = document.getElementById('source_url');
+    const referrerInput = document.getElementById('referrer');
+    const utmSourceInput = document.getElementById('utm_source');
+    const utmMediumInput = document.getElementById('utm_medium');
+    const utmCampaignInput = document.getElementById('utm_campaign');
+    const utmTermInput = document.getElementById('utm_term');
+    const utmContentInput = document.getElementById('utm_content');
+
+    // Set page_id immediately
+    pageIdInput.value = pageId;
+
+    // Utility to get URL param
+    function getParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name) || '';
+    }
+
+    // Populate hidden inputs from URL and document.referrer
+    const utm_source = getParam('utm_source');
+    const utm_medium = getParam('utm_medium');
+    const utm_campaign = getParam('utm_campaign');
+    const utm_term = getParam('utm_term');
+    const utm_content = getParam('utm_content');
+    const source_url = window.location.href;
+    const referrer = document.referrer || '';
+
+    utmSourceInput.value = utm_source;
+    utmMediumInput.value = utm_medium;
+    utmCampaignInput.value = utm_campaign;
+    utmTermInput.value = utm_term;
+    utmContentInput.value = utm_content;
+    sourceUrlInput.value = source_url;
+    referrerInput.value = referrer;
+
+    // Check localStorage for session_id and variant_id
+    let storedSessionId = localStorage.getItem(sessionIdKey) || '';
+    let storedVariantId = localStorage.getItem(variantIdKey) || '';
+
+    if (storedSessionId) sessionIdInput.value = storedSessionId;
+    if (storedVariantId) variantIdInput.value = storedVariantId;
+
+    // Router webhook call on page load
+    async function callRouter() {
+      try {
+        const resp = await fetch('https://victoryvision.app.n8n.cloud/webhook/pages/router', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            pageId,
+            source_url,
+            referrer,
+            utm_source,
+            utm_medium,
+            utm_campaign,
+            utm_term,
+            utm_content,
+            session_id: storedSessionId || ''
+          }),
+          credentials: 'omit'
+        });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (data.variant_id) {
+          localStorage.setItem(variantIdKey, data.variant_id);
+          variantIdInput.value = data.variant_id;
+          storedVariantId = data.variant_id;
+        }
+        if (data.session_id) {
+          localStorage.setItem(sessionIdKey, data.session_id);
+          sessionIdInput.value = data.session_id;
+          storedSessionId = data.session_id;
+        }
+        // After router completes, fire page view tracking
+        trackPageView();
+      } catch (e) {
+        // silent fail
+      }
+    }
+
+    // Track pixel firing
+    async function trackPageView() {
+      try {
+        await fetch('https://victoryvision.app.n8n.cloud/webhook/pages/track-pixel', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            page_id: pageId,
+            variant_id: storedVariantId,
+            session_id: storedSessionId,
+            source_url,
+            referrer,
+            utm_source,
+            utm_medium,
+            utm_campaign,
+            utm_term,
+            utm_content
+          }),
+          credentials: 'omit'
+        });
+      } catch (e) {
+        // silent fail
+      }
+    }
+
+    callRouter();
+
+    // Smooth scroll to form
+    const heroBtn = document.getElementById('hero-cta');
+    const stickyBtn = document.getElementById('sticky-btn');
+    const formSection = document.getElementById('form-section');
+    const nameInput = document.getElementById('name');
+
+    function scrollToForm() {
+      formSection.scrollIntoView({behavior: 'smooth', block: 'center'});
+      setTimeout(() => {
+        nameInput.focus();
+      }, 450);
+    }
+
+    heroBtn.addEventListener('click', scrollToForm);
+    stickyBtn.addEventListener('click', scrollToForm);
+
+    // Sticky CTA Bar logic - show/hide based on form visibility
+    const stickyCta = document.getElementById('sticky-cta');
+    const observerOptions = { root: null, threshold: 0.15 };
+
+    function onIntersection(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          stickyCta.classList.add('hidden');
+          stickyCta.setAttribute('aria-hidden', 'true');
+        } else {
+          stickyCta.classList.remove('hidden');
+          stickyCta.setAttribute('aria-hidden', 'false');
+        }
+      });
+    }
+
+    const observer = new IntersectionObserver(onIntersection, observerOptions);
+
+    observer.observe(formSection);
+
+  })();
+</script>
+</body>
+</html>
