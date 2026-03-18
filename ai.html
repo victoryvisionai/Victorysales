@@ -1383,12 +1383,13 @@
               <th>Score</th>
               <th>Last Activity</th>
               <th>Engagement</th>
+              <th>Recommended Next Step</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody id="leadsTableBody">
             <tr>
-              <td colspan="5" class="loading">
+              <td colspan="6" class="loading">
                 <div class="spinner"></div>
                 Loading leads...
               </td>
@@ -1424,9 +1425,81 @@
     <div id="feedbackContent"></div>
   </div>
 </div>
-  </div>
 
-  <script>
+<!-- ═══ SEGMENT PERFORMANCE ═══ -->
+<div class="attribution-card" style="margin-top: 30px;" id="segmentSection">
+  <h3>
+    <span class="attribution-icon icon-engagement">📊</span>
+    Performance by Segment
+  </h3>
+  <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
+    Filter by lead magnet, campaign, tag, or customer journey stage.
+  </p>
+  <!-- Search bar -->
+  <div style="position:relative; margin-bottom:12px;">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:#94a3b8;">🔍</span>
+    <input type="text" id="segmentSearchInput" placeholder="Search tags, campaigns, lead magnets, journey stages…"
+      oninput="filterSegmentTable(this.value)"
+      style="width:100%;padding:10px 12px 10px 36px;border:2px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;font-family:inherit;">
+  </div>
+  <!-- Quick-filter pills populated by JS -->
+  <div id="segmentPills" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;"></div>
+  <!-- Table -->
+  <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f8fafc;">
+          <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e2e8f0;">Segment</th>
+          <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e2e8f0;">Type</th>
+          <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e2e8f0;">Contacts</th>
+          <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e2e8f0;">Emails Sent</th>
+          <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e2e8f0;">Open Rate</th>
+          <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e2e8f0;">Replies</th>
+          <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #e2e8f0;">Meetings</th>
+        </tr>
+      </thead>
+      <tbody id="segmentTableBody">
+        <tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8;">Loading segments…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ VICTORIES ADVICE ═══ -->
+<div class="attribution-card" style="margin-top: 30px;" id="victoriesAdviceSection">
+  <h3>
+    <span class="attribution-icon icon-conversion">🏆</span>
+    Advice from Victories
+  </h3>
+  <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">
+    Patterns synthesized from your closed wins — what messaging, triggers, and journeys actually convert.
+  </p>
+  <div id="victoriesAdviceContent">
+    <div style="text-align:center;padding:30px;color:#94a3b8;">Loading insights…</div>
+  </div>
+</div>
+
+<!-- ═══ NEXT STEPS TRACKER ═══ -->
+<div class="attribution-card" style="margin-top: 30px;" id="nextStepsSection">
+  <h3>
+    <span class="attribution-icon icon-manual">✅</span>
+    Next Steps Tracker
+  </h3>
+  <!-- Walkthrough email banner -->
+  <div style="background:linear-gradient(135deg,#0A3161,#1a5fa8);border-radius:10px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+    <span style="font-size:28px;flex-shrink:0;">📬</span>
+    <div style="flex:1;">
+      <div style="font-weight:700;color:#fff;font-size:14px;">Get the Walkthrough</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:2px;">Send yourself a step-by-step summary of all open next steps.</div>
+    </div>
+    <button onclick="sendWalkthroughEmail()" style="padding:8px 18px;background:#C9A84C;color:#0A3161;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;flex-shrink:0;font-family:inherit;">Send Email</button>
+  </div>
+  <div id="nextStepsContent">
+    <div style="text-align:center;padding:30px;color:#94a3b8;">Loading next steps…</div>
+  </div>
+</div>
+
+  </div><!-- /container -->
     // Initialize Supabase with CORRECT credentials
     const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
@@ -1697,6 +1770,12 @@ async function loadDashboard() {
     loadActivityTimeline(startDate),
     loadLeadsByScore('hot')
   ]);
+
+  // New sections — run after all data is loaded
+  loadPlans();
+  renderSegmentTable('');
+  loadVictoriesAdvice();
+  renderNextSteps();
 }
     // Load funnel data
     async function loadFunnelData(startDate) {
@@ -1710,16 +1789,13 @@ async function loadDashboard() {
         // Calculate Victory Vision funnel stages
         const leadsFound = contacts?.length || 0;
      // Outreach breakdown - count from actual data sources, not just new contacts
-        // Emails: use allEmails (from emails/get webhook) filtered by date
-        const emailsInPeriod = allEmails.filter(e => {
-          const d = e.created_at || e.created_at || e.created;
-          return d && new Date(d) >= startDate;
-        });
+        // FIX: Emails = outbound only (inbound=false) with sent_at in window — excludes drafts & inbound
+        const emailsInPeriod = allEmails.filter(e => !e.inbound && e.sent_at && new Date(e.sent_at) >= startDate);
         const emailed = emailsInPeriod.length || 0;
-        console.log('📧 Emails in period:', emailed, 'from', allEmails.length, 'total. Fields on first:', allEmails[0] ? Object.keys(allEmails[0]) : 'none');
+        console.log('📧 Emails in period (outbound sent):', emailed, 'from', allEmails.length, 'total');
         
-        // Calls: use allContacts with last_called in date range (not just new contacts)
-        const called = allContacts.filter(c => c.last_called && new Date(c.last_called) >= startDate).length || 0; 
+        // FIX: Calls = from calls table (each row = a real Telnyx session)
+        const called = allCalls.filter(c => c.created_at && new Date(c.created_at) >= startDate).length || 0;
         // SMS count from actual SMS data
         const smsContacted = allSMS.filter(s => {
           return s.created_at && new Date(s.created_at) >= startDate;
@@ -1862,9 +1938,9 @@ if (!allCalls || allCalls.length === 0) {
     allCalls = Array.isArray(callsResponse) ? callsResponse : callsResponse?.calls || [];
   } catch (e) { allCalls = []; }
 }  
-    // Rest of the function stays the same...
+    // FIX: Emails = outbound only (inbound=false) with sent_at in window — excludes drafts & inbound
     const emails = allEmails.filter(e => 
-      e.created_at && new Date(e.created_at) >= startDate
+      !e.inbound && e.sent_at && new Date(e.sent_at) >= startDate
     );
     
     const meetings = allMeetings.filter(m => 
@@ -1875,8 +1951,9 @@ if (!allCalls || allCalls.length === 0) {
       c.created && new Date(c.created) >= startDate
     ).length;
     
-    const calls = allContacts.filter(c => 
-      c.last_called && new Date(c.last_called) >= startDate
+    // FIX: Calls = from calls table (each row = a real Telnyx session), not last_called on contacts
+    const calls = allCalls.filter(c => 
+      c.created_at && new Date(c.created_at) >= startDate
     ).length;
     
     const victories = allContacts.filter(c => 
@@ -1902,9 +1979,9 @@ if (!allCalls || allCalls.length === 0) {
     // Load attribution data
     async function loadAttributionData(startDate) {
       try {
-        // Filter emails by date
+        // FIX: outbound only (inbound=false) with sent_at in window
         const emails = allEmails.filter(e => 
-          e.created_at && new Date(e.created_at) >= startDate
+          !e.inbound && e.sent_at && new Date(e.sent_at) >= startDate
         );
 
         // Separate AI vs manual
@@ -2156,6 +2233,7 @@ let filteredContacts;
           const lastActivity = getLastActivity(contact);
           const engagement = getEngagementSummary(contact);
           const isPriority = contact.tags?.includes('priority');
+          const rec = getRecommendedNextStep(contact);
 
           return `
             <tr>
@@ -2170,6 +2248,18 @@ let filteredContacts;
               </td>
               <td>${lastActivity}</td>
               <td>${engagement}</td>
+              <td>
+                <div style="display:flex;align-items:flex-start;gap:6px;">
+                  <span style="font-size:16px;flex-shrink:0;">${rec.icon}</span>
+                  <div>
+                    <div style="font-size:13px;font-weight:600;color:${rec.color};">${rec.text}</div>
+                    <div style="margin-top:3px;">
+                      <span style="font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:${rec.color}20;color:${rec.color};">${rec.deadline}</span>
+                    </div>
+                    ${contact.next_steps ? `<div style="font-size:11px;color:#64748b;margin-top:4px;font-style:italic;">📌 ${escapeHtml(contact.next_steps)}</div>` : ''}
+                  </div>
+                </div>
+              </td>
               <td>
                 <div class="lead-actions">
                   <button class="action-btn" onclick="viewContact('${contact.contact_id || contact.id}')">
@@ -2188,8 +2278,38 @@ let filteredContacts;
       } catch (error) {
         console.error('Error loading leads:', error);
         document.getElementById('leadsTableBody').innerHTML = 
-          '<tr><td colspan="5" style="text-align: center; padding: 40px; color: #ef4444;">Error loading leads</td></tr>';
+          '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #ef4444;">Error loading leads</td></tr>';
       }
+    }
+
+    // Get recommended next step for a contact
+    function getRecommendedNextStep(contact) {
+      const now = new Date();
+      const last72h = new Date(now - 72 * 3600 * 1000);
+      const last7d  = new Date(now - 7 * 24 * 3600 * 1000);
+
+      if (contact.last_clicked_date && new Date(contact.last_clicked_date) > last72h) {
+        return { icon: '📞', text: 'Call today — clicked link <72h', deadline: 'TODAY', color: '#dc2626' };
+      }
+      if (contact.last_responded && !contact.next_steps) {
+        return { icon: '📧', text: 'They replied — send follow-up', deadline: 'Today', color: '#d97706' };
+      }
+      const hasMeeting = allMeetings.some(m =>
+        (m.attendees_emails || '').includes(contact.email) && m.status === 'completed'
+      );
+      if (hasMeeting) {
+        return { icon: '📋', text: 'Meeting held — send proposal', deadline: 'Within 24h', color: '#d97706' };
+      }
+      if (contact.last_opened_date && new Date(contact.last_opened_date) > last72h && !contact.last_responded) {
+        return { icon: '💬', text: 'Opened email — send personal note', deadline: 'This week', color: '#0369a1' };
+      }
+      if (!contact.last_emailed_date || new Date(contact.last_emailed_date) < last7d) {
+        return { icon: '📤', text: 'No touch in 7+ days — re-engage', deadline: 'Today', color: '#dc2626' };
+      }
+      if (contact.score >= 50) {
+        return { icon: '🤝', text: 'High score — book a meeting', deadline: 'This week', color: '#059669' };
+      }
+      return { icon: '📤', text: 'Continue nurture sequence', deadline: 'This week', color: '#64748b' };
     }
 
     // Get last activity for contact
@@ -2294,8 +2414,13 @@ async function loadPlans() {
       return;
     }
     
+    // Show only the 2 most recent plans
+    const topPlans = [...plans]
+      .sort((a, b) => new Date(b.created_at || b.start || 0) - new Date(a.created_at || a.start || 0))
+      .slice(0, 2);
+    
     // Render plans
-    container.innerHTML = plans.map(plan => renderPlan(plan)).join('');
+    container.innerHTML = topPlans.map((plan, i) => renderPlan(plan, i + 1, topPlans.length)).join('');
     
   } catch (error) {
     console.error('Error loading plans:', error);
@@ -2303,7 +2428,8 @@ async function loadPlans() {
   }
 }
 // Render individual plan
-function renderPlan(plan) {
+function renderPlan(plan, planIndex, totalPlans) {
+  const planNum = planIndex ? `<span style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#6b7280;font-weight:700;">Play ${planIndex} of ${totalPlans || 2}</span><br>` : '';
   // Parse the plan actions array
   const actions = typeof plan.plan === 'string' ? JSON.parse(plan.plan) : plan.plan;
   
@@ -2320,7 +2446,7 @@ function renderPlan(plan) {
       <div class="plan-header" onclick="togglePlan('${plan.id}')">
         <div class="plan-header-left">
           <div class="plan-date">📅 ${startDate}${startDate !== endDate ? ' → ' + endDate : ''}</div>
-          <div class="plan-description">${plan.description || 'AI Generated Plan'}</div>
+          ${planNum}<div class="plan-description">${plan.description || 'AI Generated Plan'}</div>
           <div class="plan-stats">
             <span class="plan-stat">🎯 ${actions ? actions.length : 0} actions</span>
             <span class="plan-stat">💰 ${plan.credits || 0} credits</span>
@@ -2459,14 +2585,7 @@ async function executePlan(event, planId, customerId) {
   }
 }
 
-// Load plans when page loads
-window.addEventListener('load', function() {
-  setTimeout(function() {
-    if (typeof userEmail !== 'undefined' && userEmail) {
-      loadPlans();
-    }
-  }, 1000);
-});
+// Plans loaded via loadDashboard()
 
 function displayFeedback(data) {
   const resultsDiv = document.getElementById('feedbackResults');
@@ -2577,6 +2696,238 @@ async function getAIFeedback() {
     btn.textContent = '🤖 Get AI Feedback';
   }, 10000);
 }    
+
+// ═══════════════════════════════════════════════════
+// SEGMENT PERFORMANCE
+// ═══════════════════════════════════════════════════
+let allSegments = [];
+
+function buildSegments() {
+  const map = {};
+  function add(key, type, label, contact) {
+    if (!key || key === 'null' || key === 'undefined' || !String(key).trim()) return;
+    const k = type + '::' + String(key).trim();
+    if (!map[k]) map[k] = { type, label: label || String(key).trim(), contacts: [] };
+    map[k].contacts.push(contact);
+  }
+  allContacts.forEach(function(c) {
+    if (c.campaigns) add(c.campaigns, 'campaign', c.campaigns, c);
+    if (c.customer_journey) add(c.customer_journey, 'journey', c.customer_journey, c);
+    if (c.tags) {
+      c.tags.split(',').map(function(t){ return t.trim(); }).filter(Boolean).forEach(function(tag) {
+        var type = tag.toLowerCase().startsWith('leadmagnet') ? 'leadmagnet' : 'tag';
+        add(tag, type, tag, c);
+      });
+    }
+  });
+  return Object.values(map);
+}
+
+function renderSegmentTable(searchTerm) {
+  allSegments = buildSegments();
+  var term = (searchTerm || '').toLowerCase();
+  var filtered = term
+    ? allSegments.filter(function(s){ return s.label.toLowerCase().includes(term) || s.type.toLowerCase().includes(term); })
+    : allSegments;
+
+  var pills = document.getElementById('segmentPills');
+  if (pills && !term) {
+    var typeIcon = { leadmagnet: '🧲', campaign: '🎯', journey: '🗺️', tag: '🏷️' };
+    var topSegs = allSegments.slice().sort(function(a,b){ return b.contacts.length - a.contacts.length; }).slice(0, 10);
+    pills.innerHTML = '<span onclick="document.getElementById(\'segmentSearchInput\').value=\'\';renderSegmentTable(\'\')" style="padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #0A3161;background:#0A3161;color:#fff;margin-right:4px;">All</span>'
+      + topSegs.map(function(s) {
+          var lbl = escapeHtml(s.label);
+          var safeLabel = lbl.replace(/'/g, '').replace(/"/g, '');
+          return '<span onclick="document.getElementById(\'segmentSearchInput\').value=\'' + safeLabel + '\';renderSegmentTable(\'' + safeLabel + '\')" style="padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#374151;margin-right:4px;">' + (typeIcon[s.type]||'🏷️') + ' ' + lbl + '</span>';
+        }).join('');
+  }
+
+  var tbody = document.getElementById('segmentTableBody');
+  if (!tbody) return;
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#94a3b8;">No segments match "' + escapeHtml(term) + '"</td></tr>';
+    return;
+  }
+
+  var sorted = filtered.slice().sort(function(a,b){ return b.contacts.length - a.contacts.length; }).slice(0, 25);
+  var typeIcon = { leadmagnet: '🧲', campaign: '🎯', journey: '🗺️', tag: '🏷️' };
+  var typeColor = { leadmagnet: '#7c3aed', campaign: '#0369a1', journey: '#059669', tag: '#64748b' };
+
+  tbody.innerHTML = sorted.map(function(seg) {
+    var cs = seg.contacts;
+    var totalEmails = cs.reduce(function(s,c){ return s + (parseInt(c.number_emails_sent)||0); }, 0);
+    var totalOpens  = cs.reduce(function(s,c){ return s + (parseInt(c.num_emails_opened)||0); }, 0);
+    var replies     = cs.filter(function(c){ return c.last_responded; }).length;
+    var meetings    = cs.filter(function(c){ return allMeetings.some(function(m){ return (m.attendees_emails||'').includes(c.email); }); }).length;
+    var openRate    = totalEmails > 0 ? ((totalOpens / totalEmails) * 100).toFixed(0) : 0;
+    var rateColor   = openRate >= 30 ? '#059669' : openRate >= 15 ? '#d97706' : '#dc2626';
+    var col         = typeColor[seg.type] || '#64748b';
+    return '<tr style="border-bottom:1px solid #f1f5f9;">'
+      + '<td style="padding:12px;">' + (typeIcon[seg.type]||'🏷️') + ' <strong style="color:#0A3161;">' + escapeHtml(seg.label) + '</strong></td>'
+      + '<td style="padding:12px;"><span style="font-size:11px;font-weight:600;text-transform:uppercase;padding:2px 8px;border-radius:10px;background:' + col + '20;color:' + col + ';">' + seg.type + '</span></td>'
+      + '<td style="padding:12px;text-align:center;font-weight:700;color:#0A3161;">' + cs.length + '</td>'
+      + '<td style="padding:12px;text-align:center;color:#64748b;">' + totalEmails + '</td>'
+      + '<td style="padding:12px;text-align:center;font-weight:700;color:' + rateColor + ';">' + openRate + '%</td>'
+      + '<td style="padding:12px;text-align:center;font-weight:700;color:' + (replies > 0 ? '#059669' : '#94a3b8') + ';">' + replies + '</td>'
+      + '<td style="padding:12px;text-align:center;font-weight:700;color:' + (meetings > 0 ? '#059669' : '#94a3b8') + ';">' + meetings + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+function filterSegmentTable(val) { renderSegmentTable(val); }
+
+// ═══════════════════════════════════════════════════
+// VICTORIES ADVICE
+// ═══════════════════════════════════════════════════
+async function loadVictoriesAdvice() {
+  var container = document.getElementById('victoriesAdviceContent');
+  if (!container) return;
+  try {
+    var response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/victories/get');
+    var victories = Array.isArray(response) ? response : (response && response.victories ? response.victories : []);
+
+    if (!victories.length) {
+      container.innerHTML = '<p style="text-align:center;color:#94a3b8;padding:20px;">Close your first deal to unlock win-pattern insights.</p>';
+      return;
+    }
+
+    var insights = [];
+
+    var msgs = victories.map(function(v){ return v.messages_that_landed; }).filter(Boolean);
+    if (msgs.length) insights.push({ icon: '💬', title: 'Messages That Close', color: '#667eea',
+      text: '"' + escapeHtml(msgs[msgs.length - 1]) + '"', source: msgs.length + ' win' + (msgs.length > 1 ? 's' : '') });
+
+    var reasons = victories.map(function(v){ return v.reasons_they_chose_us; }).filter(Boolean);
+    if (reasons.length) insights.push({ icon: '🏅', title: 'Why They Said Yes', color: '#10b981',
+      text: escapeHtml(reasons[reasons.length - 1]), source: reasons.length + ' deal' + (reasons.length > 1 ? 's' : '') + ' analyzed' });
+
+    var triggers = victories.map(function(v){ return v.final_trigger; }).filter(Boolean);
+    if (triggers.length) {
+      var counts = {};
+      triggers.forEach(function(t){ counts[t] = (counts[t] || 0) + 1; });
+      var top = Object.entries(counts).sort(function(a,b){ return b[1]-a[1]; })[0];
+      insights.push({ icon: '⚡', title: 'Final Conversion Trigger', color: '#f59e0b',
+        text: 'Most common closing trigger: <strong>' + escapeHtml(top[0]) + '</strong>. Include this in every follow-up sequence.',
+        source: triggers.length + ' closes' });
+    }
+
+    var days = victories.map(function(v){ return parseInt(v.days_to_convert); }).filter(function(n){ return !isNaN(n) && n > 0; });
+    if (days.length) {
+      var avg = Math.round(days.reduce(function(a,b){ return a+b; }, 0) / days.length);
+      insights.push({ icon: '📅', title: 'Avg ' + avg + ' Days to Close', color: '#0A3161',
+        text: 'Prospects beyond <strong>' + Math.round(avg * 1.5) + ' days</strong> need re-engagement or disqualification.',
+        source: days.length + ' win' + (days.length > 1 ? 's' : '') });
+    }
+
+    var useCases = victories.map(function(v){ return v.use_cases_that_resonated; }).filter(Boolean);
+    if (useCases.length) insights.push({ icon: '🎯', title: 'Use Cases That Win', color: '#dc2626',
+      text: escapeHtml(useCases[useCases.length - 1]), source: 'from victories' });
+
+    var traits = victories.map(function(v){ return v.conversion_traits; }).filter(Boolean);
+    if (traits.length) insights.push({ icon: '🔬', title: 'Who Converts', color: '#7c3aed',
+      text: escapeHtml(traits[traits.length - 1]), source: traits.length + ' pattern' + (traits.length > 1 ? 's' : '') });
+
+    if (!insights.length) {
+      container.innerHTML = '<p style="text-align:center;color:#94a3b8;padding:20px;">No structured win data yet. Fill in victory fields to unlock insights.</p>';
+      return;
+    }
+
+    container.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">'
+      + insights.slice(0, 6).map(function(ins) {
+        return '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:16px;background:#fafafa;">'
+          + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'
+          + '<div style="width:36px;height:36px;border-radius:8px;background:' + ins.color + ';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">' + ins.icon + '</div>'
+          + '<div style="font-weight:700;color:#0A3161;font-size:14px;">' + ins.title + '</div></div>'
+          + '<div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:8px;">' + ins.text + '</div>'
+          + '<div style="font-size:11px;font-weight:600;color:' + ins.color + ';text-transform:uppercase;letter-spacing:0.5px;">Source: ' + ins.source + '</div>'
+          + '</div>';
+      }).join('') + '</div>';
+
+  } catch (e) {
+    console.error('Victories advice error:', e);
+    if (container) container.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">Could not load victories data.</p>';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// NEXT STEPS TRACKER
+// ═══════════════════════════════════════════════════
+function renderNextSteps() {
+  var container = document.getElementById('nextStepsContent');
+  if (!container) return;
+  var withSteps = allContacts.filter(function(c){ return c.next_steps && c.next_steps.trim(); }).slice(0, 30);
+
+  if (!withSteps.length) {
+    container.innerHTML = '<p style="text-align:center;color:#94a3b8;padding:20px;">No open next steps. Add them via the leads table above.</p>';
+    return;
+  }
+
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+
+  var rows = withSteps.map(function(c) {
+    var due = c.next_step_due ? new Date(c.next_step_due) : null;
+    var dueLabel = '—', dueBg = '#f1f5f9', dueColor = '#64748b';
+    if (due) {
+      var d = new Date(due); d.setHours(0, 0, 0, 0);
+      dueLabel = due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      if (d < today)                              { dueBg = '#fee2e2'; dueColor = '#dc2626'; dueLabel = 'OVERDUE'; }
+      else if (d.getTime() === today.getTime())   { dueBg = '#fef3c7'; dueColor = '#d97706'; dueLabel = 'TODAY'; }
+      else                                        { dueBg = '#e0f2fe'; dueColor = '#0369a1'; }
+    }
+    var safeId    = escapeHtml(String(c.id || ''));
+    var safeEmail = escapeHtml(c.email || '');
+    return '<tr id="nstr_' + safeId + '" style="border-bottom:1px solid #f1f5f9;">'
+      + '<td style="padding:12px;font-weight:600;color:#0A3161;">' + escapeHtml(c.name || c.email || 'Unknown') + '</td>'
+      + '<td style="padding:12px;font-size:13px;color:#374151;">' + escapeHtml(c.next_steps) + '</td>'
+      + '<td style="padding:12px;text-align:center;"><span style="padding:3px 8px;border-radius:10px;font-size:11px;font-weight:700;background:' + dueBg + ';color:' + dueColor + ';">' + dueLabel + '</span></td>'
+      + '<td style="padding:12px;text-align:center;"><button onclick="completeNextStep(\'' + safeId + '\',\'' + safeEmail + '\',this)" style="background:#f0fdf4;border:1.5px solid #86efac;color:#166534;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;">✓ Done</button></td>'
+      + '</tr>';
+  }).join('');
+
+  container.innerHTML = '<table style="width:100%;border-collapse:collapse;">'
+    + '<thead><tr style="background:#f8fafc;">'
+    + '<th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;border-bottom:2px solid #e2e8f0;">Contact</th>'
+    + '<th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;border-bottom:2px solid #e2e8f0;">Next Step</th>'
+    + '<th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;border-bottom:2px solid #e2e8f0;">Due</th>'
+    + '<th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;border-bottom:2px solid #e2e8f0;">Done</th>'
+    + '</tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+async function completeNextStep(contactId, email, btn) {
+  btn.textContent = '…';
+  btn.disabled = true;
+  try {
+    await apiCall('https://victoryvision.app.n8n.cloud/webhook/contacts/add', { id: contactId, email: email, next_steps: '', next_step_due: null });
+    var c = allContacts.find(function(x){ return String(x.id) === String(contactId) || x.email === email; });
+    if (c) c.next_steps = '';
+    var row = document.getElementById('nstr_' + contactId);
+    if (row) { row.style.opacity = '0'; row.style.transition = 'opacity 0.4s'; setTimeout(function(){ row.remove(); }, 400); }
+  } catch (e) {
+    btn.textContent = '✓ Done';
+    btn.disabled = false;
+    console.error('Error completing next step:', e);
+  }
+}
+
+async function sendWalkthroughEmail() {
+  var steps = allContacts.filter(function(c){ return c.next_steps && c.next_steps.trim(); }).slice(0, 30);
+  if (!steps.length) { alert('No open next steps to send.'); return; }
+  var rows = steps.map(function(c){
+    return '<tr><td style="padding:8px;border-bottom:1px solid #eee;">' + escapeHtml(c.name || c.email) + '</td>'
+      + '<td style="padding:8px;border-bottom:1px solid #eee;">' + escapeHtml(c.next_steps) + '</td>'
+      + '<td style="padding:8px;border-bottom:1px solid #eee;">' + (c.next_step_due || '—') + '</td></tr>';
+  }).join('');
+  var body = '<p>Hi,</p><p>Here are your <strong>' + steps.length + '</strong> open next steps in Victory Vision:</p>'
+    + '<table style="width:100%;border-collapse:collapse;margin-top:10px;">'
+    + '<tr style="background:#0A3161;color:white;"><th style="padding:10px;text-align:left;">Contact</th><th style="padding:10px;text-align:left;">Next Step</th><th style="padding:10px;text-align:left;">Due</th></tr>'
+    + rows + '</table>'
+    + '<p style="margin-top:16px;">Log into <a href="https://www.victoryvision.app/ai">Victory Vision AI</a> to take action.</p>';
+  try {
+    await apiCall('https://victoryvision.app.n8n.cloud/webhook/emails/send', { to_email: CUSTOMER_ID, subject: 'Victory Vision: ' + steps.length + ' Open Next Steps', body: body });
+    alert('Walkthrough email sent to ' + CUSTOMER_ID);
+  } catch (e) { alert('Error sending email: ' + e.message); }
+}
+
     // Session management - check every 5 minutes
     setInterval(async function() {
       try {
