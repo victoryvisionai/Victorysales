@@ -54,46 +54,100 @@
 
   /* Hero */
   .hero {
-    background: var(--color-primary);
+    background: linear-gradient(108deg, var(--color-primary) 82%, #184e91 100%);
     color: var(--color-accent);
-    padding: 5rem 1.5rem 5.5rem;
+    padding: 6rem 1.5rem 6rem;
     text-align: center;
-    border-radius: 0 0 0 4rem;
-    box-shadow: inset 0 0 40px #0a3161dd;
+    border-radius: 0 0 0 4.5rem;
+    position: relative;
+    box-shadow:
+      0 30px 64px 0 rgba(10,49,97,0.10),
+      0 0 0 8px #f5f8fb;
+    overflow: visible;
+    z-index: 1;
+  }
+  .hero::after {
+      content: "";
+      display: block;
+      position: absolute;
+      left: 50%;
+      bottom: -26px;
+      transform: translateX(-50%);
+      width: 6rem;
+      height: 7px;
+      background: var(--color-highlight);
+      border-radius: 3.5px;
+      opacity: 0.95;
+      box-shadow: 0 4px 18px 0 rgba(187,19,62,0.23);
   }
   .hero h1 {
-    margin: 0 0 1rem;
-    font-size: 2.25rem;
+    margin: 0 0 1.25rem;
+    font-size: 2.65rem;
     font-weight: 900;
-    line-height: 1.1;
-    max-width: 600px;
+    letter-spacing: -0.03em;
+    line-height: 1.07;
+    max-width: 700px;
     margin-left: auto;
     margin-right: auto;
   }
   .hero p {
-    margin: 0 auto 2.5rem;
+    margin: 0 auto 2.65rem;
     font-weight: 500;
-    font-size: 1.125rem;
-    max-width: 540px;
-    opacity: 0.85;
+    font-size: 1.175rem;
+    max-width: 570px;
+    opacity: 0.91;
   }
   .btn-primary {
     background: var(--color-highlight);
     color: var(--color-accent);
     border: none;
-    padding: 0.9rem 2.5rem;
-    font-size: 1.125rem;
-    font-weight: 700;
+    padding: 1rem 2.7rem;
+    font-size: 1.175rem;
+    font-weight: 800;
     border-radius: 9999px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.4);
-    transition: background-color 0.3s ease;
+    box-shadow: 0 7px 24px rgba(187, 19, 62, 0.42);
+    transition: background-color 0.3s ease, box-shadow 0.22s cubic-bezier(.4,0,.2,1);
     user-select: none;
+    letter-spacing: 0.01em;
   }
   .btn-primary:hover,
   .btn-primary:focus {
     background: #960f2d;
     outline: none;
+    box-shadow: 0 12px 36px rgba(187, 19, 62, 0.52);
+  }
+
+  /* Download clarity bar */
+  .clarity-bar {
+    background: #fff7f8;
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 1.08rem;
+    text-align: center;
+    padding: 0.7rem 1.5rem 0.7rem 1.5rem;
+    margin: -2.2rem auto 2rem auto;
+    max-width: 560px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px 0 rgba(187, 19, 62, 0.08);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7em;
+    letter-spacing: 0.01em;
+    position: relative;
+    z-index: 2;
+  }
+  .clarity-bar .bar-icon {
+    color: var(--color-highlight);
+    font-weight: 900;
+    font-size: 1.25em;
+    vertical-align: middle;
+    margin-right: 0.28em;
+    display: inline-block;
+    line-height: 1;
+    margin-top: 1.5px;
   }
 
   /* Benefits */
@@ -101,7 +155,7 @@
     background: #fff;
     border-radius: 1rem;
     padding: 2rem 2.5rem;
-    box-shadow: 0 4px 20px rgb(10 49 97 / 0.1);
+    box-shadow: 0 4px 20px rgb(10 49 97 / 0.10);
   }
   .benefits h2 {
     margin-top: 0;
@@ -156,7 +210,7 @@
     margin-bottom: 0.75rem;
   }
   .offer p {
-    font-size: 1.075rem;
+    font-size: 1.08rem;
     font-weight: 500;
     color: var(--color-primary);
     max-width: 720px;
@@ -170,11 +224,12 @@
     background: var(--color-accent);
     border: 2px solid var(--color-primary);
     border-radius: 1rem;
-    padding: 2.5rem 2.5rem 3rem;
+    padding: 2.6rem 2.5rem 2.9rem;
     max-width: 460px;
     margin-left: auto;
     margin-right: auto;
-    box-shadow: 0 8px 20px rgb(10 49 97 / 0.12);
+    box-shadow: 0 8px 20px rgb(10 49 97 / 0.13);
+    position: relative;
   }
   #form-section h2 {
     font-weight: 900;
@@ -182,7 +237,17 @@
     color: var(--color-primary);
     margin-top: 0;
     text-align: center;
-    margin-bottom: 1.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .form-lead-text {
+    display: block;
+    font-size: 1.05rem;
+    color: #3b5678;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 1.75em;
+    margin-top: -0.5em;
+    line-height: 1.5;
   }
   form {
     display: flex;
@@ -194,8 +259,22 @@
     font-size: 0.925rem;
     color: var(--color-primary);
     display: block;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.27rem;
     user-select: none;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .field-hint {
+    font-size: 0.93em;
+    color: #7d90aa;
+    font-weight: 500;
+    margin-top: 0.05em;
+    padding-left: 0.09em;
+    user-select: none;
+    letter-spacing: 0.01em;
   }
   input[type="text"],
   input[type="email"] {
@@ -218,17 +297,30 @@
   input::placeholder {
     color: #929dad;
   }
+  .field-error {
+    font-size: 0.93em;
+    color: var(--color-highlight);
+    font-weight: 600;
+    margin-top: 0.18em;
+    margin-left: 0.1em;
+    display: none;
+    min-height: 1.2em;
+  }
+  .field-error.show {
+    display: block;
+  }
   button[type="submit"] {
     background: var(--color-highlight);
     border: none;
-    padding: 1rem 0;
+    padding: 1.04rem 0;
     font-weight: 900;
-    font-size: 1.125rem;
+    font-size: 1.13rem;
     border-radius: 9999px;
     color: var(--color-accent);
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.5);
+    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.48);
+    letter-spacing: 0.01em;
   }
   button[type="submit"]:hover,
   button[type="submit"]:focus {
@@ -242,6 +334,62 @@
     margin-top: 0.8rem;
     text-align: center;
     user-select: none;
+    margin-bottom: 0.14em;
+  }
+  .privacy-link {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    text-align: center;
+    display: block;
+    text-decoration: underline;
+    opacity: .90;
+    margin-top: 0.09em;
+    margin-bottom: -0.35em;
+    user-select: none;
+    transition: color 0.16s;
+  }
+  .privacy-link:hover,
+  .privacy-link:focus {
+    color: var(--color-highlight);
+  }
+
+  /* Subtle trustbar */
+  .trustbar {
+    margin: 2.2rem auto 0 auto;
+    max-width: 466px;
+    text-align: center;
+    font-size: 1.00rem;
+    color: #395681;
+    background: #f5f8fb;
+    border-radius: 11px;
+    line-height: 1.55;
+    font-weight: 500;
+    box-shadow: 0 2px 18px 0 rgb(10 49 97 / 0.05);
+    padding: 1.05em 1.65em 1.05em 1.65em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: .68em;
+    margin-bottom: 3.1rem;
+    letter-spacing: 0.00em;
+  }
+  .trustbar .trustbar-icon {
+    color: var(--color-primary);
+    font-size: 1.32em;
+    font-weight: 900;
+    margin-right: 0.28em;
+    vertical-align: middle;
+    text-shadow: 0 2px 8px rgba(10,49,97,0.06);
+    margin-top: 1.5px;
+    display: inline-block;
+    line-height: 1;
+  }
+  .trustbar-strong {
+    color: var(--color-primary);
+    font-weight: 700;
+    letter-spacing: 0.01em;
   }
 
   /* Final CTA Reinforcement */
@@ -250,7 +398,7 @@
     max-width: 660px;
     margin-left: auto;
     margin-right: auto;
-    font-size: 1.125rem;
+    font-size: 1.13rem;
     color: var(--color-primary);
     font-weight: 600;
     line-height: 1.4;
@@ -282,13 +430,14 @@
     background: var(--color-highlight);
     color: var(--color-accent);
     border: none;
-    padding: 0.85rem 2rem;
+    padding: 0.93rem 2.15rem;
     font-size: 1.125rem;
     font-weight: 700;
     border-radius: 9999px;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.5);
+    box-shadow: 0 5px 15px rgba(187, 19, 62, 0.49);
     user-select: none;
+    letter-spacing: .01em;
   }
   #sticky-cta button:hover,
   #sticky-cta button:focus {
@@ -299,61 +448,124 @@
   /* Responsive */
   @media (min-width: 600px) {
     .hero h1 {
-      font-size: 3rem;
-      max-width: 720px;
+      font-size: 3.3rem;
+      max-width: 800px;
     }
     .hero p {
-      font-size: 1.25rem;
-      max-width: 620px;
+      font-size: 1.34rem;
+      max-width: 680px;
     }
     main {
       padding: 2rem 3rem 7rem;
     }
     #form-section {
-      padding: 3rem 3rem 3.5rem;
+      padding: 3.2rem 3rem 3.5rem;
+    }
+    .clarity-bar {
+        font-size: 1.12rem;
+        margin-top: -3.1rem;
+        max-width: 625px;
+    }
+    .trustbar {
+        font-size: 1.03rem;
+        padding: 1.15em 2.2em 1.15em 2.2em;
+        max-width: 530px;
     }
   }
 </style>
+
+<!-- Google Pixel -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-16965842202"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-16965842202');
+  gtag('config', 'GT-WF4ZXWLR');
+</script>
+
+<!-- LinkedIn Pixel -->
+<script type="text/javascript">
+_linkedin_partner_id = "8929812";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script>
+<script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+
+<!-- Microsoft Pixel -->
+<script>(function(w,d,t,r,u){var f,n,i;w[u]=w[u]||[],f=function(){var o={ti:"97225334", enableAutoSpaTracking: true};o.q=w[u],w[u]=new UET(o),w[u].push("pageLoad")},n=d.createElement(t),n.src=r,n.async=1,n.onload=n.onreadystatechange=function(){var s=this.readyState;s&&s!=="loaded"&&s!=="complete"||(f(),n.onload=n.onreadystatechange=null)},i=d.getElementsByTagName(t)[0],i.parentNode.insertBefore(n,i)})(window,document,"script","//bat.bing.com/bat.js","uetq");</script>
 </head>
 <body>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=8929812&fmt=gif" />
+</noscript>
 <header>
   <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision Logo" width="176" height="40" />
 </header>
 <main>
   <section class="hero" aria-label="Hero Section - Scale Revenue Faster with AI">
-    <h1>Scale Your Property Management Business with AI-Powered Precision</h1>
-    <p>Victory Vision helps growth-minded companies generate more qualified opportunities, automate follow-up, and scale revenue faster without wasted time or complexity.</p>
+    <h1>Scale Revenue Faster with AI—Consistently Book More Qualified Meetings, Zero Chaos</h1>
+    <p>Turn scattered sales and follow-up into a disciplined AI-powered growth engine. Victory Vision helps founder-led property management businesses unlock predictable pipeline—and grow revenue without adding complexity or manual effort.</p>
     <button class="btn-primary" id="hero-cta" type="button" aria-label="Get the Presentation">Get the Presentation</button>
   </section>
 
+  <div class="clarity-bar" aria-live="polite" role="status">
+    <span class="bar-icon" aria-hidden="true">⬇️</span>
+    Instant download—no waiting, no calls. <span class="clarity-bar-text">Get the <strong>8-slide “Scale Revenue Faster with AI” presentation</strong> as a high-impact, business-ready file right after submitting the form below.</span>
+  </div>
+
   <section class="benefits" aria-labelledby="benefits-heading">
-    <h2 id="benefits-heading">Unlock Predictable Growth with Victory Vision</h2>
+    <h2 id="benefits-heading">Unlock Predictable Growth: The Victory Vision Advantage</h2>
     <ul>
       <li>Consistently generate more qualified opportunities tailored to your target market</li>
-      <li>Automate follow-up with precision to reduce lead leakage and missed revenue</li>
-      <li>Book more qualified meetings without adding headcount or operational chaos</li>
-      <li>Gain clear insights into which campaigns and messages drive real revenue</li>
+      <li>Automate follow-up with precision—stop lost revenue from disorganized or missed outreach</li>
+      <li>Book more valuable meetings without more headcount, wasted time, or operational chaos</li>
+      <li>Gain full insight into which campaigns and messages are driving actual revenue</li>
       <li>Streamline your sales process by replacing scattered tools with one AI-powered engine</li>
     </ul>
   </section>
 
   <section class="offer" aria-label="Offer Section">
-    <h3>What You’ll Receive</h3>
+    <h3>What You’ll Get Inside</h3>
     <p>
-      Access a professionally designed 8-slide <strong>presentation</strong> that reveals how Victory Vision’s AI-powered growth platform transforms scattered sales and marketing into a high-performance engine — delivering faster, more efficient scaling for property management companies earning $2M to $10M annually.
+      <strong>The “Scale Revenue Faster with AI” presentation (Downloadable PDF)</strong> shows, in 8 concise, benefit-heavy slides, exactly how Victory Vision’s AI-powered platform transforms fragmented outreach and unpredictable referrals into a <strong>measurable, high-performance growth engine</strong>. Built specifically for property management founders earning $2M–$10M/year, you’ll see how to:
+      <br><br>
+      <ul style="display:inline-block; text-align:left; margin:0 auto; font-size:1.06rem; padding-left:1.3em; color:#0a3161;">
+        <li>Identify high-value prospects — and book more qualified meetings</li>
+        <li>Automate follow-up to capture hidden revenue</li>
+        <li>Scale faster, with less busywork and no extra chaos</li>
+        <li>Measure what really drives your pipeline and growth</li>
+      </ul>
+      <br>
+      <strong>Ready to get clarity?</strong> Enter your business email below for instant access.
     </p>
   </section>
 
   <section id="form-section" aria-labelledby="form-heading">
-    <h2 id="form-heading">Access Your Scale Revenue Faster with AI Presentation</h2>
+    <h2 id="form-heading">Get Instant Access: Scale Revenue Faster with AI Presentation</h2>
+    <span class="form-lead-text">Enter your details for an immediate download. <strong>Built for founder-led property management businesses ready to convert more pipeline, faster.</strong></span>
     <form id="lead-form" method="POST" action="https://victoryvision.app.n8n.cloud/webhook/pages/lead-submission" novalidate autocomplete="off" aria-describedby="privacy-text">
-      <label for="name">Full Name</label>
-      <input type="text" id="name" name="name" placeholder="Enter your full name" autocomplete="name" required />
-
-      <label for="email">Professional Email</label>
-      <input type="email" id="email" name="professional_email" placeholder="you@example.com" autocomplete="email" required />
-
-      <input type="hidden" id="page_id" name="page_id" value="" />
+      <div class="form-field">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" autocomplete="name" required />
+        <span class="field-error" id="error-name"></span>
+      </div>
+      <div class="form-field">
+        <label for="email">Professional Email</label>
+        <input type="email" id="email" name="professional_email" placeholder="you@yourcompany.com" autocomplete="email" pattern="^[^@]+@[^@]+\.[^@]+$" inputmode="email" required aria-describedby="email-hint" />
+        <span class="field-hint" id="email-hint">Please use your business email (Gmail/Yahoo discouraged for priority access).</span>
+        <span class="field-error" id="error-email"></span>
+      </div>
+      <input type="hidden" id="page_id" name="page_id" value="4362a40d9dd48a2ffbb87bc7be1867a1d125a5c8" />
       <input type="hidden" id="variant_id" name="variant_id" value="" />
       <input type="hidden" id="session_id" name="session_id" value="" />
       <input type="hidden" id="source_url" name="source_url" value="" />
@@ -365,13 +577,20 @@
       <input type="hidden" id="utm_content" name="utm_content" value="" />
       <input type="hidden" id="lead_magnet_name" name="lead_magnet_name" value="SCALE1" />
 
-      <button type="submit" aria-label="Submit to get the Victory Vision presentation">Access the Presentation</button>
+      <button type="submit" aria-label="Get the Presentation">Get the Presentation</button>
     </form>
     <p id="privacy-text" class="privacy-line">Your information is safe. We respect your privacy and never share your details.</p>
+    <a class="privacy-link" rel="nofollow noopener" href="https://victoryvision.ai/privacy" target="_blank">Privacy Policy</a>
   </section>
 
+  <div class="trustbar" aria-label="Credibility Statement" role="note">
+    <span class="trustbar-icon" aria-hidden="true">🔒</span>
+    <span class="trustbar-strong">Built for serious business growth.</span>
+    Used by founder-led property management teams scaling $2M–$10M in annual revenue. Victory Vision is trusted to power AI-driven pipeline, automate critical follow-up, and deliver real revenue results.
+  </div>
+
   <section class="final-cta" aria-label="Call To Action - Final Reminder">
-    Ready to scale faster with AI-powered growth? Get clarity, book more qualified meetings, and grow your property management business without extra chaos or guesswork.
+    Ready to streamline growth and outpace the competition? Get your copy of “Scale Revenue Faster with AI”—see exactly how to book more qualified meetings, improve follow-up, and grow revenue decisively, without extra chaos.
   </section>
 </main>
 
@@ -388,7 +607,7 @@
 
 <script>
   (() => {
-    const pageId = '';
+    const pageId = '4362a40d9dd48a2ffbb87bc7be1867a1d125a5c8';
     const variantIdKey = 'vv_variant_id';
     const sessionIdKey = 'vv_session_id';
 
@@ -538,7 +757,81 @@
 
     observer.observe(formSection);
 
+    // Inline soft-validation for form
+    function validateEmailFormat(val) {
+      // Accept most business emails, but "gmail.com/yahoo.com/aol.com/outlook.com/hotmail.com" discouraged (soft validation only, not rejected)
+      const personalDomains = ['gmail.com','yahoo.com','aol.com','outlook.com','hotmail.com','icloud.com','protonmail.com','me.com','yandex.com','fastmail.com','zoho.com','mail.com'];
+      const email = (val||'').toLowerCase();
+      const atIdx = email.indexOf('@');
+      if (atIdx < 1) return false;
+      const domain = email.substr(atIdx+1);
+      if (!domain.includes('.')) return false;
+      return true;
+    }
+    function isPersonalEmail(val) {
+      const personalDomains = ['gmail.com','yahoo.com','aol.com','outlook.com','hotmail.com','icloud.com','protonmail.com','me.com','yandex.com','fastmail.com','zoho.com','mail.com'];
+      const atIdx = (val||'').toLowerCase().lastIndexOf('@');
+      if (atIdx < 1) return false;
+      const domainOnly = val.substr(atIdx+1).toLowerCase();
+      return personalDomains.includes(domainOnly);
+    }
+
+    const nameField = document.getElementById('name');
+    const emailField = document.getElementById('email');
+    const errorName = document.getElementById('error-name');
+    const errorEmail = document.getElementById('error-email');
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+    function clearError(el) {
+      el.textContent = '';
+      el.classList.remove('show');
+    }
+
+    nameField.addEventListener('input', function() {
+      if (nameField.value.length < 2) {
+        showError(errorName, 'Please enter your full name.');
+      } else {
+        clearError(errorName);
+      }
+    });
+
+    emailField.addEventListener('input', function() {
+      clearError(errorEmail);
+      if (emailField.value.length < 4 || !validateEmailFormat(emailField.value)) {
+        showError(errorEmail, 'Please enter a valid email address.');
+      } else if (isPersonalEmail(emailField.value)) {
+        showError(errorEmail, 'Business email preferred for priority access.');
+      }
+    });
+
+    form.addEventListener('submit', function(e) {
+      let hasError = false;
+      if (nameField.value.length < 2) {
+        showError(errorName, 'Please enter your full name.');
+        hasError = true;
+      } else {
+        clearError(errorName);
+      }
+      if (emailField.value.length < 4 || !validateEmailFormat(emailField.value)) {
+        showError(errorEmail, 'Please enter a valid email address.');
+        hasError = true;
+      } else if (isPersonalEmail(emailField.value)) {
+        showError(errorEmail, 'Business email preferred for priority access.');
+        // Let them submit anyway—but with soft warning.
+      } else {
+        clearError(errorEmail);
+      }
+      if (hasError) {
+        e.preventDefault();
+      }
+    });
+
   })();
 </script>
+<img src="https://victoryvision.app.n8n.cloud/webhook/pixel/track?page_id=4362a40d9dd48a2ffbb87bc7be1867a1d125a5c8" width="1" height="1" alt="" style="display:none;" loading="eager">
+<footer style="text-align:center;padding:1.5rem 1rem;font-size:0.95rem;border-top:1px solid #e7eef7;color:#444;font-family:sans-serif;">Your Vision. Our AI. Pure Victory. <a href="https://www.victoryvision.app" target="_blank" rel="noopener" style="color:#bb133e;font-weight:bold;text-decoration:underline;">Build your free AI website at Victory Vision</a></footer>
 </body>
 </html>
