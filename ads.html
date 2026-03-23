@@ -3,735 +3,380 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Manage your billboard and advertising campaigns."/>
-  <meta name="author" content="Victory Vision"/>
-  <title>Victory Vision AI - Advertising</title>
+  <title>Victory Vision – Ads</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
-    .navbar {
-      background-color: #0A3161;
-      color: white;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .navbar nav ul {
-      display: flex;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-    .navbar nav ul li {
-      margin: 0 10px;
-    }
-    .navbar nav ul li a {
-      color: white;
-      text-decoration: none;
-    }
-    .navbar .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .subscription-medallion {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-weight: bold;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      position: relative;
-      border: none;
-      transition: all 0.3s ease;
-    }
-    .subscription-medallion.bronze {
-      background: linear-gradient(45deg, #CD7F32, #A0522D);
-    }
-    .subscription-medallion.silver {
-      background: linear-gradient(45deg, #C0C0C0, #808080);
-    }
-    .subscription-medallion.gold {
-      background: linear-gradient(45deg, #FFD700, #FFA500);
-    }
-    .subscription-medallion:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-    .subscription-medallion .plan-name {
-      font-weight: bold;
-    }
-    .logo img {
-      height: 60px;
-      width: auto;
-      max-height: 100px;
-    }
-    .content {
-      padding: 20px 4px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .page-header {
-      margin-bottom: 30px;
-    }
-    .page-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 0.5rem;
-    }
-    .page-subtitle {
-      font-size: 1.1rem;
-      color: #666;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .section-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 15px;
-      margin: -20px -20px 20px -20px;
-      border-radius: 8px 8px 0 0;
-    }
-    .billboard-creation {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 30px;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-      color: #333;
-    }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-    .form-group textarea {
-      height: 100px;
-      resize: vertical;
-    }
-    
-    /* Image Upload and Selection Styles */
-    .image-upload-section {
-      background: #f8f9fa;
-      border: 2px dashed #dee2e6;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 20px;
-      transition: all 0.3s ease;
-    }
-    .image-upload-section:hover {
-      border-color: #0A3161;
-      background: #e3f2fd;
-    }
-    .image-upload-section.dragover {
-      border-color: #28a745;
-      background: #d4edda;
-    }
-    .upload-btn {
-      background: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      margin: 10px;
-    }
-    .upload-btn:hover {
-      background: #218838;
-    }
-    
-    .billboard-preview {
-      background: #1a1a1a;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      min-height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      color: white;
-      border: 3px solid #333;
-      position: relative;
-      overflow: hidden;
-    }
-    .billboard-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.7;
-      z-index: 1;
-    }
-    .billboard-content {
-      max-width: 100%;
-      position: relative;
-      z-index: 2;
-      background: rgba(0,0,0,0.5);
-      padding: 20px;
-      border-radius: 8px;
-    }
-    .billboard-headline {
-      font-size: 2rem;
-      font-weight: bold;
-      margin-bottom: 15px;
-      color: #fff;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    }
-    .billboard-message {
-      font-size: 1.2rem;
-      line-height: 1.4;
-      margin-bottom: 15px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    }
-    .billboard-cta {
-      font-size: 1rem;
-      background: #BB133E;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-top: 10px;
-      text-shadow: none;
-    }
-    .campaign-options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-    .campaign-card {
-      background: white;
-      border-radius: 8px;
-      padding: 25px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-      text-align: center;
-    }
-    .campaign-card:hover {
-      border-color: #0A3161;
-      transform: translateY(-2px);
-    }
-    .campaign-duration {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #0A3161;
-      margin-bottom: 10px;
-    }
-    .campaign-price {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #28a745;
-      margin-bottom: 15px;
-    }
-    .campaign-features {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 20px 0;
-    }
-    .campaign-features li {
-      padding: 5px 0;
-      border-bottom: 1px solid #eee;
-    }
-    .campaign-features li:last-child {
-      border-bottom: none;
-    }
-    .checkout-btn {
-      background: linear-gradient(135deg, #28a745, #20c997);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      width: 100%;
-      margin-top: 15px;
-    }
-    .checkout-btn:hover {
-      background: linear-gradient(135deg, #218838, #1e7e34);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    }
-    .checkout-btn:disabled {
-      background: #6c757d;
-      cursor: not-allowed;
-      transform: none;
-    }
-    .special-opportunities {
-      margin-bottom: 30px;
-    }
-    .fortune-cookie-card {
-      background: linear-gradient(135deg, #ffd700, #ffed4e);
-      border-radius: 12px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      margin-bottom: 20px;
-    }
-    .fortune-cookie-title {
-      font-size: 2rem;
-      font-weight: bold;
-      color: #8b4513;
-      margin-bottom: 15px;
-    }
-    .fortune-cookie-price {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #d2691e;
-      margin-bottom: 15px;
-    }
-    .fortune-cookie-description {
-      font-size: 1.1rem;
-      color: #654321;
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-    .video-preview-btn {
-      background: #BB133E;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      margin: 10px;
-      transition: all 0.3s ease;
-    }
-    .video-preview-btn:hover {
-      background: #9e1034;
-    }
-    .download-billboard-btn {
-      background: linear-gradient(135deg, #17a2b8, #138496);
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      display: block;
-      margin: 20px auto;
-      width: fit-content;
-    }
-    .download-billboard-btn:hover {
-      background: linear-gradient(135deg, #138496, #117a8b);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-    }
-    .download-billboard-btn:disabled {
-      background: #6c757d;
-      cursor: not-allowed;
-      transform: none;
-    }
-    button {
-      background: #0A3161;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      margin: 5px 5px 0 0;
-    }
-    button:hover {
-      background: #083050;
-    }
-    button.secondary {
-      background: #6c757d;
-    }
-    button.secondary:hover {
-      background: #5a6268;
-    }
-    button.danger {
-      background: #dc3545;
-    }
-    button.danger:hover {
-      background: #c82333;
-    }
-    .filter-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      align-items: end;
-      margin-bottom: 20px;
-    }
-    .ads-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 20px;
-    }
-    .ad-card {
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    .ad-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    }
-    .ad-preview {
-      background: #1a1a1a;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      min-height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      position: relative;
-    }
-    .ad-preview img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.7;
-    }
-    .ad-preview-content {
-      position: relative;
-      z-index: 2;
-      background: rgba(0,0,0,0.7);
-      padding: 15px;
-      border-radius: 6px;
-    }
-    .ad-info {
-      padding: 15px;
-    }
-    .ad-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #0A3161;
-    }
-    .ad-meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 15px;
-      font-size: 0.8rem;
-      color: #666;
-    }
-    .meta-item {
-      display: flex;
-      flex-direction: column;
-    }
-    .meta-label {
-      font-weight: 600;
-      color: #0A3161;
-    }
-    .ad-actions {
-      display: flex;
-      gap: 8px;
-      padding: 0 15px 15px;
-    }
-    .btn-small {
-      padding: 8px 12px;
-      font-size: 12px;
-      flex: 1;
-    }
-    .download-btn {
-      background: #17a2b8;
-    }
-    .download-btn:hover {
-      background: #138496;
-    }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      font-size: 1.1rem;
-      color: #666;
-    }
-    .loading::before {
-      content: '';
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 2px solid #ddd;
-      border-top: 2px solid #0A3161;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 0.5rem;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .empty-state {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #666;
-    }
-    .empty-state h3 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      color: #0A3161;
-    }
-    .status-message {
-      padding: 10px;
-      border-radius: 4px;
-      margin: 10px 0;
-      display: none;
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      max-width: 400px;
-      z-index: 1000;
-    }
-    .status-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .status-error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.8);
-    }
-    .modal-content {
-      background-color: #fefefe;
-      margin: 5% auto;
-      padding: 0;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 800px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      background: linear-gradient(135deg, #0A3161, #1a4c80);
-      color: white;
-      padding: 20px;
-      border-radius: 8px 8px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .close {
-      color: white;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover {
-      opacity: 0.8;
-    }
-    .modal-body {
-      padding: 20px;
-    }
-    .video-modal-content {
-      background-color: #000;
-      margin: 10% auto;
-      padding: 0;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 800px;
-    }
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-    }
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
+    :root {
+      --navy: #0A3161;
+      --navy-light: #1a4c80;
+      --red: #BB133E;
+      --red-dark: #9e1034;
+      --gold: #C8A84B;
+      --green: #1a7a4a;
+      --green-light: #22c55e;
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --border: #dde1e8;
+      --text: #1a2332;
+      --muted: #64748b;
+      --li-blue: #0077B5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* ── AUTH LOADING ── */
     .auth-loading {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      flex-direction: column;
+      position: fixed; inset: 0; background: rgba(255,255,255,.95);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
     }
     .auth-loading .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #0A3161;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
+      width: 48px; height: 48px; border: 4px solid #ddd;
+      border-top-color: var(--navy); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin-bottom: 16px;
     }
-    
-    /* Thank you modal styles */
-    .thank-you-modal {
-      background: linear-gradient(135deg, #28a745, #20c997);
-      color: white;
-      padding: 40px;
-      text-align: center;
-      border-radius: 12px;
-      max-width: 500px;
-      margin: 10% auto;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background: var(--navy); color: white;
+      padding: 0 20px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
     }
-    .thank-you-modal h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
+    .logo img { height: 50px; }
+    .navbar nav ul { display: flex; list-style: none; gap: 2px; }
+    .navbar nav ul li a {
+      color: rgba(255,255,255,.8); text-decoration: none;
+      padding: 6px 10px; border-radius: 4px; font-size: 13px; font-weight: 500;
+      transition: all .2s;
     }
-    .thank-you-modal p {
-      margin-bottom: 15px;
-      line-height: 1.6;
+    .navbar nav ul li a:hover, .navbar nav ul li a.active { color: white; background: rgba(255,255,255,.15); }
+    .user-info { display: flex; align-items: center; gap: 8px; }
+    .medallion {
+      padding: 6px 14px; border-radius: 20px; font-size: 11px;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+      border: none; transition: all .2s;
     }
-    .veteran-message {
-      background: rgba(255,255,255,0.1);
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
-      border-left: 4px solid #fff;
+    .medallion.bronze { background: linear-gradient(135deg,#CD7F32,#A0522D); color: white; }
+    .medallion.silver { background: linear-gradient(135deg,#C0C0C0,#808080); color: white; }
+    .medallion.gold   { background: linear-gradient(135deg,#FFD700,#FFA500); color: #333; }
+    .btn-nav { padding: 6px 12px; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+
+    /* ── STATUS MESSAGE ── */
+    .status-message {
+      position: fixed; top: 72px; right: 20px;
+      padding: 12px 18px; border-radius: 6px; font-size: 14px;
+      max-width: 380px; display: none; z-index: 1001;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
     }
-    
-    /* Intro.js custom styling */
-    .introjs-tooltip {
-      max-width: 350px;
-      font-size: 14px;
+    .status-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .status-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* ── PAGE LAYOUT ── */
+    .content { max-width: 1380px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    /* ── ACTION BANNER (email deep-link prompt) ── */
+    .action-banner {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: white; border-radius: 10px; padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; display: none;
+    }
+    .action-banner.show { display: flex; }
+    .action-banner-text h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; margin-bottom: 4px; }
+    .action-banner-text p  { font-size: 13px; opacity: .85; }
+    .action-banner-btn {
+      background: var(--red); color: white; border: none;
+      padding: 10px 22px; border-radius: 6px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; margin-left: 20px; font-size: 14px;
     }
 
-    .introjs-button {
-      background: #0A3161 !important;
-      border: 1px solid #0A3161 !important;
-      color: white !important;
-      padding: 8px 15px !important;
-      border-radius: 4px !important;
+    /* ── SECTION TABS ── */
+    .section-tabs {
+      display: flex; gap: 4px; margin-bottom: 24px;
+      background: white; border-radius: 10px; padding: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .tab-btn {
+      flex: 1; padding: 10px 16px; border: none; border-radius: 7px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      background: transparent; color: var(--muted); transition: all .2s;
+      font-family: 'Barlow', sans-serif;
+    }
+    .tab-btn.active { background: var(--navy); color: white; }
+    .tab-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card); border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: white; padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-header h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .card-body { padding: 20px; }
+
+    /* ── KPI STRIP ── */
+    .kpi-strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;
+      margin-bottom: 24px;
+    }
+    .kpi-tile {
+      background: white; border-radius: 10px; padding: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08); text-align: center;
+      border-top: 3px solid var(--navy); cursor: pointer; transition: all .2s;
+    }
+    .kpi-tile:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+    .kpi-tile.li    { border-color: var(--li-blue); }
+    .kpi-tile.good  { border-color: var(--green); }
+    .kpi-tile.warn  { border-color: #f59e0b; }
+    .kpi-value { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: var(--navy); }
+    .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-top: 2px; }
+
+    /* ── FORM ── */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 14px; font-family: 'Barlow', sans-serif;
+      transition: border-color .2s; background: white;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { outline: none; border-color: var(--navy); }
+    .form-group textarea { height: 90px; resize: vertical; }
+    .form-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── BUTTONS ── */
+    button { font-family: 'Barlow', sans-serif; cursor: pointer; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; transition: all .2s; }
+    .btn-primary   { background: var(--navy); color: white; }
+    .btn-primary:hover   { background: var(--navy-light); }
+    .btn-li        { background: var(--li-blue); color: white; }
+    .btn-li:hover  { background: #005e8f; }
+    .btn-red       { background: var(--red); color: white; }
+    .btn-red:hover { background: var(--red-dark); }
+    .btn-green     { background: var(--green); color: white; }
+    .btn-green:hover { background: #145c37; }
+    .btn-ghost     { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-sm        { padding: 7px 14px; font-size: 12px; }
+    .btn-full      { width: 100%; }
+
+    /* ── AUDIENCE SEGMENT PILLS ── */
+    .segment-options { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .segment-pill {
+      padding: 10px 18px; border: 2px solid var(--border); border-radius: 30px;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s;
+      background: white;
+    }
+    .segment-pill.selected { border-color: var(--li-blue); background: #e8f4fb; color: var(--li-blue); }
+    .segment-pill:hover:not(.selected) { border-color: var(--navy); }
+
+    /* ── AD CREATIVE PICKER ── */
+    .creative-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;
+      max-height: 280px; overflow-y: auto; padding: 4px;
+    }
+    .creative-thumb {
+      border: 3px solid var(--border); border-radius: 8px; overflow: hidden;
+      cursor: pointer; transition: all .2s; aspect-ratio: 16/9; position: relative;
+      background: #1a1a1a;
+    }
+    .creative-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: .85; }
+    .creative-thumb.selected { border-color: var(--li-blue); }
+    .creative-thumb .check {
+      position: absolute; top: 4px; right: 4px;
+      background: var(--li-blue); color: white; border-radius: 50%;
+      width: 22px; height: 22px; display: none; align-items: center; justify-content: center;
+      font-size: 12px;
+    }
+    .creative-thumb.selected .check { display: flex; }
+    .creative-type-badge {
+      position: absolute; bottom: 4px; left: 4px;
+      background: rgba(0,0,0,.7); color: white; font-size: 9px;
+      padding: 2px 6px; border-radius: 3px; font-weight: 600; text-transform: uppercase;
     }
 
-    .introjs-button:hover {
-      background: #083050 !important;
-      border-color: #083050 !important;
+    /* ── AD PREVIEW PANEL ── */
+    .ad-preview-panel {
+      background: #f8f9fb; border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; min-height: 200px;
+    }
+    .li-ad-mock {
+      background: white; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;
+      max-width: 400px; margin: 0 auto; font-size: 13px;
+    }
+    .li-ad-mock-header {
+      padding: 12px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .li-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--navy); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+    .li-ad-mock-img { width: 100%; aspect-ratio: 16/9; background: #e0e0e0; object-fit: cover; }
+    .li-ad-mock-body { padding: 12px; }
+    .li-ad-mock-headline { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .li-ad-mock-intro { color: var(--muted); font-size: 12px; margin-bottom: 10px; line-height: 1.4; }
+    .li-ad-cta-btn {
+      display: inline-block; padding: 8px 20px; border-radius: 4px;
+      background: var(--li-blue); color: white; font-size: 13px; font-weight: 600;
+    }
+    .li-sponsored-tag { font-size: 11px; color: var(--muted); }
+
+    /* ── ACTIVE ADS TABLE ── */
+    .ads-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .ads-table th {
+      background: var(--bg); padding: 10px 14px; text-align: left;
+      font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+      color: var(--muted); border-bottom: 2px solid var(--border);
+    }
+    .ads-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .ads-table tr:hover td { background: #f8f9fb; }
+    .status-badge {
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .status-active   { background: #d1fae5; color: #065f46; }
+    .status-paused   { background: #fef3c7; color: #92400e; }
+    .status-draft    { background: #e0e7ff; color: #3730a3; }
+    .status-complete { background: #f1f5f9; color: #475569; }
+
+    /* ── OPTIMIZATION FEED ── */
+    .opt-feed { display: flex; flex-direction: column; gap: 10px; }
+    .opt-item {
+      border-left: 4px solid var(--navy); padding: 12px 16px;
+      background: white; border-radius: 0 8px 8px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .opt-item.boost  { border-color: var(--green); }
+    .opt-item.pause  { border-color: #f59e0b; }
+    .opt-item.swap   { border-color: var(--li-blue); }
+    .opt-item.alert  { border-color: var(--red); }
+    .opt-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+    .opt-desc  { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    .opt-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .opt-time  { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── BILLBOARD SECTION ── */
+    .billboard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .billboard-preview {
+      background: #111; border-radius: 8px; overflow: hidden;
+      aspect-ratio: 16/5; position: relative; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .bb-bg { position: absolute; inset: 0; object-fit: cover; width: 100%; height: 100%; opacity: .7; }
+    .bb-overlay {
+      position: relative; z-index: 2; background: rgba(0,0,0,.55);
+      padding: 20px 28px; border-radius: 6px; text-align: center; max-width: 90%;
+    }
+    .bb-headline { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 800; color: white; text-shadow: 1px 1px 4px rgba(0,0,0,.8); }
+    .bb-message  { font-size: 1rem; color: rgba(255,255,255,.9); margin: 8px 0; text-shadow: 1px 1px 2px rgba(0,0,0,.7); }
+    .bb-cta      { display: inline-block; background: var(--red); color: white; padding: 8px 20px; border-radius: 4px; font-weight: 700; margin-top: 8px; font-size: .9rem; }
+
+    /* Billboard inventory map placeholder */
+    .bb-inventory-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+    }
+    .bb-slot {
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+      transition: all .2s; cursor: pointer;
+    }
+    .bb-slot:hover { box-shadow: 0 4px 16px rgba(0,0,0,.12); transform: translateY(-2px); }
+    .bb-slot-img { width: 100%; aspect-ratio: 16/5; object-fit: cover; background: #1a1a2e; display: flex; align-items: center; justify-content: center; color: #555; font-size: 12px; }
+    .bb-slot-info { padding: 12px; }
+    .bb-slot-location { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .bb-slot-meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+    .bb-slot-price { font-weight: 700; color: var(--green); font-size: 15px; }
+    .bb-owner-badge { font-size: 10px; background: #e0e7ff; color: #3730a3; padding: 2px 7px; border-radius: 3px; font-weight: 600; }
+
+    /* ── BUDGET SLIDER ── */
+    .budget-display { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--navy); }
+    input[type=range] { width: 100%; accent-color: var(--navy); }
+
+    /* ── MODAL ── */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 2000; align-items: center; justify-content: center; }
+    .modal.open { display: flex; }
+    .modal-box { background: white; border-radius: 10px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+    .modal-hd { background: linear-gradient(135deg, var(--navy), var(--navy-light)); color: white; padding: 18px 22px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: space-between; }
+    .modal-hd h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; }
+    .modal-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; line-height: 1; }
+    .modal-bd { padding: 22px; }
+
+    /* ── INTRO.JS ── */
+    .introjs-tooltip { max-width: 360px; font-size: 14px; font-family: 'Barlow', sans-serif; }
+    .introjs-button { background: var(--navy) !important; border: 1px solid var(--navy) !important; color: white !important; padding: 8px 16px !important; border-radius: 5px !important; font-family: 'Barlow', sans-serif !important; }
+    .introjs-skipbutton { background: #6c757d !important; border-color: #6c757d !important; }
+    .introjs-progressbar { background-color: var(--navy) !important; }
+    .introjs-helperLayer { box-shadow: rgba(10,49,97,.6) 0 0 0 3px, rgba(0,0,0,.5) 0 0 0 9999px !important; }
+
+    /* ── TABS CONTENT ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── EMPTY ── */
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state h3 { color: var(--text); font-size: 1.2rem; margin-bottom: 8px; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--navy); color: white; text-align: center; padding: 16px; font-size: 13px; }
+    footer a { color: rgba(255,255,255,.7); text-decoration: none; margin: 0 10px; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 900px) {
+      .navbar nav { display: none; }
+      .billboard-layout { grid-template-columns: 1fr; }
+      .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
     }
 
-    .introjs-skipbutton {
-      background: #6c757d !important;
-      border-color: #6c757d !important;
+    /* ── STEP WIZARD ── */
+    .wizard-steps { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+    .wizard-step {
+      display: flex; align-items: center; flex: 1;
     }
+    .wizard-step-dot {
+      width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--muted); background: white;
+      flex-shrink: 0; z-index: 1; transition: all .3s;
+    }
+    .wizard-step.done  .wizard-step-dot { background: var(--green); border-color: var(--green); color: white; }
+    .wizard-step.active .wizard-step-dot { background: var(--navy); border-color: var(--navy); color: white; }
+    .wizard-step-label { font-size: 11px; font-weight: 600; color: var(--muted); margin-left: 8px; white-space: nowrap; }
+    .wizard-step.active .wizard-step-label { color: var(--navy); }
+    .wizard-step.done  .wizard-step-label { color: var(--green); }
+    .wizard-line { flex: 1; height: 2px; background: var(--border); margin: 0 4px; }
+    .wizard-step.done ~ .wizard-line { background: var(--green); }
 
-    .introjs-progressbar {
-      background-color: #0A3161 !important;
-    }
-    
-    footer {
-      background: #0A3161;
-      color: #fff;
-      text-align: center;
-      padding: 15px;
-      margin-top: 20px;
-    }
-    footer a {
-      color: #fff;
-      margin-right: 15px;
-      text-decoration: none;
-    }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      .content {
-        padding: 10px 5px;
-      }
-      .page-title {
-        font-size: 2rem;
-      }
-      .billboard-creation {
-        grid-template-columns: 1fr;
-      }
-      .campaign-options {
-        grid-template-columns: 1fr;
-      }
-      .filter-section {
-        grid-template-columns: 1fr;
-      }
-      .ads-grid {
-        grid-template-columns: 1fr;
-      }
-      .modal-content {
-        width: 95%;
-        margin: 10% auto;
-      }
-      .video-modal-content {
-        width: 95%;
-        margin: 20% auto;
-      }
-    }
+    /* ── LOADING SKELETON ── */
+    .skel { background: linear-gradient(90deg,#e8edf2 25%,#f1f5f9 50%,#e8edf2 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; }
+    @keyframes shimmer { to { background-position: -200% 0; } }
   </style>
 </head>
 <body>
 
-<!-- Authentication Loading Screen -->
+<!-- Auth Loading -->
 <div id="authLoading" class="auth-loading">
   <div class="spinner"></div>
-  <p>Verifying authentication...</p>
+  <p style="color:var(--muted);font-size:14px;">Verifying session…</p>
 </div>
 
+<!-- Navbar -->
 <header class="navbar">
   <div class="logo">
-    <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
-         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+    <img src="logo.jpg" alt="Victory Vision"
+      onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22/><text x=%225%22 y=%2228%22 font-size=%2222%22 fill=%22white%22 font-weight=%22bold%22>VV</text></svg>'">
   </div>
   <nav>
     <ul>
@@ -741,1225 +386,1488 @@
       <li><a href="pages">Pages</a></li>
       <li><a href="social">Social</a></li>
       <li><a href="contacts">Contacts</a></li>
-      <li><a href="ads">Ads</a></li>
+      <li><a href="ads" class="active">Ads</a></li>
       <li><a href="messages">Messages</a></li>
       <li><a href="meetings">Meetings</a></li>
-     <li><a href="ai">Analytics</a></li>
+      <li><a href="ai">AI SDR</a></li>
       <li><a href="settings">Settings</a></li>
     </ul>
   </nav>
   <div class="user-info">
-    <span id="userEmail"></span>
-    <button onclick="startTour()" style="background: #28a745; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="tourButton">
-      📖 Take Tour
+    <span id="userEmail" style="font-size:12px;color:rgba(255,255,255,.7);"></span>
+    <button class="btn-nav" style="background:#28a745;" onclick="startTour()">📖 Tour</button>
+    <button class="btn-nav" style="background:var(--red);" onclick="logout()">Sign Out</button>
+    <button id="subscriptionMedallion" class="medallion bronze"
+      data-intro="Your plan tier. Higher tiers unlock more ad credits and LinkedIn spend." data-step="1">
+      <span id="planName">Bronze</span>
     </button>
-    <button onclick="logout()" style="background: #bb133e; padding: 6px 12px; font-size: 11px; margin-left: 10px;" id="logoutButton">
-      Sign Out
-    </button>
-    <div id="subscriptionMedallion" class="subscription-medallion bronze" data-intro="Your current subscription tier. Higher tiers unlock more advertising credits and premium features for billboard campaigns." data-step="1">
-      <span class="plan-name">Bronze</span>
-    </div>
   </div>
 </header>
 
 <div class="content">
-  <header class="page-header">
-    <h1 class="page-title">Advertising Management</h1>
-    <p class="page-subtitle">Create billboard ads and manage advertising campaigns</p>
-  </header>
 
-  <!-- Billboard Creation Section -->
-  <section class="card" data-intro="Design your billboard advertisement with live preview. Add your headline, message, and call-to-action, then choose from your AI-generated images or upload a new one." data-step="2">
-    <div class="section-header">
-      <h3>🏗️ Create Billboard Advertisement</h3>
+  <!-- Action Banner — shown when user arrives via email deep-link -->
+  <div id="actionBanner" class="action-banner">
+    <div class="action-banner-text">
+      <h3 id="bannerTitle">🎯 Recommended Action Ready</h3>
+      <p id="bannerDesc">Your AI SDR identified an opportunity. Let's walk you through it.</p>
     </div>
-    
-    <div class="billboard-creation">
-      <div>
-        <div class="form-group">
-          <label for="billboardHeadline">Headline *</label>
-          <input type="text" id="billboardHeadline" placeholder="Enter compelling headline" maxlength="50" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="billboardMessage">Message *</label>
-          <textarea id="billboardMessage" placeholder="Enter your marketing message" maxlength="150" required></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="billboardCTA">Call to Action *</label>
-          <input type="text" id="billboardCTA" placeholder="Call Now! | Visit Us! | Get Started!" maxlength="25" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="billboardLocation">Location *</label>
-          <select id="billboardLocation" required>
-            <option value="">Select Location</option>
-            <option value="baton-rouge">Baton Rouge, Louisiana</option>
-            <option value="breaux-bridge">Breaux Bridge, Louisiana</option>
-            <option value="both">Both Locations</option>
-          </select>
-        </div>
+    <button class="action-banner-btn" onclick="startActionTour()">Show Me →</button>
+  </div>
 
-        <!-- Image Selection Section -->
-        <div class="form-group" data-intro="Choose a background image from your AI-generated media library, or upload a new image. Your existing campaign images appear here automatically." data-step="3">
-          <label>Background Image</label>
+  <!-- KPI Strip -->
+  <div class="kpi-strip" id="kpiStrip"
+    data-intro="Your live ad performance. Victory Vision combines LinkedIn data with your email opens, meetings booked, and Stripe conversions — giving you full-funnel visibility no ad platform can match." data-step="2">
+    <div class="kpi-tile li">
+      <div class="kpi-value" id="kpiImpressions">–</div>
+      <div class="kpi-label">Impressions</div>
+    </div>
+    <div class="kpi-tile li">
+      <div class="kpi-value" id="kpiClicks">–</div>
+      <div class="kpi-label">LI Clicks</div>
+    </div>
+    <div class="kpi-tile warn">
+      <div class="kpi-value" id="kpiCTR">–</div>
+      <div class="kpi-label">CTR</div>
+    </div>
+    <div class="kpi-tile good">
+      <div class="kpi-value" id="kpiMeetings">–</div>
+      <div class="kpi-label">Meetings Booked</div>
+    </div>
+    <div class="kpi-tile good">
+      <div class="kpi-value" id="kpiConversions">–</div>
+      <div class="kpi-label">Conversions</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-value" id="kpiCPM">–</div>
+      <div class="kpi-label">Spend</div>
+    </div>
+    <div class="kpi-tile good">
+      <div class="kpi-value" id="kpiCPMeeting">–</div>
+      <div class="kpi-label">Cost/Meeting</div>
+    </div>
+  </div>
+
+  <!-- Section Tabs -->
+  <div class="section-tabs">
+    <button class="tab-btn active" onclick="switchTab('linkedin')" id="tab-linkedin"
+      data-intro="LinkedIn Ads tab — create retargeting ads aimed at your email openers and 1st-degree connections." data-step="3">
+      🔵 LinkedIn Ads
+    </button>
+    <button class="tab-btn" onclick="switchTab('optimize')" id="tab-optimize">
+      ⚡ AI Optimizer
+    </button>
+    <button class="tab-btn" onclick="switchTab('billboard')" id="tab-billboard">
+      🏗️ Billboard
+    </button>
+    <button class="tab-btn" onclick="switchTab('active')" id="tab-active">
+      📊 Active Campaigns
+    </button>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: LINKEDIN ADS                        -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-linkedin" class="tab-content active">
+
+    <!-- Wizard Progress -->
+    <div class="wizard-steps" id="wizardSteps">
+      <div class="wizard-step active" id="ws1">
+        <div class="wizard-step-dot">1</div>
+        <div class="wizard-step-label">Audience</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws2">
+        <div class="wizard-step-dot">2</div>
+        <div class="wizard-step-label">Creative</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws3">
+        <div class="wizard-step-dot">3</div>
+        <div class="wizard-step-label">Copy</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws4">
+        <div class="wizard-step-dot">4</div>
+        <div class="wizard-step-label">Budget</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws5">
+        <div class="wizard-step-dot">5</div>
+        <div class="wizard-step-label">Launch</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Audience -->
+    <div id="li-step-1" class="li-step">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 1 of 5 — Choose Your Audience</h3>
+          <span style="font-size:12px;opacity:.75;">Only people who already know you or engaged with you</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">
+            Victory Vision retargets <strong>warm prospects only</strong> — contacts who opened your emails or are your 1st-degree LinkedIn connections. This keeps your cost-per-meeting low and your message relevant.
+          </p>
+
+          <div class="segment-options" id="segmentOptions"
+            data-intro="Pick your audience. Email openers already know your product. 1st-degree connections trust you personally. Combined is our highest-converting segment." data-step="4">
+            <div class="segment-pill" data-segment="email_openers" onclick="selectSegment(this)">
+              📧 Email Openers
+              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountEmail">Loading…</div>
+            </div>
+            <div class="segment-pill" data-segment="first_degree" onclick="selectSegment(this)">
+              🤝 1st-Degree Connections
+              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountFirst">Loading…</div>
+            </div>
+            <div class="segment-pill selected" data-segment="both" onclick="selectSegment(this)">
+              ⚡ Both Combined <span style="background:var(--red);color:white;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">Recommended</span>
+              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountBoth">Loading…</div>
+            </div>
+          </div>
+
+          <div id="segmentWarning" style="display:none;" class="form-group">
+            <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:6px;padding:12px;font-size:13px;color:#92400e;">
+              ⚠️ <strong>LinkedIn requires at least 300 matched contacts</strong> to activate a campaign. Sync more contacts or send more email campaigns to grow this audience.
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+            <button class="btn btn-primary" onclick="goToStep(2)" id="btnStep1Next">
+              Next: Choose Creative →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Creative -->
+    <div id="li-step-2" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 2 of 5 — Pick Your Creative</h3>
+          <span style="font-size:12px;opacity:.75;">From your AI-generated media library</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">
+            These are the images and videos Victory Vision already generated for your campaigns. Select one to use as your LinkedIn ad creative. Need new creative? Visit <a href="media" style="color:var(--navy);">Media</a> or <a href="campaigns" style="color:var(--navy);">Campaigns</a>.
+          </p>
+
           <div class="form-group">
-            <label for="savedImageSelect">Choose from Your Media</label>
-            <select id="savedImageSelect">
-              <option value="">Select from your generated images...</option>
+            <label>Filter by Campaign</label>
+            <select id="creativeCampaignFilter" onchange="loadCreatives()">
+              <option value="">All Campaigns</option>
             </select>
           </div>
-          
-          <div class="image-upload-section" id="imageUploadArea">
-            <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
-            <p>📷 <strong>Or Upload New Image</strong></p>
-            <button type="button" class="upload-btn" onclick="document.getElementById('imageFileInput').click()">
-              Choose File
+
+          <div class="creative-grid" id="creativeGrid"
+            data-intro="Your existing AI-generated images and videos appear here. Click to select one as your LinkedIn ad." data-step="5">
+            <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);">Loading your media library…</div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+            <button class="btn btn-primary" onclick="goToStep(3)" id="btnStep2Next" disabled>
+              Next: Write Copy →
             </button>
-            <p style="font-size: 0.85em; color: #666;">or drag & drop image here</p>
           </div>
         </div>
       </div>
-      
+    </div>
+
+    <!-- Step 3: Copy -->
+    <div id="li-step-3" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 3 of 5 — Ad Copy</h3>
+          <span style="font-size:12px;opacity:.75;">LinkedIn limits: 70 char headline · 150 char intro</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid-2">
+            <div>
+              <div class="form-group">
+                <label>Headline <span id="headlineCount" style="color:var(--muted);font-weight:400;">(0/70)</span></label>
+                <input type="text" id="adHeadline" maxlength="70" placeholder="e.g. Book a Strategy Call Today"
+                  oninput="updateCharCount('adHeadline','headlineCount',70);updateAdPreview()"
+                  data-intro="Your headline is the first thing prospects read. Keep it outcome-focused and under 70 characters." data-step="6">
+              </div>
+              <div class="form-group">
+                <label>Intro Text <span id="introCount" style="color:var(--muted);font-weight:400;">(0/150)</span></label>
+                <textarea id="adIntro" maxlength="150" placeholder="e.g. We help property management companies double their qualified leads using AI."
+                  oninput="updateCharCount('adIntro','introCount',150);updateAdPreview()"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Call to Action</label>
+                <select id="adCTA" onchange="updateAdPreview()">
+                  <option value="LEARN_MORE">Learn More</option>
+                  <option value="SIGN_UP">Sign Up</option>
+                  <option value="CONTACT_US" selected>Contact Us</option>
+                  <option value="DOWNLOAD">Download</option>
+                  <option value="REGISTER">Register</option>
+                  <option value="REQUEST_DEMO">Request Demo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Landing Page URL</label>
+                <select id="adLandingPage">
+                  <option value="">Select a landing page…</option>
+                </select>
+                <div class="form-hint">Your VV-generated landing pages appear here. <a href="pages" style="color:var(--navy);">Create a new one →</a></div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="generateAICopy()" id="btnAICopy">
+                ✨ Generate with AI
+              </button>
+            </div>
+            <div>
+              <label style="font-size:13px;font-weight:600;display:block;margin-bottom:10px;">Live LinkedIn Preview</label>
+              <div class="li-ad-mock">
+                <div class="li-ad-mock-header">
+                  <div class="li-avatar" id="liAvatarInit">VV</div>
+                  <div>
+                    <div style="font-weight:700;font-size:13px;" id="liCompanyName">Your Company</div>
+                    <div class="li-sponsored-tag">Sponsored · <span id="liCtaTag">Contact Us</span></div>
+                  </div>
+                </div>
+                <div id="liPreviewImg" style="width:100%;aspect-ratio:16/9;background:#e0e0e0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">No creative selected</div>
+                <div class="li-ad-mock-body">
+                  <div class="li-ad-mock-headline" id="liPreviewHeadline">Your Headline Here</div>
+                  <div class="li-ad-mock-intro" id="liPreviewIntro">Your intro text will appear here. Make it compelling and benefit-focused.</div>
+                  <div class="li-ad-cta-btn" id="liPreviewCTA">Contact Us</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+            <button class="btn btn-primary" onclick="goToStep(4)">Next: Set Budget →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Budget -->
+    <div id="li-step-4" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 4 of 5 — Budget & Schedule</h3>
+          <span style="font-size:12px;opacity:.75;">Victory Vision will auto-optimize daily based on meeting bookings</span>
+        </div>
+        <div class="card-body"
+          data-intro="Set your daily budget and schedule. Victory Vision monitors meeting bookings and Stripe conversions daily — and adjusts spend up or down automatically to minimize your cost per meeting." data-step="7">
+
+          <div class="form-grid-2">
+            <div>
+              <div class="form-group">
+                <label>Daily Budget</label>
+                <div class="budget-display" id="budgetDisplay">$25</div>
+                <input type="range" id="dailyBudget" min="10" max="500" step="5" value="25"
+                  oninput="updateBudgetDisplay()">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+                  <span>$10/day</span><span>$500/day</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Total Budget Cap <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+                <input type="number" id="totalBudget" placeholder="e.g. 500" min="50">
+                <div class="form-hint">Leave blank for no cap — AI Optimizer will pause when goals are met.</div>
+              </div>
+
+              <div class="form-group">
+                <label>Optimization Goal</label>
+                <select id="optimizationGoal">
+                  <option value="CONVERSION" selected>Conversions (Meetings Booked)</option>
+                  <option value="CLICK">Clicks to Landing Page</option>
+                  <option value="IMPRESSION">Brand Awareness (Impressions)</option>
+                  <option value="VIDEO_VIEW">Video Views</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" id="adStartDate">
+              </div>
+              <div class="form-group">
+                <label>End Date <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+                <input type="date" id="adEndDate">
+              </div>
+
+              <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;">
+                <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:6px;">🤖 AI Optimizer Will:</div>
+                <ul style="font-size:12px;color:#374151;line-height:1.8;padding-left:16px;">
+                  <li>Monitor meeting bookings from this ad daily</li>
+                  <li>Pause underperforming creatives automatically</li>
+                  <li>Increase budget when cost/meeting drops below goal</li>
+                  <li>Email you before making changes over $50/day</li>
+                  <li>Cross-reference email engagement for lead scoring</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+            <button class="btn btn-primary" onclick="goToStep(5)">Review & Launch →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Launch -->
+    <div id="li-step-5" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 5 of 5 — Review & Launch</h3>
+          <span style="font-size:12px;opacity:.75;">Double-check before going live</span>
+        </div>
+        <div class="card-body">
+          <div id="launchSummary" style="margin-bottom:20px;">
+            <!-- populated by JS -->
+          </div>
+
+          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:14px;margin-bottom:20px;">
+            <div style="font-weight:700;font-size:13px;color:var(--green);margin-bottom:4px;">✅ What happens next</div>
+            <ol style="font-size:13px;color:#374151;line-height:1.8;padding-left:18px;">
+              <li>Victory Vision uploads your creative to LinkedIn (takes ~2 min)</li>
+              <li>LinkedIn reviews your ad (24–48 hours)</li>
+              <li>Audience matching completes — usually 24 hours after approval</li>
+              <li>Your ad goes live and Victory Vision begins tracking</li>
+              <li>You'll receive daily performance emails with AI recommendations</li>
+            </ol>
+          </div>
+
+          <div id="liConnectWarning" style="display:none;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:14px;margin-bottom:20px;">
+            ⚠️ <strong>LinkedIn not connected.</strong> 
+            <a href="settings" style="color:var(--navy);">Connect your LinkedIn account in Settings →</a>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <button class="btn btn-ghost" onclick="goToStep(4)">← Back</button>
+            <button class="btn btn-li" onclick="launchLinkedInAd()" id="btnLaunch"
+              data-intro="Launch your LinkedIn ad. Victory Vision handles the API calls, audience upload, creative registration, and campaign creation automatically." data-step="8">
+              🚀 Launch LinkedIn Ad
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: AI OPTIMIZER                        -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-optimize" class="tab-content">
+    <div class="form-grid-2">
       <div>
-        <h4 style="margin-bottom: 15px; color: #0A3161;">Live Preview</h4>
-        <div class="billboard-preview" id="billboardPreview">
-          <img id="billboardBackground" class="billboard-background" style="display: none;">
-          <div class="billboard-content">
-            <div class="billboard-headline" id="previewHeadline">Your Headline Here</div>
-            <div class="billboard-message" id="previewMessage">Your marketing message will appear here</div>
-            <div class="billboard-cta" id="previewCTA">Call to Action</div>
+        <div class="card">
+          <div class="card-header">
+            <h3>⚡ AI Optimization Feed</h3>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadOptimizations()">🔄 Refresh</button>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+              Victory Vision's AI reviews your ads, email engagement, meeting data, and Stripe conversions daily. Recommendations below are ranked by projected impact on cost-per-meeting.
+            </p>
+            <div class="opt-feed" id="optFeed">
+              <div class="empty-state">
+                <div class="icon">🤖</div>
+                <h3>No Recommendations Yet</h3>
+                <p>Launch your first LinkedIn ad. The optimizer activates after 48 hours of data.</p>
+              </div>
+            </div>
           </div>
         </div>
-        
-        <button id="downloadBillboardBtn" class="download-billboard-btn" data-intro="Download your finished billboard design as a high-quality PNG image to your computer. Perfect for printing or sharing with your team." data-step="4">
-          💾 Download Billboard Design
-        </button>
       </div>
-    </div>
-  </section>
+      <div>
+        <div class="card">
+          <div class="card-header"><h3>📈 Attribution Breakdown</h3></div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">
+              How contacts move from ad impression → email open → meeting → conversion.
+            </p>
+            <div id="attributionFunnel">
+              <div class="skel" style="height:180px;width:100%;margin-bottom:12px;"></div>
+            </div>
+            <div id="topCreatives" style="margin-top:16px;">
+              <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Top Performing Creatives</div>
+              <div id="topCreativesList">
+                <div style="font-size:13px;color:var(--muted);">Loading after first campaign…</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <!-- Campaign Duration Options -->
-  <section class="card" data-intro="Choose your billboard campaign duration and instantly purchase through our secure Stripe checkout. A portion of all purchases supports combat veteran suicide prevention." data-step="5">
-    <div class="section-header">
-      <h3>📅 Campaign Duration & Pricing</h3>
-    </div>
-    <div class="campaign-options">
-      <div class="campaign-card">
-        <div class="campaign-duration">3 Month Campaign</div>
-        <div class="campaign-price">$12,000</div>
-        <ul class="campaign-features">
-          <li>✅ Prime billboard locations</li>
-          <li>✅ Both Baton Rouge & Breaux Bridge</li>
-          <li>✅ Professional design included</li>
-          <li>✅ Installation & maintenance</li>
-          <li>✅ Performance analytics</li>
-        </ul>
-        <button class="checkout-btn" onclick="purchaseCampaign('3-month')">
-          🛒 Purchase 3-Month Campaign
-        </button>
-      </div>
-    <div class="campaign-options">
-      <div class="campaign-card">
-        <div class="campaign-duration">6 Month Campaign</div>
-        <div class="campaign-price">$20,000</div>
-        <ul class="campaign-features">
-          <li>✅ Everything in 3-month plan</li>
-          <li>✅ 15% discount vs monthly rate</li>
-          <li>✅ Mid-campaign design refresh</li>
-          <li>✅ Extended analytics report</li>
-          <li>✅ Priority customer support</li>
-        </ul>
-        <button class="checkout-btn" onclick="purchaseCampaign('6-month')">
-          🛒 Purchase 6-Month Campaign
-        </button>
-      </div>
-      
-      <div class="campaign-card">
-        <div class="campaign-duration">Full Year Campaign</div>
-        <div class="campaign-price">$35,000</div>
-        <ul class="campaign-features">
-          <li>✅ Everything in 6-month plan</li>
-          <li>✅ 25% discount vs monthly rate</li>
-          <li>✅ Quarterly design updates</li>
-          <li>✅ Comprehensive market analysis</li>
-          <li>✅ Dedicated account manager</li>
-        </ul>
-        <button class="checkout-btn" onclick="purchaseCampaign('12-month')">
-          🛒 Purchase Full Year Campaign
-        </button>
+        <div class="card">
+          <div class="card-header"><h3>🎯 Audience Health</h3></div>
+          <div class="card-body">
+            <div id="audienceHealth">
+              <div class="form-grid-2" style="gap:12px;">
+                <div style="text-align:center;padding:14px;background:var(--bg);border-radius:8px;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;color:var(--navy);" id="audEmailCount">–</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Email Openers</div>
+                </div>
+                <div style="text-align:center;padding:14px;background:var(--bg);border-radius:8px;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;color:var(--li-blue);" id="audLICount">–</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">1st-Degree Connections</div>
+                </div>
+              </div>
+              <div style="margin-top:12px;font-size:13px;color:var(--muted);">
+                Audience syncs to LinkedIn nightly. Last sync: <span id="lastAudienceSync">–</span>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="margin-top:10px;" onclick="triggerAudienceSync()">
+                🔄 Sync Audience Now
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Special Advertising Opportunities -->
-  <section class="card special-opportunities" data-intro="Our signature Fortune Cookie campaign creates memorable customer experiences with QR codes linking to personalized video messages." data-step="6">
-    <div class="section-header">
-      <h3>🌟 Special Advertising Opportunities</h3>
-    </div>
-    
-    <div class="fortune-cookie-card">
-      <div class="fortune-cookie-title">🥠 Fortune Cookie Campaign</div>
-      <div class="fortune-cookie-price">$15,000</div>
-      <div class="fortune-cookie-description">
-        Blanket your target area with unique fortune cookie advertisements featuring your custom message. 
-        Each cookie includes a QR code that opens a personalized video message when scanned.
-      </div>
-      <button class="video-preview-btn" onclick="openVideoModal()">
-        📹 Preview Fortune Cookie Video
-      </button>
-      <button class="checkout-btn" onclick="purchaseCampaign('fortune-cookie')" style="max-width: 300px; margin: 10px auto;">
-        🛒 Purchase Fortune Cookie Campaign
-      </button>
-    </div>
-  </section>
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: BILLBOARD                           -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-billboard" class="tab-content">
 
-  <!-- Existing Ads Management -->
-  <section class="card" data-intro="View and manage all your active advertising campaigns. Track performance, download designs, and manage your billboard portfolio." data-step="7">
-    <div class="section-header">
-      <h3>📊 Your Active Campaigns</h3>
-    </div>
-    
-    <!-- Filter Section -->
-    <div class="filter-section">
-      <div class="form-group">
-        <label for="searchFilter">Search</label>
-        <input type="text" id="searchFilter" placeholder="Search campaigns...">
+    <!-- Billboard Creator -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header">
+        <h3>🏗️ Design Your Billboard</h3>
+        <span style="font-size:12px;opacity:.75;">Creates a print-ready design for your chosen inventory</span>
       </div>
-      <div class="form-group">
-        <label for="statusFilter">Status</label>
-        <select id="statusFilter">
-          <option value="">All Status</option>
-          <option value="active">Active</option>
-          <option value="scheduled">Scheduled</option>
-          <option value="completed">Completed</option>
-        </select>
+      <div class="card-body">
+        <div class="billboard-layout">
+          <div>
+            <div class="form-group">
+              <label>Headline <span style="font-weight:400;color:var(--muted);">(max 50 chars)</span></label>
+              <input type="text" id="bbHeadline" maxlength="50" placeholder="Bold. Short. Memorable."
+                oninput="updateBBPreview()">
+            </div>
+            <div class="form-group">
+              <label>Message <span style="font-weight:400;color:var(--muted);">(max 100 chars)</span></label>
+              <textarea id="bbMessage" maxlength="100" style="height:70px;" placeholder="One clear benefit or offer."
+                oninput="updateBBPreview()"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Call to Action</label>
+              <input type="text" id="bbCTA" maxlength="25" placeholder="Call Now! | QR Code | Visit Us"
+                oninput="updateBBPreview()">
+            </div>
+            <div class="form-group">
+              <label>Background Image</label>
+              <select id="bbImageSelect" onchange="updateBBPreviewImg()">
+                <option value="">Select from your media library…</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:4px;">
+              <button class="btn btn-primary btn-sm" onclick="downloadBillboard()">💾 Download Design</button>
+              <button class="btn btn-ghost btn-sm" onclick="generateBBAICopy()">✨ AI Headline</button>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Live Preview</label>
+            <div class="billboard-preview" id="billboardPreview">
+              <img id="bbBg" class="bb-bg" style="display:none;">
+              <div class="bb-overlay">
+                <div class="bb-headline" id="bbPreviewHeadline">YOUR HEADLINE</div>
+                <div class="bb-message" id="bbPreviewMessage">Your message appears here</div>
+                <div class="bb-cta" id="bbPreviewCTA">Call to Action</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;">Standard 14×48 ft · 72 DPI minimum for print</div>
+          </div>
+        </div>
       </div>
-      <button id="refreshAds">🔄 Refresh</button>
-      <button id="clearFilters" class="secondary">Clear Filters</button>
     </div>
 
-    <!-- Ads Grid -->
-    <div id="adsContainer">
-      <div class="loading">Loading your advertising campaigns...</div>
+    <!-- Billboard Inventory -->
+    <div class="card">
+      <div class="card-header">
+        <h3>📍 Available Billboard Inventory</h3>
+        <span style="font-size:12px;opacity:.75;">50–100 independent owners · nationwide</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+          <div class="form-group" style="margin:0;flex:1;min-width:160px;">
+            <input type="text" id="bbSearch" placeholder="🔍 Search city, state, or market…" oninput="filterBillboards()">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <select id="bbDurationFilter" onchange="filterBillboards()">
+              <option value="">Any Duration</option>
+              <option value="1month">1 Month</option>
+              <option value="3month">3 Months</option>
+              <option value="6month">6 Months</option>
+              <option value="12month">12 Months</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <select id="bbMaxPrice" onchange="filterBillboards()">
+              <option value="">Any Price</option>
+              <option value="2000">Under $2,000/mo</option>
+              <option value="5000">Under $5,000/mo</option>
+              <option value="10000">Under $10,000/mo</option>
+            </select>
+          </div>
+        </div>
+        <div class="bb-inventory-grid" id="billboardInventory">
+          <!-- populated by JS -->
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Status Messages -->
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: ACTIVE CAMPAIGNS                    -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-active" class="tab-content">
+    <div class="card">
+      <div class="card-header">
+        <h3>📊 All Active Ad Campaigns</h3>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="campaignSearch" placeholder="Search…"
+            style="padding:6px 10px;border:1px solid rgba(255,255,255,.3);border-radius:4px;background:rgba(255,255,255,.15);color:white;font-size:12px;width:160px;"
+            oninput="filterCampaigns()">
+          <select id="campaignTypeFilter" onchange="filterCampaigns()"
+            style="padding:6px 8px;border:1px solid rgba(255,255,255,.3);border-radius:4px;background:rgba(255,255,255,.15);color:white;font-size:12px;">
+            <option value="">All Types</option>
+            <option value="linkedin">LinkedIn</option>
+            <option value="billboard">Billboard</option>
+          </select>
+          <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadCampaigns()">🔄</button>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table class="ads-table" id="campaignsTable">
+            <thead>
+              <tr>
+                <th>Campaign</th>
+                <th>Type</th>
+                <th>Audience</th>
+                <th>Spend</th>
+                <th>Impressions</th>
+                <th>Clicks</th>
+                <th>Meetings</th>
+                <th>Cost/Mtg</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="campaignsBody">
+              <tr><td colspan="10" style="text-align:center;padding:30px;color:var(--muted);">Loading campaigns…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="statusMessage" class="status-message"></div>
 </div>
 
-<!-- Ad Details Modal -->
-<div id="adModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="modalTitle">Campaign Details</h2>
-      <span class="close" onclick="closeModal()">&times;</span>
+<!-- ── BILLBOARD PURCHASE MODAL ── -->
+<div id="bbModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3 id="bbModalTitle">Reserve Billboard</h3>
+      <button class="modal-close" onclick="closeBBModal()">×</button>
     </div>
-    <div class="modal-body" id="modalBody">
-      <!-- Campaign details will be loaded here -->
-    </div>
+    <div class="modal-bd" id="bbModalBody"></div>
   </div>
 </div>
 
-<!-- Video Modal -->
-<div id="videoModal" class="modal">
-  <div class="video-modal-content">
-    <div style="background: #000; padding: 10px; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
-      <h3 style="color: white; margin: 0;">Fortune Cookie Video Preview</h3>
-      <span class="close" onclick="closeVideoModal()" style="margin-left: auto;">&times;</span>
+<!-- ── CAMPAIGN DETAIL MODAL ── -->
+<div id="campaignModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3 id="campaignModalTitle">Campaign Details</h3>
+      <button class="modal-close" onclick="closeCampaignModal()">×</button>
     </div>
-    <div class="video-container">
-      <iframe id="fortuneCookieVideo" src="" frameborder="0" allowfullscreen></iframe>
-    </div>
-  </div>
-</div>
-
-<!-- Thank You Modal -->
-<div id="thankYouModal" class="modal">
-  <div class="thank-you-modal">
-    <h2>🙏 Thank You for Your Purchase!</h2>
-    <p>Your advertising campaign order has been successfully processed. We'll be in touch within 24 hours to coordinate your billboard installation.</p>
-    
-    <div class="veteran-message">
-      <p><strong>🇺🇸 Supporting Our Veterans</strong></p>
-      <p>A percentage of all purchases goes to combat Veteran suicide prevention.</p>
-      <p>On behalf of all US Veterans, thank you for your support.</p>
-    </div>
-    
-    <button onclick="closeThankYouModal()" class="checkout-btn" style="max-width: 200px; margin: 20px auto 0;">
-      Continue
-    </button>
+    <div class="modal-bd" id="campaignModalBody"></div>
   </div>
 </div>
 
 <footer>
-  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
-  <nav>
+  <p>© 2025 Victory Vision. All rights reserved. &nbsp;·&nbsp;
     <a href="privacy.html">Privacy Policy</a>
     <a href="terms.html">Terms of Service</a>
-  </nav>
+  </p>
 </footer>
 
 <script>
-  // Supabase configuration for auth only
-  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
-  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-  
-  // n8n webhook endpoints
-  const N8N_ENDPOINTS = {
-    getUserData: 'https://victoryvision.app.n8n.cloud/webhook/user/get',
-    getAds: 'https://victoryvision.app.n8n.cloud/webhook/ads/get',
-    createAd: 'https://victoryvision.app.n8n.cloud/webhook/ads/create',
-    removeAd: 'https://victoryvision.app.n8n.cloud/webhook/ads/remove',
-    getMedia: 'https://victoryvision.app.n8n.cloud/webhook/media/get',
-    uploadImage: 'https://victoryvision.app.n8n.cloud/webhook/media/create',
-    getCheckout: 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout'
-  };
-  
-  // Stripe Price IDs for advertising campaigns
-  const CAMPAIGN_PRICE_IDS = {
-    '3-month': 'price_1RlDFmDtO3GiFEcMG9wZLIAu',
-    '6-month': 'price_1RlDKoDtO3GiFEcM83XffYOv',
-    '12-month': 'price_1RlDLEDtO3GiFEcMIhQl9FXu',
-    'fortune-cookie': 'price_1RlDOWDtO3GiFEcMKhPeR9Jx'
-  };
-  
-  let CUSTOMER_ID = null;
-  let authToken = null;
-  let userCredits = {};
+// ══════════════════════════════════════
+// CONFIGURATION
+// ══════════════════════════════════════
+const supabaseUrl  = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // State management
-  let allAds = [];
-  let filteredAds = [];
-  let selectedImageUrl = null;
-  let savedImages = [];
+// ── NEW WEBHOOK NAMES ──
+const N8N = {
+  // User & Auth
+  getUserData:          'https://victoryvision.app.n8n.cloud/webhook/user/get',
 
-  // DOM elements
-  const adsContainer = document.getElementById('adsContainer');
-  const searchFilter = document.getElementById('searchFilter');
-  const statusFilter = document.getElementById('statusFilter');
-  const refreshAdsBtn = document.getElementById('refreshAds');
-  const clearFiltersBtn = document.getElementById('clearFilters');
-  const adModal = document.getElementById('adModal');
-  const videoModal = document.getElementById('videoModal');
-  const thankYouModal = document.getElementById('thankYouModal');
+  // LinkedIn Ads — new workflows
+  liGetAudience:        'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-audience',
+  liBuildAudience:      'https://victoryvision.app.n8n.cloud/webhook/linkedin/build-audience',
+  liSyncAudience:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/sync-audience',
+  liGetOAuth:           'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-oauth',
+  liCreateAd:           'https://victoryvision.app.n8n.cloud/webhook/linkedin/create-ad',
+  liGetCampaigns:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-campaigns',
+  liUpdateCampaign:     'https://victoryvision.app.n8n.cloud/webhook/linkedin/update-campaign',
+  liPauseCampaign:      'https://victoryvision.app.n8n.cloud/webhook/linkedin/pause-campaign',
+  liDeleteCampaign:     'https://victoryvision.app.n8n.cloud/webhook/linkedin/delete-campaign',
+  liGetReporting:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-reporting',
+  liGenerateAICopy:     'https://victoryvision.app.n8n.cloud/webhook/linkedin/generate-copy',
 
-  // Billboard form elements
-  const billboardHeadline = document.getElementById('billboardHeadline');
-  const billboardMessage = document.getElementById('billboardMessage');
-  const billboardCTA = document.getElementById('billboardCTA');
-  const billboardLocation = document.getElementById('billboardLocation');
-  const previewHeadline = document.getElementById('previewHeadline');
-  const previewMessage = document.getElementById('previewMessage');
-  const previewCTA = document.getElementById('previewCTA');
-  const billboardBackground = document.getElementById('billboardBackground');
-  const savedImageSelect = document.getElementById('savedImageSelect');
-  const downloadBillboardBtn = document.getElementById('downloadBillboardBtn');
+  // Optimization
+  getOptimizations:     'https://victoryvision.app.n8n.cloud/webhook/ads/get-optimizations',
+  applyOptimization:    'https://victoryvision.app.n8n.cloud/webhook/ads/apply-optimization',
+  getAttribution:       'https://victoryvision.app.n8n.cloud/webhook/ads/get-attribution',
 
-  // Image upload elements
-  const imageFileInput = document.getElementById('imageFileInput');
-  const imageUploadArea = document.getElementById('imageUploadArea');
+  // Creatives / Media
+  getMedia:             'https://victoryvision.app.n8n.cloud/webhook/media/get',
+  getCampaigns:         'https://victoryvision.app.n8n.cloud/webhook/campaigns/get',
+  getPages:             'https://victoryvision.app.n8n.cloud/webhook/pages/get',
 
-  // Tour completion tracking
-  function completeTour() {
-    localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true');
-  }
+  // Billboard
+  getBillboardInventory:'https://victoryvision.app.n8n.cloud/webhook/billboard/get-inventory',
+  reserveBillboard:     'https://victoryvision.app.n8n.cloud/webhook/billboard/reserve',
+  getCheckout:          'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
 
-  function hasCompletedTour() {
-    return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true';
-  }
+  // All ads (combined LinkedIn + billboard)
+  getAllAds:            'https://victoryvision.app.n8n.cloud/webhook/ads/get',
+  removeAd:             'https://victoryvision.app.n8n.cloud/webhook/ads/remove',
+};
 
-  function startTour() {
-    introJs().setOptions({
-      showProgress: true,
-      showBullets: false,
-      exitOnOverlayClick: false,
-      nextLabel: 'Next →',
-      prevLabel: '← Back',
-      doneLabel: 'Complete!',
-      skipLabel: 'Skip Tour'
-    }).oncomplete(completeTour).onexit(completeTour).start();
-  }
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let CUSTOMER_ID = null, authToken = null;
+let currentStep = 1;
+let selectedSegment = 'both';
+let selectedCreative = null;
+let allCreatives = [], allCampaigns = [], allAds = [];
+let allBillboards = [], filteredBillboards = [];
+let liConnected = false;
+let userData = {};
 
-  // Authentication
-  async function checkAuthentication() {
-    try {
-      console.log('Checking authentication...');
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      
-      if (error) {
-        console.error('Auth error:', error);
-        return false;
-      }
+// ══════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════
+async function checkAuthentication() {
+  const { data: { session }, error } = await supabaseClient.auth.getSession();
+  if (error || !session) return false;
+  CUSTOMER_ID = session.user.email;
+  authToken   = session.access_token;
+  document.getElementById('userEmail').textContent = CUSTOMER_ID;
+  return true;
+}
+function redirectToLogin() { window.location.href = 'login.html'; }
+function logout() {
+  supabaseClient.auth.signOut();
+  redirectToLogin();
+}
 
-      if (session && session.user) {
-        CUSTOMER_ID = session.user.email;
-        authToken = session.access_token;
-        console.log('Authentication successful for:', CUSTOMER_ID);
-        document.getElementById('userEmail').textContent = CUSTOMER_ID;
-        return true;
-      }
-
-      console.log('No valid session found');
-      return false;
-    } catch (e) {
-      console.error('Auth check error:', e);
-      return false;
-    }
-  }
-
-  function redirectToLogin() {
-    localStorage.removeItem('vv_session');
-    window.location.href = 'login.html';
-  }
-
-  async function logout() {
-    try {
-      await supabaseClient.auth.signOut();
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    } catch (e) {
-      console.error('Logout error:', e);
-      localStorage.removeItem('vv_session');
-      redirectToLogin();
-    }
-  }
-
-  // API call function with enhanced security
-  async function apiCall(endpoint, data = {}) {
-    try {
-      // Input validation
-      if (!CUSTOMER_ID) {
-        throw new Error('User not authenticated');
-      }
-
-      // Sanitize data
-      const sanitizedData = sanitizeApiData(data);
-      
-      const url = endpoint.includes('/user/get') ? 
-        `${endpoint}?customer_id=${encodeURIComponent(CUSTOMER_ID)}` : 
-        endpoint;
-      
-      const requestOptions = {
-        method: endpoint.includes('/user/get') ? 'GET' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Customer-ID': CUSTOMER_ID,
-          'Authorization': authToken ? `Bearer ${authToken}` : '',
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-Protection': '1'
-        }
-      };
-
-      if (!endpoint.includes('/user/get')) {
-        requestOptions.body = JSON.stringify({
-          customer_id: CUSTOMER_ID,
-          timestamp: Date.now(),
-          ...sanitizedData
-        });
-      }
-
-      const response = await fetch(url, requestOptions);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('API call failed:', error);
-      throw error;
-    }
-  }
-
-  // Input sanitization function
-  function sanitizeApiData(data) {
-    const sanitized = {};
-    for (const [key, value] of Object.entries(data)) {
-      if (typeof value === 'string') {
-        sanitized[key] = value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                              .replace(/javascript:/gi, '')
-                              .replace(/on\w+\s*=/gi, '')
-                              .trim();
-      } else {
-        sanitized[key] = value;
-      }
-    }
-    return sanitized;
-  }
-
-  // Load user data and update subscription medallion
-  async function loadUserData() {
-    try {
-      const response = await apiCall(N8N_ENDPOINTS.getUserData);
-      const userData = Array.isArray(response) ? response[0] : response;
-      
-      userCredits = {
-        image_credits: userData.image_credits || 0,
-        video_credits: userData.video_credits || 0
-      };
-      
-      // Update subscription medallion
-      const medallion = document.getElementById('subscriptionMedallion');
-      const plan = userData.subscription_plan || 'Bronze';
-      medallion.className = `subscription-medallion ${plan.toLowerCase()}`;
-      medallion.querySelector('.plan-name').textContent = plan;
-      
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      showStatus('Error loading user data: ' + error.message, true);
-    }
-  }
-
-  // Load saved images from campaign files
-  async function loadSavedImages() {
-    try {
-      const response = await apiCall(N8N_ENDPOINTS.getMedia);
-      const mediaData = Array.isArray(response) ? response : (response.files || []);
-      
-      // Filter for PNG images only from campaigns_files
-      savedImages = mediaData.filter(file => 
-        file.file_type && (
-          file.file_type.includes('image') || 
-          file.file_type.toLowerCase().includes('png')
-        ) && file.URL
-      );
-      
-      console.log(`Loaded ${savedImages.length} saved images`);
-      populateImageDropdown();
-      
-    } catch (error) {
-      console.error('Error loading saved images:', error);
-      showStatus('Error loading saved images: ' + error.message, true);
-    }
-  }
-
-  // Populate image dropdown
-  function populateImageDropdown() {
-    savedImageSelect.innerHTML = '<option value="">Select from your generated images...</option>';
-    
-    savedImages.forEach(image => {
-      const option = document.createElement('option');
-      option.value = image.URL;
-      option.textContent = image.name || `Image from ${image.campaign_name || 'Campaign'}`;
-      savedImageSelect.appendChild(option);
-    });
-  }
-
-  // Handle image selection from dropdown
-  savedImageSelect.addEventListener('change', (e) => {
-    if (e.target.value) {
-      selectedImageUrl = e.target.value;
-      updateBillboardPreview();
-      showStatus('Image selected for billboard background');
-    }
+// ══════════════════════════════════════
+// API HELPER
+// ══════════════════════════════════════
+async function apiCall(endpoint, data = {}) {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Customer-ID': CUSTOMER_ID,
+      'Authorization': authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify({ customer_id: CUSTOMER_ID, ...data })
   });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  return text.length ? JSON.parse(text) : { success: true };
+}
 
-  // Handle image file upload
-  async function handleImageUpload(file) {
-    if (!file) return;
-    
-    if (!file.type.startsWith('image/')) {
-      showStatus('Please select an image file', true);
-      return;
-    }
-    
-    // File size validation (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      showStatus('Image file too large. Please select a file under 10MB.', true);
-      return;
-    }
-    
-    try {
-      showStatus('Uploading image...');
-      
-      // Convert file to base64 for upload
-      const base64Image = await fileToBase64(file);
-      
-      const result = await apiCall(N8N_ENDPOINTS.uploadImage, {
-        type: 'image',
-        prompt: 'Billboard background image',
-        image_data: base64Image,
-        filename: file.name
-      });
-      
-      if (result.success !== false) {
-        showStatus('Image uploaded successfully!');
-        selectedImageUrl = result.URL || result.url;
-        updateBillboardPreview();
-        
-        // Reload saved images
-        await loadSavedImages();
-      } else {
-        throw new Error(result.message || 'Image upload failed');
-      }
-      
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      showStatus('Error uploading image: ' + error.message, true);
-    }
-  }
+// ══════════════════════════════════════
+// TOUR SYSTEM
+// ══════════════════════════════════════
+function completeTour() {
+  localStorage.setItem('vv_tour_ads', 'true');
+}
+function hasCompletedTour() {
+  return localStorage.getItem('vv_tour_ads') === 'true';
+}
+function startTour() {
+  introJs().setOptions({
+    showProgress: true, showBullets: false,
+    exitOnOverlayClick: false,
+    nextLabel: 'Next →', prevLabel: '← Back',
+    doneLabel: '✅ Got It!', skipLabel: 'Skip'
+  }).oncomplete(completeTour).onexit(completeTour).start();
+}
 
-  // Convert file to base64
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  }
-
-  // Setup drag and drop for image upload
-  function setupImageUpload() {
-    imageFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) handleImageUpload(file);
-    });
-    
-    // Drag and drop functionality
-    imageUploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      imageUploadArea.classList.add('dragover');
-    });
-    
-    imageUploadArea.addEventListener('dragleave', (e) => {
-      e.preventDefault();
-      imageUploadArea.classList.remove('dragover');
-    });
-    
-    imageUploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      imageUploadArea.classList.remove('dragover');
-      
-      const files = e.dataTransfer.files;
-      if (files.length > 0 && files[0].type.startsWith('image/')) {
-        handleImageUpload(files[0]);
-      } else {
-        showStatus('Please drop an image file', true);
-      }
-    });
-  }
-
-  // Update billboard preview in real-time
-  function updateBillboardPreview() {
-    previewHeadline.textContent = billboardHeadline.value || 'Your Headline Here';
-    previewMessage.textContent = billboardMessage.value || 'Your marketing message will appear here';
-    previewCTA.textContent = billboardCTA.value || 'Call to Action';
-    
-    // Update background image
-    if (selectedImageUrl) {
-      billboardBackground.src = selectedImageUrl;
-      billboardBackground.style.display = 'block';
-    } else {
-      billboardBackground.style.display = 'none';
-    }
-  }
-
-  // Download billboard design as PNG
-  async function downloadBillboardDesign() {
-    try {
-      if (!billboardHeadline.value.trim()) {
-        showStatus('Please add a headline before downloading', true);
-        return;
-      }
-
-      downloadBillboardBtn.disabled = true;
-      downloadBillboardBtn.textContent = '🔄 Generating...';
-
-      // Create canvas for billboard design
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      // Billboard dimensions (typical 14x48 feet scaled to 1400x4800 pixels)
-      canvas.width = 1400;
-      canvas.height = 400;
-      
-      // Fill background
-      ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw background image if selected
-      if (selectedImageUrl) {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        
-        await new Promise((resolve, reject) => {
-          img.onload = () => {
-            ctx.globalAlpha = 0.7;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            ctx.globalAlpha = 1.0;
-            resolve();
-          };
-          img.onerror = reject;
-          img.src = selectedImageUrl;
-        });
-      }
-      
-      // Add semi-transparent overlay for text readability
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // Text styling
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'center';
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      ctx.shadowBlur = 4;
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 2;
-      
-      // Draw headline
-      ctx.font = 'bold 72px Arial';
-      ctx.fillText(billboardHeadline.value || 'Your Headline Here', canvas.width / 2, 120);
-      
-      // Draw message
-      ctx.font = '48px Arial';
-      const message = billboardMessage.value || 'Your marketing message will appear here';
-      wrapText(ctx, message, canvas.width / 2, 200, canvas.width - 100, 60);
-      
-      // Draw CTA button
-      const ctaText = billboardCTA.value || 'Call to Action';
-      const ctaWidth = 300;
-      const ctaHeight = 60;
-      const ctaX = (canvas.width - ctaWidth) / 2;
-      const ctaY = 300;
-      
-      // CTA background
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = '#BB133E';
-      ctx.fillRect(ctaX, ctaY, ctaWidth, ctaHeight);
-      
-      // CTA text
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 32px Arial';
-      ctx.fillText(ctaText, canvas.width / 2, ctaY + 40);
-      
-      // Download the canvas as PNG
-      canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `billboard-design-${Date.now()}.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        showStatus('Billboard design downloaded successfully!');
-      }, 'image/png');
-      
-    } catch (error) {
-      console.error('Error downloading billboard:', error);
-      showStatus('Error downloading billboard design: ' + error.message, true);
-    } finally {
-      downloadBillboardBtn.disabled = false;
-      downloadBillboardBtn.textContent = '💾 Download Billboard Design';
-    }
-  }
-
-  // Helper function to wrap text
-  function wrapText(context, text, x, y, maxWidth, lineHeight) {
-    const words = text.split(' ');
-    let line = '';
-    let currentY = y;
-
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n] + ' ';
-      const metrics = context.measureText(testLine);
-      const testWidth = metrics.width;
-      
-      if (testWidth > maxWidth && n > 0) {
-        context.fillText(line, x, currentY);
-        line = words[n] + ' ';
-        currentY += lineHeight;
-      } else {
-        line = testLine;
-      }
-    }
-    context.fillText(line, x, currentY);
-  }
-
-  // Stripe checkout for campaigns
-  async function purchaseCampaign(campaignType) {
-    try {
-      const priceId = CAMPAIGN_PRICE_IDS[campaignType];
-      if (!priceId) {
-        throw new Error('Invalid campaign type');
-      }
-
-      showStatus('Redirecting to secure checkout...', false);
-      
-      const response = await fetch(N8N_ENDPOINTS.getCheckout, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Customer-ID': CUSTOMER_ID,
-          'Authorization': authToken ? `Bearer ${authToken}` : '',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: JSON.stringify({
-          customer_id: CUSTOMER_ID,
-          price_id: priceId,
-          campaign_type: campaignType,
-          success_url: `${window.location.origin}/ads?success=true&campaign=${campaignType}`,
-          cancel_url: `${window.location.origin}/ads`
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      
-      if (result.success && result.checkout_url) {
-        window.location.href = result.checkout_url;
-      } else {
-        throw new Error(result.message || 'Failed to create checkout session');
-      }
-    } catch (error) {
-      console.error('Error creating checkout session:', error);
-      showStatus('Error creating checkout session: ' + error.message, true);
-    }
-  }
-
-  // Load ads
-  async function loadAds() {
-    try {
-      const response = await apiCall(N8N_ENDPOINTS.getAds);
-      allAds = Array.isArray(response) ? response : (response.ads || []);
-      
-      console.log(`Loaded ${allAds.length} advertising campaigns`);
-      filteredAds = [...allAds];
-      renderAdsGrid();
-      
-    } catch (error) {
-      console.error('Error loading ads:', error);
-      allAds = [];
-      filteredAds = [];
-      renderAdsGrid();
-         }
-  }
-
-  // Apply filters
-  function applyFilters() {
-    const searchTerm = searchFilter.value.toLowerCase();
-    const status = statusFilter.value;
-
-    filteredAds = allAds.filter(ad => {
-      // Search filter
-      if (searchTerm) {
-        const searchableText = [
-          ad.headline || '',
-          ad.message || '',
-          ad.location || ''
-        ].join(' ').toLowerCase();
-        
-        if (!searchableText.includes(searchTerm)) {
-          return false;
-        }
-      }
-
-      // Status filter
-      if (status && ad.status !== status) {
-        return false;
-      }
-
-      return true;
-    });
-
-    renderAdsGrid();
-  }
-
-  // Clear filters
-  function clearFilters() {
-    searchFilter.value = '';
-    statusFilter.value = '';
-    applyFilters();
-  }
-
-  // Render ads grid
-  function renderAdsGrid() {
-    if (filteredAds.length === 0) {
-      if (allAds.length === 0) {
-        showEmptyState();
-      } else {
-        showNoResultsState();
-      }
-      return;
-    }
-
-    const grid = document.createElement('div');
-    grid.className = 'ads-grid';
-
-    filteredAds.forEach(ad => {
-      const card = createAdCard(ad);
-      grid.appendChild(card);
-    });
-
-    adsContainer.innerHTML = '';
-    adsContainer.appendChild(grid);
-  }
-
-  // Create ad card
-  function createAdCard(ad) {
-    const card = document.createElement('div');
-    card.className = 'ad-card';
-
-    const createdDate = new Date(ad.created_at).toLocaleDateString();
-
-    card.innerHTML = `
-      <div class="ad-preview">
-        ${ad.design_url ? `<img src="${ad.design_url}" alt="Background">` : ''}
-        <div class="ad-preview-content">
-          <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 8px;">${ad.headline || 'No Headline'}</div>
-          <div style="font-size: 0.9rem; margin-bottom: 8px;">${ad.message || 'No Message'}</div>
-          <div style="background: #BB133E; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem;">
-            ${ad.call_to_action || 'No CTA'}
-          </div>
-        </div>
-      </div>
-      <div class="ad-info">
-        <h3 class="ad-title">${ad.campaign_type === 'fortune-cookie' ? '🥠 ' : '📺 '}${ad.headline || 'Campaign'}</h3>
-        <div class="ad-meta">
-          <div class="meta-item">
-            <span class="meta-label">Location:</span>
-            ${ad.location || 'N/A'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Status:</span>
-            ${ad.status || 'Unknown'}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Created:</span>
-            ${createdDate}
-          </div>
-          <div class="meta-item">
-            <span class="meta-label">Duration:</span>
-            ${ad.duration || 'Custom'}
-          </div>
-        </div>
-      </div>
-      <div class="ad-actions">
-        <button onclick="showAdDetails('${ad.id}')" class="btn-small">View Details</button>
-        <button onclick="downloadAd('${ad.id}')" class="btn-small download-btn">📥 Download</button>
-        <button onclick="deleteAd('${ad.id}')" class="btn-small danger">🗑️ Delete</button>
-      </div>
-    `;
-
-    return card;
-  }
-
-  // Show ad details in modal
-  async function showAdDetails(adId) {
-    const ad = allAds.find(a => a.id === adId);
-    if (!ad) return;
-
-    document.getElementById('modalTitle').textContent = ad.campaign_name || 'Campaign Details';
-    
-    const modalBody = document.getElementById('modalBody');
-    modalBody.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
-        <div>
-          <h4 style="margin-bottom: 15px; color: #0A3161;">Campaign Information</h4>
-          <div style="margin-bottom: 10px;"><strong>Campaign Name:</strong> ${ad.campaign_name || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Type:</strong> ${ad.ad_type || 'Billboard'}</div>
-          <div style="margin-bottom: 10px;"><strong>Location:</strong> ${ad.location || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Duration:</strong> ${ad.duration || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Status:</strong> ${ad.status || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Price:</strong> ${ad.price || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Created:</strong> ${new Date(ad.created_at).toLocaleDateString()}</div>
-          ${ad.start_date ? `<div style="margin-bottom: 10px;"><strong>Start Date:</strong> ${new Date(ad.start_date).toLocaleDateString()}</div>` : ''}
-          ${ad.end_date ? `<div style="margin-bottom: 10px;"><strong>End Date:</strong> ${new Date(ad.end_date).toLocaleDateString()}</div>` : ''}
-        </div>
-        
-        <div>
-          <h4 style="margin-bottom: 15px; color: #0A3161;">Creative Content</h4>
-          <div style="margin-bottom: 10px;"><strong>Headline:</strong> ${ad.headline || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Message:</strong> ${ad.message || 'N/A'}</div>
-          <div style="margin-bottom: 10px;"><strong>Call to Action:</strong> ${ad.call_to_action || 'N/A'}</div>
-          ${ad.design_url ? `<div style="margin-bottom: 10px;"><strong>Design:</strong> <a href="${ad.design_url}" target="_blank" style="color: #0A3161;">View Design</a></div>` : ''}
-        </div>
-      </div>
-      
-      <div style="display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 2px solid #dee2e6;">
-        <button onclick="downloadAd('${ad.id}')" class="success">📥 Download Design</button>
-        <button onclick="editAd('${ad.id}')">✏️ Edit Campaign</button>
-        <button onclick="deleteAd('${ad.id}')" class="danger">🗑️ Delete Campaign</button>
-      </div>
-    `;
-    
-    document.getElementById('adModal').style.display = 'block';
-  }
-
-  // Download ad design
-  async function downloadAd(adId) {
-    const ad = allAds.find(a => a.id === adId);
-    if (!ad) return;
-    
-    if (ad.design_url) {
-      // If design URL exists, download it
-      const link = document.createElement('a');
-      link.href = ad.design_url;
-      link.download = `${ad.campaign_name || 'ad-design'}-${Date.now()}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showStatus('Design downloaded successfully!');
-    } else {
-      showStatus('No design available for download', true);
-    }
-  }
-
-  // Edit ad
-  function editAd(adId) {
-    const ad = allAds.find(a => a.id === adId);
-    if (!ad) return;
-    
-    // Pre-fill form with existing data
-    if (ad.headline) billboardHeadline.value = ad.headline;
-    if (ad.message) billboardMessage.value = ad.message;
-    if (ad.call_to_action) billboardCTA.value = ad.call_to_action;
-    if (ad.location) billboardLocation.value = ad.location;
-    if (ad.design_url) {
-      selectedImageUrl = ad.design_url;
-      updateBillboardPreview();
-    }
-    
-    closeModal();
-    document.querySelector('.billboard-creation').scrollIntoView({ behavior: 'smooth' });
-    showStatus('Ad data loaded into form. Make changes and download updated design.');
-  }
-
-  // Delete ad
-  async function deleteAd(adId) {
-    if (!confirm('Are you sure you want to delete this advertising campaign?')) {
-      return;
-    }
-    
-    try {
-      await apiCall(N8N_ENDPOINTS.removeAd, {
-        ad_id: adId
-      });
-      
-      showStatus('Campaign deleted successfully!');
-      closeModal();
-      await loadAds();
-      
-    } catch (error) {
-      console.error('Error deleting ad:', error);
-      showStatus('Error deleting campaign: ' + error.message, true);
-    }
-  }
-
-  // Show empty state
-  function showEmptyState() {
-    adsContainer.innerHTML = `
-      <div class="empty-state">
-        <h3>No Advertising Campaigns Yet</h3>
-        <p>Create your first billboard campaign above to get started!</p>
-        <button onclick="document.querySelector('.billboard-creation').scrollIntoView({behavior: 'smooth'})" style="margin-top: 15px;">
-          🚀 Create First Campaign
-        </button>
-      </div>
-    `;
-  }
-
-  // Show no results state
-  function showNoResultsState() {
-    adsContainer.innerHTML = `
-      <div class="empty-state">
-        <h3>No Campaigns Match Your Filters</h3>
-        <p>Try adjusting your search criteria or clearing the filters.</p>
-        <button onclick="clearFilters()" style="margin-top: 15px;">
-          Clear Filters
-        </button>
-      </div>
-    `;
-  }
-
-  // Open video modal
-  function openVideoModal() {
-    const iframe = document.getElementById('fortuneCookieVideo');
-    iframe.src = 'https://player.cloudinary.com/embed/?cloud_name=dv94te4zt&public_id=fortune-cookie-preview&profile=cld-default';
-    document.getElementById('videoModal').style.display = 'block';
-  }
-
-  // Close video modal
-  function closeVideoModal() {
-    const iframe = document.getElementById('fortuneCookieVideo');
-    iframe.src = '';
-    document.getElementById('videoModal').style.display = 'none';
-  }
-
-  // Close modal
-  function closeModal() {
-    document.getElementById('adModal').style.display = 'none';
-  }
-
-  // Close thank you modal
-  function closeThankYouModal() {
-    document.getElementById('thankYouModal').style.display = 'none';
-  }
-
-  // Check for success parameter
-  function checkForSuccess() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const success = urlParams.get('success');
-    const campaign = urlParams.get('campaign');
-    
-    if (success === 'true') {
-      document.getElementById('thankYouModal').style.display = 'block';
-      
-      // Clean URL after showing modal
+// Action-specific tours triggered by email deep-link
+const ACTION_TOURS = {
+  launch_ad: {
+    title: '🚀 Launch Your First LinkedIn Ad',
+    desc: "Your AI SDR found warm prospects ready to see your ad. Let's launch it now.",
+    steps: () => {
+      switchTab('linkedin');
       setTimeout(() => {
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }, 1000);
+        introJs().setOptions({
+          showProgress: true, showBullets: false,
+          steps: [
+            { element: '#segmentOptions', intro: '<strong>Step 1: Pick your audience.</strong><br>We recommend "Both Combined" — it targets your email openers AND LinkedIn connections for the highest hit rate.', position: 'bottom' },
+            { element: '#btnStep1Next', intro: '<strong>Click here to proceed</strong> once your audience is selected.', position: 'top' }
+          ]
+        }).start();
+      }, 300);
+    }
+  },
+  optimize_ad: {
+    title: '⚡ Optimization Action Needed',
+    desc: "AI found a change that could cut your cost-per-meeting by 30%. Review it now.",
+    steps: () => {
+      switchTab('optimize');
+      setTimeout(() => {
+        introJs().setOptions({
+          showProgress: true, showBullets: false,
+          steps: [
+            { element: '#optFeed', intro: '<strong>AI Recommendations below.</strong><br>Each card shows a specific action — pause, boost, or swap. Apply them with one click.', position: 'bottom' }
+          ]
+        }).start();
+      }, 300);
     }
   }
+};
 
-  // Show status message
-  function showStatus(message, isError = false) {
-    const statusDiv = document.getElementById('statusMessage');
-    statusDiv.textContent = message;
-    statusDiv.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
-    statusDiv.style.display = 'block';
-    
-    setTimeout(() => {
-      statusDiv.style.display = 'none';
-    }, 5000);
+function startActionTour() {
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  if (action && ACTION_TOURS[action]) {
+    ACTION_TOURS[action].steps();
   }
+}
 
-  // Setup event listeners
-  function setupEventListeners() {
-    // Billboard form real-time updates
-    billboardHeadline.addEventListener('input', updateBillboardPreview);
-    billboardMessage.addEventListener('input', updateBillboardPreview);
-    billboardCTA.addEventListener('input', updateBillboardPreview);
-    
-    // Download button
-    downloadBillboardBtn.addEventListener('click', downloadBillboardDesign);
-    
-    // Filter event listeners
-    let searchTimeout;
-    searchFilter.addEventListener('input', () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(applyFilters, 300);
-    });
-    
-    statusFilter.addEventListener('change', applyFilters);
-    refreshAdsBtn.addEventListener('click', loadAds);
-    clearFiltersBtn.addEventListener('click', clearFilters);
-    
-    // Modal close events
-    window.addEventListener('click', (event) => {
-      if (event.target === adModal) {
-        closeModal();
-      }
-      if (event.target === videoModal) {
-        closeVideoModal();
-      }
-      if (event.target === thankYouModal) {
-        closeThankYouModal();
-      }
-    });
+function checkDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  if (action && ACTION_TOURS[action]) {
+    const banner = document.getElementById('actionBanner');
+    document.getElementById('bannerTitle').textContent = ACTION_TOURS[action].title;
+    document.getElementById('bannerDesc').textContent  = ACTION_TOURS[action].desc;
+    banner.classList.add('show');
   }
+}
 
-  // Initialize page
-  async function init() {
-    try {
-      console.log('Initializing ads page...');
-      document.getElementById('authLoading').style.display = 'flex';
-      
-      const isAuthenticated = await checkAuthentication();
-      console.log('Authentication result:', isAuthenticated);
-      
-      if (isAuthenticated) {
-        console.log('User authenticated, loading data...');
-        document.getElementById('authLoading').style.display = 'none';
-        
-        setupEventListeners();
-        setupImageUpload();
-        
-        try {
-          await Promise.all([
-            loadUserData(),
-            loadSavedImages(),
-            loadAds()
-          ]);
-          
-          checkForSuccess();
-          
-          // Auto-start tour for new users
-          if (!hasCompletedTour()) {
-            setTimeout(() => {
-              startTour();
-            }, 1000);
-          }
-        } catch (dataError) {
-          console.error('Error loading data:', dataError);
-          showStatus('Error loading data. Some features may not work properly.', true);
-        }
-      } else {
-        console.log('User not authenticated, redirecting to login...');
-        redirectToLogin();
-      }
-    } catch (error) {
-      console.error('Error initializing page:', error);
-      showStatus('Failed to initialize. Please refresh.', true);
-      document.getElementById('authLoading').style.display = 'none';
-    }
+// ══════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(`tab-content-${name}`).classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+}
+
+// ══════════════════════════════════════
+// WIZARD NAVIGATION
+// ══════════════════════════════════════
+function goToStep(n) {
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById(`li-step-${i}`).style.display = 'none';
+    const ws = document.getElementById(`ws${i}`);
+    ws.classList.remove('active', 'done');
+    if (i < n) ws.classList.add('done');
   }
+  document.getElementById(`li-step-${n}`).style.display = 'block';
+  document.getElementById(`ws${n}`).classList.add('active');
+  currentStep = n;
 
-  // Security checks - session validation every 5 minutes
-  setInterval(async function() {
-    try {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        redirectToLogin();
-      } else {
-        authToken = session.access_token;
-      }
-    } catch (e) {
-      console.error('Session check failed:', e);
-    }
-  }, 300000);
+  if (n === 5) buildLaunchSummary();
+  document.getElementById('tab-content-linkedin').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
-  // Enhanced security - check on page visibility change
-  document.addEventListener('visibilitychange', async function() {
-    if (!document.hidden) {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          redirectToLogin();
-        } else {
-          authToken = session.access_token;
-        }
-      } catch (e) {
-        console.error('Visibility auth check failed:', e);
-      }
+// ══════════════════════════════════════
+// AUDIENCE
+// ══════════════════════════════════════
+async function loadAudienceCounts() {
+  try {
+    const res = await apiCall(N8N.liGetAudience);
+    const counts = res.counts || {};
+    document.getElementById('segCountEmail').textContent = `${counts.email_openers || 0} contacts`;
+    document.getElementById('segCountFirst').textContent = `${counts.first_degree || 0} contacts`;
+    document.getElementById('segCountBoth').textContent  = `${counts.both || 0} contacts`;
+    document.getElementById('audEmailCount').textContent = counts.email_openers || 0;
+    document.getElementById('audLICount').textContent    = counts.first_degree || 0;
+    document.getElementById('lastAudienceSync').textContent = res.last_sync ? new Date(res.last_sync).toLocaleDateString() : 'Not yet';
+
+    const minOk = (counts[selectedSegment] || 0) >= 300;
+    document.getElementById('segmentWarning').style.display = minOk ? 'none' : 'block';
+    document.getElementById('btnStep1Next').disabled = !minOk;
+  } catch(e) {
+    console.error('Audience load failed', e);
+  }
+}
+
+function selectSegment(el) {
+  document.querySelectorAll('.segment-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSegment = el.dataset.segment;
+  const count = parseInt(el.querySelector('div').textContent) || 0;
+  const minOk = count >= 300;
+  document.getElementById('segmentWarning').style.display = minOk ? 'none' : 'block';
+  document.getElementById('btnStep1Next').disabled = !minOk;
+}
+
+async function triggerAudienceSync() {
+  showStatus('Syncing audience to LinkedIn…', false);
+  try {
+    await apiCall(N8N.liSyncAudience, { segment: selectedSegment });
+    showStatus('Audience sync queued — LinkedIn matching takes up to 24 hours.', false);
+    setTimeout(loadAudienceCounts, 3000);
+  } catch(e) { showStatus('Sync failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// CREATIVES
+// ══════════════════════════════════════
+async function loadCreatives() {
+  const campaignFilter = document.getElementById('creativeCampaignFilter').value;
+  const grid = document.getElementById('creativeGrid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted);">Loading…</div>';
+
+  try {
+    const res = await apiCall(N8N.getMedia, { campaign_id: campaignFilter || null });
+    allCreatives = Array.isArray(res) ? res : (res.files || res.value || []);
+
+    if (!allCreatives.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);">No media found. <a href="campaigns" style="color:var(--navy);">Generate a campaign first →</a></div>`;
+      return;
     }
+
+    grid.innerHTML = allCreatives.map((f, i) => `
+      <div class="creative-thumb ${selectedCreative?.id === f.id ? 'selected' : ''}"
+        onclick="selectCreative(${i})" title="${f.file_name || ''}">
+        ${f.URL ? `<img src="${f.URL}" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <div class="creative-type-badge">${(f.file_type || 'image').includes('video') ? '▶ video' : '🖼 image'}</div>
+        <div class="check">✓</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--red);">Failed to load media.</div>`;
+  }
+}
+
+function selectCreative(idx) {
+  selectedCreative = allCreatives[idx];
+  document.querySelectorAll('.creative-thumb').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
   });
+  document.getElementById('btnStep2Next').disabled = false;
+  updateAdPreview();
+}
 
-  // Make functions globally available
-  window.showAdDetails = showAdDetails;
-  window.downloadAd = downloadAd;
-  window.editAd = editAd;
-  window.deleteAd = deleteAd;
-  window.purchaseCampaign = purchaseCampaign;
-  window.openVideoModal = openVideoModal;
-  window.closeVideoModal = closeVideoModal;
-  window.closeModal = closeModal;
-  window.closeThankYouModal = closeThankYouModal;
-  window.startTour = startTour;
-  window.logout = logout;
+// ══════════════════════════════════════
+// AD COPY & PREVIEW
+// ══════════════════════════════════════
+function updateCharCount(inputId, countId, max) {
+  const val = document.getElementById(inputId).value.length;
+  const el  = document.getElementById(countId);
+  el.textContent = `(${val}/${max})`;
+  el.style.color = val > max * .9 ? 'var(--red)' : 'var(--muted)';
+}
 
-  // Initialize when DOM loads
-  document.addEventListener('DOMContentLoaded', init);
+function updateAdPreview() {
+  const headline = document.getElementById('adHeadline').value || 'Your Headline Here';
+  const intro    = document.getElementById('adIntro').value   || 'Your intro text appears here.';
+  const ctaVal   = document.getElementById('adCTA').value;
+  const ctaLabels = { LEARN_MORE: 'Learn More', SIGN_UP: 'Sign Up', CONTACT_US: 'Contact Us', DOWNLOAD: 'Download', REGISTER: 'Register', REQUEST_DEMO: 'Request Demo' };
+  const ctaLabel = ctaLabels[ctaVal] || 'Learn More';
+
+  document.getElementById('liPreviewHeadline').textContent = headline;
+  document.getElementById('liPreviewIntro').textContent    = intro;
+  document.getElementById('liPreviewCTA').textContent      = ctaLabel;
+  document.getElementById('liCtaTag').textContent          = ctaLabel;
+
+  const previewImg = document.getElementById('liPreviewImg');
+  if (selectedCreative?.URL) {
+    const isVideo = (selectedCreative.file_type || '').includes('video');
+    previewImg.innerHTML = isVideo
+      ? `<video src="${selectedCreative.URL}" style="width:100%;aspect-ratio:16/9;object-fit:cover;" muted loop autoplay></video>`
+      : `<img src="${selectedCreative.URL}" style="width:100%;aspect-ratio:16/9;object-fit:cover;">`;
+  } else {
+    previewImg.innerHTML = '<span style="color:#aaa;font-size:12px;">No creative selected</span>';
+    previewImg.style.cssText = 'width:100%;aspect-ratio:16/9;background:#e0e0e0;display:flex;align-items:center;justify-content:center;';
+  }
+
+  const compName = userData.company_name || 'Your Company';
+  document.getElementById('liCompanyName').textContent = compName;
+  document.getElementById('liAvatarInit').textContent  = compName.charAt(0).toUpperCase();
+}
+
+async function generateAICopy() {
+  const btn = document.getElementById('btnAICopy');
+  btn.textContent = '⏳ Generating…'; btn.disabled = true;
+  try {
+    const res = await apiCall(N8N.liGenerateAICopy, {
+      segment: selectedSegment,
+      creative_url: selectedCreative?.URL,
+      campaign_id: selectedCreative?.campaign_id
+    });
+    if (res.headline) {
+      document.getElementById('adHeadline').value = res.headline;
+      document.getElementById('adIntro').value    = res.intro || '';
+      updateCharCount('adHeadline', 'headlineCount', 70);
+      updateCharCount('adIntro', 'introCount', 150);
+      updateAdPreview();
+      showStatus('AI copy generated!', false);
+    }
+  } catch(e) { showStatus('AI copy failed: ' + e.message, true); }
+  finally { btn.textContent = '✨ Generate with AI'; btn.disabled = false; }
+}
+
+// ══════════════════════════════════════
+// BUDGET
+// ══════════════════════════════════════
+function updateBudgetDisplay() {
+  const val = document.getElementById('dailyBudget').value;
+  document.getElementById('budgetDisplay').textContent = `$${val}`;
+}
+
+// ══════════════════════════════════════
+// LAUNCH SUMMARY
+// ══════════════════════════════════════
+function buildLaunchSummary() {
+  const segLabels = { email_openers: 'Email Openers', first_degree: '1st-Degree Connections', both: 'Both Combined' };
+  const budget    = document.getElementById('dailyBudget').value;
+  const total     = document.getElementById('totalBudget').value;
+  const goal      = document.getElementById('optimizationGoal').value;
+  const start     = document.getElementById('adStartDate').value;
+  const end       = document.getElementById('adEndDate').value;
+  const headline  = document.getElementById('adHeadline').value || '(not set)';
+
+  document.getElementById('launchSummary').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Audience</div>
+        <div style="font-weight:700;">${segLabels[selectedSegment]}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Creative</div>
+        <div style="font-weight:700;">${selectedCreative ? selectedCreative.file_name || 'Selected' : '⚠️ None selected'}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Headline</div>
+        <div style="font-weight:700;">${headline}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Budget</div>
+        <div style="font-weight:700;">$${budget}/day${total ? ` · $${total} cap` : ''}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Optimization Goal</div>
+        <div style="font-weight:700;">${goal}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Schedule</div>
+        <div style="font-weight:700;">${start || 'Today'} → ${end || 'Until paused'}</div>
+      </div>
+    </div>
+  `;
+
+  // Check LI connection
+  if (!liConnected) {
+    document.getElementById('liConnectWarning').style.display = 'block';
+    document.getElementById('btnLaunch').disabled = true;
+  }
+}
+
+// ══════════════════════════════════════
+// LAUNCH
+// ══════════════════════════════════════
+async function launchLinkedInAd() {
+  const btn = document.getElementById('btnLaunch');
+  btn.textContent = '⏳ Launching…'; btn.disabled = true;
+
+  try {
+    const payload = {
+      segment:          selectedSegment,
+      creative_id:      selectedCreative?.id,
+      creative_url:     selectedCreative?.URL,
+      creative_type:    (selectedCreative?.file_type || '').includes('video') ? 'video' : 'image',
+      headline:         document.getElementById('adHeadline').value,
+      intro_text:       document.getElementById('adIntro').value,
+      cta_type:         document.getElementById('adCTA').value,
+      landing_page_url: document.getElementById('adLandingPage').value,
+      daily_budget:     parseFloat(document.getElementById('dailyBudget').value),
+      total_budget:     parseFloat(document.getElementById('totalBudget').value) || null,
+      optimization_goal:document.getElementById('optimizationGoal').value,
+      start_date:       document.getElementById('adStartDate').value || null,
+      end_date:         document.getElementById('adEndDate').value || null,
+    };
+
+    const res = await apiCall(N8N.liCreateAd, payload);
+    showStatus('🚀 LinkedIn ad launched! Approval takes 24–48 hours.', false);
+
+    // Switch to Active tab
+    setTimeout(() => {
+      switchTab('active');
+      loadCampaigns();
+    }, 1500);
+
+  } catch(e) {
+    showStatus('Launch failed: ' + e.message, true);
+    btn.textContent = '🚀 Launch LinkedIn Ad'; btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════
+// KPI STRIP
+// ══════════════════════════════════════
+async function loadKPIs() {
+  try {
+    const res = await apiCall(N8N.liGetReporting);
+    const d   = res.kpis || res || {};
+    document.getElementById('kpiImpressions').textContent = fmtNum(d.impressions);
+    document.getElementById('kpiClicks').textContent      = fmtNum(d.clicks);
+    document.getElementById('kpiCTR').textContent         = d.ctr ? d.ctr.toFixed(2) + '%' : '–';
+    document.getElementById('kpiMeetings').textContent    = fmtNum(d.meetings_booked);
+    document.getElementById('kpiConversions').textContent = fmtNum(d.conversions);
+    document.getElementById('kpiCPM').textContent         = d.spend ? '$' + d.spend.toFixed(0) : '–';
+    document.getElementById('kpiCPMeeting').textContent   = d.cost_per_meeting ? '$' + d.cost_per_meeting.toFixed(0) : '–';
+  } catch(e) { /* silent — no data yet */ }
+}
+
+// ══════════════════════════════════════
+// OPTIMIZER
+// ══════════════════════════════════════
+async function loadOptimizations() {
+  const feed = document.getElementById('optFeed');
+  feed.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">Loading…</div>';
+  try {
+    const res = await apiCall(N8N.getOptimizations);
+    const items = Array.isArray(res) ? res : (res.recommendations || []);
+    if (!items.length) {
+      feed.innerHTML = `<div class="empty-state"><div class="icon">🤖</div><h3>No Recommendations Yet</h3><p>Activate a campaign. Optimizer runs after 48 hours of data.</p></div>`;
+      return;
+    }
+    feed.innerHTML = items.map(item => `
+      <div class="opt-item ${item.type || ''}">
+        <div class="opt-title">${item.title}</div>
+        <div class="opt-desc">${item.description}</div>
+        <div class="opt-actions">
+          <button class="btn btn-sm btn-primary" onclick="applyOpt('${item.id}','apply')">✅ Apply</button>
+          <button class="btn btn-sm btn-ghost" onclick="applyOpt('${item.id}','dismiss')">Dismiss</button>
+        </div>
+        <div class="opt-time">${item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    feed.innerHTML = `<div style="color:var(--red);padding:12px;">Failed to load recommendations.</div>`;
+  }
+}
+
+async function applyOpt(id, action) {
+  try {
+    await apiCall(N8N.applyOptimization, { optimization_id: id, action });
+    showStatus(action === 'apply' ? '✅ Optimization applied!' : 'Recommendation dismissed.', false);
+    loadOptimizations();
+    loadKPIs();
+  } catch(e) { showStatus('Failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// ACTIVE CAMPAIGNS TABLE
+// ══════════════════════════════════════
+async function loadCampaigns() {
+  const tbody = document.getElementById('campaignsBody');
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--muted);">Loading…</td></tr>';
+  try {
+    const res = await apiCall(N8N.getAllAds);
+    allAds = Array.isArray(res) ? res : (res.ads || res.value || []);
+    renderCampaignsTable(allAds);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--red);">Failed to load campaigns.</td></tr>`;
+  }
+}
+
+function renderCampaignsTable(ads) {
+  const tbody = document.getElementById('campaignsBody');
+  if (!ads.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted);">No campaigns yet. Launch your first LinkedIn ad above.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = ads.map(ad => `
+    <tr>
+      <td><strong>${ad.name || ad.campaign_name || '–'}</strong><br><span style="font-size:11px;color:var(--muted);">${ad.created_at ? new Date(ad.created_at).toLocaleDateString() : ''}</span></td>
+      <td><span style="font-size:12px;background:${ad.type==='linkedin'?'#e8f4fb':'#f0fdf4'};color:${ad.type==='linkedin'?'var(--li-blue)':'var(--green)'};padding:2px 8px;border-radius:3px;font-weight:600;">${ad.type || 'linkedin'}</span></td>
+      <td style="font-size:12px;">${ad.audience_segment || '–'}</td>
+      <td>$${(ad.spend_usd || 0).toFixed(0)}</td>
+      <td>${fmtNum(ad.impressions)}</td>
+      <td>${fmtNum(ad.clicks)}</td>
+      <td style="font-weight:700;color:var(--green);">${fmtNum(ad.meetings_booked || 0)}</td>
+      <td>${ad.cost_per_meeting ? '$' + ad.cost_per_meeting.toFixed(0) : '–'}</td>
+      <td><span class="status-badge status-${(ad.status||'draft').toLowerCase()}">${ad.status || 'Draft'}</span></td>
+      <td>
+        <button class="btn btn-sm btn-ghost" onclick="openCampaignDetail('${ad.id}')">Details</button>
+        ${ad.status === 'ACTIVE' ? `<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;margin-left:4px;" onclick="pauseCampaign('${ad.id}')">⏸ Pause</button>` : ''}
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterCampaigns() {
+  const q    = document.getElementById('campaignSearch').value.toLowerCase();
+  const type = document.getElementById('campaignTypeFilter').value;
+  const filtered = allAds.filter(a =>
+    (!q || (a.name||a.campaign_name||'').toLowerCase().includes(q)) &&
+    (!type || (a.type||'linkedin') === type)
+  );
+  renderCampaignsTable(filtered);
+}
+
+async function pauseCampaign(id) {
+  if (!confirm('Pause this campaign?')) return;
+  try {
+    await apiCall(N8N.liPauseCampaign, { campaign_id: id });
+    showStatus('Campaign paused.', false);
+    loadCampaigns();
+  } catch(e) { showStatus('Failed: ' + e.message, true); }
+}
+
+function openCampaignDetail(id) {
+  const ad = allAds.find(a => a.id === id);
+  if (!ad) return;
+  document.getElementById('campaignModalTitle').textContent = ad.name || ad.campaign_name || 'Campaign Details';
+  document.getElementById('campaignModalBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div><strong>Status:</strong> <span class="status-badge status-${(ad.status||'draft').toLowerCase()}">${ad.status||'Draft'}</span></div>
+      <div><strong>Type:</strong> ${ad.type || 'LinkedIn'}</div>
+      <div><strong>Audience:</strong> ${ad.audience_segment || '–'}</div>
+      <div><strong>Daily Budget:</strong> $${ad.daily_budget_usd || '–'}</div>
+      <div><strong>Impressions:</strong> ${fmtNum(ad.impressions)}</div>
+      <div><strong>Clicks:</strong> ${fmtNum(ad.clicks)}</div>
+      <div><strong>Meetings:</strong> ${ad.meetings_booked || 0}</div>
+      <div><strong>Total Spend:</strong> $${(ad.spend_usd||0).toFixed(2)}</div>
+      <div><strong>Cost/Meeting:</strong> ${ad.cost_per_meeting ? '$'+ad.cost_per_meeting.toFixed(2) : '–'}</div>
+      <div><strong>Started:</strong> ${ad.start_date || '–'}</div>
+    </div>
+    ${ad.asset_url ? `<img src="${ad.asset_url}" style="width:100%;border-radius:6px;max-height:200px;object-fit:cover;margin-bottom:16px;">` : ''}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      ${ad.status === 'ACTIVE' ? `<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;" onclick="pauseCampaign('${ad.id}');closeCampaignModal()">⏸ Pause Campaign</button>` : ''}
+      <button class="btn btn-sm btn-red" onclick="deleteCampaign('${ad.id}')">🗑 Delete</button>
+    </div>
+  `;
+  document.getElementById('campaignModal').classList.add('open');
+}
+
+function closeCampaignModal() { document.getElementById('campaignModal').classList.remove('open'); }
+
+async function deleteCampaign(id) {
+  if (!confirm('Permanently delete this campaign?')) return;
+  try {
+    await apiCall(N8N.removeAd, { ad_id: id });
+    showStatus('Campaign deleted.', false);
+    closeCampaignModal();
+    loadCampaigns();
+  } catch(e) { showStatus('Delete failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// BILLBOARD
+// ══════════════════════════════════════
+function updateBBPreview() {
+  document.getElementById('bbPreviewHeadline').textContent = document.getElementById('bbHeadline').value || 'YOUR HEADLINE';
+  document.getElementById('bbPreviewMessage').textContent  = document.getElementById('bbMessage').value  || 'Your message appears here';
+  document.getElementById('bbPreviewCTA').textContent      = document.getElementById('bbCTA').value      || 'Call to Action';
+}
+
+function updateBBPreviewImg() {
+  const url = document.getElementById('bbImageSelect').value;
+  const bg  = document.getElementById('bbBg');
+  if (url) { bg.src = url; bg.style.display = 'block'; }
+  else      { bg.style.display = 'none'; }
+}
+
+function downloadBillboard() {
+  showStatus('Billboard download requires html2canvas. Integrate via your media.html workflow.', false);
+}
+
+async function generateBBAICopy() {
+  showStatus('Generating billboard headline with AI…', false);
+  try {
+    const res = await apiCall(N8N.liGenerateAICopy, { mode: 'billboard' });
+    if (res.headline) {
+      document.getElementById('bbHeadline').value = res.headline;
+      document.getElementById('bbMessage').value  = res.tagline || '';
+      document.getElementById('bbCTA').value      = res.cta || 'Call Now';
+      updateBBPreview();
+    }
+  } catch(e) { showStatus('AI generation failed.', true); }
+}
+
+async function loadBillboardInventory() {
+  const grid = document.getElementById('billboardInventory');
+  try {
+    const res = await apiCall(N8N.getBillboardInventory);
+    allBillboards = Array.isArray(res) ? res : (res.inventory || MOCK_BILLBOARDS);
+    filteredBillboards = [...allBillboards];
+    renderBillboards();
+  } catch(e) {
+    allBillboards = MOCK_BILLBOARDS;
+    filteredBillboards = [...MOCK_BILLBOARDS];
+    renderBillboards();
+  }
+}
+
+// Mock inventory for display until webhook is live
+const MOCK_BILLBOARDS = [
+  { id:'bb1', owner:'Martinez Outdoor', location:'Houston, TX – I-10 W', size:'14×48', impressions_daily:48000, price_per_month:3200, available_from:'2026-04-01', img:'' },
+  { id:'bb2', owner:'Liberty Signs LLC', location:'Phoenix, AZ – Loop 101', size:'14×48', impressions_daily:62000, price_per_month:4100, available_from:'2026-04-15', img:'' },
+  { id:'bb3', owner:'Southern Outdoor Media', location:'Atlanta, GA – I-285', size:'10×36', impressions_daily:35000, price_per_month:2400, available_from:'2026-04-01', img:'' },
+  { id:'bb4', owner:'Heartland Billboard Co.', location:'Kansas City, MO – I-70', size:'14×48', impressions_daily:28000, price_per_month:1800, available_from:'2026-05-01', img:'' },
+  { id:'bb5', owner:'Sun State Outdoor', location:'Tampa, FL – US-19', size:'12×36', impressions_daily:41000, price_per_month:2900, available_from:'2026-04-01', img:'' },
+  { id:'bb6', owner:'Blue Ridge Media', location:'Charlotte, NC – I-485', size:'14×48', impressions_daily:38000, price_per_month:2600, available_from:'2026-04-15', img:'' },
+];
+
+function renderBillboards() {
+  const grid = document.getElementById('billboardInventory');
+  if (!filteredBillboards.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="icon">📍</div><h3>No Results</h3><p>Try adjusting your filters.</p></div>`;
+    return;
+  }
+  grid.innerHTML = filteredBillboards.map(bb => `
+    <div class="bb-slot" onclick="openBBModal('${bb.id}')">
+      <div class="bb-slot-img">
+        ${bb.img ? `<img src="${bb.img}" style="width:100%;height:100%;object-fit:cover;">` : '<span>📍 Billboard Preview</span>'}
+      </div>
+      <div class="bb-slot-info">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div class="bb-slot-location">${bb.location}</div>
+          <span class="bb-owner-badge">Independent</span>
+        </div>
+        <div class="bb-slot-meta">
+          <span>📐 ${bb.size} ft</span>
+          <span>👁 ${fmtNum(bb.impressions_daily)}/day</span>
+          <span>📅 Available ${bb.available_from}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+          <div class="bb-slot-price">$${fmtNum(bb.price_per_month)}<span style="font-size:11px;font-weight:400;color:var(--muted);">/mo</span></div>
+          <button class="btn btn-sm btn-primary">Reserve →</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Owner: ${bb.owner}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterBillboards() {
+  const q        = document.getElementById('bbSearch').value.toLowerCase();
+  const maxPrice = parseInt(document.getElementById('bbMaxPrice').value) || Infinity;
+  filteredBillboards = allBillboards.filter(bb =>
+    (!q || bb.location.toLowerCase().includes(q) || bb.owner.toLowerCase().includes(q)) &&
+    (bb.price_per_month <= maxPrice)
+  );
+  renderBillboards();
+}
+
+function openBBModal(id) {
+  const bb = allBillboards.find(b => b.id === id);
+  if (!bb) return;
+  document.getElementById('bbModalTitle').textContent = bb.location;
+  document.getElementById('bbModalBody').innerHTML = `
+    <div style="margin-bottom:16px;">
+      <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px;">
+          <div><strong>Location:</strong> ${bb.location}</div>
+          <div><strong>Size:</strong> ${bb.size} ft</div>
+          <div><strong>Daily Impressions:</strong> ${fmtNum(bb.impressions_daily)}</div>
+          <div><strong>Price:</strong> $${fmtNum(bb.price_per_month)}/month</div>
+          <div><strong>Available:</strong> ${bb.available_from}</div>
+          <div><strong>Owner:</strong> ${bb.owner}</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Campaign Duration</label>
+        <select id="bbDuration">
+          <option value="1month">1 Month — $${fmtNum(bb.price_per_month)}</option>
+          <option value="3month" selected>3 Months — $${fmtNum(bb.price_per_month * 3)} (save 5%)</option>
+          <option value="6month">6 Months — $${fmtNum(bb.price_per_month * 5.7)} (save 10%)</option>
+          <option value="12month">12 Months — $${fmtNum(bb.price_per_month * 10)} (save 17%)</option>
+        </select>
+      </div>
+      <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:13px;margin-bottom:16px;">
+        💡 <strong>Pro tip:</strong> Upload your Victory Vision–designed billboard creative for this location before reserving.
+      </div>
+      <button class="btn btn-green btn-full" onclick="reserveBillboard('${bb.id}')">
+        ✅ Reserve & Proceed to Payment
+      </button>
+    </div>
+  `;
+  document.getElementById('bbModal').classList.add('open');
+}
+
+function closeBBModal() { document.getElementById('bbModal').classList.remove('open'); }
+
+async function reserveBillboard(id) {
+  const duration = document.getElementById('bbDuration').value;
+  const bb = allBillboards.find(b => b.id === id);
+  try {
+    const res = await apiCall(N8N.getCheckout, {
+      type: 'billboard',
+      billboard_id: id,
+      duration,
+      price: bb.price_per_month,
+      success_url: `${window.location.origin}/ads?success=true&type=billboard`,
+      cancel_url:  `${window.location.origin}/ads`
+    });
+    if (res.checkout_url) window.location.href = res.checkout_url;
+  } catch(e) { showStatus('Checkout failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// LANDING PAGES DROPDOWN
+// ══════════════════════════════════════
+async function loadLandingPages() {
+  try {
+    const res = await apiCall(N8N.getPages);
+    const pages = Array.isArray(res) ? res : (res.pages || res.value || []);
+    const sel = document.getElementById('adLandingPage');
+    pages.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.url || p.page_url || '';
+      opt.textContent = p.name || p.page_name || p.url || 'Untitled Page';
+      sel.appendChild(opt);
+    });
+  } catch(e) { /* silent */ }
+}
+
+// ══════════════════════════════════════
+// CAMPAIGN FILTER DROPDOWN
+// ══════════════════════════════════════
+async function loadCampaignFilters() {
+  try {
+    const res = await apiCall(N8N.getCampaigns);
+    const campaigns = Array.isArray(res) ? res : (res.value || []);
+    const sel = document.getElementById('creativeCampaignFilter');
+    campaigns.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name || c.campaign_name || c.id;
+      sel.appendChild(opt);
+    });
+  } catch(e) { /* silent */ }
+}
+
+// ══════════════════════════════════════
+// USER DATA
+// ══════════════════════════════════════
+async function loadUserData() {
+  try {
+    const res = await apiCall(N8N.getUserData);
+    userData = Array.isArray(res) ? res[0] : (res.value?.[0] || res);
+    const plan = (userData?.subscription_plan || 'bronze').toLowerCase();
+    const med  = document.getElementById('subscriptionMedallion');
+    med.className = `medallion ${plan}`;
+    document.getElementById('planName').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    liConnected = userData?.li_connected || false;
+  } catch(e) { /* silent */ }
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function fmtNum(n) {
+  if (!n && n !== 0) return '–';
+  return Number(n).toLocaleString();
+}
+
+function showStatus(msg, isError) {
+  const el = document.getElementById('statusMessage');
+  el.textContent = msg;
+  el.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+async function init() {
+  document.getElementById('authLoading').style.display = 'flex';
+  const ok = await checkAuthentication();
+  if (!ok) { redirectToLogin(); return; }
+  document.getElementById('authLoading').style.display = 'none';
+
+  // Set today as default start date
+  document.getElementById('adStartDate').valueAsDate = new Date();
+
+  await Promise.allSettled([
+    loadUserData(),
+    loadAudienceCounts(),
+    loadKPIs(),
+    loadCampaigns(),
+    loadCreatives(),
+    loadLandingPages(),
+    loadCampaignFilters(),
+    loadBillboardInventory(),
+    loadOptimizations()
+  ]);
+
+  checkDeepLink();
+
+  if (!hasCompletedTour()) {
+    setTimeout(startTour, 800);
+  }
+}
+
+// Session keepalive
+setInterval(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) redirectToLogin();
+  else authToken = session.access_token;
+}, 300000);
+
+document.addEventListener('visibilitychange', async () => {
+  if (!document.hidden) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) redirectToLogin();
+  }
+});
+
+// Global exposure
+window.startTour = startTour;
+window.logout = logout;
+window.switchTab = switchTab;
+window.goToStep = goToStep;
+window.selectSegment = selectSegment;
+window.selectCreative = selectCreative;
+window.loadCreatives = loadCreatives;
+window.updateAdPreview = updateAdPreview;
+window.updateBBPreview = updateBBPreview;
+window.updateBBPreviewImg = updateBBPreviewImg;
+window.filterBillboards = filterBillboards;
+window.filterCampaigns = filterCampaigns;
+window.openBBModal = openBBModal;
+window.closeBBModal = closeBBModal;
+window.openCampaignDetail = openCampaignDetail;
+window.closeCampaignModal = closeCampaignModal;
+window.pauseCampaign = pauseCampaign;
+window.deleteCampaign = deleteCampaign;
+window.reserveBillboard = reserveBillboard;
+window.applyOpt = applyOpt;
+window.triggerAudienceSync = triggerAudienceSync;
+window.startActionTour = startActionTour;
+window.generateAICopy = generateAICopy;
+window.generateBBAICopy = generateBBAICopy;
+window.downloadBillboard = downloadBillboard;
+window.launchLinkedInAd = launchLinkedInAd;
+window.loadOptimizations = loadOptimizations;
+window.loadCampaigns = loadCampaigns;
+
+document.addEventListener('DOMContentLoaded', init);
 </script>
-
 </body>
 </html>
