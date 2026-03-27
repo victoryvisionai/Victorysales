@@ -6,7 +6,7 @@
   <meta name="description" content="Manage your contacts and email campaigns."/>
   <meta name="author" content="Victory Vision"/>
   <title>Victory Vision AI - Contacts</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-jsrenderTableHeader();@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@telnyx/webrtc@2/lib/bundle.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
   <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
@@ -3916,7 +3916,13 @@ async function init() {
       await Promise.all([loadUserData(), loadContacts()]);
       initializeColumnSelector();
       renderTableHeader();
-
+// Deep link guide handler
+      const params = new URLSearchParams(window.location.search);
+      const guide = params.get('guide');
+      const contactEmail = params.get('contact');
+      if (guide && contactEmail) {
+        setTimeout(() => fireGuide(guide, contactEmail), 1500);
+      }
       console.log('Step 6: Data loaded successfully');
       
       // Initialize WebRTC after user data loads
@@ -3936,7 +3942,67 @@ async function init() {
     showStatus('Failed to initialize. Please refresh.', true);
   }
 }
+function fireGuide(guide, contactEmail) {
+  const messages = {
+    'call': {
+      text: `📞 Find <strong>${contactEmail}</strong> in the table below, check their checkbox, then click <strong>"Mass Call Selected"</strong>`
+    },
+    'followup': {
+      text: `📧 Find <strong>${contactEmail}</strong> in the table, check their checkbox, select <strong>"Follow-up Sequence"</strong> from campaigns, then click <strong>"Enroll in campaigns"</strong>`
+    },
+    'reply': {
+      text: `💬 Find <strong>${contactEmail}</strong> and click their name to open their record, then click <strong>"Send Message"</strong>`
+    },
+    'enroll': {
+      text: `🎯 Find <strong>${contactEmail}</strong> in the table, check their checkbox, choose a campaign, then click <strong>"Enroll in campaigns"</strong>`
+    }
+  };
 
+  const msg = messages[guide];
+  if (!msg) return;
+
+  // Auto-populate search with contact email so they appear at top
+  const searchInput = document.getElementById('searchFilter');
+  if (searchInput && contactEmail) {
+    searchInput.value = contactEmail;
+    searchInput.dispatchEvent(new Event('input'));
+  }
+
+  // Build and show overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'vv-guide-overlay';
+  overlay.innerHTML = `
+    <div style="
+      position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+      background:#0A3161; color:#fff; padding:18px 24px; border-radius:12px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.3); z-index:9999;
+      max-width:520px; width:90%; font-size:14px; line-height:1.6;
+      display:flex; align-items:center; gap:16px;
+      animation: vvSlideUp 0.3s ease;
+    ">
+      <div style="flex:1;">${msg.text}</div>
+      <button onclick="document.getElementById('vv-guide-overlay').remove()"
+        style="background:rgba(255,255,255,0.2); border:none; color:#fff;
+        padding:6px 14px; border-radius:6px; cursor:pointer; white-space:nowrap;
+        font-size:13px; flex-shrink:0;">
+        Got it ✓
+      </button>
+    </div>
+    <style>
+      @keyframes vvSlideUp {
+        from { opacity:0; transform:translateX(-50%) translateY(20px); }
+        to   { opacity:1; transform:translateX(-50%) translateY(0); }
+      }
+    </style>
+  `;
+  document.body.appendChild(overlay);
+
+  // Auto-dismiss after 20 seconds
+  setTimeout(() => {
+    const el = document.getElementById('vv-guide-overlay');
+    if (el) el.remove();
+  }, 20000);
+}
 setInterval(async function() {
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
