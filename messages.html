@@ -1180,8 +1180,13 @@ function selectEmail(id) {
     document.getElementById('evCc').textContent = currentEmail.cc;
   }
 
-  document.getElementById('evBody').textContent = currentEmail.body || '(No content)';
-
+const rawBody = currentEmail.body_html || currentEmail.body || '(No content)';
+const isHtml = rawBody.trim().startsWith('<');
+if (isHtml) {
+  document.getElementById('evBody').innerHTML = rawBody;
+} else {
+  document.getElementById('evBody').textContent = rawBody;
+}
   // Attachments
   const attSec = document.getElementById('evAttachments');
   const attList = document.getElementById('evAttList');
