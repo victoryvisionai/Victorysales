@@ -2263,7 +2263,7 @@ async function scheduleSelectedCampaign() {
         customer_id: CUSTOMER_ID,
         campaign_name: document.getElementById('campaignName').value,
         contact_ids: Array.from(selectedContacts),
-        start_date: startDate,
+     start_date: startDate ? new Date(startDate).toISOString() : null,
         days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
         emails: selectedEmails
       })
@@ -2377,7 +2377,7 @@ async function sendVVCampaign() {
     campaigns: selected.map(c => ({ id: c.id || c.campaign_id, name: c.name || c.campaign_name })),
     email_count: parseInt(document.getElementById('vvEmailCount').value) || 3,
     days_between: parseInt(document.getElementById('vvDaysBetween').value) || 2,
-    schedule_start_date: aiChooseTime ? null : startDate,
+    schedule_start_date: aiChooseTime ? null : (startDate ? new Date(startDate).toISOString() : null),
     ai_choose_time: aiChooseTime
   };
   try {
@@ -3681,7 +3681,7 @@ function setupEventListeners() {
     campaign_name: formData.get('campaignName'),
     email_count: parseInt(formData.get('emailCount')),
     tone: formData.get('emailTone'),
-    schedule_start_date: aiChooseTime ? null : formData.get('scheduleStartDate'),
+    schedule_start_date: aiChooseTime ? null : (formData.get('scheduleStartDate') ? new Date(formData.get('scheduleStartDate')).toISOString() : null),
     days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
     customer_id: CUSTOMER_ID,
     selected_contacts: Array.from(selectedContacts),
