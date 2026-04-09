@@ -1367,9 +1367,12 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         
         <!-- Template Mode (hidden by default) -->
         <div id="templateMode" style="display: none;">
-          <div class="form-group">
-        <button type="button" id="loadTemplatesBtn" onclick="loadEmailTemplates()" class="success" style="background: #17a2b8;">
-              📧 Load Templates
+          <div class="form-group" style="display: flex; gap: 10px; align-items: center;">
+            <button type="button" id="loadTemplatesBtn" onclick="loadEmailTemplates()" class="success" style="background: #17a2b8;">
+              📧 Create Templates
+            </button>
+            <button type="button" id="loadSavedTemplatesBtn" onclick="loadSavedTemplates()" class="success" style="background: #6f42c1;">
+              📂 Load Saved Templates
             </button>
           </div>
 
@@ -1665,7 +1668,8 @@ const ENDPOINTS = {
   generateScript: 'https://victoryvision.app.n8n.cloud/webhook/call/script',
   columneUser: 'https://victoryvision.app.n8n.cloud/webhook/user/column',
   massSMS: 'https://victoryvision.app.n8n.cloud/webhook/sms/mass',
-  getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get'
+  getCampaigns: 'https://victoryvision.app.n8n.cloud/webhook/campaigns/get',
+  saveTemplates: 'https://victoryvision.app.n8n.cloud/webhook/emails/templates/save'
 };
 
 // Global variables
@@ -2191,6 +2195,14 @@ sendButton.style.cssText = 'background: #28a745; margin-top: 20px; padding: 12px
 sendButton.textContent = '✅ Schedule Selected Campaign';
 sendButton.onclick = scheduleSelectedCampaign;
 container.appendChild(sendButton);
+
+const saveButton = document.createElement('button');
+saveButton.type = 'button';
+saveButton.className = 'success';
+saveButton.style.cssText = 'background: #6f42c1; margin-top: 10px; padding: 12px 24px; width: 100%;';
+saveButton.textContent = '💾 Save Selected Variants as Template';
+saveButton.onclick = saveEmailTemplates;
+container.appendChild(saveButton);
   } catch (error) {
     console.error('Error loading templates:', error);
     showStatus(`❌ Error: ${error.message}`, true);
@@ -2265,6 +2277,7 @@ async function scheduleSelectedCampaign() {
         contact_ids: Array.from(selectedContacts),
      start_date: startDate ? new Date(startDate).toISOString() : null,
         days_between: parseInt(document.getElementById('daysBetweenEmails').value) || 2,
+        ai_choose_time: document.getElementById('aiChooseTimeBtn').dataset.active === 'true',
         emails: selectedEmails
       })
     });
@@ -4565,6 +4578,187 @@ window.toggleHold = toggleHold;
 window.hangupCall = hangupCall;
 window.handleCallStatusUpdate = handleCallStatusUpdate;
 document.addEventListener('DOMContentLoaded', init);
+
+// ── Email Template Save / Load / Delete ──────────────────────────────────────
+
+async function saveEmailTemplates() {
+  try {
+    const container = document.getElementById('emailTemplateContainer');
+    const emailDivs = container.querySelectorAll('div[style*="border: 1px solid"]');
+    if (emailDivs.length === 0) {
+      showStatus('❌ No templates to save. Generate templates first.', true);
+      return;
+    }
+
+    const templateName = prompt('Enter a name for this template set:');
+    if (!templateName) return;
+
+    // Collect all variants (not just selected) so user can reuse any variant later
+    const emails = [];
+    emailDivs.forEach((div, emailIndex) => {
+      const variations = [];
+      for (let varIndex = 0; varIndex < 3; varIndex++) {
+        const subjectEl = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="subject"]`);
+        const bodyEl = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="body"]`);
+        if (subjectEl && bodyEl) {
+          variations.push({ variation: String.fromCharCode(65 + varIndex), subject: subjectEl.value, body: bodyEl.value });
+        }
+      }
+      if (variations.length > 0) emails.push({ email_number: emailIndex + 1, variations });
+    });
+
+    if (emails.length === 0) {
+      showStatus('❌ Could not read template content.', true);
+      return;
+    }
+
+    showStatus('💾 Saving templates...', false);
+    const response = await fetch(ENDPOINTS.saveTemplates, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        action: 'save',
+        template_name: templateName,
+        emails: emails
+      })
+    });
+
+    const result = await response.json();
+    const data = Array.isArray(result) ? result[0] : result;
+    if (data.success !== false) {
+      showStatus(`✅ Template "${templateName}" saved successfully!`, false);
+    } else {
+      throw new Error(data.message || 'Failed to save template');
+    }
+  } catch (error) {
+    console.error('Error saving templates:', error);
+    showStatus('❌ Error saving templates: ' + error.message, true);
+  }
+}
+
+async function loadSavedTemplates() {
+  try {
+    showStatus('📂 Loading saved templates...', false);
+    const response = await fetch(ENDPOINTS.saveTemplates, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: CUSTOMER_ID, action: 'get' })
+    });
+
+    const result = await response.json();
+    const data = Array.isArray(result) ? result[0] : result;
+    const saved = data.templates || [];
+
+    if (saved.length === 0) {
+      showStatus('📭 No saved templates found.', false);
+      return;
+    }
+
+    // Build picker UI
+    const container = document.getElementById('emailTemplateContainer');
+    container.innerHTML = `
+      <div style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px;">
+        <h4 style="margin: 0 0 12px 0;">📂 Saved Templates</h4>
+        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">Select a template to load it for editing, then schedule or re-save.</p>
+        <div id="savedTemplateList">
+          ${saved.map((t, i) => `
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f8f9fa; border-radius: 6px; margin-bottom: 8px;">
+              <span style="font-weight: 500;">${escapeHtml(t.template_name)}</span>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" onclick="applySavedTemplate(${i})" style="padding: 6px 14px; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Load</button>
+                <button type="button" onclick="deleteSavedTemplate('${escapeHtml(t.template_name)}')" style="padding: 6px 14px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">Delete</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    // Stash data for applySavedTemplate
+    container._savedTemplates = saved;
+    showStatus('', false);
+  } catch (error) {
+    console.error('Error loading saved templates:', error);
+    showStatus('❌ Error loading saved templates: ' + error.message, true);
+  }
+}
+
+function applySavedTemplate(index) {
+  const container = document.getElementById('emailTemplateContainer');
+  const saved = container._savedTemplates;
+  if (!saved || !saved[index]) return;
+
+  const tpl = saved[index];
+  container.innerHTML = '';
+  container._savedTemplates = null;
+
+  tpl.emails.forEach((emailSet, idx) => {
+    const emailDiv = document.createElement('div');
+    emailDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;';
+    emailDiv.innerHTML = `
+      <h4>Email ${emailSet.email_number}</h4>
+      ${emailSet.variations.map((variation, varIndex) => `
+        <div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; position: relative;">
+          <div style="position: absolute; top: 10px; right: 10px;">
+            <input type="radio" name="email_${idx}_selection" value="${variation.variation}" id="select_${idx}_${varIndex}" style="width: 20px; height: 20px; cursor: pointer;">
+            <label for="select_${idx}_${varIndex}" style="margin-left: 5px; cursor: pointer;">Select this variant</label>
+          </div>
+          <label><strong>Variation ${variation.variation}:</strong></label>
+          <div style="margin: 5px 0;">
+            <strong>Subject:</strong>
+            <input type="text" value="${escapeHtml(variation.subject)}" style="width: 100%; margin: 5px 0; padding: 8px;" data-email="${idx}" data-var="${varIndex}" data-field="subject">
+          </div>
+          <div style="margin: 5px 0;">
+            <strong>Body:</strong>
+            <textarea style="width: 100%; min-height: 150px; padding: 8px; font-family: monospace;" data-email="${idx}" data-var="${varIndex}" data-field="body">${escapeHtml(variation.body)}</textarea>
+          </div>
+          <div style="margin-top: 5px; font-size: 12px; color: #666;">💡 Use &lt;&lt;variable&gt;&gt; for merge fields</div>
+        </div>
+      `).join('')}
+    `;
+    container.appendChild(emailDiv);
+  });
+
+  const sendButton = document.createElement('button');
+  sendButton.type = 'button';
+  sendButton.className = 'success';
+  sendButton.style.cssText = 'background: #28a745; margin-top: 20px; padding: 12px 24px; width: 100%;';
+  sendButton.textContent = '✅ Schedule Selected Campaign';
+  sendButton.onclick = scheduleSelectedCampaign;
+  container.appendChild(sendButton);
+
+  const saveButton = document.createElement('button');
+  saveButton.type = 'button';
+  saveButton.className = 'success';
+  saveButton.style.cssText = 'background: #6f42c1; margin-top: 10px; padding: 12px 24px; width: 100%;';
+  saveButton.textContent = '💾 Re-save / Update Template';
+  saveButton.onclick = saveEmailTemplates;
+  container.appendChild(saveButton);
+
+  showStatus(`✅ Template "${escapeHtml(tpl.template_name)}" loaded. Edit as needed.`, false);
+}
+
+async function deleteSavedTemplate(templateName) {
+  if (!confirm(`Delete template "${templateName}"? This cannot be undone.`)) return;
+  try {
+    showStatus('🗑️ Deleting template...', false);
+    const response = await fetch(ENDPOINTS.saveTemplates, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: CUSTOMER_ID, action: 'delete', template_name: templateName })
+    });
+    const result = await response.json();
+    const data = Array.isArray(result) ? result[0] : result;
+    if (data.success !== false) {
+      showStatus(`✅ Template "${templateName}" deleted.`, false);
+      loadSavedTemplates(); // refresh list
+    } else {
+      throw new Error(data.message || 'Failed to delete template');
+    }
+  } catch (error) {
+    showStatus('❌ Error deleting template: ' + error.message, true);
+  }
+}
 
 </script> 
 </body>
