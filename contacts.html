@@ -882,8 +882,8 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
       <h4 style="margin: 0 0 15px 0; color: #0A3161;">📧 Available Email campaigns</h4>
       <div class="campaign-list" id="campaignList">
         <div class="campaign-item">
-          <input type="checkbox" id="campaign_ads" value="ads">
-          <label for="campaign_ads">📺 Ad Outreach - Share hyper personalized ads</label>
+          <input type="checkbox" id="campaign_ads" value="leadmagnet">
+<label for="campaign_ads">🧲 Lead Magnet - Send a lead magnet landing page</label>
         </div>
         <div class="campaign-item">
           <input type="checkbox" id="campaign_nurture" value="nurture">
@@ -1246,7 +1246,7 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
             <select id="campaign" name="campaign">
               <option value="">None</option>
               <option value="ads">Ad Outreach</option>
-              <option value="nurture">Lead Nurture</option>
+              <option value="leadmagnet">Lead Magnet</option>
               <option value="meeting">Meeting Request</option>
               <option value="followup">Follow-up</option>
             </select>
@@ -1424,7 +1424,27 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>     
-     
+
+<!-- Lead Magnet Picker Modal -->
+<div id="leadMagnetModal" class="modal">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h2>🧲 Select Lead Magnet</h2>
+      <span class="close" onclick="closeLeadMagnetModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p style="color: #666; margin-bottom: 15px;">Select a landing page to send as your lead magnet.</p>
+      <div id="leadMagnetList" style="min-height: 80px;">
+        <div style="text-align:center; padding: 30px; color: #999;">Loading your lead magnet pages...</div>
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" onclick="closeLeadMagnetModal()" class="secondary">Cancel</button>
+        <button type="button" onclick="confirmLeadMagnet()" class="success" style="background: #0A3161;">✅ Send to Selected Contacts</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
 <!-- SMS Modal -->
 <div id="smsModal" class="modal">
   <div class="modal-content" style="max-width: 600px;">
@@ -1655,6 +1675,8 @@ const ENDPOINTS = {
   enrichContacts: 'https://victoryvision.app.n8n.cloud/webhook/contacts/enrich',
   uploadCSV: 'https://victoryvision.app.n8n.cloud/webhook/contacts/upload-csv',
   enrollAds: 'https://victoryvision.app.n8n.cloud/webhook/emails/ad-campaign',
+enrollLeadMagnet: 'https://victoryvision.app.n8n.cloud/webhook/emails/leadmagnet',
+getLeadMagnets: 'https://victoryvision.app.n8n.cloud/webhook/pages/get-lead-magnets',
   enrollNurture: 'https://victoryvision.app.n8n.cloud/webhook/emails/nurture',
   enrollMeeting: 'https://victoryvision.app.n8n.cloud/webhook/emails/meeting',
   enrollFollowup: 'https://victoryvision.app.n8n.cloud/webhook/emails/followup',
@@ -3422,9 +3444,9 @@ for (const campaign of selectedCampaigns) {
       let useCustomCampaign = false;
       let campaignPrompt = '';
       switch(campaign) {
-        case 'ads':
-          endpoint = ENDPOINTS.enrollAds;
-          break;
+        case 'leadmagnet':
+  await enrollLeadMagnet();
+  continue;
         case 'nurture':
           endpoint = ENDPOINTS.enrollNurture;
           break;
@@ -4759,7 +4781,108 @@ async function deleteSavedTemplate(templateName) {
     showStatus('❌ Error deleting template: ' + error.message, true);
   }
 }
+// ── Lead Magnet ──────────────────────────────────────────────────────────────
+let selectedLeadMagnetUrl = null;
+let leadMagnetContactsPending = [];
 
+async function enrollLeadMagnet() {
+  leadMagnetContactsPending = Array.from(selectedContacts)
+    .map(id => allContacts.find(c => c.id === id || c.contact_id === id))
+    .filter(c => c && c.email);
+
+  if (leadMagnetContactsPending.length === 0) {
+    showStatus('❌ No selected contacts have email addresses', true);
+    return;
+  }
+
+  document.getElementById('leadMagnetModal').style.display = 'block';
+  document.getElementById('leadMagnetList').innerHTML =
+    '<div style="text-align:center; padding: 30px; color: #999;">Loading your lead magnet pages...</div>';
+  selectedLeadMagnetUrl = null;
+
+  try {
+    const response = await fetch(ENDPOINTS.getLeadMagnets, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: CUSTOMER_ID })
+    });
+    const result = await response.json();
+    const data = Array.isArray(result) ? result[0] : result;
+    const pages = data.pages || [];
+
+    if (pages.length === 0) {
+      document.getElementById('leadMagnetList').innerHTML =
+        '<div style="text-align:center; padding: 30px; color: #999;">No lead magnet pages found. Create one in the Pages section first.</div>';
+      return;
+    }
+
+    document.getElementById('leadMagnetList').innerHTML = pages.map((page, i) => `
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer;"
+           onclick="selectLeadMagnet('${escapeHtml(page.url)}', this)">
+        <input type="radio" name="leadMagnetSelect" value="${escapeHtml(page.url)}"
+               id="lm_${i}" style="width:18px; height:18px;">
+        <label for="lm_${i}" style="cursor:pointer; flex:1;">
+          <strong>${escapeHtml(page.title || page.name || 'Untitled Page')}</strong>
+          <div style="font-size: 12px; color: #666;">${escapeHtml(page.url)}</div>
+        </label>
+      </div>
+    `).join('');
+  } catch (error) {
+    document.getElementById('leadMagnetList').innerHTML =
+      '<div style="color: #dc3545; padding: 20px;">❌ Error loading pages: ' + error.message + '</div>';
+  }
+}
+
+function selectLeadMagnet(url, rowEl) {
+  selectedLeadMagnetUrl = url;
+  document.querySelectorAll('#leadMagnetList > div').forEach(d => d.style.background = '');
+  rowEl.style.background = '#f0f4ff';
+  rowEl.querySelector('input[type="radio"]').checked = true;
+}
+
+function closeLeadMagnetModal() {
+  document.getElementById('leadMagnetModal').style.display = 'none';
+  selectedLeadMagnetUrl = null;
+  leadMagnetContactsPending = [];
+}
+
+async function confirmLeadMagnet() {
+  if (!selectedLeadMagnetUrl) {
+    showStatus('❌ Please select a lead magnet page', true);
+    return;
+  }
+  try {
+    showStatus(`⏳ Enrolling ${leadMagnetContactsPending.length} contacts in lead magnet...`, false);
+    document.getElementById('leadMagnetModal').style.display = 'none';
+
+    const response = await fetch(ENDPOINTS.enrollLeadMagnet, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        lead_magnet_url: selectedLeadMagnetUrl,
+        contacts: leadMagnetContactsPending.map(c => ({
+          id: c.id || c.contact_id,
+          email: c.email,
+          name: c.name
+        }))
+      })
+    });
+
+    const result = await response.json();
+    const data = Array.isArray(result) ? result[0] : result;
+    if (data.success !== false) {
+      showStatus(`✅ ${leadMagnetContactsPending.length} contacts enrolled in lead magnet campaign!`, false);
+    } else {
+      throw new Error(data.message || 'Failed to enroll contacts');
+    }
+  } catch (error) {
+    showStatus('❌ Error: ' + error.message, true);
+  } finally {
+    selectedLeadMagnetUrl = null;
+    leadMagnetContactsPending = [];
+  }
+}
 </script> 
 </body>
 </html>
