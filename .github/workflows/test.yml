@@ -1,0 +1,47 @@
+name: Page Health Check
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+  TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+  N8N_API_KEY: ${{ secrets.N8N_API_KEY }}
+
+jobs:
+  check:
+    name: Run browser checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Check /contacts
+        run: node browser.js check "https://victoryvision.app/contacts"
+
+      - name: Check /ai
+        run: node browser.js check "https://victoryvision.app/ai"
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-screenshots
+          path: screenshots/
+          if-no-files-found: ignore
+          retention-days: 7

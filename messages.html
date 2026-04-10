@@ -1047,7 +1047,7 @@ async function loadEmails() {
 }
 
 function updateUnreadCount() {
-  const count = allEmails.filter(e => e.inbound && !e.opened).length;
+  const count = allEmails.filter(e => e.inbound && !e.read && !e.opened_at).length;
   const badge = document.getElementById('unreadCount');
   badge.style.display = count > 0 ? 'inline-flex' : 'none';
   badge.textContent = count;
@@ -1080,8 +1080,8 @@ function getFilteredEmails() {
     if (currentFolder === 'sent')   { if (e.inbound || e.draft) return false; }
     if (currentFolder === 'drafts') { if (!e.draft) return false; }
     // Status pill
-    if (currentStatusPill === 'unread')  { if (e.opened || !e.inbound) return false; }
-    if (currentStatusPill === 'opened')  { if (!e.opened) return false; }
+    if (currentStatusPill === 'unread')  { if ((e.read || e.opened_at) || !e.inbound) return false; }
+    if (currentStatusPill === 'opened')  { if (!e.read && !e.opened_at) return false; }
     if (currentStatusPill === 'replied') { if (!e.replied) return false; }
     // Search
     if (search) {
@@ -1111,7 +1111,7 @@ function renderList() {
   list.innerHTML = '';
   emails.forEach(email => {
     const isSelected = currentEmail?.id === email.id;
-    const isUnread = email.inbound && !email.opened;
+    const isUnread = email.inbound && !email.read && !email.opened_at;
     const sender = email.inbound ? (email.from||'Unknown') : (email.to||'Unknown');
 
     const row = document.createElement('div');
@@ -1141,7 +1141,7 @@ function renderList() {
     if (email.inbound && !email.draft)       badges.push('<span class="mini-badge received">Received</span>');
     if (!email.inbound && !email.draft)      badges.push('<span class="mini-badge sent">Sent</span>');
     if (email.replied)                       badges.push('<span class="mini-badge replied">Replied</span>');
-    if (email.opened && email.inbound)       badges.push('<span class="mini-badge opened">Opened</span>');
+    if ((email.read || email.opened_at) && email.inbound)  badges.push('<span class="mini-badge opened">Opened</span>');
     if (email.scheduled)                     badges.push('<span class="mini-badge scheduled">Scheduled</span>');
     meta.innerHTML = `<div class="email-row-date">${formatDate(email.created_at||email.sent_at)}</div>
                       <div class="email-row-flags">${badges.join('')}</div>`;
@@ -1176,7 +1176,7 @@ function selectEmail(id) {
   const statuses = [];
   if (currentEmail.draft)   statuses.push('Draft');
   if (currentEmail.inbound) statuses.push('Received');
-  if (currentEmail.opened)  statuses.push('Opened');
+  if (currentEmail.read || currentEmail.opened_at)  statuses.push('Opened');
   if (currentEmail.replied) statuses.push('Replied');
   if (!currentEmail.inbound && !currentEmail.draft) statuses.push('Sent');
   document.getElementById('evStatus').textContent = statuses.join(', ') || '—';
@@ -1256,7 +1256,7 @@ if (isHtml) {
   // Enable toolbar buttons
   setEmailBtnsEnabled(true);
   renderList(); // re-render to show selection
-  if (currentEmail.inbound && !currentEmail.opened) markAsRead();
+  if (currentEmail.inbound && !currentEmail.read) markAsRead();
 }
 
 function setEmailBtnsEnabled(on) {
@@ -1483,10 +1483,10 @@ async function markAsRead() {
       method:'POST', headers:{'Content-Type':'application/json','Authorization':`Bearer ${authToken}`},
       body: JSON.stringify({customer_id: CUSTOMER_ID, email_id: currentEmail.id})
     });
-    currentEmail.opened = true;
+    currentEmail.read = true;
     // Update local array too
     const idx = allEmails.findIndex(e => e.id === currentEmail.id);
-    if (idx !== -1) allEmails[idx].opened = true;
+    if (idx !== -1) allEmails[idx].read = true;
     const emailId = currentEmail.id;
     const localEmail = allEmails.find(e => e.id === emailId);
     if (localEmail && !localEmail.opened_at) {
