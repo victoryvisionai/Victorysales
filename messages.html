@@ -246,6 +246,7 @@
     }
     .ev-label { color: #888; font-weight: 600; }
     .ev-value { color: #333; }
+    .ev-row { display: contents; }
     .ev-body {
       font-size: 14px; line-height: 1.7; color: #333;
       white-space: pre-wrap;
@@ -654,6 +655,12 @@
         <span class="ev-label" id="evCcLabel" style="display:none">CC</span><span class="ev-value" id="evCc" style="display:none"></span>
         <span class="ev-label">Date</span><span class="ev-value" id="evDate"></span>
         <span class="ev-label">Status</span><span class="ev-value" id="evStatus"></span>
+        <span class="ev-row" id="evCampaignRow" style="display:none"><span class="ev-label">Campaign</span><span class="ev-value" id="evCampaign"></span></span>
+        <span class="ev-row" id="evOpensRow" style="display:none"><span class="ev-label">Opens</span><span class="ev-value" id="evOpens"></span></span>
+        <span class="ev-row" id="evOpenedAtRow" style="display:none"><span class="ev-label">Opened</span><span class="ev-value" id="evOpenedAt"></span></span>
+        <span class="ev-row" id="evClicksRow" style="display:none"><span class="ev-label">Clicks</span><span class="ev-value" id="evClicks"></span></span>
+        <span class="ev-row" id="evClickedAtRow" style="display:none"><span class="ev-label">Clicked</span><span class="ev-value" id="evClickedAt"></span></span>
+        <span class="ev-row" id="evRepliedAtRow" style="display:none"><span class="ev-label">Replied</span><span class="ev-value" id="evRepliedAt"></span></span>
       </div>
       <div class="ev-attachments" id="evAttachments" style="display:none">
         <h4>📎 Attachments</h4>
@@ -1174,6 +1181,51 @@ function selectEmail(id) {
   if (!currentEmail.inbound && !currentEmail.draft) statuses.push('Sent');
   document.getElementById('evStatus').textContent = statuses.join(', ') || '—';
 
+  // Campaign
+  const campaignRow = document.getElementById('evCampaignRow');
+  if (currentEmail.campaign) {
+    document.getElementById('evCampaign').textContent = currentEmail.campaign;
+    campaignRow.style.display = '';
+  } else { campaignRow.style.display = 'none'; }
+
+  // Opens
+  const opensRow = document.getElementById('evOpensRow');
+  if (currentEmail.opens > 0) {
+    document.getElementById('evOpens').textContent = currentEmail.opens;
+    opensRow.style.display = '';
+  } else { opensRow.style.display = 'none'; }
+
+  // Opened At
+  const openedAtRow = document.getElementById('evOpenedAtRow');
+  if (currentEmail.opened_at) {
+    document.getElementById('evOpenedAt').textContent =
+      new Date(currentEmail.opened_at).toLocaleString();
+    openedAtRow.style.display = '';
+  } else { openedAtRow.style.display = 'none'; }
+
+  // Clicks
+  const clicksRow = document.getElementById('evClicksRow');
+  if (currentEmail.clicks > 0) {
+    document.getElementById('evClicks').textContent = currentEmail.clicks;
+    clicksRow.style.display = '';
+  } else { clicksRow.style.display = 'none'; }
+
+  // Clicked At
+  const clickedAtRow = document.getElementById('evClickedAtRow');
+  if (currentEmail.clicked_at) {
+    document.getElementById('evClickedAt').textContent =
+      new Date(currentEmail.clicked_at).toLocaleString();
+    clickedAtRow.style.display = '';
+  } else { clickedAtRow.style.display = 'none'; }
+
+  // Replied At
+  const repliedAtRow = document.getElementById('evRepliedAtRow');
+  if (currentEmail.replied_at) {
+    document.getElementById('evRepliedAt').textContent =
+      new Date(currentEmail.replied_at).toLocaleString();
+    repliedAtRow.style.display = '';
+  } else { repliedAtRow.style.display = 'none'; }
+
   if (currentEmail.cc) {
     document.getElementById('evCcLabel').style.display = '';
     document.getElementById('evCc').style.display = '';
@@ -1435,6 +1487,22 @@ async function markAsRead() {
     // Update local array too
     const idx = allEmails.findIndex(e => e.id === currentEmail.id);
     if (idx !== -1) allEmails[idx].opened = true;
+    const emailId = currentEmail.id;
+    const localEmail = allEmails.find(e => e.id === emailId);
+    if (localEmail && !localEmail.opened_at) {
+      localEmail.opened_at = new Date().toISOString();
+      localEmail.opens = (localEmail.opens || 0) + 1;
+      // Re-populate the reading pane fields
+      const openedAtRow = document.getElementById('evOpenedAtRow');
+      if (openedAtRow) {
+        document.getElementById('evOpenedAt').textContent =
+          new Date(localEmail.opened_at).toLocaleString();
+        openedAtRow.style.display = '';
+        const opensRow = document.getElementById('evOpensRow');
+        document.getElementById('evOpens').textContent = localEmail.opens;
+        opensRow.style.display = '';
+      }
+    }
     updateUnreadCount();
     renderList();
   } catch(e) {}
