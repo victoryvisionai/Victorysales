@@ -1232,12 +1232,13 @@ function selectEmail(id) {
     document.getElementById('evCc').textContent = currentEmail.cc;
   }
 
-const rawBody = currentEmail.body_html || currentEmail.body || '(No content)';
-const isHtml = rawBody.trim().startsWith('<');
-if (isHtml) {
-  document.getElementById('evBody').innerHTML = rawBody;
+const evBody = document.getElementById('evBody');
+if (currentEmail.body_html) {
+  evBody.innerHTML = currentEmail.body_html;
+} else if (currentEmail.body) {
+  evBody.textContent = currentEmail.body;
 } else {
-  document.getElementById('evBody').textContent = rawBody;
+  evBody.textContent = '(No content)';
 }
   // Attachments
   const attSec = document.getElementById('evAttachments');
