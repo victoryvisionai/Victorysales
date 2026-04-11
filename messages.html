@@ -1235,10 +1235,13 @@ function selectEmail(id) {
 
 const evBody = document.getElementById('evBody');
 if (currentEmail.body_html) {
+  evBody.classList.remove('plain');
   evBody.innerHTML = currentEmail.body_html;
 } else if (currentEmail.body) {
+  evBody.classList.add('plain');
   evBody.textContent = currentEmail.body;
 } else {
+  evBody.classList.add('plain');
   evBody.textContent = '(No content)';
 }
   // Attachments
