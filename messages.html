@@ -1032,16 +1032,20 @@ async function loadEmails() {
     });
     if (!r.ok) { allEmails = []; renderList(); return; }
     const data = await r.json();
+    console.log('[loadEmails] raw response:', JSON.stringify(data).slice(0, 500));
     const arr = Array.isArray(data) ? data : (data.emails || []);
+    console.log('[loadEmails] arr length:', arr.length, 'first item:', arr[0] ? JSON.stringify(arr[0]).slice(0,200) : 'none');
     // Filter warm-up
     allEmails = arr.filter(e => {
       const s = (e.subject||'').toLowerCase();
       const tags = (e.tags||[]).map(t=>t.toLowerCase());
       return !s.includes('warm-up') && !s.includes('warmup') && !tags.includes('warm-up') && !tags.includes('warmup') && !tags.includes('test');
     });
+    console.log('[loadEmails] allEmails after filter:', allEmails.length);
     updateUnreadCount();
     renderList();
   } catch(e) {
+    console.error('[loadEmails] error:', e);
     allEmails = [];
     renderList();
   }
