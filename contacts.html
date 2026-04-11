@@ -4719,7 +4719,14 @@ function applySavedTemplate(index) {
   container.innerHTML = '';
   container._savedTemplates = null;
 
-  tpl.emails.forEach((emailSet, idx) => {
+  // Normalize flat saved format {email_number, variation, subject, body}
+  // into the grouped format {email_number, variations: [{variation, subject, body}]}
+  const emailSets = (tpl.emails || []).map(e => {
+    if (e.variations) return e; // already grouped
+    return { email_number: e.email_number, variations: [{ variation: e.variation || 'A', subject: e.subject, body: e.body }] };
+  });
+
+  emailSets.forEach((emailSet, idx) => {
     const emailDiv = document.createElement('div');
     emailDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;';
     emailDiv.innerHTML = `
