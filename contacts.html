@@ -4615,18 +4615,21 @@ async function saveEmailTemplates() {
     const templateName = prompt('Enter a name for this template set:');
     if (!templateName) return;
 
-    // Collect all variants (not just selected) so user can reuse any variant later
+    // Collect only the selected variant per email
     const emails = [];
     emailDivs.forEach((div, emailIndex) => {
-      const variations = [];
-      for (let varIndex = 0; varIndex < 3; varIndex++) {
-        const subjectEl = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="subject"]`);
-        const bodyEl = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="body"]`);
-        if (subjectEl && bodyEl) {
-          variations.push({ variation: String.fromCharCode(65 + varIndex), subject: subjectEl.value, body: bodyEl.value });
-        }
+      const selectedRadio = div.querySelector(`input[name="email_${emailIndex}_selection"]:checked`);
+      if (!selectedRadio) {
+        showStatus(`❌ Please select a variant for Email ${emailIndex + 1}.`, true);
+        throw new Error('missing_selection');
       }
-      if (variations.length > 0) emails.push({ email_number: emailIndex + 1, variations });
+      const varLetter = selectedRadio.value; // 'A', 'B', or 'C'
+      const varIndex = varLetter.charCodeAt(0) - 65; // A→0, B→1, C→2
+      const subjectEl = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="subject"]`);
+      const bodyEl    = div.querySelector(`[data-email="${emailIndex}"][data-var="${varIndex}"][data-field="body"]`);
+      if (subjectEl && bodyEl) {
+        emails.push({ email_number: emailIndex + 1, variation: varLetter, subject: subjectEl.value, body: bodyEl.value });
+      }
     });
 
     if (emails.length === 0) {
