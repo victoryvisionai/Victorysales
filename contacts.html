@@ -4657,8 +4657,10 @@ async function saveEmailTemplates() {
       throw new Error(data.message || 'Failed to save template');
     }
   } catch (error) {
-    console.error('Error saving templates:', error);
-    showStatus('❌ Error saving templates: ' + error.message, true);
+    if (error.message !== 'missing_selection') {
+      console.error('Error saving templates:', error);
+      showStatus('❌ Error saving templates: ' + error.message, true);
+    }
   }
 }
 
