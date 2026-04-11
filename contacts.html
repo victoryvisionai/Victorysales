@@ -4731,24 +4731,29 @@ function applySavedTemplate(index) {
     emailDiv.style.cssText = 'margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;';
     emailDiv.innerHTML = `
       <h4>Email ${emailSet.email_number}</h4>
-      ${emailSet.variations.map((variation, varIndex) => `
+      ${emailSet.variations.map((variation, varIndex) => {
+        // data-var must match scheduleSelectedCampaign's letter→number mapping (A=0,B=1,C=2)
+        const dataVar = variation.variation === 'A' ? 0 : variation.variation === 'B' ? 1 : 2;
+        // Auto-check when only one variation (saved template)
+        const autoChecked = emailSet.variations.length === 1 ? 'checked' : '';
+        return `
         <div style="margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 4px; position: relative;">
           <div style="position: absolute; top: 10px; right: 10px;">
-            <input type="radio" name="email_${idx}_selection" value="${variation.variation}" id="select_${idx}_${varIndex}" style="width: 20px; height: 20px; cursor: pointer;">
+            <input type="radio" name="email_${idx}_selection" value="${variation.variation}" id="select_${idx}_${varIndex}" ${autoChecked} style="width: 20px; height: 20px; cursor: pointer;">
             <label for="select_${idx}_${varIndex}" style="margin-left: 5px; cursor: pointer;">Select this variant</label>
           </div>
           <label><strong>Variation ${variation.variation}:</strong></label>
           <div style="margin: 5px 0;">
             <strong>Subject:</strong>
-            <input type="text" value="${escapeHtml(variation.subject)}" style="width: 100%; margin: 5px 0; padding: 8px;" data-email="${idx}" data-var="${varIndex}" data-field="subject">
+            <input type="text" value="${escapeHtml(variation.subject)}" style="width: 100%; margin: 5px 0; padding: 8px;" data-email="${idx}" data-var="${dataVar}" data-field="subject">
           </div>
           <div style="margin: 5px 0;">
             <strong>Body:</strong>
-            <textarea style="width: 100%; min-height: 150px; padding: 8px; font-family: monospace;" data-email="${idx}" data-var="${varIndex}" data-field="body">${escapeHtml(variation.body)}</textarea>
+            <textarea style="width: 100%; min-height: 150px; padding: 8px; font-family: monospace;" data-email="${idx}" data-var="${dataVar}" data-field="body">${escapeHtml(variation.body)}</textarea>
           </div>
           <div style="margin-top: 5px; font-size: 12px; color: #666;">💡 Use &lt;&lt;variable&gt;&gt; for merge fields</div>
-        </div>
-      `).join('')}
+        </div>`;
+      }).join('')}
     `;
     container.appendChild(emailDiv);
   });
