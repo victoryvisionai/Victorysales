@@ -2239,10 +2239,7 @@ function escapeHtml(text) {
 }
 // Update template count when email count changes
 function updateTemplateCount() {
-  if (document.getElementById('useTemplates').checked) {
-    document.getElementById('emailTemplateContainer').innerHTML = '';
-    showStatus('Click "Load Templates" to generate new templates', false);
-  }
+  // Changing email count no longer clears rendered templates
 }  
 async function scheduleSelectedCampaign() {
   try {
