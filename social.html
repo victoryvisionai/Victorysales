@@ -1978,12 +1978,14 @@
       }
 
       const response = await fetch(url, requestOptions);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      return await response.json();
+      const text = await response.text();
+      if (!text || !text.trim()) return {};
+      return JSON.parse(text);
     } catch (error) {
       console.error('API call failed:', error);
       throw error;
