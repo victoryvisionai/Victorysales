@@ -2855,14 +2855,45 @@ async function startSocialPlan() {
       campaign_topics: campaignTopics
     };
 
-    const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
-    
-   if (result && (result.campaigns || result.posts) && (result.campaigns || result.posts).length > 0) {
+    // AI plan generation takes 30-90s — use a dedicated long timeout fetch
+    const controller = new AbortController();
+    const planTimeout = setTimeout(() => controller.abort(), 120000); // 2 min max
+    let result;
+    try {
+      const resp = await fetch(ENDPOINTS.socialPlan, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Customer-ID': CUSTOMER_ID,
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        },
+        body: JSON.stringify(planConfig),
+        signal: controller.signal
+      });
+      clearTimeout(planTimeout);
+      const text = await resp.text();
+      result = (text && text.trim()) ? JSON.parse(text) : {};
+    } catch (fetchErr) {
+      clearTimeout(planTimeout);
+      if (fetchErr.name === 'AbortError') {
+        showStatus('⏱️ Plan generation timed out (>2 min). The AI may still be working — try again in a moment.', true);
+      } else {
+        showStatus('❌ Network error generating plan. Check your connection and try again.', true);
+      }
+      resetPlanModal();
+      button.disabled = false;
+      button.innerHTML = '📅 Create Plan';
+      return;
+    }
+
+    const posts = result.campaigns || result.posts || [];
+    if (posts.length > 0) {
       displayPlanForApproval(result);
       showStatus('Plan generated! Review and approve below.', false);
     } else {
-      console.error('Invalid response format:', result);
-      showStatus('Error: Invalid response format', true);
+      console.error('Plan response:', result);
+      const msg = result.error || result.message || 'The AI returned no posts — try adding more key ideas or check that you have campaign content.';
+      showStatus('⚠️ ' + msg, true);
       resetPlanModal();
       button.disabled = false;
       button.innerHTML = '📅 Create Plan';
