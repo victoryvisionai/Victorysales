@@ -3336,18 +3336,26 @@ async function deleteDraft() {
       showStatus('Please enter some content first', true);
       return;
     }
-    
+
     try {
       showStatus('Publishing post...', false);
+      const mediaAttachments = [...attachedFiles];
       const result = await apiCall(ENDPOINTS.createPost, {
         content: postContent.value,
         platforms: selectedPlatforms,
         schedule_type: 'immediate',
+        post_as: 'company',
         attachments: attachedFiles
       });
-      
+
       if (result.success !== false) {
         showStatus(`Post published to ${selectedPlatforms.join(', ')}!`);
+        // Mark campaign library files as posted to LinkedIn
+        if (selectedPlatforms.includes('linkedin')) {
+          mediaAttachments.filter(f => f.type === 'media' && f.id).forEach(f => {
+            apiCall(ENDPOINTS.updateMedia, { file_id: f.id, updates: { posted_linkedin: true } }).catch(() => {});
+          });
+        }
         postContent.value = '';
         attachedFiles = [];
         updateAttachmentDisplay();
