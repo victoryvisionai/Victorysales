@@ -2395,28 +2395,38 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
       }
     }
   }
-  // Request Review - creator saves post as pending_review
-  function requestReview() {
+  // Request Review - creator submits post as pending_review for reviewer/admin
+  async function requestReview() {
     if (!postContent.value.trim()) {
       showStatus('Please enter content first', true);
       return;
     }
-    
-    const reviewRequest = {
-      content: postContent.value,
-      platforms: selectedPlatforms,
-      status: 'pending_review',
-      requested_by: CUSTOMER_ID,
-      company_id: COMPANY_ID,
-      created_at: new Date().toISOString()
-    };
-    
-    console.log('Requesting review:', reviewRequest);
-    showStatus('Post submitted for review. Waiting for reviewer approval.', false);
-    
-    // TODO: Call n8n webhook to save as pending_review
-    // For now just clear
-    postContent.value = '';
+
+    try {
+      showStatus('Submitting for review...', false);
+      const result = await apiCall(ENDPOINTS.createPost, {
+        content: postContent.value,
+        platforms: selectedPlatforms,
+        post_as: 'company',
+        attachments: attachedFiles,
+        status: 'pending_review',
+        requested_by: CUSTOMER_ID,
+        company_id: COMPANY_ID
+      });
+
+      if (result.success !== false) {
+        showStatus('✅ Post submitted for review. A reviewer will approve or reject it.', false);
+        postContent.value = '';
+        attachedFiles = [];
+        updateAttachmentDisplay();
+        await loadSocialPosts();
+      } else {
+        showStatus('Failed to submit for review. Try again.', true);
+      }
+    } catch (error) {
+      console.error('Error requesting review:', error);
+      showStatus('Error: ' + error.message, true);
+    }
   }
 
   function renderLinkList(pages) {
