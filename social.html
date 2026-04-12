@@ -1882,6 +1882,7 @@
   let filteredSocialPosts = [];
   let expandedRows = new Set();
   let campaignFiles = [];
+  let allCampaigns = [];
   let attachedFiles = [];
   let selectedFiles = [];
   let currentDate = new Date();
@@ -1990,29 +1991,25 @@
   // Separate posts based on campaign field and post_at
   function separatePosts() {
     const now = new Date();
-    
+
     publishedPosts = [];
     draftPosts = [];
     scheduledPosts = [];
-    
+
     allSocialPosts.forEach(post => {
       const isDraft = post.campaign === 'DRAFT';
       const postAt = post.post_at ? new Date(post.post_at) : null;
-      
-      if (isDraft) {
-        if (postAt && postAt > now) {
-          // Draft scheduled for future
-          scheduledPosts.push(post);
-        } else {
-          // Unscheduled draft
-          draftPosts.push(post);
-        }
+
+      if (postAt && postAt > now) {
+        // Any future-dated post is scheduled — never count toward engagement stats
+        scheduledPosts.push(post);
+      } else if (isDraft) {
+        draftPosts.push(post);
       } else {
-        // Published or past posts
         publishedPosts.push(post);
       }
     });
-    
+
     console.log(`Separated posts: ${publishedPosts.length} published, ${draftPosts.length} drafts, ${scheduledPosts.length} scheduled`);
   }
 
