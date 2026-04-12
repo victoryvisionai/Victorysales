@@ -2940,20 +2940,34 @@ async function startSocialPlan() {
 function openScheduledPostModal(postId) {
   const post = allSocialPosts.find(p => p.id === postId);
   if (!post) return;
-  
+
   currentEditingDraft = post;
-  
+
   document.getElementById('draftTitle').value = post.title || '';
   document.getElementById('draftContent').value = post.message || '';
   document.getElementById('draftPlatform').value = post.platform || 'linkedin';
   document.getElementById('draftHashtags').value = post.hashtag || '';
-  
+
   if (post.post_at) {
     const scheduledDate = new Date(post.post_at);
     document.getElementById('draftScheduleDate').value = scheduledDate.toISOString().split('T')[0];
     document.getElementById('draftScheduleTime').value = scheduledDate.toTimeString().substr(0, 5);
   }
-  
+
+  // Show approve/reject actions for pending_review posts if user can approve
+  const isPendingReview = post.status === 'pending_review';
+  const canApprove = CURRENT_TEAM_ROLE === 'reviewer' || CURRENT_TEAM_ROLE === 'admin' || !CURRENT_TEAM_ROLE;
+  const reviewActions = document.getElementById('reviewActions');
+  if (reviewActions) {
+    reviewActions.style.display = (isPendingReview && canApprove) ? 'flex' : 'none';
+  }
+
+  // Update modal title to flag pending reviews
+  const modalTitle = document.querySelector('#draftEditModal .modal-title');
+  if (modalTitle) {
+    modalTitle.textContent = isPendingReview ? '⏳ Pending Review' : '📝 Edit Scheduled Post';
+  }
+
   document.getElementById('draftEditModal').style.display = 'block';
 }
 
