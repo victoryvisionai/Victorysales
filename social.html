@@ -2827,6 +2827,34 @@ async function startSocialPlan() {
   try {
     showStatus('Creating social media plan...', false);
     
+    // Top performing published posts (not future-scheduled) — sorted by total engagement
+    const topPosts = publishedPosts
+      .sort((a, b) =>
+        ((parseInt(b.engagements)||0)+(parseInt(b.clicks)||0)+(parseInt(b.shares)||0)) -
+        ((parseInt(a.engagements)||0)+(parseInt(a.clicks)||0)+(parseInt(a.shares)||0))
+      )
+      .slice(0, 5)
+      .map(p => ({
+        id: p.id,
+        title: p.title,
+        content: (p.message || p.content || '').slice(0, 200),
+        platform: p.platform,
+        engagements: parseInt(p.engagements) || 0,
+        clicks: parseInt(p.clicks) || 0,
+        shares: parseInt(p.shares) || 0
+      }));
+
+    // Media files not yet posted to LinkedIn
+    const unusedMedia = campaignFiles
+      .filter(f => f.posted_linkedin === null || f.posted_linkedin === undefined || f.posted_linkedin === false)
+      .slice(0, 10)
+      .map(f => ({ id: f.id, name: f.name, url: f.URL, file_type: f.file_type, campaign_name: f.campaign_name }));
+
+    // Campaign research context
+    const campaignTopics = allCampaigns
+      .slice(0, 8)
+      .map(c => ({ name: c.name || c.campaign_name, topic: c.campaign_topic, description: (c.description || c.viral || '').slice(0, 150), keywords: c.keywords }));
+
     const planConfig = {
       days: selectedPlanPeriod,
       include_weekends: document.getElementById('includeWeekend').checked,
@@ -2834,7 +2862,10 @@ async function startSocialPlan() {
       use_existing_media: document.getElementById('useExistingMedia').checked,
       use_uploaded_videos: document.getElementById('useUploadedVideos').checked,
       ai_create_videos: document.getElementById('aiCreateVideos').checked,
-      customer_id: CUSTOMER_ID
+      customer_id: CUSTOMER_ID,
+      top_posts: topPosts,
+      unused_media: unusedMedia,
+      campaign_topics: campaignTopics
     };
 
     const result = await apiCall(ENDPOINTS.socialPlan, planConfig);
