@@ -2108,23 +2108,13 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     }
   }
 
-  // Load campaigns for social plan context
-  async function loadCampaigns() {
-    try {
-      const url = `${ENDPOINTS.getCampaigns}?customer_id=${encodeURIComponent(CUSTOMER_ID)}`;
-      const response = await fetch(url, {
-        headers: { 'X-Customer-ID': CUSTOMER_ID, 'Authorization': authToken ? `Bearer ${authToken}` : '' }
-      });
-      if (!response.ok) { allCampaigns = []; return; }
-      const text = await response.text();
-      if (!text || !text.trim()) { allCampaigns = []; return; }
-      const data = JSON.parse(text);
-      allCampaigns = Array.isArray(data) ? data : (data.campaigns || []);
-      console.log(`Loaded ${allCampaigns.length} campaigns`);
-    } catch (error) {
-      console.error('Error loading campaigns:', error);
-      allCampaigns = [];
-    }
+  // Derive unique campaign names from already-loaded media files
+  function buildCampaignTopics() {
+    const seen = new Set();
+    allCampaigns = campaignFiles
+      .filter(f => f.campaign_name && !seen.has(f.campaign_name) && seen.add(f.campaign_name))
+      .map(f => ({ name: f.campaign_name, campaign_name: f.campaign_name, file_type: f.file_type }));
+    console.log(`Derived ${allCampaigns.length} campaign topics from media files`);
   }
 
   // Update credits display
@@ -3855,9 +3845,9 @@ async function deleteDraft() {
         await Promise.all([
           loadUserData(),
           loadCampaignFiles(),
-          loadCampaigns(),
           loadSocialPosts()
         ]);
+        buildCampaignTopics();
         setupEventListeners();
         applyFilters();
         renderCalendar();
