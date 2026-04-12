@@ -2419,22 +2419,6 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
     postContent.value = '';
   }
 
-  // Approve Post - reviewer/admin changes status to approved/published
-  function approvePost() {
-    // TODO: Get selected post that is pending_review
-    // Update its status to 'published'
-    alert('Post approved and published');
-  }
-
-  // Reject Post - reviewer/admin changes status to rejected with comment
-  function rejectPost() {
-    const comment = prompt('Why are you rejecting this post?');
-    if (comment) {
-      // TODO: Get selected post and update status to 'rejected'
-      // Store comment in review_comment field
-      alert('Post rejected. Comment: ' + comment);
-    }
-  }
   function renderLinkList(pages) {
     const linkList = document.getElementById('linkList');
     
