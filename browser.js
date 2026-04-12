@@ -24,7 +24,7 @@ const BASE_URL      = 'https://victoryvision.app';
 const TEST_EMAIL    = process.env.TEST_EMAIL;
 const TEST_PASSWORD = process.env.TEST_PASSWORD;
 
-const SCREENSHOTS_DIR = resolve(__dirname, 'screenshots');
+const SCREENSHOTS_DIR = 'C:/Users/andre/OneDrive/Pictures/Screenshots/VV';
 
 // Noise to ignore
 const IGNORED_PATTERNS = [
