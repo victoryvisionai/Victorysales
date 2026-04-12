@@ -2078,42 +2078,22 @@ aiPostEnabled = userData.aipost === true || userData.aipost === 'true' || userDa
 
   // Update UI based on team role
   function updateTeamRoleUI() {
-    // Creator: can create, learn, plan - but needs review from reviewer/admin
-    if (CURRENT_TEAM_ROLE === 'creator') {
-      document.getElementById('learnBtn').style.display = 'block';
-      document.getElementById('planBtn').style.display = 'block';
-      document.getElementById('requestReviewBtn').style.display = 'block';
-      document.getElementById('approveBtn').style.display = 'none';
-      document.getElementById('rejectBtn').style.display = 'none';
-      return;
-    }
-    
-    // Reviewer: can review and approve/reject
-    if (CURRENT_TEAM_ROLE === 'reviewer') {
-      document.getElementById('learnBtn').style.display = 'block';
-      document.getElementById('planBtn').style.display = 'block';
-      document.getElementById('requestReviewBtn').style.display = 'none';
-      document.getElementById('approveBtn').style.display = 'block';
-      document.getElementById('rejectBtn').style.display = 'block';
-      return;
-    }
-    
-    // Admin: can do everything
-    if (CURRENT_TEAM_ROLE === 'admin') {
-      document.getElementById('learnBtn').style.display = 'block';
-      document.getElementById('planBtn').style.display = 'block';
-      document.getElementById('requestReviewBtn').style.display = 'none';
-      document.getElementById('approveBtn').style.display = 'block';
-      document.getElementById('rejectBtn').style.display = 'block';
-      return;
-    }
-    
-    // No role: hide everything
-    document.getElementById('learnBtn').style.display = 'none';
-    document.getElementById('planBtn').style.display = 'none';
-    document.getElementById('requestReviewBtn').style.display = 'none';
-    document.getElementById('approveBtn').style.display = 'none';
-    document.getElementById('rejectBtn').style.display = 'none';
+    const learnBtn = document.getElementById('learnBtn');
+    const planBtn = document.getElementById('planBtn');
+    const requestReviewBtn = document.getElementById('requestReviewBtn');
+    const approveBtn = document.getElementById('approveBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+
+    const role = CURRENT_TEAM_ROLE;
+    // Creator must request review; everyone else (admin, reviewer, or no role) gets full access
+    const isCreatorOnly = role === 'creator';
+    const canApprove = role === 'reviewer' || role === 'admin' || !role;
+
+    if (learnBtn) learnBtn.style.display = 'block';
+    if (planBtn) planBtn.style.display = 'block';
+    if (requestReviewBtn) requestReviewBtn.style.display = isCreatorOnly ? 'block' : 'none';
+    if (approveBtn) approveBtn.style.display = canApprove ? 'block' : 'none';
+    if (rejectBtn) rejectBtn.style.display = canApprove ? 'block' : 'none';
   }
   
   // Load campaign files for media browser - Fixed to POST
