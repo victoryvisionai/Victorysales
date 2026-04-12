@@ -1628,6 +1628,10 @@
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeDraftEditModal()">Cancel</button>
       <button class="danger" onclick="deleteDraft()">🗑️ Delete</button>
+      <div id="reviewActions" style="display:none; gap:8px; display:none;">
+        <button id="modalRejectBtn" class="danger" onclick="rejectPost()" style="background:#dc3545;">❌ Reject</button>
+        <button id="modalApproveBtn" style="background:#28a745;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:600;" onclick="approvePost()">✅ Approve & Publish</button>
+      </div>
       <button class="btn-primary" onclick="updateDraft()">💾 Update Draft</button>
     </div>
   </div>
