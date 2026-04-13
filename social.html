@@ -3897,10 +3897,10 @@ async function deleteDraft() {
   //      renderDraftsList(); //
         
         if (!hasCompletedTour()) {
-          setTimeout(() => {
-            startTour();
-          }, 1000);
+          setTimeout(() => { startTour(); }, 1000);
         }
+        // Auto-trigger tour from email link (?tour=)
+        if (new URLSearchParams(window.location.search).get('tour')) setTimeout(startTour, 1200);
       } else {
         redirectToLogin();
       }
