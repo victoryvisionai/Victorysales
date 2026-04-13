@@ -308,7 +308,13 @@ for (const target of TARGETS) {
 
   let newWorkflowId = null;
 
-  if (matches.length === 0) {
+  // ── Skip if already migrated with the correct name ────────────────────────
+  const alreadyExists = nameMap.get(target.name);
+  if (alreadyExists) {
+    newWorkflowId = alreadyExists.id;
+    console.log(`   ✔   Already exists (id=${newWorkflowId}) — skipping create`);
+    stats.alreadyCorrect = (stats.alreadyCorrect ?? 0) + 1;
+  } else if (matches.length === 0) {
     // No existing webhook for this path → create stub
     console.log(`   ✨  No match — creating stub`);
     if (!DRY) {
@@ -336,12 +342,22 @@ for (const target of TARGETS) {
     console.log(`       Nodes: ${sub.nodes.length} / ${wf.nodes?.length ?? 0} total  (preserving all AI prompts + code)`);
 
     if (!DRY) {
+      // Deactivate the source workflow first so its webhook path is free
+      if (wf.active) {
+        try {
+          await api('POST', `/workflows/${wf.id}/deactivate`);
+          console.log(`   🔌  Deactivated source "${wf.name}"`);
+        } catch (e) {
+          console.log(`   ⚠️  Could not deactivate source: ${e.message.slice(0, 100)}`);
+        }
+      }
+
       try {
         const newWf = {
           name: target.name,
           nodes: sub.nodes,
           connections: sub.connections,
-          settings: wf.settings ?? { executionOrder: 'v1' },
+          settings: sanitizeSettings(wf.settings),
           staticData: null,
         };
         const created = await api('POST', '/workflows', newWf);
@@ -363,16 +379,45 @@ for (const target of TARGETS) {
 
   // Activate new workflow
   if (newWorkflowId && !DRY) {
-    try {
-      await api('POST', `/workflows/${newWorkflowId}/activate`);
+    const wfInfo = existing.find(w => w.id === newWorkflowId);
+    if (wfInfo?.active) {
       stats.activated++;
-      console.log(`   ⚡  Activated`);
-    } catch (e) {
-      if (e.message.includes('already active')) {
+      console.log(`   ⚡  Already active`);
+    } else {
+      try {
+        await api('POST', `/workflows/${newWorkflowId}/activate`);
         stats.activated++;
-        console.log(`   ⚡  Already active`);
-      } else {
-        console.log(`   ⚠️  Activate failed: ${e.message.slice(0, 120)}`);
+        console.log(`   ⚡  Activated`);
+      } catch (e) {
+        if (e.message.includes('already active')) {
+          stats.activated++;
+          console.log(`   ⚡  Already active`);
+        } else if (e.message.includes('conflict')) {
+          // Find and deactivate the conflicting workflow
+          console.log(`   ⚠️  Webhook conflict — searching for blocker...`);
+          for (const candidate of existing) {
+            if (candidate.id === newWorkflowId || !candidate.active) continue;
+            const paths = findWebhookNodes(candidate).map(h => h.path);
+            if (paths.includes(target.path)) {
+              try {
+                await api('POST', `/workflows/${candidate.id}/deactivate`);
+                console.log(`   🔌  Deactivated blocker "${candidate.name}"`);
+                oldIdsToDelete.add(candidate.id);
+                // Retry activation
+                await api('POST', `/workflows/${newWorkflowId}/activate`);
+                stats.activated++;
+                console.log(`   ⚡  Activated (after clearing conflict)`);
+              } catch (e2) {
+                console.log(`   ❌  Still could not activate: ${e2.message.slice(0, 120)}`);
+                stats.errors++;
+              }
+              break;
+            }
+          }
+        } else {
+          console.log(`   ⚠️  Activate failed: ${e.message.slice(0, 120)}`);
+          stats.errors++;
+        }
       }
     }
   }
