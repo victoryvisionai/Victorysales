@@ -56,7 +56,6 @@ async function main() {
 
   const workflow = {
     name: 'Plans - Generate',
-    active: true,
     nodes: [
 
       // ─── TRIGGER ───────────────────────────────────────────────────────────
