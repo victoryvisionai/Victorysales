@@ -2986,10 +2986,10 @@ document.getElementById('videoForm').addEventListener('submit', async (e) => {
         
         // Auto-start tour for new users
         if (!hasCompletedTour()) {
-          setTimeout(() => {
-            startTour();
-          }, 1000);
+          setTimeout(() => { startTour(); }, 1000);
         }
+        // Auto-trigger tour from email link (?tour=)
+        if (new URLSearchParams(window.location.search).get('tour')) setTimeout(startTour, 1200);
       } else {
         redirectToLogin();
       }
