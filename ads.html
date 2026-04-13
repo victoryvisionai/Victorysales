@@ -1821,6 +1821,8 @@ async function init() {
   if (!hasCompletedTour()) {
     setTimeout(startTour, 800);
   }
+  // Auto-trigger tour from email link (?tour=)
+  if (new URLSearchParams(window.location.search).get('tour')) setTimeout(startTour, 1200);
 }
 
 // Session keepalive
