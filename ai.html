@@ -2947,5 +2947,55 @@ async function sendWalkthroughEmail() {
     document.addEventListener('DOMContentLoaded', init);
   </script>
 
+  <!-- ── Email tour trigger: ?tour=aisdr|plans|execute|victories|feedback ── -->
+  <script>
+  (function() {
+    const tour = new URLSearchParams(window.location.search).get('tour');
+    if (!tour) return;
+
+    const TOURS = {
+      aisdr:     { sel: '#sdrToggle, .sdr-section, [id*="sdr"]',           msg: '👆 Toggle <strong>Auto SDR</strong> to let AI automatically reach out to your leads while you sleep.' },
+      plans:     { sel: '.plans-section, #plansContainer',                   msg: '📋 These are your <strong>AI-generated action plans</strong>. Click <em>Execute Plan</em> to trigger all actions instantly.' },
+      execute:   { sel: '.execute-btn, .plans-section',                      msg: '▶️ Click <strong>Execute Plan</strong> to trigger every action in your plan — emails, SMS, calls — automatically.' },
+      victories: { sel: '#victoriesAdviceSection, #statVictories',           msg: '🏆 <strong>Victories</strong> tracks your closed deals and surfaces the patterns that got them. Add wins to unlock deeper insights.' },
+      feedback:  { sel: '#getFeedbackBtn, #feedbackResults',                 msg: '🤖 Click <strong>Get AI Feedback</strong> to get a full analysis of your last 2 weeks of calls, emails, SMS, and meetings.' },
+    };
+
+    const config = TOURS[tour];
+    if (!config) return;
+
+    function showTour() {
+      const el = document.querySelector(config.sel);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.style.cssText += ';outline:3px solid #bb133e;outline-offset:4px;border-radius:8px;transition:outline 0.3s;';
+      }
+
+      const tip = document.createElement('div');
+      tip.id = 'vv-tour-tip';
+      tip.style.cssText = [
+        'position:fixed','top:72px','left:50%','transform:translateX(-50%)',
+        'background:#0a3161','color:white','padding:18px 28px','border-radius:14px',
+        'z-index:99999','font-size:14px','line-height:1.6','font-weight:500',
+        'box-shadow:0 8px 32px rgba(0,0,0,0.35)','text-align:center',
+        'max-width:440px','width:90%'
+      ].join(';');
+      tip.innerHTML = config.msg + '<br><br>'
+        + '<button onclick="document.getElementById(\'vv-tour-tip\').remove();'
+        + 'document.querySelectorAll(\'[style*=\\\"outline:3px\\\"]\').forEach(e=>{e.style.outline=\'\';});"'
+        + ' style="background:#bb133e;color:white;border:none;padding:8px 20px;border-radius:8px;'
+        + 'cursor:pointer;font-weight:700;font-size:13px;">Got it ✓</button>';
+      document.body.appendChild(tip);
+    }
+
+    // Wait for page data to load before scrolling
+    if (document.readyState === 'complete') {
+      setTimeout(showTour, 1500);
+    } else {
+      window.addEventListener('load', () => setTimeout(showTour, 1500));
+    }
+  })();
+  </script>
+
 </body>
 </html>
