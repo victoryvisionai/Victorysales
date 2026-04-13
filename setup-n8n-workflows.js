@@ -285,7 +285,11 @@ console.log(`\n    Loaded ${existing.length} workflow(s)\n`);
 //    (multiple workflows could share a path — unlikely but handled)
 const pathIndex = new Map(); // path → [{ wf, webhookNodeName }]
 
+// Also build a name → workflow map to detect already-migrated workflows
+const nameMap = new Map(); // workflow name → wf
+
 for (const wf of existing) {
+  nameMap.set(wf.name, wf);
   for (const hook of findWebhookNodes(wf)) {
     if (!pathIndex.has(hook.path)) pathIndex.set(hook.path, []);
     pathIndex.get(hook.path).push({ wf, webhookNodeName: hook.name });
