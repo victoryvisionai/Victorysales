@@ -2,18 +2,22 @@
 /**
  * setup-n8n-workflows.js
  *
- * Migrates all n8n workflows to a clean naming convention: "Function - Verb"
- * e.g. "Social - Get", "Social - Plan", "Contacts - Get"
+ * Migrates all n8n workflows to individual, cleanly-named workflows.
+ * Naming convention: "Function - Verb"  e.g. "Social - Get", "Social - Plan"
  *
- * For each target webhook path:
- *   - If 1 existing workflow found  → rename it to new convention, preserve all nodes
- *   - If multiple found             → keep richest (most nodes), rename, delete others
- *   - If none found                 → create stub (Webhook → Respond to Webhook)
- *   - Then activate all
+ * Strategy per target webhook path:
+ *   1. Find existing workflow(s) that contain a matching webhook node
+ *   2. Extract the subgraph reachable from that webhook node
+ *      (preserves all downstream nodes: AI prompts, code, Supabase, etc.)
+ *   3. Create a new individual workflow with just that subgraph
+ *   4. After ALL new workflows are created, delete the old combined workflows
+ *   5. Activate every new workflow
+ *
+ * For paths with NO existing workflow → create a stub (Webhook + Respond)
  *
  * Usage:
- *   node setup-n8n-workflows.js           → full migration (dry-run off)
- *   node setup-n8n-workflows.js --dry-run → show plan, make no changes
+ *   node setup-n8n-workflows.js           → full migration
+ *   node setup-n8n-workflows.js --dry-run → show plan only, no changes
  */
 
 import dotenv from 'dotenv';
@@ -24,9 +28,9 @@ import { randomUUID } from 'crypto';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(__dirname, '.env') });
 
-const BASE   = process.env.N8N_BASE_URL;  // https://victoryvision.app.n8n.cloud/api/v1
-const KEY    = process.env.N8N_API_KEY;
-const DRY    = process.argv.includes('--dry-run');
+const BASE = process.env.N8N_BASE_URL;
+const KEY  = process.env.N8N_API_KEY;
+const DRY  = process.argv.includes('--dry-run');
 
 if (!BASE || !KEY) {
   console.error('❌  N8N_BASE_URL and N8N_API_KEY must be set in .env');
@@ -118,103 +122,119 @@ async function api(method, path, body) {
   const url = `${BASE}${path}`;
   const res = await fetch(url, {
     method,
-    headers: {
-      'X-N8N-API-KEY': KEY,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'X-N8N-API-KEY': KEY, 'Content-Type': 'application/json' },
     body: body ? JSON.stringify(body) : undefined,
   });
-
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`${method} ${path} → ${res.status}: ${text.slice(0, 300)}`);
+    throw new Error(`${method} ${path} → ${res.status}: ${text.slice(0, 400)}`);
   }
-
-  // 204 No Content
   if (res.status === 204) return null;
   return res.json();
 }
 
-// Fetch ALL workflows (handles pagination)
 async function fetchAllWorkflows() {
   const all = [];
   let cursor = null;
-
   do {
     const qs  = cursor ? `?cursor=${encodeURIComponent(cursor)}&limit=100` : '?limit=100';
     const res = await api('GET', `/workflows${qs}`);
     all.push(...(res.data ?? res));
     cursor = res.nextCursor ?? null;
   } while (cursor);
-
   return all;
 }
 
-// Fetch full workflow details (includes all node parameters)
 async function fetchWorkflow(id) {
   return api('GET', `/workflows/${id}`);
 }
 
-// Extract webhook paths from a full workflow object
-function extractWebhookPaths(wf) {
-  const paths = [];
-  for (const node of (wf.nodes ?? [])) {
-    if (node.type === 'n8n-nodes-base.webhook') {
-      const p = node.parameters?.path;
-      if (p) paths.push(p.replace(/^\//, ''));
+// ── Graph helpers ─────────────────────────────────────────────────────────────
+
+// Find all webhook nodes in a workflow, return [{name, path, method}]
+function findWebhookNodes(wf) {
+  return (wf.nodes ?? [])
+    .filter(n => n.type === 'n8n-nodes-base.webhook')
+    .map(n => ({
+      name:   n.name,
+      path:   (n.parameters?.path ?? '').replace(/^\//, ''),
+      method: (n.parameters?.httpMethod ?? 'GET').toUpperCase(),
+    }));
+}
+
+/**
+ * Extract the subgraph reachable from webhookNodeName via BFS.
+ * Returns { nodes, connections } — only the nodes/edges connected to that webhook.
+ */
+function extractSubgraph(wf, webhookNodeName) {
+  const allNodes   = wf.nodes ?? [];
+  const allConns   = wf.connections ?? {};
+
+  // BFS
+  const visited = new Set([webhookNodeName]);
+  const queue   = [webhookNodeName];
+
+  while (queue.length > 0) {
+    const current  = queue.shift();
+    const nodeConns = allConns[current];
+    if (!nodeConns) continue;
+
+    for (const portConns of Object.values(nodeConns)) {
+      if (!Array.isArray(portConns)) continue;
+      for (const connList of portConns) {
+        if (!Array.isArray(connList)) continue;
+        for (const conn of connList) {
+          if (conn?.node && !visited.has(conn.node)) {
+            visited.add(conn.node);
+            queue.push(conn.node);
+          }
+        }
+      }
     }
   }
-  return paths;
-}
 
-// Score a workflow by "richness" — used to pick the keeper when duplicates exist
-function richness(wf) {
-  const nodes = wf.nodes ?? [];
-  // Count total characters across all node parameter values (captures AI prompts etc.)
-  let chars = 0;
-  for (const n of nodes) {
-    chars += JSON.stringify(n.parameters ?? {}).length;
+  // Filter nodes to only visited
+  const nodes = allNodes.filter(n => visited.has(n.name));
+
+  // Filter connections: only source nodes in visited, drop edges to non-visited targets
+  const connections = {};
+  for (const [src, portMap] of Object.entries(allConns)) {
+    if (!visited.has(src)) continue;
+    connections[src] = {};
+    for (const [portType, portConns] of Object.entries(portMap)) {
+      connections[src][portType] = portConns.map(connList =>
+        Array.isArray(connList)
+          ? connList.filter(c => c?.node && visited.has(c.node))
+          : []
+      );
+    }
   }
-  return nodes.length * 1000 + chars;
+
+  return { nodes, connections };
 }
 
-// Build a stub workflow (Webhook → Respond to Webhook)
+// Build a stub workflow when no existing nodes found
 function buildStub(name, webhookPath, method) {
-  const webhookId  = randomUUID();
-  const respondId  = randomUUID();
-
+  const wId = randomUUID();
+  const rId = randomUUID();
   return {
     name,
     nodes: [
       {
-        id: webhookId,
-        name: 'Webhook',
-        type: 'n8n-nodes-base.webhook',
-        typeVersion: 2,
-        position: [250, 300],
-        webhookId: randomUUID(),
-        parameters: {
-          path: webhookPath,
-          httpMethod: method,
-          responseMode: 'responseNode',
-        },
+        id: wId, name: 'Webhook',
+        type: 'n8n-nodes-base.webhook', typeVersion: 2,
+        position: [250, 300], webhookId: randomUUID(),
+        parameters: { path: webhookPath, httpMethod: method, responseMode: 'responseNode' },
       },
       {
-        id: respondId,
-        name: 'Respond to Webhook',
-        type: 'n8n-nodes-base.respondToWebhook',
-        typeVersion: 1,
+        id: rId, name: 'Respond to Webhook',
+        type: 'n8n-nodes-base.respondToWebhook', typeVersion: 1,
         position: [500, 300],
-        parameters: {
-          respondWith: 'json',
-          responseBody: '={{ JSON.stringify({ status: "ok" }) }}',
-        },
+        parameters: { respondWith: 'json', responseBody: '={{ JSON.stringify({ status: "ok" }) }}' },
       },
     ],
     connections: {
-      Webhook: {
-        main: [[{ node: 'Respond to Webhook', type: 'main', index: 0 }]],
-      },
+      Webhook: { main: [[{ node: 'Respond to Webhook', type: 'main', index: 0 }]] },
     },
     settings: { executionOrder: 'v1' },
     staticData: null,
@@ -222,139 +242,171 @@ function buildStub(name, webhookPath, method) {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
-console.log(`\n${'─'.repeat(60)}`);
+console.log(`\n${'─'.repeat(65)}`);
 console.log(DRY ? '🔍  DRY RUN — no changes will be made' : '🚀  Starting n8n workflow migration');
-console.log(`${'─'.repeat(60)}\n`);
+console.log(`${'─'.repeat(65)}\n`);
 
-// 1. Fetch all existing workflows (summary only first)
+// 1. Fetch all existing workflows (full details)
 console.log('📡  Fetching existing workflows...');
 const summaries = await fetchAllWorkflows();
-console.log(`    Found ${summaries.length} existing workflow(s)\n`);
+console.log(`    Found ${summaries.length} existing workflow(s)`);
 
-// 2. Fetch full details for each (to read node params + AI prompts)
 console.log('📥  Loading full workflow details...');
 const existing = [];
 for (const s of summaries) {
   try {
-    const full = await fetchWorkflow(s.id);
-    existing.push(full);
+    existing.push(await fetchWorkflow(s.id));
     process.stdout.write('.');
   } catch (e) {
     process.stdout.write('x');
-    console.error(`\n    ⚠️  Could not fetch workflow ${s.id} (${s.name}): ${e.message}`);
+    console.error(`\n    ⚠️  Could not load ${s.id} (${s.name}): ${e.message}`);
   }
 }
 console.log(`\n    Loaded ${existing.length} workflow(s)\n`);
 
-// 3. Build path → [workflow] map
-const pathMap = new Map(); // path → [full workflow objects]
+// 2. Build index: webhookPath → { workflow, webhookNodeName }
+//    (multiple workflows could share a path — unlikely but handled)
+const pathIndex = new Map(); // path → [{ wf, webhookNodeName }]
 
 for (const wf of existing) {
-  const paths = extractWebhookPaths(wf);
-  for (const p of paths) {
-    if (!pathMap.has(p)) pathMap.set(p, []);
-    pathMap.get(p).push(wf);
+  for (const hook of findWebhookNodes(wf)) {
+    if (!pathIndex.has(hook.path)) pathIndex.set(hook.path, []);
+    pathIndex.get(hook.path).push({ wf, webhookNodeName: hook.name });
   }
 }
 
+// 3. Track which old workflow IDs we'll want to delete
+const oldIdsToDelete = new Set(); // filled as we migrate each path
+
 // 4. Process each target
-const stats = { renamed: 0, created: 0, deleted: 0, alreadyCorrect: 0, activated: 0 };
+const stats = { extracted: 0, stubbed: 0, deleted: 0, activated: 0, errors: 0 };
 
 for (const target of TARGETS) {
-  const matches = pathMap.get(target.path) ?? [];
+  const matches = pathIndex.get(target.path) ?? [];
   console.log(`\n── ${target.name}  (/${target.path})`);
 
-  let keepId = null;
+  let newWorkflowId = null;
 
   if (matches.length === 0) {
-    // ── No existing workflow → create stub ──────────────────────────────────
-    console.log(`   ✨  No match found — creating stub`);
+    // No existing webhook for this path → create stub
+    console.log(`   ✨  No match — creating stub`);
     if (!DRY) {
-      const created = await api('POST', '/workflows', buildStub(target.name, target.path, target.method));
-      keepId = created.id;
-      stats.created++;
-      console.log(`   ✅  Created id=${keepId}`);
+      try {
+        const created = await api('POST', '/workflows', buildStub(target.name, target.path, target.method));
+        newWorkflowId = created.id;
+        stats.stubbed++;
+        console.log(`   ✅  Stub created  id=${newWorkflowId}`);
+      } catch (e) {
+        stats.errors++;
+        console.error(`   ❌  Create failed: ${e.message.slice(0, 200)}`);
+      }
     } else {
       console.log(`   [dry] Would create stub`);
     }
 
   } else {
-    // ── Sort matches by richness descending; richest = keeper ────────────────
-    matches.sort((a, b) => richness(b) - richness(a));
-    const keeper = matches[0];
-    keepId = keeper.id;
+    // Pick best match (most nodes)
+    matches.sort((a, b) => (b.wf.nodes?.length ?? 0) - (a.wf.nodes?.length ?? 0));
+    const { wf, webhookNodeName } = matches[0];
 
-    if (keeper.name === target.name) {
-      console.log(`   ✔   Already correctly named (id=${keeper.id}, nodes=${keeper.nodes?.length ?? 0})`);
-      stats.alreadyCorrect++;
+    // Extract subgraph from this webhook node
+    const sub = extractSubgraph(wf, webhookNodeName);
+    console.log(`   🔬  Extracted from "${wf.name}" via webhook node "${webhookNodeName}"`);
+    console.log(`       Nodes: ${sub.nodes.length} / ${wf.nodes?.length ?? 0} total  (preserving all AI prompts + code)`);
+
+    if (!DRY) {
+      try {
+        const newWf = {
+          name: target.name,
+          nodes: sub.nodes,
+          connections: sub.connections,
+          settings: wf.settings ?? { executionOrder: 'v1' },
+          staticData: null,
+        };
+        const created = await api('POST', '/workflows', newWf);
+        newWorkflowId = created.id;
+        stats.extracted++;
+        console.log(`   ✅  Created  id=${newWorkflowId}  nodes=${sub.nodes.length}`);
+
+        // Mark source workflow for deletion (after all paths processed)
+        oldIdsToDelete.add(wf.id);
+      } catch (e) {
+        stats.errors++;
+        console.error(`   ❌  Create failed: ${e.message.slice(0, 200)}`);
+      }
     } else {
-      console.log(`   ✏️   Renaming "${keeper.name}" → "${target.name}" (id=${keeper.id}, nodes=${keeper.nodes?.length ?? 0})`);
-      if (!DRY) {
-        await api('PUT', `/workflows/${keeper.id}`, { ...keeper, name: target.name });
-        stats.renamed++;
-        console.log(`   ✅  Renamed`);
-      } else {
-        console.log(`   [dry] Would rename`);
-      }
-    }
-
-    // ── Delete duplicates ───────────────────────────────────────────────────
-    for (const dupe of matches.slice(1)) {
-      console.log(`   🗑️   Deleting duplicate "${dupe.name}" (id=${dupe.id}, nodes=${dupe.nodes?.length ?? 0})`);
-      if (!DRY) {
-        // Must deactivate before deleting if active
-        if (dupe.active) {
-          try { await api('POST', `/workflows/${dupe.id}/deactivate`); } catch {}
-        }
-        await api('DELETE', `/workflows/${dupe.id}`);
-        stats.deleted++;
-        console.log(`   ✅  Deleted`);
-      } else {
-        console.log(`   [dry] Would delete`);
-      }
+      console.log(`   [dry] Would create workflow "${target.name}" with ${sub.nodes.length} nodes`);
+      oldIdsToDelete.add(wf.id); // for dry-run reporting
     }
   }
 
-  // ── Activate ──────────────────────────────────────────────────────────────
-  if (keepId && !DRY) {
+  // Activate new workflow
+  if (newWorkflowId && !DRY) {
     try {
-      await api('POST', `/workflows/${keepId}/activate`);
+      await api('POST', `/workflows/${newWorkflowId}/activate`);
       stats.activated++;
       console.log(`   ⚡  Activated`);
     } catch (e) {
-      // May already be active
-      if (!e.message.includes('already active')) {
-        console.log(`   ⚠️  Could not activate: ${e.message.slice(0, 120)}`);
-      } else {
-        console.log(`   ⚡  Already active`);
+      if (e.message.includes('already active')) {
         stats.activated++;
+        console.log(`   ⚡  Already active`);
+      } else {
+        console.log(`   ⚠️  Activate failed: ${e.message.slice(0, 120)}`);
       }
     }
   }
 }
 
-// 5. Report any existing workflows NOT in our target list
-const allTargetPaths = new Set(TARGETS.map(t => t.path));
-const unmapped = existing.filter(wf => {
-  const paths = extractWebhookPaths(wf);
-  return paths.length === 0 || paths.every(p => !allTargetPaths.has(p));
-});
-
-if (unmapped.length > 0) {
-  console.log(`\n${'─'.repeat(60)}`);
-  console.log(`⚠️   ${unmapped.length} workflow(s) NOT in target list (left untouched):`);
-  for (const wf of unmapped) {
-    const paths = extractWebhookPaths(wf);
-    console.log(`    • "${wf.name}" (id=${wf.id}) paths=[${paths.join(', ') || 'none'}]`);
+// 5. Delete old combined workflows
+console.log(`\n${'─'.repeat(65)}`);
+if (oldIdsToDelete.size === 0) {
+  console.log('ℹ️   No old workflows to delete');
+} else {
+  console.log(`🗑️   Deleting ${oldIdsToDelete.size} old combined workflow(s)...`);
+  for (const id of oldIdsToDelete) {
+    const wf = existing.find(w => w.id === id);
+    const label = `"${wf?.name ?? id}" (id=${id})`;
+    if (!DRY) {
+      try {
+        // Deactivate first if active
+        if (wf?.active) {
+          try { await api('POST', `/workflows/${id}/deactivate`); } catch {}
+        }
+        await api('DELETE', `/workflows/${id}`);
+        stats.deleted++;
+        console.log(`   ✅  Deleted ${label}`);
+      } catch (e) {
+        stats.errors++;
+        console.error(`   ❌  Could not delete ${label}: ${e.message.slice(0, 150)}`);
+      }
+    } else {
+      console.log(`   [dry] Would delete ${label}`);
+    }
   }
 }
 
-// 6. Summary
-console.log(`\n${'─'.repeat(60)}`);
+// 6. Report untouched workflows
+const targetPaths = new Set(TARGETS.map(t => t.path));
+const untouched = existing.filter(wf => {
+  const paths = findWebhookNodes(wf).map(h => h.path);
+  return paths.length === 0 || paths.every(p => !targetPaths.has(p));
+});
+
+if (untouched.length > 0) {
+  console.log(`\n${'─'.repeat(65)}`);
+  console.log(`ℹ️   ${untouched.length} workflow(s) not in target list — left untouched:`);
+  for (const wf of untouched) {
+    const paths = findWebhookNodes(wf).map(h => `/${h.path}`);
+    console.log(`    • "${wf.name}" (id=${wf.id})  paths=[${paths.join(', ') || 'none'}]`);
+  }
+}
+
+// 7. Summary
+console.log(`\n${'─'.repeat(65)}`);
 console.log(`✅  Migration complete${DRY ? ' (dry run)' : ''}`);
-console.log(`    Already correct : ${stats.alreadyCorrect}`);
-console.log(`    Renamed         : ${stats.renamed}`);
-console.log(`    Created (stubs) : ${stats.created}`);
-console.log(`    Deleted (dupes) : ${stats.deleted}`);
-console.log(`    Activated       : ${stats.activated}`);
-console.log(`${'─'.repeat(60)}\n`);
+console.log(`    Extracted from existing : ${stats.extracted}`);
+console.log(`    Stubs created           : ${stats.stubbed}`);
+console.log(`    Old workflows deleted   : ${stats.deleted}`);
+console.log(`    Activated               : ${stats.activated}`);
+if (stats.errors > 0) console.log(`    Errors                  : ${stats.errors} ⚠️`);
+console.log(`${'─'.repeat(65)}\n`);
