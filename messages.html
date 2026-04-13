@@ -1833,6 +1833,16 @@ async function init() {
   if (!localStorage.getItem(`tour_msg_${CUSTOMER_ID}`)) {
     setTimeout(startTour, 800);
   }
+
+  // Auto-trigger tour from email link (?tour=)
+  if (new URLSearchParams(window.location.search).get('tour')) setTimeout(startTour, 1200);
+
+  // Pre-populate compose form from email link (?contact=EMAIL)
+  const _cp = new URLSearchParams(window.location.search).get('contact');
+  if (_cp) setTimeout(() => {
+    showComposeForm();
+    setTimeout(() => { const el = document.getElementById('composeTo'); if (el) el.value = _cp; }, 300);
+  }, 1500);
 }
 
 // Session refresh every 5 min
