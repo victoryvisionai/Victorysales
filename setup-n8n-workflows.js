@@ -149,6 +149,23 @@ async function fetchWorkflow(id) {
   return api('GET', `/workflows/${id}`);
 }
 
+// ── Settings sanitizer ───────────────────────────────────────────────────────
+// n8n API only accepts these settings keys on workflow create/update
+const ALLOWED_SETTINGS = new Set([
+  'executionOrder', 'saveManualExecutions', 'callerPolicy',
+  'errorWorkflow', 'timezone', 'saveExecutionProgress',
+  'saveDataSuccessExecution', 'saveDataErrorExecution',
+]);
+
+function sanitizeSettings(s) {
+  if (!s || typeof s !== 'object') return { executionOrder: 'v1' };
+  const out = {};
+  for (const [k, v] of Object.entries(s)) {
+    if (ALLOWED_SETTINGS.has(k)) out[k] = v;
+  }
+  return Object.keys(out).length ? out : { executionOrder: 'v1' };
+}
+
 // ── Graph helpers ─────────────────────────────────────────────────────────────
 
 // Find all webhook nodes in a workflow, return [{name, path, method}]
