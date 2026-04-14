@@ -1696,6 +1696,12 @@ function connectCalendly() {
       currentUser.company_name = userData.company_name || '';
       currentUser.subscription_plan = plan;
       currentUser.phone_number = userData.phone_number || userData.vvnumber || null;
+
+      // Populate ad tracking fields
+      ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account'].forEach(f => {
+        const el = document.getElementById(f);
+        if (el && userData[f]) el.value = userData[f];
+      });
       
       // Update subscription medallion - use exact plan value from API
       const medallion = document.getElementById('subscriptionMedallion');
