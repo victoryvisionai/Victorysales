@@ -2010,12 +2010,23 @@ async function loadOptimizations() {
   }
 }
 
-async function applyOpt(id, action) {
+async function applyOpt(rec, action) {
+  if (action === 'dismiss') { showStatus('Recommendation dismissed.', false); loadOptimizations(); return; }
   try {
-    await apiCall(N8N.applyOptimization, { optimization_id: id, action });
-    showStatus(action === 'apply' ? '✅ Optimization applied!' : 'Recommendation dismissed.', false);
-    loadOptimizations();
+    await apiCall(N8N.applyOptimization, {
+      ad_id:        rec.ad_id,
+      platform:     rec.platform,
+      action_type:  rec.action_type,
+      rationale:    rec.rationale,
+      before_value: rec.before_value,
+      after_value:  rec.after_value,
+      kpi_snapshot: rec.kpi_snapshot,
+      applied_by:   CUSTOMER_ID
+    });
+    showStatus('✅ Optimization applied!', false);
+    adsData = null; // invalidate cache
     loadKPIs();
+    loadOptimizations();
   } catch(e) { showStatus('Failed: ' + e.message, true); }
 }
 
