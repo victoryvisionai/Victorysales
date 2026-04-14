@@ -2020,36 +2020,53 @@ async function applyOpt(id, action) {
 // ══════════════════════════════════════
 async function loadCampaigns() {
   const tbody = document.getElementById('campaignsBody');
-  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--muted);">Loading…</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--muted);">Loading…</td></tr>';
   try {
-    const res = await apiCall(N8N.getAllAds);
+    // Use cached adsData if already loaded, otherwise fetch fresh
+    const res = adsData || await apiCall(N8N.getAllAds);
     allAds = Array.isArray(res) ? res : (res.ads || res.value || []);
     renderCampaignsTable(allAds);
   } catch(e) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--red);">Failed to load campaigns.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--red);">Failed to load campaigns.</td></tr>`;
   }
 }
+
+const PLATFORM_COLORS = {
+  google_ads:   '#EA4335',
+  msft_ads:     '#0078d4',
+  linkedin_ads: '#0077B5',
+  linkedin:     '#0077B5',
+  billboard:    '#C8A84B'
+};
 
 function renderCampaignsTable(ads) {
   const tbody = document.getElementById('campaignsBody');
   if (!ads.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--muted);">No campaigns yet. Launch your first LinkedIn ad above.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">No campaigns yet. Create one from the LinkedIn, Google Ads, or Microsoft Ads tabs.</td></tr>';
     return;
   }
-  tbody.innerHTML = ads.map(ad => `
+  tbody.innerHTML = ads.map(ad => {
+    const platform = ad.platform || ad.type || 'linkedin_ads';
+    const platColor = PLATFORM_COLORS[platform] || 'var(--navy)';
+    const spend     = Number(ad.spend || ad.spend_usd) || 0;
+    const revenue   = Number(ad.conversion_revenue) || 0;
+    const roi       = spend > 0 ? Math.round((revenue - spend) / spend * 100) : null;
+    const roiStr    = roi != null ? `<span style="font-weight:700;color:${roi>=0?'var(--green)':'var(--red)'};">${roi}%</span>` : '–';
+    return `
     <tr>
-      <td><strong>${ad.name || ad.campaign_name || '–'}</strong><br><span style="font-size:11px;color:var(--muted);">${ad.created_at ? new Date(ad.created_at).toLocaleDateString() : ''}</span></td>
-      <td><span style="font-size:12px;background:${ad.type==='linkedin'?'#e8f4fb':'#f0fdf4'};color:${ad.type==='linkedin'?'var(--li-blue)':'var(--green)'};padding:2px 8px;border-radius:3px;font-weight:600;">${ad.type || 'linkedin'}</span></td>
-      <td style="font-size:12px;">${ad.audience_segment || '–'}</td>
-      <td>$${(ad.spend_usd || 0).toFixed(0)}</td>
-      <td>${fmtNum(ad.impressions)}</td>
-      <td>${fmtNum(ad.clicks)}</td>
-      <td style="font-weight:700;color:var(--green);">${fmtNum(ad.meetings_booked || 0)}</td>
-      <td>${ad.cost_per_meeting ? '$' + ad.cost_per_meeting.toFixed(0) : '–'}</td>
-      <td><span class="status-badge status-${(ad.status||'draft').toLowerCase()}">${ad.status || 'Draft'}</span></td>
-      <td>
+      <td style="padding:10px 14px;"><strong>${ad.campaign_name || ad.name || '–'}</strong><br><span style="font-size:11px;color:var(--muted);">${ad.created_at ? new Date(ad.created_at).toLocaleDateString() : ''}</span></td>
+      <td style="padding:10px 8px;"><span style="font-size:11px;background:${platColor}22;color:${platColor};padding:2px 8px;border-radius:3px;font-weight:700;">${platform.replace('_ads','').replace('_',' ').toUpperCase()}</span></td>
+      <td style="padding:10px 8px;font-size:12px;">${ad.audience_tier || ad.audience_segment || '–'}</td>
+      <td style="padding:10px 8px;">$${fmtNum(Math.round(spend))}</td>
+      <td style="padding:10px 8px;font-weight:700;color:var(--green);">${fmtNum(ad.new_customers||0)}</td>
+      <td style="padding:10px 8px;">$${fmtNum(Math.round(revenue))}</td>
+      <td style="padding:10px 8px;">${roiStr}</td>
+      <td style="padding:10px 8px;font-weight:700;">${fmtNum(ad.meetings_booked||0)}</td>
+      <td style="padding:10px 8px;">${ad.cost_per_meeting ? '$'+Math.round(ad.cost_per_meeting) : (spend>0&&(ad.meetings_booked||0)>0?'$'+Math.round(spend/(ad.meetings_booked||1)):'–')}</td>
+      <td style="padding:10px 8px;"><span class="status-badge status-${(ad.status||'draft').toLowerCase()}">${ad.status || 'Draft'}</span></td>
+      <td style="padding:10px 8px;">
         <button class="btn btn-sm btn-ghost" onclick="openCampaignDetail('${ad.id}')">Details</button>
-        ${ad.status === 'ACTIVE' ? `<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;margin-left:4px;" onclick="pauseCampaign('${ad.id}')">⏸ Pause</button>` : ''}
+        ${ad.status === 'ACTIVE' ? `<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;margin-left:4px;" onclick="pauseCampaign('${ad.id}')">⏸</button>` : ''}
       </td>
     </tr>
   `).join('');
