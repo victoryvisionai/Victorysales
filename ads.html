@@ -1337,12 +1337,12 @@ const supabaseUrl  = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const supabaseKey  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-// ── NEW WEBHOOK NAMES ──
+// ── WEBHOOK ENDPOINTS ──
 const N8N = {
   // User & Auth
   getUserData:          'https://victoryvision.app.n8n.cloud/webhook/user/get',
 
-  // LinkedIn Ads — new workflows
+  // LinkedIn Ads
   liGetAudience:        'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-audience',
   liBuildAudience:      'https://victoryvision.app.n8n.cloud/webhook/linkedin/build-audience',
   liSyncAudience:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/sync-audience',
@@ -1355,12 +1355,16 @@ const N8N = {
   liGetReporting:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-reporting',
   liGenerateAICopy:     'https://victoryvision.app.n8n.cloud/webhook/linkedin/generate-copy',
 
-  // Optimization
+  // Cross-platform Ads
+  getAllAds:            'https://victoryvision.app.n8n.cloud/webhook/ads/get',
+  removeAd:             'https://victoryvision.app.n8n.cloud/webhook/ads/remove',
+  createAd:             'https://victoryvision.app.n8n.cloud/webhook/ads/create',
+  buildAudience:        'https://victoryvision.app.n8n.cloud/webhook/ads/build-audience',
   getOptimizations:     'https://victoryvision.app.n8n.cloud/webhook/ads/get-optimizations',
   applyOptimization:    'https://victoryvision.app.n8n.cloud/webhook/ads/apply-optimization',
   getAttribution:       'https://victoryvision.app.n8n.cloud/webhook/ads/get-attribution',
 
-  // Creatives / Media
+  // Creatives / Media / Pages
   getMedia:             'https://victoryvision.app.n8n.cloud/webhook/media/get',
   getCampaigns:         'https://victoryvision.app.n8n.cloud/webhook/campaigns/get',
   getPages:             'https://victoryvision.app.n8n.cloud/webhook/pages/get',
@@ -1369,10 +1373,6 @@ const N8N = {
   getBillboardInventory:'https://victoryvision.app.n8n.cloud/webhook/billboard/get-inventory',
   reserveBillboard:     'https://victoryvision.app.n8n.cloud/webhook/billboard/reserve',
   getCheckout:          'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
-
-  // All ads (combined LinkedIn + billboard)
-  getAllAds:            'https://victoryvision.app.n8n.cloud/webhook/ads/get',
-  removeAd:             'https://victoryvision.app.n8n.cloud/webhook/ads/remove',
 };
 
 // ══════════════════════════════════════
