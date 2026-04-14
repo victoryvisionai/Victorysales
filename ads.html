@@ -1787,7 +1787,7 @@ async function loadKPIs() {
     else if (t.roi < 0) roiTile.style.borderTopColor = 'var(--red)';
 
     // Populate overview tab from cached data
-    renderROIDashboard(res);
+    renderROIDashboard(raw);
   } catch(e) { console.warn('KPI load failed', e); }
 }
 
@@ -1871,9 +1871,10 @@ async function loadAttributionData() {
   const chain = document.getElementById('attributionChain');
   chain.innerHTML = '<div style="padding:20px;color:var(--muted);">Loading…</div>';
   try {
-    const res = await apiCall(N8N.getAttribution);
-    const bp  = res.by_platform || {};
-    const pa  = res.page_attribution || [];
+    const res  = await apiCall(N8N.getAttribution);
+    const data = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    const bp   = data.by_platform || {};
+    const pa   = data.page_attribution || [];
 
     // Sum totals across platforms
     let totalSpend = 0, totalMeetings = 0, totalCustomers = 0, totalRevenue = 0;
@@ -2047,8 +2048,9 @@ async function loadCampaigns() {
   tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--muted);">Loading…</td></tr>';
   try {
     // Use cached adsData if already loaded, otherwise fetch fresh
-    const res = adsData || await apiCall(N8N.getAllAds);
-    allAds = Array.isArray(res) ? res : (res.ads || res.value || []);
+    const res  = adsData || await apiCall(N8N.getAllAds);
+    const data = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    allAds = Array.isArray(data) ? data : (data.ads || data.value || []);
     renderCampaignsTable(allAds);
   } catch(e) {
     tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--red);">Failed to load campaigns.</td></tr>`;
