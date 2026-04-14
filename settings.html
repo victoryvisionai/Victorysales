@@ -1523,9 +1523,9 @@ function connectCalendly() {
     
     // Update pricing with 10% discount
     const plans = {
-      bronze: { monthly: 99, annual: 89 },   // 10% discount: $99 -> $89
-      silver: { monthly: 450, annual: 375 }, // 16% discount: $450 -> $375  
-      gold: { monthly: 1250, annual: 1035 }    // 17% discount: $1,250 -> $1,035
+      bronze: { monthly: 99,   annual: 89,   annualSave: 'Save $120/yr' },
+      silver: { monthly: 450,  annual: 375,  annualSave: 'Save $900/yr' },
+      gold:   { monthly: 1250, annual: 1035, annualSave: 'Save $2,580/yr' }
     };
     
     Object.keys(plans).forEach(plan => {
