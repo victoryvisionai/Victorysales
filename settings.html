@@ -2003,31 +2003,8 @@ function connectCalendly() {
     }
   }
 
-  // Update connection status UI
-  function updateConnectionStatus(platform, isConnected, profileInfo = null) {
-    const statusIndicator = document.getElementById(`${platform}-status`);
-    const connectBtn = document.getElementById(`connect-${platform}`);
-    const disconnectBtn = document.getElementById(`disconnect-${platform}`);
-    const infoDiv = document.getElementById(`${platform}-info`);
-    const profileSpan = document.getElementById(`${platform}-profile`);
-    
-    if (isConnected) {
-      statusIndicator.className = 'status-indicator status-connected';
-      connectBtn.style.display = 'none';
-      disconnectBtn.style.display = 'inline-block';
-      if (profileInfo && infoDiv && profileSpan) {
-        profileSpan.textContent = profileInfo;
-        infoDiv.style.display = 'block';
-      }
-    } else {
-      statusIndicator.className = 'status-indicator status-disconnected';
-      connectBtn.style.display = 'inline-block';
-      disconnectBtn.style.display = 'none';
-      if (infoDiv) {
-        infoDiv.style.display = 'none';
-      }
-    }
-  }
+  // Legacy stub — full status handled by checkConnectionStatus()
+  function updateConnectionStatus(platform, isConnected, profileInfo = null) {}
 
   // OAuth connection functions
   function generateStateFromSession() {
