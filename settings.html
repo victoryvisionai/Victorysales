@@ -2371,7 +2371,7 @@ function connectCalendly() {
     const statusEl = document.getElementById('ad-tracking-status');
     statusEl.textContent = 'Saving...';
     try {
-      await apiCall(N8N_ENDPOINTS.updateUser, payload);
+      await apiCall('https://victoryvision.app.n8n.cloud/webhook/user/ad-tracking', payload);
       statusEl.textContent = '✅ Saved';
       statusEl.style.color = '#28a745';
       setTimeout(() => { statusEl.textContent = ''; }, 3000);
