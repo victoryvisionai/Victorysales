@@ -213,8 +213,13 @@ async function test(url, specs) {
   page.on('response', async resp => {
     try {
       const u = resp.url();
+      const status = resp.status();
       const body = await resp.text().catch(() => '');
-      networkLog[u] = { status: resp.status(), text: body };
+      networkLog[u] = { status, text: body };
+      // Log non-2xx non-3xx as noticeable warnings
+      if (status >= 400 && !shouldIgnore(u)) {
+        console.log(`  ⚠️   HTTP ${status}: ${u.replace(/^https?:\/\/[^/]+/, '')}`);
+      }
     } catch {}
   });
 
