@@ -482,9 +482,282 @@
   </div>
 
   <!-- ════════════════════════════════════════ -->
+  <!-- TAB: ROI OVERVIEW                        -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-overview" class="tab-content active">
+
+    <!-- Platform ROI Cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px;" id="platformCards">
+      <!-- Injected by JS -->
+      <div class="skel" style="height:140px;border-radius:10px;"></div>
+      <div class="skel" style="height:140px;border-radius:10px;"></div>
+      <div class="skel" style="height:140px;border-radius:10px;"></div>
+    </div>
+
+    <div class="form-grid-2">
+      <!-- Victories Intelligence -->
+      <div class="card">
+        <div class="card-header">
+          <h3>🏆 What Wins Deals</h3>
+          <span style="font-size:11px;opacity:.75;">Pulled from your closed victories</span>
+        </div>
+        <div class="card-body">
+          <div style="margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;">Top Messages That Land</div>
+            <div id="winningMessages" style="display:flex;flex-wrap:wrap;gap:6px;">
+              <span class="skel" style="width:120px;height:26px;border-radius:20px;display:inline-block;"></span>
+              <span class="skel" style="width:90px;height:26px;border-radius:20px;display:inline-block;"></span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;">Top Use Cases That Convert</div>
+            <div id="winningUseCases" style="display:flex;flex-wrap:wrap;gap:6px;">
+              <span class="skel" style="width:100px;height:26px;border-radius:20px;display:inline-block;"></span>
+              <span class="skel" style="width:140px;height:26px;border-radius:20px;display:inline-block;"></span>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="text-align:center;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="ovAvgRevenue">–</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Avg Deal Revenue</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="ovVictories">–</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Total Victories</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Landing Pages -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📄 Top Converting Pages</h3>
+          <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="switchTab('pages')">View All →</button>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);">Page</th>
+                <th style="padding:10px 8px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--muted);">Views</th>
+                <th style="padding:10px 8px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--muted);">Conversions</th>
+                <th style="padding:10px 14px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--muted);">Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="topPagesBody">
+              <tr><td colspan="4" style="padding:20px;text-align:center;color:var(--muted);">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attribution Funnel -->
+    <div class="card">
+      <div class="card-header">
+        <h3>🔗 Attribution Chain — Ad → Page → Meeting → Revenue</h3>
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadAttributionData()">🔄 Refresh</button>
+      </div>
+      <div class="card-body">
+        <div id="attributionChain" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;">
+          <div style="text-align:center;padding:20px;color:var(--muted);">Loading attribution data…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: GOOGLE ADS                          -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-google" class="tab-content">
+    <div class="form-grid-2">
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#EA4335,#c0392b);">
+            <h3>🔴 Google Ads</h3>
+            <span id="googleConnectBadge" style="font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.2);font-weight:700;">Checking…</span>
+          </div>
+          <div class="card-body">
+            <div id="googleNotConnected" style="display:none;">
+              <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">Connect your Google Ads account to launch Search, Display, Performance Max, and YouTube campaigns from Victory Vision.</p>
+              <button class="btn btn-primary" onclick="window.location.href='settings?tab=integrations'">Connect Google Ads →</button>
+            </div>
+            <div id="googleConnected" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:#EA4335;" id="gSpend">$0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Spend</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--green);" id="gROI">–%</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">ROI</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="gMeetings">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Meetings</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="gCustomers">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">New Customers</div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-full" onclick="openCreateAdModal('google_ads')">+ New Google Campaign</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#EA4335,#c0392b);">
+            <h3>📋 Google Campaign Setup</h3>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div id="gStep1" class="setup-step">
+                <span class="setup-step-icon" id="gStep1Icon">○</span>
+                <div><strong>OAuth Connected</strong><br><span style="font-size:12px;color:var(--muted);">Link Google Ads account via Settings</span></div>
+              </div>
+              <div id="gStep2" class="setup-step">
+                <span class="setup-step-icon" id="gStep2Icon">○</span>
+                <div><strong>Developer Token</strong><br><span style="font-size:12px;color:var(--muted);">Applied — Google approval pending</span></div>
+              </div>
+              <div id="gStep3" class="setup-step">
+                <span class="setup-step-icon" id="gStep3Icon">○</span>
+                <div><strong>Conversion Tracking</strong><br><span style="font-size:12px;color:var(--muted);">Add Google pixel to victoryvision.app</span></div>
+              </div>
+              <div id="gStep4" class="setup-step">
+                <span class="setup-step-icon" id="gStep4Icon">○</span>
+                <div><strong>First Campaign Created</strong><br><span style="font-size:12px;color:var(--muted);">Search, Display, or Performance Max</span></div>
+              </div>
+            </div>
+            <div style="margin-top:16px;padding:12px;background:#fef3c7;border-radius:6px;font-size:12px;color:#92400e;">
+              ⚠️ Google Ads Developer Token is under review. Campaigns will be activated once Google approves Basic Access.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: MICROSOFT ADS                       -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-msft" class="tab-content">
+    <div class="form-grid-2">
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#00a4ef,#0078d4);">
+            <h3>🟦 Microsoft Ads</h3>
+            <span id="msftConnectBadge" style="font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.2);font-weight:700;">Checking…</span>
+          </div>
+          <div class="card-body">
+            <div id="msftNotConnected" style="display:none;">
+              <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">Connect Microsoft Ads to reach Bing, MSN, LinkedIn Audience Network, and Microsoft News — often lower CPM than Google with higher intent users.</p>
+              <button class="btn btn-primary" onclick="window.location.href='settings?tab=integrations'">Connect Microsoft Ads →</button>
+            </div>
+            <div id="msftConnected" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:#0078d4;" id="mSpend">$0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Spend</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--green);" id="mROI">–%</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">ROI</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="mMeetings">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Meetings</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="mCustomers">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">New Customers</div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-full" onclick="openCreateAdModal('msft_ads')">+ New MSFT Campaign</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#00a4ef,#0078d4);">
+            <h3>📋 Microsoft Ads Setup</h3>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep1Icon">○</span>
+                <div><strong>OAuth Connected</strong><br><span style="font-size:12px;color:var(--muted);">Link Microsoft Ads via Settings</span></div>
+              </div>
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep2Icon">○</span>
+                <div><strong>UET Tag Installed</strong><br><span style="font-size:12px;color:var(--muted);">Add UET snippet to victoryvision.app for conversion tracking</span></div>
+              </div>
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep3Icon">○</span>
+                <div><strong>Customer Match Terms</strong><br><span style="font-size:12px;color:var(--muted);">Accept in Microsoft Ads UI → Audiences → Customer Match</span></div>
+              </div>
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep4Icon">○</span>
+                <div><strong>First Campaign Created</strong><br><span style="font-size:12px;color:var(--muted);">Search or Audience campaign</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: LANDING PAGES                       -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-pages" class="tab-content">
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header">
+        <h3>📄 Landing Pages — Conversion Intelligence</h3>
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadPlatformPages()">🔄 Refresh</button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;" id="pagesTable">
+            <thead>
+              <tr style="border-bottom:2px solid var(--border);background:var(--bg);">
+                <th style="padding:10px 14px;text-align:left;">Page</th>
+                <th style="padding:10px 8px;text-align:right;">Views</th>
+                <th style="padding:10px 8px;text-align:right;">Conversions</th>
+                <th style="padding:10px 8px;text-align:right;">Conv. Rate</th>
+                <th style="padding:10px 8px;text-align:right;">Revenue</th>
+                <th style="padding:10px 14px;text-align:left;">Top Traffic Sources</th>
+              </tr>
+            </thead>
+            <tbody id="pagesBody">
+              <tr><td colspan="6" style="padding:30px;text-align:center;color:var(--muted);">Loading pages…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Intelligence -->
+    <div class="card">
+      <div class="card-header"><h3>💡 Cross-Platform Lessons</h3></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">What converts on one platform can be A/B tested across Google, MSFT, and LinkedIn. These insights propagate automatically to your AI Optimizer recommendations.</p>
+        <div id="pageLessons" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+          <div style="padding:14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--muted);">Loading intelligence…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
   <!-- TAB: LINKEDIN ADS                        -->
   <!-- ════════════════════════════════════════ -->
-  <div id="tab-content-linkedin" class="tab-content active">
+  <div id="tab-content-linkedin" class="tab-content">
 
     <!-- Wizard Progress -->
     <div class="wizard-steps" id="wizardSteps">
