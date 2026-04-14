@@ -1502,6 +1502,10 @@ function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById(`tab-content-${name}`).classList.add('active');
   document.getElementById(`tab-${name}`).classList.add('active');
+  // Lazy load on tab switch
+  if (name === 'pages')  loadPlatformPages();
+  if (name === 'active') loadCampaigns();
+  if (name === 'overview') loadAttributionData();
 }
 
 // ══════════════════════════════════════
