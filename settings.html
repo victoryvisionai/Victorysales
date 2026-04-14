@@ -877,6 +877,51 @@
 
     </div>
 
+    <!-- ── Ad Campaign Tracking ── -->
+    <div class="int-section-label">Ad Campaign Tracking <span style="font-size:10px;color:#666;font-weight:400;">— pixels, tags &amp; account IDs</span></div>
+    <div class="card" style="margin:0 0 8px;padding:20px 24px;">
+      <p style="color:#666;font-size:12px;margin:0 0 16px;">Enter your tracking tag IDs and ad account numbers. These are independent of OAuth — you can fill them in any time.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
+
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#0A3161;margin-bottom:10px;">🔍 Google</div>
+          <label style="font-size:11px;color:#555;font-weight:600;display:block;margin-bottom:3px;">Google Tag / Pixel ID</label>
+          <input type="text" id="google_pixel" placeholder="G-XXXXXXXXXX or AW-XXXXXXXXX"
+                 style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:10px;box-sizing:border-box;">
+          <label style="font-size:11px;color:#555;font-weight:600;display:block;margin-bottom:3px;">Google Ads Customer ID</label>
+          <input type="text" id="google_ads_customer_id" placeholder="123-456-7890"
+                 style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;box-sizing:border-box;">
+        </div>
+
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#0A3161;margin-bottom:10px;">🪟 Microsoft</div>
+          <label style="font-size:11px;color:#555;font-weight:600;display:block;margin-bottom:3px;">UET Tag ID</label>
+          <input type="text" id="msft_pixel" placeholder="123456789"
+                 style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:10px;box-sizing:border-box;">
+          <label style="font-size:11px;color:#555;font-weight:600;display:block;margin-bottom:3px;">Microsoft Ads Account ID</label>
+          <input type="text" id="msft_ads_account_id" placeholder="12345678"
+                 style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;box-sizing:border-box;">
+        </div>
+
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#0A3161;margin-bottom:10px;">💼 LinkedIn</div>
+          <label style="font-size:11px;color:#555;font-weight:600;display:block;margin-bottom:3px;">Insight Tag ID</label>
+          <input type="text" id="linkedin_pixel" placeholder="1234567"
+                 style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin-bottom:10px;box-sizing:border-box;">
+          <label style="font-size:11px;color:#555;font-weight:600;display:block;margin-bottom:3px;">LinkedIn Ad Account ID</label>
+          <input type="text" id="li_ad_account" placeholder="123456789"
+                 style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;box-sizing:border-box;">
+        </div>
+
+      </div>
+
+      <div style="margin-top:16px;display:flex;align-items:center;gap:12px;">
+        <button onclick="saveAdTracking()" style="padding:9px 20px;background:#0A3161;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:600;font-size:13px;">💾 Save Tracking IDs</button>
+        <span id="ad-tracking-status" style="font-size:12px;color:#666;"></span>
+      </div>
+    </div>
+
     <!-- ── Scheduling ── -->
     <div class="int-section-label">Scheduling</div>
     <div class="integrations-grid">
