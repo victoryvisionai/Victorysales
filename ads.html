@@ -2076,10 +2076,37 @@ function filterCampaigns() {
   const q    = document.getElementById('campaignSearch').value.toLowerCase();
   const type = document.getElementById('campaignTypeFilter').value;
   const filtered = allAds.filter(a =>
-    (!q || (a.name||a.campaign_name||'').toLowerCase().includes(q)) &&
-    (!type || (a.type||'linkedin') === type)
+    (!q || (a.campaign_name||a.name||'').toLowerCase().includes(q)) &&
+    (!type || (a.platform||a.type||'linkedin_ads') === type)
   );
   renderCampaignsTable(filtered);
+}
+
+// ══════════════════════════════════════
+// PLATFORM CONNECTION STATUS
+// ══════════════════════════════════════
+function updatePlatformConnectionUI(adAccounts) {
+  const accounts = Array.isArray(adAccounts) ? adAccounts : [];
+
+  for (const platform of ['google_ads', 'msft_ads']) {
+    const acct = accounts.find(a => a.platform === platform);
+    const connected = acct?.oauth_connected;
+    const prefix = platform === 'google_ads' ? 'google' : 'msft';
+
+    const badge     = document.getElementById(`${prefix}ConnectBadge`);
+    const notConn   = document.getElementById(`${prefix}NotConnected`);
+    const connDiv   = document.getElementById(`${prefix}Connected`);
+    const step1Icon = document.getElementById(`${prefix === 'google' ? 'g' : 'm'}Step1Icon`);
+
+    if (badge) badge.textContent = connected ? '✓ Connected' : 'Not Connected';
+    if (notConn) notConn.style.display = connected ? 'none' : 'block';
+    if (connDiv) connDiv.style.display = connected ? 'block' : 'none';
+    if (step1Icon) { step1Icon.textContent = connected ? '✓' : '○'; step1Icon.parentElement.classList.toggle('done', !!connected); }
+  }
+}
+
+function openCreateAdModal(platform) {
+  showStatus(`${platform.replace('_',' ').toUpperCase()} campaign creation coming soon — building now.`, false);
 }
 
 async function pauseCampaign(id) {
