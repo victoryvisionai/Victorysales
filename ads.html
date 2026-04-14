@@ -1759,18 +1759,222 @@ async function launchLinkedInAd() {
 // ══════════════════════════════════════
 // KPI STRIP
 // ══════════════════════════════════════
+let adsData = null; // cached from getAllAds
+
 async function loadKPIs() {
   try {
-    const res = await apiCall(N8N.liGetReporting);
-    const d   = res.kpis || res || {};
-    document.getElementById('kpiImpressions').textContent = fmtNum(d.impressions);
-    document.getElementById('kpiClicks').textContent      = fmtNum(d.clicks);
-    document.getElementById('kpiCTR').textContent         = d.ctr ? d.ctr.toFixed(2) + '%' : '–';
-    document.getElementById('kpiMeetings').textContent    = fmtNum(d.meetings_booked);
-    document.getElementById('kpiConversions').textContent = fmtNum(d.conversions);
-    document.getElementById('kpiCPM').textContent         = d.spend ? '$' + d.spend.toFixed(0) : '–';
-    document.getElementById('kpiCPMeeting').textContent   = d.cost_per_meeting ? '$' + d.cost_per_meeting.toFixed(0) : '–';
-  } catch(e) { /* silent — no data yet */ }
+    const res = await apiCall(N8N.getAllAds);
+    adsData = res;
+    const t = res.totals || {};
+    document.getElementById('kpiSpend').textContent       = t.spend       ? '$' + fmtNum(Math.round(t.spend))       : '$0';
+    document.getElementById('kpiRevenue').textContent     = t.conversionRevenue ? '$' + fmtNum(Math.round(t.conversionRevenue)) : '$0';
+    document.getElementById('kpiROI').textContent         = t.roi != null ? t.roi + '%'                              : '–%';
+    document.getElementById('kpiNewCustomers').textContent= fmtNum(t.newCustomers || 0);
+    document.getElementById('kpiMeetings').textContent    = fmtNum(t.meetings || 0);
+    document.getElementById('kpiCPMeeting').textContent   = t.cost_per_meeting ? '$' + fmtNum(t.cost_per_meeting)   : '–';
+    document.getElementById('kpiImpressions').textContent = fmtNum(t.impressions || 0);
+    document.getElementById('kpiClicks').textContent      = fmtNum(t.clicks || 0);
+
+    // Color ROI tile
+    const roiTile = document.getElementById('kpiRoiTile');
+    if (t.roi > 0) roiTile.style.borderTopColor = 'var(--green)';
+    else if (t.roi < 0) roiTile.style.borderTopColor = 'var(--red)';
+
+    // Populate overview tab from cached data
+    renderROIDashboard(res);
+  } catch(e) { console.warn('KPI load failed', e); }
+}
+
+// ══════════════════════════════════════
+// ROI OVERVIEW TAB
+// ══════════════════════════════════════
+function renderROIDashboard(data) {
+  if (!data) return;
+  const byP  = data.by_platform || {};
+  const intel= data.intelligence || {};
+  const pages= data.top_pages    || [];
+
+  // Platform cards
+  const PLATFORM_META = {
+    google_ads:   { name: '🔴 Google Ads',     color: '#EA4335' },
+    msft_ads:     { name: '🟦 Microsoft Ads',  color: '#0078d4' },
+    linkedin_ads: { name: '🔵 LinkedIn Ads',   color: '#0077B5' },
+    billboard:    { name: '🏗️ Billboard',      color: '#C8A84B' }
+  };
+
+  const cards = Object.entries(PLATFORM_META).map(([p, meta]) => {
+    const d = byP[p] || {};
+    const roi = d.spend > 0 ? Math.round((d.conversionRevenue - d.spend) / d.spend * 100) : null;
+    const cpm = d.meetings > 0 ? Math.round(d.spend / d.meetings) : null;
+    return `
+      <div class="platform-roi-card" style="border-top-color:${meta.color};">
+        <div class="prc-name" style="color:${meta.color};">${meta.name}</div>
+        <div class="prc-grid">
+          <div>
+            <div class="prc-val">$${fmtNum(Math.round(d.spend||0))}</div>
+            <div class="prc-lbl">Spend</div>
+          </div>
+          <div>
+            <div class="prc-val" style="color:${roi>0?'var(--green)':roi<0?'var(--red)':'var(--muted)'};">${roi!=null?roi+'%':'–'}</div>
+            <div class="prc-lbl">ROI</div>
+          </div>
+          <div>
+            <div class="prc-val">${fmtNum(d.meetings||0)}</div>
+            <div class="prc-lbl">Meetings</div>
+          </div>
+          <div>
+            <div class="prc-val">${cpm!=null?'$'+cpm:'–'}</div>
+            <div class="prc-lbl">Cost/Mtg</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);">
+          ${fmtNum(d.newCustomers||0)} new customers · $${fmtNum(Math.round(d.conversionRevenue||0))} revenue
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('platformCards').innerHTML = cards;
+
+  // Winning messages
+  const msgs = intel.winning_messages || [];
+  document.getElementById('winningMessages').innerHTML = msgs.length
+    ? msgs.map(m => `<span class="intel-pill">${m}</span>`).join('')
+    : '<span style="font-size:13px;color:var(--muted);">No victories yet — win a deal and it appears here.</span>';
+
+  // Winning use cases
+  const uc = intel.winning_use_cases || [];
+  document.getElementById('winningUseCases').innerHTML = uc.length
+    ? uc.map(u => `<span class="intel-pill" style="background:#f0fdf4;color:#166534;">${u}</span>`).join('')
+    : '<span style="font-size:13px;color:var(--muted);">No victories yet.</span>';
+
+  document.getElementById('ovAvgRevenue').textContent = intel.avg_deal_revenue ? '$' + fmtNum(intel.avg_deal_revenue) : '–';
+  document.getElementById('ovVictories').textContent  = intel.total_victories || 0;
+
+  // Top pages
+  const pb = document.getElementById('topPagesBody');
+  pb.innerHTML = pages.length ? pages.map(p => `
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:10px 14px;"><strong>${p.name || '–'}</strong></td>
+      <td style="padding:10px 8px;text-align:right;">${fmtNum(p.views)}</td>
+      <td style="padding:10px 8px;text-align:right;font-weight:700;color:var(--green);">${fmtNum(p.conversions)}</td>
+      <td style="padding:10px 14px;text-align:right;">$${fmtNum(Math.round(p.revenue||0))}</td>
+    </tr>`).join('')
+    : '<tr><td colspan="4" style="padding:20px;text-align:center;color:var(--muted);">No page data yet.</td></tr>';
+}
+
+async function loadAttributionData() {
+  const chain = document.getElementById('attributionChain');
+  chain.innerHTML = '<div style="padding:20px;color:var(--muted);">Loading…</div>';
+  try {
+    const res = await apiCall(N8N.getAttribution);
+    const bp  = res.by_platform || {};
+    const pa  = res.page_attribution || [];
+
+    // Sum totals across platforms
+    let totalSpend = 0, totalMeetings = 0, totalCustomers = 0, totalRevenue = 0;
+    for (const d of Object.values(bp)) {
+      totalSpend    += d.spend    || 0;
+      totalMeetings += d.meetings || 0;
+      totalCustomers+= d.customers|| 0;
+      totalRevenue  += d.revenue  || 0;
+    }
+    const roi = totalSpend > 0 ? Math.round((totalRevenue - totalSpend) / totalSpend * 100) : 0;
+
+    chain.innerHTML = `
+      <div class="attr-step">
+        <div class="attr-val">$${fmtNum(Math.round(totalSpend))}</div>
+        <div class="attr-lbl">Ad Spend</div>
+      </div>
+      <div class="attr-step">
+        <div class="attr-val">${fmtNum(totalMeetings)}</div>
+        <div class="attr-lbl">Meetings</div>
+        <div class="attr-sub">${totalSpend>0&&totalMeetings>0?'$'+Math.round(totalSpend/totalMeetings)+'/mtg':''}</div>
+      </div>
+      <div class="attr-step">
+        <div class="attr-val">${fmtNum(totalCustomers)}</div>
+        <div class="attr-lbl">New Customers</div>
+        <div class="attr-sub">${totalMeetings>0?Math.round(totalCustomers/totalMeetings*100)+'% close rate':''}</div>
+      </div>
+      <div class="attr-step">
+        <div class="attr-val" style="color:${roi>=0?'var(--green)':'var(--red)'};">$${fmtNum(Math.round(totalRevenue))}</div>
+        <div class="attr-lbl">Revenue Won</div>
+        <div class="attr-sub" style="color:${roi>=0?'var(--green)':'var(--red)'};">${roi}% ROI</div>
+      </div>
+    `;
+
+    // Top messages if available
+    if (res.top_messages?.length) {
+      const msgs = res.top_messages.slice(0,3).map(m => m.message || m).join(' · ');
+      chain.innerHTML += `<div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--muted);"><strong>Winning Messages:</strong> ${msgs}</div>`;
+    }
+  } catch(e) {
+    chain.innerHTML = '<div style="padding:20px;color:var(--muted);">Attribution data unavailable — launch campaigns to see funnel data.</div>';
+  }
+}
+
+// ══════════════════════════════════════
+// LANDING PAGES TAB
+// ══════════════════════════════════════
+async function loadPlatformPages() {
+  const tbody = document.getElementById('pagesBody');
+  tbody.innerHTML = '<tr><td colspan="6" style="padding:30px;text-align:center;color:var(--muted);">Loading…</td></tr>';
+  try {
+    const res   = await apiCall(N8N.getPages);
+    const pages = Array.isArray(res) ? res : (res.value || res.pages || []);
+    if (!pages.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:30px;text-align:center;color:var(--muted);">No landing pages found. Create pages in the Pages section.</td></tr>';
+      renderPageLessons([]);
+      return;
+    }
+    tbody.innerHTML = pages.map(p => {
+      const views = Number(p.views) || 0;
+      const convs = Number(p.conversions) || 0;
+      const rate  = views > 0 ? (convs / views * 100).toFixed(1) + '%' : '–';
+      let sources = {};
+      try { sources = typeof p.visitor_sources === 'string' ? JSON.parse(p.visitor_sources) : (p.visitor_sources || {}); } catch(e) {}
+      const topSrc = Object.entries(sources).sort((a,b)=>b[1]-a[1]).slice(0,3)
+        .map(([k,v]) => `<span style="font-size:11px;background:#e0f2fe;color:#0369a1;padding:2px 7px;border-radius:10px;margin:1px;">${k} (${v})</span>`).join('');
+      return `
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 14px;"><strong>${p.page_name||p.name||'–'}</strong></td>
+          <td style="padding:10px 8px;text-align:right;">${fmtNum(views)}</td>
+          <td style="padding:10px 8px;text-align:right;font-weight:700;color:var(--green);">${fmtNum(convs)}</td>
+          <td style="padding:10px 8px;text-align:right;">${rate}</td>
+          <td style="padding:10px 8px;text-align:right;">$${fmtNum(Math.round(Number(p.revenue)||0))}</td>
+          <td style="padding:10px 14px;">${topSrc || '<span style="font-size:12px;color:var(--muted);">No source data</span>'}</td>
+        </tr>`;
+    }).join('');
+    renderPageLessons(pages);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--red);">Failed to load pages.</td></tr>`;
+  }
+}
+
+function renderPageLessons(pages) {
+  const el = document.getElementById('pageLessons');
+  const sorted = [...pages].sort((a,b)=>(Number(b.conversions)||0)-(Number(a.conversions)||0));
+  const best = sorted[0];
+  if (!best) {
+    el.innerHTML = '<div style="padding:14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--muted);">No conversion data yet. Pages with highest conversion rates will surface winning patterns here.</div>';
+    return;
+  }
+  let sources = {};
+  try { sources = typeof best.visitor_sources === 'string' ? JSON.parse(best.visitor_sources) : (best.visitor_sources || {}); } catch(e) {}
+  const topSrcName = Object.entries(sources).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'direct';
+  const views = Number(best.views)||0;
+  const convs = Number(best.conversions)||0;
+  const rate  = views > 0 ? (convs/views*100).toFixed(1) : '0';
+
+  el.innerHTML = `
+    <div style="padding:14px;background:#f0fdf4;border-radius:8px;border-left:3px solid var(--green);">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;">Best Converter: ${best.page_name||best.name||'–'}</div>
+      <div style="font-size:12px;color:var(--muted);">${rate}% conversion rate · Top source: ${topSrcName}</div>
+      <div style="font-size:12px;margin-top:6px;color:var(--navy);">Use this page as the landing URL for <strong>all platforms</strong>. A/B test the headline copy across Google, MSFT, and LinkedIn.</div>
+    </div>
+    <div style="padding:14px;background:#eff6ff;border-radius:8px;border-left:3px solid #3b82f6;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;">Cross-Platform Propagation</div>
+      <div style="font-size:12px;color:var(--muted);">The AI Optimizer uses this conversion rate as the benchmark when scoring your Google and MSFT campaigns. Higher-converting pages automatically get more budget allocation recommendations.</div>
+    </div>
+  `;
 }
 
 // ══════════════════════════════════════
