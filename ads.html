@@ -1768,8 +1768,10 @@ let adsData = null; // cached from getAllAds
 async function loadKPIs() {
   try {
     const res = await apiCall(N8N.getAllAds);
-    adsData = res;
-    const t = res.totals || {};
+    // n8n allIncomingItems wraps result in array — unwrap
+    const raw = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    adsData = raw;
+    const t = raw.totals || {};
     document.getElementById('kpiSpend').textContent       = t.spend       ? '$' + fmtNum(Math.round(t.spend))       : '$0';
     document.getElementById('kpiRevenue').textContent     = t.conversionRevenue ? '$' + fmtNum(Math.round(t.conversionRevenue)) : '$0';
     document.getElementById('kpiROI').textContent         = t.roi != null ? t.roi + '%'                              : '–%';
