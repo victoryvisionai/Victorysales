@@ -2170,6 +2170,146 @@ function connectCalendly() {
     }
   }
 
+  // ── Google Ads OAuth ─────────────────────────────────────────────────────
+  function connectGoogleAds() {
+    if (!isGoldUser()) { showStatus('Google Ads management requires a Gold plan.', true); return; }
+    const state = generateStateFromSession();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
+    const scope = encodeURIComponent('https://www.googleapis.com/auth/adwords https://www.googleapis.com/auth/userinfo.email');
+    const clientId = '395241490195-YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'; // replace with actual client ID
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&access_type=offline&state=${state}&prompt=consent`;
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'google_ads');
+    window.location.href = authUrl;
+  }
+
+  // ── Microsoft Ads OAuth ───────────────────────────────────────────────────
+  function connectMicrosoftAds() {
+    if (!isGoldUser()) { showStatus('Microsoft Ads management requires a Gold plan.', true); return; }
+    const state = generateStateFromSession();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
+    const scope = encodeURIComponent('https://ads.microsoft.com/ads.manage offline_access');
+    const clientId = 'YOUR_MSFT_CLIENT_ID'; // replace with actual Azure app client ID
+    const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}`;
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'msft_ads');
+    window.location.href = authUrl;
+  }
+
+  // ── LinkedIn Ads OAuth ────────────────────────────────────────────────────
+  function connectLinkedInAds() {
+    if (!isGoldUser()) { showStatus('LinkedIn Ads management requires a Gold plan.', true); return; }
+    const state = generateStateFromSession();
+    const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
+    // Ads scopes in addition to social scopes
+    const scope = encodeURIComponent('openid profile email w_member_social r_organization_social rw_organization_admin w_organization_social r_ads r_ads_reporting rw_ads');
+    const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${OAUTH_CLIENTS.linkedin}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
+    sessionStorage.setItem('oauth_state', state);
+    sessionStorage.setItem('oauth_platform', 'linkedin_ads');
+    window.location.href = authUrl;
+  }
+
+  // ── Generic disconnect ────────────────────────────────────────────────────
+  async function disconnectIntegration(platform) {
+    const label = platform.replace('_',' ').replace(/\b\w/g, c => c.toUpperCase());
+    if (!confirm(`Disconnect ${label}? You will need to reconnect to use this integration.`)) return;
+    try {
+      await apiCall(N8N_ENDPOINTS.oauthDisconnect, { platform });
+      showStatus(`${label} disconnected.`, false);
+      await checkConnectionStatus();
+    } catch(e) {
+      showStatus('Error disconnecting: ' + e.message, true);
+    }
+  }
+
+  // ── LinkedIn Company Pages ────────────────────────────────────────────────
+  async function showLinkedInPages() {
+    document.getElementById('linkedinPagesModal').style.display = 'block';
+    const listEl = document.getElementById('linkedinPagesList');
+    const loadingEl = document.getElementById('linkedinPagesLoading');
+    listEl.innerHTML = '';
+    loadingEl.style.display = 'block';
+
+    try {
+      const response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/linkedin/pages');
+      loadingEl.style.display = 'none';
+
+      const pages = Array.isArray(response) ? response : (response.pages || []);
+      if (!pages.length) {
+        listEl.innerHTML = '<p style="color:#666;text-align:center;">No company pages found on this LinkedIn account. Make sure you are an admin of a LinkedIn Page.</p>';
+        return;
+      }
+
+      listEl.innerHTML = pages.map(p => `
+        <div onclick="selectLinkedInPage('${p.id}','${(p.name||'').replace(/'/g,"\\'")}',this)"
+             style="border:1.5px solid #e0e0e0;border-radius:8px;padding:14px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all 0.2s;">
+          ${p.logo_url ? `<img src="${p.logo_url}" style="width:40px;height:40px;border-radius:4px;object-fit:cover;">` : '<div style="width:40px;height:40px;background:#e0e0e0;border-radius:4px;display:flex;align-items:center;justify-content:center;">🏢</div>'}
+          <div>
+            <div style="font-weight:700;color:#0A3161;">${p.name || p.id}</div>
+            <div style="font-size:12px;color:#666;">${p.followers ? p.followers.toLocaleString() + ' followers' : 'Company Page'}</div>
+          </div>
+        </div>
+      `).join('');
+    } catch(e) {
+      loadingEl.style.display = 'none';
+      listEl.innerHTML = `<p style="color:#dc3545;">Error loading pages: ${e.message}</p>`;
+    }
+  }
+
+  async function selectLinkedInPage(orgId, pageName, el) {
+    document.querySelectorAll('#linkedinPagesList > div').forEach(d => d.style.borderColor = '#e0e0e0');
+    el.style.borderColor = '#28a745';
+    el.style.background = '#f8fff9';
+
+    try {
+      await apiCall('https://victoryvision.app.n8n.cloud/webhook/linkedin/select-page', { org_id: 'urn:li:organization:' + orgId, page_name: pageName });
+      showStatus(`✅ "${pageName}" set as your posting page.`, false);
+      document.getElementById('linkedin-page-account').textContent = pageName;
+      document.getElementById('int-linkedin-pages').classList.add('connected');
+      setTimeout(() => { document.getElementById('linkedinPagesModal').style.display = 'none'; }, 1200);
+    } catch(e) {
+      showStatus('Error selecting page: ' + e.message, true);
+    }
+  }
+
+  // ── Teams invite ──────────────────────────────────────────────────────────
+  function showTeamsInvite() {
+    const plan = (currentUser && currentUser.subscription_plan || 'bronze').toLowerCase();
+    if (!['silver','gold','enterprise'].includes(plan)) {
+      showStatus('Team invites require Silver or Gold plan.', true);
+      return;
+    }
+    document.getElementById('teamsInviteModal').style.display = 'block';
+  }
+
+  async function sendTeamInvite() {
+    const email = document.getElementById('teamInviteEmail').value.trim();
+    const role  = document.getElementById('teamInviteRole').value;
+    if (!email) { showStatus('Please enter an email address.', true); return; }
+    try {
+      await apiCall('https://victoryvision.app.n8n.cloud/webhook/user/invite', { invite_email: email, role });
+      showStatus(`✅ Invite sent to ${email}`, false);
+      document.getElementById('teamsInviteModal').style.display = 'none';
+      document.getElementById('teamInviteEmail').value = '';
+    } catch(e) {
+      showStatus('Error sending invite: ' + e.message, true);
+    }
+  }
+
+  // ── Tier helpers ──────────────────────────────────────────────────────────
+  function isGoldUser() {
+    if (!currentUser) return false;
+    return ['gold','enterprise'].includes((currentUser.subscription_plan || '').toLowerCase());
+  }
+
+  // ── Close modals on outside click ────────────────────────────────────────
+  window.addEventListener('click', function(e) {
+    ['linkedinPagesModal','teamsInviteModal'].forEach(id => {
+      const m = document.getElementById(id);
+      if (e.target === m) m.style.display = 'none';
+    });
+  });
+
   // Initialize page
   async function init() {
     try {
