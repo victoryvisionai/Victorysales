@@ -1373,6 +1373,7 @@ async function checkAuthentication() {
       
       CUSTOMER_ID = session.user.email;
       authToken = session.access_token;
+      currentUser = { email: CUSTOMER_ID };
       document.getElementById('userEmail').textContent = CUSTOMER_ID;
       return true;
     }
