@@ -791,56 +791,184 @@
     </div>
   </div>
   
-  <div class="card" data-intro="Connect your social media accounts to enable automated posting and engagement across multiple platforms. Start with LinkedIn for professional networking." data-step="5">
+  <div class="card" data-intro="Connect your platforms here. Each OAuth shows days until expiry so you can renew before losing access." data-step="5">
     <div class="section-header">
       <h3>🔗 Platform Integrations</h3>
+      <div style="font-size:12px;opacity:0.85;margin-top:4px;">10 integrations · OAuth tokens auto-tracked · Expiry email reminders at 7 days</div>
     </div>
 
-    <div class="settings-group" data-intro="LinkedIn integration allows you to automatically post your AI-generated content, find leads, and track engagement. This is our most popular integration for B2B marketing." data-step="6">
-      <h3>
-        <span class="status-indicator status-disconnected" id="linkedin-status"></span>
-        LinkedIn Integration
-      </h3>
-      <p>Connect LinkedIn for social media posting and lead generation.</p>
-      <button onclick="connectLinkedIn()" id="connect-linkedin">Connect LinkedIn</button>
-      <button class="danger" onclick="disconnectLinkedIn()" style="display: none;" id="disconnect-linkedin">Disconnect</button>
-      <div class="connection-info" id="linkedin-info" style="display: none;">
-        <strong>Connected as:</strong> <span id="linkedin-profile"></span>
-      </div>
-    </div>
+    <!-- ── Social & Content ── -->
+    <div class="int-section-label">Social &amp; Content</div>
+    <div class="integrations-grid">
 
-    <!-- Calendly Integration -->
-    <div class="settings-group" data-intro="Connect your Calendly account to enable automatic meeting scheduling and calendar integration with your campaigns." data-step="6a">
-      <h3>
-        <span class="status-indicator status-disconnected" id="calendly-status"></span>
-        Calendly Integration
-      </h3>
-      <p>Connect Calendly for automated scheduling and calendar management.</p>
-      <button onclick="connectCalendly()" id="connect-calendly">Connect Calendly</button>
-      <button class="danger" onclick="disconnectCalendly()" style="display: none;" id="disconnect-calendly">Disconnect</button>
-      <div class="connection-info" id="calendly-info" style="display: none;">
-        <strong>Connected as:</strong> <span id="calendly-profile"></span>
-      </div>
-    </div>
-  </div>
-  <!-- SMS Phone Number Setup -->
-    <div class="settings-group" data-intro="Set up SMS messaging for your business. We'll help you get a dedicated phone number and handle all the compliance requirements automatically." data-step="6b">
-      <h3>
-        <span class="status-indicator status-disconnected" id="sms-status"></span>
-        SMS Phone Number Setup
-      </h3>
-      <p>Get a dedicated SMS phone number for your business with automated A2P compliance.</p>
-      <div id="sms-setup-info" style="display: none;">
-        <div class="connection-info">
-          <strong>Business Phone:</strong> <span id="sms-phone-number">Loading...</span><br>
-          <strong>Status:</strong> <span id="sms-registration-status">Active</span><br>
-          <strong>Brand Registration:</strong> <span id="brand-status">Approved</span><br>
-          <strong>Monthly Cost:</strong> ~$5/month + usage
+      <div class="integration-card" id="int-linkedin">
+        <div class="int-header">
+          <div class="int-icon">💼</div>
+          <div><div class="int-name">LinkedIn Personal</div><div style="font-size:10px;color:#666;">Post, engage, DM</div></div>
+        </div>
+        <div class="int-account" id="linkedin-account">Not connected</div>
+        <div id="linkedin-expiry"></div>
+        <div class="int-actions">
+          <button id="connect-linkedin" onclick="connectLinkedIn()">Connect</button>
+          <button class="danger" id="disconnect-linkedin" onclick="disconnectLinkedIn()" style="display:none">Disconnect</button>
+          <button class="secondary" id="linkedin-pages-btn" onclick="showLinkedInPages()" style="display:none;font-size:11px;">🏢 Company Pages</button>
         </div>
       </div>
-      <button onclick="showSMSSetupModal()" id="setup-sms-btn">📱 Setup SMS Number</button>
-      <button class="danger" onclick="disconnectSMS()" style="display: none;" id="disconnect-sms">Disconnect SMS</button>
+
+      <div class="integration-card" id="int-linkedin-pages">
+        <div class="int-header">
+          <div class="int-icon">🏢</div>
+          <div><div class="int-name">LinkedIn Pages</div><div style="font-size:10px;color:#666;">Post as company</div></div>
+        </div>
+        <div class="int-account" id="linkedin-page-account">Connect LinkedIn first</div>
+        <div id="linkedin-page-expiry"></div>
+        <div class="int-actions">
+          <button id="select-linkedin-page" onclick="showLinkedInPages()" style="display:none">Select Page</button>
+        </div>
+      </div>
+
     </div>
+
+    <!-- ── Advertising ── -->
+    <div class="int-section-label">Advertising <span style="font-size:10px;color:#bb133e;font-weight:700;">Gold only</span></div>
+    <div class="integrations-grid">
+
+      <div class="integration-card tier-locked" id="int-google-ads">
+        <div class="tier-badge badge-gold">Gold</div>
+        <div class="int-header">
+          <div class="int-icon">📊</div>
+          <div><div class="int-name">Google Ads</div><div style="font-size:10px;color:#666;">Search &amp; Display</div></div>
+        </div>
+        <div class="int-account" id="google-ads-account">Not connected</div>
+        <div id="google-ads-expiry"></div>
+        <div class="int-actions">
+          <button id="connect-google-ads" onclick="connectGoogleAds()">Connect</button>
+          <button class="danger" id="disconnect-google-ads" onclick="disconnectIntegration('google_ads')" style="display:none">Disconnect</button>
+        </div>
+      </div>
+
+      <div class="integration-card tier-locked" id="int-msft-ads">
+        <div class="tier-badge badge-gold">Gold</div>
+        <div class="int-header">
+          <div class="int-icon">🪟</div>
+          <div><div class="int-name">Microsoft Ads</div><div style="font-size:10px;color:#666;">Bing &amp; Audience</div></div>
+        </div>
+        <div class="int-account" id="msft-ads-account">Not connected</div>
+        <div id="msft-ads-expiry"></div>
+        <div class="int-actions">
+          <button id="connect-msft-ads" onclick="connectMicrosoftAds()">Connect</button>
+          <button class="danger" id="disconnect-msft-ads" onclick="disconnectIntegration('msft_ads')" style="display:none">Disconnect</button>
+        </div>
+      </div>
+
+      <div class="integration-card tier-locked" id="int-linkedin-ads">
+        <div class="tier-badge badge-gold">Gold</div>
+        <div class="int-header">
+          <div class="int-icon">📣</div>
+          <div><div class="int-name">LinkedIn Ads</div><div style="font-size:10px;color:#666;">Sponsored content</div></div>
+        </div>
+        <div class="int-account" id="linkedin-ads-account">Not connected</div>
+        <div id="linkedin-ads-expiry"></div>
+        <div class="int-actions">
+          <button id="connect-linkedin-ads" onclick="connectLinkedInAds()">Connect</button>
+          <button class="danger" id="disconnect-linkedin-ads" onclick="disconnectIntegration('linkedin_ads')" style="display:none">Disconnect</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Scheduling ── -->
+    <div class="int-section-label">Scheduling</div>
+    <div class="integrations-grid">
+
+      <div class="integration-card" id="int-calendly">
+        <div class="int-header">
+          <div class="int-icon">📅</div>
+          <div><div class="int-name">Calendly</div><div style="font-size:10px;color:#666;">Auto scheduling</div></div>
+        </div>
+        <div class="int-account" id="calendly-account">Not connected</div>
+        <div id="calendly-expiry"></div>
+        <div class="int-actions">
+          <button id="connect-calendly" onclick="connectCalendly()">Connect</button>
+          <button class="danger" id="disconnect-calendly" onclick="disconnectCalendly()" style="display:none">Disconnect</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Communications ── -->
+    <div class="int-section-label">Communications</div>
+    <div class="integrations-grid">
+
+      <div class="integration-card" id="int-sms">
+        <div class="int-header">
+          <div class="int-icon">📱</div>
+          <div><div class="int-name">SMS (Telnyx)</div><div style="font-size:10px;color:#666;">Business number</div></div>
+        </div>
+        <div class="int-account" id="sms-account">Not connected</div>
+        <div id="sms-setup-info" style="display:none;">
+          <div style="font-size:11px;color:#555;margin:4px 0;">
+            📞 <span id="sms-phone-number"></span><br>
+            Status: <span id="sms-registration-status">Active</span>
+          </div>
+        </div>
+        <div class="int-actions">
+          <button id="setup-sms-btn" onclick="showSMSSetupModal()">Setup SMS</button>
+          <button class="danger" id="disconnect-sms" onclick="disconnectSMS()" style="display:none">Disconnect</button>
+        </div>
+      </div>
+
+      <div class="integration-card tier-locked" id="int-teams">
+        <div class="tier-badge badge-silver">Silver+</div>
+        <div class="int-header">
+          <div class="int-icon">👥</div>
+          <div><div class="int-name">Teams Invite</div><div style="font-size:10px;color:#666;">Add team members</div></div>
+        </div>
+        <div class="int-account" id="teams-account">Invite teammates to your workspace</div>
+        <div class="int-actions">
+          <button id="invite-teams-btn" onclick="showTeamsInvite()">Invite Team</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LinkedIn Company Page Modal -->
+    <div id="linkedinPagesModal" class="modal">
+      <div class="modal-content" style="max-width:500px;">
+        <div class="modal-header"><h2>🏢 Select Company Page</h2><span class="close" onclick="document.getElementById('linkedinPagesModal').style.display='none'">&times;</span></div>
+        <div class="modal-body">
+          <p style="color:#666;">Choose which LinkedIn company page Victory Vision will post on your behalf.</p>
+          <div id="linkedinPagesList" style="margin-top:16px;display:grid;gap:10px;"></div>
+          <div id="linkedinPagesLoading" style="text-align:center;padding:30px;color:#666;"><div class="spinner" style="margin:0 auto 10px;width:30px;height:30px;border-width:3px;"></div>Loading your pages...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teams Invite Modal -->
+    <div id="teamsInviteModal" class="modal">
+      <div class="modal-content" style="max-width:480px;">
+        <div class="modal-header"><h2>👥 Invite Team Member</h2><span class="close" onclick="document.getElementById('teamsInviteModal').style.display='none'">&times;</span></div>
+        <div class="modal-body">
+          <p style="color:#666;">Team members share your workspace and credit pool. Gold plan includes up to 5 seats.</p>
+          <label>Email address</label>
+          <input type="email" id="teamInviteEmail" placeholder="colleague@company.com" style="margin:8px 0 4px;">
+          <label>Role</label>
+          <select id="teamInviteRole" style="width:100%;padding:10px;margin:8px 0;border:1px solid #ddd;border-radius:4px;">
+            <option value="member">Member (full access)</option>
+            <option value="viewer">Viewer (read-only)</option>
+            <option value="admin">Admin (manage billing)</option>
+          </select>
+          <button onclick="sendTeamInvite()" class="success" style="width:100%;margin-top:12px;">Send Invite</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- SMS Phone Number Setup (hidden status spans kept for JS compat) -->
+  <span id="sms-status" style="display:none"></span>
+  <span id="linkedin-status" style="display:none"></span>
+  <span id="calendly-status" style="display:none"></span>
+  <span id="brand-status" style="display:none"></span>
   <div class="card" id="billing-section" data-intro="Manage your subscription and billing here. View your current plan details, usage statistics, and upgrade options to unlock more AI credits and features." data-step="7">
     <div class="section-header">
       <h3>💳 Billing & Subscription Management</h3>
