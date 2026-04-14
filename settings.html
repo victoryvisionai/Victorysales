@@ -1706,16 +1706,20 @@ function connectCalendly() {
     const currentDomainInfo = document.getElementById('current-domain-info');
     const currentDomainSpan = document.getElementById('current-domain');
     const searchBtn = document.getElementById('search-domains');
-    
+    const domainSetupStatus = document.getElementById('domain-setup-status');
+
     if (hasDomain && domainName) {
-      statusIndicator.className = 'status-indicator status-connected';
-      currentDomainInfo.style.display = 'block';
-      currentDomainSpan.textContent = domainName;
-      searchBtn.textContent = '🔄 Change Domain';
+      if (statusIndicator) statusIndicator.className = 'status-indicator status-connected';
+      if (currentDomainInfo) currentDomainInfo.style.display = 'block';
+      if (currentDomainSpan) currentDomainSpan.textContent = domainName;
+      if (domainSetupStatus) domainSetupStatus.textContent = 'Active';
+      if (searchBtn) searchBtn.textContent = '🔄 Change Domain';
     } else {
-      statusIndicator.className = 'status-indicator status-disconnected';
-      currentDomainInfo.style.display = 'none';
-      searchBtn.textContent = '🔍 Search Available Domains';
+      if (statusIndicator) statusIndicator.className = 'status-indicator status-disconnected';
+      if (currentDomainInfo) currentDomainInfo.style.display = 'block'; // show "not chosen" state
+      if (currentDomainSpan) currentDomainSpan.innerHTML = '<span style="color:#999;font-style:italic;">No domain chosen yet</span>';
+      if (domainSetupStatus) domainSetupStatus.innerHTML = '<span style="color:#dc3545;">Not configured</span>';
+      if (searchBtn) searchBtn.textContent = '🔍 Search Available Domains';
     }
   }
 
