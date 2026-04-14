@@ -2073,7 +2073,8 @@ function renderCampaignsTable(ads) {
     const spend     = Number(ad.spend || ad.spend_usd) || 0;
     const revenue   = Number(ad.conversion_revenue) || 0;
     const roi       = spend > 0 ? Math.round((revenue - spend) / spend * 100) : null;
-    const roiStr    = roi != null ? `<span style="font-weight:700;color:${roi>=0?'var(--green)':'var(--red)'};">${roi}%</span>` : '–';
+    const roiColor  = roi >= 0 ? 'var(--green)' : 'var(--red)';
+    const roiStr    = roi != null ? '<span style="font-weight:700;color:' + roiColor + ';">' + roi + '%</span>' : '–';
     return `
     <tr>
       <td style="padding:10px 14px;"><strong>${ad.campaign_name || ad.name || '–'}</strong><br><span style="font-size:11px;color:var(--muted);">${ad.created_at ? new Date(ad.created_at).toLocaleDateString() : ''}</span></td>
