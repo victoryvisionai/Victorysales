@@ -322,10 +322,13 @@ async function testSettings() {
       urlPattern: 'webhook/user/ad-tracking',
       waitMs: 2000,
       action: async (page) => {
-        // Fill in a test value and click save
+        // Dismiss intro.js tour overlay if present, then click
+        await page.evaluate(() => {
+          document.querySelectorAll('.introjs-overlay, .introjs-tooltip, .introjs-helperLayer').forEach(el => el.remove());
+        });
         await page.fill('#google_pixel', 'G-TEST123').catch(() => {});
         const btn = page.locator('button:has-text("Save Tracking IDs")');
-        if (await btn.count() > 0) await btn.click();
+        if (await btn.count() > 0) await btn.click({ force: true });
         else throw new Error('"Save Tracking IDs" button not found');
       },
       assert: ({ status, json }) => {
