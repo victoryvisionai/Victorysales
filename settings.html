@@ -2253,7 +2253,7 @@ function connectCalendly() {
     const state = generateStateFromSession();
     const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
     const scope = encodeURIComponent('https://ads.microsoft.com/ads.manage offline_access');
-    const clientId = 'YOUR_MSFT_CLIENT_ID'; // replace with actual Azure app client ID
+    const clientId = '7ee290c0-f51d-4af7-a962-64f804bfd361';
     const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}`;
     sessionStorage.setItem('oauth_state', state);
     sessionStorage.setItem('oauth_platform', 'msft_ads');
