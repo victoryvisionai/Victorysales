@@ -187,15 +187,196 @@ async function check(url) {
   return hasErrors ? 1 : 0;
 }
 
+// ── test() ────────────────────────────────────────────────────────────────────
+// Interactive webhook verification. Pass a list of test specs:
+//   { label, action(page), assert(result) }
+// Each spec runs action, waits for the network response matching a URL pattern,
+// then calls assert with { status, body, json }.
+async function test(url, specs) {
+  mkdirSync(SCREENSHOTS_DIR, { recursive: true });
+
+  const browser = await chromium.launch({ headless: true });
+  const session = await getSession(browser);
+  const context = await browser.newContext({ storageState: session || undefined });
+  const page    = await context.newPage();
+
+  const consoleErrors = [];
+  const networkLog    = {};   // url-pattern → { status, text }
+
+  page.on('console', msg => {
+    const text = msg.text();
+    if (shouldIgnore(text)) return;
+    if (msg.type() === 'error') consoleErrors.push(text);
+  });
+
+  // Capture every response body for later assertion
+  page.on('response', async resp => {
+    try {
+      const u = resp.url();
+      const body = await resp.text().catch(() => '');
+      networkLog[u] = { status: resp.status(), text: body };
+    } catch {}
+  });
+
+  console.log(`\n🧪  Testing: ${url}`);
+  await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+  await page.waitForTimeout(3000);   // let deferred calls settle
+
+  const results = [];
+
+  for (const spec of specs) {
+    process.stdout.write(`  ⏳  ${spec.label} … `);
+    try {
+      if (spec.action) await spec.action(page);
+      if (spec.waitMs) await page.waitForTimeout(spec.waitMs);
+
+      // Find matching network response
+      const key = spec.urlPattern
+        ? Object.keys(networkLog).find(u => u.includes(spec.urlPattern))
+        : null;
+      const net = key ? networkLog[key] : null;
+      let json = null;
+      if (net) {
+        try { json = JSON.parse(net.text); } catch {}
+      }
+
+      const result = { status: net?.status, body: net?.text, json };
+      const assertResult = spec.assert ? spec.assert(result, page) : true;
+
+      if (assertResult === true || assertResult === undefined) {
+        console.log('✅ pass');
+        results.push({ label: spec.label, pass: true });
+      } else {
+        console.log('❌ FAIL — ' + assertResult);
+        results.push({ label: spec.label, pass: false, reason: assertResult });
+      }
+    } catch (err) {
+      console.log('❌ ERROR — ' + err.message);
+      results.push({ label: spec.label, pass: false, reason: err.message });
+    }
+  }
+
+  // Screenshot after all tests
+  const filename = `test-${slugify(url)}-${timestamp()}.png`;
+  try {
+    await page.screenshot({ path: `${SCREENSHOTS_DIR}/${filename}`, fullPage: true });
+    console.log(`\n  📸  Screenshot: ${filename}`);
+  } catch {}
+
+  await browser.close();
+
+  // Console error summary
+  if (consoleErrors.length) {
+    console.log(`\n  ❌  Console errors (${consoleErrors.length}):`);
+    consoleErrors.forEach(e => console.log(`      ${e}`));
+  } else {
+    console.log('  ✅  No console errors');
+  }
+
+  const failed = results.filter(r => !r.pass);
+  console.log(`\n  Results: ${results.length - failed.length}/${results.length} passed`);
+  if (failed.length) {
+    failed.forEach(r => console.log(`  ✗  ${r.label}: ${r.reason}`));
+  }
+
+  return (failed.length > 0 || consoleErrors.length > 0) ? 1 : 0;
+}
+
+// ── testSettings() ────────────────────────────────────────────────────────────
+async function testSettings() {
+  return test('https://victoryvision.app/settings.html', [
+    {
+      label: 'Page loads (networkidle)',
+      urlPattern: null,
+      assert: () => true   // navigation itself is the assertion
+    },
+    {
+      label: 'oauth/status — returns 200 with tokens array',
+      urlPattern: 'webhook/oauth/status',
+      assert: ({ status, json }) => {
+        if (!status) return 'no network request captured';
+        if (status !== 200) return `HTTP ${status}`;
+        if (!json) return 'response body not JSON';
+        const tokens = Array.isArray(json) ? json : (json.tokens || null);
+        if (!Array.isArray(tokens)) return 'tokens is not an array';
+        return true;
+      }
+    },
+    {
+      label: 'user/get — returns user object',
+      urlPattern: 'webhook/user/get',
+      assert: ({ status, json }) => {
+        if (!status) return 'no network request captured';
+        if (status !== 200) return `HTTP ${status}`;
+        if (!json) return 'response body not JSON';
+        return true;
+      }
+    },
+    {
+      label: 'Save Tracking IDs — posts to user/ad-tracking',
+      urlPattern: 'webhook/user/ad-tracking',
+      waitMs: 2000,
+      action: async (page) => {
+        // Fill in a test value and click save
+        await page.fill('#google_pixel', 'G-TEST123').catch(() => {});
+        const btn = page.locator('button:has-text("Save Tracking IDs")');
+        if (await btn.count() > 0) await btn.click();
+        else throw new Error('"Save Tracking IDs" button not found');
+      },
+      assert: ({ status, json }) => {
+        if (!status) return 'no network request captured';
+        if (status !== 200) return `HTTP ${status}`;
+        if (!json) return 'response body not JSON';
+        if (json.ok === false) return 'server returned ok:false — ' + (json.error || '');
+        return true;
+      }
+    },
+  ]);
+}
+
+// ── testAds() ─────────────────────────────────────────────────────────────────
+async function testAds() {
+  return test('https://victoryvision.app/ads.html', [
+    {
+      label: 'Page loads (networkidle)',
+      urlPattern: null,
+      assert: () => true
+    },
+    {
+      label: 'ads/get — returns 200 with totals object',
+      urlPattern: 'webhook/ads/get',
+      assert: ({ status, json }) => {
+        if (!status) return 'no network request captured';
+        if (status !== 200) return `HTTP ${status}`;
+        if (!json) return 'response body not JSON';
+        if (!json.totals) return 'missing totals field';
+        return true;
+      }
+    },
+    {
+      label: 'ads/get-attribution — returns 200',
+      urlPattern: 'webhook/ads/get-attribution',
+      assert: ({ status, json }) => {
+        if (!status) return 'no network request captured';
+        if (status !== 200) return `HTTP ${status}`;
+        if (!json) return 'response body not JSON';
+        return true;
+      }
+    },
+  ]);
+}
+
 // ── CLI ───────────────────────────────────────────────────────────────────────
 const [,, cmd, url] = process.argv;
 
-if (!cmd || !url) {
+if (!cmd) {
   console.log(`
 browser.js — Victory Vision page checker
 
   node browser.js check      "https://victoryvision.app/contacts"
   node browser.js screenshot "https://victoryvision.app/ai"
+  node browser.js test-settings
+  node browser.js test-ads
 `);
   process.exit(0);
 }
@@ -203,9 +384,15 @@ browser.js — Victory Vision page checker
 let exitCode = 0;
 
 if (cmd === 'check') {
+  if (!url) { console.error('check requires a URL'); process.exit(1); }
   exitCode = await check(url);
 } else if (cmd === 'screenshot') {
+  if (!url) { console.error('screenshot requires a URL'); process.exit(1); }
   await screenshot(url);
+} else if (cmd === 'test-settings') {
+  exitCode = await testSettings();
+} else if (cmd === 'test-ads') {
+  exitCode = await testAds();
 } else {
   console.error(`Unknown command: ${cmd}`);
   exitCode = 1;
