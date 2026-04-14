@@ -1610,6 +1610,8 @@ function connectCalendly() {
 
       // Update currentUser object
       currentUser.company_name = userData.company_name || '';
+      currentUser.subscription_plan = plan;
+      currentUser.phone_number = userData.phone_number || userData.vvnumber || null;
       
       // Update subscription medallion - use exact plan value from API
       const medallion = document.getElementById('subscriptionMedallion');
