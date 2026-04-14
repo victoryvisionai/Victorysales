@@ -1745,11 +1745,32 @@ function connectCalendly() {
       
       // Update plan cards based on current plan
       updatePlanCards(plan.toLowerCase());
-      
+
+      // Load saved ad tracking IDs (non-blocking)
+      loadAdTrackingSettings();
+
     } catch (error) {
       console.error('Error loading user data:', error);
       showStatus('Error loading user data: ' + error.message, true);
     }
+  }
+
+  async function loadAdTrackingSettings() {
+    try {
+      const res = await fetch(
+        'https://nyyvsdkumxvuwimmucdb.supabase.co/rest/v1/user_ad_settings?customer_id=eq.' + encodeURIComponent(CUSTOMER_ID) + '&select=*&limit=1',
+        { headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1OTAyMTUsImV4cCI6MjA1ODE2NjIxNX0.Y4bBHHkJRy7yQ64pFO8Qh6LBiHKNjIb3fE5mFWBGaI8', 'Authorization': 'Bearer ' + (authToken || '') } }
+      );
+      if (!res.ok) return;
+      const rows = await res.json();
+      const s = Array.isArray(rows) && rows[0] ? rows[0] : null;
+      if (!s) return;
+      const fields = ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account'];
+      fields.forEach(function(f) {
+        const el = document.getElementById(f);
+        if (el && s[f]) el.value = s[f];
+      });
+    } catch (_e) { /* non-fatal */ }
   }
 
   // Update domain status
