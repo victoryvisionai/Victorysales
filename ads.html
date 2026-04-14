@@ -2388,14 +2388,21 @@ async function init() {
   await Promise.allSettled([
     loadUserData(),
     loadAudienceCounts(),
-    loadKPIs(),
-    loadCampaigns(),
+    loadKPIs(),      // loads adsData + renders ROI dashboard
     loadCreatives(),
     loadLandingPages(),
     loadCampaignFilters(),
     loadBillboardInventory(),
-    loadOptimizations()
+    loadOptimizations(),
+    loadPlatformPages(),
+    loadAttributionData()
   ]);
+
+  // After KPIs loaded (which caches adsData), load campaigns table
+  loadCampaigns();
+
+  // Update platform connection UI from cached adsData
+  if (adsData?.ad_accounts) updatePlatformConnectionUI(adsData.ad_accounts);
 
   checkDeepLink();
 
@@ -2449,6 +2456,9 @@ window.downloadBillboard = downloadBillboard;
 window.launchLinkedInAd = launchLinkedInAd;
 window.loadOptimizations = loadOptimizations;
 window.loadCampaigns = loadCampaigns;
+window.loadPlatformPages = loadPlatformPages;
+window.loadAttributionData = loadAttributionData;
+window.openCreateAdModal = openCreateAdModal;
 
 document.addEventListener('DOMContentLoaded', init);
 </script>
