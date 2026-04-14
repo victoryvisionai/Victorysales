@@ -1568,7 +1568,46 @@ function connectCalendly() {
       const status = userData.subscription_status || 'trial';
       const nextBilling = userData.next_billing_date;
       const currentDomain = userData.domain;
-      
+      const credits = userData.credits || 0;
+
+      // Credit maxes per tier
+      const TIER_CREDITS = { bronze: 500, silver: 2500, gold: 10000, enterprise: 99999 };
+      const tierMax = TIER_CREDITS[plan.toLowerCase()] || 500;
+
+      // Update credits display
+      const creditsEl = document.getElementById('creditsRemaining');
+      const creditsTotalEl = document.getElementById('creditsTotal');
+      const creditsBarEl = document.getElementById('creditsBar');
+      const creditsTotalLabelEl = document.getElementById('creditsTotalLabel');
+      if (creditsEl) {
+        creditsEl.textContent = credits.toLocaleString();
+        const pct = Math.min(100, Math.round((credits / tierMax) * 100));
+        if (creditsBarEl) creditsBarEl.style.width = pct + '%';
+        if (creditsTotalEl) creditsTotalEl.textContent = `/ ${tierMax.toLocaleString()} monthly`;
+        if (creditsTotalLabelEl) creditsTotalLabelEl.textContent = tierMax.toLocaleString();
+        // Colour the bar based on remaining %
+        if (creditsBarEl) {
+          creditsBarEl.style.background = pct > 30 ? 'linear-gradient(90deg,#0A3161,#1a6fc4)'
+            : pct > 10 ? 'linear-gradient(90deg,#FFA500,#e67e00)'
+            : 'linear-gradient(90deg,#dc3545,#a01135)';
+        }
+      }
+
+      // Apply tier locks on ad integration cards
+      const isGold = ['gold','enterprise'].includes(plan.toLowerCase());
+      const isSilverPlus = ['silver','gold','enterprise'].includes(plan.toLowerCase());
+      ['int-google-ads','int-msft-ads','int-linkedin-ads'].forEach(id => {
+        const card = document.getElementById(id);
+        if (card) {
+          if (isGold) { card.classList.remove('tier-locked'); }
+          else { card.classList.add('tier-locked'); }
+        }
+      });
+      const teamsCard = document.getElementById('int-teams');
+      if (teamsCard) {
+        if (isSilverPlus) teamsCard.classList.remove('tier-locked');
+      }
+
       // Update currentUser object
       currentUser.company_name = userData.company_name || '';
       
