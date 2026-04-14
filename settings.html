@@ -932,6 +932,60 @@
 
     </div>
 
+    <!-- ── Ad Campaign Tracking ── -->
+    <div class="int-section-label" style="margin-top:24px;">Ad Campaign Tracking</div>
+    <div class="card" style="margin:0 0 24px;padding:24px;">
+      <p style="color:#666;font-size:13px;margin:0 0 20px;">Enter your pixel/tag IDs and ad account numbers so Victory Vision can track conversions and manage campaigns. These are saved to your profile.</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+
+        <!-- Google -->
+        <div>
+          <h4 style="margin:0 0 12px;color:#0A3161;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">🔍</span> Google
+          </h4>
+          <label style="font-size:12px;color:#555;font-weight:600;">Google Tag / Pixel ID</label>
+          <input type="text" id="google_pixel" placeholder="G-XXXXXXXXXX or AW-XXXXXXXXX"
+                 style="width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin:4px 0 12px;box-sizing:border-box;">
+          <label style="font-size:12px;color:#555;font-weight:600;">Google Ads Customer ID</label>
+          <input type="text" id="google_ads_customer_id" placeholder="123-456-7890"
+                 style="width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin:4px 0;box-sizing:border-box;">
+        </div>
+
+        <!-- Microsoft -->
+        <div>
+          <h4 style="margin:0 0 12px;color:#0A3161;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">🪟</span> Microsoft
+          </h4>
+          <label style="font-size:12px;color:#555;font-weight:600;">UET Tag ID</label>
+          <input type="text" id="msft_pixel" placeholder="123456789"
+                 style="width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin:4px 0 12px;box-sizing:border-box;">
+          <label style="font-size:12px;color:#555;font-weight:600;">Microsoft Ads Account ID</label>
+          <input type="text" id="msft_ads_account_id" placeholder="12345678"
+                 style="width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin:4px 0;box-sizing:border-box;">
+        </div>
+
+        <!-- LinkedIn -->
+        <div>
+          <h4 style="margin:0 0 12px;color:#0A3161;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">💼</span> LinkedIn
+          </h4>
+          <label style="font-size:12px;color:#555;font-weight:600;">Insight Tag ID</label>
+          <input type="text" id="linkedin_pixel" placeholder="1234567"
+                 style="width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin:4px 0 12px;box-sizing:border-box;">
+          <label style="font-size:12px;color:#555;font-weight:600;">LinkedIn Ad Account ID</label>
+          <input type="text" id="li_ad_account" placeholder="123456789"
+                 style="width:100%;padding:9px 10px;border:1px solid #ddd;border-radius:4px;font-size:13px;margin:4px 0;box-sizing:border-box;">
+        </div>
+
+      </div>
+
+      <div style="margin-top:20px;display:flex;align-items:center;gap:12px;">
+        <button onclick="saveAdTracking()" style="padding:10px 24px;background:#0A3161;color:white;border:none;border-radius:4px;cursor:pointer;font-weight:600;">💾 Save Tracking IDs</button>
+        <span id="ad-tracking-status" style="font-size:13px;color:#666;"></span>
+      </div>
+    </div>
+
     <!-- LinkedIn Company Page Modal -->
     <div id="linkedinPagesModal" class="modal">
       <div class="modal-content" style="max-width:500px;">
