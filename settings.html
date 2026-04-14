@@ -847,9 +847,21 @@
     </div>
     
     <div class="plan-info">
-      <p><strong>Current Plan:</strong> <span id="currentPlanName">Loading...</span></p>
-      <p><strong>Status:</strong> <span id="subscriptionStatus">Loading...</span></p>
-      <p id="nextBillingInfo" style="display: none;"><strong>Next Billing:</strong> <span id="nextBillingDate">Loading...</span></p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;align-items:start;">
+        <div>
+          <p style="margin:4px 0;"><strong>Current Plan:</strong> <span id="currentPlanName">Loading...</span></p>
+          <p style="margin:4px 0;"><strong>Status:</strong> <span id="subscriptionStatus">Loading...</span></p>
+          <p id="nextBillingInfo" style="display:none;margin:4px 0;"><strong>Next Billing:</strong> <span id="nextBillingDate">Loading...</span></p>
+        </div>
+        <div id="creditsSection">
+          <p style="margin:4px 0 8px;"><strong>Credits Remaining:</strong> <span id="creditsRemaining" style="font-size:1.2em;font-weight:700;color:#0A3161;">—</span> <span id="creditsTotal" style="font-size:12px;color:#666;"></span></p>
+          <div class="credits-bar-wrap">
+            <div class="credits-bar-track"><div class="credits-bar-fill" id="creditsBar" style="width:0%"></div></div>
+            <div class="credits-label"><span>0</span><span id="creditsTotalLabel">—</span></div>
+          </div>
+          <p style="font-size:11px;color:#888;margin:4px 0 0;">Credits refresh on billing date</p>
+        </div>
+      </div>
     </div>
 
     <!-- Billing Toggle -->
