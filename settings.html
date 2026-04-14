@@ -757,11 +757,11 @@
     <p class="page-subtitle">Manage your account integrations and billing preferences</p>
   </header>
   
-  <!-- Trial Notice -->
-  <div class="trial-notice" data-intro="All new users start with Bronze tier access and a few free credits to try our AI-powered features. To unlock full potential, choose a subscription plan below!" data-step="2">
-    <h4>🌟 Welcome to Victory Vision!</h4>
-    <p>You're currently on the <strong>Bronze tier</strong> with starter credits. Upgrade today to access unlimited campaigns, more AI credits, and advanced features!</p>
-    <a href="#billing" class="upgrade-cta" onclick="document.getElementById('billing-section').scrollIntoView({behavior: 'smooth'})">
+  <!-- Trial Notice — updated dynamically by loadUserData() -->
+  <div id="tierNotice" class="trial-notice" data-intro="Your current tier and credit balance are shown here. Upgrade to unlock more AI credits and premium features." data-step="2">
+    <h4 id="tierNoticeTitle">🌟 Welcome to Victory Vision!</h4>
+    <p id="tierNoticeText">Loading your account details...</p>
+    <a href="#billing" class="upgrade-cta" id="tierNoticeCta" onclick="document.getElementById('billing-section').scrollIntoView({behavior: 'smooth'})">
       View Subscription Plans →
     </a>
   </div>
