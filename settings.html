@@ -1759,7 +1759,7 @@ function connectCalendly() {
     try {
       const res = await fetch(
         'https://nyyvsdkumxvuwimmucdb.supabase.co/rest/v1/user_ad_settings?customer_id=eq.' + encodeURIComponent(CUSTOMER_ID) + '&select=*&limit=1',
-        { headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1OTAyMTUsImV4cCI6MjA1ODE2NjIxNX0.Y4bBHHkJRy7yQ64pFO8Qh6LBiHKNjIb3fE5mFWBGaI8', 'Authorization': 'Bearer ' + (authToken || '') } }
+        { headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU' } }
       );
       if (!res.ok) return;
       const rows = await res.json();
