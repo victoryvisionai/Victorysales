@@ -1357,6 +1357,7 @@
     getCheckout: 'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
     oauthStatus: 'https://victoryvision.app.n8n.cloud/webhook/oauth/status',
     oauthDisconnect: 'https://victoryvision.app.n8n.cloud/webhook/oauth/disconnect',
+    saveAdTracking: 'https://victoryvision.app.n8n.cloud/webhook/user/ad-tracking',
     deleteAccount: 'https://victoryvision.app.n8n.cloud/webhook/user/delete',
     searchDomains: 'https://victoryvision.app.n8n.cloud/webhook/domains/search',
     purchaseDomain: 'https://victoryvision.app.n8n.cloud/webhook/domains/purchase'
@@ -1401,20 +1402,20 @@ async function checkAuthentication() {
     }
 
     if (session && session.user) {
-      // NEW: Check blacklist
-      const { data: blacklisted } = await supabaseClient
-        .from('email_blacklist')
-        .select('email')
-        .eq('email', session.user.email)
-        .single();
-      
-      if (blacklisted) {
-        // User is blacklisted - sign them out
-        await supabaseClient.auth.signOut();
-        alert('Your account has been terminated. Please contact support if you believe this is an error.');
-        window.location.href = 'login.html';
-        return false;
-      }
+      // Check blacklist — ignore if table doesn't exist yet (won't block login)
+      try {
+        const { data: blacklisted } = await supabaseClient
+          .from('email_blacklist')
+          .select('email')
+          .eq('email', session.user.email)
+          .single();
+        if (blacklisted) {
+          await supabaseClient.auth.signOut();
+          alert('Your account has been terminated. Please contact support if you believe this is an error.');
+          window.location.href = 'login.html';
+          return false;
+        }
+      } catch (_blErr) { /* table may not exist — not a blocking error */ }
       
       CUSTOMER_ID = session.user.email;
       authToken = session.access_token;
@@ -2015,7 +2016,10 @@ function connectCalendly() {
   async function checkConnectionStatus() {
     try {
       const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
-      const oauthArray = Array.isArray(response) ? response : [response];
+      // Workflow returns { tokens: [...] } via firstIncomingItem, or plain array
+      const oauthArray = response && response.tokens ? response.tokens
+                       : Array.isArray(response) ? response
+                       : [response];
 
       // Reset all integration cards to disconnected state
       const platforms = { linkedin: false, calendly: false, google_ads: false, msft_ads: false, linkedin_ads: false };
@@ -2371,7 +2375,7 @@ function connectCalendly() {
     const statusEl = document.getElementById('ad-tracking-status');
     statusEl.textContent = 'Saving...';
     try {
-      await apiCall('https://victoryvision.app.n8n.cloud/webhook/user/ad-tracking', payload);
+      await apiCall(N8N_ENDPOINTS.saveAdTracking, payload);
       statusEl.textContent = '✅ Saved';
       statusEl.style.color = '#28a745';
       setTimeout(() => { statusEl.textContent = ''; }, 3000);
