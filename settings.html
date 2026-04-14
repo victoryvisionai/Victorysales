@@ -865,87 +865,148 @@
     </div>
 
     <h4>Available Plans</h4>
-    <div class="billing-section" data-intro="Choose your subscription tier based on your marketing needs. Bronze is perfect for small businesses, Silver for growing companies, Gold for enterprises, and Enterprise for teams requiring unlimited campaigns." data-step="8">
+    <p style="font-size:12px;color:#888;margin-bottom:16px;">1 credit = $0.10 value. Credits refresh monthly. Unused credits do not roll over.</p>
+    <div class="billing-section" data-intro="Choose your tier. Bronze gets you started, Silver unlocks campaigns and lead enrichment, Gold unlocks video and ads management with 10,000 credits/month." data-step="8">
+
       <!-- Bronze Plan -->
       <div class="plan-card" id="bronzePlan">
-        <h4>Bronze Plan</h4>
+        <h4>🥉 Bronze</h4>
+        <div style="font-size:11px;color:#888;margin-bottom:8px;">Solo operators &amp; first 90 days</div>
         <div class="plan-price">
           <span id="bronzePrice">$99</span>
           <span style="font-size: 1rem; color: #666;" id="bronzePeriod">/month</span>
           <div class="annual-savings" id="bronzeSavings" style="display: none;">Save $120/year</div>
         </div>
-        <ul class="plan-features">
-          <li>✓ 100 Image Credits</li>
-          <li>✓ 20 Video Credits</li>
-          <li>✓ 50 Lead Credits</li>
-          <li>✓ 10 Campaign Credits</li>
-          <li>✓ 25 Social Credits</li>
-          <li>✓ Basic Support</li>
+        <div style="background:#e8f4f8;border-radius:6px;padding:8px;margin:10px 0;font-size:13px;">
+          <strong>500 credits/month</strong><br>
+          <span style="font-size:11px;color:#666;">~500 emails or 100 social posts or 60 AI plans</span>
+        </div>
+        <ul class="plan-features" style="text-align:left;font-size:13px;">
+          <li>✓ Email &amp; SMS outreach (1-2 cr each)</li>
+          <li>✓ Social posting (3 cr)</li>
+          <li>✓ AI plan generation (15 cr)</li>
+          <li>✓ Contact management (1 cr)</li>
+          <li>✓ Landing page builder (12 cr)</li>
+          <li>✓ Meetings &amp; calendar (2 cr)</li>
+          <li class="plan-feature-locked">✗ Email campaigns (Silver+)</li>
+          <li class="plan-feature-locked">✗ Lead enrichment (Silver+)</li>
+          <li class="plan-feature-locked">✗ Video creation (Gold only)</li>
+          <li class="plan-feature-locked">✗ Ads management (Gold only)</li>
         </ul>
         <button onclick="upgradeToPlan('bronze')" id="bronzeButton">Select Bronze</button>
       </div>
 
       <!-- Silver Plan -->
       <div class="plan-card" id="silverPlan">
-        <h4>Silver Plan</h4>
+        <h4>🥈 Silver</h4>
+        <div style="font-size:11px;color:#888;margin-bottom:8px;">Growing teams doing active prospecting</div>
         <div class="plan-price">
           <span id="silverPrice">$450</span>
           <span style="font-size: 1rem; color: #666;" id="silverPeriod">/month</span>
-          <div class="annual-savings" id="silverSavings" style="display: none;">Save $360/year</div>
+          <div class="annual-savings" id="silverSavings" style="display: none;">Save $900/year</div>
         </div>
-        <ul class="plan-features">
-          <li>✓ 500 Image Credits</li>
-          <li>✓ 100 Video Credits</li>
-          <li>✓ 200 Lead Credits</li>
-          <li>✓ 50 Campaign Credits</li>
-          <li>✓ 100 Social Credits</li>
-          <li>✓ Priority Support</li>
-          <li>✓ Advanced Analytics</li>
+        <div style="background:#e8f4f8;border-radius:6px;padding:8px;margin:10px 0;font-size:13px;">
+          <strong>2,500 credits/month</strong><br>
+          <span style="font-size:11px;color:#666;">~500 lead enrichments or 166 AI plans or 250 social posts</span>
+        </div>
+        <ul class="plan-features" style="text-align:left;font-size:13px;">
+          <li>✓ Everything in Bronze</li>
+          <li>✓ <span class="plan-highlight">Email campaigns (15 cr + 5/50 sent)</span></li>
+          <li>✓ <span class="plan-highlight">Lead enrichment via Clay (5 cr each)</span></li>
+          <li>✓ Priority email support</li>
+          <li>✓ Advanced AI analytics</li>
+          <li>✓ Ads performance view (read-only)</li>
+          <li class="plan-feature-locked">✗ Video creation (Gold only)</li>
+          <li class="plan-feature-locked">✗ Launch &amp; manage ads (Gold only)</li>
+          <li class="plan-feature-locked">✗ White-label options (Gold only)</li>
         </ul>
         <button onclick="upgradeToPlan('silver')" id="silverButton">Select Silver</button>
       </div>
 
       <!-- Gold Plan -->
       <div class="plan-card" id="goldPlan">
-        <h4>Gold Plan</h4>
+        <h4>🥇 Gold</h4>
+        <div style="font-size:11px;color:#888;margin-bottom:8px;">Full sales teams — everything unlocked</div>
         <div class="plan-price">
           <span id="goldPrice">$1250</span>
           <span style="font-size: 1rem; color: #666;" id="goldPeriod">/month</span>
-          <div class="annual-savings" id="goldSavings" style="display: none;">Save $960/year</div>
+          <div class="annual-savings" id="goldSavings" style="display: none;">Save $2,580/year</div>
         </div>
-        <ul class="plan-features">
-          <li>✓ Unlimited Image </li>
-          <li>✓ 500 Video </li>
-          <li>✓ 1000 Lead </li>
-          <li>✓ Unlimited Campaigns</li>
-          <li>✓ 500 Social Posts</li>
-          <li>✓ 24/7 Dedicated Support</li>
-          <li>✓ White-label Options</li>
-          <li>✓ Custom Integrations</li>
+        <div style="background:#fff8e1;border-radius:6px;padding:8px;margin:10px 0;font-size:13px;">
+          <strong>10,000 credits/month</strong><br>
+          <span style="font-size:11px;color:#666;">~2,000 lead enrichments or 83 videos (10 sec) or 666 AI plans</span>
+        </div>
+        <ul class="plan-features" style="text-align:left;font-size:13px;">
+          <li>✓ Everything in Silver</li>
+          <li>✓ <span class="plan-highlight">AI video creation (120 cr / 10 sec)</span></li>
+          <li>✓ <span class="plan-highlight">Google, MSFT &amp; LinkedIn Ads mgmt (20 cr)</span></li>
+          <li>✓ <span class="plan-highlight">Unlimited lead enrichment</span></li>
+          <li>✓ White-label &amp; custom domain</li>
+          <li>✓ 24/7 dedicated support</li>
+          <li>✓ Custom integrations</li>
+          <li>✓ Team seats included</li>
         </ul>
         <button onclick="upgradeToPlan('gold')" id="goldButton">Select Gold</button>
       </div>
 
       <!-- Enterprise Plan -->
       <div class="plan-card" id="enterprisePlan">
-        <h4>Enterprise Plan</h4>
+        <h4>🏆 Enterprise</h4>
+        <div style="font-size:11px;color:#888;margin-bottom:8px;">Multi-location &amp; agency teams</div>
         <div class="plan-price">
-          <span id="enterprisePrice">Contact Us</span>
+          <span id="enterprisePrice">Custom</span>
           <span style="font-size: 1rem; color: #666;" id="enterprisePeriod"></span>
         </div>
-        <ul class="plan-features">
+        <div style="background:#fce8e8;border-radius:6px;padding:8px;margin:10px 0;font-size:13px;">
+          <strong>Custom credits + rollover</strong><br>
+          <span style="font-size:11px;color:#666;">Volume discounts, SLA, dedicated infra</span>
+        </div>
+        <ul class="plan-features" style="text-align:left;font-size:13px;">
           <li>✓ Everything in Gold</li>
+          <li>✓ Unused credits roll over</li>
           <li>✓ Role-based approvals</li>
-          <li>✓ Inline comments</li>
-          <li>✓ Calendar rescheduling</li>
-          <li>✓ Custom integrations</li>
+          <li>✓ Multi-location management</li>
           <li>✓ Dedicated account manager</li>
           <li>✓ SLA guarantees</li>
-          <li>✓ Priority development</li>
+          <li>✓ Priority development pipeline</li>
+          <li>✓ White-glove onboarding</li>
         </ul>
         <button onclick="contactEnterprise()" id="enterpriseButton">Contact Sales</button>
       </div>
     </div>
+
+    <!-- Credit cost reference -->
+    <details style="margin-top:16px;font-size:13px;color:#555;">
+      <summary style="cursor:pointer;font-weight:600;color:#0A3161;">📊 Credit cost per action (click to expand)</summary>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-top:12px;">
+        <div style="background:#f8f9fa;padding:10px;border-radius:6px;">
+          <strong>Outreach</strong><br>
+          Email Send: 1 cr<br>
+          Email AI Draft/Reply: 2 cr<br>
+          SMS Send: 2 cr<br>
+          Meeting Schedule: 2 cr
+        </div>
+        <div style="background:#f8f9fa;padding:10px;border-radius:6px;">
+          <strong>Content</strong><br>
+          Social Post: 3 cr<br>
+          Social Content Calendar: 8 cr<br>
+          Landing Page: 12 cr<br>
+          AI Plan Generate: 15 cr
+        </div>
+        <div style="background:#f8f9fa;padding:10px;border-radius:6px;">
+          <strong>Campaigns (Silver+)</strong><br>
+          Campaign Create: 15 cr<br>
+          Campaign Send per 50: 5 cr<br>
+          Lead Enrich (Clay): 5 cr/contact
+        </div>
+        <div style="background:#f8f9fa;padding:10px;border-radius:6px;">
+          <strong>Gold Only</strong><br>
+          Video Create: 120 cr/10 sec<br>
+          Ad Launch: 20 cr<br>
+          AI Feedback: 10 cr
+        </div>
+      </div>
+    </details>
   </div>
 
   <!-- Account Deletion Section -->
