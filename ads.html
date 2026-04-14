@@ -1994,17 +1994,24 @@ async function loadOptimizations() {
       feed.innerHTML = `<div class="empty-state"><div class="icon">🤖</div><h3>No Recommendations Yet</h3><p>Activate a campaign. Optimizer runs after 48 hours of data.</p></div>`;
       return;
     }
-    feed.innerHTML = items.map(item => `
-      <div class="opt-item ${item.type || ''}">
-        <div class="opt-title">${item.title}</div>
-        <div class="opt-desc">${item.description}</div>
-        <div class="opt-actions">
-          <button class="btn btn-sm btn-primary" onclick="applyOpt('${item.id}','apply')">✅ Apply</button>
-          <button class="btn btn-sm btn-ghost" onclick="applyOpt('${item.id}','dismiss')">Dismiss</button>
+    feed.innerHTML = items.map((item, i) => {
+      const pColor = PLATFORM_COLORS[item.platform] || 'var(--navy)';
+      const recKey = `_rec_${i}`;
+      window[recKey] = item; // store rec object for onclick
+      return `
+      <div class="opt-item ${item.priority === 'high' ? 'pause' : ''}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:10px;background:${pColor}22;color:${pColor};padding:2px 8px;border-radius:10px;font-weight:700;">${(item.platform||'').replace('_ads','').toUpperCase()}</span>
+          <span style="font-size:10px;background:${item.priority==='high'?'#fee2e2':'#fef3c7'};color:${item.priority==='high'?'#991b1b':'#92400e'};padding:2px 8px;border-radius:10px;font-weight:700;">${item.priority?.toUpperCase()||'MEDIUM'}</span>
         </div>
-        <div class="opt-time">${item.created_at ? new Date(item.created_at).toLocaleDateString() : ''}</div>
-      </div>
-    `).join('');
+        <div class="opt-title">${item.action_type?.toUpperCase().replace('_',' ')}: Ad #${item.ad_id}</div>
+        <div class="opt-desc">${item.rationale}</div>
+        <div class="opt-actions">
+          <button class="btn btn-sm btn-primary" onclick="applyOpt(window['${recKey}'],'apply')">✅ Apply</button>
+          <button class="btn btn-sm btn-ghost" onclick="applyOpt(window['${recKey}'],'dismiss')">Dismiss</button>
+        </div>
+      </div>`;
+    }).join('');
   } catch(e) {
     feed.innerHTML = `<div style="color:var(--red);padding:12px;">Failed to load recommendations.</div>`;
   }
