@@ -175,6 +175,47 @@
     .btn-sm        { padding: 7px 14px; font-size: 12px; }
     .btn-full      { width: 100%; }
 
+    /* ── SETUP STEPS ── */
+    .setup-step {
+      display: flex; align-items: flex-start; gap: 12px; padding: 10px;
+      background: var(--bg); border-radius: 8px;
+    }
+    .setup-step-icon {
+      font-size: 18px; margin-top: 1px; flex-shrink: 0; min-width: 22px;
+    }
+    .setup-step.done .setup-step-icon { color: var(--green); }
+    .setup-step.pending .setup-step-icon { color: #f59e0b; }
+
+    /* ── PLATFORM CARD ── */
+    .platform-roi-card {
+      background: white; border-radius: 10px; padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      border-top: 4px solid var(--border);
+    }
+    .platform-roi-card .prc-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+    .platform-roi-card .prc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .platform-roi-card .prc-val  { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; }
+    .platform-roi-card .prc-lbl  { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+
+    /* ── PILL TAG ── */
+    .intel-pill {
+      padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      background: #e0f2fe; color: #0369a1;
+      display: inline-block;
+    }
+
+    /* ── ATTRIBUTION STEP ── */
+    .attr-step {
+      text-align: center; padding: 16px 8px; position: relative;
+    }
+    .attr-step + .attr-step::before {
+      content: '→'; position: absolute; left: -8px; top: 50%; transform: translateY(-50%);
+      font-size: 20px; color: var(--muted);
+    }
+    .attr-step .attr-val { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--navy); }
+    .attr-step .attr-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+    .attr-step .attr-sub { font-size: 11px; color: var(--green); margin-top: 2px; }
+
     /* ── AUDIENCE SEGMENT PILLS ── */
     .segment-options { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
     .segment-pill {
