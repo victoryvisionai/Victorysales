@@ -2088,7 +2088,7 @@ function renderCampaignsTable(ads) {
       <td style="padding:10px 8px;"><span class="status-badge status-${(ad.status||'draft').toLowerCase()}">${ad.status || 'Draft'}</span></td>
       <td style="padding:10px 8px;">
         <button class="btn btn-sm btn-ghost" onclick="openCampaignDetail('${ad.id}')">Details</button>
-        ${ad.status === 'ACTIVE' ? `<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;margin-left:4px;" onclick="pauseCampaign('${ad.id}')">⏸</button>` : ''}
+        ${ad.status === 'ACTIVE' ? '<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;margin-left:4px;" onclick="pauseCampaign(\'' + ad.id + '\')">⏸</button>' : ''}
       </td>
     </tr>
   `).join('');
