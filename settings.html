@@ -2037,10 +2037,11 @@ function connectCalendly() {
   async function checkConnectionStatus() {
     try {
       const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
-      // Workflow returns { tokens: [...] } via firstIncomingItem, or plain array
-      const oauthArray = response && response.tokens ? response.tokens
-                       : Array.isArray(response) ? response
-                       : [response];
+      // n8n allIncomingItems wraps in array: [{tokens:[...]}]
+      const _oauthRaw  = Array.isArray(response) ? response[0] : response;
+      const oauthArray = (_oauthRaw && _oauthRaw.tokens) ? _oauthRaw.tokens
+                       : Array.isArray(_oauthRaw) ? _oauthRaw
+                       : [_oauthRaw];
 
       // Reset all integration cards to disconnected state
       const platforms = { linkedin: false, calendly: false, google_ads: false, msft_ads: false, linkedin_ads: false };
