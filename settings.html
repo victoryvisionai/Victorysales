@@ -2363,6 +2363,27 @@ function connectCalendly() {
     }
   }
 
+  // ── Ad Tracking Save ────────────────────────────────────────────────────
+  async function saveAdTracking() {
+    const fields = ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account'];
+    const payload = {};
+    fields.forEach(f => {
+      const el = document.getElementById(f);
+      if (el) payload[f] = el.value.trim();
+    });
+    const statusEl = document.getElementById('ad-tracking-status');
+    statusEl.textContent = 'Saving...';
+    try {
+      await apiCall(N8N_ENDPOINTS.updateUser, payload);
+      statusEl.textContent = '✅ Saved';
+      statusEl.style.color = '#28a745';
+      setTimeout(() => { statusEl.textContent = ''; }, 3000);
+    } catch(e) {
+      statusEl.textContent = '❌ Error: ' + e.message;
+      statusEl.style.color = '#dc3545';
+    }
+  }
+
   // ── Tier helpers ──────────────────────────────────────────────────────────
   function isGoldUser() {
     if (!currentUser) return false;
