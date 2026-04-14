@@ -1909,45 +1909,94 @@ function connectCalendly() {
     }
   }
 
+  // Render an expiry badge in the given element id
+  function renderExpiryBadge(elementId, expiresAt) {
+    const el = document.getElementById(elementId);
+    if (!el || !expiresAt) return;
+    const days = Math.floor((new Date(expiresAt) - new Date()) / 86400000);
+    if (days < 0) {
+      el.innerHTML = '<span class="int-expiry expiry-urgent">⚠️ Expired</span>';
+    } else if (days <= 7) {
+      el.innerHTML = `<span class="int-expiry expiry-urgent">🔴 ${days}d left — renew now</span>`;
+    } else if (days <= 30) {
+      el.innerHTML = `<span class="int-expiry expiry-warn">🟡 ${days} days left</span>`;
+    } else {
+      el.innerHTML = `<span class="int-expiry expiry-ok">✅ ${days} days left</span>`;
+    }
+  }
+
   async function checkConnectionStatus() {
     try {
       const response = await apiCall(N8N_ENDPOINTS.oauthStatus);
-      console.log('OAuth status response:', response);
-      
-      // Handle array response - each item is a separate OAuth record
       const oauthArray = Array.isArray(response) ? response : [response];
-      
-      // Look for LinkedIn and Calendly connections specifically
-      let linkedinConnected = false;
-      let linkedinProfile = null;
-      let calendlyConnected = false;
-      let calendlyProfile = null;
-      
+
+      // Reset all integration cards to disconnected state
+      const platforms = { linkedin: false, calendly: false, google_ads: false, msft_ads: false, linkedin_ads: false };
+      const tokenMap = {};
+
       oauthArray.forEach(item => {
-        if (item && item.platform && item.access_token) {
-          if (item.platform.toLowerCase() === 'linkedin') {
-            linkedinConnected = true;
-            linkedinProfile = item.customer_id || item.profile_id;
-          }
-          if (item.platform.toLowerCase() === 'calendly') {
-            calendlyConnected = true;
-            calendlyProfile = item.customer_id || item.profile_id;
-          }
+        if (!item || !item.platform || !item.access_token) return;
+        const p = item.platform.toLowerCase().replace(/\s+/g,'_');
+        platforms[p] = true;
+        tokenMap[p] = item;
+      });
+
+      // LinkedIn Personal
+      if (tokenMap.linkedin) {
+        const t = tokenMap.linkedin;
+        const name = t.social_name || t.social_email || t.customer_id;
+        document.getElementById('linkedin-account').textContent = name;
+        document.getElementById('int-linkedin').classList.add('connected');
+        document.getElementById('connect-linkedin').style.display = 'none';
+        document.getElementById('disconnect-linkedin').style.display = 'inline-block';
+        document.getElementById('linkedin-pages-btn').style.display = 'inline-block';
+        renderExpiryBadge('linkedin-expiry', t.expires_at);
+
+        // LinkedIn Company Page (org_id)
+        if (t.org_id && t.org_id.trim()) {
+          const orgId = t.org_id.trim().replace('urn:li:organization:','');
+          document.getElementById('linkedin-page-account').textContent = `Company ID: ${orgId}`;
+          document.getElementById('select-linkedin-page').style.display = 'inline-block';
+          document.getElementById('int-linkedin-pages').classList.add('connected');
+          renderExpiryBadge('linkedin-page-expiry', t.expires_at);
+        }
+      }
+
+      // Calendly
+      if (tokenMap.calendly) {
+        const t = tokenMap.calendly;
+        document.getElementById('calendly-account').textContent = t.social_name || t.social_email || t.profile_id;
+        document.getElementById('int-calendly').classList.add('connected');
+        document.getElementById('connect-calendly').style.display = 'none';
+        document.getElementById('disconnect-calendly').style.display = 'inline-block';
+        renderExpiryBadge('calendly-expiry', t.expires_at);
+      }
+
+      // Ads integrations
+      ['google_ads','msft_ads','linkedin_ads'].forEach(platform => {
+        if (tokenMap[platform]) {
+          const t = tokenMap[platform];
+          const cardId = 'int-' + platform.replace('_','-');
+          document.getElementById(cardId).classList.add('connected');
+          document.getElementById(platform.replace('_','-') + '-account').textContent = t.social_name || t.social_email || 'Connected';
+          document.getElementById('connect-' + platform.replace('_','-')).style.display = 'none';
+          document.getElementById('disconnect-' + platform.replace('_','-')).style.display = 'inline-block';
+          renderExpiryBadge(platform.replace('_','-') + '-expiry', t.expires_at);
         }
       });
-      
-      console.log('LinkedIn connected:', linkedinConnected, 'Profile:', linkedinProfile);
-      console.log('Calendly connected:', calendlyConnected, 'Profile:', calendlyProfile);
-      
-      // Update UI for each platform
-      updateConnectionStatus('linkedin', linkedinConnected, linkedinProfile);
-      updateConnectionStatus('calendly', calendlyConnected, calendlyProfile);
-      
+
+      // SMS
+      if (currentUser && currentUser.phone_number) {
+        document.getElementById('sms-account').textContent = currentUser.phone_number;
+        document.getElementById('int-sms').classList.add('connected');
+        document.getElementById('sms-setup-info').style.display = 'block';
+        document.getElementById('sms-phone-number').textContent = currentUser.phone_number;
+        document.getElementById('setup-sms-btn').style.display = 'none';
+        document.getElementById('disconnect-sms').style.display = 'inline-block';
+      }
+
     } catch (error) {
       console.error('Error checking connection status:', error);
-      // Set all to disconnected on error
-      updateConnectionStatus('linkedin', false);
-      updateConnectionStatus('calendly', false);
     }
   }
 
