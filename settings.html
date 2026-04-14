@@ -1571,6 +1571,35 @@ function connectCalendly() {
       const currentDomain = userData.vv_domain || userData.domain || null;
       const credits = typeof userData.credits === 'number' ? userData.credits : parseInt(userData.credits) || 0;
 
+      // ── Update tier notice banner ──────────────────────────────────────────
+      const noticeEl    = document.getElementById('tierNotice');
+      const noticeTitleEl = document.getElementById('tierNoticeTitle');
+      const noticeTextEl  = document.getElementById('tierNoticeText');
+      const noticeCtaEl   = document.getElementById('tierNoticeCta');
+      if (noticeEl) {
+        const planLower = plan.toLowerCase();
+        if (planLower === 'gold' || planLower === 'enterprise') {
+          // Gold: no upsell needed — show a congratulatory banner
+          noticeEl.style.background = 'linear-gradient(135deg,#fff8e1,#ffe082)';
+          noticeEl.style.borderColor = '#FFD700';
+          if (noticeTitleEl) noticeTitleEl.textContent = '🥇 You\'re on ' + plan + ' — Full Access';
+          if (noticeTextEl)  noticeTextEl.textContent  = 'All features unlocked including video creation, ads management, and 10,000 credits/month. Credits reset on your billing date.';
+          if (noticeCtaEl)   noticeCtaEl.style.display = 'none';
+        } else if (planLower === 'silver') {
+          noticeEl.style.background = 'linear-gradient(135deg,#f5f5f5,#e0e0e0)';
+          noticeEl.style.borderColor = '#C0C0C0';
+          if (noticeTitleEl) noticeTitleEl.textContent = '🥈 Silver Plan — 2,500 credits/month';
+          if (noticeTextEl)  noticeTextEl.textContent  = 'Campaigns and lead enrichment unlocked. Upgrade to Gold to unlock video creation, ads management, and 10,000 credits/month.';
+          if (noticeCtaEl) { noticeCtaEl.textContent = 'Upgrade to Gold →'; noticeCtaEl.style.display = 'inline-block'; }
+        } else {
+          // Bronze or trial
+          noticeEl.style.background = '';
+          if (noticeTitleEl) noticeTitleEl.textContent = '🥉 Bronze Plan — 500 credits/month';
+          if (noticeTextEl)  noticeTextEl.textContent  = 'Upgrade to Silver to unlock campaigns and lead enrichment. Upgrade to Gold for video creation and ads management.';
+          if (noticeCtaEl) { noticeCtaEl.textContent = 'View Subscription Plans →'; noticeCtaEl.style.display = 'inline-block'; }
+        }
+      }
+
       // Credit maxes per tier
       const TIER_CREDITS = { bronze: 500, silver: 2500, gold: 10000, enterprise: 99999 };
       const tierMax = TIER_CREDITS[plan.toLowerCase()] || 500;
