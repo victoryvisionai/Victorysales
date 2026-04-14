@@ -1568,8 +1568,8 @@ function connectCalendly() {
       const plan = userData.subscription_plan || 'Bronze';
       const status = userData.subscription_status || 'trial';
       const nextBilling = userData.next_billing_date;
-      const currentDomain = userData.domain;
-      const credits = userData.credits || 0;
+      const currentDomain = userData.vv_domain || userData.domain || null;
+      const credits = typeof userData.credits === 'number' ? userData.credits : parseInt(userData.credits) || 0;
 
       // Credit maxes per tier
       const TIER_CREDITS = { bronze: 500, silver: 2500, gold: 10000, enterprise: 99999 };
