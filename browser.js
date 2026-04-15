@@ -235,9 +235,11 @@ async function test(url, specs) {
       if (spec.action) await spec.action(page);
       if (spec.waitMs) await page.waitForTimeout(spec.waitMs);
 
-      // Find matching network response
+      // Find matching network response (urlPattern can be string or function)
       const key = spec.urlPattern
-        ? Object.keys(networkLog).find(u => u.includes(spec.urlPattern))
+        ? Object.keys(networkLog).find(u =>
+            typeof spec.urlPattern === 'function' ? spec.urlPattern(u) : u.includes(spec.urlPattern)
+          )
         : null;
       const net = key ? networkLog[key] : null;
       let json = null;
