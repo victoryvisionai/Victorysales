@@ -1755,23 +1755,9 @@ function connectCalendly() {
     }
   }
 
-  async function loadAdTrackingSettings() {
-    try {
-      const res = await fetch(
-        'https://nyyvsdkumxvuwimmucdb.supabase.co/rest/v1/user_ad_settings?customer_id=eq.' + encodeURIComponent(CUSTOMER_ID) + '&select=*&limit=1',
-        { headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU' } }
-      );
-      if (!res.ok) return;
-      const rows = await res.json();
-      const s = Array.isArray(rows) && rows[0] ? rows[0] : null;
-      if (!s) return;
-      const fields = ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account'];
-      fields.forEach(function(f) {
-        const el = document.getElementById(f);
-        if (el && s[f]) el.value = s[f];
-      });
-    } catch (_e) { /* non-fatal */ }
-  }
+  // Pixel fields now live on users table — loaded via loadUserData() into userData.
+  // This function is kept as a no-op so any existing callers don't break.
+  async function loadAdTrackingSettings() { /* pixels loaded from userData in loadUserData() */ }
 
   // Update domain status
   function updateDomainStatus(hasDomain, domainName = null) {
