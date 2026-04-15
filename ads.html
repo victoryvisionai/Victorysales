@@ -2237,7 +2237,61 @@ function updatePlatformConnectionUI(adAccounts) {
 }
 
 function openCreateAdModal(platform) {
-  showStatus(`${platform.replace('_',' ').toUpperCase()} campaign creation coming soon — building now.`, false);
+  const labels = { google_ads: '🔍 New Google Campaign', msft_ads: '🪟 New Microsoft Campaign', linkedin_ads: '📣 New LinkedIn Campaign' };
+  document.getElementById('createAdModalTitle').textContent = labels[platform] || 'New Campaign';
+  document.getElementById('createAdPlatform').value = platform;
+  document.getElementById('createAdName').value = '';
+  document.getElementById('createAdTitle').value = '';
+  document.getElementById('createAdText').value = '';
+  document.getElementById('createAdBudget').value = '50';
+  document.getElementById('createAdStatus').textContent = '';
+  // Populate landing pages
+  const sel = document.getElementById('createAdLandingPage');
+  sel.innerHTML = '<option value="">Select a page…</option>';
+  if (adsData && adsData.pages) {
+    (Array.isArray(adsData.pages) ? adsData.pages : []).forEach(function(p) {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name || p.page_name || p.URL || p.id;
+      sel.appendChild(opt);
+    });
+  }
+  document.getElementById('createAdModal').classList.add('open');
+}
+
+function closeCreateAdModal() {
+  document.getElementById('createAdModal').classList.remove('open');
+}
+
+async function submitCreateAd() {
+  const btn = document.querySelector('#createAdModal .btn-primary');
+  const statusEl = document.getElementById('createAdStatus');
+  const platform = document.getElementById('createAdPlatform').value;
+  const campaign_name = document.getElementById('createAdName').value.trim();
+  const title = document.getElementById('createAdTitle').value.trim();
+  if (!campaign_name || !title) { statusEl.textContent = '⚠️ Campaign name and headline are required.'; return; }
+  btn.disabled = true; btn.textContent = '⏳ Launching…';
+  statusEl.textContent = '';
+  try {
+    const res = await apiCall(N8N.createAd, {
+      platform,
+      campaign_name,
+      title,
+      text:           document.getElementById('createAdText').value.trim(),
+      landing_page_id:document.getElementById('createAdLandingPage').value || null,
+      daily_budget:   parseFloat(document.getElementById('createAdBudget').value) || 50,
+      audience_tier:  document.getElementById('createAdAudience').value
+    });
+    closeCreateAdModal();
+    showStatus('🚀 Campaign created!', false);
+    adsData = null;
+    loadKPIs();
+    switchTab('active');
+    loadCampaigns();
+  } catch(e) {
+    statusEl.textContent = '❌ ' + e.message;
+    btn.disabled = false; btn.textContent = '🚀 Launch Campaign';
+  }
 }
 
 async function pauseCampaign(id) {
