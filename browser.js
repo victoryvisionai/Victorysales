@@ -355,12 +355,12 @@ async function testAds() {
       label: 'ads/get — returns 200 with totals object',
       urlPattern: u => u.includes('webhook/ads/get') && !u.includes('attribution'),
       waitMs: 5000,
-      assert: ({ status, json }) => {
+      assert: ({ status, json, body }) => {
         if (!status) return 'no network request captured';
         if (status !== 200) return `HTTP ${status}`;
-        if (!json) return 'response body not JSON';
+        if (!json) return 'response body not JSON — raw: ' + (body||'').slice(0,100);
         const data = Array.isArray(json) ? (json[0] || {}) : json;
-        if (!data.totals) return 'missing totals field';
+        if (!data.totals) return 'missing totals — keys: ' + Object.keys(data).join(',') + ' | preview: ' + JSON.stringify(data).slice(0,100);
         return true;
       }
     },
