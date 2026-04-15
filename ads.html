@@ -2376,7 +2376,10 @@ async function loadCampaignFilters() {
 // ══════════════════════════════════════
 async function loadUserData() {
   try {
-    const res = await apiCall(N8N.getUserData);
+    // Use GET (no custom headers) to avoid CORS preflight on this endpoint
+    const r = await fetch(N8N.getUserData + '?customer_id=' + encodeURIComponent(CUSTOMER_ID));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const res = await r.json();
     userData = Array.isArray(res) ? res[0] : (res.value?.[0] || res);
     const plan = (userData?.subscription_plan || 'bronze').toLowerCase();
     const med  = document.getElementById('subscriptionMedallion');
