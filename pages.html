@@ -927,13 +927,23 @@
     } catch(e) { showStatus('Error deleting page: ' + e.message, true); }
   }
 
-  function viewPage(url) {
-    if (url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') window.open(url, '_blank', 'noopener,noreferrer');
+  // Build the live-preview URL: uses Pages-Serve webhook so pages work before DNS routing is set up
+  function buildPreviewUrl(slug) {
+    if (!slug) return '';
+    return 'https://victoryvision.app.n8n.cloud/webhook/p?slug=' + encodeURIComponent(slug) + '&cid=' + encodeURIComponent(CUSTOMER_ID);
+  }
+
+  function viewPage(url, slug) {
+    // Prefer slug-based preview (always reachable); fall back to stored URL
+    var target = slug ? buildPreviewUrl(slug) : '';
+    if (!target && url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') target = url;
+    if (target) window.open(target, '_blank', 'noopener,noreferrer');
     else showStatus('No URL available for this page', true);
   }
 
-  function copyPageUrl(url) {
-    if (url && url !== 'No URL set') navigator.clipboard.writeText(url).then(function() { showStatus('URL copied!'); }).catch(function() { showStatus('Failed to copy URL', true); });
+  function copyPageUrl(url, slug) {
+    var target = slug ? buildPreviewUrl(slug) : url;
+    if (target && target !== 'No URL set') navigator.clipboard.writeText(target).then(function() { showStatus('URL copied!'); }).catch(function() { showStatus('Failed to copy URL', true); });
     else showStatus('No URL available', true);
   }
 
