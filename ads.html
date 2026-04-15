@@ -2665,7 +2665,7 @@ async function saveAdNote(note) {
 async function loadAdNotesHistory() {
   try {
     const r = await fetch(
-      SB_URL_AI + '/rest/v1/user_ad_settings?customer_id=eq.' + encodeURIComponent(CUSTOMER_ID) + '&select=ad_notes&limit=1',
+      SB_URL_AI + '/rest/v1/users?email=eq.' + encodeURIComponent(CUSTOMER_ID) + '&select=ad_notes&limit=1',
       { headers: { 'apikey': SB_ANON_AI, 'Authorization': 'Bearer ' + SB_ANON_AI } }
     );
     if (!r.ok) return;
