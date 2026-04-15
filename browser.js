@@ -356,7 +356,8 @@ async function testAds() {
         if (!status) return 'no network request captured';
         if (status !== 200) return `HTTP ${status}`;
         if (!json) return 'response body not JSON';
-        if (!json.totals) return 'missing totals field';
+        const data = Array.isArray(json) ? (json[0] || {}) : json;
+        if (!data.totals) return 'missing totals field';
         return true;
       }
     },
