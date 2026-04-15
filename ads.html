@@ -2543,6 +2543,175 @@ window.loadPlatformPages = loadPlatformPages;
 window.loadAttributionData = loadAttributionData;
 window.openCreateAdModal = openCreateAdModal;
 
+// ══════════════════════════════════════════════════
+// AI ADVISOR
+// ══════════════════════════════════════════════════
+const SB_URL_AI  = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const SB_ANON_AI = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+
+const PLATFORM_LABELS = {
+  google_ads: '🔍 Google Ads', msft_ads: '🪟 Microsoft Ads',
+  linkedin_ads: '📣 LinkedIn Ads', billboard: '🏗️ Billboard'
+};
+const PRIORITY_COLORS = { high: '#e53e3e', medium: '#dd6b20', low: '#38a169' };
+const ACTION_LABELS   = { new_campaign: 'New Campaign', optimize: 'Optimize', pause: 'Pause', ab_test: 'A/B Test' };
+
+async function runAIAdvisor() {
+  const btn = document.getElementById('aiRunBtn');
+  const statusEl = document.getElementById('aiStatus');
+  btn.disabled = true;
+  btn.textContent = '⏳ Analyzing…';
+  statusEl.textContent = 'Pulling your victories, pages, and ad data…';
+
+  try {
+    const res = await apiCall(N8N.getRecommendations);
+    // Unwrap n8n allIncomingItems array
+    const raw = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    const rec = raw.recommendation;
+    if (!rec) throw new Error('No recommendation returned');
+
+    // Render output
+    renderAIRecommendations(rec, raw.generated_at);
+
+    // Persist note to Supabase
+    await saveAdNote({
+      timestamp: raw.generated_at || new Date().toISOString(),
+      type: 'ai_recommendation',
+      data: rec
+    });
+
+    // Load history
+    await loadAdNotesHistory();
+
+    statusEl.textContent = '✅ Done — ' + ((rec.recommendations||[]).length) + ' recommendations generated';
+    statusEl.style.color = '#38a169';
+  } catch(e) {
+    statusEl.textContent = '❌ ' + e.message;
+    statusEl.style.color = '#e53e3e';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Generate Recommendations';
+  }
+}
+
+function renderAIRecommendations(rec, generatedAt) {
+  const wrap = document.getElementById('aiRecommendationsWrap');
+  wrap.style.display = 'block';
+
+  // Summary banner
+  const banner = document.getElementById('aiSummaryBanner');
+  banner.innerHTML =
+    '<div style="padding:16px 20px;">' +
+    '<div style="font-size:11px;color:#888;margin-bottom:6px;">Generated ' + (generatedAt||'').slice(0,19).replace('T',' ') + ' · Confidence: ' +
+      '<strong style="color:' + (rec.confidence==='high'?'#38a169':rec.confidence==='medium'?'#dd6b20':'#e53e3e') + '">' + (rec.confidence||'–') + '</strong>' +
+    '</div>' +
+    '<div style="font-size:14px;font-weight:600;color:#0A3161;margin-bottom:4px;">ICP: ' + (rec.icp_summary||'') + '</div>' +
+    '<div style="font-size:13px;color:#444;">🏆 ' + (rec.winning_formula||'') + '</div>' +
+    (rec.key_learnings && rec.key_learnings.length ?
+      '<ul style="margin:10px 0 0;padding-left:18px;font-size:12px;color:#555;">' +
+      rec.key_learnings.map(function(l){ return '<li>'+l+'</li>'; }).join('') +
+      '</ul>' : '') +
+    '</div>';
+
+  // Recommendations grid
+  const grid = document.getElementById('aiRecsGrid');
+  grid.innerHTML = (rec.recommendations||[]).map(function(r) {
+    var priorityColor = PRIORITY_COLORS[r.priority] || '#666';
+    var variants = (r.ab_variants||[]).map(function(v) {
+      return '<div style="background:#f5f7fa;border-radius:4px;padding:8px 10px;margin-top:6px;">' +
+        '<span style="font-size:10px;font-weight:700;color:#888;">VARIANT ' + v.variant + '</span><br>' +
+        '<span style="font-size:12px;font-weight:600;">' + (v.headline||'') + '</span><br>' +
+        '<span style="font-size:12px;color:#555;">' + (v.body||'') + '</span>' +
+        '</div>';
+    }).join('');
+    return '<div class="card" style="border-top:3px solid ' + priorityColor + ';">' +
+      '<div style="padding:16px 20px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">' +
+          '<div>' +
+            '<span style="font-size:13px;font-weight:700;">' + (PLATFORM_LABELS[r.platform]||r.platform) + '</span>' +
+            '<span style="margin-left:8px;font-size:11px;background:' + priorityColor + ';color:white;padding:2px 7px;border-radius:10px;">' + (r.priority||'') + '</span>' +
+            '<span style="margin-left:6px;font-size:11px;color:#888;">' + (ACTION_LABELS[r.action]||r.action) + '</span>' +
+          '</div>' +
+          '<span style="font-size:12px;font-weight:700;color:#0A3161;">$' + (r.suggested_budget_usd_day||0) + '/day</span>' +
+        '</div>' +
+        '<div style="font-size:15px;font-weight:600;margin-bottom:4px;">' + (r.headline||'') + '</div>' +
+        '<div style="font-size:13px;color:#444;margin-bottom:8px;">' + (r.description||'') + '</div>' +
+        '<div style="font-size:12px;color:#666;margin-bottom:8px;font-style:italic;">Target: ' + (r.target_audience||'') + '</div>' +
+        '<div style="font-size:12px;color:#555;margin-bottom:10px;">📊 ' + (r.rationale||'') + '</div>' +
+        (variants ? '<div style="font-size:12px;font-weight:600;color:#0A3161;margin-bottom:2px;">A/B Variants</div>' + variants : '') +
+        '<div style="margin-top:10px;display:flex;gap:16px;font-size:11px;color:#888;">' +
+          '<span>✅ Stop if: ' + (r.stop_if||'–') + '</span>' +
+          '<span>📈 Metric: ' + (r.success_metric||'–') + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function saveAdNote(note) {
+  try {
+    await fetch(SB_URL_AI + '/rest/v1/rpc/append_ad_note', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_ANON_AI,
+        'Authorization': 'Bearer ' + SB_ANON_AI,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_customer_id: CUSTOMER_ID, p_note: note })
+    });
+  } catch(e) { /* non-fatal */ }
+}
+
+async function loadAdNotesHistory() {
+  try {
+    const r = await fetch(
+      SB_URL_AI + '/rest/v1/user_ad_settings?customer_id=eq.' + encodeURIComponent(CUSTOMER_ID) + '&select=ad_notes&limit=1',
+      { headers: { 'apikey': SB_ANON_AI, 'Authorization': 'Bearer ' + SB_ANON_AI } }
+    );
+    if (!r.ok) return;
+    const rows = await r.json();
+    const notes = (rows[0] && rows[0].ad_notes) || [];
+    const log = document.getElementById('aiNotesLog');
+    const count = document.getElementById('aiNoteCount');
+    count.textContent = notes.length + ' analyses stored';
+    if (!notes.length) {
+      log.innerHTML = '<div style="padding:16px 20px;color:#888;font-size:13px;">No history yet — run your first analysis above.</div>';
+      return;
+    }
+    // Show most recent first
+    log.innerHTML = notes.slice().reverse().map(function(n, i) {
+      var ts = (n.timestamp||'').slice(0,19).replace('T',' ');
+      var d = n.data || {};
+      var conf = d.confidence || '–';
+      var confColor = conf==='high'?'#38a169':conf==='medium'?'#dd6b20':'#e53e3e';
+      var summary = d.winning_formula || (d.key_learnings && d.key_learnings[0]) || '';
+      var recCount = (d.recommendations||[]).length;
+      return '<div style="padding:12px 20px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="toggleNoteDetail(this,' + (notes.length-1-i) + ')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+          '<span style="font-size:13px;font-weight:600;">' + ts + '</span>' +
+          '<span style="font-size:11px;color:' + confColor + ';font-weight:700;">' + conf + ' confidence · ' + recCount + ' recs</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:#555;margin-top:2px;">' + summary.slice(0,120) + '</div>' +
+        '<div class="note-detail" style="display:none;margin-top:10px;font-size:12px;color:#444;white-space:pre-wrap;">' +
+          JSON.stringify(d, null, 2).slice(0, 1000) +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) { /* non-fatal */ }
+}
+
+function toggleNoteDetail(el, idx) {
+  var detail = el.querySelector('.note-detail');
+  if (detail) detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+}
+
+// Load history when AI tab is activated
+const _origSwitchTab = window.switchTab;
+window.switchTab = function(tab) {
+  if (typeof _origSwitchTab === 'function') _origSwitchTab(tab);
+  if (tab === 'ai') loadAdNotesHistory();
+};
+
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
