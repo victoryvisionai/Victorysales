@@ -353,7 +353,7 @@ async function testAds() {
     },
     {
       label: 'ads/get — returns 200 with totals object',
-      urlPattern: 'webhook/ads/get',
+      urlPattern: u => u.includes('webhook/ads/get') && !u.includes('attribution'),
       assert: ({ status, json }) => {
         if (!status) return 'no network request captured';
         if (status !== 200) return `HTTP ${status}`;
