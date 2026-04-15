@@ -625,7 +625,7 @@
       var abTest = document.getElementById('abTestLanding').checked;
       if (!selectedVideoId) { showStatus('Please select a header video.', true); return; }
       btn.disabled = true; btn.textContent = '🔄 Creating Page...';
-      var result = await apiCall(ENDPOINTS.pagesCreate, { campaigns_file_id: selectedVideoId, title: pageTitle, description: pageDescription, slug: slug, ab_test: String(abTest), page_type: 'landing' });
+      var result = await apiCall(ENDPOINTS.pagesCreate, { campaigns_file_id: selectedVideoId, title: pageTitle, description: pageDescription, slug: slug, ab_test: String(abTest), page_type: 'landing', google_pixel: currentUserData.google_pixel || '', msft_pixel: currentUserData.msft_pixel || '', linkedin_pixel: currentUserData.linkedin_pixel || '' });
       if (result && result.success !== false) {
         showStatus('Landing page created successfully!');
         document.getElementById('headerVideoSelect').value = '';
@@ -648,7 +648,7 @@
       var abTest = document.getElementById('abTestLm').checked;
       if (!lmId) { showStatus('Please select a lead magnet file.', true); return; }
       showStatus('Creating lead magnet page...');
-      var result = await apiCall(ENDPOINTS.pagesLeadMagnet, { campaigns_file_id: lmId, title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'lead_magnet' });
+      var result = await apiCall(ENDPOINTS.pagesLeadMagnet, { campaigns_file_id: lmId, title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'lead_magnet', google_pixel: currentUserData.google_pixel || '', msft_pixel: currentUserData.msft_pixel || '', linkedin_pixel: currentUserData.linkedin_pixel || '' });
       if (result && result.success !== false) {
         showStatus('Lead magnet page created!');
         document.getElementById('lmSelectedName').value = '';
@@ -671,7 +671,7 @@
       var abTest = document.getElementById('abTestNl').checked;
       if (!title) { showStatus('Please enter a newsletter name.', true); return; }
       showStatus('Creating newsletter page...');
-      var result = await apiCall(ENDPOINTS.pagesNewsletter, { title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'newsletter' });
+      var result = await apiCall(ENDPOINTS.pagesNewsletter, { title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'newsletter', google_pixel: currentUserData.google_pixel || '', msft_pixel: currentUserData.msft_pixel || '', linkedin_pixel: currentUserData.linkedin_pixel || '' });
       if (result && result.success !== false) {
         showStatus('Newsletter page created!');
         document.getElementById('nlTitle').value = '';
