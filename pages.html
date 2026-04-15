@@ -518,6 +518,7 @@
     try {
       var response = await apiCall(ENDPOINTS.getUserData, null, 'GET');
       var userData = Array.isArray(response) ? response[0] : response;
+      currentUserData = userData || {};
       userVVDomain = userData.vv_domain || '';
       var prefix = userVVDomain ? userVVDomain.replace(/\/$/, '') + '/' : 'yoursite.victoryvision.app/';
       document.querySelectorAll('.slug-prefix').forEach(function(el) { el.textContent = prefix; });
