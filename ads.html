@@ -2649,27 +2649,16 @@ function renderAIRecommendations(rec, generatedAt) {
 
 async function saveAdNote(note) {
   try {
-    await fetch(SB_URL_AI + '/rest/v1/rpc/append_ad_note', {
-      method: 'POST',
-      headers: {
-        'apikey': SB_ANON_AI,
-        'Authorization': 'Bearer ' + SB_ANON_AI,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ p_customer_id: CUSTOMER_ID, p_note: note })
-    });
+    await apiCall(N8N.saveNote, { note });
   } catch(e) { /* non-fatal */ }
 }
 
 async function loadAdNotesHistory() {
   try {
-    const r = await fetch(
-      SB_URL_AI + '/rest/v1/users?email=eq.' + encodeURIComponent(CUSTOMER_ID) + '&select=ad_notes&limit=1',
-      { headers: { 'apikey': SB_ANON_AI, 'Authorization': 'Bearer ' + SB_ANON_AI } }
-    );
-    if (!r.ok) return;
-    const rows = await r.json();
-    const notes = (rows[0] && rows[0].ad_notes) || [];
+    // ad_notes come back from get_ads_data via N8N.getAllAds — reuse cached data if available
+    const raw = adsData || await apiCall(N8N.getAllAds);
+    const data = Array.isArray(raw) ? (raw[0] || {}) : (raw || {});
+    const notes = Array.isArray(data.ad_notes) ? data.ad_notes : [];
     const log = document.getElementById('aiNotesLog');
     const count = document.getElementById('aiNoteCount');
     count.textContent = notes.length + ' analyses stored';
