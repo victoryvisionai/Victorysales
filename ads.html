@@ -1678,33 +1678,97 @@ function goToStep(n) {
 // ══════════════════════════════════════
 // AUDIENCE
 // ══════════════════════════════════════
+// Cached audience data so modal + wizard share the same fetch
+let audienceCache = null;
+
 async function loadAudienceCounts() {
   try {
-    const res = await apiCall(N8N.liGetAudience);
-    const counts = res.counts || {};
-    document.getElementById('segCountEmail').textContent = `${counts.email_openers || 0} contacts`;
-    document.getElementById('segCountFirst').textContent = `${counts.first_degree || 0} contacts`;
-    document.getElementById('segCountBoth').textContent  = `${counts.both || 0} contacts`;
-    document.getElementById('audEmailCount').textContent = counts.email_openers || 0;
-    document.getElementById('audLICount').textContent    = counts.first_degree || 0;
-    document.getElementById('lastAudienceSync').textContent = res.last_sync ? new Date(res.last_sync).toLocaleDateString() : 'Not yet';
+    const raw = await apiCall(N8N.audienceCounts);
+    const res = Array.isArray(raw) ? raw[0] : raw;
+    audienceCache = res;
+    const counts = (res && res.counts) || {};
+    const sug    = (res && res.suggestions) || {};
 
-    const minOk = (counts[selectedSegment] || 0) >= 300;
-    document.getElementById('segmentWarning').style.display = minOk ? 'none' : 'block';
-    document.getElementById('btnStep1Next').disabled = !minOk;
+    // Wizard Step 1 — existing pill DOM
+    const elEmail = document.getElementById('segCountEmail');
+    const elFirst = document.getElementById('segCountFirst');
+    const elBoth  = document.getElementById('segCountBoth');
+    if (elEmail) elEmail.textContent = `${counts.email_openers || 0} contacts`;
+    if (elFirst) elFirst.textContent = `${counts.first_degree || 0} contacts`;
+    if (elBoth)  elBoth.textContent  = `${counts.warm_union || counts.both || 0} contacts`;
+    const audEmail = document.getElementById('audEmailCount');
+    const audLI    = document.getElementById('audLICount');
+    if (audEmail) audEmail.textContent = counts.email_openers || 0;
+    if (audLI)    audLI.textContent    = counts.first_degree || 0;
+    const lastSync = document.getElementById('lastAudienceSync');
+    if (lastSync) lastSync.textContent = res && res.last_sync ? new Date(res.last_sync).toLocaleDateString() : 'Not yet';
+
+    // Wizard: 300 minimum only applies when warm retargeting is selected
+    const wizardMinOk = (counts[selectedSegment] || 0) >= 300;
+    const warnEl = document.getElementById('segmentWarning');
+    if (warnEl) warnEl.style.display = wizardMinOk ? 'none' : 'block';
+    const wizNext = document.getElementById('btnStep1Next');
+    if (wizNext) wizNext.disabled = !wizardMinOk;
+
+    // Modal — warm counts breakdown
+    const warmBreakdown = document.getElementById('warmCountsBreakdown');
+    if (warmBreakdown) {
+      warmBreakdown.innerHTML =
+        `📧 <strong>${counts.email_openers || 0}</strong> email openers · ` +
+        `🤝 <strong>${counts.first_degree || 0}</strong> 1st-degree connections · ` +
+        `🎯 <strong>${counts.ad_clickers || 0}</strong> past ad viewers · ` +
+        `👁 <strong>${counts.page_viewers || 0}</strong> page visitors<br>` +
+        `<strong style="color:#854d0e;">${counts.warm_union || 0}</strong> unique warm contacts total`;
+    }
+    const modalWarm = document.getElementById('modalWarmCount');
+    if (modalWarm) modalWarm.textContent = `${counts.warm_union || 0} warm contacts`;
+
+    // Populate cold targeting dropdowns from firmographic suggestions
+    function fill(id, items) {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      sel.innerHTML = '';
+      (items || []).forEach(it => {
+        const o = document.createElement('option');
+        o.value = it.value;
+        o.textContent = `${it.value} (${it.count})`;
+        sel.appendChild(o);
+      });
+    }
+    fill('coldIndustries', sug.top_industries);
+    fill('coldTitles',     sug.top_titles);
+    fill('coldLocations',  sug.top_locations);
+    fill('coldCompanies',  sug.top_companies);
   } catch(e) {
     console.error('Audience load failed', e);
   }
 }
 
 function selectSegment(el) {
-  document.querySelectorAll('.segment-pill').forEach(p => p.classList.remove('selected'));
+  document.querySelectorAll('#segmentOptions .segment-pill').forEach(p => p.classList.remove('selected'));
   el.classList.add('selected');
   selectedSegment = el.dataset.segment;
-  const count = parseInt(el.querySelector('div').textContent) || 0;
+  const counts = (audienceCache && audienceCache.counts) || {};
+  const count = counts[selectedSegment] || 0;
   const minOk = count >= 300;
-  document.getElementById('segmentWarning').style.display = minOk ? 'none' : 'block';
-  document.getElementById('btnStep1Next').disabled = !minOk;
+  const warnEl = document.getElementById('segmentWarning');
+  if (warnEl) warnEl.style.display = minOk ? 'none' : 'block';
+  const wizNext = document.getElementById('btnStep1Next');
+  if (wizNext) wizNext.disabled = !minOk;
+}
+
+// Modal audience mode — toggles which panel (cold / warm / both) is shown
+let modalAudienceMode = 'both';
+function selectModalAudienceMode(el) {
+  document.querySelectorAll('#modalAudienceOptions .segment-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  modalAudienceMode = el.dataset.mode;
+  const showCold = modalAudienceMode === 'cold' || modalAudienceMode === 'both';
+  const showWarm = modalAudienceMode === 'warm' || modalAudienceMode === 'both';
+  const coldPanel = document.getElementById('coldTargetingPanel');
+  const warmPanel = document.getElementById('warmTargetingPanel');
+  if (coldPanel) coldPanel.style.display = showCold ? 'block' : 'none';
+  if (warmPanel) warmPanel.style.display = showWarm ? 'block' : 'none';
 }
 
 async function triggerAudienceSync() {
