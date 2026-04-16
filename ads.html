@@ -2019,15 +2019,27 @@ async function launchLinkedInAd() {
   btn.textContent = '⏳ Launching…'; btn.disabled = true;
 
   try {
-    // Route through the same Ads - Launch LinkedIn workflow as the simple modal.
-    // API creates DRAFT campaign group on LinkedIn; user finishes creative upload in Campaign Manager.
+    // Route through Ads - Launch LinkedIn. Creates DRAFT campaign group; user finishes in Campaign Manager.
+    function pickMulti(id) {
+      const sel = document.getElementById(id);
+      return sel ? Array.from(sel.selectedOptions).map(o => o.value) : [];
+    }
     const payload = {
       campaign_name:   document.getElementById('adHeadline').value || ('LinkedIn Campaign ' + new Date().toLocaleDateString()),
       headline:        document.getElementById('adHeadline').value,
       copy:            document.getElementById('adIntro').value,
       url:             document.getElementById('adLandingPage').value,
       daily_budget:    parseFloat(document.getElementById('dailyBudget').value) || 50,
-      audience_tier:   selectedSegment || 'ALL',
+      audience_mode:   wizardAudienceMode,                                    // cold | warm | both
+      cold_targeting:  {
+        industries: pickMulti('wizColdIndustries'),
+        titles:     pickMulti('wizColdTitles'),
+        locations:  pickMulti('wizColdLocations'),
+        companies:  pickMulti('wizColdCompanies')
+      },
+      warm_segment:    selectedSegment,                                       // email_openers | first_degree | both
+      warm_retarget:   wizardAudienceMode !== 'cold',
+      audience_tier:   wizardAudienceMode.toUpperCase(),
       landing_page_id: null
     };
 
