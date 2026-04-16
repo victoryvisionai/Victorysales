@@ -2276,22 +2276,67 @@ async function submitCreateAd() {
   if (!campaign_name || !title) { statusEl.textContent = '⚠️ Campaign name and headline are required.'; return; }
   btn.disabled = true; btn.textContent = '⏳ Launching…';
   statusEl.textContent = '';
+
+  // Select platform-specific launch endpoint
+  const endpointMap = {
+    linkedin_ads: N8N.launchLinkedIn,
+    google_ads:   N8N.launchGoogle,
+    msft_ads:     N8N.launchMsft
+  };
+  const endpoint = endpointMap[platform];
+  if (!endpoint) { statusEl.textContent = '⚠️ Unknown platform: ' + platform; btn.disabled = false; btn.textContent = '🚀 Launch Campaign'; return; }
+
   try {
-    const res = await apiCall(N8N.createAd, {
-      platform,
+    const payload = {
       campaign_name,
-      title,
-      text:           document.getElementById('createAdText').value.trim(),
-      landing_page_id:document.getElementById('createAdLandingPage').value || null,
-      daily_budget:   parseFloat(document.getElementById('createAdBudget').value) || 50,
-      audience_tier:  document.getElementById('createAdAudience').value
-    });
-    closeCreateAdModal();
-    showStatus('🚀 Campaign created!', false);
-    adsData = null;
-    loadKPIs();
-    switchTab('active');
-    loadCampaigns();
+      headline: title,
+      copy:            document.getElementById('createAdText').value.trim(),
+      url:             (function(){
+        const sel = document.getElementById('createAdLandingPage');
+        const opt = sel.options[sel.selectedIndex];
+        // Try to find the page's URL from adsData cache
+        const pageId = sel.value;
+        if (pageId && adsData && adsData.pages) {
+          const p = (Array.isArray(adsData.pages) ? adsData.pages : []).find(function(x){ return String(x.id) === String(pageId); });
+          if (p && (p.URL || p.url)) return p.URL || p.url;
+        }
+        return 'https://victoryvision.app';
+      })(),
+      landing_page_id: document.getElementById('createAdLandingPage').value || null,
+      daily_budget:    parseFloat(document.getElementById('createAdBudget').value) || 50,
+      audience_tier:   document.getElementById('createAdAudience').value
+    };
+    const raw = await apiCall(endpoint, payload);
+    const res = Array.isArray(raw) ? raw[0] : raw;
+
+    if (res && res.success) {
+      closeCreateAdModal();
+      showStatus('🚀 Campaign created! Opening ' + (platform === 'linkedin_ads' ? 'LinkedIn Campaign Manager' : platform === 'google_ads' ? 'Google Ads' : 'Microsoft Ads') + ' to finish setup…', false);
+      if (res.deep_link) window.open(res.deep_link, '_blank', 'noopener,noreferrer');
+      adsData = null;
+      loadKPIs();
+      switchTab('active');
+      loadCampaigns();
+    } else {
+      // Friendly error decoding for common cases
+      const raw_err = (res && (res.error || res.message)) || 'Unknown error';
+      let friendly = raw_err;
+      if (/DEVELOPER_TOKEN_NOT_APPROVED/i.test(raw_err)) {
+        friendly = '⛔ Google Ads developer token not approved yet. Apply for Basic Access at developers.google.com/google-ads/api/docs/access-levels and ensure your customer ID is linked to that dev token.';
+      } else if (/InvalidCredentials/i.test(raw_err) || /Authentication failed/i.test(raw_err)) {
+        friendly = '⛔ Microsoft Ads credentials rejected. Check: (1) your dev token is production-tier (not sandbox), (2) msft_ads_account_id is correct, (3) re-connect via Settings → Microsoft Ads OAuth.';
+      } else if (/li_ad_account is not set/i.test(raw_err)) {
+        friendly = '⛔ LinkedIn Ad Account ID is missing. Go to Settings → enter your LinkedIn Ad Account ID.';
+      } else if (/google_ads_customer_id is not set/i.test(raw_err)) {
+        friendly = '⛔ Google Ads Customer ID missing. Enter it in Settings.';
+      } else if (/msft_ads_account_id is not set/i.test(raw_err)) {
+        friendly = '⛔ Microsoft Ads Account ID missing. Enter it in Settings.';
+      } else if (/No refresh_token/i.test(raw_err)) {
+        friendly = '⛔ Not connected to this platform yet. Go to Settings and click Connect for this platform.';
+      }
+      statusEl.innerHTML = friendly;
+      btn.disabled = false; btn.textContent = '🚀 Launch Campaign';
+    }
   } catch(e) {
     statusEl.textContent = '❌ ' + e.message;
     btn.disabled = false; btn.textContent = '🚀 Launch Campaign';
