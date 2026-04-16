@@ -836,32 +836,75 @@
       <div class="card">
         <div class="card-header">
           <h3>Step 1 of 5 — Choose Your Audience</h3>
-          <span style="font-size:12px;opacity:.75;">Only people who already know you or engaged with you</span>
+          <span style="font-size:12px;opacity:.75;">Cold, warm retarget, or both</span>
         </div>
         <div class="card-body">
-          <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">
-            Victory Vision retargets <strong>warm prospects only</strong> — contacts who opened your emails or are your 1st-degree LinkedIn connections. This keeps your cost-per-meeting low and your message relevant.
-          </p>
-
-          <div class="segment-options" id="segmentOptions"
-            data-intro="Pick your audience. Email openers already know your product. 1st-degree connections trust you personally. Combined is our highest-converting segment." data-step="4">
-            <div class="segment-pill" data-segment="email_openers" onclick="selectSegment(this)">
-              📧 Email Openers
-              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountEmail">Loading…</div>
+          <!-- Top-level mode toggle -->
+          <div class="segment-options" id="wizardAudienceMode" style="margin-bottom:16px;">
+            <div class="segment-pill" data-mode="cold" onclick="selectWizardMode(this)">
+              🎯 Cold Targeting
+              <div style="font-size:11px;font-weight:400;margin-top:2px;">Reach new people by firmographics</div>
             </div>
-            <div class="segment-pill" data-segment="first_degree" onclick="selectSegment(this)">
-              🤝 1st-Degree Connections
-              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountFirst">Loading…</div>
+            <div class="segment-pill" data-mode="warm" onclick="selectWizardMode(this)">
+              🔥 Warm Retarget
+              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="wizardWarmSummary">Loading…</div>
             </div>
-            <div class="segment-pill selected" data-segment="both" onclick="selectSegment(this)">
-              ⚡ Both Combined <span style="background:var(--red);color:white;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">Recommended</span>
-              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountBoth">Loading…</div>
+            <div class="segment-pill selected" data-mode="both" onclick="selectWizardMode(this)">
+              ⚡ Both Combined <span style="background:var(--red);color:white;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">Best</span>
+              <div style="font-size:11px;font-weight:400;margin-top:2px;">Cold + warm overlap</div>
             </div>
           </div>
 
-          <div id="segmentWarning" style="display:none;" class="form-group">
-            <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:6px;padding:12px;font-size:13px;color:#92400e;">
-              ⚠️ <strong>LinkedIn requires at least 300 matched contacts</strong> to activate a campaign. Sync more contacts or send more email campaigns to grow this audience.
+          <!-- Cold targeting panel -->
+          <div id="wizardColdPanel" style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:12px;">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">
+              <strong>Cold targeting:</strong> Show your ad to new people matching these firmographics. Suggestions come from industries/titles common among your best engaged contacts.
+            </p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Industries</label>
+                <select id="wizColdIndustries" multiple size="5" style="min-height:110px;"></select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Job titles</label>
+                <select id="wizColdTitles" multiple size="5" style="min-height:110px;"></select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Locations</label>
+                <select id="wizColdLocations" multiple size="5" style="min-height:110px;"></select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Target companies (ABM)</label>
+                <select id="wizColdCompanies" multiple size="5" style="min-height:110px;"></select>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:8px;">💡 Hold Ctrl/Cmd to multi-select.</div>
+          </div>
+
+          <!-- Warm retargeting panel: the original segment pills -->
+          <div id="wizardWarmPanel">
+            <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">
+              <strong>Warm retargeting:</strong> Show ads to contacts who've already engaged with you.
+            </p>
+            <div class="segment-options" id="segmentOptions"
+              data-intro="Pick which warm segment to retarget." data-step="4">
+              <div class="segment-pill" data-segment="email_openers" onclick="selectSegment(this)">
+                📧 Email Openers
+                <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountEmail">Loading…</div>
+              </div>
+              <div class="segment-pill" data-segment="first_degree" onclick="selectSegment(this)">
+                🤝 1st-Degree Connections
+                <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountFirst">Loading…</div>
+              </div>
+              <div class="segment-pill selected" data-segment="both" onclick="selectSegment(this)">
+                ⚡ Both Combined
+                <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountBoth">Loading…</div>
+              </div>
+            </div>
+            <div id="segmentWarning" style="display:none;" class="form-group">
+              <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:6px;padding:12px;font-size:13px;color:#92400e;">
+                ⚠️ <strong>LinkedIn requires at least 300 matched contacts</strong> to activate a warm-only campaign. Add cold targeting to launch now with a smaller warm list.
+              </div>
             </div>
           </div>
 
