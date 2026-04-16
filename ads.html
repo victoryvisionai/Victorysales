@@ -2366,6 +2366,15 @@ function openCreateAdModal(platform) {
       sel.appendChild(opt);
     });
   }
+  // Reset audience mode to both (default) + refresh counts for real numbers + firmographics
+  modalAudienceMode = 'both';
+  const pills = document.querySelectorAll('#modalAudienceOptions .segment-pill');
+  pills.forEach(p => p.classList.toggle('selected', p.dataset.mode === 'both'));
+  const coldPanel = document.getElementById('coldTargetingPanel');
+  const warmPanel = document.getElementById('warmTargetingPanel');
+  if (coldPanel) coldPanel.style.display = 'block';
+  if (warmPanel) warmPanel.style.display = 'block';
+  loadAudienceCounts();
   document.getElementById('createAdModal').classList.add('open');
 }
 
