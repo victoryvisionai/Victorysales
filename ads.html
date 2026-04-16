@@ -1821,6 +1821,33 @@ function selectModalAudienceMode(el) {
   if (warmPanel) warmPanel.style.display = showWarm ? 'block' : 'none';
 }
 
+// Wizard (5-step LinkedIn) audience mode selector
+let wizardAudienceMode = 'both';
+function selectWizardMode(el) {
+  document.querySelectorAll('#wizardAudienceMode .segment-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  wizardAudienceMode = el.dataset.mode;
+  const showCold = wizardAudienceMode === 'cold' || wizardAudienceMode === 'both';
+  const showWarm = wizardAudienceMode === 'warm' || wizardAudienceMode === 'both';
+  const coldPanel = document.getElementById('wizardColdPanel');
+  const warmPanel = document.getElementById('wizardWarmPanel');
+  if (coldPanel) coldPanel.style.display = showCold ? 'block' : 'none';
+  if (warmPanel) warmPanel.style.display = showWarm ? 'block' : 'none';
+
+  // When ONLY warm is selected, enforce 300-min; otherwise cold fills the gap
+  const counts = (audienceCache && audienceCache.counts) || {};
+  const warnEl = document.getElementById('segmentWarning');
+  const wizNext = document.getElementById('btnStep1Next');
+  if (wizardAudienceMode === 'warm') {
+    const ok = (counts[selectedSegment] || 0) >= 300;
+    if (warnEl) warnEl.style.display = ok ? 'none' : 'block';
+    if (wizNext) wizNext.disabled = !ok;
+  } else {
+    if (warnEl) warnEl.style.display = 'none';
+    if (wizNext) wizNext.disabled = false;
+  }
+}
+
 async function triggerAudienceSync() {
   showStatus('Syncing audience to LinkedIn…', false);
   try {
