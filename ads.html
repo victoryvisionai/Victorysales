@@ -1835,31 +1835,30 @@ async function launchLinkedInAd() {
   btn.textContent = '⏳ Launching…'; btn.disabled = true;
 
   try {
+    // Route through the same Ads - Launch LinkedIn workflow as the simple modal.
+    // API creates DRAFT campaign group on LinkedIn; user finishes creative upload in Campaign Manager.
     const payload = {
-      segment:          selectedSegment,
-      creative_id:      selectedCreative?.id,
-      creative_url:     selectedCreative?.URL,
-      creative_type:    (selectedCreative?.file_type || '').includes('video') ? 'video' : 'image',
-      headline:         document.getElementById('adHeadline').value,
-      intro_text:       document.getElementById('adIntro').value,
-      cta_type:         document.getElementById('adCTA').value,
-      landing_page_url: document.getElementById('adLandingPage').value,
-      daily_budget:     parseFloat(document.getElementById('dailyBudget').value),
-      total_budget:     parseFloat(document.getElementById('totalBudget').value) || null,
-      optimization_goal:document.getElementById('optimizationGoal').value,
-      start_date:       document.getElementById('adStartDate').value || null,
-      end_date:         document.getElementById('adEndDate').value || null,
+      campaign_name:   document.getElementById('adHeadline').value || ('LinkedIn Campaign ' + new Date().toLocaleDateString()),
+      headline:        document.getElementById('adHeadline').value,
+      copy:            document.getElementById('adIntro').value,
+      url:             document.getElementById('adLandingPage').value,
+      daily_budget:    parseFloat(document.getElementById('dailyBudget').value) || 50,
+      audience_tier:   selectedSegment || 'ALL',
+      landing_page_id: null
     };
 
-    const res = await apiCall(N8N.liCreateAd, payload);
-    showStatus('🚀 LinkedIn ad launched! Approval takes 24–48 hours.', false);
+    const raw = await apiCall(N8N.launchLinkedIn, payload);
+    const res = Array.isArray(raw) ? raw[0] : raw;
 
-    // Switch to Active tab
-    setTimeout(() => {
-      switchTab('active');
-      loadCampaigns();
-    }, 1500);
-
+    if (res && res.success) {
+      showStatus('🚀 LinkedIn campaign group created! Opening Campaign Manager to finish creative + activate…', false);
+      if (res.deep_link) window.open(res.deep_link, '_blank', 'noopener,noreferrer');
+      setTimeout(() => { switchTab('active'); loadCampaigns(); }, 1500);
+    } else {
+      const err = (res && (res.error || res.message)) || 'Unknown error';
+      showStatus('Launch failed: ' + err, true);
+      btn.textContent = '🚀 Launch LinkedIn Ad'; btn.disabled = false;
+    }
   } catch(e) {
     showStatus('Launch failed: ' + e.message, true);
     btn.textContent = '🚀 Launch LinkedIn Ad'; btn.disabled = false;
