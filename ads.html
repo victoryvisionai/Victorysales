@@ -1397,20 +1397,62 @@
           <option value="">Select a page…</option>
         </select>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="form-group">
-          <label>Daily Budget ($)</label>
-          <input type="number" id="createAdBudget" value="50" min="1">
+      <div class="form-group" style="margin-top:4px;">
+        <label>Daily Budget ($)</label>
+        <input type="number" id="createAdBudget" value="50" min="1" style="max-width:160px;">
+      </div>
+
+      <!-- Audience mode selector: Cold / Warm Retarget / Both -->
+      <div class="form-group" style="border-top:1px solid #e5e7eb;padding-top:12px;">
+        <label>Who should see this ad?</label>
+        <div class="segment-options" id="modalAudienceOptions" style="margin-bottom:8px;">
+          <div class="segment-pill" data-mode="cold" onclick="selectModalAudienceMode(this)">
+            🎯 Cold Targeting
+            <div style="font-size:11px;font-weight:400;margin-top:2px;">People who don't know you yet</div>
+          </div>
+          <div class="segment-pill" data-mode="warm" onclick="selectModalAudienceMode(this)">
+            🔥 Warm Retarget
+            <div style="font-size:11px;font-weight:400;margin-top:2px;" id="modalWarmCount">Loading…</div>
+          </div>
+          <div class="segment-pill selected" data-mode="both" onclick="selectModalAudienceMode(this)">
+            ⚡ Both Combined <span style="background:var(--red);color:white;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">Best</span>
+            <div style="font-size:11px;font-weight:400;margin-top:2px;">Reach new + re-engage warm</div>
+          </div>
         </div>
-        <div class="form-group">
-          <label>Audience Tier</label>
-          <select id="createAdAudience">
-            <option value="ALL">All</option>
-            <option value="WARM">Warm</option>
-            <option value="HOT">Hot</option>
-          </select>
+
+        <!-- Cold targeting details (shown when mode = cold or both) -->
+        <div id="coldTargetingPanel" style="background:#f8f9fa;border-radius:8px;padding:12px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Cold targeting — matched from your contacts' firmographics.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Industries</label>
+              <select id="coldIndustries" multiple size="4" style="min-height:90px;"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Job titles</label>
+              <select id="coldTitles" multiple size="4" style="min-height:90px;"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Locations</label>
+              <select id="coldLocations" multiple size="4" style="min-height:90px;"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Target companies</label>
+              <select id="coldCompanies" multiple size="4" style="min-height:90px;"></select>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;">💡 Hold Ctrl/Cmd to multi-select. These suggestions come from industries/titles most common among your engaged contacts.</div>
+        </div>
+
+        <!-- Warm retargeting details (shown when mode = warm or both) -->
+        <div id="warmTargetingPanel" style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:12px;margin-top:8px;">
+          <div style="font-size:12px;color:#92400e;margin-bottom:8px;">Warm retargeting — contacts who've already engaged:</div>
+          <div id="warmCountsBreakdown" style="font-size:13px;color:#78350f;">
+            Loading engagement counts…
+          </div>
         </div>
       </div>
+
       <div style="display:flex;gap:10px;margin-top:8px;">
         <button class="btn btn-primary" style="flex:1;" onclick="submitCreateAd()">🚀 Launch Campaign</button>
         <button class="btn btn-ghost" onclick="closeCreateAdModal()">Cancel</button>
