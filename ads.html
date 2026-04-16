@@ -1782,6 +1782,13 @@ async function loadAudienceCounts() {
     fill('coldTitles',     sug.top_titles);
     fill('coldLocations',  sug.top_locations);
     fill('coldCompanies',  sug.top_companies);
+    // Wizard cold dropdowns mirror the modal's
+    fill('wizColdIndustries', sug.top_industries);
+    fill('wizColdTitles',     sug.top_titles);
+    fill('wizColdLocations',  sug.top_locations);
+    fill('wizColdCompanies',  sug.top_companies);
+    const wizWarmSummary = document.getElementById('wizardWarmSummary');
+    if (wizWarmSummary) wizWarmSummary.textContent = `${counts.warm_union || 0} warm contacts`;
   } catch(e) {
     console.error('Audience load failed', e);
   }
