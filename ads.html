@@ -2402,14 +2402,25 @@ async function submitCreateAd() {
   if (!endpoint) { statusEl.textContent = '⚠️ Unknown platform: ' + platform; btn.disabled = false; btn.textContent = '🚀 Launch Campaign'; return; }
 
   try {
+    // Collect cold targeting selections
+    function pickMulti(id) {
+      const sel = document.getElementById(id);
+      if (!sel) return [];
+      return Array.from(sel.selectedOptions).map(o => o.value);
+    }
+    const coldTargeting = {
+      industries: pickMulti('coldIndustries'),
+      titles:     pickMulti('coldTitles'),
+      locations:  pickMulti('coldLocations'),
+      companies:  pickMulti('coldCompanies')
+    };
+
     const payload = {
       campaign_name,
       headline: title,
       copy:            document.getElementById('createAdText').value.trim(),
       url:             (function(){
         const sel = document.getElementById('createAdLandingPage');
-        const opt = sel.options[sel.selectedIndex];
-        // Try to find the page's URL from adsData cache
         const pageId = sel.value;
         if (pageId && adsData && adsData.pages) {
           const p = (Array.isArray(adsData.pages) ? adsData.pages : []).find(function(x){ return String(x.id) === String(pageId); });
@@ -2419,7 +2430,12 @@ async function submitCreateAd() {
       })(),
       landing_page_id: document.getElementById('createAdLandingPage').value || null,
       daily_budget:    parseFloat(document.getElementById('createAdBudget').value) || 50,
-      audience_tier:   document.getElementById('createAdAudience').value
+      // New audience schema: mode + cold targeting details + warm flag
+      audience_mode:   modalAudienceMode,                      // cold | warm | both
+      cold_targeting:  coldTargeting,                          // { industries, titles, locations, companies }
+      warm_retarget:   modalAudienceMode !== 'cold',           // include warm match list when warm or both
+      // Legacy field (backward compat with launch workflows currently ignoring it)
+      audience_tier:   modalAudienceMode.toUpperCase()
     };
     const raw = await apiCall(endpoint, payload);
     const res = Array.isArray(raw) ? raw[0] : raw;
