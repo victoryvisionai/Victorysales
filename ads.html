@@ -2438,6 +2438,13 @@ function updatePlatformConnectionUI(adAccounts) {
     if (notConn) notConn.style.display = connected ? 'none' : 'block';
     if (connDiv) connDiv.style.display = connected ? 'block' : 'none';
     if (step1Icon) { step1Icon.textContent = connected ? '✓' : '○'; step1Icon.parentElement.classList.toggle('done', !!connected); }
+
+    // MSFT-specific: also check UET tag step
+    if (platform === 'msft_ads') {
+      const hasUet = !!(userData?.msft_pixel);
+      const step2 = document.getElementById('mStep2Icon');
+      if (step2) { step2.textContent = hasUet ? '✓' : '○'; step2.parentElement.classList.toggle('done', hasUet); }
+    }
   }
 }
 
