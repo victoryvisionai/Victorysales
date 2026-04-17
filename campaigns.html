@@ -1055,10 +1055,18 @@
       createCampaignBtn.disabled = true;
       createCampaignBtn.textContent = '🔄 Creating Campaign...';
       
-      const result = await apiCall(ENDPOINTS.CREATE_CAMPAIGN);
+      // Use campaigns/user endpoint with auto-generated topic
+      const response = await fetch(N8N_BASE_URL + '/campaigns/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID, 'Authorization': authToken ? 'Bearer ' + authToken : '' },
+        body: JSON.stringify({ customer_id: CUSTOMER_ID, campaign_topic: 'Auto-generate a high-converting B2B campaign based on my company data, victories, and ICP', timestamp: new Date().toISOString() })
+      });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const text = await response.text();
+      const result = text.length ? JSON.parse(text) : { success: true };
 
       if (result.success !== false) {
-        showStatus('Campaign creation started! This will take up to 5 minutes. Refresh the page to see your new campaign.');
+        showStatus('Campaign creation started! Images + content generating — check back in 5 minutes.');
         // Refresh user data to update credits
         await loadUserData();
       } else {
