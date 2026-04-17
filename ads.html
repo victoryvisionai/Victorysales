@@ -2588,8 +2588,10 @@ async function submitCreateAd() {
 
     if (res && res.success) {
       closeCreateAdModal();
-      showStatus('🚀 Campaign created! Opening ' + (platform === 'linkedin_ads' ? 'LinkedIn Campaign Manager' : platform === 'google_ads' ? 'Google Ads' : 'Microsoft Ads') + ' to finish setup…', false);
-      if (res.deep_link) window.open(res.deep_link, '_blank', 'noopener,noreferrer');
+      const platformLabels = { linkedin_ads: 'LinkedIn', google_ads: 'Google Ads', msft_ads: 'Microsoft Ads' };
+      const pLabel = platformLabels[platform] || platform;
+      const deepLinkHtml = res.deep_link ? ` <a href="${res.deep_link}" target="_blank" style="color:var(--navy);text-decoration:underline;">View in ${pLabel} →</a>` : '';
+      showStatus(`🚀 ${pLabel} campaign created as ${res.status || 'DRAFT'}!${deepLinkHtml}`, false);
       adsData = null;
       loadKPIs();
       switchTab('active');
