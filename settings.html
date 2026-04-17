@@ -2005,14 +2005,25 @@ function connectCalendly() {
   }
 
   // Render an expiry badge in the given element id
-  function renderExpiryBadge(elementId, expiresAt) {
+  // Platforms whose access_tokens expire in 1 hour but have a long-lived refresh_token.
+  // "Expired" on these means "will auto-refresh on next API call" — still connected.
+  const AUTO_REFRESH_PLATFORMS = ['google_ads', 'msft_ads'];
+
+  function renderExpiryBadge(elementId, expiresAt, platform) {
     const el = document.getElementById(elementId);
     if (!el || !expiresAt) return;
     const days = Math.floor((new Date(expiresAt) - new Date()) / 86400000);
+    const autoRefresh = platform && AUTO_REFRESH_PLATFORMS.includes(platform);
     if (days < 0) {
-      el.innerHTML = '<span class="int-expiry expiry-urgent">⚠️ Expired</span>';
+      if (autoRefresh) {
+        el.innerHTML = '<span class="int-expiry expiry-ok">✅ Connected (auto-refreshes)</span>';
+      } else {
+        el.innerHTML = '<span class="int-expiry expiry-urgent">⚠️ Expired — reconnect</span>';
+      }
     } else if (days <= 7) {
-      el.innerHTML = `<span class="int-expiry expiry-urgent">🔴 ${days}d left — renew now</span>`;
+      el.innerHTML = autoRefresh
+        ? '<span class="int-expiry expiry-ok">✅ Connected (auto-refreshes)</span>'
+        : `<span class="int-expiry expiry-urgent">🔴 ${days}d left — renew now</span>`;
     } else if (days <= 30) {
       el.innerHTML = `<span class="int-expiry expiry-warn">🟡 ${days} days left</span>`;
     } else {
