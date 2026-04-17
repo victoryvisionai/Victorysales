@@ -1991,7 +1991,9 @@ async function generateAICopy() {
     const raw = await apiCall(N8N.liGenerateAICopy, {
       segment: selectedSegment,
       creative_url: selectedCreative?.URL,
-      campaign_id: selectedCreative?.campaign_id
+      creative_type: selectedCreative?.file_type || '',
+      campaign_id: selectedCreative?.campaign_id,
+      mode: 'linkedin_ads'
     });
     // n8n wraps in array: [{headline,intro}]
     const res = Array.isArray(raw) ? raw[0] : raw;
