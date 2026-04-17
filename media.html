@@ -2364,20 +2364,21 @@ showStatus('⏳ Creating video... Wait ~8 minutes, then refresh the page.');
       const result = await apiCall(ENDPOINTS.createPresentation, payload);
 
       if (result.success !== false) {
-        showStatus(`⏳ Creating presentation... Wait ~8 minute(s), then refresh the page.`);
-document.getElementById('presentationForm').reset();
+        hideProcessing();
+        showStatus('⏳ Presentation creating... takes ~8 minutes. Refresh the page to see it when ready.');
+        document.getElementById('presentationForm').reset();
         userCredits.credits = (userCredits.credits || 0) - 1;
         updateCreditsDisplay();
-          selectedMediaFiles.presentation = null;
+        selectedMediaFiles.presentation = null;
         document.getElementById('selectedPresentationDisplay').classList.remove('show');
         await loadMediaFiles();
         applyFilters();
-        showPreview(result.data);   
+        if (result.data) showPreview(result.data);
         document.getElementById('presentationChat').value = '';
-document.getElementById('presentationPages').value = '8';
-document.getElementById('companySelect').value = '';
-var _cis = document.getElementById('campaignImageSelect');
-if (_cis) _cis.value = '';
+        document.getElementById('presentationPages').value = '8';
+        document.getElementById('companySelect').value = '';
+        var _cis = document.getElementById('campaignImageSelect');
+        if (_cis) _cis.value = '';
       } else {
         hideProcessing();
         throw new Error(result.message || 'Presentation creation failed');
