@@ -2091,7 +2091,7 @@ function connectCalendly() {
           document.getElementById(platform.replace('_','-') + '-account').textContent = t.social_name || t.social_email || 'Connected';
           document.getElementById('connect-' + platform.replace('_','-')).style.display = 'none';
           document.getElementById('disconnect-' + platform.replace('_','-')).style.display = 'inline-block';
-          renderExpiryBadge(platform.replace('_','-') + '-expiry', t.expires_at);
+          renderExpiryBadge(platform.replace('_','-') + '-expiry', t.expires_at, platform);
         }
       });
 
