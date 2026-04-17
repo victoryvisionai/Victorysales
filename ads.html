@@ -1938,12 +1938,14 @@ async function generateAICopy() {
   const btn = document.getElementById('btnAICopy');
   btn.textContent = '⏳ Generating…'; btn.disabled = true;
   try {
-    const res = await apiCall(N8N.liGenerateAICopy, {
+    const raw = await apiCall(N8N.liGenerateAICopy, {
       segment: selectedSegment,
       creative_url: selectedCreative?.URL,
       campaign_id: selectedCreative?.campaign_id
     });
-    if (res.headline) {
+    // n8n wraps in array: [{headline,intro}]
+    const res = Array.isArray(raw) ? raw[0] : raw;
+    if (res && res.headline) {
       document.getElementById('adHeadline').value = res.headline;
       document.getElementById('adIntro').value    = res.intro || '';
       updateCharCount('adHeadline', 'headlineCount', 70);
