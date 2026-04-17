@@ -1422,22 +1422,25 @@
     </div>
     <div class="modal-bd">
       <input type="hidden" id="createAdPlatform">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+        <button class="btn btn-ghost btn-sm" id="modalAutoGenBtn" onclick="autoGenerateModalCopy()" style="font-size:12px;">✨ Auto-generate with AI</button>
+      </div>
       <div class="form-group">
         <label>Campaign Name</label>
         <input type="text" id="createAdName" placeholder="e.g. Q2 Decision Makers">
       </div>
       <div class="form-group">
         <label>Headline</label>
-        <input type="text" id="createAdTitle" placeholder="Primary ad headline">
+        <input type="text" id="createAdTitle" placeholder="Primary ad headline" maxlength="70">
       </div>
       <div class="form-group">
         <label>Ad Copy</label>
-        <textarea id="createAdText" style="height:80px;" placeholder="Body copy for the ad"></textarea>
+        <textarea id="createAdText" style="height:80px;" placeholder="Body copy for the ad" maxlength="300"></textarea>
       </div>
       <div class="form-group">
-        <label>Landing Page URL</label>
+        <label>Landing Page</label>
         <select id="createAdLandingPage">
-          <option value="">Select a page…</option>
+          <option value="">Loading pages…</option>
         </select>
       </div>
       <div class="form-group" style="margin-top:4px;">
