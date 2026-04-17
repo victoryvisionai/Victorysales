@@ -1583,8 +1583,9 @@ campaignTopicTextarea.value = '';
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const result = await response.json();
-        
+        const text = await response.text();
+        const result = text.length ? JSON.parse(text) : { success: true };
+
      if (result.success !== false) {
           showStatus('Custom campaign creation started! This will take up to 5 minutes. Refresh the page to see your new campaign.');
                     await loadUserData();
