@@ -2810,7 +2810,8 @@ async function loadUserData() {
     const med  = document.getElementById('subscriptionMedallion');
     med.className = `medallion ${plan}`;
     document.getElementById('planName').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-    liConnected = userData?.li_connected || false;
+    // User is "LinkedIn connected" if they have an ad account ID saved (set in Settings)
+    liConnected = !!(userData?.li_ad_account);
   } catch(e) { /* silent */ }
 }
 
