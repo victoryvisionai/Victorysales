@@ -2003,7 +2003,9 @@ async function generateAICopy() {
       updateCharCount('adHeadline', 'headlineCount', 70);
       updateCharCount('adIntro', 'introCount', 150);
       updateAdPreview();
-      showStatus('AI copy generated!', false);
+      showStatus('AI copy generated from your winning data + advisor learnings!', false);
+    } else {
+      showStatus('AI returned no copy — check that you have victories/contacts data.', true);
     }
   } catch(e) { showStatus('AI copy failed: ' + e.message, true); }
   finally { btn.textContent = '✨ Generate with AI'; btn.disabled = false; }
