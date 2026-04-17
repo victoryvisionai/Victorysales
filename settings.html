@@ -2321,7 +2321,9 @@ function connectCalendly() {
       const response = await apiCall('https://victoryvision.app.n8n.cloud/webhook/linkedin/pages');
       loadingEl.style.display = 'none';
 
-      const pages = Array.isArray(response) ? response : (response.pages || []);
+      // n8n wraps in array: [{pages:[...]}] — unwrap first, then get .pages
+      const raw = Array.isArray(response) ? response[0] : response;
+      const pages = (raw && raw.pages) ? raw.pages : (Array.isArray(raw) ? raw : []);
       if (!pages.length) {
         listEl.innerHTML = '<p style="color:#666;text-align:center;">No company pages found on this LinkedIn account. Make sure you are an admin of a LinkedIn Page.</p>';
         return;
