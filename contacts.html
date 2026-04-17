@@ -2703,7 +2703,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   try {
     const csvText = await file.text();
-    const result = await apiCall(ENDPOINTS.uploadCSV, { 
+    const result = await apiCall(ENDPOINTS.uploadCSV, {
+      customer_id: CUSTOMER_ID,
       csv_data: csvText,
       filename: file.name
     });
