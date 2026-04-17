@@ -1824,6 +1824,53 @@ function selectModalAudienceMode(el) {
   if (warmPanel) warmPanel.style.display = showWarm ? 'block' : 'none';
 }
 
+// Populate landing pages in modal dropdown — fetches from pages/get if adsData.pages is empty
+async function populateModalPages() {
+  const sel = document.getElementById('createAdLandingPage');
+  sel.innerHTML = '<option value="">Loading pages…</option>';
+  let pages = (adsData && adsData.pages) ? (Array.isArray(adsData.pages) ? adsData.pages : []) : [];
+  if (!pages.length) {
+    try {
+      const raw = await apiCall(N8N.getPages);
+      const r = Array.isArray(raw) ? raw : (raw && raw.pages ? raw.pages : []);
+      pages = r;
+    } catch(e) { console.warn('Pages fetch failed:', e); }
+  }
+  sel.innerHTML = '<option value="">Select a page…</option>';
+  pages.forEach(function(p) {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.name || p.page_name || p.URL || p.id;
+    sel.appendChild(opt);
+  });
+  // Store for URL lookup in submitCreateAd
+  if (!adsData) adsData = {};
+  if (!adsData.pages || !adsData.pages.length) adsData.pages = pages;
+}
+
+// Auto-generate campaign name, headline, and copy via AI
+async function autoGenerateModalCopy() {
+  const btn = document.getElementById('modalAutoGenBtn');
+  btn.textContent = '⏳ Generating…'; btn.disabled = true;
+  try {
+    const platform = document.getElementById('createAdPlatform').value;
+    const raw = await apiCall(N8N.liGenerateAICopy, {
+      segment: modalAudienceMode,
+      mode: platform  // tells AI which platform format to target
+    });
+    const res = Array.isArray(raw) ? raw[0] : raw;
+    if (res && res.headline) {
+      const platformLabels = { google_ads: 'Google', msft_ads: 'MSFT', linkedin_ads: 'LinkedIn' };
+      document.getElementById('createAdName').value = (platformLabels[platform] || '') + ' Campaign — ' + new Date().toLocaleDateString();
+      document.getElementById('createAdTitle').value = res.headline;
+      document.getElementById('createAdText').value = res.intro || '';
+    }
+  } catch(e) {
+    document.getElementById('createAdStatus').textContent = 'AI generation failed: ' + e.message;
+  }
+  btn.textContent = '✨ Auto-generate with AI'; btn.disabled = false;
+}
+
 // Wizard (5-step LinkedIn) audience mode selector
 let wizardAudienceMode = 'both';
 function selectWizardMode(el) {
