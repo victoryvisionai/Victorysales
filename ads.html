@@ -2884,10 +2884,10 @@ function fmtNum(n) {
 
 function showStatus(msg, isError) {
   const el = document.getElementById('statusMessage');
-  el.textContent = msg;
+  el.innerHTML = msg;  // innerHTML to support links in success messages
   el.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
   el.style.display = 'block';
-  setTimeout(() => { el.style.display = 'none'; }, 5000);
+  setTimeout(() => { el.style.display = 'none'; }, 8000);
 }
 
 // ══════════════════════════════════════
