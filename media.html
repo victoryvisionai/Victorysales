@@ -2376,7 +2376,8 @@ document.getElementById('presentationForm').reset();
         document.getElementById('presentationChat').value = '';
 document.getElementById('presentationPages').value = '8';
 document.getElementById('companySelect').value = '';
-document.getElementById('campaignImageSelect').value = '';
+var _cis = document.getElementById('campaignImageSelect');
+if (_cis) _cis.value = '';
       } else {
         hideProcessing();
         throw new Error(result.message || 'Presentation creation failed');
