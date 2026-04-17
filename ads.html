@@ -2099,8 +2099,8 @@ async function launchLinkedInAd() {
     const res = Array.isArray(raw) ? raw[0] : raw;
 
     if (res && res.success) {
-      showStatus('🚀 LinkedIn campaign group created! Opening Campaign Manager to finish creative + activate…', false);
-      if (res.deep_link) window.open(res.deep_link, '_blank', 'noopener,noreferrer');
+      const deepLinkHtml = res.deep_link ? ` <a href="${res.deep_link}" target="_blank" style="color:var(--navy);text-decoration:underline;">View in LinkedIn →</a>` : '';
+      showStatus(`🚀 LinkedIn campaign created as ${res.status || 'DRAFT'}!${deepLinkHtml}`, false);
       setTimeout(() => { switchTab('active'); loadCampaigns(); }, 1500);
     } else {
       const err = (res && (res.error || res.message)) || 'Unknown error';
