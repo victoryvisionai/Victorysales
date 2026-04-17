@@ -2418,11 +2418,15 @@ function filterCampaigns() {
 // PLATFORM CONNECTION STATUS
 // ══════════════════════════════════════
 function updatePlatformConnectionUI(adAccounts) {
-  const accounts = Array.isArray(adAccounts) ? adAccounts : [];
+  // Determine connection by checking if the user has account IDs saved (set in Settings)
+  // — these are only saved after OAuth + entering the account ID.
+  const connectionMap = {
+    google_ads: !!(userData?.google_ads_customer_id),
+    msft_ads:   !!(userData?.msft_ads_account_id)
+  };
 
   for (const platform of ['google_ads', 'msft_ads']) {
-    const acct = accounts.find(a => a.platform === platform);
-    const connected = acct?.oauth_connected;
+    const connected = connectionMap[platform];
     const prefix = platform === 'google_ads' ? 'google' : 'msft';
 
     const badge     = document.getElementById(`${prefix}ConnectBadge`);
