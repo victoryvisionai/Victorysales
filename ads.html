@@ -1851,22 +1851,44 @@ async function populateModalPages() {
 // Auto-generate campaign name, headline, and copy via AI
 async function autoGenerateModalCopy() {
   const btn = document.getElementById('modalAutoGenBtn');
+  const statusEl = document.getElementById('createAdStatus');
   btn.textContent = '⏳ Generating…'; btn.disabled = true;
+  statusEl.textContent = '';
   try {
     const platform = document.getElementById('createAdPlatform').value;
-    const raw = await apiCall(N8N.liGenerateAICopy, {
-      segment: modalAudienceMode,
-      mode: platform  // tells AI which platform format to target
+    // Use AbortSignal to timeout after 25s (OpenAI can be slow)
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 25000);
+    const response = await fetch(N8N.liGenerateAICopy, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        segment: modalAudienceMode,
+        mode: platform
+      }),
+      signal: controller.signal
     });
+    clearTimeout(timer);
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const text = await response.text();
+    const raw = text.length ? JSON.parse(text) : {};
     const res = Array.isArray(raw) ? raw[0] : raw;
     if (res && res.headline) {
       const platformLabels = { google_ads: 'Google', msft_ads: 'MSFT', linkedin_ads: 'LinkedIn' };
       document.getElementById('createAdName').value = (platformLabels[platform] || '') + ' Campaign — ' + new Date().toLocaleDateString();
       document.getElementById('createAdTitle').value = res.headline;
       document.getElementById('createAdText').value = res.intro || '';
+      statusEl.textContent = '✅ AI copy generated!';
+    } else {
+      statusEl.textContent = '⚠️ AI returned empty — try again.';
     }
   } catch(e) {
-    document.getElementById('createAdStatus').textContent = 'AI generation failed: ' + e.message;
+    if (e.name === 'AbortError') {
+      statusEl.textContent = '⚠️ AI took too long (>25s). Try again.';
+    } else {
+      statusEl.textContent = '❌ AI failed: ' + e.message;
+    }
   }
   btn.textContent = '✨ Auto-generate with AI'; btn.disabled = false;
 }
