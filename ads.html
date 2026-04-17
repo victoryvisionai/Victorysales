@@ -2460,17 +2460,11 @@ function openCreateAdModal(platform) {
   document.getElementById('createAdText').value = '';
   document.getElementById('createAdBudget').value = '50';
   document.getElementById('createAdStatus').textContent = '';
-  // Populate landing pages
-  const sel = document.getElementById('createAdLandingPage');
-  sel.innerHTML = '<option value="">Select a page…</option>';
-  if (adsData && adsData.pages) {
-    (Array.isArray(adsData.pages) ? adsData.pages : []).forEach(function(p) {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name || p.page_name || p.URL || p.id;
-      sel.appendChild(opt);
-    });
-  }
+  document.getElementById('modalAutoGenBtn').textContent = '✨ Auto-generate with AI';
+  document.getElementById('modalAutoGenBtn').disabled = false;
+
+  // Populate landing pages — try adsData first, then fetch fresh if empty
+  populateModalPages();
   // Reset audience mode to both (default) + refresh counts for real numbers + firmographics
   modalAudienceMode = 'both';
   const pills = document.querySelectorAll('#modalAudienceOptions .segment-pill');
