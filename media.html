@@ -2692,7 +2692,7 @@ card.innerHTML = `
       <option value="">-- Select Campaign --</option>
       ${campaigns.map(c => `<option value="${c.id}" ${file.campaign_id === c.id ? 'selected' : ''}>${c.name || c.id}</option>`).join('')}
     </select>
-    <button onclick="moveToCampaign('${file.id}')" style="background:#0a3161;color:white;padding:4px 10px;border:none;border-radius:4px;cursor:pointer;">Move</button>
+    <button onclick="moveToCampaign('${jse(file.id)}')" style="background:#0a3161;color:white;padding:4px 10px;border:none;border-radius:4px;cursor:pointer;">Move</button>
   </div>
 </div>
       <!-- Edit Mode -->
