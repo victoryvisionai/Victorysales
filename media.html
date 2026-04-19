@@ -1448,6 +1448,10 @@
 </div>
 
 <script>
+  // JS-string escape — prevents apostrophes/quotes/newlines in file.name or file.URL
+  // from breaking inline onclick="foo('${value}')" attributes (was causing SyntaxError at line 1)
+  function jse(s) { return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\r?\n/g, ' '); }
+
   // Supabase configuration for auth only
   const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
