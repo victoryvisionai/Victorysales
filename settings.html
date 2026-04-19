@@ -2409,6 +2409,64 @@ function connectCalendly() {
     }
   }
 
+  // ── Refer & Earn ──────────────────────────────────────────────────────────
+  async function sendReferral() {
+    const name = document.getElementById('referName').value.trim();
+    const email = document.getElementById('referEmail').value.trim();
+    const status = document.getElementById('referStatus');
+    const btn = document.getElementById('sendReferBtn');
+    if (!name || !email) { status.style.color='#dc3545'; status.textContent = '❌ Both name and email required.'; return; }
+    btn.disabled = true; btn.textContent = 'Sending...';
+    status.style.color = '#666'; status.textContent = '⏳ Sending invite from your domain...';
+    try {
+      const r = await apiCall('https://victoryvision.app.n8n.cloud/webhook/user/refer', { name, email });
+      const data = Array.isArray(r) ? r[0] : r;
+      if (data.success === false) throw new Error(data.error || 'Failed');
+      status.style.color = '#16a34a';
+      status.textContent = '✅ ' + (data.message || 'Invite sent!');
+      document.getElementById('referName').value = '';
+      document.getElementById('referEmail').value = '';
+      renderReferProgress(data.total_sent, data.free_month_progress, data.free_month_unlocked);
+      loadReferralHistory();
+    } catch(e) {
+      status.style.color = '#dc3545'; status.textContent = '❌ ' + e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = 'Send Invite';
+    }
+  }
+
+  function renderReferProgress(sent, progress, unlocked) {
+    const p = document.getElementById('refer-progress');
+    const remaining = Math.max(0, 4 - (sent || 0));
+    const filled = '🎁'.repeat(Math.min(sent || 0, 4));
+    const empty = '⚪'.repeat(remaining);
+    p.innerHTML = unlocked
+      ? '<strong>🎉 Free month unlocked!</strong> ' + filled + ' (' + (sent || 0) + ' referrals on file)'
+      : '<strong>' + (sent || 0) + ' / 4 referrals</strong> toward your free month — ' + filled + empty + ' (' + remaining + ' to go)';
+  }
+
+  async function loadReferralHistory() {
+    try {
+      const r = await apiCall('https://victoryvision.app.n8n.cloud/webhook/user/get');
+      const data = Array.isArray(r) ? r[0] : r;
+      const refs = (data && data.background_data && Array.isArray(data.background_data.referrals)) ? data.background_data.referrals : [];
+      renderReferProgress(refs.length, Math.min(refs.length, 4), refs.length >= 4);
+      const list = document.getElementById('referList');
+      if (!refs.length) { list.innerHTML = '<div style="color:#999;font-size:12px;">No referrals sent yet. Invite a friend to get started.</div>'; return; }
+      list.innerHTML = '<div style="font-size:11px;color:#666;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Your Referrals</div>' +
+        refs.slice(-10).reverse().map(r => `
+          <div style="display:flex;justify-content:space-between;padding:6px 10px;background:white;border-radius:4px;margin-bottom:4px;font-size:12px;">
+            <span><strong>${r.name||''}</strong> · ${r.email||''}</span>
+            <span style="color:${r.status==='signed_up'?'#16a34a':'#999'};">${r.status==='signed_up'?'✅ Joined':'📨 Sent'} · ${(r.sent_at||'').slice(0,10)}</span>
+          </div>
+        `).join('');
+    } catch(e) {
+      document.getElementById('refer-progress').textContent = '0 / 4 referrals toward your free month';
+    }
+  }
+  // Auto-load on page ready (delay so loadUserData has CUSTOMER_ID set)
+  setTimeout(() => { if (typeof CUSTOMER_ID !== 'undefined' && CUSTOMER_ID) loadReferralHistory(); }, 1500);
+
   // ── Ad Tracking Save ────────────────────────────────────────────────────
   // Pixels and account IDs are stored directly on the users table.
   // user/update is the canonical update endpoint used by companyprofile.html too.
