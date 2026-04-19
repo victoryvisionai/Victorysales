@@ -2715,7 +2715,7 @@ card.innerHTML = `
       
    <div class="modal-actions">
   <button id="editBtn" onclick="toggleEditMode()">📝 Edit</button>
-  <button id="saveBtn" onclick="saveFileChanges('${file.id}')" style="display:none;background:#28a745;">💾 Save</button>
+  <button id="saveBtn" onclick="saveFileChanges('${jse(file.id)}')" style="display:none;background:#28a745;">💾 Save</button>
   <button id="cancelBtn" onclick="cancelEdit()" style="display:none;background:#6c757d;">❌ Cancel</button>
   <button onclick="downloadFile('${jse(file.URL)}', '${jse(file.name)}')" style="background:#17a2b8;">📥 Download</button>
   <button onclick="archiveFile('${jse(file.id)}', ${file.archive ? 'true' : 'false'})" style="background:${file.archive ? '#28a745' : '#6c757d'};">
