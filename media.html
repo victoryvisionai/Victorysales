@@ -2717,12 +2717,12 @@ card.innerHTML = `
   <button id="editBtn" onclick="toggleEditMode()">📝 Edit</button>
   <button id="saveBtn" onclick="saveFileChanges('${file.id}')" style="display:none;background:#28a745;">💾 Save</button>
   <button id="cancelBtn" onclick="cancelEdit()" style="display:none;background:#6c757d;">❌ Cancel</button>
-  <button onclick="downloadFile('${file.URL}', '${file.name}')" style="background:#17a2b8;">📥 Download</button>
-  <button onclick="archiveFile('${file.id}', ${file.archive})" style="background:${file.archive ? '#28a745' : '#6c757d'};">
+  <button onclick="downloadFile('${jse(file.URL)}', '${jse(file.name)}')" style="background:#17a2b8;">📥 Download</button>
+  <button onclick="archiveFile('${jse(file.id)}', ${file.archive ? 'true' : 'false'})" style="background:${file.archive ? '#28a745' : '#6c757d'};">
   ${file.archive ? '📤 Unarchive' : '🗄️ Archive'}
 </button>
-  ${window.currentUser && window.currentUser.company_id ? `<button onclick="shareWithTeam('${file.id}')" style="background:#6610f2;color:white;">👥 Share</button>` : ''}
-  <button onclick="deleteFile('${file.id}', '${fileType}')" style="background:#dc3545;">🗑️ Delete</button>
+  ${window.currentUser && window.currentUser.company_id ? `<button onclick="shareWithTeam('${jse(file.id)}')" style="background:#6610f2;color:white;">👥 Share</button>` : ''}
+  <button onclick="deleteFile('${jse(file.id)}', '${jse(fileType)}')" style="background:#dc3545;">🗑️ Delete</button>
 </div>
     `;
     
