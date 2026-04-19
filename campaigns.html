@@ -1287,9 +1287,10 @@
   }
 
 function closeModal() {
-  campaignModal.style.display = 'none';
-  researchProgressModal.style.display = 'none';
-  document.getElementById('researchDashboard').style.display = 'none';
+  if (campaignModal) campaignModal.style.display = 'none';
+  if (researchProgressModal) researchProgressModal.style.display = 'none';
+  const rd = document.getElementById('researchDashboard');
+  if (rd) rd.style.display = 'none';
 }
   // Edit campaign (placeholder)
   function editCampaign(campaignId) {
