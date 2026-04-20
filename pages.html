@@ -906,6 +906,7 @@
       '<div class="page-actions">' +
         '<button onclick="event.stopPropagation(); viewPage(\'' + escHtml(pageUrl) + '\',\'' + escHtml(page.slug||'') + '\')" class="btn-small secondary">👁 View</button>' +
         '<button onclick="event.stopPropagation(); copyPageUrl(\'' + escHtml(pageUrl) + '\',\'' + escHtml(page.slug||'') + '\')" class="btn-small">🔗 Copy URL</button>' +
+        '<button onclick="event.stopPropagation(); openEditPageModal(allPages.find(function(p){return String(p.id)===\'' + page.id + '\';}))" class="btn-small">✏️ Edit</button>' +
         '<button onclick="event.stopPropagation(); deletePage(\'' + page.id + '\')" class="btn-small danger">🗑 Delete</button>' +
       '</div>';
 
