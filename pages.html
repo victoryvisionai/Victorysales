@@ -927,10 +927,10 @@
     } catch(e) { showStatus('Error deleting page: ' + e.message, true); }
   }
 
-  // Build the live-preview URL: uses Pages-Serve webhook so pages work before DNS routing is set up
+  // Build the live-preview URL: uses Pages-Serve webhook with clean /p/<slug> path
   function buildPreviewUrl(slug) {
     if (!slug) return '';
-    return 'https://victoryvision.app.n8n.cloud/webhook/p?slug=' + encodeURIComponent(slug) + '&cid=' + encodeURIComponent(CUSTOMER_ID);
+    return 'https://victoryvision.app.n8n.cloud/webhook/p/' + encodeURIComponent(slug);
   }
 
   function viewPage(url, slug) {
