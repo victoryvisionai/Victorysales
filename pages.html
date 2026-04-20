@@ -1028,7 +1028,7 @@
     }
     overlay.dataset.pageId = page.id;
     document.getElementById('editPageName').value = page.title || page.name || '';
-    document.getElementById('editPageDescription').value = page.description || '';
+    document.getElementById('editPageCampaign').value = page.campaign_name || '';
     document.getElementById('editPageType').value = page.page_type || 'landing';
     document.getElementById('editPageSlug').value = page.slug || '';
     overlay.style.display = 'flex';
@@ -1038,14 +1038,14 @@
     var overlay = document.getElementById('editPageOverlay');
     var id = overlay.dataset.pageId;
     var name = document.getElementById('editPageName').value.trim();
-    var description = document.getElementById('editPageDescription').value.trim();
+    var campaign_name = document.getElementById('editPageCampaign').value.trim();
     var page_type = document.getElementById('editPageType').value;
     var slug = document.getElementById('editPageSlug').value.trim();
     if (!id) { overlay.style.display = 'none'; return; }
     var btn = document.getElementById('editPageSave');
     btn.disabled = true; btn.textContent = 'Saving…';
     try {
-      var res = await apiCall(ENDPOINTS.pagesEditMeta, { page_id: id, name: name, description: description, page_type: page_type, slug: slug });
+      var res = await apiCall(ENDPOINTS.pagesEditMeta, { page_id: id, name: name, campaign_name: campaign_name, page_type: page_type, slug: slug });
       if (res && (res.success || res.page)) { showStatus('Page updated!'); overlay.style.display = 'none'; await loadPages(); applyFilters(); }
       else throw new Error(res && res.message ? res.message : 'Update failed');
     } catch (e) {
