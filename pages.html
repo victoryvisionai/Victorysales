@@ -1141,6 +1141,9 @@
     document.getElementById('clearFilters').addEventListener('click', clearFilters);
     document.getElementById('modalOverlay').addEventListener('click', closeExpandedCard);
     document.getElementById('typeFilter').addEventListener('change', applyFilters);
+    var sortEl = document.getElementById('sortFilter'); if (sortEl) sortEl.addEventListener('change', applyFilters);
+    var gridBtn = document.getElementById('viewGridBtn'); if (gridBtn) gridBtn.addEventListener('click', function(){ setViewMode('grid'); });
+    var listBtn = document.getElementById('viewListBtn'); if (listBtn) listBtn.addEventListener('click', function(){ setViewMode('list'); });
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && expandedCard) closeExpandedCard(); });
     var searchTimeout;
     document.getElementById('searchFilter').addEventListener('input', function() {
