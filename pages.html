@@ -984,6 +984,77 @@
       sourceHtml + abHtml;
   }
 
+  // ─── Edit Meta Modal ─────────────────────────────────────────────────────────
+  function openEditPageModal(page) {
+    if (!page) return;
+    var overlay = document.getElementById('editPageOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'editPageOverlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,49,97,0.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;';
+      overlay.innerHTML =
+        '<div id="editPageModal" style="background:#fff;border-radius:12px;max-width:520px;width:100%;padding:24px 28px;box-shadow:0 20px 50px rgba(0,0,0,0.25);">' +
+          '<h3 style="margin:0 0 16px;color:#0A3161;">Edit page</h3>' +
+          '<div class="form-group" style="margin-bottom:14px;">' +
+            '<label for="editPageName" style="font-size:12px;color:#555;">Name</label>' +
+            '<input type="text" id="editPageName" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;">' +
+          '</div>' +
+          '<div class="form-group" style="margin-bottom:14px;">' +
+            '<label for="editPageDescription" style="font-size:12px;color:#555;">Description</label>' +
+            '<textarea id="editPageDescription" rows="3" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;resize:vertical;"></textarea>' +
+          '</div>' +
+          '<div class="form-group" style="margin-bottom:14px;">' +
+            '<label for="editPageType" style="font-size:12px;color:#555;">Type</label>' +
+            '<select id="editPageType" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;">' +
+              '<option value="landing">Landing</option>' +
+              '<option value="lead_magnet">Lead Magnet</option>' +
+              '<option value="newsletter">Newsletter</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group" style="margin-bottom:18px;">' +
+            '<label for="editPageSlug" style="font-size:12px;color:#555;">Slug (URL path)</label>' +
+            '<input type="text" id="editPageSlug" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;font-family:monospace;">' +
+            '<div style="font-size:11px;color:#888;margin-top:4px;">Lowercase letters, numbers, dashes only.</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:10px;justify-content:flex-end;">' +
+            '<button type="button" id="editPageCancel" class="secondary" style="padding:10px 18px;">Cancel</button>' +
+            '<button type="button" id="editPageSave" style="padding:10px 18px;background:#0A3161;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Save</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.style.display = 'none'; });
+      document.getElementById('editPageCancel').addEventListener('click', function() { overlay.style.display = 'none'; });
+      document.getElementById('editPageSave').addEventListener('click', submitEditPageMeta);
+    }
+    overlay.dataset.pageId = page.id;
+    document.getElementById('editPageName').value = page.title || page.name || '';
+    document.getElementById('editPageDescription').value = page.description || '';
+    document.getElementById('editPageType').value = page.page_type || 'landing';
+    document.getElementById('editPageSlug').value = page.slug || '';
+    overlay.style.display = 'flex';
+  }
+
+  async function submitEditPageMeta() {
+    var overlay = document.getElementById('editPageOverlay');
+    var id = overlay.dataset.pageId;
+    var name = document.getElementById('editPageName').value.trim();
+    var description = document.getElementById('editPageDescription').value.trim();
+    var page_type = document.getElementById('editPageType').value;
+    var slug = document.getElementById('editPageSlug').value.trim();
+    if (!id) { overlay.style.display = 'none'; return; }
+    var btn = document.getElementById('editPageSave');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      var res = await apiCall(ENDPOINTS.pagesEditMeta, { page_id: id, name: name, description: description, page_type: page_type, slug: slug });
+      if (res && (res.success || res.page)) { showStatus('Page updated!'); overlay.style.display = 'none'; await loadPages(); applyFilters(); }
+      else throw new Error(res && res.message ? res.message : 'Update failed');
+    } catch (e) {
+      showStatus('Update failed: ' + e.message, true);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save';
+    }
+  }
+
   // ─── Card expand ─────────────────────────────────────────────────────────────
   function toggleCardExpansion(cardElement, pageId) {
     if (expandedCard && expandedCard !== cardElement) expandedCard.classList.remove('expanded');
