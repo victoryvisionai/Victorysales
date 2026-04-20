@@ -434,6 +434,7 @@
   let leadMagnetFiles = [];
   let selectedLmFile = null;
   let expandedCard = null;
+  let currentViewMode = 'grid';
   const analyticsCache = {};
 
   const ENDPOINTS = {
@@ -441,6 +442,7 @@
     pagesGet:         'https://victoryvision.app.n8n.cloud/webhook/pages/get',
     pagesCreate:      'https://victoryvision.app.n8n.cloud/webhook/pages/creates',
     pagesUpdate:      'https://victoryvision.app.n8n.cloud/webhook/pages/update',
+    pagesEditMeta:    'https://victoryvision.app.n8n.cloud/webhook/pages/edit-meta',
     pagesRemove:      'https://victoryvision.app.n8n.cloud/webhook/pages/remove',
     pagesLeadMagnet:  'https://victoryvision.app.n8n.cloud/webhook/pages/lead-magnet-create',
     pagesNewsletter:  'https://victoryvision.app.n8n.cloud/webhook/pages/newsletter-create',
