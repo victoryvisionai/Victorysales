@@ -1097,10 +1097,11 @@
     } catch(e) { showStatus('Error deleting page: ' + e.message, true); }
   }
 
-  // Build the live-preview URL: uses Pages-Serve webhook with clean /p/<slug> path
+  // Build the live-preview URL. n8n production webhooks don't support path params, so
+  // slug must be a query param. cid is no longer needed (lookup is slug-only server-side).
   function buildPreviewUrl(slug) {
     if (!slug) return '';
-    return 'https://victoryvision.app.n8n.cloud/webhook/p/' + encodeURIComponent(slug);
+    return 'https://victoryvision.app.n8n.cloud/webhook/p?slug=' + encodeURIComponent(slug);
   }
 
   function viewPage(url, slug) {
