@@ -741,13 +741,24 @@
   function applyFilters() {
     var searchTerm = document.getElementById('searchFilter').value.toLowerCase();
     var typeVal = document.getElementById('typeFilter').value;
+    var sortVal = (document.getElementById('sortFilter') || { value: 'created_desc' }).value;
     filteredPages = allPages.filter(function(page) {
       if (typeVal && page.page_type !== typeVal) return false;
       if (searchTerm) {
-        var text = [page.title, page.description, page.url, page.campaign_name || ''].join(' ').toLowerCase();
+        var text = [page.title, page.description, page.url, page.slug, page.campaign_name || ''].join(' ').toLowerCase();
         if (text.indexOf(searchTerm) === -1) return false;
       }
       return true;
+    });
+    filteredPages.sort(function(a, b) {
+      switch (sortVal) {
+        case 'created_asc':       return new Date(a.created_at||0) - new Date(b.created_at||0);
+        case 'views_desc':        return (b.views||0) - (a.views||0);
+        case 'conversions_desc':  return (b.conversions||0) - (a.conversions||0);
+        case 'name_asc':          return String(a.title||'').localeCompare(String(b.title||''));
+        case 'created_desc':
+        default:                  return new Date(b.created_at||0) - new Date(a.created_at||0);
+      }
     });
     renderPagesGrid();
   }
@@ -755,7 +766,20 @@
   function clearFilters() {
     document.getElementById('searchFilter').value = '';
     document.getElementById('typeFilter').value = '';
-    filteredPages = allPages.slice();
+    var sortSel = document.getElementById('sortFilter'); if (sortSel) sortSel.value = 'created_desc';
+    applyFilters();
+  }
+
+  function setViewMode(mode) {
+    currentViewMode = (mode === 'list') ? 'list' : 'grid';
+    var gridBtn = document.getElementById('viewGridBtn');
+    var listBtn = document.getElementById('viewListBtn');
+    if (gridBtn && listBtn) {
+      var activeCss = 'padding:6px 12px;border:none;background:#0A3161;color:#fff;cursor:pointer;font-size:13px;';
+      var inactiveCss = 'padding:6px 12px;border:none;background:#fff;color:#333;cursor:pointer;font-size:13px;';
+      gridBtn.style.cssText = currentViewMode === 'grid' ? activeCss : inactiveCss;
+      listBtn.style.cssText = currentViewMode === 'list' ? activeCss : inactiveCss;
+    }
     renderPagesGrid();
   }
 
