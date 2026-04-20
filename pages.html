@@ -1186,7 +1186,10 @@
   window.closeExpandedCard = closeExpandedCard;
   window.handlePageEdit = handlePageEdit;
   window.openEditPageModal = openEditPageModal;
-  window.allPages = allPages;
+  window.openEditPageById = function(id) {
+    var p = allPages.find(function(x){ return String(x.id) === String(id); });
+    if (p) openEditPageModal(p);
+  };
   window.viewPage = viewPage;
   window.copyPageUrl = copyPageUrl;
   window.deletePage = deletePage;
