@@ -850,9 +850,19 @@
     var typeLabel = typeLabels[page.page_type] || page.page_type;
     var pageUrl = page.url || 'No URL set';
 
-    var previewContent = (page.thumbnail_URL && page.thumbnail_URL !== 'null' && page.thumbnail_URL !== 'NULL')
-      ? '<img src="' + page.thumbnail_URL + '" alt="Page preview" class="page-thumbnail" onerror="this.parentElement.innerHTML=\'<div class=\\\'page-preview-placeholder\\\'>📄<br><small>Preview unavailable</small></div>\'">'
-      : '<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>';
+    var previewContent;
+    if (page.thumbnail_URL && page.thumbnail_URL !== 'null' && page.thumbnail_URL !== 'NULL') {
+      previewContent = '<img src="' + page.thumbnail_URL + '" alt="Page preview" class="page-thumbnail" onerror="this.parentElement.innerHTML=\'<div class=\\\'page-preview-placeholder\\\'>📄<br><small>Preview unavailable</small></div>\'">';
+    } else if (page.body && typeof page.body === 'string' && page.body.length > 100) {
+      // Live iframe preview scaled down so the whole hero fits in the card height
+      var srcdoc = page.body.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      previewContent = '<div class="page-iframe-preview" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">' +
+        '<iframe loading="lazy" sandbox srcdoc="' + srcdoc + '" ' +
+          'style="width:200%;height:200%;border:0;transform:scale(0.5);transform-origin:0 0;pointer-events:none;"></iframe>' +
+        '</div>';
+    } else {
+      previewContent = '<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>';
+    }
 
     var twButtons = ['1D','7D','30D','90D','ALL'].map(function(w) {
       return '<button class="tw-btn ' + (w==='7D'?'active':'') + '" onclick="event.stopPropagation(); loadAnalytics(\'' + page.id + '\',\'' + w + '\',this)">' + w + '</button>';
