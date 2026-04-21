@@ -184,6 +184,18 @@ return [{ json: out }];
 `,
 
 // ────────────────────────────────────────────────────────────────────────────
+// Sequence parameter table — one record per campaign. Webhook entry points set
+// these on the item before the loop starts; the engine reads them each iteration.
+SEQUENCE_PARAMS: {
+  nurture:    { total_emails: 12, days_between: 7,  stop_on_response: true,  lead_magnet_page: false, newsletter_guard: false },
+  leadmagnet: { total_emails: 6,  days_between: 3,  stop_on_response: true,  lead_magnet_page: true,  newsletter_guard: false },
+  meeting:    { total_emails: 4,  days_between: 3.5,stop_on_response: true,  lead_magnet_page: false, newsletter_guard: false },
+  newsletter: { total_emails: 1,  days_between: 0,  stop_on_response: false, lead_magnet_page: false, newsletter_guard: true  },
+  followup:   { total_emails: 2,  days_between: 7,  stop_on_response: true,  lead_magnet_page: false, newsletter_guard: false }
+  // user-generated campaigns pass their own total_emails + days_between from webhook body
+},
+
+// ────────────────────────────────────────────────────────────────────────────
 // Supabase ?select= field lists. Use verbatim in HTTP node query params.
 CONTACT_CONTEXT_SELECT: 'id,name,first_name,email,phone_number,title,company,industry,location,linkedin,type,tags,campaigns,source,customer_journey,analysis,next_steps,close_probability,meetings_to_close,personal_summary,company_summary,personal_priorities,company_priorities,conversion_tips,number_emails_sent,number_call_attempts,num_emails_opened,num_links_clicked,last_emailed_date,last_opened_date,last_responded,last_called',
 
