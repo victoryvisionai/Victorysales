@@ -3465,14 +3465,20 @@ async function loadVVCampaignsInline() {
 }
 
 // Append "<name> @ <ISO>" to contacts.campaigns on the server, non-blocking.
+// Reads the current campaigns string from local state, appends a new entry, PATCHes full string.
 async function appendContactCampaignTag(contactId, tag) {
   if (!contactId || !tag) return;
   try {
+    const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
+    const existing = (contact && contact.campaigns) ? String(contact.campaigns) : '';
+    const entry = tag + ' @ ' + new Date().toISOString();
+    const next = existing ? (existing + ', ' + entry) : entry;
     await apiCall(ENDPOINTS.updateContact, {
       contact_id: contactId,
       customer_id: CUSTOMER_ID,
-      append_campaign_tag: tag + ' @ ' + new Date().toISOString()
+      campaigns: next
     });
+    if (contact) contact.campaigns = next; // sync local state
   } catch(e) { console.warn('campaign tag append failed:', e.message); }
 }
 
