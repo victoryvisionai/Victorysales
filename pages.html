@@ -1053,14 +1053,16 @@
     var overlay = document.getElementById('editPageOverlay');
     var id = overlay.dataset.pageId;
     var name = document.getElementById('editPageName').value.trim();
-    var campaign_name = document.getElementById('editPageCampaign').value.trim();
+    var camSel = document.getElementById('editPageCampaign');
+    var campaign_id = camSel.value || null;
+    var campaign_name = campaign_id ? (camSel.selectedOptions[0]?.dataset?.name || camSel.selectedOptions[0]?.textContent || '') : null;
     var page_type = document.getElementById('editPageType').value;
     var slug = document.getElementById('editPageSlug').value.trim();
     if (!id) { overlay.style.display = 'none'; return; }
     var btn = document.getElementById('editPageSave');
     btn.disabled = true; btn.textContent = 'Saving…';
     try {
-      var res = await apiCall(ENDPOINTS.pagesEditMeta, { page_id: id, name: name, campaign_name: campaign_name, page_type: page_type, slug: slug });
+      var res = await apiCall(ENDPOINTS.pagesEditMeta, { page_id: id, name: name, campaign_id: campaign_id, campaign_name: campaign_name, page_type: page_type, slug: slug });
       if (res && (res.success || res.page)) { showStatus('Page updated!'); overlay.style.display = 'none'; await loadPages(); applyFilters(); }
       else throw new Error(res && res.message ? res.message : 'Update failed');
     } catch (e) {
