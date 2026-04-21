@@ -706,6 +706,14 @@
   }
 
   // ─── Load pages ───────────────────────────────────────────────────────────────
+  async function loadCampaigns() {
+    try {
+      var data = await apiCall(ENDPOINTS.campaignsGet, {});
+      var list = Array.isArray(data) ? data : (data && (data.campaigns || data.data) || []);
+      availableCampaigns = list.map(function(c) { return { id: c.id, name: c.name || c.campaign_name || '' }; }).filter(function(c){ return c.id; });
+    } catch(e) { console.error('loadCampaigns:', e); availableCampaigns = []; }
+  }
+
   async function loadPages() {
     try {
       var data = await apiCall(ENDPOINTS.pagesGet);
@@ -1177,7 +1185,7 @@
       var isAuthenticated = await checkAuthentication();
       if (isAuthenticated) {
         document.getElementById('authLoading').style.display = 'none';
-        await Promise.all([loadUserData(), loadAvailableVideos(), loadLeadMagnetFiles(), loadPages()]);
+        await Promise.all([loadUserData(), loadAvailableVideos(), loadLeadMagnetFiles(), loadPages(), loadCampaigns()]);
         setupEventListeners();
         applyFilters();
         if (!hasCompletedTour()) setTimeout(startTour, 1000);
