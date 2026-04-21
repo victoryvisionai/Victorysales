@@ -3800,6 +3800,11 @@ function setupEventListeners() {
   document.getElementById('selectAllBtn').addEventListener('click', selectAll);
   document.getElementById('deselectAllBtn').addEventListener('click', deselectAll);
   document.getElementById('enrollCampaignsBtn').addEventListener('click', enrollInCampaigns);
+  document.getElementById('campaign_newsletter').addEventListener('change', function(e) {
+    var wrap = document.getElementById('newsletterPagePickerWrap');
+    wrap.style.display = e.target.checked ? 'block' : 'none';
+    if (e.target.checked) loadNewsletterPages();
+  });
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
   document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
   document.getElementById('massSMSBtn').addEventListener('click', showMassSMSModal);
