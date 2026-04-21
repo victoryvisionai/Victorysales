@@ -1612,25 +1612,29 @@
   }
 
 // File upload function using direct form submission (bypasses CORS and iframe restrictions)
-  function uploadFileToN8N(file, fileType) {
+  async function uploadFileToN8N(file, fileType) {
+    // For document uploads with a plain-text body, extract content client-side so
+    // the Media - Upload workflow can drop it into the "message" column while still
+    // saving the file to Cloudinary (same as image/video/presentation branches).
+    let extractedText = '';
+    if (fileType === 'document') {
+      try { extractedText = await readFileText(file); } catch {}
+    }
     return new Promise((resolve, reject) => {
-      // Log file details
       console.log(`📤 Uploading: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB, type: ${fileType})`);
-      
-      // Check file size limit (500MB)
+
       const MAX_SIZE = 500 * 1024 * 1024;
       if (file.size > MAX_SIZE) {
         const errorMsg = `File too large: ${(file.size / 1024 / 1024).toFixed(2)}MB (max 500MB)`;
-        console.error('❌', errorMsg);
         reject(new Error(errorMsg));
         return;
       }
-      
-      // Create a direct form submission without iframe
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('customer_id', CUSTOMER_ID);
       formData.append('file_type', fileType);
+      if (extractedText) formData.append('message', extractedText);
       
       // Use XMLHttpRequest instead of fetch to avoid CORS preflight for simple requests
       const xhr = new XMLHttpRequest();
