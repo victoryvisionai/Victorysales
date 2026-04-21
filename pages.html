@@ -952,35 +952,43 @@
     var visitors = parseInt(d.visitors || d.views || 0);
     var clicks   = parseFloat(d.clicks || 0);
     var subs     = parseInt(d.subscribers || 0);
-    var convs    = parseInt(d.conversions || 0);
+    var convs    = parseInt(d.conversions || d.form_submits || 0);
     var revenue  = parseFloat(d.revenue || 0);
-    var ctr      = visitors > 0 ? ((clicks/visitors)*100).toFixed(1)+'%' : '—';
+    var ctr      = (d.ctr_pct !== undefined) ? d.ctr_pct + '%' : (visitors > 0 ? ((clicks/visitors)*100).toFixed(1)+'%' : '—');
+    var convRate = (d.conversion_rate_pct !== undefined) ? d.conversion_rate_pct + '%' : (visitors > 0 ? ((convs/visitors)*100).toFixed(1)+'%' : '—');
     var sources  = d.visitor_sources || {};
-    var hasAB    = d.ab_a || d.ab_b;
 
+    // Source chips — backend now sends email / social / google_ads / msft_ads / linkedin_ads / direct / other.
     var sourceHtml = '';
-    if (Object.keys(sources).length) {
-      var chips = ['email','social','ads','direct','unknown'].map(function(s) {
-        return sources[s] ? '<div class="source-chip">' + s + ' <span>' + sources[s].toLocaleString() + '</span></div>' : '';
-      }).join('');
-      sourceHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin-bottom:4px;">Visitor Sources</div><div class="sources-row">' + chips + '</div>';
+    var orderedKeys = ['email','social','google_ads','msft_ads','linkedin_ads','direct','other'];
+    var prettyLabels = {email:'📧 Email', social:'📱 Social', google_ads:'🔎 Google Ads', msft_ads:'🅱 Bing/MSFT Ads', linkedin_ads:'💼 LinkedIn Ads', direct:'↗ Direct', other:'… Other'};
+    var chips = orderedKeys.filter(function(k){return sources[k] && sources[k] > 0;}).map(function(k) {
+      return '<div class="source-chip">' + prettyLabels[k] + ' <span>' + Number(sources[k]).toLocaleString() + '</span></div>';
+    }).join('');
+    if (chips) {
+      sourceHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">Visitor Sources</div><div class="sources-row">' + chips + '</div>';
     }
 
+    // A/B — backend returns { variants[], winner, status }.
     var abHtml = '';
-    if (hasAB) {
-      abHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">A/B Test Results</div>' +
-        '<div class="ab-compare">' +
-          '<div class="ab-panel variant-a"><h5>Variant A</h5>' +
-            '<div style="font-size:12px;">Views: <b>' + ((d.ab_a && d.ab_a.views)||0).toLocaleString() + '</b></div>' +
-            '<div style="font-size:12px;">CTR: <b>' + (d.ab_a && d.ab_a.ctr ? (d.ab_a.ctr*100).toFixed(1)+'%' : '—') + '</b></div>' +
-            '<div style="font-size:12px;">Conv: <b>' + ((d.ab_a && d.ab_a.conversions)||0).toLocaleString() + '</b></div>' +
-          '</div>' +
-          '<div class="ab-panel variant-b"><h5>Variant B</h5>' +
-            '<div style="font-size:12px;">Views: <b>' + ((d.ab_b && d.ab_b.views)||0).toLocaleString() + '</b></div>' +
-            '<div style="font-size:12px;">CTR: <b>' + (d.ab_b && d.ab_b.ctr ? (d.ab_b.ctr*100).toFixed(1)+'%' : '—') + '</b></div>' +
-            '<div style="font-size:12px;">Conv: <b>' + ((d.ab_b && d.ab_b.conversions)||0).toLocaleString() + '</b></div>' +
-          '</div>' +
+    var ab = d.ab_test;
+    if (ab && Array.isArray(ab.variants) && ab.variants.length >= 2) {
+      var winnerId = ab.winner && ab.winner.id;
+      var panels = ab.variants.map(function(v) {
+        var isWinner = winnerId && v.id === winnerId;
+        return '<div class="ab-panel" style="border:2px solid ' + (isWinner ? '#10b981' : '#dde2e8') + ';border-radius:8px;padding:10px;">' +
+          '<h5 style="margin:0 0 6px;font-size:12px;color:#0A3161;">Variant ' + (v.variant || '?') +
+            (isWinner ? ' 🏆' : '') + (v.enough_data ? '' : ' <span style="color:#999;font-weight:normal;">(low sample)</span>') +
+          '</h5>' +
+          '<div style="font-size:12px;">Views: <b>' + Number(v.views).toLocaleString() + '</b></div>' +
+          '<div style="font-size:12px;">Conv: <b>' + Number(v.conversions).toLocaleString() + '</b></div>' +
+          '<div style="font-size:12px;">Rate: <b>' + v.conversion_rate_pct + '%</b></div>' +
+          (v.revenue > 0 ? '<div style="font-size:12px;">Rev: <b>$' + Number(v.revenue).toLocaleString() + '</b></div>' : '') +
         '</div>';
+      }).join('');
+      abHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">A/B Test — ' +
+        (ab.status === 'ready' && winnerId ? 'Winner identified' : 'Needs ≥' + ab.min_views_per_variant + ' views per variant') + '</div>' +
+        '<div class="ab-compare" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">' + panels + '</div>';
     }
 
     container.innerHTML =
@@ -989,7 +997,7 @@
         '<div class="stat-box"><div class="stat-val">' + clicks.toLocaleString() + '</div><div class="stat-lbl">Clicks</div></div>' +
         '<div class="stat-box"><div class="stat-val">' + ctr + '</div><div class="stat-lbl">CTR</div></div>' +
         '<div class="stat-box"><div class="stat-val">' + subs.toLocaleString() + '</div><div class="stat-lbl">Subscribers</div></div>' +
-        '<div class="stat-box conversions"><div class="stat-val">' + convs.toLocaleString() + '</div><div class="stat-lbl">Conversions</div></div>' +
+        '<div class="stat-box conversions"><div class="stat-val">' + convs.toLocaleString() + '</div><div class="stat-lbl">Conversions (' + convRate + ')</div></div>' +
         '<div class="stat-box revenue"><div class="stat-val">$' + revenue.toLocaleString() + '</div><div class="stat-lbl">Revenue</div></div>' +
       '</div>' +
       sourceHtml + abHtml;
