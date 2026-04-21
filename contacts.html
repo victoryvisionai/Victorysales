@@ -5026,6 +5026,7 @@ async function confirmLeadMagnet() {
       body: JSON.stringify({
         customer_id: CUSTOMER_ID,
         lead_magnet_url: selectedLeadMagnetUrl,
+        lead_magnet_page_id: selectedLeadMagnetPageId,
         contacts: leadMagnetContactsPending.map(c => ({
           id: c.id || c.contact_id,
           email: c.email,
