@@ -2,6 +2,26 @@
 // Strings embedded into n8n code nodes across every email sequence workflow.
 // Change ONE place → redeploy every workflow script that imports this.
 //
+// UNIFIED SEQUENCE ENGINE DESIGN (confirmed 2026-04-20):
+//   Every email sequence (Nurture, Lead Magnet, Meeting Request, Newsletter,
+//   Follow-up, and user-generated custom campaigns) is the SAME loop:
+//
+//     1. Decide next fire time  → SEND_TIME_DECISION
+//     2. Wait Until that time   (n8n Wait node, "Wait Until" mode, $json._due_at)
+//     3. Guard: stop if done    → LOOP_GUARD
+//          - contact.last_responded > last_sent_at_of_this_sequence   → stop
+//          - newsletter campaign AND contact.newsletter = true         → stop
+//          - sequence_index >= total_emails                            → stop
+//     4. Fetch fresh user + contact (Supabase GET by id)
+//     5. Compose (Sonnet; reads the fresh CONTEXT block)
+//     6. Capitalize              → CAPITALIZATION_FIX
+//     7. Mailgun send
+//     8. Log touchpoint row into existing `email` table (no new columns)
+//     9. Increment sequence_index and loop back to step 1
+//
+//   total_emails + days_between change per sequence; everything else is identical.
+//   No new DB columns. No cron/queue. Workflow execution holds state via Wait nodes.
+//
 // Exports:
 //   SEND_TIME_DECISION   — code node JS that reads aiChooseTime boolean + days_between
 //                          and writes _due_at for Wait / scheduled_at.
