@@ -1460,6 +1460,26 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
     </div>
   </div>
 </div>
+
+<!-- Newsletter Picker Modal -->
+<div id="newsletterModal" class="modal">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h2>📰 Select Newsletter Page</h2>
+      <span class="close" onclick="closeNewsletterModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p style="color: #666; margin-bottom: 15px;">Select which newsletter landing page to link in the email.</p>
+      <div id="newsletterList" style="min-height: 80px;">
+        <div style="text-align:center; padding: 30px; color: #999;">Loading your newsletter pages...</div>
+      </div>
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" onclick="closeNewsletterModal()" class="secondary">Cancel</button>
+        <button type="button" onclick="confirmNewsletter()" class="success" style="background: #0A3161;">✅ Send to Selected Contacts</button>
+      </div>
+    </div>
+  </div>
+</div>
   
 <!-- SMS Modal -->
 <div id="smsModal" class="modal">
