@@ -1704,6 +1704,27 @@
         await handleFileUploads(files, 'presentation');
       }
     });
+
+    // Document upload (DOC, DOCX, ODT, RTF, TXT, MD, CSV)
+    document.getElementById('documentFileInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files);
+      if (files.length > 0) {
+        await handleFileUploads(files, 'document');
+      }
+    });
+  }
+
+  // For plain-text formats we read the content client-side so the workflow
+  // can drop it into the "message" column while saving the file to Cloudinary.
+  async function readFileText(file) {
+    return new Promise((resolve) => {
+      const TEXT_EXTS = /\.(txt|md|csv|rtf)$/i;
+      if (!TEXT_EXTS.test(file.name || '')) return resolve('');
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || '').slice(0, 200000));
+      reader.onerror = () => resolve('');
+      reader.readAsText(file);
+    });
   }
 
   async function handleFileUploads(files, fileType) {
