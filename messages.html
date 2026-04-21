@@ -1137,7 +1137,7 @@ function renderList() {
     body.innerHTML = `
       <div class="email-row-from">${sender}${isUnread ? '<span class="status-dot"></span>' : ''}</div>
       <div class="email-row-subject">${email.subject || '(No subject)'}</div>
-      <div class="email-row-preview">${(email.body||'').slice(0,80)}</div>
+      <div class="email-row-preview">${((email.body_html||email.body||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim()).slice(0,80)}</div>
     `;
 
     // Meta
