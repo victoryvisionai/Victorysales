@@ -3434,6 +3434,23 @@ function updateSelectedCount() {
   document.getElementById('selectAllCheckbox').checked = selectedContacts.size === filteredContacts.length && filteredContacts.length > 0;
 }
 
+let availableNewsletterPages = [];
+async function loadNewsletterPages() {
+  var sel = document.getElementById('newsletterPageSelect');
+  if (availableNewsletterPages.length) return; // already loaded
+  try {
+    var data = await apiCall(ENDPOINTS.pagesGet);
+    var list = Array.isArray(data) ? data : (data && (data.pages || data.data) || []);
+    availableNewsletterPages = list.filter(p => p && p.page_type === 'newsletter');
+    sel.innerHTML = availableNewsletterPages.length
+      ? availableNewsletterPages.map(p => '<option value="' + p.id + '" data-url="' + (p.URL || p.url || '') + '">' + (p.name || p.title || ('Newsletter #' + p.id)) + '</option>').join('')
+      : '<option value="">No newsletter pages yet — create one on Pages</option>';
+  } catch(e) {
+    console.error('loadNewsletterPages:', e);
+    sel.innerHTML = '<option value="">Error loading newsletter pages</option>';
+  }
+}
+
 async function enrollInCampaigns() {
   const selectedCampaigns = getSelectedCampaigns();
   
