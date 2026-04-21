@@ -3524,9 +3524,12 @@ for (const campaign of selectedCampaigns) {
       let endpoint;
       let useCustomCampaign = false;
       let campaignPrompt = '';
+      let vvPayloadExtra = null;
       switch(campaign) {
         case 'leadmagnet':
   await enrollLeadMagnet();
+  // tag each selected contact with the leadmagnet campaign
+  for (const c of selectedContactsList) await appendContactCampaignTag(c.contact_id || c.id, 'Lead Magnet');
   continue;
         case 'nurture':
           endpoint = ENDPOINTS.enrollNurture;
@@ -3541,6 +3544,24 @@ for (const campaign of selectedCampaigns) {
           useCustomCampaign = true;
           campaignPrompt = 'Create a professional follow-up email sequence to re-engage prospects who have gone quiet. Be respectful of their time while reminding them of the value you can provide. Include a soft call-to-action and make it easy for them to respond or schedule a conversation.';
           break;
+        case 'vv': {
+          const vvSel = document.getElementById('vvCampaignSelectInline');
+          const vvOpt = vvSel && vvSel.selectedOptions && vvSel.selectedOptions[0];
+          if (!vvOpt || !vvOpt.value) {
+            showStatus('⚠️ Pick a Victory Vision campaign from the dropdown first', true);
+            continue;
+          }
+          endpoint = 'https://victoryvision.app.n8n.cloud/webhook/emails/victoryvisioncampaigns';
+          vvPayloadExtra = {
+            campaigns: [{ id: vvOpt.value, name: vvOpt.textContent || '' }],
+            selected_contacts: selectedContactsList.map(c => c.contact_id || c.id || c.email),
+            email_count: 3,
+            days_between: parseInt(document.getElementById('daysBetweenEmails')?.value || 2),
+            schedule_start_date: null,
+            ai_choose_time: true
+          };
+          break;
+        }
         default:
           endpoint = ENDPOINTS.enrollNurture;
       }
