@@ -3529,14 +3529,26 @@ for (const campaign of selectedCampaigns) {
           console.error(`Error enrolling in ${campaign}:`, campaignError);
         }
       } else {
+        // Build campaign-specific extra params (e.g. newsletter page selection)
+        let extra = {};
+        if (campaign === 'newsletter') {
+          const nSel = document.getElementById('newsletterPageSelect');
+          const opt = nSel && nSel.selectedOptions && nSel.selectedOptions[0];
+          if (opt && opt.value) {
+            extra.newsletter_page_id = opt.value;
+            extra.newsletter_page_url = opt.dataset.url || '';
+            extra.newsletter_page_name = opt.textContent || '';
+          }
+        }
         for (const contact of selectedContactsList) {
           try {
-            await apiCall(endpoint, {
+            await apiCall(endpoint, Object.assign({
               email: contact.email,
               name: contact.name,
               campaign: campaign,
-              contact_id: contact.contact_id || contact.id || contact.email
-            });
+              contact_id: contact.contact_id || contact.id || contact.email,
+              customer_id: CUSTOMER_ID
+            }, extra));
             
             const currentCampaigns = contact.campaigns ? 
               contact.campaigns.split(',').filter(w => w.trim() && w !== 'null') : [];
