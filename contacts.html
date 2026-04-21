@@ -3844,6 +3844,11 @@ function setupEventListeners() {
     wrap.style.display = e.target.checked ? 'block' : 'none';
     if (e.target.checked) loadNewsletterPages();
   });
+  document.getElementById('campaign_vv').addEventListener('change', function(e) {
+    var wrap = document.getElementById('vvCampaignPickerWrap');
+    wrap.style.display = e.target.checked ? 'block' : 'none';
+    if (e.target.checked) loadVVCampaignsInline();
+  });
   document.getElementById('enrichContactsBtn').addEventListener('click', enrichSelectedContacts);
   document.getElementById('lookAlikeBtn').addEventListener('click', showLookAlikeModal);
   document.getElementById('massSMSBtn').addEventListener('click', showMassSMSModal);
