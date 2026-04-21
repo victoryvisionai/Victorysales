@@ -100,6 +100,57 @@ return [{ json: Object.assign({}, $json, { _due_at: dueAt.toISOString(), _mode: 
 `,
 
 // ────────────────────────────────────────────────────────────────────────────
+// CAMPAIGNS_APPEND — PATCH contacts.campaigns with "<name> @ <ISO>" (append, not replace).
+// Wire as a code node producing _patch_url + _patch_body, then HTTP PATCH node reads them.
+// Inputs on $json:
+//   contact_id   — the contact to update
+//   campaign_tag — what to append (e.g. "Lead Magnet: 7-Day Playbook" or "Template: Opening Ask")
+// Upstream 'Fetch Contact Live' gives us the existing campaigns string so we append, not replace.
+CAMPAIGNS_APPEND: `
+const SB_URL = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const live = $('Fetch Contact Live').first()?.json || {};
+const row = Array.isArray(live) ? live[0] : live;
+if (!row || !row.id) return [{ json: Object.assign({}, $json, { _skip_campaign_append: true }) }];
+const existing = (row.campaigns || '').toString();
+const tag = ($json.campaign_tag || $json.campaign || '').toString().slice(0, 120);
+if (!tag) return [{ json: Object.assign({}, $json, { _skip_campaign_append: true }) }];
+const entry = tag + ' @ ' + new Date().toISOString();
+const appended = existing ? (existing + ', ' + entry) : entry;
+return [{ json: Object.assign({}, $json, {
+  _campaign_patch_url: SB_URL + '/rest/v1/contacts?id=eq.' + row.id,
+  _campaign_patch_body: JSON.stringify({ campaigns: appended })
+}) }];
+`,
+
+// ────────────────────────────────────────────────────────────────────────────
+// JOURNEY_APPEND — PATCH contacts.customer_journey with a dated entry for this email.
+// Format: "\\n— YYYY-MM-DD: Email sent via <campaign> — <subject>\\n  • <bullet1>\\n  • <bullet2>"
+// Inputs on $json:
+//   campaign          — campaign name (e.g. 'leadmagnet')
+//   subject           — email subject line that just went out
+//   _summary_bullets  — array of 1-2 short strings describing the email (LLM-generated)
+// Upstream Fetch Contact Live gives the current customer_journey to append to.
+JOURNEY_APPEND: `
+const SB_URL = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const live = $('Fetch Contact Live').first()?.json || {};
+const row = Array.isArray(live) ? live[0] : live;
+if (!row || !row.id) return [{ json: Object.assign({}, $json, { _skip_journey_append: true }) }];
+const prior = (row.customer_journey || '').toString();
+const d = new Date();
+const ymd = d.getUTCFullYear() + '-' + String(d.getUTCMonth()+1).padStart(2,'0') + '-' + String(d.getUTCDate()).padStart(2,'0');
+const bullets = Array.isArray($json._summary_bullets) ? $json._summary_bullets.slice(0,2).filter(Boolean) : [];
+const campaign = ($json.campaign || 'outbound').toString();
+const subject  = ($json.subject  || '(no subject)').toString().slice(0, 140);
+const bulletLines = bullets.map(b => '  • ' + String(b).slice(0, 200)).join('\\n');
+const entry = '\\n— ' + ymd + ': Email sent via ' + campaign + ' — "' + subject + '"' + (bulletLines ? '\\n' + bulletLines : '');
+const appended = prior + entry;
+return [{ json: Object.assign({}, $json, {
+  _journey_patch_url:  SB_URL + '/rest/v1/contacts?id=eq.' + row.id,
+  _journey_patch_body: JSON.stringify({ customer_journey: appended, last_emailed_date: d.toISOString(), number_emails_sent: (Number(row.number_emails_sent)||0) + 1 })
+}) }];
+`,
+
+// ────────────────────────────────────────────────────────────────────────────
 LOOP_GUARD: `
 // Runs right after Wait Until fires. Checks stop conditions; emits _stop=true to
 // short-circuit the rest of the loop body so no email is sent.
