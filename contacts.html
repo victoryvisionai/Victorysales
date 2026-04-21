@@ -3444,6 +3444,38 @@ function updateSelectedCount() {
   document.getElementById('selectAllCheckbox').checked = selectedContacts.size === filteredContacts.length && filteredContacts.length > 0;
 }
 
+let availableVVCampaigns = [];
+async function loadVVCampaignsInline() {
+  var sel = document.getElementById('vvCampaignSelectInline');
+  if (availableVVCampaigns.length) return;
+  try {
+    const r = await fetch('https://victoryvision.app.n8n.cloud/webhook/campaigns/get', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ customer_id: CUSTOMER_ID })
+    });
+    const data = await r.json();
+    const list = Array.isArray(data) ? data : (data.campaigns || []);
+    availableVVCampaigns = list.filter(c => c && c.id);
+    sel.innerHTML = availableVVCampaigns.length
+      ? availableVVCampaigns.map(c => '<option value="' + c.id + '">' + (c.name || c.campaign_name || 'Untitled') + '</option>').join('')
+      : '<option value="">No campaigns — build one on Campaigns page</option>';
+  } catch(e) {
+    sel.innerHTML = '<option value="">Error loading campaigns</option>';
+  }
+}
+
+// Append "<name> @ <ISO>" to contacts.campaigns on the server, non-blocking.
+async function appendContactCampaignTag(contactId, tag) {
+  if (!contactId || !tag) return;
+  try {
+    await apiCall(ENDPOINTS.updateContact, {
+      contact_id: contactId,
+      customer_id: CUSTOMER_ID,
+      append_campaign_tag: tag + ' @ ' + new Date().toISOString()
+    });
+  } catch(e) { console.warn('campaign tag append failed:', e.message); }
+}
+
 let availableNewsletterPages = [];
 async function loadNewsletterPages() {
   var sel = document.getElementById('newsletterPageSelect');
