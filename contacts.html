@@ -3591,9 +3591,17 @@ for (const campaign of selectedCampaigns) {
         } catch (campaignError) {
           console.error(`Error enrolling in ${campaign}:`, campaignError);
         }
+      } else if (campaign === 'vv' && vvPayloadExtra) {
+        // VV campaigns post ONCE with the full contact list
+        try {
+          await apiCall(endpoint, Object.assign({ customer_id: CUSTOMER_ID }, vvPayloadExtra));
+          const tag = 'Victory Vision: ' + (vvPayloadExtra.campaigns[0].name || vvPayloadExtra.campaigns[0].id);
+          for (const c of selectedContactsList) await appendContactCampaignTag(c.contact_id || c.id, tag);
+        } catch(e) { console.error('VV enroll failed:', e); }
       } else {
         // Build campaign-specific extra params (e.g. newsletter page selection)
         let extra = {};
+        let displayTag = campaign;
         if (campaign === 'newsletter') {
           const nSel = document.getElementById('newsletterPageSelect');
           const opt = nSel && nSel.selectedOptions && nSel.selectedOptions[0];
@@ -3601,8 +3609,11 @@ for (const campaign of selectedCampaigns) {
             extra.newsletter_page_id = opt.value;
             extra.newsletter_page_url = opt.dataset.url || '';
             extra.newsletter_page_name = opt.textContent || '';
+            displayTag = 'Newsletter: ' + (opt.textContent || '');
           }
-        }
+        } else if (campaign === 'nurture')  displayTag = 'Lead Nurture';
+        else if (campaign === 'meeting')    displayTag = 'Meeting Request';
+        else if (campaign === 'followup')   displayTag = 'Follow-up';
         for (const contact of selectedContactsList) {
           try {
             await apiCall(endpoint, Object.assign({
@@ -3612,6 +3623,7 @@ for (const campaign of selectedCampaigns) {
               contact_id: contact.contact_id || contact.id || contact.email,
               customer_id: CUSTOMER_ID
             }, extra));
+            await appendContactCampaignTag(contact.contact_id || contact.id, displayTag);
             
             const currentCampaigns = contact.campaigns ? 
               contact.campaigns.split(',').filter(w => w.trim() && w !== 'null') : [];
