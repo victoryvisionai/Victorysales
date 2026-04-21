@@ -3470,7 +3470,9 @@ async function appendContactCampaignTag(contactId, tag) {
   if (!contactId || !tag) return;
   try {
     const contact = allContacts.find(c => c.contact_id === contactId || c.id === contactId);
-    const existing = (contact && contact.campaigns) ? String(contact.campaigns) : '';
+    let existing = (contact && contact.campaigns) ? String(contact.campaigns).trim() : '';
+    // Treat sentinel values as empty so the first append doesn't carry a "none" prefix.
+    if (/^(none|null|-|n\/a)$/i.test(existing)) existing = '';
     const entry = tag + ' @ ' + new Date().toISOString();
     const next = existing ? (existing + ', ' + entry) : entry;
     await apiCall(ENDPOINTS.updateContact, {
