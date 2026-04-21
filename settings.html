@@ -1544,26 +1544,17 @@ async function checkAuthentication() {
     }
   }
 
-// Calendly OAuth functions — public PKCE flow (no client secret)
-async function connectCalendly() {
+// Calendly OAuth — confidential flow (client_id + client_secret server-side)
+function connectCalendly() {
   const state = generateStateFromSession();
   const redirectUri = encodeURIComponent('https://victoryvision.app/oauth-callback/');
   const scope = encodeURIComponent('default');
 
-  // PKCE: generate code_verifier + derive code_challenge (S256)
-  const verifierBytes = new Uint8Array(32);
-  crypto.getRandomValues(verifierBytes);
-  const b64url = (bytes) => btoa(String.fromCharCode(...bytes))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  const codeVerifier = b64url(verifierBytes);
-  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(codeVerifier));
-  const codeChallenge = b64url(new Uint8Array(hash));
-
   sessionStorage.setItem('oauth_state', state);
   sessionStorage.setItem('oauth_platform', 'calendly');
-  sessionStorage.setItem('code_verifier', codeVerifier);
+  sessionStorage.removeItem('code_verifier');
 
-  const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${OAUTH_CLIENTS.calendly}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+  const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${OAUTH_CLIENTS.calendly}&response_type=code&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
   window.location.href = authUrl;
 }
   async function disconnectCalendly() {
