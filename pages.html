@@ -1033,7 +1033,17 @@
     }
     overlay.dataset.pageId = page.id;
     document.getElementById('editPageName').value = page.title || page.name || '';
-    document.getElementById('editPageCampaign').value = page.campaign_name || '';
+    // Rebuild campaigns dropdown with current list + current selection
+    var camSel = document.getElementById('editPageCampaign');
+    camSel.innerHTML = '<option value="">— No campaign —</option>';
+    (availableCampaigns || []).forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c.id;
+      opt.dataset.name = c.name || '';
+      opt.textContent = c.name || ('Untitled (' + c.id + ')');
+      camSel.appendChild(opt);
+    });
+    camSel.value = page.campaign_id || '';
     document.getElementById('editPageType').value = page.page_type || 'landing';
     document.getElementById('editPageSlug').value = page.slug || '';
     overlay.style.display = 'flex';
