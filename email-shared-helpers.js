@@ -253,7 +253,9 @@ CONTACT_CONTEXT_SELECT: 'id,name,first_name,email,phone_number,title,company,ind
 USER_CONTEXT_SELECT: 'email,name,company_name,vv_domain,industry,company_description,product_descriptions,offer,terms,icp,goal,brand_colors,logo_URL,email_notes,ai_suggestions,victories,campaign_notes,lead_notes,calendar,signature',
 
 // ────────────────────────────────────────────────────────────────────────────
-COMPOSE_SYSTEM_BASE: `You write outbound B2B email at founder caliber. Output JSON only: {"subject": "...", "body_text": "...", "body_html": "..."}. Writing rules:
+COMPOSE_SYSTEM_BASE: `You write outbound B2B email at founder caliber. Output JSON only:
+{"subject": "...", "body_text": "...", "body_html": "...", "summary_bullets": ["one short phrase describing angle of this email", "one short phrase describing the ask/CTA"]}
+summary_bullets is 1-2 short sentences (<= 120 chars each) that the platform appends to customer_journey so the next email knows what this one said. Writing rules:
 
 1. Every email is DISTINCT. Read the contact's customer_journey, tags, status (type = Lead | Client | Partner), last_responded, num_emails_opened, num_links_clicked, analysis, next_steps, conversion_tips, personal_priorities, company_priorities, source, and campaigns. Reference something specific. No generic "just checking in".
 2. Ground the pitch in the user's real business — company_description, product_descriptions, offer, icp, goal, victories, email_notes, ai_suggestions. Never invent stats, clients, testimonials, or product features.
