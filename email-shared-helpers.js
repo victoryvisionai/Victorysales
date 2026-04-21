@@ -100,6 +100,47 @@ return [{ json: Object.assign({}, $json, { _due_at: dueAt.toISOString(), _mode: 
 `,
 
 // ────────────────────────────────────────────────────────────────────────────
+LOOP_GUARD: `
+// Runs right after Wait Until fires. Checks stop conditions; emits _stop=true to
+// short-circuit the rest of the loop body so no email is sent.
+// Inputs on $json:
+//   sequence_index     — 0-based slot we're about to send
+//   total_emails       — hard cap
+//   campaign           — 'nurture' | 'leadmagnet' | 'meeting' | 'newsletter' | 'followup' | 'user-generated' | custom
+//   contact_id         — to look up the LIVE contact row
+//   _sequence_started_at — ISO timestamp of when this whole sequence was enrolled
+// Available from upstream 'Fetch Contact Live' HTTP node:
+//   the LIVE contact row (with last_responded, newsletter, etc.)
+
+const live = $('Fetch Contact Live').first()?.json || {};
+const row  = Array.isArray(live) ? live[0] : live;
+const seqStarted = $json._sequence_started_at ? new Date($json._sequence_started_at) : null;
+const seqIdx  = Number($json.sequence_index || 0);
+const total   = Number($json.total_emails || 1);
+const campaign = String($json.campaign || '').toLowerCase();
+
+const reasons = [];
+if (!row || !row.id) reasons.push('contact_missing');
+if (seqIdx >= total) reasons.push('sequence_complete');
+
+// Response since sequence started → stop
+if (row && row.last_responded && seqStarted && new Date(row.last_responded) > seqStarted) {
+  reasons.push('contact_responded');
+}
+
+// Newsletter sign-up → stop (applies to newsletter campaign only)
+if (campaign === 'newsletter' && row && (row.newsletter === true || row.newsletter === 'true')) {
+  reasons.push('already_subscribed');
+}
+
+return [{ json: Object.assign({}, $json, {
+  _stop: reasons.length > 0,
+  _stop_reasons: reasons,
+  _live_contact: row || null
+}) }];
+`,
+
+// ────────────────────────────────────────────────────────────────────────────
 CAPITALIZATION_FIX: `
 // Cleans common LLM casing glitches on a drafted email before queue/send.
 // Inputs: $json.subject, $json.body_text, $json.body_html (strings)
