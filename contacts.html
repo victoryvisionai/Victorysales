@@ -5069,6 +5069,108 @@ async function confirmLeadMagnet() {
     leadMagnetContactsPending = [];
   }
 }
-</script> 
+
+// ── Newsletter Picker ───────────────────────────────────────────────────────
+let selectedNewsletterUrl = null;
+let selectedNewsletterPageId = null;
+let newsletterContactsPending = [];
+
+async function enrollNewsletterModal() {
+  newsletterContactsPending = Array.from(selectedContacts)
+    .map(id => allContacts.find(c => c.id === id || c.contact_id === id))
+    .filter(c => c && c.email);
+
+  if (newsletterContactsPending.length === 0) {
+    showStatus('❌ No selected contacts have email addresses', true);
+    return;
+  }
+
+  document.getElementById('newsletterModal').style.display = 'block';
+  document.getElementById('newsletterList').innerHTML =
+    '<div style="text-align:center; padding: 30px; color: #999;">Loading your newsletter pages...</div>';
+  selectedNewsletterUrl = null;
+  selectedNewsletterPageId = null;
+
+  try {
+    const data = await apiCall(ENDPOINTS.pagesGet);
+    const all = Array.isArray(data) ? data : (data && (data.pages || data.data) || []);
+    const pages = all.filter(p => p && p.page_type === 'newsletter');
+
+    if (pages.length === 0) {
+      document.getElementById('newsletterList').innerHTML =
+        '<div style="text-align:center; padding: 30px; color: #999;">No newsletter pages yet — create one on Pages first.</div>';
+      return;
+    }
+
+    document.getElementById('newsletterList').innerHTML = pages.map((page, i) => {
+      const pageUrl = (page.URL && page.URL.length)
+        ? page.URL
+        : (page.slug ? ('https://victoryvision.app.n8n.cloud/webhook/p?slug=' + encodeURIComponent(page.slug)) : '');
+      return `
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer;"
+             data-page-id="${escapeHtml(String(page.id || ''))}"
+             onclick="selectNewsletter('${escapeHtml(pageUrl)}', '${escapeHtml(String(page.id || ''))}', this)">
+          <input type="radio" name="newsletterSelect" value="${escapeHtml(pageUrl)}" id="nl_${i}" style="width:18px; height:18px;">
+          <label for="nl_${i}" style="cursor:pointer; flex:1;">
+            <strong>${escapeHtml(page.name || page.title || 'Untitled Newsletter')}</strong>
+            <div style="font-size: 12px; color: #666;">${escapeHtml(pageUrl)}</div>
+          </label>
+        </div>
+      `;
+    }).join('');
+  } catch (error) {
+    document.getElementById('newsletterList').innerHTML =
+      '<div style="color: #dc3545; padding: 20px;">❌ Error loading pages: ' + error.message + '</div>';
+  }
+}
+
+function selectNewsletter(url, pageId, rowEl) {
+  selectedNewsletterUrl = url;
+  selectedNewsletterPageId = pageId || null;
+  document.querySelectorAll('#newsletterList > div').forEach(d => d.style.background = '');
+  rowEl.style.background = '#f0f4ff';
+  rowEl.querySelector('input[type="radio"]').checked = true;
+}
+
+function closeNewsletterModal() {
+  document.getElementById('newsletterModal').style.display = 'none';
+  selectedNewsletterUrl = null;
+  selectedNewsletterPageId = null;
+  newsletterContactsPending = [];
+}
+
+async function confirmNewsletter() {
+  if (!selectedNewsletterUrl) {
+    showStatus('❌ Please select a newsletter page', true);
+    return;
+  }
+  try {
+    showStatus(`⏳ Enrolling ${newsletterContactsPending.length} contacts in newsletter...`, false);
+    document.getElementById('newsletterModal').style.display = 'none';
+
+    // Fire per-contact (matches existing enroll pattern for other sequences).
+    for (const c of newsletterContactsPending) {
+      await apiCall(ENDPOINTS.enrollNewsletter, {
+        customer_id: CUSTOMER_ID,
+        email: c.email,
+        name: c.name,
+        campaign: 'newsletter',
+        contact_id: c.id || c.contact_id,
+        newsletter_page_id: selectedNewsletterPageId,
+        newsletter_page_url: selectedNewsletterUrl,
+        newsletter_url: selectedNewsletterUrl
+      });
+      await appendContactCampaignTag(c.id || c.contact_id, 'Newsletter');
+    }
+    showStatus(`✅ ${newsletterContactsPending.length} contacts enrolled in newsletter!`, false);
+  } catch (error) {
+    showStatus('❌ Error: ' + error.message, true);
+  } finally {
+    selectedNewsletterUrl = null;
+    selectedNewsletterPageId = null;
+    newsletterContactsPending = [];
+  }
+}
+</script>
 </body>
 </html>
