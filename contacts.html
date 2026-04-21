@@ -4996,8 +4996,9 @@ async function enrollLeadMagnet() {
   }
 }
 
-function selectLeadMagnet(url, rowEl) {
+function selectLeadMagnet(url, pageId, rowEl) {
   selectedLeadMagnetUrl = url;
+  selectedLeadMagnetPageId = pageId || null;
   document.querySelectorAll('#leadMagnetList > div').forEach(d => d.style.background = '');
   rowEl.style.background = '#f0f4ff';
   rowEl.querySelector('input[type="radio"]').checked = true;
