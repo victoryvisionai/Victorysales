@@ -111,7 +111,9 @@ const SB_URL = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
 const live = $('Fetch Contact Live').first()?.json || {};
 const row = Array.isArray(live) ? live[0] : live;
 if (!row || !row.id) return [{ json: Object.assign({}, $json, { _skip_campaign_append: true }) }];
-const existing = (row.campaigns || '').toString();
+let existing = (row.campaigns || '').toString().trim();
+// Treat sentinel values as empty so the first real entry isn't prefixed with "none".
+if (/^(none|null|-|n\\/a)$/i.test(existing)) existing = '';
 const tag = ($json.campaign_tag || $json.campaign || '').toString().slice(0, 120);
 if (!tag) return [{ json: Object.assign({}, $json, { _skip_campaign_append: true }) }];
 const entry = tag + ' @ ' + new Date().toISOString();
