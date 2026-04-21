@@ -4980,7 +4980,8 @@ async function enrollLeadMagnet() {
 
     document.getElementById('leadMagnetList').innerHTML = pages.map((page, i) => `
       <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer;"
-           onclick="selectLeadMagnet('${escapeHtml(page.url)}', this)">
+           data-page-id="${escapeHtml(String(page.id || ''))}"
+           onclick="selectLeadMagnet('${escapeHtml(page.url)}', '${escapeHtml(String(page.id || ''))}', this)">
         <input type="radio" name="leadMagnetSelect" value="${escapeHtml(page.url)}"
                id="lm_${i}" style="width:18px; height:18px;">
         <label for="lm_${i}" style="cursor:pointer; flex:1;">
