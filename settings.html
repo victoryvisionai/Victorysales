@@ -1720,7 +1720,7 @@ function connectCalendly() {
       currentUser.phone_number = userData.phone_number || userData.vvnumber || null;
 
       // Populate ad tracking fields
-      ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account'].forEach(f => {
+      ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account','ga4_property_id'].forEach(f => {
         const el = document.getElementById(f);
         if (el && userData[f]) el.value = userData[f];
       });
