@@ -2477,7 +2477,7 @@ function connectCalendly() {
   // Pixels and account IDs are stored directly on the users table.
   // user/update is the canonical update endpoint used by companyprofile.html too.
   async function saveAdTracking() {
-    const fields = ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account'];
+    const fields = ['google_pixel','google_ads_customer_id','msft_pixel','msft_ads_account_id','linkedin_pixel','li_ad_account','ga4_property_id'];
     const payload = { customer_id: CUSTOMER_ID };
     fields.forEach(f => {
       const el = document.getElementById(f);
