@@ -1011,6 +1011,18 @@
       var c = adChip(pretty, ads[k]);
       if (c) adChips.push(c);
     });
+    // GA4 chip
+    if (ads.ga4) {
+      var g = ads.ga4;
+      if (g.error) adChips.push('<div class="source-chip" style="background:#fef2f2;">📊 GA4 <span style="color:#dc2626;">err</span></div>');
+      else {
+        var gaBits = [];
+        if (g.views) gaBits.push(Number(g.views).toLocaleString() + ' views');
+        if (g.users) gaBits.push(Number(g.users).toLocaleString() + ' users');
+        if (g.sessions) gaBits.push(Number(g.sessions).toLocaleString() + ' sess');
+        adChips.push('<div class="source-chip">📊 GA4 <span>' + (gaBits.join(' · ') || '0') + '</span></div>');
+      }
+    }
     if (adChips.length) {
       adHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">Ad Spend (total $' + adSpendTotal.toLocaleString() + ')</div>' +
                '<div class="sources-row">' + adChips.join('') + '</div>';
