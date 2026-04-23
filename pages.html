@@ -592,22 +592,32 @@
     } catch(e) { console.error('Error loading lead magnet files:', e); }
   }
 
-  function openLmModal() {
+  function renderLmList() {
     var list = document.getElementById('lmList');
     if (!leadMagnetFiles.length) {
       list.innerHTML = '<div style="padding:24px;text-align:center;color:#999;">No lead magnet files found.<br><small>Go to Media and mark files as lead magnets first.</small></div>';
-    } else {
-      list.innerHTML = leadMagnetFiles.map(function(f) {
-        var isImg = f.file_type && f.file_type.toLowerCase().indexOf('image') > -1;
-        var thumb = isImg && f.URL ? '<img class="lm-thumb" src="' + escHtml(f.URL) + '" onerror="this.style.display=\'none\'">' : '<div class="lm-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🧲</div>';
-        var sel = selectedLmFile && selectedLmFile.id == f.id ? ' selected' : '';
-        return '<div class="lm-item' + sel + '" onclick="selectLmFile(\'' + f.id + '\',\'' + escHtml(f.name||'') + '\',\'' + escHtml(f.URL||'') + '\',this)">' +
-          thumb +
-          '<div class="lm-info"><div class="lm-name">' + escHtml(f.name||'Untitled') + '</div><div class="lm-meta">' + escHtml(f.campaign_name||'No campaign') + ' &middot; ' + escHtml(f.file_type||'file') + '</div></div>' +
-          '<div class="lm-clicks">👆 ' + parseFloat(f.clicks||0).toLocaleString() + '</div></div>';
-      }).join('');
+      return;
     }
+    list.innerHTML = leadMagnetFiles.map(function(f) {
+      var isImg = f.file_type && f.file_type.toLowerCase().indexOf('image') > -1;
+      var thumb = isImg && f.URL ? '<img class="lm-thumb" src="' + escHtml(f.URL) + '" onerror="this.style.display=\'none\'">' : '<div class="lm-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🧲</div>';
+      var sel = selectedLmFile && selectedLmFile.id == f.id ? ' selected' : '';
+      return '<div class="lm-item' + sel + '" onclick="selectLmFile(\'' + f.id + '\',\'' + escHtml(f.name||'') + '\',\'' + escHtml(f.URL||'') + '\',this)">' +
+        thumb +
+        '<div class="lm-info"><div class="lm-name">' + escHtml(f.name||'Untitled') + '</div><div class="lm-meta">' + escHtml(f.campaign_name||'No campaign') + ' &middot; ' + escHtml(f.file_type||'file') + '</div></div>' +
+        '<div class="lm-clicks">👆 ' + parseFloat(f.clicks||0).toLocaleString() + '</div></div>';
+    }).join('');
+  }
+
+  async function openLmModal() {
+    var list = document.getElementById('lmList');
     document.getElementById('lmModal').classList.add('show');
+    // If init's preload hasn't populated (race condition) or returned empty, fetch fresh on open.
+    if (!leadMagnetFiles.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:#999;">Loading lead magnets…</div>';
+      await loadLeadMagnetFiles();
+    }
+    renderLmList();
   }
 
   function selectLmFile(id, name, url, el) {
