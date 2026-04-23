@@ -661,6 +661,144 @@ async function joinMeeting(invite) {
   }
 }
 
+/* ══════════════════════════════════════════════
+   AI LIVE COACH (host-only)
+   - Subscribes to Daily 'transcription-message' events
+   - Buffers ~45s windows; flushes on silence >= 8s or window age >= 45s
+   - POSTs window to /webhook/meeting/coach → renders the returned tip
+══════════════════════════════════════════════ */
+const COACH_EP = 'https://victoryvision.app.n8n.cloud/webhook/meeting/coach';
+let coachBuffer = [];
+let coachFlushTimer = null;
+let coachSilenceTimer = null;
+let coachLastEventAt = 0;
+let coachStarted = false;
+let coachMeta = null;
+let coachInflight = false;
+
+function renderCoachTip(text) {
+  const host = document.getElementById('coachTips');
+  if (!host) return;
+  const tip = document.createElement('div');
+  tip.className = 'coach-tip';
+  const t = new Date();
+  const hh = t.getHours() % 12 || 12;
+  const mm = String(t.getMinutes()).padStart(2, '0');
+  const ap = t.getHours() >= 12 ? 'PM' : 'AM';
+  tip.innerHTML = `<span class="coach-tip-time">${hh}:${mm} ${ap}</span>${text}`;
+  host.prepend(tip);
+  // Cap to last 12 tips
+  while (host.children.length > 12) host.removeChild(host.lastChild);
+}
+
+function setCoachStatus(s) {
+  const el = document.getElementById('coachStatus');
+  if (el) el.textContent = s;
+}
+
+async function flushCoachBuffer(reason) {
+  if (coachInflight) return;
+  const transcript = coachBuffer.map(e => e.text).join(' ').trim();
+  if (transcript.length < 40) return; // too short — skip
+  coachInflight = true;
+  setCoachStatus('thinking…');
+  const payload = {
+    customer_id: coachMeta.customer_id,
+    contact_email: coachMeta.contact_email || '',
+    meeting_id: coachMeta.meeting_id || null,
+    transcript,
+    reason: reason || 'window'
+  };
+  coachBuffer = [];
+  try {
+    const r = await fetch(COACH_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json().catch(() => ({}));
+    if (j && j.tip) renderCoachTip(j.tip);
+  } catch (err) {
+    console.error('coach flush failed', err);
+  } finally {
+    coachInflight = false;
+    setCoachStatus('listening…');
+  }
+}
+
+function onTranscriptionMessage(ev) {
+  // Daily fires transcription-message with { text, participantId, timestamp, is_final }
+  // Only buffer final fragments to avoid duplicating interim results.
+  const text = ev?.text || ev?.data?.text;
+  const isFinal = ev?.is_final !== false; // default true if undefined
+  if (!text || !isFinal) return;
+  coachBuffer.push({ text, at: Date.now() });
+  coachLastEventAt = Date.now();
+  // Silence-based flush: if 8s elapses without new transcript, flush
+  if (coachSilenceTimer) clearTimeout(coachSilenceTimer);
+  coachSilenceTimer = setTimeout(() => flushCoachBuffer('silence'), 8000);
+}
+
+function startCoach(invite) {
+  if (coachStarted || !callFrame) return;
+  coachStarted = true;
+  coachMeta = {
+    customer_id: invite.customer_id || userEmail,
+    contact_email: '', // unknown here — invitee email lives on a sibling row, coach still works without
+    meeting_id: invite.meeting_id || null
+  };
+  document.getElementById('coachPanel').style.display = 'flex';
+  setCoachStatus('connecting…');
+
+  // Subscribe to Daily transcription events
+  try {
+    callFrame.on('transcription-message', onTranscriptionMessage);
+    callFrame.on('app-message', (ev) => {
+      // Some Daily versions relay transcription via app-message with fromId:'transcription'
+      if (ev && ev.fromId === 'transcription') onTranscriptionMessage(ev.data || ev);
+    });
+  } catch (e) { console.warn('coach transcription subscribe failed', e); }
+
+  // Try to start transcription (host-privileged call; silent if not allowed)
+  try {
+    if (typeof callFrame.startTranscription === 'function') {
+      callFrame.startTranscription({ language: 'en' }).catch(err => {
+        console.warn('startTranscription failed:', err?.message || err);
+      });
+    }
+  } catch (e) { console.warn('startTranscription threw', e); }
+
+  // Periodic window flush every 45s regardless
+  coachFlushTimer = setInterval(() => {
+    if (coachBuffer.length) flushCoachBuffer('interval');
+  }, 45000);
+
+  setCoachStatus('listening…');
+}
+
+function stopCoach() {
+  if (!coachStarted) return;
+  try { if (callFrame?.off) callFrame.off('transcription-message', onTranscriptionMessage); } catch (e) {}
+  try { if (callFrame?.stopTranscription) callFrame.stopTranscription().catch(() => {}); } catch (e) {}
+  if (coachFlushTimer) { clearInterval(coachFlushTimer); coachFlushTimer = null; }
+  if (coachSilenceTimer) { clearTimeout(coachSilenceTimer); coachSilenceTimer = null; }
+  coachBuffer = [];
+  coachStarted = false;
+  coachMeta = null;
+  const panel = document.getElementById('coachPanel');
+  if (panel) panel.style.display = 'none';
+  const tips = document.getElementById('coachTips');
+  if (tips) tips.innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('coachToggleBtn');
+  if (btn) btn.addEventListener('click', () => {
+    const panel = document.getElementById('coachPanel');
+    if (panel) panel.style.display = 'none';
+  });
+});
+
 // Toggle mute
 async function toggleMute() {
   if (!callFrame) return;
