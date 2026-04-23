@@ -865,10 +865,16 @@
     if (page.thumbnail_URL && page.thumbnail_URL !== 'null' && page.thumbnail_URL !== 'NULL') {
       previewContent = '<img src="' + page.thumbnail_URL + '" alt="Page preview" class="page-thumbnail" onerror="this.parentElement.innerHTML=\'<div class=\\\'page-preview-placeholder\\\'>📄<br><small>Preview unavailable</small></div>\'">';
     } else if (page.body && typeof page.body === 'string' && page.body.length > 100) {
-      // Live iframe preview scaled down so the whole hero fits in the card height
-      var srcdoc = page.body.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      // Live iframe preview scaled down so the whole hero fits in the card height.
+      // Strip <script> tags + inline event handlers before rendering — the preview is visual only,
+      // and leaving scripts in srcdoc floods the console with sandbox warnings (Chrome auto-
+      // sandboxes srcdoc frames without allow-scripts) and would fire pixel trackers from the preview.
+      var cleanBody = page.body
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/\son\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+      var srcdoc = cleanBody.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
       previewContent = '<div class="page-iframe-preview" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">' +
-        '<iframe loading="lazy" sandbox srcdoc="' + srcdoc + '" ' +
+        '<iframe loading="lazy" sandbox="allow-same-origin" srcdoc="' + srcdoc + '" ' +
           'style="width:200%;height:200%;border:0;transform:scale(0.5);transform-origin:0 0;pointer-events:none;"></iframe>' +
         '</div>';
     } else {
