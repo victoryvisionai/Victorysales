@@ -1136,10 +1136,19 @@
     var page_type = document.getElementById('editPageType').value;
     var slug = document.getElementById('editPageSlug').value.trim();
     if (!id) { overlay.style.display = 'none'; return; }
+    // If the user typed an obviously invalid slug, surface it before the PATCH blanks the live one.
+    if (slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      showStatus('Slug must be lowercase letters, numbers, and single dashes only.', true);
+      return;
+    }
     var btn = document.getElementById('editPageSave');
     btn.disabled = true; btn.textContent = 'Saving…';
     try {
-      var res = await apiCall(ENDPOINTS.pagesEditMeta, { page_id: id, name: name, campaign_id: campaign_id, campaign_name: campaign_name, page_type: page_type, slug: slug });
+      // Only send slug in the payload if the user actually typed one. Sending an empty string
+      // causes the Edit Meta workflow (which treats `undefined` as "leave alone") to overwrite.
+      var payload = { page_id: id, name: name, campaign_id: campaign_id, campaign_name: campaign_name, page_type: page_type };
+      if (slug) payload.slug = slug;
+      var res = await apiCall(ENDPOINTS.pagesEditMeta, payload);
       if (res && (res.success || res.page)) { showStatus('Page updated!'); overlay.style.display = 'none'; await loadPages(); applyFilters(); }
       else throw new Error(res && res.message ? res.message : 'Update failed');
     } catch (e) {
