@@ -762,14 +762,22 @@ function startCoach(invite) {
     });
   } catch (e) { console.warn('coach transcription subscribe failed', e); }
 
-  // Try to start transcription (host-privileged call; silent if not allowed)
+  // Try to start transcription (host-privileged call; requires admin meeting-token)
   try {
     if (typeof callFrame.startTranscription === 'function') {
-      callFrame.startTranscription({ language: 'en' }).catch(err => {
-        console.warn('startTranscription failed:', err?.message || err);
-      });
+      callFrame.startTranscription({ language: 'en' })
+        .then(() => setCoachStatus('listening…'))
+        .catch(err => {
+          const msg = err?.message || String(err);
+          console.warn('startTranscription failed:', msg);
+          setCoachStatus('transcription unavailable');
+          renderCoachTip('⚠️ Live transcription did not start. Re-join from a fresh meeting so the host token loads, or contact support. (' + msg.slice(0, 80) + ')');
+        });
     }
-  } catch (e) { console.warn('startTranscription threw', e); }
+  } catch (e) {
+    console.warn('startTranscription threw', e);
+    setCoachStatus('transcription unavailable');
+  }
 
   // Periodic window flush every 45s regardless
   coachFlushTimer = setInterval(() => {
