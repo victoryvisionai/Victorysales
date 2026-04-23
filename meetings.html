@@ -636,11 +636,14 @@ async function joinMeeting(invite) {
       showParticipantsBar: true,
     });
 
-    // Join the meeting
-    await callFrame.join({
+    // Join the meeting — pass Daily meeting-token for host row so startTranscription()
+    // has admin permission. Non-host rows join without a token (guest privileges).
+    const joinOpts = {
       url: invite.room_url,
       userName: invite.name || userEmail.split('@')[0],
-    });
+    };
+    if (invite.rsvp === 'host' && invite.token) joinOpts.token = invite.token;
+    await callFrame.join(joinOpts);
 
     loadingState.style.display = 'none';
     videoContainer.style.display = 'block';
