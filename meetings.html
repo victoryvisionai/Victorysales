@@ -857,7 +857,9 @@ function showEmailForm() {
   loadingState.style.display = 'none';
   errorMessage.style.display = 'none';
   successMessage.style.display = 'none';
-  
+
+  stopCoach();
+
   if (callFrame) {
     try {
       callFrame.destroy();
@@ -865,7 +867,7 @@ function showEmailForm() {
     } catch (error) {
       console.error('Error destroying call frame:', error);
     }
-  }  
+  }
   emailInput.value = '';
   userEmail = '';
   currentMeetings = [];
