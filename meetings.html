@@ -645,9 +645,14 @@ async function joinMeeting(invite) {
     loadingState.style.display = 'none';
     videoContainer.style.display = 'block';
     meetingControls.style.display = 'block';
-    
+
+    // Host-only: start the AI Live Coach
+    if (invite.rsvp === 'host') {
+      startCoach(invite);
+    }
+
     showSuccess('Successfully joined the meeting!');
-    
+
   } catch (error) {
     console.error('Error joining meeting:', error);
     loadingState.style.display = 'none';
