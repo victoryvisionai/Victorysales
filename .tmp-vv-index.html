@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Victory Vision — AI Sales OS for Dealmakers</title>
+  <meta name="description" content="AI-powered sales operating system purpose-built for M&amp;A advisors, family office principals, search fund searchers, and PE originators who live in their inbox.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a3161;
+      --accent: #bb133e;
+      --surface: #ffffff;
+      --ink: #121a2b;
+      --mute: #5a6679;
+      --border: #e6eaf2;
+      --shadow: 0 20px 50px rgba(10,49,97,0.12);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      color: var(--ink);
+      background: var(--surface);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--primary); margin: 0; line-height: 1.1; letter-spacing: -0.02em; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 28px; }
+
+    /* Nav */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+    nav .brand { display: flex; align-items: center; gap: 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; color: var(--primary); font-size: 18px; letter-spacing: -0.01em; }
+    nav .brand img { height: 36px; width: auto; border-radius: 6px; }
+    nav .cta { background: var(--accent); color: #fff; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 14px; box-shadow: 0 6px 18px rgba(187,19,62,0.25); transition: transform 0.15s; }
+    nav .cta:hover { transform: translateY(-1px); }
+
+    /* Hero */
+    .hero { padding: 72px 0 56px; }
+    .eyebrow { display: inline-block; font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 20px; }
+    h1 { font-size: clamp(36px, 5.2vw, 60px); font-weight: 900; margin-bottom: 24px; }
+    .hero p.lede { font-size: clamp(18px, 2.1vw, 22px); color: var(--mute); max-width: 720px; margin: 0 0 32px; }
+    .hero-cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+    .btn { display: inline-block; padding: 14px 26px; border-radius: 10px; font-weight: 700; font-size: 16px; transition: transform 0.15s, box-shadow 0.15s; }
+    .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 8px 22px rgba(187,19,62,0.28); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(187,19,62,0.35); }
+    .btn-ghost { background: transparent; color: var(--primary); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--primary); }
+    .hero-note { margin-top: 18px; font-size: 13px; color: var(--mute); }
+
+    /* Built-for band */
+    .built-for { padding: 40px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: #f7f9fc; }
+    .built-for h3 { font-size: 14px; font-weight: 700; color: var(--mute); text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 18px; text-align: center; }
+    .bf-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .bf-row .item { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; text-align: center; font-weight: 600; color: var(--primary); font-size: 14px; }
+    @media (max-width: 780px) { .bf-row { grid-template-columns: repeat(2, 1fr); } }
+
+    /* Pillars */
+    .pillars { padding: 80px 0 56px; }
+    .section-head { text-align: center; margin-bottom: 48px; }
+    .section-head h2 { font-size: clamp(28px, 3.5vw, 40px); margin-bottom: 14px; }
+    .section-head p { color: var(--mute); font-size: 17px; max-width: 640px; margin: 0 auto; }
+    .pillar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    @media (max-width: 780px) { .pillar-grid { grid-template-columns: 1fr; } }
+    .pillar { padding: 28px; background: #fff; border: 1px solid var(--border); border-radius: 14px; transition: border-color 0.2s, transform 0.2s; }
+    .pillar:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .pillar .label { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; }
+    .pillar h3 { font-size: 22px; margin-bottom: 12px; }
+    .pillar p { font-size: 15px; color: var(--mute); margin: 0; }
+
+    /* Trust */
+    .trust { padding: 64px 0; background: var(--primary); color: #fff; }
+    .trust .wrap { text-align: center; }
+    .trust h2 { color: #fff; font-size: clamp(26px, 3.2vw, 36px); margin-bottom: 18px; }
+    .trust p { font-size: 18px; opacity: 0.9; max-width: 680px; margin: 0 auto 28px; line-height: 1.55; }
+    .trust .btn-primary { background: #fff; color: var(--primary); }
+    .trust .btn-primary:hover { background: #f7f9fc; }
+
+    /* Footer */
+    footer { padding: 40px 0; text-align: center; border-top: 1px solid var(--border); color: var(--mute); font-size: 13px; }
+    footer a { color: var(--primary); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="brand">
+      <img src="https://res.cloudinary.com/dv94te4zt/image/upload/v1753320422/sd4auec2bgofhaleur7o.jpg" alt="Victory Vision">
+      Victory Vision
+    </div>
+    <a href="https://calendly.com/victoryvision/45-mins" class="cta">Book a call</a>
+  </nav>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Built for dealmakers · Not another CRM</div>
+    <h1>The AI sales operating system for M&amp;A advisors, family offices &amp; search funds.</h1>
+    <p class="lede">Victory Vision replaces the marketing team you don&rsquo;t want to hire. Autonomous outbound, an AI meeting coach that whispers in your ear during seller calls, and end-to-end pipeline analytics &mdash; purpose-built for rainmakers who live in their inbox.</p>
+    <div class="hero-cta-row">
+      <a href="https://calendly.com/victoryvision/45-mins" class="btn btn-primary">Book a 45-minute working session</a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+    <div class="hero-note">Built by a West Point grad running a multi-billion dollar advisory book. Every feature battle-tested against our own pipeline before it ships to yours.</div>
+  </div>
+</section>
+
+<section class="built-for">
+  <div class="wrap">
+    <h3>Purpose-built for</h3>
+    <div class="bf-row">
+      <div class="item">M&amp;A Advisors<br><span style="font-weight:400;color:var(--mute);font-size:12px;">LMM, $10M&ndash;$250M EV</span></div>
+      <div class="item">Search Fund Searchers<br><span style="font-weight:400;color:var(--mute);font-size:12px;">Months 3&ndash;24 of search</span></div>
+      <div class="item">Family Office Direct<br><span style="font-weight:400;color:var(--mute);font-size:12px;">Proprietary deal sourcing</span></div>
+      <div class="item">PE Originators<br><span style="font-weight:400;color:var(--mute);font-size:12px;">Sub-$500M AUM firms</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="pillars" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Four things, doing the work of a 10-person BD team.</h2>
+      <p>No enterprise CRM bloat. No configuration hell. Just the sales motion a rainmaker actually runs &mdash; automated where it should be, personal where it matters.</p>
+    </div>
+    <div class="pillar-grid">
+      <div class="pillar">
+        <div class="label">01 · Autonomous AI SDR</div>
+        <h3>Sources the right owners. Writes the right first line.</h3>
+        <p>Plug in your deal thesis &mdash; industry, revenue band, geography, ownership tenure. The AI SDR builds the list, finds the owner, and runs multi-channel outbound (email + LinkedIn + SMS) with copy that references their business, not yours.</p>
+      </div>
+      <div class="pillar">
+        <div class="label">02 · Real-time meeting coach</div>
+        <h3>The analyst in your ear during every seller call.</h3>
+        <p>Listens live to your call. Pulls the contact&rsquo;s customer journey, priorities, and close signals. Surfaces 1-sentence tactical nudges during the conversation &mdash; &ldquo;they just mentioned a 2027 liquidity event; ask about timing&rdquo; &mdash; so the tenth call of the day feels like the first.</p>
+      </div>
+      <div class="pillar">
+        <div class="label">03 · Trigger-based nurture</div>
+        <h3>Re-warms stale prospects the moment something changes.</h3>
+        <p>New filings, funding events, leadership changes, a mention in a trade publication &mdash; triggers hit, the AI drafts a perfectly-timed message referencing the event, and the sequence ships. Your dormant pipeline restarts itself.</p>
+      </div>
+      <div class="pillar">
+        <div class="label">04 · Unified pipeline &amp; Ops Brief</div>
+        <h3>Close probability. Meetings-to-close. Revenue forecast. One view.</h3>
+        <p>Every touchpoint &mdash; email, call, SMS, meeting &mdash; rolls up into a single pipeline view with AI-generated close probability and a weekly Ops Brief that reads like a partner-level memo. Plus a daily &ldquo;do this one thing&rdquo; nudge that actually moves a deal forward.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="wrap">
+    <h2>Built by a dealmaker, for dealmakers.</h2>
+    <p>Victory Vision is battle-tested against our own advisory book before any feature ships to yours. When you buy a seat, you&rsquo;re buying a system already proven on live LP commitments &mdash; not a demo.</p>
+    <a href="https://calendly.com/victoryvision/45-mins" class="btn btn-primary">Book a 45-minute working session</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Victory Vision &middot; <a href="mailto:andrew@victoryvisionai.com">andrew@victoryvisionai.com</a> &middot; <a href="https://calendly.com/victoryvision/45-mins">Book time</a>
+  </div>
+</footer>
+
+</body>
+</html>
