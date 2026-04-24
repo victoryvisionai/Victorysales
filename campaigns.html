@@ -1055,11 +1055,10 @@
       createCampaignBtn.disabled = true;
       createCampaignBtn.textContent = '🔄 Creating Campaign...';
       
-      // Use campaigns/user endpoint with auto-generated topic
-      const response = await fetch(N8N_BASE_URL + '/campaigns/user', {
+      const response = await fetch(ENDPOINTS.CREATE_CAMPAIGN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID, 'Authorization': authToken ? 'Bearer ' + authToken : '' },
-        body: JSON.stringify({ customer_id: CUSTOMER_ID, campaign_topic: 'Auto-generate a high-converting B2B campaign based on my company data, victories, and ICP', timestamp: new Date().toISOString() })
+        body: JSON.stringify({ customer_id: CUSTOMER_ID })
       });
       if (!response.ok) throw new Error('HTTP ' + response.status);
       const text = await response.text();
