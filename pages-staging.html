@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Manage your landing pages."/>
+  <meta name="author" content="Victory Vision"/>
+  <title>Victory Vision AI - Pages</title>
+  <link rel="icon" href="data:image/x-icon;base64,">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+    .navbar { background-color: #0A3161; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .navbar nav ul { display: flex; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+    .navbar nav ul li { margin: 0 10px; }
+    .navbar nav ul li a { color: white; text-decoration: none; }
+    .navbar .user-info { display: flex; align-items: center; gap: 10px; }
+    .subscription-medallion { display: flex; align-items: center; gap: 8px; background: linear-gradient(45deg, #CD7F32, #A0522D); color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: none; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .subscription-medallion.bronze { background: linear-gradient(45deg, #CD7F32, #A0522D); }
+    .subscription-medallion.silver { background: linear-gradient(45deg, #C0C0C0, #808080); }
+    .subscription-medallion.gold { background: linear-gradient(45deg, #FFD700, #FFA500); }
+    .subscription-medallion:hover { opacity: 0.9; transform: translateY(-1px); }
+    .logo img { height: 60px; width: auto; }
+    .content { padding: 20px 4px; max-width: 1400px; margin: 0 auto; }
+    .page-header { margin-bottom: 30px; }
+    .page-title { font-size: 2.5rem; font-weight: bold; color: #0A3161; margin-bottom: 0.5rem; }
+    .page-subtitle { font-size: 1.1rem; color: white; background: linear-gradient(135deg, #0A3161, #1a4c80); padding: 10px 15px; border-radius: 6px; display: inline-block; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 20px; }
+    .section-header { background: linear-gradient(135deg, #0A3161, #1a4c80); color: white; padding: 15px; margin: -20px -20px 20px -20px; border-radius: 8px 8px 0 0; }
+    .section-header h3 { margin: 0; }
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
+    .form-group textarea { resize: vertical; }
+    button { background: #0A3161; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 5px 5px 0 0; }
+    button:hover { background: #083050; }
+    button.secondary { background: #6c757d; }
+    button.secondary:hover { background: #5a6268; }
+    button.danger { background: #dc3545; }
+    button.danger:hover { background: #c82333; }
+    button.success { background: #28a745; }
+
+    /* Page type buttons */
+    .page-type-btns { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+    .page-type-btn { flex: 1; min-width: 160px; padding: 18px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 15px; font-weight: bold; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .page-type-btn .btn-icon { font-size: 28px; }
+    .page-type-btn .btn-label { font-size: 11px; opacity: 0.85; font-weight: normal; }
+    .page-type-btn.landing { background: linear-gradient(135deg, #0A3161, #1a4c80); color: white; }
+    .page-type-btn.lead-magnet { background: linear-gradient(135deg, #BB133E, #e0294f); color: white; }
+    .page-type-btn.newsletter { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+    .page-type-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+
+    /* Create panels */
+    .create-panel { display: none; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin-top: 10px; background: #f8f9fa; }
+    .create-panel.active { display: block; }
+
+    /* Slug row */
+    .slug-row { display: flex; align-items: stretch; }
+    .slug-prefix { color: #555; font-size: 12px; white-space: nowrap; font-family: monospace; background: #e9ecef; padding: 8px; border-radius: 4px 0 0 4px; border: 1px solid #ddd; border-right: none; display: flex; align-items: center; }
+    .slug-input { flex: 1; border-radius: 0 4px 4px 0 !important; font-family: monospace; }
+
+    /* Toggle */
+    .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .toggle-row label { margin: 0; }
+    .toggle { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; transition: .3s; border-radius: 24px; }
+    .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: .3s; border-radius: 50%; }
+    input:checked + .toggle-slider { background: #0A3161; }
+    input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+    /* Lead magnet picker */
+    .lead-magnet-list { max-height: 240px; overflow-y: auto; border: 1px solid #ddd; border-radius: 6px; background: white; }
+    .lm-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.15s; }
+    .lm-item:hover { background: #f0f4ff; }
+    .lm-item.selected { background: #e8f0ff; border-left: 3px solid #0A3161; }
+    .lm-item:last-child { border-bottom: none; }
+    .lm-thumb { width: 48px; height: 36px; object-fit: cover; border-radius: 4px; background: #eee; flex-shrink: 0; }
+    .lm-info { flex: 1; min-width: 0; }
+    .lm-name { font-weight: bold; font-size: 13px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lm-meta { font-size: 11px; color: #888; }
+    .lm-clicks { font-size: 12px; font-weight: bold; color: #BB133E; white-space: nowrap; }
+
+    /* Lead magnet modal */
+    .lm-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
+    .lm-modal.show { display: flex; }
+    .lm-modal-content { background: white; border-radius: 10px; padding: 24px; width: 90%; max-width: 560px; max-height: 80vh; overflow-y: auto; }
+    .lm-modal-content h3 { margin: 0 0 6px 0; color: #0A3161; }
+
+    /* Filter section */
+    .filter-section { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px; }
+    .filter-section .form-group { flex: 1; min-width: 150px; margin-bottom: 0; }
+
+    /* Pages grid */
+    .pages-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .page-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; position: relative; }
+    .page-card:hover { transform: translateY(-4px); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .page-card.expanded { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90vw; max-width: 860px; height: 90vh; z-index: 1000; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .page-preview { position: relative; height: 150px; background: #f8f9fa; border-bottom: 1px solid #dee2e6; overflow: hidden; }
+    .page-card.expanded .page-preview { height: 200px; }
+    .page-thumbnail { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .page-preview-placeholder { display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 2rem; flex-direction: column; }
+    .page-preview-placeholder small { font-size: 0.7rem; margin-top: 5px; }
+    .page-status { position: absolute; top: 10px; right: 10px; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+    .page-status.active { background: #28a745; color: white; }
+    .page-type-badge { position: absolute; top: 10px; left: 10px; padding: 3px 7px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+    .page-type-badge.landing { background: #0A3161; color: white; }
+    .page-type-badge.lead_magnet { background: #BB133E; color: white; }
+    .page-type-badge.newsletter { background: #28a745; color: white; }
+    .ab-badge { position: absolute; bottom: 10px; left: 10px; background: #6610f2; color: white; padding: 3px 7px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+    .page-card-header { background: linear-gradient(135deg, #0A3161, #1a4c80); color: white; padding: 12px; }
+    .page-card.expanded .page-card-header { padding: 15px; }
+    .page-card-title { font-size: 1rem; font-weight: 600; margin-bottom: 4px; line-height: 1.2; }
+    .page-card.expanded .page-card-title { font-size: 1.3rem; margin-bottom: 8px; }
+    .page-url { font-size: 0.8rem; opacity: 0.9; font-family: monospace; word-break: break-all; }
+    .page-info { padding: 12px; }
+    .page-card.expanded .page-info { padding: 15px; }
+    .page-description { font-size: 0.8rem; color: #777; line-height: 1.3; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .page-card.expanded .page-description { -webkit-line-clamp: unset; display: block; overflow: visible; margin-bottom: 15px; font-size: 0.9rem; }
+    .page-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; font-size: 0.7rem; color: #666; }
+    .page-card.expanded .page-meta { font-size: 0.8rem; }
+    .meta-item { display: flex; flex-direction: column; }
+    .meta-label { font-weight: 600; color: #0A3161; }
+    .page-actions { display: flex; gap: 6px; padding: 0 12px 12px; flex-wrap: wrap; }
+    .page-card.expanded .page-actions { padding: 0 15px 15px; gap: 8px; }
+    .btn-small { padding: 6px 10px; font-size: 11px; flex: 1; }
+    .page-card.expanded .btn-small { padding: 8px 12px; font-size: 12px; }
+
+    /* Analytics */
+    .analytics-section { display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6; }
+    .page-card.expanded .analytics-section { display: block; }
+    .analytics-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .analytics-header h4 { margin: 0; color: #0A3161; font-size: 14px; }
+    .time-windows { display: flex; gap: 4px; flex-wrap: wrap; }
+    .tw-btn { padding: 4px 10px; font-size: 11px; background: #e9ecef; color: #555; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; margin: 0; transition: all 0.15s; }
+    .tw-btn.active { background: #0A3161; color: white; border-color: #0A3161; }
+    .analytics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    .stat-box { background: white; border-radius: 6px; padding: 10px; text-align: center; border: 1px solid #e0e0e0; }
+    .stat-box .stat-val { font-size: 22px; font-weight: bold; color: #0A3161; }
+    .stat-box .stat-lbl { font-size: 10px; color: #888; margin-top: 2px; }
+    .stat-box.revenue .stat-val { color: #28a745; }
+    .stat-box.conversions .stat-val { color: #BB133E; }
+    .sources-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .source-chip { background: white; border: 1px solid #ddd; border-radius: 12px; padding: 4px 10px; font-size: 11px; color: #555; }
+    .source-chip span { font-weight: bold; color: #0A3161; }
+    .ab-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .ab-panel { background: white; border-radius: 6px; padding: 12px; border: 2px solid #e0e0e0; }
+    .ab-panel.variant-a { border-color: #0A3161; }
+    .ab-panel.variant-b { border-color: #BB133E; }
+    .ab-panel h5 { margin: 0 0 8px 0; font-size: 13px; }
+    .ab-panel.variant-a h5 { color: #0A3161; }
+    .ab-panel.variant-b h5 { color: #BB133E; }
+
+    /* Edit chat */
+    .edit-chat-container { margin-top: 8px; padding: 12px; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6; display: none; }
+    .page-card.expanded .edit-chat-container { display: block; margin-top: 15px; padding: 15px; }
+    .edit-chat-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 8px; min-height: 50px; resize: vertical; box-sizing: border-box; }
+    .edit-chat-btn { background: #17a2b8; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .edit-chat-btn:hover { background: #138496; }
+    .edit-chat-btn:disabled { background: #6c757d; cursor: not-allowed; }
+    .close-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px; display: none; z-index: 1001; padding: 0; line-height: 30px; }
+    .page-card.expanded .close-btn { display: block; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+    .modal-overlay.show { display: block; }
+    .loading { text-align: center; padding: 3rem; font-size: 1.1rem; color: #666; }
+    .loading::before { content: ''; display: inline-block; width: 20px; height: 20px; border: 2px solid #ddd; border-top: 2px solid #0A3161; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 0.5rem; vertical-align: middle; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 4rem 2rem; color: #666; }
+    .empty-state h3 { font-size: 1.5rem; margin-bottom: 10px; color: #0A3161; }
+    .status-message { padding: 10px; border-radius: 4px; margin: 10px 0; display: none; }
+    .status-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .status-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .auth-loading { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; flex-direction: column; }
+    .auth-loading .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0A3161; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+    footer { background: #0A3161; color: #fff; text-align: center; padding: 15px; margin-top: 20px; }
+    footer a { color: #fff; margin-right: 15px; text-decoration: none; }
+    .introjs-button { background: #0A3161 !important; border: 1px solid #0A3161 !important; color: white !important; padding: 8px 15px !important; border-radius: 4px !important; }
+    .introjs-progressbar { background-color: #0A3161 !important; }
+    @media (max-width: 768px) {
+      .content { padding: 10px 5px; }
+      .page-title { font-size: 2rem; }
+      .pages-grid { grid-template-columns: 1fr; }
+      .page-card.expanded { width: 95vw; height: 95vh; }
+      .navbar { flex-direction: column; gap: 10px; }
+      .analytics-grid { grid-template-columns: repeat(2, 1fr); }
+      .ab-compare { grid-template-columns: 1fr; }
+      .page-type-btns { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="authLoading" class="auth-loading">
+  <div class="spinner"></div>
+  <p>Verifying authentication...</p>
+</div>
+
+<div id="modalOverlay" class="modal-overlay"></div>
+
+<!-- Lead Magnet Picker Modal -->
+<div id="lmModal" class="lm-modal">
+  <div class="lm-modal-content">
+    <h3>🧲 Select Lead Magnet File</h3>
+    <p style="color:#666;font-size:13px;margin-top:0;margin-bottom:14px;">Files marked as lead magnets, sorted by clicks.</p>
+    <div id="lmList" class="lead-magnet-list">
+      <div style="padding:20px;text-align:center;color:#999;">Loading...</div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">
+      <button class="secondary" onclick="closeLmModal()">Cancel</button>
+      <button style="background:#BB133E;" onclick="confirmLmSelection()">Use Selected File</button>
+    </div>
+  </div>
+</div>
+
+<header class="navbar">
+  <div class="logo">
+    <img class="logo-image" src="logo.jpg" alt="Victory Vision Logo"
+         onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22 /><text x=%225%22 y=%2225%22 font-size=%2220%22 fill=%22white%22>VV</text></svg>'"/>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="contacts">Contacts</a></li>
+      <li><a href="ads">Ads</a></li>
+      <li><a href="messages">Messages</a></li>
+      <li><a href="meetings">Meetings</a></li>
+      <li><a href="ai">Analytics</a></li>
+      <li><a href="settings">Settings</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail"></span>
+    <button onclick="startTour()" style="background:#28a745;padding:6px 12px;font-size:11px;margin-left:10px;">📖 Tour</button>
+    <button id="subscriptionMedallion" class="subscription-medallion bronze" onclick="window.location.href='settings'">
+      <span class="plan-name">Bronze</span>
+    </button>
+  </div>
+</header>
+
+<div class="content">
+  <header class="page-header">
+    <h1 class="page-title">Landing Pages</h1>
+    <p class="page-subtitle">Manage your campaign landing pages</p>
+  </header>
+
+  <!-- Create Section -->
+  <section class="card" data-intro="Create AI-powered landing pages. Choose a standard landing page, a lead magnet page, or a newsletter signup page." data-step="1">
+    <div class="section-header"><h3>📄 Create New Page</h3></div>
+
+    <div class="page-type-btns">
+      <button class="page-type-btn landing" onclick="selectPageType('landing')" data-intro="Create a standard campaign landing page with a header video." data-step="2">
+        <span class="btn-icon">📄</span>
+        <span>Landing Page</span>
+        <span class="btn-label">Campaign page + video</span>
+      </button>
+      <button class="page-type-btn lead-magnet" onclick="selectPageType('lead_magnet')" data-intro="Create a lead magnet page. Pick a file marked as a lead magnet." data-step="3">
+        <span class="btn-icon">🧲</span>
+        <span>Lead Magnet</span>
+        <span class="btn-label">Gated content download</span>
+      </button>
+      <button class="page-type-btn newsletter" onclick="selectPageType('newsletter')" data-intro="Create a newsletter signup page." data-step="4">
+        <span class="btn-icon">📧</span>
+        <span>Newsletter</span>
+        <span class="btn-label">Subscriber signup page</span>
+      </button>
+    </div>
+
+    <!-- Landing Page Panel -->
+    <div id="panel_landing" class="create-panel">
+      <div class="form-group">
+        <label for="headerVideoSelect">Select Header Video *</label>
+        <select id="headerVideoSelect" data-intro="Choose a video from your media library." data-step="5">
+          <option value="">Choose a video from your media library</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="pageTitle">Page Title</label>
+        <input type="text" id="pageTitle" placeholder="Enter page title (optional)">
+      </div>
+      <div class="form-group">
+        <label for="pageDescription">Page Description</label>
+        <textarea id="pageDescription" placeholder="Enter page description (optional)" style="height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Custom URL Slug</label>
+        <div class="slug-row">
+          <span class="slug-prefix" id="slugPrefix">yoursite.victoryvision.app/</span>
+          <input type="text" id="slugLanding" class="slug-input" placeholder="my-page" oninput="sanitizeSlug(this)">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle"><input type="checkbox" id="abTestLanding"><span class="toggle-slider"></span></label>
+        <label for="abTestLanding" style="font-weight:bold;color:#333;">Create A/B Test variant</label>
+      </div>
+      <button id="createPageBtn" style="background:linear-gradient(135deg,#0A3161,#1a4c80);width:100%;margin-top:10px;padding:15px;font-size:16px;font-weight:bold;border-radius:8px;" data-intro="Click to generate your landing page." data-step="6">
+        📄 Create Landing Page
+      </button>
+    </div>
+
+    <!-- Lead Magnet Panel -->
+    <div id="panel_lead_magnet" class="create-panel">
+      <div class="form-group">
+        <label>Select Lead Magnet File *</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input type="text" id="lmSelectedName" readonly placeholder="No file selected" style="flex:1;background:#f8f9fa;cursor:pointer;" onclick="openLmModal()">
+          <button type="button" style="white-space:nowrap;background:#BB133E;margin:0;" onclick="openLmModal()">🧲 Browse</button>
+        </div>
+        <input type="hidden" id="lmSelectedId">
+      </div>
+      <div class="form-group">
+        <label for="lmTitle">Page Title</label>
+        <input type="text" id="lmTitle" placeholder="Enter page title (optional)">
+      </div>
+      <div class="form-group">
+        <label for="lmDescription">Page Description</label>
+        <textarea id="lmDescription" placeholder="Describe what the visitor gets..." style="height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Custom URL Slug</label>
+        <div class="slug-row">
+          <span class="slug-prefix" id="slugPrefixLm">yoursite.victoryvision.app/</span>
+          <input type="text" id="slugLeadMagnet" class="slug-input" placeholder="free-guide" oninput="sanitizeSlug(this)">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle"><input type="checkbox" id="abTestLm"><span class="toggle-slider"></span></label>
+        <label for="abTestLm" style="font-weight:bold;color:#333;">Create A/B Test variant</label>
+      </div>
+      <button onclick="createLeadMagnetPage()" style="background:linear-gradient(135deg,#BB133E,#e0294f);width:100%;margin-top:10px;padding:15px;font-size:16px;font-weight:bold;border-radius:8px;">
+        🧲 Create Lead Magnet Page
+      </button>
+    </div>
+
+    <!-- Newsletter Panel -->
+    <div id="panel_newsletter" class="create-panel">
+      <div class="form-group">
+        <label for="nlTitle">Newsletter Name *</label>
+        <input type="text" id="nlTitle" placeholder="e.g. The Operator's Playbook">
+      </div>
+      <div class="form-group">
+        <label for="nlDescription">What subscribers get</label>
+        <textarea id="nlDescription" placeholder="Describe your newsletter..." style="height:80px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Custom URL Slug</label>
+        <div class="slug-row">
+          <span class="slug-prefix" id="slugPrefixNl">yoursite.victoryvision.app/</span>
+          <input type="text" id="slugNewsletter" class="slug-input" placeholder="newsletter" oninput="sanitizeSlug(this)">
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle"><input type="checkbox" id="abTestNl"><span class="toggle-slider"></span></label>
+        <label for="abTestNl" style="font-weight:bold;color:#333;">Create A/B Test variant</label>
+      </div>
+      <button onclick="createNewsletterPage()" style="background:linear-gradient(135deg,#28a745,#20c997);width:100%;margin-top:10px;padding:15px;font-size:16px;font-weight:bold;border-radius:8px;">
+        📧 Create Newsletter Page
+      </button>
+    </div>
+  </section>
+
+  <!-- Filter Section -->
+  <section class="card">
+    <div class="section-header"><h3>📄 My Pages</h3></div>
+    <div class="filter-section" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+      <div class="form-group" style="flex:1;min-width:200px;">
+        <label for="searchFilter">Search</label>
+        <input type="text" id="searchFilter" placeholder="Search name, description, URL…" data-intro="Search your pages by title, description, or URL." data-step="7">
+      </div>
+      <div class="form-group">
+        <label for="typeFilter">Type</label>
+        <select id="typeFilter">
+          <option value="">All Types</option>
+          <option value="landing">Landing</option>
+          <option value="lead_magnet">Lead Magnet</option>
+          <option value="newsletter">Newsletter</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="sortFilter">Sort</label>
+        <select id="sortFilter">
+          <option value="created_desc">Newest first</option>
+          <option value="created_asc">Oldest first</option>
+          <option value="views_desc">Most views</option>
+          <option value="conversions_desc">Most conversions</option>
+          <option value="name_asc">Name A→Z</option>
+        </select>
+      </div>
+      <div class="form-group" style="min-width:140px;">
+        <label>View</label>
+        <div class="view-toggle" style="display:inline-flex;border:1px solid #dde2e8;border-radius:6px;overflow:hidden;">
+          <button id="viewGridBtn" type="button" class="view-btn active" style="padding:6px 12px;border:none;background:#0A3161;color:#fff;cursor:pointer;font-size:13px;">▦ Grid</button>
+          <button id="viewListBtn" type="button" class="view-btn" style="padding:6px 12px;border:none;background:#fff;color:#333;cursor:pointer;font-size:13px;">☰ List</button>
+        </div>
+      </div>
+      <button id="refreshPages">🔄 Refresh</button>
+      <button id="clearFilters" class="secondary">Clear</button>
+    </div>
+  </section>
+
+  <section id="pagesContainer" data-intro="Your pages appear here. Click any card to expand it and access analytics, AI editing, and more." data-step="8">
+    <div class="loading">Loading your pages...</div>
+  </section>
+
+  <div id="statusMessage" class="status-message"></div>
+</div>
+
+<footer>
+  <p>&copy; 2025 Victory Vision Digital Out of Home. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+
+<script>
+  const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+  let CUSTOMER_ID = '';
+  let authToken = '';
+  let userVVDomain = '';
+  let userCredits = {};
+  let currentUserData = {};
+  let allPages = [];
+  let filteredPages = [];
+  let availableVideos = [];
+  let leadMagnetFiles = [];
+  let selectedLmFile = null;
+  let expandedCard = null;
+  let currentViewMode = 'grid';
+  const analyticsCache = {};
+
+  const ENDPOINTS = {
+    getUserData:      'https://victoryvision.app.n8n.cloud/webhook/user/get',
+    pagesGet:         'https://victoryvision.app.n8n.cloud/webhook/pages/get',
+    pagesCreate:      'https://victoryvision.app.n8n.cloud/webhook/pages/creates',
+    pagesUpdate:      'https://victoryvision.app.n8n.cloud/webhook/pages/update',
+    pagesEditMeta:    'https://victoryvision.app.n8n.cloud/webhook/pages/edit-meta',
+    pagesRemove:      'https://victoryvision.app.n8n.cloud/webhook/pages/remove',
+    pagesLeadMagnet:  'https://victoryvision.app.n8n.cloud/webhook/pages/lead-magnet-create',
+    pagesNewsletter:  'https://victoryvision.app.n8n.cloud/webhook/pages/newsletter-create',
+    pagesAnalytics:   'https://victoryvision.app.n8n.cloud/webhook/pages/analytics',
+    mediaGet:         'https://victoryvision.app.n8n.cloud/webhook/media/get',
+    campaignsGet:     'https://victoryvision.app.n8n.cloud/webhook/campaigns/get'
+  };
+
+  let availableCampaigns = [];
+
+  // ─── Tour ────────────────────────────────────────────────────────────────────
+  function completeTour() { localStorage.setItem('vv_tour_completed_' + window.location.pathname, 'true'); }
+  function hasCompletedTour() { return localStorage.getItem('vv_tour_completed_' + window.location.pathname) === 'true'; }
+  function startTour() {
+    introJs().setOptions({ showProgress: true, showBullets: false, exitOnOverlayClick: false,
+      nextLabel: 'Next →', prevLabel: '← Back', doneLabel: 'Complete!', skipLabel: 'Skip Tour'
+    }).oncomplete(completeTour).onexit(completeTour).start();
+  }
+
+  // ─── Rate limiter ────────────────────────────────────────────────────────────
+  const rateLimiter = {
+    calls: [], maxCalls: 20, windowMs: 60000,
+    canMakeCall() {
+      const now = Date.now();
+      this.calls = this.calls.filter(t => t > now - this.windowMs);
+      if (this.calls.length >= this.maxCalls) return false;
+      this.calls.push(now); return true;
+    }
+  };
+
+  function sanitizeInput(value) {
+    if (typeof value !== 'string') return value;
+    return value.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/javascript:/gi, '').replace(/on\w+\s*=/gi, '').replace(/data:/gi, '').trim();
+  }
+  function generateRequestId() { return Math.random().toString(36).substring(2,15) + Math.random().toString(36).substring(2,15); }
+  function escHtml(str) {
+    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  }
+
+  // ─── API Call ────────────────────────────────────────────────────────────────
+  async function apiCall(endpoint, data, method) {
+    method = method || 'POST';
+    data = data || null;
+    try {
+      if (!rateLimiter.canMakeCall()) throw new Error('Too many requests. Please wait.');
+      if (!endpoint.startsWith('https://victoryvision.app.n8n.cloud/webhook/')) throw new Error('Invalid endpoint');
+
+      const headers = {
+        'X-Customer-ID': CUSTOMER_ID,
+        'X-Request-ID': generateRequestId(),
+        'X-Timestamp': new Date().toISOString(),
+        'X-User-Agent': 'VictoryVision/1.0'
+      };
+      if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+
+      var url = endpoint, body = null;
+      if (method === 'GET') {
+        url = endpoint + '?customer_id=' + encodeURIComponent(CUSTOMER_ID);
+      } else {
+        headers['Content-Type'] = 'application/json';
+        var sanitizedData = {};
+        if (data) { for (var k in data) { sanitizedData[k] = sanitizeInput(String(data[k] == null ? '' : data[k])); } }
+        body = JSON.stringify(Object.assign({}, sanitizedData, { customer_id: CUSTOMER_ID, timestamp: new Date().toISOString(), request_id: generateRequestId() }));
+      }
+
+      var response = await fetch(url, { method: method, headers: headers, body: body, mode: 'cors', credentials: 'omit', signal: AbortSignal.timeout(30000) });
+      if (!response.ok) { var t = await response.text(); throw new Error('HTTP ' + response.status + ': ' + t); }
+      var text = await response.text();
+      return text ? JSON.parse(text) : { success: true };
+    } catch (error) {
+      console.error('API call failed:', error);
+      if (error.message.indexOf('401') > -1 || error.message.indexOf('403') > -1) { showStatus('Session expired. Please log in again.', true); setTimeout(redirectToLogin, 2000); }
+      throw error;
+    }
+  }
+
+  // ─── Auth ────────────────────────────────────────────────────────────────────
+  async function checkAuthentication() {
+    try {
+      var result = await supabaseClient.auth.getSession();
+      var session = result.data.session;
+      if (!session || !session.user) return false;
+      CUSTOMER_ID = session.user.email;
+      authToken = session.access_token;
+      document.getElementById('userEmail').textContent = CUSTOMER_ID;
+      return true;
+    } catch(e) { console.error('Auth error:', e); return false; }
+  }
+  function redirectToLogin() { window.location.href = 'index.html'; }
+  async function logout() { await supabaseClient.auth.signOut(); redirectToLogin(); }
+
+  // ─── User data ───────────────────────────────────────────────────────────────
+  async function loadUserData() {
+    try {
+      var response = await apiCall(ENDPOINTS.getUserData, null, 'GET');
+      var userData = Array.isArray(response) ? response[0] : response;
+      currentUserData = userData || {};
+      userVVDomain = userData.vv_domain || '';
+      var prefix = userVVDomain ? userVVDomain.replace(/\/$/, '') + '/' : 'yoursite.victoryvision.app/';
+      document.querySelectorAll('.slug-prefix').forEach(function(el) { el.textContent = prefix; });
+      updateSubscriptionMedallion(userData.subscription_plan || 'Bronze');
+      return userData;
+    } catch(e) { console.error('Error loading user data:', e); updateSubscriptionMedallion('Bronze'); }
+  }
+
+  function updateSubscriptionMedallion(plan) {
+    var medallion = document.getElementById('subscriptionMedallion');
+    var validPlans = ['Bronze','Silver','Gold'];
+    var safePlan = validPlans.indexOf(plan) > -1 ? plan : 'Bronze';
+    medallion.className = 'subscription-medallion ' + safePlan.toLowerCase();
+    medallion.querySelector('.plan-name').textContent = safePlan;
+  }
+
+  // ─── Videos ──────────────────────────────────────────────────────────────────
+  async function loadAvailableVideos() {
+    try {
+      var data = await apiCall(ENDPOINTS.mediaGet);
+      var allMedia = Array.isArray(data) ? data : (data && data.media ? data.media : (data && data.files ? data.files : []));
+      availableVideos = allMedia.filter(function(f) {
+        return f && f.URL && f.file_type && (f.file_type.toLowerCase().indexOf('video') > -1 || f.file_type.toLowerCase().indexOf('mp4') > -1 || (f.mime_type && f.mime_type.toLowerCase().indexOf('video') > -1));
+      });
+      populateVideoDropdown();
+    } catch(e) { console.error('Error loading videos:', e); }
+  }
+
+  function populateVideoDropdown() {
+    var dd = document.getElementById('headerVideoSelect');
+    dd.innerHTML = '<option value="">Choose a video from your media library</option>';
+    if (!availableVideos.length) { dd.innerHTML += '<option disabled>No videos available — create campaigns first</option>'; return; }
+    availableVideos.forEach(function(v) {
+      var o = document.createElement('option');
+      o.value = v.id;
+      o.textContent = (v.name || 'Untitled') + ' (' + (v.campaign_name || 'Unknown') + ')';
+      dd.appendChild(o);
+    });
+  }
+
+  // ─── Lead magnet files ────────────────────────────────────────────────────────
+  async function loadLeadMagnetFiles() {
+    try {
+      var data = await apiCall(ENDPOINTS.mediaGet);
+      var allMedia = Array.isArray(data) ? data : (data && data.media ? data.media : (data && data.files ? data.files : []));
+      leadMagnetFiles = allMedia
+        .filter(function(f) { return f && (f.lead_magnet === true || f.lead_magnet === 'true'); })
+        .sort(function(a,b) { return (parseFloat(b.clicks)||0) - (parseFloat(a.clicks)||0); });
+    } catch(e) { console.error('Error loading lead magnet files:', e); }
+  }
+
+  function renderLmList() {
+    var list = document.getElementById('lmList');
+    if (!leadMagnetFiles.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:#999;">No lead magnet files found.<br><small>Go to Media and mark files as lead magnets first.</small></div>';
+      return;
+    }
+    list.innerHTML = leadMagnetFiles.map(function(f) {
+      var isImg = f.file_type && f.file_type.toLowerCase().indexOf('image') > -1;
+      var thumb = isImg && f.URL ? '<img class="lm-thumb" src="' + escHtml(f.URL) + '" onerror="this.style.display=\'none\'">' : '<div class="lm-thumb" style="display:flex;align-items:center;justify-content:center;font-size:20px;">🧲</div>';
+      var sel = selectedLmFile && selectedLmFile.id == f.id ? ' selected' : '';
+      return '<div class="lm-item' + sel + '" onclick="selectLmFile(\'' + f.id + '\',\'' + escHtml(f.name||'') + '\',\'' + escHtml(f.URL||'') + '\',this)">' +
+        thumb +
+        '<div class="lm-info"><div class="lm-name">' + escHtml(f.name||'Untitled') + '</div><div class="lm-meta">' + escHtml(f.campaign_name||'No campaign') + ' &middot; ' + escHtml(f.file_type||'file') + '</div></div>' +
+        '<div class="lm-clicks">👆 ' + parseFloat(f.clicks||0).toLocaleString() + '</div></div>';
+    }).join('');
+  }
+
+  async function openLmModal() {
+    var list = document.getElementById('lmList');
+    document.getElementById('lmModal').classList.add('show');
+    // If init's preload hasn't populated (race condition) or returned empty, fetch fresh on open.
+    if (!leadMagnetFiles.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:#999;">Loading lead magnets…</div>';
+      await loadLeadMagnetFiles();
+    }
+    renderLmList();
+  }
+
+  function selectLmFile(id, name, url, el) {
+    selectedLmFile = { id: id, name: name, url: url };
+    document.querySelectorAll('.lm-item').forEach(function(i) { i.classList.remove('selected'); });
+    if (el) el.classList.add('selected');
+  }
+
+  function closeLmModal() { document.getElementById('lmModal').classList.remove('show'); }
+
+  function confirmLmSelection() {
+    if (!selectedLmFile) { showStatus('Please select a file.', true); return; }
+    document.getElementById('lmSelectedName').value = selectedLmFile.name;
+    document.getElementById('lmSelectedId').value = selectedLmFile.id;
+    closeLmModal();
+  }
+
+  // ─── Page type selector ───────────────────────────────────────────────────────
+  function selectPageType(type) {
+    document.querySelectorAll('.create-panel').forEach(function(p) { p.classList.remove('active'); });
+    var panel = document.getElementById('panel_' + type);
+    if (panel) { panel.classList.add('active'); panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+  }
+
+  function sanitizeSlug(input) {
+    input.value = input.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-{2,}/g, '-').replace(/^-|-$/g, '');
+  }
+
+  // ─── Create pages ─────────────────────────────────────────────────────────────
+  async function createPage() {
+    var btn = document.getElementById('createPageBtn');
+    try {
+      var selectedVideoId = document.getElementById('headerVideoSelect').value;
+      var pageTitle = document.getElementById('pageTitle').value.trim();
+      var pageDescription = document.getElementById('pageDescription').value.trim();
+      var slug = document.getElementById('slugLanding').value.trim();
+      var abTest = document.getElementById('abTestLanding').checked;
+      if (!selectedVideoId) { showStatus('Please select a header video.', true); return; }
+      btn.disabled = true; btn.textContent = '🔄 Creating Page...';
+      var result = await apiCall(ENDPOINTS.pagesCreate, { campaigns_file_id: selectedVideoId, title: pageTitle, description: pageDescription, slug: slug, ab_test: String(abTest), page_type: 'landing', google_pixel: currentUserData.google_pixel || '', msft_pixel: currentUserData.msft_pixel || '', linkedin_pixel: currentUserData.linkedin_pixel || '' });
+      if (result && result.success !== false) {
+        showStatus('Landing page created successfully!');
+        document.getElementById('headerVideoSelect').value = '';
+        document.getElementById('pageTitle').value = '';
+        document.getElementById('pageDescription').value = '';
+        document.getElementById('slugLanding').value = '';
+        document.getElementById('abTestLanding').checked = false;
+        await loadPages(); applyFilters();
+      } else { throw new Error(result && result.message ? result.message : 'Page creation failed'); }
+    } catch(e) { console.error(e); showStatus('Error creating page: ' + e.message, true);
+    } finally { btn.disabled = false; btn.textContent = '📄 Create Landing Page'; }
+  }
+
+  async function createLeadMagnetPage() {
+    try {
+      var lmId = document.getElementById('lmSelectedId').value;
+      var title = document.getElementById('lmTitle').value.trim();
+      var description = document.getElementById('lmDescription').value.trim();
+      var slug = document.getElementById('slugLeadMagnet').value.trim();
+      var abTest = document.getElementById('abTestLm').checked;
+      if (!lmId) { showStatus('Please select a lead magnet file.', true); return; }
+      showStatus('Creating lead magnet page...');
+      var result = await apiCall(ENDPOINTS.pagesLeadMagnet, { campaigns_file_id: lmId, title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'lead_magnet', google_pixel: currentUserData.google_pixel || '', msft_pixel: currentUserData.msft_pixel || '', linkedin_pixel: currentUserData.linkedin_pixel || '' });
+      if (result && result.success !== false) {
+        showStatus('Lead magnet page created!');
+        document.getElementById('lmSelectedName').value = '';
+        document.getElementById('lmSelectedId').value = '';
+        document.getElementById('lmTitle').value = '';
+        document.getElementById('lmDescription').value = '';
+        document.getElementById('slugLeadMagnet').value = '';
+        document.getElementById('abTestLm').checked = false;
+        selectedLmFile = null;
+        await loadPages(); applyFilters();
+      } else { throw new Error(result && result.message ? result.message : 'Creation failed'); }
+    } catch(e) { console.error(e); showStatus('Error: ' + e.message, true); }
+  }
+
+  async function createNewsletterPage() {
+    try {
+      var title = document.getElementById('nlTitle').value.trim();
+      var description = document.getElementById('nlDescription').value.trim();
+      var slug = document.getElementById('slugNewsletter').value.trim();
+      var abTest = document.getElementById('abTestNl').checked;
+      if (!title) { showStatus('Please enter a newsletter name.', true); return; }
+      showStatus('Creating newsletter page...');
+      var result = await apiCall(ENDPOINTS.pagesNewsletter, { title: title, description: description, slug: slug, ab_test: String(abTest), page_type: 'newsletter', google_pixel: currentUserData.google_pixel || '', msft_pixel: currentUserData.msft_pixel || '', linkedin_pixel: currentUserData.linkedin_pixel || '' });
+      if (result && result.success !== false) {
+        showStatus('Newsletter page created!');
+        document.getElementById('nlTitle').value = '';
+        document.getElementById('nlDescription').value = '';
+        document.getElementById('slugNewsletter').value = '';
+        document.getElementById('abTestNl').checked = false;
+        await loadPages(); applyFilters();
+      } else { throw new Error(result && result.message ? result.message : 'Creation failed'); }
+    } catch(e) { console.error(e); showStatus('Error: ' + e.message, true); }
+  }
+
+  // ─── Load pages ───────────────────────────────────────────────────────────────
+  async function loadCampaigns() {
+    try {
+      var data = await apiCall(ENDPOINTS.campaignsGet, {});
+      var list = Array.isArray(data) ? data : (data && (data.campaigns || data.data) || []);
+      availableCampaigns = list.map(function(c) { return { id: c.id, name: c.name || c.campaign_name || '' }; }).filter(function(c){ return c.id; });
+    } catch(e) { console.error('loadCampaigns:', e); availableCampaigns = []; }
+  }
+
+  async function loadPages() {
+    try {
+      var data = await apiCall(ENDPOINTS.pagesGet);
+      var raw = Array.isArray(data) ? data : (data && data.pages ? data.pages : []);
+      allPages = raw.map(function(page) {
+        return Object.assign({}, page, {
+          title: (page.name || page.title || 'Untitled Page').replace(/['"'>]/g, ''),
+          url: cleanUrl(page.URL || page.google_page_url || page.url),
+          description: cleanDescription(page.body || page.description || ''),
+          page_type: page.page_type || 'landing',
+          slug: page.slug || '',
+          ab_test: page.ab_test || false,
+          ab_variant: page.ab_variant || null,
+          subscribers: page.subscribers || 0,
+          revenue: page.revenue || 0,
+          views: page.views || 0,
+          conversions: page.conversions || 0,
+          visitor_sources: page.visitor_sources || null,
+          status: 'active'
+        });
+      });
+      filteredPages = allPages.slice();
+    } catch(e) { console.error(e); allPages = []; filteredPages = []; showStatus('Error loading pages: ' + e.message, true); }
+  }
+
+  function cleanUrl(url) {
+    if (!url || url === 'NULL' || url === 'null') return 'No URL set';
+    return url.replace(/['"'>]/g, '').trim();
+  }
+  function cleanDescription(description) {
+    if (!description) return 'No description available';
+    return description.replace(/'''/g,'').replace(/['"'>]/g,'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim().substring(0, 200);
+  }
+
+  // ─── Filters ──────────────────────────────────────────────────────────────────
+  function applyFilters() {
+    var searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+    var typeVal = document.getElementById('typeFilter').value;
+    var sortVal = (document.getElementById('sortFilter') || { value: 'created_desc' }).value;
+    filteredPages = allPages.filter(function(page) {
+      if (typeVal && page.page_type !== typeVal) return false;
+      if (searchTerm) {
+        var text = [page.title, page.description, page.url, page.slug, page.campaign_name || ''].join(' ').toLowerCase();
+        if (text.indexOf(searchTerm) === -1) return false;
+      }
+      return true;
+    });
+    filteredPages.sort(function(a, b) {
+      switch (sortVal) {
+        case 'created_asc':       return new Date(a.created_at||0) - new Date(b.created_at||0);
+        case 'views_desc':        return (b.views||0) - (a.views||0);
+        case 'conversions_desc':  return (b.conversions||0) - (a.conversions||0);
+        case 'name_asc':          return String(a.title||'').localeCompare(String(b.title||''));
+        case 'created_desc':
+        default:                  return new Date(b.created_at||0) - new Date(a.created_at||0);
+      }
+    });
+    renderPagesGrid();
+  }
+
+  function clearFilters() {
+    document.getElementById('searchFilter').value = '';
+    document.getElementById('typeFilter').value = '';
+    var sortSel = document.getElementById('sortFilter'); if (sortSel) sortSel.value = 'created_desc';
+    applyFilters();
+  }
+
+  function setViewMode(mode) {
+    currentViewMode = (mode === 'list') ? 'list' : 'grid';
+    var gridBtn = document.getElementById('viewGridBtn');
+    var listBtn = document.getElementById('viewListBtn');
+    if (gridBtn && listBtn) {
+      var activeCss = 'padding:6px 12px;border:none;background:#0A3161;color:#fff;cursor:pointer;font-size:13px;';
+      var inactiveCss = 'padding:6px 12px;border:none;background:#fff;color:#333;cursor:pointer;font-size:13px;';
+      gridBtn.style.cssText = currentViewMode === 'grid' ? activeCss : inactiveCss;
+      listBtn.style.cssText = currentViewMode === 'list' ? activeCss : inactiveCss;
+    }
+    renderPagesGrid();
+  }
+
+  // ─── Render ───────────────────────────────────────────────────────────────────
+  function renderPagesGrid() {
+    var container = document.getElementById('pagesContainer');
+    if (!filteredPages.length) { showEmptyState(); return; }
+    container.innerHTML = '';
+    if (currentViewMode === 'list') {
+      container.appendChild(renderPagesList());
+    } else {
+      var grid = document.createElement('div');
+      grid.className = 'pages-grid';
+      filteredPages.forEach(function(page) { grid.appendChild(createPageCard(page)); });
+      container.appendChild(grid);
+    }
+  }
+
+  function renderPagesList() {
+    var wrap = document.createElement('div');
+    wrap.className = 'pages-list';
+    wrap.style.cssText = 'background:#fff;border:1px solid #dde2e8;border-radius:8px;overflow:hidden;';
+    var typeLabels = { landing: 'Landing', lead_magnet: 'Lead Magnet', newsletter: 'Newsletter' };
+    var header = document.createElement('div');
+    header.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 100px 100px 100px 220px;gap:12px;padding:10px 14px;background:#f5f6f8;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#555;font-weight:600;border-bottom:1px solid #dde2e8;';
+    header.innerHTML = '<div>Name</div><div>Type</div><div>Views</div><div>Conv.</div><div>Revenue</div><div>Actions</div>';
+    wrap.appendChild(header);
+    filteredPages.forEach(function(page) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 100px 100px 100px 220px;gap:12px;padding:12px 14px;border-bottom:1px solid #eef0f3;align-items:center;font-size:13px;';
+      var typeClass = page.page_type || 'landing';
+      row.innerHTML =
+        '<div><div style="font-weight:600;color:#0A3161;">' + escHtml(page.title||'Untitled') + '</div>' +
+          '<div style="color:#888;font-size:11px;margin-top:2px;">' + escHtml(page.slug||'') + '</div></div>' +
+        '<div><span class="page-type-badge ' + typeClass + '" style="font-size:10px;padding:2px 8px;">' + (typeLabels[page.page_type] || page.page_type) + '</span></div>' +
+        '<div>' + (page.views||0).toLocaleString() + '</div>' +
+        '<div>' + (page.conversions||0).toLocaleString() + '</div>' +
+        '<div>$' + parseFloat(page.revenue||0).toLocaleString() + '</div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
+          '<button class="btn-small secondary" data-act="view" data-id="' + page.id + '">👁 View</button>' +
+          '<button class="btn-small" data-act="edit" data-id="' + page.id + '">✏️ Edit</button>' +
+          '<button class="btn-small" data-act="copy" data-id="' + page.id + '">🔗 Copy</button>' +
+          '<button class="btn-small danger" data-act="delete" data-id="' + page.id + '">🗑</button>' +
+        '</div>';
+      row.addEventListener('click', function(e) {
+        var btn = e.target.closest('button[data-act]'); if (!btn) return;
+        e.stopPropagation();
+        var id = btn.dataset.id;
+        var p = allPages.find(function(x){ return String(x.id) === String(id); }) || {};
+        if (btn.dataset.act === 'view')   viewPage(p.url || '', p.slug || '');
+        if (btn.dataset.act === 'copy')   copyPageUrl(p.url || '', p.slug || '');
+        if (btn.dataset.act === 'edit')   openEditPageModal(p);
+        if (btn.dataset.act === 'delete') deletePage(p.id);
+      });
+      wrap.appendChild(row);
+    });
+    return wrap;
+  }
+
+  function createPageCard(page) {
+    var card = document.createElement('div');
+    card.className = 'page-card';
+
+    var createdDate = 'Unknown';
+    if (page.created_at) { try { createdDate = new Date(page.created_at).toLocaleDateString(); } catch(e) { createdDate = page.created_at; } }
+
+    var typeLabels = { landing: 'Landing', lead_magnet: 'Lead Magnet', newsletter: 'Newsletter' };
+    var typeLabel = typeLabels[page.page_type] || page.page_type;
+    var pageUrl = page.url || 'No URL set';
+
+    var previewContent;
+    if (page.thumbnail_URL && page.thumbnail_URL !== 'null' && page.thumbnail_URL !== 'NULL') {
+      previewContent = '<img src="' + page.thumbnail_URL + '" alt="Page preview" class="page-thumbnail" onerror="this.parentElement.innerHTML=\'<div class=\\\'page-preview-placeholder\\\'>📄<br><small>Preview unavailable</small></div>\'">';
+    } else if (page.body && typeof page.body === 'string' && page.body.length > 100) {
+      // Live iframe preview scaled down so the whole hero fits in the card height.
+      // Strip <script> tags + inline event handlers before rendering — the preview is visual only,
+      // and leaving scripts in srcdoc floods the console with sandbox warnings (Chrome auto-
+      // sandboxes srcdoc frames without allow-scripts) and would fire pixel trackers from the preview.
+      var cleanBody = page.body
+        .replace(/<script[\s\S]*?<\/script>/gi, '')
+        .replace(/\son\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '');
+      var srcdoc = cleanBody.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      previewContent = '<div class="page-iframe-preview" style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">' +
+        '<iframe loading="lazy" sandbox="allow-same-origin" srcdoc="' + srcdoc + '" ' +
+          'style="width:200%;height:200%;border:0;transform:scale(0.5);transform-origin:0 0;pointer-events:none;"></iframe>' +
+        '</div>';
+    } else {
+      previewContent = '<div class="page-preview-placeholder">📄<br><small>Website preview</small></div>';
+    }
+
+    var twButtons = ['1D','7D','30D','90D','ALL'].map(function(w) {
+      return '<button class="tw-btn ' + (w==='7D'?'active':'') + '" onclick="event.stopPropagation(); loadAnalytics(\'' + page.id + '\',\'' + w + '\',this)">' + w + '</button>';
+    }).join('');
+
+    card.innerHTML =
+      '<button class="close-btn" onclick="event.stopPropagation(); closeExpandedCard();">&times;</button>' +
+      '<div class="page-preview">' +
+        previewContent +
+        '<div class="page-status active">ACTIVE</div>' +
+        '<div class="page-type-badge ' + page.page_type + '">' + typeLabel + '</div>' +
+        (page.ab_test ? '<div class="ab-badge">A/B ' + (page.ab_variant||'') + '</div>' : '') +
+      '</div>' +
+      '<div class="page-card-header">' +
+        '<div class="page-card-title">' + escHtml(page.title||'Untitled') + '</div>' +
+        '<div class="page-url">' + escHtml(pageUrl) + '</div>' +
+      '</div>' +
+      '<div class="page-info">' +
+        '<p class="page-description">' + escHtml(page.description||'No description available') + '</p>' +
+        '<div class="page-meta">' +
+          '<div class="meta-item"><span class="meta-label">Created:</span>' + createdDate + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Views:</span>' + (page.views||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Conversions:</span>' + (page.conversions||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Subscribers:</span>' + (page.subscribers||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Revenue:</span>$' + parseFloat(page.revenue||0).toLocaleString() + '</div>' +
+          '<div class="meta-item"><span class="meta-label">Campaign:</span>' + escHtml(page.campaign_name||'None') + '</div>' +
+        '</div>' +
+        '<div class="analytics-section" id="analytics_' + page.id + '">' +
+          '<div class="analytics-header">' +
+            '<h4>📊 Analytics</h4>' +
+            '<div class="time-windows">' + twButtons + '</div>' +
+          '</div>' +
+          '<div id="analytics_data_' + page.id + '"><div style="text-align:center;color:#999;padding:20px;font-size:13px;">Click a time window to load analytics</div></div>' +
+        '</div>' +
+        '<div class="edit-chat-container">' +
+          '<label style="font-weight:bold;color:#0A3161;margin-bottom:5px;display:block;">✏️ Edit Page with AI:</label>' +
+          '<textarea class="edit-chat-input" placeholder="Describe what changes you want..." id="chatInput_' + page.id + '"></textarea>' +
+          '<button class="edit-chat-btn" onclick="event.stopPropagation(); handlePageEdit(\'' + page.id + '\')" id="editBtn_' + page.id + '">🤖 Update Page</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="page-actions">' +
+        '<button onclick="event.stopPropagation(); viewPage(\'' + escHtml(pageUrl) + '\',\'' + escHtml(page.slug||'') + '\')" class="btn-small secondary">👁 View</button>' +
+        '<button onclick="event.stopPropagation(); copyPageUrl(\'' + escHtml(pageUrl) + '\',\'' + escHtml(page.slug||'') + '\')" class="btn-small">🔗 Copy URL</button>' +
+        '<button onclick="event.stopPropagation(); openEditPageById(\'' + page.id + '\')" class="btn-small">✏️ Edit</button>' +
+        '<button onclick="event.stopPropagation(); deletePage(\'' + page.id + '\')" class="btn-small danger">🗑 Delete</button>' +
+      '</div>';
+
+    card.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      toggleCardExpansion(card, page.id);
+    });
+
+    return card;
+  }
+
+  // ─── Analytics ────────────────────────────────────────────────────────────────
+  async function loadAnalytics(pageId, window, btnEl) {
+    btnEl.closest('.time-windows').querySelectorAll('.tw-btn').forEach(function(b) { b.classList.remove('active'); });
+    btnEl.classList.add('active');
+    var container = document.getElementById('analytics_data_' + pageId);
+    container.innerHTML = '<div style="text-align:center;padding:16px;color:#999;font-size:13px;">Loading...</div>';
+    try {
+      if (analyticsCache[pageId] && analyticsCache[pageId][window]) { renderAnalyticsData(pageId, analyticsCache[pageId][window]); return; }
+      var data = await apiCall(ENDPOINTS.pagesAnalytics, { page_id: pageId, window: window });
+      if (!analyticsCache[pageId]) analyticsCache[pageId] = {};
+      analyticsCache[pageId][window] = data;
+      renderAnalyticsData(pageId, data);
+    } catch(e) {
+      container.innerHTML = '<div style="text-align:center;padding:16px;color:#dc3545;font-size:13px;">Could not load analytics: ' + e.message + '</div>';
+    }
+  }
+
+  function renderAnalyticsData(pageId, data) {
+    var container = document.getElementById('analytics_data_' + pageId);
+    var d = (Array.isArray(data) ? data[0] : data) || {};
+    var visitors = parseInt(d.visitors || d.views || 0);
+    var clicks   = parseFloat(d.clicks || 0);
+    var subs     = parseInt(d.subscribers || 0);
+    var convs    = parseInt(d.conversions || d.form_submits || 0);
+    var revenue  = parseFloat(d.revenue || 0);
+    var ctr      = (d.ctr_pct !== undefined) ? d.ctr_pct + '%' : (visitors > 0 ? ((clicks/visitors)*100).toFixed(1)+'%' : '—');
+    var convRate = (d.conversion_rate_pct !== undefined) ? d.conversion_rate_pct + '%' : (visitors > 0 ? ((convs/visitors)*100).toFixed(1)+'%' : '—');
+    var sources  = d.visitor_sources || {};
+
+    // Source chips — backend now sends email / social / google_ads / msft_ads / linkedin_ads / direct / other.
+    var sourceHtml = '';
+    var orderedKeys = ['email','social','google_ads','msft_ads','linkedin_ads','direct','other'];
+    var prettyLabels = {email:'📧 Email', social:'📱 Social', google_ads:'🔎 Google Ads', msft_ads:'🅱 Bing/MSFT Ads', linkedin_ads:'💼 LinkedIn Ads', direct:'↗ Direct', other:'… Other'};
+    var chips = orderedKeys.filter(function(k){return sources[k] && sources[k] > 0;}).map(function(k) {
+      return '<div class="source-chip">' + prettyLabels[k] + ' <span>' + Number(sources[k]).toLocaleString() + '</span></div>';
+    }).join('');
+    if (chips) {
+      sourceHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">Visitor Sources</div><div class="sources-row">' + chips + '</div>';
+    }
+
+    // A/B — backend returns { variants[], winner, status }.
+    var abHtml = '';
+    var ab = d.ab_test;
+    if (ab && Array.isArray(ab.variants) && ab.variants.length >= 2) {
+      var winnerId = ab.winner && ab.winner.id;
+      var panels = ab.variants.map(function(v) {
+        var isWinner = winnerId && v.id === winnerId;
+        return '<div class="ab-panel" style="border:2px solid ' + (isWinner ? '#10b981' : '#dde2e8') + ';border-radius:8px;padding:10px;">' +
+          '<h5 style="margin:0 0 6px;font-size:12px;color:#0A3161;">Variant ' + (v.variant || '?') +
+            (isWinner ? ' 🏆' : '') + (v.enough_data ? '' : ' <span style="color:#999;font-weight:normal;">(low sample)</span>') +
+          '</h5>' +
+          '<div style="font-size:12px;">Views: <b>' + Number(v.views).toLocaleString() + '</b></div>' +
+          '<div style="font-size:12px;">Conv: <b>' + Number(v.conversions).toLocaleString() + '</b></div>' +
+          '<div style="font-size:12px;">Rate: <b>' + v.conversion_rate_pct + '%</b></div>' +
+          (v.revenue > 0 ? '<div style="font-size:12px;">Rev: <b>$' + Number(v.revenue).toLocaleString() + '</b></div>' : '') +
+        '</div>';
+      }).join('');
+      abHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">A/B Test — ' +
+        (ab.status === 'ready' && winnerId ? 'Winner identified' : 'Needs ≥' + ab.min_views_per_variant + ' views per variant') + '</div>' +
+        '<div class="ab-compare" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;">' + panels + '</div>';
+    }
+
+    // Ad spend — rendered as a compact row when any platform returned data
+    var adSpendTotal = Number(d.ad_spend_total || 0);
+    var adHtml = '';
+    var ads = d.ad_spend || {};
+    var adChips = [];
+    function adChip(label, p) {
+      if (!p) return '';
+      if (p.error) return '<div class="source-chip" style="background:#fef2f2;">' + label + ' <span style="color:#dc2626;">err</span></div>';
+      if (p.note) return '<div class="source-chip">' + label + ' <span style="color:#999;font-size:10px;">setup</span></div>';
+      var bits = [];
+      if (typeof p.spend === 'number') bits.push('$' + Number(p.spend).toLocaleString());
+      if (p.clicks) bits.push(Number(p.clicks).toLocaleString() + ' clk');
+      if (p.conversions) bits.push(Number(p.conversions).toLocaleString() + ' conv');
+      return '<div class="source-chip">' + label + ' <span>' + (bits.join(' · ') || '0') + '</span></div>';
+    }
+    ['google_ads','msft_ads','linkedin_ads'].forEach(function(k) {
+      var pretty = {google_ads:'🔎 Google Ads', msft_ads:'🅱 MSFT Ads', linkedin_ads:'💼 LinkedIn Ads'}[k];
+      var c = adChip(pretty, ads[k]);
+      if (c) adChips.push(c);
+    });
+    // GA4 chip
+    if (ads.ga4) {
+      var g = ads.ga4;
+      if (g.error) adChips.push('<div class="source-chip" style="background:#fef2f2;">📊 GA4 <span style="color:#dc2626;">err</span></div>');
+      else {
+        var gaBits = [];
+        if (g.views) gaBits.push(Number(g.views).toLocaleString() + ' views');
+        if (g.users) gaBits.push(Number(g.users).toLocaleString() + ' users');
+        if (g.sessions) gaBits.push(Number(g.sessions).toLocaleString() + ' sess');
+        adChips.push('<div class="source-chip">📊 GA4 <span>' + (gaBits.join(' · ') || '0') + '</span></div>');
+      }
+    }
+    if (adChips.length) {
+      adHtml = '<div style="font-size:11px;font-weight:bold;color:#555;margin:10px 0 4px;">Ad Spend (total $' + adSpendTotal.toLocaleString() + ')</div>' +
+               '<div class="sources-row">' + adChips.join('') + '</div>';
+    }
+
+    // Revenue breakdown tooltip (appears under revenue tile)
+    var revBreak = d.revenue_breakdown || {};
+    var revDetailParts = [];
+    if (revBreak.realized_from_contacts) revDetailParts.push('realized $' + Number(revBreak.realized_from_contacts).toLocaleString());
+    if (revBreak.pipeline_estimate) revDetailParts.push('pipeline est $' + Number(revBreak.pipeline_estimate).toLocaleString());
+    if (revBreak.converted_contacts) revDetailParts.push(revBreak.converted_contacts + ' converted contacts');
+    var revDetail = revDetailParts.length ? '<div style="font-size:10px;color:#888;margin-top:2px;">' + revDetailParts.join(' · ') + '</div>' : '';
+
+    container.innerHTML =
+      '<div class="analytics-grid">' +
+        '<div class="stat-box"><div class="stat-val">' + visitors.toLocaleString() + '</div><div class="stat-lbl">Visitors</div></div>' +
+        '<div class="stat-box"><div class="stat-val">' + clicks.toLocaleString() + '</div><div class="stat-lbl">Clicks</div></div>' +
+        '<div class="stat-box"><div class="stat-val">' + ctr + '</div><div class="stat-lbl">CTR</div></div>' +
+        '<div class="stat-box"><div class="stat-val">' + subs.toLocaleString() + '</div><div class="stat-lbl">Subscribers</div></div>' +
+        '<div class="stat-box conversions"><div class="stat-val">' + convs.toLocaleString() + '</div><div class="stat-lbl">Conversions (' + convRate + ')</div></div>' +
+        '<div class="stat-box revenue"><div class="stat-val">$' + revenue.toLocaleString() + '</div><div class="stat-lbl">Revenue</div>' + revDetail + '</div>' +
+      '</div>' +
+      sourceHtml + adHtml + abHtml;
+  }
+
+  // ─── Edit Meta Modal ─────────────────────────────────────────────────────────
+  function openEditPageModal(page) {
+    if (!page) return;
+    var overlay = document.getElementById('editPageOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'editPageOverlay';
+      overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,49,97,0.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;';
+      overlay.innerHTML =
+        '<div id="editPageModal" style="background:#fff;border-radius:12px;max-width:520px;width:100%;padding:24px 28px;box-shadow:0 20px 50px rgba(0,0,0,0.25);">' +
+          '<h3 style="margin:0 0 16px;color:#0A3161;">Edit page</h3>' +
+          '<div class="form-group" style="margin-bottom:14px;">' +
+            '<label for="editPageName" style="font-size:12px;color:#555;">Name</label>' +
+            '<input type="text" id="editPageName" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;">' +
+          '</div>' +
+          '<div class="form-group" style="margin-bottom:14px;">' +
+            '<label for="editPageCampaign" style="font-size:12px;color:#555;">Move to campaign</label>' +
+            '<select id="editPageCampaign" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;">' +
+              '<option value="">— No campaign —</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group" style="margin-bottom:14px;">' +
+            '<label for="editPageType" style="font-size:12px;color:#555;">Type</label>' +
+            '<select id="editPageType" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;">' +
+              '<option value="landing">Landing</option>' +
+              '<option value="lead_magnet">Lead Magnet</option>' +
+              '<option value="newsletter">Newsletter</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="form-group" style="margin-bottom:18px;">' +
+            '<label for="editPageSlug" style="font-size:12px;color:#555;">Slug (URL path)</label>' +
+            '<input type="text" id="editPageSlug" style="width:100%;padding:10px;border:1px solid #dde2e8;border-radius:6px;font-size:14px;font-family:monospace;">' +
+            '<div style="font-size:11px;color:#888;margin-top:4px;">Lowercase letters, numbers, dashes only.</div>' +
+          '</div>' +
+          '<div style="display:flex;gap:10px;justify-content:flex-end;">' +
+            '<button type="button" id="editPageCancel" class="secondary" style="padding:10px 18px;">Cancel</button>' +
+            '<button type="button" id="editPageSave" style="padding:10px 18px;background:#0A3161;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;">Save</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.style.display = 'none'; });
+      document.getElementById('editPageCancel').addEventListener('click', function() { overlay.style.display = 'none'; });
+      document.getElementById('editPageSave').addEventListener('click', submitEditPageMeta);
+    }
+    overlay.dataset.pageId = page.id;
+    document.getElementById('editPageName').value = page.title || page.name || '';
+    // Rebuild campaigns dropdown with current list + current selection
+    var camSel = document.getElementById('editPageCampaign');
+    camSel.innerHTML = '<option value="">— No campaign —</option>';
+    (availableCampaigns || []).forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c.id;
+      opt.dataset.name = c.name || '';
+      opt.textContent = c.name || ('Untitled (' + c.id + ')');
+      camSel.appendChild(opt);
+    });
+    camSel.value = page.campaign_id || '';
+    document.getElementById('editPageType').value = page.page_type || 'landing';
+    document.getElementById('editPageSlug').value = page.slug || '';
+    overlay.style.display = 'flex';
+  }
+
+  async function submitEditPageMeta() {
+    var overlay = document.getElementById('editPageOverlay');
+    var id = overlay.dataset.pageId;
+    var name = document.getElementById('editPageName').value.trim();
+    var camSel = document.getElementById('editPageCampaign');
+    var campaign_id = camSel.value || null;
+    var campaign_name = campaign_id ? (camSel.selectedOptions[0]?.dataset?.name || camSel.selectedOptions[0]?.textContent || '') : null;
+    var page_type = document.getElementById('editPageType').value;
+    var slug = document.getElementById('editPageSlug').value.trim();
+    if (!id) { overlay.style.display = 'none'; return; }
+    // If the user typed an obviously invalid slug, surface it before the PATCH blanks the live one.
+    if (slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      showStatus('Slug must be lowercase letters, numbers, and single dashes only.', true);
+      return;
+    }
+    var btn = document.getElementById('editPageSave');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      // Only send slug in the payload if the user actually typed one. Sending an empty string
+      // causes the Edit Meta workflow (which treats `undefined` as "leave alone") to overwrite.
+      var payload = { page_id: id, name: name, campaign_id: campaign_id, campaign_name: campaign_name, page_type: page_type };
+      if (slug) payload.slug = slug;
+      var res = await apiCall(ENDPOINTS.pagesEditMeta, payload);
+      if (res && (res.success || res.page)) { showStatus('Page updated!'); overlay.style.display = 'none'; await loadPages(); applyFilters(); }
+      else throw new Error(res && res.message ? res.message : 'Update failed');
+    } catch (e) {
+      showStatus('Update failed: ' + e.message, true);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save';
+    }
+  }
+
+  // ─── Card expand ─────────────────────────────────────────────────────────────
+  function toggleCardExpansion(cardElement, pageId) {
+    if (expandedCard && expandedCard !== cardElement) expandedCard.classList.remove('expanded');
+    if (cardElement.classList.contains('expanded')) {
+      cardElement.classList.remove('expanded'); expandedCard = null;
+      document.getElementById('modalOverlay').classList.remove('show');
+    } else {
+      cardElement.classList.add('expanded'); expandedCard = cardElement;
+      document.getElementById('modalOverlay').classList.add('show');
+      var twBtn = cardElement.querySelector('.tw-btn.active');
+      if (twBtn) loadAnalytics(pageId, twBtn.textContent.trim(), twBtn);
+    }
+  }
+
+  function closeExpandedCard() {
+    if (expandedCard) { expandedCard.classList.remove('expanded'); expandedCard = null; }
+    document.getElementById('modalOverlay').classList.remove('show');
+  }
+
+  // ─── Page actions ─────────────────────────────────────────────────────────────
+  async function handlePageEdit(pageId) {
+    var chatInput = document.getElementById('chatInput_' + pageId);
+    var editBtn = document.getElementById('editBtn_' + pageId);
+    if (!chatInput.value.trim()) { showStatus('Please describe what changes you want.', true); return; }
+    try {
+      editBtn.disabled = true; editBtn.textContent = '🔄 Updating...';
+      var result = await apiCall(ENDPOINTS.pagesUpdate, { id: pageId, chat_input: chatInput.value });
+      if (result && result.success !== false) { chatInput.value = ''; showStatus('Page updated successfully!'); await loadPages(); applyFilters(); }
+      else { throw new Error(result && result.message ? result.message : 'Update failed'); }
+    } catch(e) { showStatus('Error: ' + e.message, true); }
+    finally { editBtn.disabled = false; editBtn.textContent = '🤖 Update Page'; }
+  }
+
+  async function deletePage(pageId) {
+    if (!confirm('Are you sure you want to delete this page?')) return;
+    try {
+      var result = await apiCall(ENDPOINTS.pagesRemove, { id: pageId });
+      if (result && result.success !== false) { showStatus('Page deleted successfully!'); closeExpandedCard(); await loadPages(); applyFilters(); }
+      else { throw new Error(result && result.message ? result.message : 'Delete failed'); }
+    } catch(e) { showStatus('Error deleting page: ' + e.message, true); }
+  }
+
+  // Build the live-preview URL. n8n production webhooks don't support path params, so
+  // slug must be a query param. cid is no longer needed (lookup is slug-only server-side).
+  function buildPreviewUrl(slug) {
+    if (!slug) return '';
+    return 'https://victoryvision.app.n8n.cloud/webhook/p?slug=' + encodeURIComponent(slug);
+  }
+
+  function viewPage(url, slug) {
+    // Prefer slug-based preview (always reachable); fall back to stored URL
+    var target = slug ? buildPreviewUrl(slug) : '';
+    if (!target && url && url !== 'No URL set' && url !== 'NULL' && url !== 'null') target = url;
+    if (target) window.open(target, '_blank', 'noopener,noreferrer');
+    else showStatus('No URL available for this page', true);
+  }
+
+  function copyPageUrl(url, slug) {
+    var target = slug ? buildPreviewUrl(slug) : url;
+    if (target && target !== 'No URL set') navigator.clipboard.writeText(target).then(function() { showStatus('URL copied!'); }).catch(function() { showStatus('Failed to copy URL', true); });
+    else showStatus('No URL available', true);
+  }
+
+  // ─── UI helpers ───────────────────────────────────────────────────────────────
+  function showEmptyState() {
+    document.getElementById('pagesContainer').innerHTML = '<div class="empty-state"><h3>No pages yet</h3><p>Choose a page type above to get started!</p></div>';
+  }
+
+  function showStatus(message, isError) {
+    isError = isError || false;
+    var div = document.getElementById('statusMessage');
+    div.textContent = message;
+    div.className = 'status-message ' + (isError ? 'status-error' : 'status-success');
+    div.style.display = 'block';
+    setTimeout(function() { div.style.display = 'none'; }, 5000);
+  }
+
+  // ─── Event listeners ─────────────────────────────────────────────────────────
+  function setupEventListeners() {
+    document.getElementById('createPageBtn').addEventListener('click', createPage);
+    document.getElementById('refreshPages').addEventListener('click', async function() {
+      await Promise.all([loadAvailableVideos(), loadLeadMagnetFiles(), loadPages()]);
+      applyFilters();
+    });
+    document.getElementById('clearFilters').addEventListener('click', clearFilters);
+    document.getElementById('modalOverlay').addEventListener('click', closeExpandedCard);
+    document.getElementById('typeFilter').addEventListener('change', applyFilters);
+    var sortEl = document.getElementById('sortFilter'); if (sortEl) sortEl.addEventListener('change', applyFilters);
+    var gridBtn = document.getElementById('viewGridBtn'); if (gridBtn) gridBtn.addEventListener('click', function(){ setViewMode('grid'); });
+    var listBtn = document.getElementById('viewListBtn'); if (listBtn) listBtn.addEventListener('click', function(){ setViewMode('list'); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && expandedCard) closeExpandedCard(); });
+    var searchTimeout;
+    document.getElementById('searchFilter').addEventListener('input', function() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(applyFilters, 300);
+    });
+  }
+
+  // ─── Init ─────────────────────────────────────────────────────────────────────
+  async function init() {
+    try {
+      document.getElementById('authLoading').style.display = 'flex';
+      var isAuthenticated = await checkAuthentication();
+      if (isAuthenticated) {
+        document.getElementById('authLoading').style.display = 'none';
+        await Promise.all([loadUserData(), loadAvailableVideos(), loadLeadMagnetFiles(), loadPages(), loadCampaigns()]);
+        setupEventListeners();
+        applyFilters();
+        if (!hasCompletedTour()) setTimeout(startTour, 1000);
+        // Auto-trigger tour from email link (?tour=)
+        if (new URLSearchParams(window.location.search).get('tour')) setTimeout(startTour, 1200);
+      } else { redirectToLogin(); }
+    } catch(e) {
+      console.error('Init error:', e);
+      showStatus('Failed to load. Please refresh.', true);
+      document.getElementById('authLoading').style.display = 'none';
+    }
+  }
+
+  setInterval(async function() {
+    try { var r = await supabaseClient.auth.getSession(); if (!r.data.session) redirectToLogin(); } catch(e) { console.error(e); }
+  }, 300000);
+
+  document.addEventListener('visibilitychange', async function() {
+    if (!document.hidden) {
+      try { var r = await supabaseClient.auth.getSession(); if (!r.data.session) redirectToLogin(); else authToken = r.data.session.access_token; } catch(e) { console.error(e); }
+    }
+  });
+
+  window.closeExpandedCard = closeExpandedCard;
+  window.handlePageEdit = handlePageEdit;
+  window.openEditPageModal = openEditPageModal;
+  window.openEditPageById = function(id) {
+    var p = allPages.find(function(x){ return String(x.id) === String(id); });
+    if (p) openEditPageModal(p);
+  };
+  window.viewPage = viewPage;
+  window.copyPageUrl = copyPageUrl;
+  window.deletePage = deletePage;
+  window.logout = logout;
+  window.startTour = startTour;
+  window.loadAnalytics = loadAnalytics;
+  window.openLmModal = openLmModal;
+  window.closeLmModal = closeLmModal;
+  window.confirmLmSelection = confirmLmSelection;
+  window.selectLmFile = selectLmFile;
+  window.selectPageType = selectPageType;
+  window.sanitizeSlug = sanitizeSlug;
+  window.createLeadMagnetPage = createLeadMagnetPage;
+  window.createNewsletterPage = createNewsletterPage;
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
