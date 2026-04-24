@@ -1,0 +1,3170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Victory Vision – Ads</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/introjs.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@7.2.0/minified/intro.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0A3161;
+      --navy-light: #1a4c80;
+      --red: #BB133E;
+      --red-dark: #9e1034;
+      --gold: #C8A84B;
+      --green: #1a7a4a;
+      --green-light: #22c55e;
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --border: #dde1e8;
+      --text: #1a2332;
+      --muted: #64748b;
+      --li-blue: #0077B5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* ── AUTH LOADING ── */
+    .auth-loading {
+      position: fixed; inset: 0; background: rgba(255,255,255,.95);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
+    }
+    .auth-loading .spinner {
+      width: 48px; height: 48px; border: 4px solid #ddd;
+      border-top-color: var(--navy); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin-bottom: 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background: var(--navy); color: white;
+      padding: 0 20px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.25);
+    }
+    .logo img { height: 50px; }
+    .navbar nav ul { display: flex; list-style: none; gap: 2px; }
+    .navbar nav ul li a {
+      color: rgba(255,255,255,.8); text-decoration: none;
+      padding: 6px 10px; border-radius: 4px; font-size: 13px; font-weight: 500;
+      transition: all .2s;
+    }
+    .navbar nav ul li a:hover, .navbar nav ul li a.active { color: white; background: rgba(255,255,255,.15); }
+    .user-info { display: flex; align-items: center; gap: 8px; }
+    .medallion {
+      padding: 6px 14px; border-radius: 20px; font-size: 11px;
+      font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+      border: none; transition: all .2s;
+    }
+    .medallion.bronze { background: linear-gradient(135deg,#CD7F32,#A0522D); color: white; }
+    .medallion.silver { background: linear-gradient(135deg,#C0C0C0,#808080); color: white; }
+    .medallion.gold   { background: linear-gradient(135deg,#FFD700,#FFA500); color: #333; }
+    .btn-nav { padding: 6px 12px; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer; }
+
+    /* ── STATUS MESSAGE ── */
+    .status-message {
+      position: fixed; top: 72px; right: 20px;
+      padding: 12px 18px; border-radius: 6px; font-size: 14px;
+      max-width: 380px; display: none; z-index: 1001;
+      box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    }
+    .status-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .status-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+    /* ── PAGE LAYOUT ── */
+    .content { max-width: 1380px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    /* ── ACTION BANNER (email deep-link prompt) ── */
+    .action-banner {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: white; border-radius: 10px; padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; display: none;
+    }
+    .action-banner.show { display: flex; }
+    .action-banner-text h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; margin-bottom: 4px; }
+    .action-banner-text p  { font-size: 13px; opacity: .85; }
+    .action-banner-btn {
+      background: var(--red); color: white; border: none;
+      padding: 10px 22px; border-radius: 6px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; margin-left: 20px; font-size: 14px;
+    }
+
+    /* ── SECTION TABS ── */
+    .section-tabs {
+      display: flex; gap: 4px; margin-bottom: 24px;
+      background: white; border-radius: 10px; padding: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .tab-btn {
+      flex: 1; padding: 10px 16px; border: none; border-radius: 7px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      background: transparent; color: var(--muted); transition: all .2s;
+      font-family: 'Barlow', sans-serif;
+    }
+    .tab-btn.active { background: var(--navy); color: white; }
+    .tab-btn:hover:not(.active) { background: var(--bg); color: var(--text); }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card); border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      color: white; padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-header h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .card-body { padding: 20px; }
+
+    /* ── KPI STRIP ── */
+    .kpi-strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;
+      margin-bottom: 24px;
+    }
+    .kpi-tile {
+      background: white; border-radius: 10px; padding: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08); text-align: center;
+      border-top: 3px solid var(--navy); cursor: pointer; transition: all .2s;
+    }
+    .kpi-tile:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+    .kpi-tile.li    { border-color: var(--li-blue); }
+    .kpi-tile.good  { border-color: var(--green); }
+    .kpi-tile.warn  { border-color: #f59e0b; }
+    .kpi-value { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 800; color: var(--navy); }
+    .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .6px; margin-top: 2px; }
+
+    /* ── FORM ── */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 14px; font-family: 'Barlow', sans-serif;
+      transition: border-color .2s; background: white;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { outline: none; border-color: var(--navy); }
+    .form-group textarea { height: 90px; resize: vertical; }
+    .form-hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── BUTTONS ── */
+    button { font-family: 'Barlow', sans-serif; cursor: pointer; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; transition: all .2s; }
+    .btn-primary   { background: var(--navy); color: white; }
+    .btn-primary:hover   { background: var(--navy-light); }
+    .btn-li        { background: var(--li-blue); color: white; }
+    .btn-li:hover  { background: #005e8f; }
+    .btn-red       { background: var(--red); color: white; }
+    .btn-red:hover { background: var(--red-dark); }
+    .btn-green     { background: var(--green); color: white; }
+    .btn-green:hover { background: #145c37; }
+    .btn-ghost     { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-sm        { padding: 7px 14px; font-size: 12px; }
+    .btn-full      { width: 100%; }
+
+    /* ── SETUP STEPS ── */
+    .setup-step {
+      display: flex; align-items: flex-start; gap: 12px; padding: 10px;
+      background: var(--bg); border-radius: 8px;
+    }
+    .setup-step-icon {
+      font-size: 18px; margin-top: 1px; flex-shrink: 0; min-width: 22px;
+    }
+    .setup-step.done .setup-step-icon { color: var(--green); }
+    .setup-step.pending .setup-step-icon { color: #f59e0b; }
+
+    /* ── PLATFORM CARD ── */
+    .platform-roi-card {
+      background: white; border-radius: 10px; padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      border-top: 4px solid var(--border);
+    }
+    .platform-roi-card .prc-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+    .platform-roi-card .prc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .platform-roi-card .prc-val  { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; }
+    .platform-roi-card .prc-lbl  { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+
+    /* ── PILL TAG ── */
+    .intel-pill {
+      padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      background: #e0f2fe; color: #0369a1;
+      display: inline-block;
+    }
+
+    /* ── ATTRIBUTION STEP ── */
+    .attr-step {
+      text-align: center; padding: 16px 8px; position: relative;
+    }
+    .attr-step + .attr-step::before {
+      content: '→'; position: absolute; left: -8px; top: 50%; transform: translateY(-50%);
+      font-size: 20px; color: var(--muted);
+    }
+    .attr-step .attr-val { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--navy); }
+    .attr-step .attr-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+    .attr-step .attr-sub { font-size: 11px; color: var(--green); margin-top: 2px; }
+
+    /* ── AUDIENCE SEGMENT PILLS ── */
+    .segment-options { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .segment-pill {
+      padding: 10px 18px; border: 2px solid var(--border); border-radius: 30px;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s;
+      background: white;
+    }
+    .segment-pill.selected { border-color: var(--li-blue); background: #e8f4fb; color: var(--li-blue); }
+    .segment-pill:hover:not(.selected) { border-color: var(--navy); }
+
+    /* ── AD CREATIVE PICKER ── */
+    .creative-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px;
+      max-height: 280px; overflow-y: auto; padding: 4px;
+    }
+    .creative-thumb {
+      border: 3px solid var(--border); border-radius: 8px; overflow: hidden;
+      cursor: pointer; transition: all .2s; aspect-ratio: 16/9; position: relative;
+      background: #1a1a1a;
+    }
+    .creative-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: .85; }
+    .creative-thumb.selected { border-color: var(--li-blue); }
+    .creative-thumb .check {
+      position: absolute; top: 4px; right: 4px;
+      background: var(--li-blue); color: white; border-radius: 50%;
+      width: 22px; height: 22px; display: none; align-items: center; justify-content: center;
+      font-size: 12px;
+    }
+    .creative-thumb.selected .check { display: flex; }
+    .creative-type-badge {
+      position: absolute; bottom: 4px; left: 4px;
+      background: rgba(0,0,0,.7); color: white; font-size: 9px;
+      padding: 2px 6px; border-radius: 3px; font-weight: 600; text-transform: uppercase;
+    }
+
+    /* ── AD PREVIEW PANEL ── */
+    .ad-preview-panel {
+      background: #f8f9fb; border: 1px solid var(--border); border-radius: 8px;
+      padding: 16px; min-height: 200px;
+    }
+    .li-ad-mock {
+      background: white; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;
+      max-width: 400px; margin: 0 auto; font-size: 13px;
+    }
+    .li-ad-mock-header {
+      padding: 12px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .li-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--navy); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+    .li-ad-mock-img { width: 100%; aspect-ratio: 16/9; background: #e0e0e0; object-fit: cover; }
+    .li-ad-mock-body { padding: 12px; }
+    .li-ad-mock-headline { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .li-ad-mock-intro { color: var(--muted); font-size: 12px; margin-bottom: 10px; line-height: 1.4; }
+    .li-ad-cta-btn {
+      display: inline-block; padding: 8px 20px; border-radius: 4px;
+      background: var(--li-blue); color: white; font-size: 13px; font-weight: 600;
+    }
+    .li-sponsored-tag { font-size: 11px; color: var(--muted); }
+
+    /* ── ACTIVE ADS TABLE ── */
+    .ads-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .ads-table th {
+      background: var(--bg); padding: 10px 14px; text-align: left;
+      font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+      color: var(--muted); border-bottom: 2px solid var(--border);
+    }
+    .ads-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .ads-table tr:hover td { background: #f8f9fb; }
+    .status-badge {
+      padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .status-active   { background: #d1fae5; color: #065f46; }
+    .status-paused   { background: #fef3c7; color: #92400e; }
+    .status-draft    { background: #e0e7ff; color: #3730a3; }
+    .status-complete { background: #f1f5f9; color: #475569; }
+
+    /* ── OPTIMIZATION FEED ── */
+    .opt-feed { display: flex; flex-direction: column; gap: 10px; }
+    .opt-item {
+      border-left: 4px solid var(--navy); padding: 12px 16px;
+      background: white; border-radius: 0 8px 8px 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .opt-item.boost  { border-color: var(--green); }
+    .opt-item.pause  { border-color: #f59e0b; }
+    .opt-item.swap   { border-color: var(--li-blue); }
+    .opt-item.alert  { border-color: var(--red); }
+    .opt-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+    .opt-desc  { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    .opt-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .opt-time  { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+    /* ── BILLBOARD SECTION ── */
+    .billboard-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .billboard-preview {
+      background: #111; border-radius: 8px; overflow: hidden;
+      aspect-ratio: 16/5; position: relative; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .bb-bg { position: absolute; inset: 0; object-fit: cover; width: 100%; height: 100%; opacity: .7; }
+    .bb-overlay {
+      position: relative; z-index: 2; background: rgba(0,0,0,.55);
+      padding: 20px 28px; border-radius: 6px; text-align: center; max-width: 90%;
+    }
+    .bb-headline { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 800; color: white; text-shadow: 1px 1px 4px rgba(0,0,0,.8); }
+    .bb-message  { font-size: 1rem; color: rgba(255,255,255,.9); margin: 8px 0; text-shadow: 1px 1px 2px rgba(0,0,0,.7); }
+    .bb-cta      { display: inline-block; background: var(--red); color: white; padding: 8px 20px; border-radius: 4px; font-weight: 700; margin-top: 8px; font-size: .9rem; }
+
+    /* Billboard inventory map placeholder */
+    .bb-inventory-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+    }
+    .bb-slot {
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+      transition: all .2s; cursor: pointer;
+    }
+    .bb-slot:hover { box-shadow: 0 4px 16px rgba(0,0,0,.12); transform: translateY(-2px); }
+    .bb-slot-img { width: 100%; aspect-ratio: 16/5; object-fit: cover; background: #1a1a2e; display: flex; align-items: center; justify-content: center; color: #555; font-size: 12px; }
+    .bb-slot-info { padding: 12px; }
+    .bb-slot-location { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .bb-slot-meta { font-size: 12px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+    .bb-slot-price { font-weight: 700; color: var(--green); font-size: 15px; }
+    .bb-owner-badge { font-size: 10px; background: #e0e7ff; color: #3730a3; padding: 2px 7px; border-radius: 3px; font-weight: 600; }
+
+    /* ── BUDGET SLIDER ── */
+    .budget-display { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--navy); }
+    input[type=range] { width: 100%; accent-color: var(--navy); }
+
+    /* ── MODAL ── */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 2000; align-items: center; justify-content: center; }
+    .modal.open { display: flex; }
+    .modal-box { background: white; border-radius: 10px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
+    .modal-hd { background: linear-gradient(135deg, var(--navy), var(--navy-light)); color: white; padding: 18px 22px; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: space-between; }
+    .modal-hd h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; }
+    .modal-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; line-height: 1; }
+    .modal-bd { padding: 22px; }
+
+    /* ── INTRO.JS ── */
+    .introjs-tooltip { max-width: 360px; font-size: 14px; font-family: 'Barlow', sans-serif; }
+    .introjs-button { background: var(--navy) !important; border: 1px solid var(--navy) !important; color: white !important; padding: 8px 16px !important; border-radius: 5px !important; font-family: 'Barlow', sans-serif !important; }
+    .introjs-skipbutton { background: #6c757d !important; border-color: #6c757d !important; }
+    .introjs-progressbar { background-color: var(--navy) !important; }
+    .introjs-helperLayer { box-shadow: rgba(10,49,97,.6) 0 0 0 3px, rgba(0,0,0,.5) 0 0 0 9999px !important; }
+
+    /* ── TABS CONTENT ── */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── EMPTY ── */
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--muted); }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state h3 { color: var(--text); font-size: 1.2rem; margin-bottom: 8px; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--navy); color: white; text-align: center; padding: 16px; font-size: 13px; }
+    footer a { color: rgba(255,255,255,.7); text-decoration: none; margin: 0 10px; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 900px) {
+      .navbar nav { display: none; }
+      .billboard-layout { grid-template-columns: 1fr; }
+      .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ── STEP WIZARD ── */
+    .wizard-steps { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+    .wizard-step {
+      display: flex; align-items: center; flex: 1;
+    }
+    .wizard-step-dot {
+      width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--muted); background: white;
+      flex-shrink: 0; z-index: 1; transition: all .3s;
+    }
+    .wizard-step.done  .wizard-step-dot { background: var(--green); border-color: var(--green); color: white; }
+    .wizard-step.active .wizard-step-dot { background: var(--navy); border-color: var(--navy); color: white; }
+    .wizard-step-label { font-size: 11px; font-weight: 600; color: var(--muted); margin-left: 8px; white-space: nowrap; }
+    .wizard-step.active .wizard-step-label { color: var(--navy); }
+    .wizard-step.done  .wizard-step-label { color: var(--green); }
+    .wizard-line { flex: 1; height: 2px; background: var(--border); margin: 0 4px; }
+    .wizard-step.done ~ .wizard-line { background: var(--green); }
+
+    /* ── LOADING SKELETON ── */
+    .skel { background: linear-gradient(90deg,#e8edf2 25%,#f1f5f9 50%,#e8edf2 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; }
+    @keyframes shimmer { to { background-position: -200% 0; } }
+  </style>
+</head>
+<body>
+
+<!-- Auth Loading -->
+<div id="authLoading" class="auth-loading">
+  <div class="spinner"></div>
+  <p style="color:var(--muted);font-size:14px;">Verifying session…</p>
+</div>
+
+<!-- Navbar -->
+<header class="navbar">
+  <div class="logo">
+    <img src="logo.jpg" alt="Victory Vision"
+      onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%230A3161%22/><text x=%225%22 y=%2228%22 font-size=%2222%22 fill=%22white%22 font-weight=%22bold%22>VV</text></svg>'">
+  </div>
+  <nav>
+    <ul>
+      <li><a href="companyprofile">Profile</a></li>
+      <li><a href="campaigns">Campaigns</a></li>
+      <li><a href="media">Media</a></li>
+      <li><a href="pages">Pages</a></li>
+      <li><a href="social">Social</a></li>
+      <li><a href="contacts">Contacts</a></li>
+      <li><a href="ads" class="active">Ads</a></li>
+      <li><a href="messages">Messages</a></li>
+      <li><a href="meetings">Meetings</a></li>
+      <li><a href="ai">AI SDR</a></li>
+      <li><a href="settings">Settings</a></li>
+    </ul>
+  </nav>
+  <div class="user-info">
+    <span id="userEmail" style="font-size:12px;color:rgba(255,255,255,.7);"></span>
+    <button class="btn-nav" style="background:#28a745;" onclick="startTour()">📖 Tour</button>
+    <button class="btn-nav" style="background:var(--red);" onclick="logout()">Sign Out</button>
+    <button id="subscriptionMedallion" class="medallion bronze"
+      data-intro="Your plan tier. Higher tiers unlock more ad credits and LinkedIn spend." data-step="1">
+      <span id="planName">Bronze</span>
+    </button>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- Action Banner — shown when user arrives via email deep-link -->
+  <div id="actionBanner" class="action-banner">
+    <div class="action-banner-text">
+      <h3 id="bannerTitle">🎯 Recommended Action Ready</h3>
+      <p id="bannerDesc">Your AI SDR identified an opportunity. Let's walk you through it.</p>
+    </div>
+    <button class="action-banner-btn" onclick="startActionTour()">Show Me →</button>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip" id="kpiStrip"
+    data-intro="Your live ad performance across all platforms — spend, ROI, new customers, and cost-per-meeting in one view." data-step="2">
+    <div class="kpi-tile">
+      <div class="kpi-value" id="kpiSpend">–</div>
+      <div class="kpi-label">Total Spend</div>
+    </div>
+    <div class="kpi-tile good">
+      <div class="kpi-value" id="kpiRevenue">–</div>
+      <div class="kpi-label">Revenue Won</div>
+    </div>
+    <div class="kpi-tile good" id="kpiRoiTile">
+      <div class="kpi-value" id="kpiROI">–</div>
+      <div class="kpi-label">ROI</div>
+    </div>
+    <div class="kpi-tile good">
+      <div class="kpi-value" id="kpiNewCustomers">–</div>
+      <div class="kpi-label">New Customers</div>
+    </div>
+    <div class="kpi-tile good">
+      <div class="kpi-value" id="kpiMeetings">–</div>
+      <div class="kpi-label">Meetings Booked</div>
+    </div>
+    <div class="kpi-tile warn">
+      <div class="kpi-value" id="kpiCPMeeting">–</div>
+      <div class="kpi-label">Cost/Meeting</div>
+    </div>
+    <div class="kpi-tile li">
+      <div class="kpi-value" id="kpiImpressions">–</div>
+      <div class="kpi-label">Impressions</div>
+    </div>
+    <div class="kpi-tile li">
+      <div class="kpi-value" id="kpiClicks">–</div>
+      <div class="kpi-label">Clicks</div>
+    </div>
+  </div>
+
+  <!-- Section Tabs -->
+  <div class="section-tabs">
+    <button class="tab-btn active" onclick="switchTab('overview')" id="tab-overview">
+      📊 ROI Overview
+    </button>
+    <button class="tab-btn" onclick="switchTab('linkedin')" id="tab-linkedin"
+      data-intro="LinkedIn Ads tab — create retargeting ads aimed at your email openers and 1st-degree connections." data-step="3">
+      🔵 LinkedIn
+    </button>
+    <button class="tab-btn" onclick="switchTab('google')" id="tab-google">
+      🔴 Google Ads
+    </button>
+    <button class="tab-btn" onclick="switchTab('msft')" id="tab-msft">
+      🟦 Microsoft Ads
+    </button>
+    <button class="tab-btn" onclick="switchTab('pages')" id="tab-pages">
+      📄 Landing Pages
+    </button>
+    <button class="tab-btn" onclick="switchTab('optimize')" id="tab-optimize">
+      ⚡ AI Optimizer
+    </button>
+    <button class="tab-btn" onclick="switchTab('ai')" id="tab-ai">
+      🤖 AI Advisor
+    </button>
+    <button class="tab-btn" onclick="switchTab('billboard')" id="tab-billboard">
+      🏗️ Billboard
+    </button>
+    <button class="tab-btn" onclick="switchTab('active')" id="tab-active">
+      📋 All Campaigns
+    </button>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: ROI OVERVIEW                        -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-overview" class="tab-content active">
+
+    <!-- Platform ROI Cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px;" id="platformCards">
+      <!-- Injected by JS -->
+      <div class="skel" style="height:140px;border-radius:10px;"></div>
+      <div class="skel" style="height:140px;border-radius:10px;"></div>
+      <div class="skel" style="height:140px;border-radius:10px;"></div>
+    </div>
+
+    <div class="form-grid-2">
+      <!-- Victories Intelligence -->
+      <div class="card">
+        <div class="card-header">
+          <h3>🏆 What Wins Deals</h3>
+          <span style="font-size:11px;opacity:.75;">Pulled from your closed victories</span>
+        </div>
+        <div class="card-body">
+          <div style="margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;">Top Messages That Land</div>
+            <div id="winningMessages" style="display:flex;flex-wrap:wrap;gap:6px;">
+              <span class="skel" style="width:120px;height:26px;border-radius:20px;display:inline-block;"></span>
+              <span class="skel" style="width:90px;height:26px;border-radius:20px;display:inline-block;"></span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;">Top Use Cases That Convert</div>
+            <div id="winningUseCases" style="display:flex;flex-wrap:wrap;gap:6px;">
+              <span class="skel" style="width:100px;height:26px;border-radius:20px;display:inline-block;"></span>
+              <span class="skel" style="width:140px;height:26px;border-radius:20px;display:inline-block;"></span>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="text-align:center;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="ovAvgRevenue">–</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Avg Deal Revenue</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="ovVictories">–</div>
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Total Victories</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Landing Pages -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📄 Top Converting Pages</h3>
+          <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="switchTab('pages')">View All →</button>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);">Page</th>
+                <th style="padding:10px 8px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--muted);">Views</th>
+                <th style="padding:10px 8px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--muted);">Conversions</th>
+                <th style="padding:10px 14px;text-align:right;font-size:11px;text-transform:uppercase;color:var(--muted);">Revenue</th>
+              </tr>
+            </thead>
+            <tbody id="topPagesBody">
+              <tr><td colspan="4" style="padding:20px;text-align:center;color:var(--muted);">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attribution Funnel -->
+    <div class="card">
+      <div class="card-header">
+        <h3>🔗 Attribution Chain — Ad → Page → Meeting → Revenue</h3>
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadAttributionData()">🔄 Refresh</button>
+      </div>
+      <div class="card-body">
+        <div id="attributionChain" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;">
+          <div style="text-align:center;padding:20px;color:var(--muted);">Loading attribution data…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: GOOGLE ADS                          -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-google" class="tab-content">
+    <div class="form-grid-2">
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#EA4335,#c0392b);">
+            <h3>🔴 Google Ads</h3>
+            <span id="googleConnectBadge" style="font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.2);font-weight:700;">Checking…</span>
+          </div>
+          <div class="card-body">
+            <div id="googleNotConnected" style="display:none;">
+              <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">Connect your Google Ads account to launch Search, Display, Performance Max, and YouTube campaigns from Victory Vision.</p>
+              <button class="btn btn-primary" onclick="window.location.href='settings?tab=integrations'">Connect Google Ads →</button>
+            </div>
+            <div id="googleConnected" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:#EA4335;" id="gSpend">$0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Spend</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--green);" id="gROI">–%</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">ROI</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="gMeetings">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Meetings</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="gCustomers">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">New Customers</div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-full" onclick="openCreateAdModal('google_ads')">+ New Google Campaign</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#EA4335,#c0392b);">
+            <h3>📋 Google Campaign Setup</h3>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div id="gStep1" class="setup-step">
+                <span class="setup-step-icon" id="gStep1Icon">○</span>
+                <div><strong>OAuth Connected</strong><br><span style="font-size:12px;color:var(--muted);">Link Google Ads account via Settings</span></div>
+              </div>
+              <div id="gStep2" class="setup-step">
+                <span class="setup-step-icon" id="gStep2Icon">○</span>
+                <div><strong>Developer Token</strong><br><span style="font-size:12px;color:var(--muted);">Applied — Google approval pending</span></div>
+              </div>
+              <div id="gStep3" class="setup-step">
+                <span class="setup-step-icon" id="gStep3Icon">○</span>
+                <div><strong>Conversion Tracking</strong><br><span style="font-size:12px;color:var(--muted);">Add Google pixel to victoryvision.app</span></div>
+              </div>
+              <div id="gStep4" class="setup-step">
+                <span class="setup-step-icon" id="gStep4Icon">○</span>
+                <div><strong>First Campaign Created</strong><br><span style="font-size:12px;color:var(--muted);">Search, Display, or Performance Max</span></div>
+              </div>
+            </div>
+            <div style="margin-top:16px;padding:12px;background:#fef3c7;border-radius:6px;font-size:12px;color:#92400e;">
+              ⚠️ Google Ads Developer Token is under review. Campaigns will be activated once Google approves Basic Access.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: MICROSOFT ADS                       -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-msft" class="tab-content">
+    <div class="form-grid-2">
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#00a4ef,#0078d4);">
+            <h3>🟦 Microsoft Ads</h3>
+            <span id="msftConnectBadge" style="font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.2);font-weight:700;">Checking…</span>
+          </div>
+          <div class="card-body">
+            <div id="msftNotConnected" style="display:none;">
+              <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">Connect Microsoft Ads to reach Bing, MSN, LinkedIn Audience Network, and Microsoft News — often lower CPM than Google with higher intent users.</p>
+              <button class="btn btn-primary" onclick="window.location.href='settings?tab=integrations'">Connect Microsoft Ads →</button>
+            </div>
+            <div id="msftConnected" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:#0078d4;" id="mSpend">$0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Spend</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--green);" id="mROI">–%</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">ROI</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="mMeetings">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Meetings</div>
+                </div>
+                <div style="padding:14px;background:var(--bg);border-radius:8px;text-align:center;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);" id="mCustomers">0</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">New Customers</div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-full" onclick="openCreateAdModal('msft_ads')">+ New MSFT Campaign</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="card-header" style="background:linear-gradient(135deg,#00a4ef,#0078d4);">
+            <h3>📋 Microsoft Ads Setup</h3>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep1Icon">○</span>
+                <div><strong>OAuth Connected</strong><br><span style="font-size:12px;color:var(--muted);">Link Microsoft Ads via Settings</span></div>
+              </div>
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep2Icon">○</span>
+                <div><strong>UET Tag Installed</strong><br><span style="font-size:12px;color:var(--muted);">Add UET snippet to victoryvision.app for conversion tracking</span></div>
+              </div>
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep3Icon">○</span>
+                <div><strong>Customer Match Terms</strong><br><span style="font-size:12px;color:var(--muted);">Accept in Microsoft Ads UI → Audiences → Customer Match</span></div>
+              </div>
+              <div class="setup-step">
+                <span class="setup-step-icon" id="mStep4Icon">○</span>
+                <div><strong>First Campaign Created</strong><br><span style="font-size:12px;color:var(--muted);">Search or Audience campaign</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: LANDING PAGES                       -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-pages" class="tab-content">
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header">
+        <h3>📄 Landing Pages — Conversion Intelligence</h3>
+        <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadPlatformPages()">🔄 Refresh</button>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;" id="pagesTable">
+            <thead>
+              <tr style="border-bottom:2px solid var(--border);background:var(--bg);">
+                <th style="padding:10px 14px;text-align:left;">Page</th>
+                <th style="padding:10px 8px;text-align:right;">Views</th>
+                <th style="padding:10px 8px;text-align:right;">Conversions</th>
+                <th style="padding:10px 8px;text-align:right;">Conv. Rate</th>
+                <th style="padding:10px 8px;text-align:right;">Revenue</th>
+                <th style="padding:10px 14px;text-align:left;">Top Traffic Sources</th>
+              </tr>
+            </thead>
+            <tbody id="pagesBody">
+              <tr><td colspan="6" style="padding:30px;text-align:center;color:var(--muted);">Loading pages…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Intelligence -->
+    <div class="card">
+      <div class="card-header"><h3>💡 Cross-Platform Lessons</h3></div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">What converts on one platform can be A/B tested across Google, MSFT, and LinkedIn. These insights propagate automatically to your AI Optimizer recommendations.</p>
+        <div id="pageLessons" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+          <div style="padding:14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--muted);">Loading intelligence…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: LINKEDIN ADS                        -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-linkedin" class="tab-content">
+
+    <!-- Wizard Progress -->
+    <div class="wizard-steps" id="wizardSteps">
+      <div class="wizard-step active" id="ws1">
+        <div class="wizard-step-dot">1</div>
+        <div class="wizard-step-label">Audience</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws2">
+        <div class="wizard-step-dot">2</div>
+        <div class="wizard-step-label">Creative</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws3">
+        <div class="wizard-step-dot">3</div>
+        <div class="wizard-step-label">Copy</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws4">
+        <div class="wizard-step-dot">4</div>
+        <div class="wizard-step-label">Budget</div>
+      </div>
+      <div class="wizard-line"></div>
+      <div class="wizard-step" id="ws5">
+        <div class="wizard-step-dot">5</div>
+        <div class="wizard-step-label">Launch</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Audience -->
+    <div id="li-step-1" class="li-step">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 1 of 5 — Choose Your Audience</h3>
+          <span style="font-size:12px;opacity:.75;">Cold, warm retarget, or both</span>
+        </div>
+        <div class="card-body">
+          <!-- Top-level mode toggle -->
+          <div class="segment-options" id="wizardAudienceMode" style="margin-bottom:16px;">
+            <div class="segment-pill" data-mode="cold" onclick="selectWizardMode(this)">
+              🎯 Cold Targeting
+              <div style="font-size:11px;font-weight:400;margin-top:2px;">Reach new people by firmographics</div>
+            </div>
+            <div class="segment-pill" data-mode="warm" onclick="selectWizardMode(this)">
+              🔥 Warm Retarget
+              <div style="font-size:11px;font-weight:400;margin-top:2px;" id="wizardWarmSummary">Loading…</div>
+            </div>
+            <div class="segment-pill selected" data-mode="both" onclick="selectWizardMode(this)">
+              ⚡ Both Combined <span style="background:var(--red);color:white;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">Best</span>
+              <div style="font-size:11px;font-weight:400;margin-top:2px;">Cold + warm overlap</div>
+            </div>
+          </div>
+
+          <!-- Cold targeting panel -->
+          <div id="wizardColdPanel" style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:12px;">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:10px;">
+              <strong>Cold targeting:</strong> Show your ad to new people matching these firmographics. Suggestions come from industries/titles common among your best engaged contacts.
+            </p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Industries</label>
+                <select id="wizColdIndustries" multiple size="5" style="min-height:110px;"></select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Job titles</label>
+                <select id="wizColdTitles" multiple size="5" style="min-height:110px;"></select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Locations</label>
+                <select id="wizColdLocations" multiple size="5" style="min-height:110px;"></select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label style="font-size:12px;">Target companies (ABM)</label>
+                <select id="wizColdCompanies" multiple size="5" style="min-height:110px;"></select>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:8px;">💡 Hold Ctrl/Cmd to multi-select.</div>
+          </div>
+
+          <!-- Warm retargeting panel: the original segment pills -->
+          <div id="wizardWarmPanel">
+            <p style="font-size:14px;color:var(--muted);margin-bottom:12px;">
+              <strong>Warm retargeting:</strong> Show ads to contacts who've already engaged with you.
+            </p>
+            <div class="segment-options" id="segmentOptions"
+              data-intro="Pick which warm segment to retarget." data-step="4">
+              <div class="segment-pill" data-segment="email_openers" onclick="selectSegment(this)">
+                📧 Email Openers
+                <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountEmail">Loading…</div>
+              </div>
+              <div class="segment-pill" data-segment="first_degree" onclick="selectSegment(this)">
+                🤝 1st-Degree Connections
+                <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountFirst">Loading…</div>
+              </div>
+              <div class="segment-pill selected" data-segment="both" onclick="selectSegment(this)">
+                ⚡ Both Combined
+                <div style="font-size:11px;font-weight:400;margin-top:2px;" id="segCountBoth">Loading…</div>
+              </div>
+            </div>
+            <div id="segmentWarning" style="display:none;" class="form-group">
+              <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:6px;padding:12px;font-size:13px;color:#92400e;">
+                ⚠️ <strong>LinkedIn requires at least 300 matched contacts</strong> to activate a warm-only campaign. Add cold targeting to launch now with a smaller warm list.
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+            <button class="btn btn-primary" onclick="goToStep(2)" id="btnStep1Next">
+              Next: Choose Creative →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Creative -->
+    <div id="li-step-2" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 2 of 5 — Pick Your Creative</h3>
+          <span style="font-size:12px;opacity:.75;">From your AI-generated media library</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">
+            These are the images and videos Victory Vision already generated for your campaigns. Select one to use as your LinkedIn ad creative. Need new creative? Visit <a href="media" style="color:var(--navy);">Media</a> or <a href="campaigns" style="color:var(--navy);">Campaigns</a>.
+          </p>
+
+          <div class="form-group">
+            <label>Filter by Campaign</label>
+            <select id="creativeCampaignFilter" onchange="loadCreatives()">
+              <option value="">All Campaigns</option>
+            </select>
+          </div>
+
+          <div class="creative-grid" id="creativeGrid"
+            data-intro="Your existing AI-generated images and videos appear here. Click to select one as your LinkedIn ad." data-step="5">
+            <div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);">Loading your media library…</div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goToStep(1)">← Back</button>
+            <button class="btn btn-primary" onclick="goToStep(3)" id="btnStep2Next" disabled>
+              Next: Write Copy →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Copy -->
+    <div id="li-step-3" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 3 of 5 — Ad Copy</h3>
+          <span style="font-size:12px;opacity:.75;">LinkedIn limits: 70 char headline · 150 char intro</span>
+        </div>
+        <div class="card-body">
+          <div class="form-grid-2">
+            <div>
+              <div class="form-group">
+                <label>Headline <span id="headlineCount" style="color:var(--muted);font-weight:400;">(0/70)</span></label>
+                <input type="text" id="adHeadline" maxlength="70" placeholder="e.g. Book a Strategy Call Today"
+                  oninput="updateCharCount('adHeadline','headlineCount',70);updateAdPreview()"
+                  data-intro="Your headline is the first thing prospects read. Keep it outcome-focused and under 70 characters." data-step="6">
+              </div>
+              <div class="form-group">
+                <label>Intro Text <span id="introCount" style="color:var(--muted);font-weight:400;">(0/150)</span></label>
+                <textarea id="adIntro" maxlength="150" placeholder="e.g. We help property management companies double their qualified leads using AI."
+                  oninput="updateCharCount('adIntro','introCount',150);updateAdPreview()"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Call to Action</label>
+                <select id="adCTA" onchange="updateAdPreview()">
+                  <option value="LEARN_MORE">Learn More</option>
+                  <option value="SIGN_UP">Sign Up</option>
+                  <option value="CONTACT_US" selected>Contact Us</option>
+                  <option value="DOWNLOAD">Download</option>
+                  <option value="REGISTER">Register</option>
+                  <option value="REQUEST_DEMO">Request Demo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Landing Page URL</label>
+                <select id="adLandingPage">
+                  <option value="">Select a landing page…</option>
+                </select>
+                <div class="form-hint">Your VV-generated landing pages appear here. <a href="pages" style="color:var(--navy);">Create a new one →</a></div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="generateAICopy()" id="btnAICopy">
+                ✨ Generate with AI
+              </button>
+            </div>
+            <div>
+              <label style="font-size:13px;font-weight:600;display:block;margin-bottom:10px;">Live LinkedIn Preview</label>
+              <div class="li-ad-mock">
+                <div class="li-ad-mock-header">
+                  <div class="li-avatar" id="liAvatarInit">VV</div>
+                  <div>
+                    <div style="font-weight:700;font-size:13px;" id="liCompanyName">Your Company</div>
+                    <div class="li-sponsored-tag">Sponsored · <span id="liCtaTag">Contact Us</span></div>
+                  </div>
+                </div>
+                <div id="liPreviewImg" style="width:100%;aspect-ratio:16/9;background:#e0e0e0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">No creative selected</div>
+                <div class="li-ad-mock-body">
+                  <div class="li-ad-mock-headline" id="liPreviewHeadline">Your Headline Here</div>
+                  <div class="li-ad-mock-intro" id="liPreviewIntro">Your intro text will appear here. Make it compelling and benefit-focused.</div>
+                  <div class="li-ad-cta-btn" id="liPreviewCTA">Contact Us</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goToStep(2)">← Back</button>
+            <button class="btn btn-primary" onclick="goToStep(4)">Next: Set Budget →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Budget -->
+    <div id="li-step-4" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 4 of 5 — Budget & Schedule</h3>
+          <span style="font-size:12px;opacity:.75;">Victory Vision will auto-optimize daily based on meeting bookings</span>
+        </div>
+        <div class="card-body"
+          data-intro="Set your daily budget and schedule. Victory Vision monitors meeting bookings and Stripe conversions daily — and adjusts spend up or down automatically to minimize your cost per meeting." data-step="7">
+
+          <div class="form-grid-2">
+            <div>
+              <div class="form-group">
+                <label>Daily Budget</label>
+                <div class="budget-display" id="budgetDisplay">$25</div>
+                <input type="range" id="dailyBudget" min="10" max="500" step="5" value="25"
+                  oninput="updateBudgetDisplay()">
+                <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);">
+                  <span>$10/day</span><span>$500/day</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Total Budget Cap <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+                <input type="number" id="totalBudget" placeholder="e.g. 500" min="50">
+                <div class="form-hint">Leave blank for no cap — AI Optimizer will pause when goals are met.</div>
+              </div>
+
+              <div class="form-group">
+                <label>Optimization Goal</label>
+                <select id="optimizationGoal">
+                  <option value="CONVERSION" selected>Conversions (Meetings Booked)</option>
+                  <option value="CLICK">Clicks to Landing Page</option>
+                  <option value="IMPRESSION">Brand Awareness (Impressions)</option>
+                  <option value="VIDEO_VIEW">Video Views</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" id="adStartDate">
+              </div>
+              <div class="form-group">
+                <label>End Date <span style="font-weight:400;color:var(--muted);">(optional)</span></label>
+                <input type="date" id="adEndDate">
+              </div>
+
+              <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px;">
+                <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:6px;">🤖 AI Optimizer Will:</div>
+                <ul style="font-size:12px;color:#374151;line-height:1.8;padding-left:16px;">
+                  <li>Monitor meeting bookings from this ad daily</li>
+                  <li>Pause underperforming creatives automatically</li>
+                  <li>Increase budget when cost/meeting drops below goal</li>
+                  <li>Email you before making changes over $50/day</li>
+                  <li>Cross-reference email engagement for lead scoring</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;margin-top:16px;">
+            <button class="btn btn-ghost" onclick="goToStep(3)">← Back</button>
+            <button class="btn btn-primary" onclick="goToStep(5)">Review & Launch →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Launch -->
+    <div id="li-step-5" class="li-step" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h3>Step 5 of 5 — Review & Launch</h3>
+          <span style="font-size:12px;opacity:.75;">Double-check before going live</span>
+        </div>
+        <div class="card-body">
+          <div id="launchSummary" style="margin-bottom:20px;">
+            <!-- populated by JS -->
+          </div>
+
+          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:14px;margin-bottom:20px;">
+            <div style="font-weight:700;font-size:13px;color:var(--green);margin-bottom:4px;">✅ What happens next</div>
+            <ol style="font-size:13px;color:#374151;line-height:1.8;padding-left:18px;">
+              <li>Victory Vision uploads your creative to LinkedIn (takes ~2 min)</li>
+              <li>LinkedIn reviews your ad (24–48 hours)</li>
+              <li>Audience matching completes — usually 24 hours after approval</li>
+              <li>Your ad goes live and Victory Vision begins tracking</li>
+              <li>You'll receive daily performance emails with AI recommendations</li>
+            </ol>
+          </div>
+
+          <div id="liConnectWarning" style="display:none;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:14px;margin-bottom:20px;">
+            ⚠️ <strong>LinkedIn not connected.</strong> 
+            <a href="settings" style="color:var(--navy);">Connect your LinkedIn account in Settings →</a>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <button class="btn btn-ghost" onclick="goToStep(4)">← Back</button>
+            <button class="btn btn-li" onclick="launchLinkedInAd()" id="btnLaunch"
+              data-intro="Launch your LinkedIn ad. Victory Vision handles the API calls, audience upload, creative registration, and campaign creation automatically." data-step="8">
+              🚀 Launch LinkedIn Ad
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: AI OPTIMIZER                        -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-optimize" class="tab-content">
+    <div class="form-grid-2">
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <h3>⚡ AI Optimization Feed</h3>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadOptimizations()">🔄 Refresh</button>
+          </div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+              Victory Vision's AI reviews your ads, email engagement, meeting data, and Stripe conversions daily. Recommendations below are ranked by projected impact on cost-per-meeting.
+            </p>
+            <div class="opt-feed" id="optFeed">
+              <div class="empty-state">
+                <div class="icon">🤖</div>
+                <h3>No Recommendations Yet</h3>
+                <p>Launch your first LinkedIn ad. The optimizer activates after 48 hours of data.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-header"><h3>📈 Attribution Breakdown</h3></div>
+          <div class="card-body">
+            <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">
+              How contacts move from ad impression → email open → meeting → conversion.
+            </p>
+            <div id="attributionFunnel">
+              <div class="skel" style="height:180px;width:100%;margin-bottom:12px;"></div>
+            </div>
+            <div id="topCreatives" style="margin-top:16px;">
+              <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Top Performing Creatives</div>
+              <div id="topCreativesList">
+                <div style="font-size:13px;color:var(--muted);">Loading after first campaign…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3>🎯 Audience Health</h3></div>
+          <div class="card-body">
+            <div id="audienceHealth">
+              <div class="form-grid-2" style="gap:12px;">
+                <div style="text-align:center;padding:14px;background:var(--bg);border-radius:8px;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;color:var(--navy);" id="audEmailCount">–</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Email Openers</div>
+                </div>
+                <div style="text-align:center;padding:14px;background:var(--bg);border-radius:8px;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;color:var(--li-blue);" id="audLICount">–</div>
+                  <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">1st-Degree Connections</div>
+                </div>
+              </div>
+              <div style="margin-top:12px;font-size:13px;color:var(--muted);">
+                Audience syncs to LinkedIn nightly. Last sync: <span id="lastAudienceSync">–</span>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="margin-top:10px;" onclick="triggerAudienceSync()">
+                🔄 Sync Audience Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: AI ADVISOR                          -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-ai" class="tab-content">
+
+    <!-- Run button -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <h3>🤖 AI Ad Advisor</h3>
+        <button class="btn btn-primary" id="aiRunBtn" onclick="runAIAdvisor()">
+          ✨ Generate Recommendations
+        </button>
+      </div>
+      <div class="card-body" style="padding:16px 20px;">
+        <p style="color:#666;font-size:13px;margin:0;">
+          Analyzes your victories, page performance, and current ad data to generate A/B-ready campaign recommendations.
+          Each run learns from previous analyses and gets smarter over time.
+        </p>
+        <div id="aiStatus" style="margin-top:10px;font-size:13px;color:#666;"></div>
+      </div>
+    </div>
+
+    <!-- Recommendations output -->
+    <div id="aiRecommendationsWrap" style="display:none;">
+
+      <!-- Summary banner -->
+      <div id="aiSummaryBanner" class="card" style="margin-bottom:16px;border-left:4px solid var(--navy);"></div>
+
+      <!-- Recommendations grid -->
+      <div id="aiRecsGrid" style="display:grid;gap:16px;margin-bottom:24px;"></div>
+
+      <!-- Learning history -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📚 Learning History</h3>
+          <span id="aiNoteCount" style="font-size:12px;color:#aaa;"></span>
+        </div>
+        <div class="card-body" style="padding:0;">
+          <div id="aiNotesLog" style="max-height:320px;overflow-y:auto;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: BILLBOARD                           -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-billboard" class="tab-content">
+
+    <!-- Billboard Creator -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header">
+        <h3>🏗️ Design Your Billboard</h3>
+        <span style="font-size:12px;opacity:.75;">Creates a print-ready design for your chosen inventory</span>
+      </div>
+      <div class="card-body">
+        <div class="billboard-layout">
+          <div>
+            <div class="form-group">
+              <label>Headline <span style="font-weight:400;color:var(--muted);">(max 50 chars)</span></label>
+              <input type="text" id="bbHeadline" maxlength="50" placeholder="Bold. Short. Memorable."
+                oninput="updateBBPreview()">
+            </div>
+            <div class="form-group">
+              <label>Message <span style="font-weight:400;color:var(--muted);">(max 100 chars)</span></label>
+              <textarea id="bbMessage" maxlength="100" style="height:70px;" placeholder="One clear benefit or offer."
+                oninput="updateBBPreview()"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Call to Action</label>
+              <input type="text" id="bbCTA" maxlength="25" placeholder="Call Now! | QR Code | Visit Us"
+                oninput="updateBBPreview()">
+            </div>
+            <div class="form-group">
+              <label>Background Image</label>
+              <select id="bbImageSelect" onchange="updateBBPreviewImg()">
+                <option value="">Select from your media library…</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:4px;">
+              <button class="btn btn-primary btn-sm" onclick="downloadBillboard()">💾 Download Design</button>
+              <button class="btn btn-ghost btn-sm" onclick="generateBBAICopy()">✨ AI Headline</button>
+            </div>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Live Preview</label>
+            <div class="billboard-preview" id="billboardPreview">
+              <img id="bbBg" class="bb-bg" style="display:none;">
+              <div class="bb-overlay">
+                <div class="bb-headline" id="bbPreviewHeadline">YOUR HEADLINE</div>
+                <div class="bb-message" id="bbPreviewMessage">Your message appears here</div>
+                <div class="bb-cta" id="bbPreviewCTA">Call to Action</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;">Standard 14×48 ft · 72 DPI minimum for print</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billboard Inventory -->
+    <div class="card">
+      <div class="card-header">
+        <h3>📍 Available Billboard Inventory</h3>
+        <span style="font-size:12px;opacity:.75;">50–100 independent owners · nationwide</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+          <div class="form-group" style="margin:0;flex:1;min-width:160px;">
+            <input type="text" id="bbSearch" placeholder="🔍 Search city, state, or market…" oninput="filterBillboards()">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <select id="bbDurationFilter" onchange="filterBillboards()">
+              <option value="">Any Duration</option>
+              <option value="1month">1 Month</option>
+              <option value="3month">3 Months</option>
+              <option value="6month">6 Months</option>
+              <option value="12month">12 Months</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <select id="bbMaxPrice" onchange="filterBillboards()">
+              <option value="">Any Price</option>
+              <option value="2000">Under $2,000/mo</option>
+              <option value="5000">Under $5,000/mo</option>
+              <option value="10000">Under $10,000/mo</option>
+            </select>
+          </div>
+        </div>
+        <div class="bb-inventory-grid" id="billboardInventory">
+          <!-- populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ -->
+  <!-- TAB: ACTIVE CAMPAIGNS                    -->
+  <!-- ════════════════════════════════════════ -->
+  <div id="tab-content-active" class="tab-content">
+    <div class="card">
+      <div class="card-header">
+        <h3>📊 All Active Ad Campaigns</h3>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="campaignSearch" placeholder="Search…"
+            style="padding:6px 10px;border:1px solid rgba(255,255,255,.3);border-radius:4px;background:rgba(255,255,255,.15);color:white;font-size:12px;width:160px;"
+            oninput="filterCampaigns()">
+          <select id="campaignTypeFilter" onchange="filterCampaigns()"
+            style="padding:6px 8px;border:1px solid rgba(255,255,255,.3);border-radius:4px;background:rgba(255,255,255,.15);color:white;font-size:12px;">
+            <option value="">All Platforms</option>
+            <option value="linkedin_ads">LinkedIn</option>
+            <option value="google_ads">Google Ads</option>
+            <option value="msft_ads">Microsoft Ads</option>
+            <option value="billboard">Billboard</option>
+          </select>
+          <button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:white;border:none;" onclick="loadCampaigns()">🔄</button>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table class="ads-table" id="campaignsTable">
+            <thead>
+              <tr>
+                <th>Campaign</th>
+                <th>Platform</th>
+                <th>Audience</th>
+                <th>Spend</th>
+                <th>New Customers</th>
+                <th>Revenue</th>
+                <th>ROI</th>
+                <th>Meetings</th>
+                <th>Cost/Mtg</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="campaignsBody">
+              <tr><td colspan="11" style="text-align:center;padding:30px;color:var(--muted);">Loading campaigns…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="statusMessage" class="status-message"></div>
+</div>
+
+<!-- ── BILLBOARD PURCHASE MODAL ── -->
+<div id="bbModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3 id="bbModalTitle">Reserve Billboard</h3>
+      <button class="modal-close" onclick="closeBBModal()">×</button>
+    </div>
+    <div class="modal-bd" id="bbModalBody"></div>
+  </div>
+</div>
+
+<!-- ── CAMPAIGN DETAIL MODAL ── -->
+<div id="campaignModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3 id="campaignModalTitle">Campaign Details</h3>
+      <button class="modal-close" onclick="closeCampaignModal()">×</button>
+    </div>
+    <div class="modal-bd" id="campaignModalBody"></div>
+  </div>
+</div>
+
+<!-- ── CREATE AD MODAL ── -->
+<div id="createAdModal" class="modal">
+  <div class="modal-box" style="max-width:540px;">
+    <div class="modal-hd">
+      <h3 id="createAdModalTitle">New Campaign</h3>
+      <button class="modal-close" onclick="closeCreateAdModal()">×</button>
+    </div>
+    <div class="modal-bd">
+      <input type="hidden" id="createAdPlatform">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+        <button class="btn btn-ghost btn-sm" id="modalAutoGenBtn" onclick="autoGenerateModalCopy()" style="font-size:12px;">✨ Auto-generate with AI</button>
+      </div>
+      <div class="form-group">
+        <label>Campaign Name</label>
+        <input type="text" id="createAdName" placeholder="e.g. Q2 Decision Makers">
+      </div>
+      <div class="form-group">
+        <label>Headline</label>
+        <input type="text" id="createAdTitle" placeholder="Primary ad headline" maxlength="70">
+      </div>
+      <div class="form-group">
+        <label>Ad Copy</label>
+        <textarea id="createAdText" style="height:80px;" placeholder="Body copy for the ad" maxlength="300"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Landing Page</label>
+        <select id="createAdLandingPage">
+          <option value="">Loading pages…</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:4px;">
+        <label>Daily Budget ($)</label>
+        <input type="number" id="createAdBudget" value="50" min="1" style="max-width:160px;">
+      </div>
+
+      <!-- Audience mode selector: Cold / Warm Retarget / Both -->
+      <div class="form-group" style="border-top:1px solid #e5e7eb;padding-top:12px;">
+        <label>Who should see this ad?</label>
+        <div class="segment-options" id="modalAudienceOptions" style="margin-bottom:8px;">
+          <div class="segment-pill" data-mode="cold" onclick="selectModalAudienceMode(this)">
+            🎯 Cold Targeting
+            <div style="font-size:11px;font-weight:400;margin-top:2px;">People who don't know you yet</div>
+          </div>
+          <div class="segment-pill" data-mode="warm" onclick="selectModalAudienceMode(this)">
+            🔥 Warm Retarget
+            <div style="font-size:11px;font-weight:400;margin-top:2px;" id="modalWarmCount">Loading…</div>
+          </div>
+          <div class="segment-pill selected" data-mode="both" onclick="selectModalAudienceMode(this)">
+            ⚡ Both Combined <span style="background:var(--red);color:white;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;">Best</span>
+            <div style="font-size:11px;font-weight:400;margin-top:2px;">Reach new + re-engage warm</div>
+          </div>
+        </div>
+
+        <!-- Cold targeting details (shown when mode = cold or both) -->
+        <div id="coldTargetingPanel" style="background:#f8f9fa;border-radius:8px;padding:12px;margin-top:8px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Cold targeting — matched from your contacts' firmographics.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Industries</label>
+              <select id="coldIndustries" multiple size="4" style="min-height:90px;"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Job titles</label>
+              <select id="coldTitles" multiple size="4" style="min-height:90px;"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Locations</label>
+              <select id="coldLocations" multiple size="4" style="min-height:90px;"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;">Target companies</label>
+              <select id="coldCompanies" multiple size="4" style="min-height:90px;"></select>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;">💡 Hold Ctrl/Cmd to multi-select. These suggestions come from industries/titles most common among your engaged contacts.</div>
+        </div>
+
+        <!-- Warm retargeting details (shown when mode = warm or both) -->
+        <div id="warmTargetingPanel" style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:12px;margin-top:8px;">
+          <div style="font-size:12px;color:#92400e;margin-bottom:8px;">Warm retargeting — contacts who've already engaged:</div>
+          <div id="warmCountsBreakdown" style="font-size:13px;color:#78350f;">
+            Loading engagement counts…
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button class="btn btn-primary" style="flex:1;" onclick="submitCreateAd()">🚀 Launch Campaign</button>
+        <button class="btn btn-ghost" onclick="closeCreateAdModal()">Cancel</button>
+      </div>
+      <div id="createAdStatus" style="margin-top:10px;font-size:13px;"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 Victory Vision. All rights reserved. &nbsp;·&nbsp;
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </p>
+</footer>
+
+<script>
+// ══════════════════════════════════════
+// CONFIGURATION
+// ══════════════════════════════════════
+const supabaseUrl  = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// ── WEBHOOK ENDPOINTS ──
+const N8N = {
+  // User & Auth
+  getUserData:          'https://victoryvision.app.n8n.cloud/webhook/user/get',
+
+  // LinkedIn Ads
+  liGetAudience:        'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-audience',
+  audienceCounts:       'https://victoryvision.app.n8n.cloud/webhook/ads/audience-counts',
+  liBuildAudience:      'https://victoryvision.app.n8n.cloud/webhook/linkedin/build-audience',
+  liSyncAudience:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/sync-audience',
+  liGetOAuth:           'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-oauth',
+  liCreateAd:           'https://victoryvision.app.n8n.cloud/webhook/linkedin/create-ad',
+  liGetCampaigns:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-campaigns',
+  liUpdateCampaign:     'https://victoryvision.app.n8n.cloud/webhook/linkedin/update-campaign',
+  liPauseCampaign:      'https://victoryvision.app.n8n.cloud/webhook/linkedin/pause-campaign',
+  liDeleteCampaign:     'https://victoryvision.app.n8n.cloud/webhook/linkedin/delete-campaign',
+  liGetReporting:       'https://victoryvision.app.n8n.cloud/webhook/linkedin/get-reporting',
+  liGenerateAICopy:     'https://victoryvision.app.n8n.cloud/webhook/linkedin/generate-copy',
+
+  // AI Advisor
+  getRecommendations:  'https://victoryvision.app.n8n.cloud/webhook/ads/recommend',
+  saveNote:            'https://victoryvision.app.n8n.cloud/webhook/ads/save-note',
+
+  // Cross-platform Ads
+  getAllAds:            'https://victoryvision.app.n8n.cloud/webhook/ads/get',
+  removeAd:             'https://victoryvision.app.n8n.cloud/webhook/ads/remove',
+  createAd:             'https://victoryvision.app.n8n.cloud/webhook/ads/create',
+  buildAudience:        'https://victoryvision.app.n8n.cloud/webhook/ads/build-audience',
+  getOptimizations:     'https://victoryvision.app.n8n.cloud/webhook/ads/get-optimizations',
+  applyOptimization:    'https://victoryvision.app.n8n.cloud/webhook/ads/apply-optimization',
+  getAttribution:       'https://victoryvision.app.n8n.cloud/webhook/ads/get-attribution',
+  // Per-platform launch endpoints — each calls platform API, creates PAUSED/DRAFT campaign, returns deep_link
+  launchLinkedIn:       'https://victoryvision.app.n8n.cloud/webhook/ads/launch/linkedin',
+  launchGoogle:         'https://victoryvision.app.n8n.cloud/webhook/ads/launch/google',
+  launchMsft:           'https://victoryvision.app.n8n.cloud/webhook/ads/launch/msft',
+
+  // Creatives / Media / Pages
+  getMedia:             'https://victoryvision.app.n8n.cloud/webhook/media/get',
+  getCampaigns:         'https://victoryvision.app.n8n.cloud/webhook/campaigns/get',
+  getPages:             'https://victoryvision.app.n8n.cloud/webhook/pages/get',
+
+  // Billboard
+  getBillboardInventory:'https://victoryvision.app.n8n.cloud/webhook/billboard/get-inventory',
+  reserveBillboard:     'https://victoryvision.app.n8n.cloud/webhook/billboard/reserve',
+  getCheckout:          'https://victoryvision.app.n8n.cloud/webhook/payment/get-checkout',
+};
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let CUSTOMER_ID = null, authToken = null;
+let currentStep = 1;
+let selectedSegment = 'both';
+let selectedCreative = null;
+let allCreatives = [], allCampaigns = [], allAds = [];
+let allBillboards = [], filteredBillboards = [];
+let liConnected = false;
+let userData = {};
+
+// ══════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════
+async function checkAuthentication() {
+  const { data: { session }, error } = await supabaseClient.auth.getSession();
+  if (error || !session) return false;
+  CUSTOMER_ID = session.user.email;
+  authToken   = session.access_token;
+  document.getElementById('userEmail').textContent = CUSTOMER_ID;
+  return true;
+}
+function redirectToLogin() { window.location.href = 'login.html'; }
+function logout() {
+  supabaseClient.auth.signOut();
+  redirectToLogin();
+}
+
+// ══════════════════════════════════════
+// API HELPER
+// ══════════════════════════════════════
+async function apiCall(endpoint, data = {}) {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Customer-ID': CUSTOMER_ID,
+      'Authorization': authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify({ customer_id: CUSTOMER_ID, ...data })
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const text = await res.text();
+  return text.length ? JSON.parse(text) : { success: true };
+}
+
+// ══════════════════════════════════════
+// TOUR SYSTEM
+// ══════════════════════════════════════
+function completeTour() {
+  localStorage.setItem('vv_tour_ads', 'true');
+}
+function hasCompletedTour() {
+  return localStorage.getItem('vv_tour_ads') === 'true';
+}
+function startTour() {
+  introJs().setOptions({
+    showProgress: true, showBullets: false,
+    exitOnOverlayClick: false,
+    nextLabel: 'Next →', prevLabel: '← Back',
+    doneLabel: '✅ Got It!', skipLabel: 'Skip'
+  }).oncomplete(completeTour).onexit(completeTour).start();
+}
+
+// Action-specific tours triggered by email deep-link
+const ACTION_TOURS = {
+  launch_ad: {
+    title: '🚀 Launch Your First LinkedIn Ad',
+    desc: "Your AI SDR found warm prospects ready to see your ad. Let's launch it now.",
+    steps: () => {
+      switchTab('linkedin');
+      setTimeout(() => {
+        introJs().setOptions({
+          showProgress: true, showBullets: false,
+          steps: [
+            { element: '#segmentOptions', intro: '<strong>Step 1: Pick your audience.</strong><br>We recommend "Both Combined" — it targets your email openers AND LinkedIn connections for the highest hit rate.', position: 'bottom' },
+            { element: '#btnStep1Next', intro: '<strong>Click here to proceed</strong> once your audience is selected.', position: 'top' }
+          ]
+        }).start();
+      }, 300);
+    }
+  },
+  optimize_ad: {
+    title: '⚡ Optimization Action Needed',
+    desc: "AI found a change that could cut your cost-per-meeting by 30%. Review it now.",
+    steps: () => {
+      switchTab('optimize');
+      setTimeout(() => {
+        introJs().setOptions({
+          showProgress: true, showBullets: false,
+          steps: [
+            { element: '#optFeed', intro: '<strong>AI Recommendations below.</strong><br>Each card shows a specific action — pause, boost, or swap. Apply them with one click.', position: 'bottom' }
+          ]
+        }).start();
+      }, 300);
+    }
+  }
+};
+
+function startActionTour() {
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  if (action && ACTION_TOURS[action]) {
+    ACTION_TOURS[action].steps();
+  }
+}
+
+function checkDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  const action = params.get('action');
+  if (action && ACTION_TOURS[action]) {
+    const banner = document.getElementById('actionBanner');
+    document.getElementById('bannerTitle').textContent = ACTION_TOURS[action].title;
+    document.getElementById('bannerDesc').textContent  = ACTION_TOURS[action].desc;
+    banner.classList.add('show');
+  }
+}
+
+// ══════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(`tab-content-${name}`).classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+  // Lazy load on tab switch
+  if (name === 'pages')  loadPlatformPages();
+  if (name === 'active') loadCampaigns();
+  if (name === 'overview') loadAttributionData();
+}
+
+// ══════════════════════════════════════
+// WIZARD NAVIGATION
+// ══════════════════════════════════════
+function goToStep(n) {
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById(`li-step-${i}`).style.display = 'none';
+    const ws = document.getElementById(`ws${i}`);
+    ws.classList.remove('active', 'done');
+    if (i < n) ws.classList.add('done');
+  }
+  document.getElementById(`li-step-${n}`).style.display = 'block';
+  document.getElementById(`ws${n}`).classList.add('active');
+  currentStep = n;
+
+  if (n === 5) buildLaunchSummary();
+  document.getElementById('tab-content-linkedin').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ══════════════════════════════════════
+// AUDIENCE
+// ══════════════════════════════════════
+// Cached audience data so modal + wizard share the same fetch
+let audienceCache = null;
+
+async function loadAudienceCounts() {
+  try {
+    const raw = await apiCall(N8N.audienceCounts);
+    const res = Array.isArray(raw) ? raw[0] : raw;
+    audienceCache = res;
+    const counts = (res && res.counts) || {};
+    const sug    = (res && res.suggestions) || {};
+
+    // Wizard Step 1 — existing pill DOM
+    const elEmail = document.getElementById('segCountEmail');
+    const elFirst = document.getElementById('segCountFirst');
+    const elBoth  = document.getElementById('segCountBoth');
+    if (elEmail) elEmail.textContent = `${counts.email_openers || 0} contacts`;
+    if (elFirst) elFirst.textContent = `${counts.first_degree || 0} contacts`;
+    if (elBoth)  elBoth.textContent  = `${counts.warm_union || counts.both || 0} contacts`;
+    const audEmail = document.getElementById('audEmailCount');
+    const audLI    = document.getElementById('audLICount');
+    if (audEmail) audEmail.textContent = counts.email_openers || 0;
+    if (audLI)    audLI.textContent    = counts.first_degree || 0;
+    const lastSync = document.getElementById('lastAudienceSync');
+    if (lastSync) lastSync.textContent = res && res.last_sync ? new Date(res.last_sync).toLocaleDateString() : 'Not yet';
+
+    // Wizard: 300 minimum only applies when warm retargeting is selected
+    const wizardMinOk = (counts[selectedSegment] || 0) >= 300;
+    const warnEl = document.getElementById('segmentWarning');
+    if (warnEl) warnEl.style.display = wizardMinOk ? 'none' : 'block';
+    const wizNext = document.getElementById('btnStep1Next');
+    if (wizNext) wizNext.disabled = !wizardMinOk;
+
+    // Modal — warm counts breakdown
+    const warmBreakdown = document.getElementById('warmCountsBreakdown');
+    if (warmBreakdown) {
+      warmBreakdown.innerHTML =
+        `📧 <strong>${counts.email_openers || 0}</strong> email openers · ` +
+        `🤝 <strong>${counts.first_degree || 0}</strong> 1st-degree connections · ` +
+        `🎯 <strong>${counts.ad_clickers || 0}</strong> past ad viewers · ` +
+        `👁 <strong>${counts.page_viewers || 0}</strong> page visitors<br>` +
+        `<strong style="color:#854d0e;">${counts.warm_union || 0}</strong> unique warm contacts total`;
+    }
+    const modalWarm = document.getElementById('modalWarmCount');
+    if (modalWarm) modalWarm.textContent = `${counts.warm_union || 0} warm contacts`;
+
+    // Populate cold targeting dropdowns from firmographic suggestions
+    function fill(id, items) {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      sel.innerHTML = '';
+      (items || []).forEach(it => {
+        const o = document.createElement('option');
+        o.value = it.value;
+        o.textContent = `${it.value} (${it.count})`;
+        sel.appendChild(o);
+      });
+    }
+    fill('coldIndustries', sug.top_industries);
+    fill('coldTitles',     sug.top_titles);
+    fill('coldLocations',  sug.top_locations);
+    fill('coldCompanies',  sug.top_companies);
+    // Wizard cold dropdowns mirror the modal's
+    fill('wizColdIndustries', sug.top_industries);
+    fill('wizColdTitles',     sug.top_titles);
+    fill('wizColdLocations',  sug.top_locations);
+    fill('wizColdCompanies',  sug.top_companies);
+    const wizWarmSummary = document.getElementById('wizardWarmSummary');
+    if (wizWarmSummary) wizWarmSummary.textContent = `${counts.warm_union || 0} warm contacts`;
+  } catch(e) {
+    console.error('Audience load failed', e);
+  }
+}
+
+function selectSegment(el) {
+  document.querySelectorAll('#segmentOptions .segment-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSegment = el.dataset.segment;
+  const counts = (audienceCache && audienceCache.counts) || {};
+  const count = counts[selectedSegment] || 0;
+  const minOk = count >= 300;
+  const warnEl = document.getElementById('segmentWarning');
+  if (warnEl) warnEl.style.display = minOk ? 'none' : 'block';
+  const wizNext = document.getElementById('btnStep1Next');
+  if (wizNext) wizNext.disabled = !minOk;
+}
+
+// Modal audience mode — toggles which panel (cold / warm / both) is shown
+let modalAudienceMode = 'both';
+function selectModalAudienceMode(el) {
+  document.querySelectorAll('#modalAudienceOptions .segment-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  modalAudienceMode = el.dataset.mode;
+  const showCold = modalAudienceMode === 'cold' || modalAudienceMode === 'both';
+  const showWarm = modalAudienceMode === 'warm' || modalAudienceMode === 'both';
+  const coldPanel = document.getElementById('coldTargetingPanel');
+  const warmPanel = document.getElementById('warmTargetingPanel');
+  if (coldPanel) coldPanel.style.display = showCold ? 'block' : 'none';
+  if (warmPanel) warmPanel.style.display = showWarm ? 'block' : 'none';
+}
+
+// Populate landing pages in modal dropdown — fetches from pages/get if adsData.pages is empty
+async function populateModalPages() {
+  const sel = document.getElementById('createAdLandingPage');
+  sel.innerHTML = '<option value="">Loading pages…</option>';
+  let pages = (adsData && adsData.pages) ? (Array.isArray(adsData.pages) ? adsData.pages : []) : [];
+  if (!pages.length) {
+    try {
+      const raw = await apiCall(N8N.getPages);
+      const r = Array.isArray(raw) ? raw : (raw && raw.pages ? raw.pages : []);
+      pages = r;
+    } catch(e) { console.warn('Pages fetch failed:', e); }
+  }
+  sel.innerHTML = '<option value="">Select a page…</option>';
+  pages.forEach(function(p) {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.name || p.page_name || p.URL || p.id;
+    sel.appendChild(opt);
+  });
+  // Store for URL lookup in submitCreateAd
+  if (!adsData) adsData = {};
+  if (!adsData.pages || !adsData.pages.length) adsData.pages = pages;
+}
+
+// Auto-generate campaign name, headline, and copy via AI
+async function autoGenerateModalCopy() {
+  const btn = document.getElementById('modalAutoGenBtn');
+  const statusEl = document.getElementById('createAdStatus');
+  btn.textContent = '⏳ Generating…'; btn.disabled = true;
+  statusEl.textContent = '';
+  try {
+    const platform = document.getElementById('createAdPlatform').value;
+    // Use AbortSignal to timeout after 25s (OpenAI can be slow)
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 25000);
+    const response = await fetch(N8N.liGenerateAICopy, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Customer-ID': CUSTOMER_ID },
+      body: JSON.stringify({
+        customer_id: CUSTOMER_ID,
+        segment: modalAudienceMode,
+        mode: platform
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const text = await response.text();
+    const raw = text.length ? JSON.parse(text) : {};
+    const res = Array.isArray(raw) ? raw[0] : raw;
+    if (res && res.headline) {
+      const platformLabels = { google_ads: 'Google', msft_ads: 'MSFT', linkedin_ads: 'LinkedIn' };
+      document.getElementById('createAdName').value = (platformLabels[platform] || '') + ' Campaign — ' + new Date().toLocaleDateString();
+      document.getElementById('createAdTitle').value = res.headline;
+      document.getElementById('createAdText').value = res.intro || '';
+      statusEl.textContent = '✅ AI copy generated!';
+    } else {
+      statusEl.textContent = '⚠️ AI returned empty — try again.';
+    }
+  } catch(e) {
+    if (e.name === 'AbortError') {
+      statusEl.textContent = '⚠️ AI took too long (>25s). Try again.';
+    } else {
+      statusEl.textContent = '❌ AI failed: ' + e.message;
+    }
+  }
+  btn.textContent = '✨ Auto-generate with AI'; btn.disabled = false;
+}
+
+// Wizard (5-step LinkedIn) audience mode selector
+let wizardAudienceMode = 'both';
+function selectWizardMode(el) {
+  document.querySelectorAll('#wizardAudienceMode .segment-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  wizardAudienceMode = el.dataset.mode;
+  const showCold = wizardAudienceMode === 'cold' || wizardAudienceMode === 'both';
+  const showWarm = wizardAudienceMode === 'warm' || wizardAudienceMode === 'both';
+  const coldPanel = document.getElementById('wizardColdPanel');
+  const warmPanel = document.getElementById('wizardWarmPanel');
+  if (coldPanel) coldPanel.style.display = showCold ? 'block' : 'none';
+  if (warmPanel) warmPanel.style.display = showWarm ? 'block' : 'none';
+
+  // When ONLY warm is selected, enforce 300-min; otherwise cold fills the gap
+  const counts = (audienceCache && audienceCache.counts) || {};
+  const warnEl = document.getElementById('segmentWarning');
+  const wizNext = document.getElementById('btnStep1Next');
+  if (wizardAudienceMode === 'warm') {
+    const ok = (counts[selectedSegment] || 0) >= 300;
+    if (warnEl) warnEl.style.display = ok ? 'none' : 'block';
+    if (wizNext) wizNext.disabled = !ok;
+  } else {
+    if (warnEl) warnEl.style.display = 'none';
+    if (wizNext) wizNext.disabled = false;
+  }
+}
+
+async function triggerAudienceSync() {
+  showStatus('Syncing audience to LinkedIn…', false);
+  try {
+    await apiCall(N8N.liSyncAudience, { segment: selectedSegment });
+    showStatus('Audience sync queued — LinkedIn matching takes up to 24 hours.', false);
+    setTimeout(loadAudienceCounts, 3000);
+  } catch(e) { showStatus('Sync failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// CREATIVES
+// ══════════════════════════════════════
+async function loadCreatives() {
+  const campaignFilter = document.getElementById('creativeCampaignFilter').value;
+  const grid = document.getElementById('creativeGrid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--muted);">Loading…</div>';
+
+  try {
+    const res = await apiCall(N8N.getMedia, { campaign_id: campaignFilter || null });
+    allCreatives = Array.isArray(res) ? res : (res.files || res.value || []);
+
+    if (!allCreatives.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--muted);">No media found. <a href="campaigns" style="color:var(--navy);">Generate a campaign first →</a></div>`;
+      return;
+    }
+
+    grid.innerHTML = allCreatives.map((f, i) => `
+      <div class="creative-thumb ${selectedCreative?.id === f.id ? 'selected' : ''}"
+        onclick="selectCreative(${i})" title="${f.file_name || ''}">
+        ${f.URL ? `<img src="${f.URL}" loading="lazy" onerror="this.style.display='none'">` : ''}
+        <div class="creative-type-badge">${(f.file_type || 'image').includes('video') ? '▶ video' : '🖼 image'}</div>
+        <div class="check">✓</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--red);">Failed to load media.</div>`;
+  }
+}
+
+function selectCreative(idx) {
+  selectedCreative = allCreatives[idx];
+  document.querySelectorAll('.creative-thumb').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('btnStep2Next').disabled = false;
+  updateAdPreview();
+}
+
+// ══════════════════════════════════════
+// AD COPY & PREVIEW
+// ══════════════════════════════════════
+function updateCharCount(inputId, countId, max) {
+  const val = document.getElementById(inputId).value.length;
+  const el  = document.getElementById(countId);
+  el.textContent = `(${val}/${max})`;
+  el.style.color = val > max * .9 ? 'var(--red)' : 'var(--muted)';
+}
+
+function updateAdPreview() {
+  const headline = document.getElementById('adHeadline').value || 'Your Headline Here';
+  const intro    = document.getElementById('adIntro').value   || 'Your intro text appears here.';
+  const ctaVal   = document.getElementById('adCTA').value;
+  const ctaLabels = { LEARN_MORE: 'Learn More', SIGN_UP: 'Sign Up', CONTACT_US: 'Contact Us', DOWNLOAD: 'Download', REGISTER: 'Register', REQUEST_DEMO: 'Request Demo' };
+  const ctaLabel = ctaLabels[ctaVal] || 'Learn More';
+
+  document.getElementById('liPreviewHeadline').textContent = headline;
+  document.getElementById('liPreviewIntro').textContent    = intro;
+  document.getElementById('liPreviewCTA').textContent      = ctaLabel;
+  document.getElementById('liCtaTag').textContent          = ctaLabel;
+
+  const previewImg = document.getElementById('liPreviewImg');
+  if (selectedCreative?.URL) {
+    const isVideo = (selectedCreative.file_type || '').includes('video');
+    previewImg.innerHTML = isVideo
+      ? `<video src="${selectedCreative.URL}" style="width:100%;aspect-ratio:16/9;object-fit:cover;" muted loop autoplay></video>`
+      : `<img src="${selectedCreative.URL}" style="width:100%;aspect-ratio:16/9;object-fit:cover;">`;
+  } else {
+    previewImg.innerHTML = '<span style="color:#aaa;font-size:12px;">No creative selected</span>';
+    previewImg.style.cssText = 'width:100%;aspect-ratio:16/9;background:#e0e0e0;display:flex;align-items:center;justify-content:center;';
+  }
+
+  const compName = userData.company_name || 'Your Company';
+  document.getElementById('liCompanyName').textContent = compName;
+  document.getElementById('liAvatarInit').textContent  = compName.charAt(0).toUpperCase();
+}
+
+async function generateAICopy() {
+  const btn = document.getElementById('btnAICopy');
+  btn.textContent = '⏳ Generating…'; btn.disabled = true;
+  try {
+    const raw = await apiCall(N8N.liGenerateAICopy, {
+      segment: selectedSegment,
+      creative_url: selectedCreative?.URL,
+      creative_type: selectedCreative?.file_type || '',
+      campaign_id: selectedCreative?.campaign_id,
+      mode: 'linkedin_ads'
+    });
+    // n8n wraps in array: [{headline,intro}]
+    const res = Array.isArray(raw) ? raw[0] : raw;
+    if (res && res.headline) {
+      document.getElementById('adHeadline').value = res.headline;
+      document.getElementById('adIntro').value    = res.intro || '';
+      updateCharCount('adHeadline', 'headlineCount', 70);
+      updateCharCount('adIntro', 'introCount', 150);
+      updateAdPreview();
+      showStatus('AI copy generated from your winning data + advisor learnings!', false);
+    } else {
+      showStatus('AI returned no copy — check that you have victories/contacts data.', true);
+    }
+  } catch(e) { showStatus('AI copy failed: ' + e.message, true); }
+  finally { btn.textContent = '✨ Generate with AI'; btn.disabled = false; }
+}
+
+// ══════════════════════════════════════
+// BUDGET
+// ══════════════════════════════════════
+function updateBudgetDisplay() {
+  const val = document.getElementById('dailyBudget').value;
+  document.getElementById('budgetDisplay').textContent = `$${val}`;
+}
+
+// ══════════════════════════════════════
+// LAUNCH SUMMARY
+// ══════════════════════════════════════
+function buildLaunchSummary() {
+  const segLabels = { email_openers: 'Email Openers', first_degree: '1st-Degree Connections', both: 'Both Combined' };
+  const budget    = document.getElementById('dailyBudget').value;
+  const total     = document.getElementById('totalBudget').value;
+  const goal      = document.getElementById('optimizationGoal').value;
+  const start     = document.getElementById('adStartDate').value;
+  const end       = document.getElementById('adEndDate').value;
+  const headline  = document.getElementById('adHeadline').value || '(not set)';
+
+  document.getElementById('launchSummary').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Audience</div>
+        <div style="font-weight:700;">${segLabels[selectedSegment]}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Creative</div>
+        <div style="font-weight:700;">${selectedCreative ? selectedCreative.file_name || 'Selected' : '⚠️ None selected'}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Headline</div>
+        <div style="font-weight:700;">${headline}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Budget</div>
+        <div style="font-weight:700;">$${budget}/day${total ? ` · $${total} cap` : ''}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Optimization Goal</div>
+        <div style="font-weight:700;">${goal}</div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:14px;">
+        <div style="font-size:11px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700;">Schedule</div>
+        <div style="font-weight:700;">${start || 'Today'} → ${end || 'Until paused'}</div>
+      </div>
+    </div>
+  `;
+
+  // Check LI connection
+  if (!liConnected) {
+    document.getElementById('liConnectWarning').style.display = 'block';
+    document.getElementById('btnLaunch').disabled = true;
+  }
+}
+
+// ══════════════════════════════════════
+// LAUNCH
+// ══════════════════════════════════════
+async function launchLinkedInAd() {
+  const btn = document.getElementById('btnLaunch');
+  btn.textContent = '⏳ Launching…'; btn.disabled = true;
+
+  try {
+    // Route through Ads - Launch LinkedIn. Creates DRAFT campaign group; user finishes in Campaign Manager.
+    function pickMulti(id) {
+      const sel = document.getElementById(id);
+      return sel ? Array.from(sel.selectedOptions).map(o => o.value) : [];
+    }
+    const payload = {
+      campaign_name:   document.getElementById('adHeadline').value || ('LinkedIn Campaign ' + new Date().toLocaleDateString()),
+      headline:        document.getElementById('adHeadline').value,
+      copy:            document.getElementById('adIntro').value,
+      url:             document.getElementById('adLandingPage').value,
+      daily_budget:    parseFloat(document.getElementById('dailyBudget').value) || 50,
+      audience_mode:   wizardAudienceMode,                                    // cold | warm | both
+      cold_targeting:  {
+        industries: pickMulti('wizColdIndustries'),
+        titles:     pickMulti('wizColdTitles'),
+        locations:  pickMulti('wizColdLocations'),
+        companies:  pickMulti('wizColdCompanies')
+      },
+      warm_segment:    selectedSegment,                                       // email_openers | first_degree | both
+      warm_retarget:   wizardAudienceMode !== 'cold',
+      audience_tier:   wizardAudienceMode.toUpperCase(),
+      landing_page_id: null
+    };
+
+    const raw = await apiCall(N8N.launchLinkedIn, payload);
+    const res = Array.isArray(raw) ? raw[0] : raw;
+
+    if (res && res.success) {
+      const deepLinkHtml = res.deep_link ? ` <a href="${res.deep_link}" target="_blank" style="color:var(--navy);text-decoration:underline;">View in LinkedIn →</a>` : '';
+      showStatus(`🚀 LinkedIn campaign created as ${res.status || 'DRAFT'}!${deepLinkHtml}`, false);
+      setTimeout(() => { switchTab('active'); loadCampaigns(); }, 1500);
+    } else {
+      const err = (res && (res.error || res.message)) || 'Unknown error';
+      showStatus('Launch failed: ' + err, true);
+      btn.textContent = '🚀 Launch LinkedIn Ad'; btn.disabled = false;
+    }
+  } catch(e) {
+    showStatus('Launch failed: ' + e.message, true);
+    btn.textContent = '🚀 Launch LinkedIn Ad'; btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════
+// KPI STRIP
+// ══════════════════════════════════════
+let adsData = null; // cached from getAllAds
+
+async function loadKPIs() {
+  try {
+    const res = await apiCall(N8N.getAllAds);
+    // n8n allIncomingItems wraps result in array — unwrap
+    const raw = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    adsData = raw;
+    const t = raw.totals || {};
+    document.getElementById('kpiSpend').textContent       = t.spend       ? '$' + fmtNum(Math.round(t.spend))       : '$0';
+    document.getElementById('kpiRevenue').textContent     = t.conversionRevenue ? '$' + fmtNum(Math.round(t.conversionRevenue)) : '$0';
+    document.getElementById('kpiROI').textContent         = t.roi != null ? t.roi + '%'                              : '–%';
+    document.getElementById('kpiNewCustomers').textContent= fmtNum(t.newCustomers || 0);
+    document.getElementById('kpiMeetings').textContent    = fmtNum(t.meetings || 0);
+    document.getElementById('kpiCPMeeting').textContent   = t.cost_per_meeting ? '$' + fmtNum(t.cost_per_meeting)   : '–';
+    document.getElementById('kpiImpressions').textContent = fmtNum(t.impressions || 0);
+    document.getElementById('kpiClicks').textContent      = fmtNum(t.clicks || 0);
+
+    // Color ROI tile
+    const roiTile = document.getElementById('kpiRoiTile');
+    if (t.roi > 0) roiTile.style.borderTopColor = 'var(--green)';
+    else if (t.roi < 0) roiTile.style.borderTopColor = 'var(--red)';
+
+    // Populate overview tab from cached data
+    renderROIDashboard(raw);
+  } catch(e) { console.warn('KPI load failed', e); }
+}
+
+// ══════════════════════════════════════
+// ROI OVERVIEW TAB
+// ══════════════════════════════════════
+function renderROIDashboard(data) {
+  if (!data) return;
+  const byP  = data.by_platform || {};
+  const intel= data.intelligence || {};
+  const pages= data.top_pages    || [];
+
+  // Platform cards
+  const PLATFORM_META = {
+    google_ads:   { name: '🔴 Google Ads',     color: '#EA4335' },
+    msft_ads:     { name: '🟦 Microsoft Ads',  color: '#0078d4' },
+    linkedin_ads: { name: '🔵 LinkedIn Ads',   color: '#0077B5' },
+    billboard:    { name: '🏗️ Billboard',      color: '#C8A84B' }
+  };
+
+  const cards = Object.entries(PLATFORM_META).map(([p, meta]) => {
+    const d = byP[p] || {};
+    const roi = d.spend > 0 ? Math.round((d.conversionRevenue - d.spend) / d.spend * 100) : null;
+    const cpm = d.meetings > 0 ? Math.round(d.spend / d.meetings) : null;
+    return `
+      <div class="platform-roi-card" style="border-top-color:${meta.color};">
+        <div class="prc-name" style="color:${meta.color};">${meta.name}</div>
+        <div class="prc-grid">
+          <div>
+            <div class="prc-val">$${fmtNum(Math.round(d.spend||0))}</div>
+            <div class="prc-lbl">Spend</div>
+          </div>
+          <div>
+            <div class="prc-val" style="color:${roi>0?'var(--green)':roi<0?'var(--red)':'var(--muted)'};">${roi!=null?roi+'%':'–'}</div>
+            <div class="prc-lbl">ROI</div>
+          </div>
+          <div>
+            <div class="prc-val">${fmtNum(d.meetings||0)}</div>
+            <div class="prc-lbl">Meetings</div>
+          </div>
+          <div>
+            <div class="prc-val">${cpm!=null?'$'+cpm:'–'}</div>
+            <div class="prc-lbl">Cost/Mtg</div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);">
+          ${fmtNum(d.newCustomers||0)} new customers · $${fmtNum(Math.round(d.conversionRevenue||0))} revenue
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('platformCards').innerHTML = cards;
+
+  // Winning messages
+  const msgs = intel.winning_messages || [];
+  document.getElementById('winningMessages').innerHTML = msgs.length
+    ? msgs.map(m => `<span class="intel-pill">${m}</span>`).join('')
+    : '<span style="font-size:13px;color:var(--muted);">No victories yet — win a deal and it appears here.</span>';
+
+  // Winning use cases
+  const uc = intel.winning_use_cases || [];
+  document.getElementById('winningUseCases').innerHTML = uc.length
+    ? uc.map(u => `<span class="intel-pill" style="background:#f0fdf4;color:#166534;">${u}</span>`).join('')
+    : '<span style="font-size:13px;color:var(--muted);">No victories yet.</span>';
+
+  document.getElementById('ovAvgRevenue').textContent = intel.avg_deal_revenue ? '$' + fmtNum(intel.avg_deal_revenue) : '–';
+  document.getElementById('ovVictories').textContent  = intel.total_victories || 0;
+
+  // Top pages
+  const pb = document.getElementById('topPagesBody');
+  pb.innerHTML = pages.length ? pages.map(p => `
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:10px 14px;"><strong>${p.name || '–'}</strong></td>
+      <td style="padding:10px 8px;text-align:right;">${fmtNum(p.views)}</td>
+      <td style="padding:10px 8px;text-align:right;font-weight:700;color:var(--green);">${fmtNum(p.conversions)}</td>
+      <td style="padding:10px 14px;text-align:right;">$${fmtNum(Math.round(p.revenue||0))}</td>
+    </tr>`).join('')
+    : '<tr><td colspan="4" style="padding:20px;text-align:center;color:var(--muted);">No page data yet.</td></tr>';
+}
+
+async function loadAttributionData() {
+  const chain = document.getElementById('attributionChain');
+  chain.innerHTML = '<div style="padding:20px;color:var(--muted);">Loading…</div>';
+  try {
+    const res  = await apiCall(N8N.getAttribution);
+    const data = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    const bp   = data.by_platform || {};
+    const pa   = data.page_attribution || [];
+
+    // Sum totals across platforms
+    let totalSpend = 0, totalMeetings = 0, totalCustomers = 0, totalRevenue = 0;
+    for (const d of Object.values(bp)) {
+      totalSpend    += d.spend    || 0;
+      totalMeetings += d.meetings || 0;
+      totalCustomers+= d.customers|| 0;
+      totalRevenue  += d.revenue  || 0;
+    }
+    const roi = totalSpend > 0 ? Math.round((totalRevenue - totalSpend) / totalSpend * 100) : 0;
+
+    chain.innerHTML = `
+      <div class="attr-step">
+        <div class="attr-val">$${fmtNum(Math.round(totalSpend))}</div>
+        <div class="attr-lbl">Ad Spend</div>
+      </div>
+      <div class="attr-step">
+        <div class="attr-val">${fmtNum(totalMeetings)}</div>
+        <div class="attr-lbl">Meetings</div>
+        <div class="attr-sub">${totalSpend>0&&totalMeetings>0?'$'+Math.round(totalSpend/totalMeetings)+'/mtg':''}</div>
+      </div>
+      <div class="attr-step">
+        <div class="attr-val">${fmtNum(totalCustomers)}</div>
+        <div class="attr-lbl">New Customers</div>
+        <div class="attr-sub">${totalMeetings>0?Math.round(totalCustomers/totalMeetings*100)+'% close rate':''}</div>
+      </div>
+      <div class="attr-step">
+        <div class="attr-val" style="color:${roi>=0?'var(--green)':'var(--red)'};">$${fmtNum(Math.round(totalRevenue))}</div>
+        <div class="attr-lbl">Revenue Won</div>
+        <div class="attr-sub" style="color:${roi>=0?'var(--green)':'var(--red)'};">${roi}% ROI</div>
+      </div>
+    `;
+
+    // Top messages if available
+    if (res.top_messages?.length) {
+      const msgs = res.top_messages.slice(0,3).map(m => m.message || m).join(' · ');
+      chain.innerHTML += `<div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--muted);"><strong>Winning Messages:</strong> ${msgs}</div>`;
+    }
+  } catch(e) {
+    chain.innerHTML = '<div style="padding:20px;color:var(--muted);">Attribution data unavailable — launch campaigns to see funnel data.</div>';
+  }
+}
+
+// ══════════════════════════════════════
+// LANDING PAGES TAB
+// ══════════════════════════════════════
+async function loadPlatformPages() {
+  const tbody = document.getElementById('pagesBody');
+  tbody.innerHTML = '<tr><td colspan="6" style="padding:30px;text-align:center;color:var(--muted);">Loading…</td></tr>';
+  try {
+    const res   = await apiCall(N8N.getPages);
+    const pages = Array.isArray(res) ? res : (res.value || res.pages || []);
+    if (!pages.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:30px;text-align:center;color:var(--muted);">No landing pages found. Create pages in the Pages section.</td></tr>';
+      renderPageLessons([]);
+      return;
+    }
+    tbody.innerHTML = pages.map(p => {
+      const views = Number(p.views) || 0;
+      const convs = Number(p.conversions) || 0;
+      const rate  = views > 0 ? (convs / views * 100).toFixed(1) + '%' : '–';
+      let sources = {};
+      try { sources = typeof p.visitor_sources === 'string' ? JSON.parse(p.visitor_sources) : (p.visitor_sources || {}); } catch(e) {}
+      const topSrc = Object.entries(sources).sort((a,b)=>b[1]-a[1]).slice(0,3)
+        .map(([k,v]) => `<span style="font-size:11px;background:#e0f2fe;color:#0369a1;padding:2px 7px;border-radius:10px;margin:1px;">${k} (${v})</span>`).join('');
+      return `
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 14px;"><strong>${p.page_name||p.name||'–'}</strong></td>
+          <td style="padding:10px 8px;text-align:right;">${fmtNum(views)}</td>
+          <td style="padding:10px 8px;text-align:right;font-weight:700;color:var(--green);">${fmtNum(convs)}</td>
+          <td style="padding:10px 8px;text-align:right;">${rate}</td>
+          <td style="padding:10px 8px;text-align:right;">$${fmtNum(Math.round(Number(p.revenue)||0))}</td>
+          <td style="padding:10px 14px;">${topSrc || '<span style="font-size:12px;color:var(--muted);">No source data</span>'}</td>
+        </tr>`;
+    }).join('');
+    renderPageLessons(pages);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--red);">Failed to load pages.</td></tr>`;
+  }
+}
+
+function renderPageLessons(pages) {
+  const el = document.getElementById('pageLessons');
+  const sorted = [...pages].sort((a,b)=>(Number(b.conversions)||0)-(Number(a.conversions)||0));
+  const best = sorted[0];
+  if (!best) {
+    el.innerHTML = '<div style="padding:14px;background:var(--bg);border-radius:8px;font-size:13px;color:var(--muted);">No conversion data yet. Pages with highest conversion rates will surface winning patterns here.</div>';
+    return;
+  }
+  let sources = {};
+  try { sources = typeof best.visitor_sources === 'string' ? JSON.parse(best.visitor_sources) : (best.visitor_sources || {}); } catch(e) {}
+  const topSrcName = Object.entries(sources).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'direct';
+  const views = Number(best.views)||0;
+  const convs = Number(best.conversions)||0;
+  const rate  = views > 0 ? (convs/views*100).toFixed(1) : '0';
+
+  el.innerHTML = `
+    <div style="padding:14px;background:#f0fdf4;border-radius:8px;border-left:3px solid var(--green);">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;">Best Converter: ${best.page_name||best.name||'–'}</div>
+      <div style="font-size:12px;color:var(--muted);">${rate}% conversion rate · Top source: ${topSrcName}</div>
+      <div style="font-size:12px;margin-top:6px;color:var(--navy);">Use this page as the landing URL for <strong>all platforms</strong>. A/B test the headline copy across Google, MSFT, and LinkedIn.</div>
+    </div>
+    <div style="padding:14px;background:#eff6ff;border-radius:8px;border-left:3px solid #3b82f6;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:4px;">Cross-Platform Propagation</div>
+      <div style="font-size:12px;color:var(--muted);">The AI Optimizer uses this conversion rate as the benchmark when scoring your Google and MSFT campaigns. Higher-converting pages automatically get more budget allocation recommendations.</div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════
+// OPTIMIZER
+// ══════════════════════════════════════
+async function loadOptimizations() {
+  const feed = document.getElementById('optFeed');
+  feed.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);">Loading…</div>';
+  try {
+    const res = await apiCall(N8N.getOptimizations);
+    const items = Array.isArray(res) ? res : (res.recommendations || []);
+    if (!items.length) {
+      feed.innerHTML = `<div class="empty-state"><div class="icon">🤖</div><h3>No Recommendations Yet</h3><p>Activate a campaign. Optimizer runs after 48 hours of data.</p></div>`;
+      return;
+    }
+    feed.innerHTML = items.map((item, i) => {
+      const pColor = PLATFORM_COLORS[item.platform] || 'var(--navy)';
+      const recKey = `_rec_${i}`;
+      window[recKey] = item; // store rec object for onclick
+      return `
+      <div class="opt-item ${item.priority === 'high' ? 'pause' : ''}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <span style="font-size:10px;background:${pColor}22;color:${pColor};padding:2px 8px;border-radius:10px;font-weight:700;">${(item.platform||'').replace('_ads','').toUpperCase()}</span>
+          <span style="font-size:10px;background:${item.priority==='high'?'#fee2e2':'#fef3c7'};color:${item.priority==='high'?'#991b1b':'#92400e'};padding:2px 8px;border-radius:10px;font-weight:700;">${item.priority?.toUpperCase()||'MEDIUM'}</span>
+        </div>
+        <div class="opt-title">${item.action_type?.toUpperCase().replace('_',' ')}: Ad #${item.ad_id}</div>
+        <div class="opt-desc">${item.rationale}</div>
+        <div class="opt-actions">
+          <button class="btn btn-sm btn-primary" onclick="applyOpt(window['${recKey}'],'apply')">✅ Apply</button>
+          <button class="btn btn-sm btn-ghost" onclick="applyOpt(window['${recKey}'],'dismiss')">Dismiss</button>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    feed.innerHTML = `<div style="color:var(--red);padding:12px;">Failed to load recommendations.</div>`;
+  }
+}
+
+async function applyOpt(rec, action) {
+  if (action === 'dismiss') { showStatus('Recommendation dismissed.', false); loadOptimizations(); return; }
+  try {
+    await apiCall(N8N.applyOptimization, {
+      ad_id:        rec.ad_id,
+      platform:     rec.platform,
+      action_type:  rec.action_type,
+      rationale:    rec.rationale,
+      before_value: rec.before_value,
+      after_value:  rec.after_value,
+      kpi_snapshot: rec.kpi_snapshot,
+      applied_by:   CUSTOMER_ID
+    });
+    showStatus('✅ Optimization applied!', false);
+    adsData = null; // invalidate cache
+    loadKPIs();
+    loadOptimizations();
+  } catch(e) { showStatus('Failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// ACTIVE CAMPAIGNS TABLE
+// ══════════════════════════════════════
+async function loadCampaigns() {
+  const tbody = document.getElementById('campaignsBody');
+  tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--muted);">Loading…</td></tr>';
+  try {
+    // Use cached adsData if already loaded, otherwise fetch fresh
+    const res  = adsData || await apiCall(N8N.getAllAds);
+    const data = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    allAds = Array.isArray(data) ? data : (data.ads || data.value || []);
+    renderCampaignsTable(allAds);
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--red);">Failed to load campaigns.</td></tr>`;
+  }
+}
+
+const PLATFORM_COLORS = {
+  google_ads:   '#EA4335',
+  msft_ads:     '#0078d4',
+  linkedin_ads: '#0077B5',
+  linkedin:     '#0077B5',
+  billboard:    '#C8A84B'
+};
+
+function renderCampaignsTable(ads) {
+  const tbody = document.getElementById('campaignsBody');
+  if (!ads.length) {
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px;color:var(--muted);">No campaigns yet. Create one from the LinkedIn, Google Ads, or Microsoft Ads tabs.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = ads.map(function(ad) {
+    var platform  = ad.platform || ad.type || 'linkedin_ads';
+    var platColor = PLATFORM_COLORS[platform] || 'var(--navy)';
+    var spend     = Number(ad.spend || ad.spend_usd) || 0;
+    var revenue   = Number(ad.conversion_revenue) || 0;
+    var roi       = spend > 0 ? Math.round((revenue - spend) / spend * 100) : null;
+    var roiColor  = roi != null && roi >= 0 ? 'var(--green)' : 'var(--red)';
+    var roiStr    = roi != null ? '<span style="font-weight:700;color:' + roiColor + ';">' + roi + '%</span>' : '&ndash;';
+    var cpm       = ad.cost_per_meeting ? '$' + Math.round(ad.cost_per_meeting) : (spend > 0 && (ad.meetings_booked || 0) > 0 ? '$' + Math.round(spend / (ad.meetings_booked || 1)) : '&ndash;');
+    var pauseBtn  = ad.status === 'ACTIVE' ? '<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;margin-left:4px;" onclick="pauseCampaign(\'' + ad.id + '\')">&#9208;</button>' : '';
+    var dateStr   = ad.created_at ? new Date(ad.created_at).toLocaleDateString() : '';
+    var platLabel = platform.replace('_ads', '').replace('_', ' ').toUpperCase();
+    var statusLbl = (ad.status || 'Draft');
+    var statusCls = (ad.status || 'draft').toLowerCase();
+    return '<tr>' +
+      '<td style="padding:10px 14px;"><strong>' + (ad.campaign_name || ad.name || '&ndash;') + '</strong><br><span style="font-size:11px;color:var(--muted);">' + dateStr + '</span></td>' +
+      '<td style="padding:10px 8px;"><span style="font-size:11px;background:' + platColor + '22;color:' + platColor + ';padding:2px 8px;border-radius:3px;font-weight:700;">' + platLabel + '</span></td>' +
+      '<td style="padding:10px 8px;font-size:12px;">' + (ad.audience_tier || ad.audience_segment || '&ndash;') + '</td>' +
+      '<td style="padding:10px 8px;">$' + fmtNum(Math.round(spend)) + '</td>' +
+      '<td style="padding:10px 8px;font-weight:700;color:var(--green);">' + fmtNum(ad.new_customers || 0) + '</td>' +
+      '<td style="padding:10px 8px;">$' + fmtNum(Math.round(revenue)) + '</td>' +
+      '<td style="padding:10px 8px;">' + roiStr + '</td>' +
+      '<td style="padding:10px 8px;font-weight:700;">' + fmtNum(ad.meetings_booked || 0) + '</td>' +
+      '<td style="padding:10px 8px;">' + cpm + '</td>' +
+      '<td style="padding:10px 8px;"><span class="status-badge status-' + statusCls + '">' + statusLbl + '</span></td>' +
+      '<td style="padding:10px 8px;"><button class="btn btn-sm btn-ghost" onclick="openCampaignDetail(\'' + ad.id + '\')">Details</button>' + pauseBtn + '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+function filterCampaigns() {
+  const q    = document.getElementById('campaignSearch').value.toLowerCase();
+  const type = document.getElementById('campaignTypeFilter').value;
+  const filtered = allAds.filter(a =>
+    (!q || (a.campaign_name||a.name||'').toLowerCase().includes(q)) &&
+    (!type || (a.platform||a.type||'linkedin_ads') === type)
+  );
+  renderCampaignsTable(filtered);
+}
+
+// ══════════════════════════════════════
+// PLATFORM CONNECTION STATUS
+// ══════════════════════════════════════
+function updatePlatformConnectionUI(adAccounts) {
+  // Determine connection by checking if the user has account IDs saved (set in Settings)
+  // — these are only saved after OAuth + entering the account ID.
+  const connectionMap = {
+    google_ads: !!(userData?.google_ads_customer_id),
+    msft_ads:   !!(userData?.msft_ads_account_id)
+  };
+
+  for (const platform of ['google_ads', 'msft_ads']) {
+    const connected = connectionMap[platform];
+    const prefix = platform === 'google_ads' ? 'google' : 'msft';
+
+    const badge     = document.getElementById(`${prefix}ConnectBadge`);
+    const notConn   = document.getElementById(`${prefix}NotConnected`);
+    const connDiv   = document.getElementById(`${prefix}Connected`);
+    const step1Icon = document.getElementById(`${prefix === 'google' ? 'g' : 'm'}Step1Icon`);
+
+    if (badge) badge.textContent = connected ? '✓ Connected' : 'Not Connected';
+    if (notConn) notConn.style.display = connected ? 'none' : 'block';
+    if (connDiv) connDiv.style.display = connected ? 'block' : 'none';
+    if (step1Icon) { step1Icon.textContent = connected ? '✓' : '○'; step1Icon.parentElement.classList.toggle('done', !!connected); }
+
+    // MSFT-specific: also check UET tag step
+    if (platform === 'msft_ads') {
+      const hasUet = !!(userData?.msft_pixel);
+      const step2 = document.getElementById('mStep2Icon');
+      if (step2) { step2.textContent = hasUet ? '✓' : '○'; step2.parentElement.classList.toggle('done', hasUet); }
+    }
+  }
+}
+
+function openCreateAdModal(platform) {
+  const labels = { google_ads: '🔍 New Google Campaign', msft_ads: '🪟 New Microsoft Campaign', linkedin_ads: '📣 New LinkedIn Campaign' };
+  document.getElementById('createAdModalTitle').textContent = labels[platform] || 'New Campaign';
+  document.getElementById('createAdPlatform').value = platform;
+  document.getElementById('createAdName').value = '';
+  document.getElementById('createAdTitle').value = '';
+  document.getElementById('createAdText').value = '';
+  document.getElementById('createAdBudget').value = '50';
+  document.getElementById('createAdStatus').textContent = '';
+  document.getElementById('modalAutoGenBtn').textContent = '✨ Auto-generate with AI';
+  document.getElementById('modalAutoGenBtn').disabled = false;
+
+  // Populate landing pages — try adsData first, then fetch fresh if empty
+  populateModalPages();
+  // Reset audience mode to both (default) + refresh counts for real numbers + firmographics
+  modalAudienceMode = 'both';
+  const pills = document.querySelectorAll('#modalAudienceOptions .segment-pill');
+  pills.forEach(p => p.classList.toggle('selected', p.dataset.mode === 'both'));
+  const coldPanel = document.getElementById('coldTargetingPanel');
+  const warmPanel = document.getElementById('warmTargetingPanel');
+  if (coldPanel) coldPanel.style.display = 'block';
+  if (warmPanel) warmPanel.style.display = 'block';
+  loadAudienceCounts();
+  document.getElementById('createAdModal').classList.add('open');
+}
+
+function closeCreateAdModal() {
+  document.getElementById('createAdModal').classList.remove('open');
+}
+
+async function submitCreateAd() {
+  const btn = document.querySelector('#createAdModal .btn-primary');
+  const statusEl = document.getElementById('createAdStatus');
+  const platform = document.getElementById('createAdPlatform').value;
+  const campaign_name = document.getElementById('createAdName').value.trim();
+  const title = document.getElementById('createAdTitle').value.trim();
+  if (!campaign_name || !title) { statusEl.textContent = '⚠️ Campaign name and headline are required.'; return; }
+  btn.disabled = true; btn.textContent = '⏳ Launching…';
+  statusEl.textContent = '';
+
+  // Select platform-specific launch endpoint
+  const endpointMap = {
+    linkedin_ads: N8N.launchLinkedIn,
+    google_ads:   N8N.launchGoogle,
+    msft_ads:     N8N.launchMsft
+  };
+  const endpoint = endpointMap[platform];
+  if (!endpoint) { statusEl.textContent = '⚠️ Unknown platform: ' + platform; btn.disabled = false; btn.textContent = '🚀 Launch Campaign'; return; }
+
+  try {
+    // Collect cold targeting selections
+    function pickMulti(id) {
+      const sel = document.getElementById(id);
+      if (!sel) return [];
+      return Array.from(sel.selectedOptions).map(o => o.value);
+    }
+    const coldTargeting = {
+      industries: pickMulti('coldIndustries'),
+      titles:     pickMulti('coldTitles'),
+      locations:  pickMulti('coldLocations'),
+      companies:  pickMulti('coldCompanies')
+    };
+
+    const payload = {
+      campaign_name,
+      headline: title,
+      copy:            document.getElementById('createAdText').value.trim(),
+      url:             (function(){
+        const sel = document.getElementById('createAdLandingPage');
+        const pageId = sel.value;
+        if (pageId && adsData && adsData.pages) {
+          const p = (Array.isArray(adsData.pages) ? adsData.pages : []).find(function(x){ return String(x.id) === String(pageId); });
+          if (p && (p.URL || p.url)) return p.URL || p.url;
+        }
+        return 'https://victoryvision.app';
+      })(),
+      landing_page_id: document.getElementById('createAdLandingPage').value || null,
+      daily_budget:    parseFloat(document.getElementById('createAdBudget').value) || 50,
+      // New audience schema: mode + cold targeting details + warm flag
+      audience_mode:   modalAudienceMode,                      // cold | warm | both
+      cold_targeting:  coldTargeting,                          // { industries, titles, locations, companies }
+      warm_retarget:   modalAudienceMode !== 'cold',           // include warm match list when warm or both
+      // Legacy field (backward compat with launch workflows currently ignoring it)
+      audience_tier:   modalAudienceMode.toUpperCase()
+    };
+    const raw = await apiCall(endpoint, payload);
+    const res = Array.isArray(raw) ? raw[0] : raw;
+
+    if (res && res.success) {
+      closeCreateAdModal();
+      const platformLabels = { linkedin_ads: 'LinkedIn', google_ads: 'Google Ads', msft_ads: 'Microsoft Ads' };
+      const pLabel = platformLabels[platform] || platform;
+      const deepLinkHtml = res.deep_link ? ` <a href="${res.deep_link}" target="_blank" style="color:var(--navy);text-decoration:underline;">View in ${pLabel} →</a>` : '';
+      showStatus(`🚀 ${pLabel} campaign created as ${res.status || 'DRAFT'}!${deepLinkHtml}`, false);
+      adsData = null;
+      loadKPIs();
+      switchTab('active');
+      loadCampaigns();
+    } else {
+      // Friendly error decoding for common cases
+      const raw_err = (res && (res.error || res.message)) || 'Unknown error';
+      let friendly = raw_err;
+      if (/DEVELOPER_TOKEN_NOT_APPROVED/i.test(raw_err)) {
+        friendly = '⛔ Google Ads developer token not approved yet. Apply for Basic Access at developers.google.com/google-ads/api/docs/access-levels and ensure your customer ID is linked to that dev token.';
+      } else if (/InvalidCredentials/i.test(raw_err) || /Authentication failed/i.test(raw_err)) {
+        friendly = '⛔ Microsoft Ads credentials rejected. Check: (1) your dev token is production-tier (not sandbox), (2) msft_ads_account_id is correct, (3) re-connect via Settings → Microsoft Ads OAuth.';
+      } else if (/li_ad_account is not set/i.test(raw_err)) {
+        friendly = '⛔ LinkedIn Ad Account ID is missing. Go to Settings → enter your LinkedIn Ad Account ID.';
+      } else if (/google_ads_customer_id is not set/i.test(raw_err)) {
+        friendly = '⛔ Google Ads Customer ID missing. Enter it in Settings.';
+      } else if (/msft_ads_account_id is not set/i.test(raw_err)) {
+        friendly = '⛔ Microsoft Ads Account ID missing. Enter it in Settings.';
+      } else if (/No refresh_token/i.test(raw_err)) {
+        friendly = '⛔ Not connected to this platform yet. Go to Settings and click Connect for this platform.';
+      }
+      statusEl.innerHTML = friendly;
+      btn.disabled = false; btn.textContent = '🚀 Launch Campaign';
+    }
+  } catch(e) {
+    statusEl.textContent = '❌ ' + e.message;
+    btn.disabled = false; btn.textContent = '🚀 Launch Campaign';
+  }
+}
+
+async function pauseCampaign(id) {
+  if (!confirm('Pause this campaign?')) return;
+  try {
+    await apiCall(N8N.liPauseCampaign, { campaign_id: id });
+    showStatus('Campaign paused.', false);
+    loadCampaigns();
+  } catch(e) { showStatus('Failed: ' + e.message, true); }
+}
+
+function openCampaignDetail(id) {
+  const ad = allAds.find(a => a.id === id);
+  if (!ad) return;
+  document.getElementById('campaignModalTitle').textContent = ad.name || ad.campaign_name || 'Campaign Details';
+  document.getElementById('campaignModalBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div><strong>Status:</strong> <span class="status-badge status-${(ad.status||'draft').toLowerCase()}">${ad.status||'Draft'}</span></div>
+      <div><strong>Type:</strong> ${ad.type || 'LinkedIn'}</div>
+      <div><strong>Audience:</strong> ${ad.audience_segment || '–'}</div>
+      <div><strong>Daily Budget:</strong> $${ad.daily_budget_usd || '–'}</div>
+      <div><strong>Impressions:</strong> ${fmtNum(ad.impressions)}</div>
+      <div><strong>Clicks:</strong> ${fmtNum(ad.clicks)}</div>
+      <div><strong>Meetings:</strong> ${ad.meetings_booked || 0}</div>
+      <div><strong>Total Spend:</strong> $${(ad.spend_usd||0).toFixed(2)}</div>
+      <div><strong>Cost/Meeting:</strong> ${ad.cost_per_meeting ? '$'+ad.cost_per_meeting.toFixed(2) : '–'}</div>
+      <div><strong>Started:</strong> ${ad.start_date || '–'}</div>
+    </div>
+    ${ad.asset_url ? `<img src="${ad.asset_url}" style="width:100%;border-radius:6px;max-height:200px;object-fit:cover;margin-bottom:16px;">` : ''}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      ${ad.status === 'ACTIVE' ? `<button class="btn btn-sm" style="background:#f59e0b;color:white;border:none;" onclick="pauseCampaign('${ad.id}');closeCampaignModal()">⏸ Pause Campaign</button>` : ''}
+      <button class="btn btn-sm btn-red" onclick="deleteCampaign('${ad.id}')">🗑 Delete</button>
+    </div>
+  `;
+  document.getElementById('campaignModal').classList.add('open');
+}
+
+function closeCampaignModal() { document.getElementById('campaignModal').classList.remove('open'); }
+
+async function deleteCampaign(id) {
+  if (!confirm('Permanently delete this campaign?')) return;
+  try {
+    await apiCall(N8N.removeAd, { ad_id: id });
+    showStatus('Campaign deleted.', false);
+    closeCampaignModal();
+    loadCampaigns();
+  } catch(e) { showStatus('Delete failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// BILLBOARD
+// ══════════════════════════════════════
+function updateBBPreview() {
+  document.getElementById('bbPreviewHeadline').textContent = document.getElementById('bbHeadline').value || 'YOUR HEADLINE';
+  document.getElementById('bbPreviewMessage').textContent  = document.getElementById('bbMessage').value  || 'Your message appears here';
+  document.getElementById('bbPreviewCTA').textContent      = document.getElementById('bbCTA').value      || 'Call to Action';
+}
+
+function updateBBPreviewImg() {
+  const url = document.getElementById('bbImageSelect').value;
+  const bg  = document.getElementById('bbBg');
+  if (url) { bg.src = url; bg.style.display = 'block'; }
+  else      { bg.style.display = 'none'; }
+}
+
+function downloadBillboard() {
+  showStatus('Billboard download requires html2canvas. Integrate via your media.html workflow.', false);
+}
+
+async function generateBBAICopy() {
+  showStatus('Generating billboard headline with AI…', false);
+  try {
+    const res = await apiCall(N8N.liGenerateAICopy, { mode: 'billboard' });
+    if (res.headline) {
+      document.getElementById('bbHeadline').value = res.headline;
+      document.getElementById('bbMessage').value  = res.tagline || '';
+      document.getElementById('bbCTA').value      = res.cta || 'Call Now';
+      updateBBPreview();
+    }
+  } catch(e) { showStatus('AI generation failed.', true); }
+}
+
+async function loadBillboardInventory() {
+  const grid = document.getElementById('billboardInventory');
+  try {
+    const res = await apiCall(N8N.getBillboardInventory);
+    allBillboards = Array.isArray(res) ? res : (res.inventory || MOCK_BILLBOARDS);
+    filteredBillboards = [...allBillboards];
+    renderBillboards();
+  } catch(e) {
+    allBillboards = MOCK_BILLBOARDS;
+    filteredBillboards = [...MOCK_BILLBOARDS];
+    renderBillboards();
+  }
+}
+
+// Mock inventory for display until webhook is live
+const MOCK_BILLBOARDS = [
+  { id:'bb1', owner:'Martinez Outdoor', location:'Houston, TX – I-10 W', size:'14×48', impressions_daily:48000, price_per_month:3200, available_from:'2026-04-01', img:'' },
+  { id:'bb2', owner:'Liberty Signs LLC', location:'Phoenix, AZ – Loop 101', size:'14×48', impressions_daily:62000, price_per_month:4100, available_from:'2026-04-15', img:'' },
+  { id:'bb3', owner:'Southern Outdoor Media', location:'Atlanta, GA – I-285', size:'10×36', impressions_daily:35000, price_per_month:2400, available_from:'2026-04-01', img:'' },
+  { id:'bb4', owner:'Heartland Billboard Co.', location:'Kansas City, MO – I-70', size:'14×48', impressions_daily:28000, price_per_month:1800, available_from:'2026-05-01', img:'' },
+  { id:'bb5', owner:'Sun State Outdoor', location:'Tampa, FL – US-19', size:'12×36', impressions_daily:41000, price_per_month:2900, available_from:'2026-04-01', img:'' },
+  { id:'bb6', owner:'Blue Ridge Media', location:'Charlotte, NC – I-485', size:'14×48', impressions_daily:38000, price_per_month:2600, available_from:'2026-04-15', img:'' },
+];
+
+function renderBillboards() {
+  const grid = document.getElementById('billboardInventory');
+  if (!filteredBillboards.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="icon">📍</div><h3>No Results</h3><p>Try adjusting your filters.</p></div>`;
+    return;
+  }
+  grid.innerHTML = filteredBillboards.map(bb => `
+    <div class="bb-slot" onclick="openBBModal('${bb.id}')">
+      <div class="bb-slot-img">
+        ${bb.img ? `<img src="${bb.img}" style="width:100%;height:100%;object-fit:cover;">` : '<span>📍 Billboard Preview</span>'}
+      </div>
+      <div class="bb-slot-info">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div class="bb-slot-location">${bb.location}</div>
+          <span class="bb-owner-badge">Independent</span>
+        </div>
+        <div class="bb-slot-meta">
+          <span>📐 ${bb.size} ft</span>
+          <span>👁 ${fmtNum(bb.impressions_daily)}/day</span>
+          <span>📅 Available ${bb.available_from}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+          <div class="bb-slot-price">$${fmtNum(bb.price_per_month)}<span style="font-size:11px;font-weight:400;color:var(--muted);">/mo</span></div>
+          <button class="btn btn-sm btn-primary">Reserve →</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Owner: ${bb.owner}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterBillboards() {
+  const q        = document.getElementById('bbSearch').value.toLowerCase();
+  const maxPrice = parseInt(document.getElementById('bbMaxPrice').value) || Infinity;
+  filteredBillboards = allBillboards.filter(bb =>
+    (!q || bb.location.toLowerCase().includes(q) || bb.owner.toLowerCase().includes(q)) &&
+    (bb.price_per_month <= maxPrice)
+  );
+  renderBillboards();
+}
+
+function openBBModal(id) {
+  const bb = allBillboards.find(b => b.id === id);
+  if (!bb) return;
+  document.getElementById('bbModalTitle').textContent = bb.location;
+  document.getElementById('bbModalBody').innerHTML = `
+    <div style="margin-bottom:16px;">
+      <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px;">
+          <div><strong>Location:</strong> ${bb.location}</div>
+          <div><strong>Size:</strong> ${bb.size} ft</div>
+          <div><strong>Daily Impressions:</strong> ${fmtNum(bb.impressions_daily)}</div>
+          <div><strong>Price:</strong> $${fmtNum(bb.price_per_month)}/month</div>
+          <div><strong>Available:</strong> ${bb.available_from}</div>
+          <div><strong>Owner:</strong> ${bb.owner}</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Campaign Duration</label>
+        <select id="bbDuration">
+          <option value="1month">1 Month — $${fmtNum(bb.price_per_month)}</option>
+          <option value="3month" selected>3 Months — $${fmtNum(bb.price_per_month * 3)} (save 5%)</option>
+          <option value="6month">6 Months — $${fmtNum(bb.price_per_month * 5.7)} (save 10%)</option>
+          <option value="12month">12 Months — $${fmtNum(bb.price_per_month * 10)} (save 17%)</option>
+        </select>
+      </div>
+      <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;font-size:13px;margin-bottom:16px;">
+        💡 <strong>Pro tip:</strong> Upload your Victory Vision–designed billboard creative for this location before reserving.
+      </div>
+      <button class="btn btn-green btn-full" onclick="reserveBillboard('${bb.id}')">
+        ✅ Reserve & Proceed to Payment
+      </button>
+    </div>
+  `;
+  document.getElementById('bbModal').classList.add('open');
+}
+
+function closeBBModal() { document.getElementById('bbModal').classList.remove('open'); }
+
+async function reserveBillboard(id) {
+  const duration = document.getElementById('bbDuration').value;
+  const bb = allBillboards.find(b => b.id === id);
+  try {
+    const res = await apiCall(N8N.getCheckout, {
+      type: 'billboard',
+      billboard_id: id,
+      duration,
+      price: bb.price_per_month,
+      success_url: `${window.location.origin}/ads?success=true&type=billboard`,
+      cancel_url:  `${window.location.origin}/ads`
+    });
+    if (res.checkout_url) window.location.href = res.checkout_url;
+  } catch(e) { showStatus('Checkout failed: ' + e.message, true); }
+}
+
+// ══════════════════════════════════════
+// LANDING PAGES DROPDOWN
+// ══════════════════════════════════════
+async function loadLandingPages() {
+  try {
+    const res = await apiCall(N8N.getPages);
+    const pages = Array.isArray(res) ? res : (res.pages || res.value || []);
+    const sel = document.getElementById('adLandingPage');
+    pages.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.url || p.page_url || '';
+      opt.textContent = p.name || p.page_name || p.url || 'Untitled Page';
+      sel.appendChild(opt);
+    });
+  } catch(e) { /* silent */ }
+}
+
+// ══════════════════════════════════════
+// CAMPAIGN FILTER DROPDOWN
+// ══════════════════════════════════════
+async function loadCampaignFilters() {
+  try {
+    const res = await apiCall(N8N.getCampaigns);
+    const campaigns = Array.isArray(res) ? res : (res.value || []);
+    const sel = document.getElementById('creativeCampaignFilter');
+    campaigns.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.name || c.campaign_name || c.id;
+      sel.appendChild(opt);
+    });
+  } catch(e) { /* silent */ }
+}
+
+// ══════════════════════════════════════
+// USER DATA
+// ══════════════════════════════════════
+async function loadUserData() {
+  try {
+    // Use GET (no custom headers) to avoid CORS preflight on this endpoint
+    const r = await fetch(N8N.getUserData + '?customer_id=' + encodeURIComponent(CUSTOMER_ID));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const res = await r.json();
+    userData = Array.isArray(res) ? res[0] : (res.value?.[0] || res);
+    const plan = (userData?.subscription_plan || 'bronze').toLowerCase();
+    const med  = document.getElementById('subscriptionMedallion');
+    med.className = `medallion ${plan}`;
+    document.getElementById('planName').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    // User is "LinkedIn connected" if they have an ad account ID saved (set in Settings)
+    liConnected = !!(userData?.li_ad_account);
+  } catch(e) { /* silent */ }
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function fmtNum(n) {
+  if (!n && n !== 0) return '–';
+  return Number(n).toLocaleString();
+}
+
+function showStatus(msg, isError) {
+  const el = document.getElementById('statusMessage');
+  el.innerHTML = msg;  // innerHTML to support links in success messages
+  el.className = `status-message ${isError ? 'status-error' : 'status-success'}`;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 8000);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+async function init() {
+  document.getElementById('authLoading').style.display = 'flex';
+  const ok = await checkAuthentication();
+  if (!ok) { redirectToLogin(); return; }
+  document.getElementById('authLoading').style.display = 'none';
+
+  // Set today as default start date
+  document.getElementById('adStartDate').valueAsDate = new Date();
+
+  await Promise.allSettled([
+    loadUserData(),
+    loadAudienceCounts(),
+    loadKPIs(),      // loads adsData + renders ROI dashboard
+    loadCreatives(),
+    loadLandingPages(),
+    loadCampaignFilters(),
+    loadBillboardInventory(),
+    loadOptimizations(),
+    loadPlatformPages(),
+    loadAttributionData()
+  ]);
+
+  // After KPIs loaded (which caches adsData), load campaigns table
+  loadCampaigns();
+
+  // Update platform connection UI from cached adsData
+  if (adsData?.ad_accounts) updatePlatformConnectionUI(adsData.ad_accounts);
+
+  checkDeepLink();
+
+  if (!hasCompletedTour()) {
+    setTimeout(startTour, 800);
+  }
+  // Auto-trigger tour from email link (?tour=)
+  if (new URLSearchParams(window.location.search).get('tour')) setTimeout(startTour, 1200);
+}
+
+// Session keepalive
+setInterval(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) redirectToLogin();
+  else authToken = session.access_token;
+}, 300000);
+
+document.addEventListener('visibilitychange', async () => {
+  if (!document.hidden) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) redirectToLogin();
+  }
+});
+
+// Global exposure
+window.startTour = startTour;
+window.logout = logout;
+window.switchTab = switchTab;
+window.goToStep = goToStep;
+window.selectSegment = selectSegment;
+window.selectWizardMode = selectWizardMode;
+window.selectModalAudienceMode = selectModalAudienceMode;
+window.autoGenerateModalCopy = autoGenerateModalCopy;
+window.selectCreative = selectCreative;
+window.loadCreatives = loadCreatives;
+window.updateAdPreview = updateAdPreview;
+window.updateBBPreview = updateBBPreview;
+window.updateBBPreviewImg = updateBBPreviewImg;
+window.filterBillboards = filterBillboards;
+window.filterCampaigns = filterCampaigns;
+window.openBBModal = openBBModal;
+window.closeBBModal = closeBBModal;
+window.openCampaignDetail = openCampaignDetail;
+window.closeCampaignModal = closeCampaignModal;
+window.pauseCampaign = pauseCampaign;
+window.deleteCampaign = deleteCampaign;
+window.reserveBillboard = reserveBillboard;
+window.applyOpt = applyOpt;
+window.triggerAudienceSync = triggerAudienceSync;
+window.startActionTour = startActionTour;
+window.generateAICopy = generateAICopy;
+window.generateBBAICopy = generateBBAICopy;
+window.downloadBillboard = downloadBillboard;
+window.launchLinkedInAd = launchLinkedInAd;
+window.loadOptimizations = loadOptimizations;
+window.loadCampaigns = loadCampaigns;
+window.loadPlatformPages = loadPlatformPages;
+window.loadAttributionData = loadAttributionData;
+window.openCreateAdModal  = openCreateAdModal;
+window.closeCreateAdModal = closeCreateAdModal;
+window.submitCreateAd     = submitCreateAd;
+
+// ══════════════════════════════════════════════════
+// AI ADVISOR
+// ══════════════════════════════════════════════════
+
+const PLATFORM_LABELS = {
+  google_ads: '🔍 Google Ads', msft_ads: '🪟 Microsoft Ads',
+  linkedin_ads: '📣 LinkedIn Ads', billboard: '🏗️ Billboard'
+};
+const PRIORITY_COLORS = { high: '#e53e3e', medium: '#dd6b20', low: '#38a169' };
+const ACTION_LABELS   = { new_campaign: 'New Campaign', optimize: 'Optimize', pause: 'Pause', ab_test: 'A/B Test' };
+
+async function runAIAdvisor() {
+  const btn = document.getElementById('aiRunBtn');
+  const statusEl = document.getElementById('aiStatus');
+  btn.disabled = true;
+  btn.textContent = '⏳ Analyzing…';
+  statusEl.textContent = 'Pulling your victories, pages, and ad data…';
+
+  try {
+    const res = await apiCall(N8N.getRecommendations);
+    // Unwrap n8n allIncomingItems array
+    const raw = Array.isArray(res) ? (res[0] || {}) : (res || {});
+    const rec = raw.recommendation;
+    if (!rec) throw new Error('No recommendation returned');
+
+    // Render output
+    renderAIRecommendations(rec, raw.generated_at);
+
+    // Persist note to Supabase
+    await saveAdNote({
+      timestamp: raw.generated_at || new Date().toISOString(),
+      type: 'ai_recommendation',
+      data: rec
+    });
+
+    // Load history
+    await loadAdNotesHistory();
+
+    statusEl.textContent = '✅ Done — ' + ((rec.recommendations||[]).length) + ' recommendations generated';
+    statusEl.style.color = '#38a169';
+  } catch(e) {
+    statusEl.textContent = '❌ ' + e.message;
+    statusEl.style.color = '#e53e3e';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Generate Recommendations';
+  }
+}
+
+function renderAIRecommendations(rec, generatedAt) {
+  const wrap = document.getElementById('aiRecommendationsWrap');
+  wrap.style.display = 'block';
+
+  // Summary banner
+  const banner = document.getElementById('aiSummaryBanner');
+  banner.innerHTML =
+    '<div style="padding:16px 20px;">' +
+    '<div style="font-size:11px;color:#888;margin-bottom:6px;">Generated ' + (generatedAt||'').slice(0,19).replace('T',' ') + ' · Confidence: ' +
+      '<strong style="color:' + (rec.confidence==='high'?'#38a169':rec.confidence==='medium'?'#dd6b20':'#e53e3e') + '">' + (rec.confidence||'–') + '</strong>' +
+    '</div>' +
+    '<div style="font-size:14px;font-weight:600;color:#0A3161;margin-bottom:4px;">ICP: ' + (rec.icp_summary||'') + '</div>' +
+    '<div style="font-size:13px;color:#444;">🏆 ' + (rec.winning_formula||'') + '</div>' +
+    (rec.key_learnings && rec.key_learnings.length ?
+      '<ul style="margin:10px 0 0;padding-left:18px;font-size:12px;color:#555;">' +
+      rec.key_learnings.map(function(l){ return '<li>'+l+'</li>'; }).join('') +
+      '</ul>' : '') +
+    '</div>';
+
+  // Recommendations grid
+  const grid = document.getElementById('aiRecsGrid');
+  grid.innerHTML = (rec.recommendations||[]).map(function(r) {
+    var priorityColor = PRIORITY_COLORS[r.priority] || '#666';
+    var variants = (r.ab_variants||[]).map(function(v) {
+      return '<div style="background:#f5f7fa;border-radius:4px;padding:8px 10px;margin-top:6px;">' +
+        '<span style="font-size:10px;font-weight:700;color:#888;">VARIANT ' + v.variant + '</span><br>' +
+        '<span style="font-size:12px;font-weight:600;">' + (v.headline||'') + '</span><br>' +
+        '<span style="font-size:12px;color:#555;">' + (v.body||'') + '</span>' +
+        '</div>';
+    }).join('');
+    return '<div class="card" style="border-top:3px solid ' + priorityColor + ';">' +
+      '<div style="padding:16px 20px;">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">' +
+          '<div>' +
+            '<span style="font-size:13px;font-weight:700;">' + (PLATFORM_LABELS[r.platform]||r.platform) + '</span>' +
+            '<span style="margin-left:8px;font-size:11px;background:' + priorityColor + ';color:white;padding:2px 7px;border-radius:10px;">' + (r.priority||'') + '</span>' +
+            '<span style="margin-left:6px;font-size:11px;color:#888;">' + (ACTION_LABELS[r.action]||r.action) + '</span>' +
+          '</div>' +
+          '<span style="font-size:12px;font-weight:700;color:#0A3161;">$' + (r.suggested_budget_usd_day||0) + '/day</span>' +
+        '</div>' +
+        '<div style="font-size:15px;font-weight:600;margin-bottom:4px;">' + (r.headline||'') + '</div>' +
+        '<div style="font-size:13px;color:#444;margin-bottom:8px;">' + (r.description||'') + '</div>' +
+        '<div style="font-size:12px;color:#666;margin-bottom:8px;font-style:italic;">Target: ' + (r.target_audience||'') + '</div>' +
+        '<div style="font-size:12px;color:#555;margin-bottom:10px;">📊 ' + (r.rationale||'') + '</div>' +
+        (variants ? '<div style="font-size:12px;font-weight:600;color:#0A3161;margin-bottom:2px;">A/B Variants</div>' + variants : '') +
+        '<div style="margin-top:10px;display:flex;gap:16px;font-size:11px;color:#888;">' +
+          '<span>✅ Stop if: ' + (r.stop_if||'–') + '</span>' +
+          '<span>📈 Metric: ' + (r.success_metric||'–') + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function saveAdNote(note) {
+  try {
+    await apiCall(N8N.saveNote, { note });
+  } catch(e) { /* non-fatal */ }
+}
+
+async function loadAdNotesHistory() {
+  try {
+    // ad_notes come back from get_ads_data via N8N.getAllAds — reuse cached data if available
+    const raw = adsData || await apiCall(N8N.getAllAds);
+    const data = Array.isArray(raw) ? (raw[0] || {}) : (raw || {});
+    const notes = Array.isArray(data.ad_notes) ? data.ad_notes : [];
+    const log = document.getElementById('aiNotesLog');
+    const count = document.getElementById('aiNoteCount');
+    count.textContent = notes.length + ' analyses stored';
+    if (!notes.length) {
+      log.innerHTML = '<div style="padding:16px 20px;color:#888;font-size:13px;">No history yet — run your first analysis above.</div>';
+      return;
+    }
+    // Show most recent first
+    log.innerHTML = notes.slice().reverse().map(function(n, i) {
+      var ts = (n.timestamp||'').slice(0,19).replace('T',' ');
+      var d = n.data || {};
+      var conf = d.confidence || '–';
+      var confColor = conf==='high'?'#38a169':conf==='medium'?'#dd6b20':'#e53e3e';
+      var summary = d.winning_formula || (d.key_learnings && d.key_learnings[0]) || '';
+      var recCount = (d.recommendations||[]).length;
+      return '<div style="padding:12px 20px;border-bottom:1px solid #f0f0f0;cursor:pointer;" onclick="toggleNoteDetail(this,' + (notes.length-1-i) + ')">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+          '<span style="font-size:13px;font-weight:600;">' + ts + '</span>' +
+          '<span style="font-size:11px;color:' + confColor + ';font-weight:700;">' + conf + ' confidence · ' + recCount + ' recs</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:#555;margin-top:2px;">' + summary.slice(0,120) + '</div>' +
+        '<div class="note-detail" style="display:none;margin-top:10px;font-size:12px;color:#444;white-space:pre-wrap;">' +
+          JSON.stringify(d, null, 2).slice(0, 1000) +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) { /* non-fatal */ }
+}
+
+function toggleNoteDetail(el, idx) {
+  var detail = el.querySelector('.note-detail');
+  if (detail) detail.style.display = detail.style.display === 'none' ? 'block' : 'none';
+}
+
+// Load history when AI tab is activated
+const _origSwitchTab = window.switchTab;
+window.switchTab = function(tab) {
+  if (typeof _origSwitchTab === 'function') _origSwitchTab(tab);
+  if (tab === 'ai') loadAdNotesHistory();
+};
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
