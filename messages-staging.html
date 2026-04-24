@@ -540,6 +540,49 @@
       .inbox-panel { max-height: 40vh; }
     }
   </style>
+  <script>
+    // ═══ STAGING ENVIRONMENT INIT — DO NOT COPY TO PRODUCTION ═══
+    window.VV_ENV = 'staging';
+    window.TEST_USER = 'andrew@victoryvisionai.com';
+    window.WEBHOOK_SUFFIX = '-staging';
+    (function () {
+      const origFetch = window.fetch.bind(window);
+      window.fetch = function (input, init) {
+        try {
+          let url = typeof input === 'string' ? input : (input && input.url) || '';
+          if (url.includes('victoryvision.app.n8n.cloud/webhook/')) {
+            url = url.replace(
+              /(victoryvision\.app\.n8n\.cloud\/webhook\/[^?#\s]+)/,
+              function (m, p) { return p.endsWith(window.WEBHOOK_SUFFIX) ? p : p + window.WEBHOOK_SUFFIX; }
+            );
+            if (typeof input === 'string') input = url;
+            else input = new Request(url, input);
+          }
+          if (init && init.body && typeof init.body === 'string') {
+            try {
+              const b = JSON.parse(init.body);
+              if (b && typeof b === 'object' && 'customer_id' in b) {
+                b.customer_id = window.TEST_USER;
+                init = Object.assign({}, init, { body: JSON.stringify(b) });
+              }
+            } catch (e) {}
+          }
+          if (init && init.headers) {
+            const h = init.headers instanceof Headers ? init.headers : new Headers(init.headers);
+            if (h.has('X-Customer-ID')) h.set('X-Customer-ID', window.TEST_USER);
+            init = Object.assign({}, init, { headers: h });
+          }
+        } catch (e) { console.warn('staging fetch rewrite failed', e); }
+        return origFetch(input, init);
+      };
+      document.addEventListener('DOMContentLoaded', function () {
+        const bar = document.createElement('div');
+        bar.textContent = 'STAGING ENVIRONMENT — test user: ' + window.TEST_USER + ' — webhooks suffixed with ' + window.WEBHOOK_SUFFIX;
+        bar.style.cssText = 'background:#c0392b;color:#fff;padding:6px 12px;font:bold 12px Arial;text-align:center;position:sticky;top:0;z-index:99999;';
+        document.body.insertBefore(bar, document.body.firstChild);
+      });
+    })();
+  </script>
 </head>
 <body>
 
