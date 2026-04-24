@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Your Meeting - Victory Vision</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@daily-co/daily-js"></script>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a3161 0%, #1a4c80 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .meeting-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 900px;
+      margin: 20px;
+      overflow: hidden;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meeting-header {
+      background: linear-gradient(135deg, #0a3161 0%, #1a4c80 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-weight: bold;
+      color: #0a3161;
+      font-size: 24px;
+    }
+
+    .meeting-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .meeting-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    .meeting-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .email-form {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 1rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f7fafc;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #0a3161;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(10,49,97,0.1);
+    }
+
+    .join-btn {
+      background: linear-gradient(135deg, #bb133e, #9d1134);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .join-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(187,19,62,0.3);
+    }
+
+    .join-btn:disabled {
+      background: #a0aec0;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .meetings-list {
+      margin-top: 30px;
+      display: none;
+    }
+
+    .meeting-item {
+      background: #f7fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .meeting-item:hover {
+      border-color: #0a3161;
+      background: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .meeting-title-item {
+      color: #2d3748;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .meeting-attendees {
+      color: #718096;
+      font-size: 0.9rem;
+    }
+
+    .video-container {
+      display: none;
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 20px;
+      background: #000;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #718096;
+      margin: 20px 0;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #e2e8f0;
+      border-top: 2px solid #0a3161;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    .error-message {
+      background: #fed7d7;
+      color: #c53030;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #e53e3e;
+    }
+
+    .success-message {
+      background: #c6f6d5;
+      color: #2d7738;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 4px solid #38a169;
+    }
+
+    .back-btn {
+      background: transparent;
+      color: #0a3161;
+      border: 2px solid #0a3161;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .back-btn:hover {
+      background: #0a3161;
+      color: white;
+    }
+
+    .meeting-controls {
+      display: none;
+      padding: 20px;
+      background: #f7fafc;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .control-btn {
+      background: #0a3161;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      margin: 0 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .control-btn:hover {
+      background: #083050;
+    }
+
+    .control-btn.danger {
+      background: #bb133e;
+    }
+
+    .control-btn.danger:hover {
+      background: #9d1134;
+    }
+
+    /* ── AI Live Coach Panel (host-only) ───────────────────────── */
+    .coach-panel {
+      position: fixed;
+      top: 80px;
+      right: 16px;
+      width: 300px;
+      max-height: 60vh;
+      background: rgba(255,255,255,0.97);
+      border-radius: 12px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-size: 13px;
+      border: 1px solid rgba(10,49,97,0.15);
+    }
+    .coach-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, #0a3161 0%, #1a4c80 100%);
+      color: white;
+      font-weight: 600;
+    }
+    .coach-title { flex: 1; }
+    .coach-status {
+      font-weight: 400;
+      opacity: 0.85;
+      font-size: 11px;
+    }
+    .coach-toggle {
+      background: transparent;
+      color: white;
+      border: none;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .coach-tips {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 8px;
+    }
+    .coach-tip {
+      background: #f7f9fc;
+      border-left: 3px solid #bb133e;
+      border-radius: 6px;
+      padding: 8px 10px;
+      line-height: 1.35;
+      color: #1a2436;
+      animation: coach-fade-in 0.25s ease-out;
+    }
+    .coach-tip .coach-tip-time {
+      display: block;
+      font-size: 10px;
+      color: #8891a6;
+      margin-bottom: 2px;
+    }
+    @keyframes coach-fade-in {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .coach-privacy {
+      padding: 6px 12px 10px;
+      font-size: 10px;
+      color: #777;
+      border-top: 1px solid #eee;
+    }
+    @media (max-width: 900px) {
+      .coach-panel {
+        top: auto;
+        bottom: 90px;
+        right: 8px;
+        width: calc(100% - 16px);
+        max-height: 40vh;
+      }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .meeting-container {
+        margin: 10px;
+        border-radius: 12px;
+      }
+      
+      .meeting-header {
+        padding: 20px;
+      }
+      
+      .meeting-title {
+        font-size: 1.5rem;
+      }
+      
+      .meeting-content {
+        padding: 20px;
+      }
+      
+      .video-container {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="meeting-container">
+  <div class="meeting-header">
+    <div class="logo">VV</div>
+    <h1 class="meeting-title">Victory Vision Meeting</h1>
+    <p class="meeting-subtitle">Join your scheduled video conference</p>
+  </div>
+
+  <div class="meeting-content">
+    <!-- Email Input Form -->
+    <div id="emailForm" class="email-form">
+      <div class="form-group">
+        <label for="emailInput" class="form-label">Enter your email address to find your meeting</label>
+        <input 
+          type="email" 
+          id="emailInput" 
+          class="form-input" 
+          placeholder="your@email.com"
+          required
+        >
+      </div>
+      <button id="findMeetingBtn" class="join-btn">
+        Find My Meeting
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="loading" style="display: none;">
+      <div class="spinner"></div>
+      <span>Finding your meetings...</span>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message" style="display: none;"></div>
+
+    <!-- Meetings List -->
+    <div id="meetingsList" class="meetings-list">
+      <h3 style="margin-bottom: 20px; color: #2d3748;">Click to join your meeting:</h3>
+      <div id="meetingsContainer"></div>
+      <button id="backBtn" class="back-btn">Back to Email Entry</button>
+    </div>
+
+    <!-- Video Container -->
+    <div id="videoContainer" class="video-container">
+      <div id="dailyContainer" style="width: 100%; height: 100%;"></div>
+    </div>
+
+    <!-- Host-only AI Coach Panel (shown only when invite.rsvp === 'host') -->
+    <div id="coachPanel" class="coach-panel" style="display:none">
+      <div class="coach-header">
+        <span class="coach-title">🎯 Live Coach</span>
+        <span class="coach-status" id="coachStatus">listening…</span>
+        <button type="button" class="coach-toggle" id="coachToggleBtn" title="Hide coach">×</button>
+      </div>
+      <div class="coach-tips" id="coachTips"></div>
+      <div class="coach-privacy">Only you see these. Tips are generated from the live transcript.</div>
+    </div>
+  </div>
+
+  <!-- Meeting Controls -->
+  <div id="meetingControls" class="meeting-controls">
+    <button id="muteBtn" class="control-btn">Mute</button>
+    <button id="videoBtn" class="control-btn">Video</button>
+    <button id="leaveBtn" class="control-btn danger">Leave Meeting</button>
+  </div>
+</div>
+
+<script>
+// Supabase configuration
+const supabaseUrl = 'https://nyyvsdkumxvuwimmucdb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eXZzZGt1bXh2dXdpbW11Y2RiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MzY5OTQsImV4cCI6MjA1OTMxMjk5NH0.7m7R_8mBhp7X8itl5cR81xbX2AjJUm2SIPR0FUv6ouU';
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+// Global variables
+let callFrame = null;
+let currentMeetings = [];
+let userEmail = '';
+let isMuted = false;
+let isVideoOff = false;
+
+// DOM elements
+const emailForm = document.getElementById('emailForm');
+const emailInput = document.getElementById('emailInput');
+const findMeetingBtn = document.getElementById('findMeetingBtn');
+const loadingState = document.getElementById('loadingState');
+const errorMessage = document.getElementById('errorMessage');
+const successMessage = document.getElementById('successMessage');
+const meetingsList = document.getElementById('meetingsList');
+const meetingsContainer = document.getElementById('meetingsContainer');
+const backBtn = document.getElementById('backBtn');
+const videoContainer = document.getElementById('videoContainer');
+const dailyContainer = document.getElementById('dailyContainer');
+const meetingControls = document.getElementById('meetingControls');
+
+// Control buttons
+const muteBtn = document.getElementById('muteBtn');
+const videoBtn = document.getElementById('videoBtn');
+const leaveBtn = document.getElementById('leaveBtn');
+
+// Event listeners
+findMeetingBtn.addEventListener('click', findMeetings);
+backBtn.addEventListener('click', showEmailForm);
+emailInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') findMeetings();
+});
+
+// Control button event listeners
+muteBtn.addEventListener('click', toggleMute);
+videoBtn.addEventListener('click', toggleVideo);
+leaveBtn.addEventListener('click', leaveMeeting);
+
+// Show error message
+function showError(message) {
+  errorMessage.textContent = message;
+  errorMessage.style.display = 'block';
+  successMessage.style.display = 'none';
+  setTimeout(() => {
+    errorMessage.style.display = 'none';
+  }, 5000);
+}
+
+// Show success message
+function showSuccess(message) {
+  successMessage.textContent = message;
+  successMessage.style.display = 'block';
+  errorMessage.style.display = 'none';
+  setTimeout(() => {
+    successMessage.style.display = 'none';
+  }, 3000);
+}
+
+// Validate email format
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Find meetings for the user
+async function findMeetings() {
+  const email = emailInput.value.trim();
+  
+  if (!email) {
+    showError('Please enter your email address');
+    return;
+  }
+  
+  if (!isValidEmail(email)) {
+    showError('Please enter a valid email address');
+    return;
+  }
+
+  userEmail = email;
+  
+  // Show loading state
+  emailForm.style.display = 'none';
+  loadingState.style.display = 'flex';
+  
+  try {
+    console.log('Searching for email:', email);
+    
+    // Query meeting_invites table - simple email match
+    const { data: meetingInvites, error } = await supabaseClient
+      .from('meeting_invites')
+      .select('*')
+      .eq('email', email);
+
+    console.log('Query result:', { meetingInvites, error });
+
+    loadingState.style.display = 'none';
+
+    if (error) {
+      console.error('Database error:', error);
+      showError('Database error: ' + error.message);
+      emailForm.style.display = 'block';
+      return;
+    }
+
+    if (!meetingInvites || meetingInvites.length === 0) {
+      showError('No meetings found for: ' + email);
+      emailForm.style.display = 'block';
+      return;
+    }
+
+    currentMeetings = meetingInvites;
+    displayMeetings(meetingInvites);
+    
+  } catch (error) {
+    console.error('Error finding meetings:', error);
+    loadingState.style.display = 'none';
+    showError('Error: ' + error.message);
+    emailForm.style.display = 'block';
+  }
+}
+
+// Display meetings list
+function displayMeetings(meetingInvites) {
+  meetingsContainer.innerHTML = '';
+  
+  meetingInvites.forEach((invite, index) => {
+    const meetingItem = document.createElement('div');
+    meetingItem.className = 'meeting-item';
+    meetingItem.innerHTML = `
+      <div class="meeting-title-item">${invite.name || 'Victory Vision Meeting'}</div>
+      <div class="meeting-attendees">
+        Link: Link: ${invite.room_url ? (() => {
+  const parts = invite.room_url.split('-');
+  const name = parts[1]?.replace(/([A-Z])/g, ' $1').trim() || 'N/A';
+  const date = `${parts[2]}/${parts[3]}/${parts[4]}`;
+  const time = parts[5]?.replace(/(\d+)(AM|PM)/, '$1 $2');
+  return `${name} - ${date} at ${time} ${parts[6] || ''}`;
+})() : 'N/A'}
+${invite.room_url ? '' : '<br>⚠️ No room information available'}
+      </div>
+    `;
+    
+    if (invite.room_url) {
+      meetingItem.addEventListener('click', () => joinMeeting(invite));
+      meetingItem.style.cursor = 'pointer';
+    } else {
+      meetingItem.style.opacity = '0.6';
+      meetingItem.style.cursor = 'not-allowed';
+    }
+    
+    meetingsContainer.appendChild(meetingItem);
+  });
+  
+  meetingsList.style.display = 'block';
+}
+
+// Join a specific meeting
+async function joinMeeting(invite) {
+  if (!invite.room_url) {
+    showError('No room URL available');
+    return;
+  }
+
+  try {
+    meetingsList.style.display = 'none';
+    loadingState.style.display = 'flex';
+    loadingState.querySelector('span').textContent = 'Joining meeting...';
+
+    // Initialize Daily.co call frame
+    callFrame = DailyIframe.createFrame(dailyContainer, {
+      showLeaveButton: false,
+      showFullscreenButton: true,
+      showLocalVideo: true,
+      showParticipantsBar: true,
+    });
+
+    // Join the meeting — pass Daily meeting-token for host row so startTranscription()
+    // has admin permission. Non-host rows join without a token (guest privileges).
+    const joinOpts = {
+      url: invite.room_url,
+      userName: invite.name || userEmail.split('@')[0],
+    };
+    if (invite.rsvp === 'host' && invite.token) joinOpts.token = invite.token;
+    await callFrame.join(joinOpts);
+
+    loadingState.style.display = 'none';
+    videoContainer.style.display = 'block';
+    meetingControls.style.display = 'block';
+
+    // Host-only: start the AI Live Coach
+    if (invite.rsvp === 'host') {
+      startCoach(invite);
+    }
+
+    showSuccess('Successfully joined the meeting!');
+
+  } catch (error) {
+    console.error('Error joining meeting:', error);
+    loadingState.style.display = 'none';
+    showError('Unable to join meeting: ' + error.message);
+    meetingsList.style.display = 'block';
+  }
+}
+
+/* ══════════════════════════════════════════════
+   AI LIVE COACH (host-only)
+   - Subscribes to Daily 'transcription-message' events
+   - Buffers ~45s windows; flushes on silence >= 8s or window age >= 45s
+   - POSTs window to /webhook/meeting/coach → renders the returned tip
+══════════════════════════════════════════════ */
+const COACH_EP = 'https://victoryvision.app.n8n.cloud/webhook/meeting/coach';
+let coachBuffer = [];
+let coachFlushTimer = null;
+let coachSilenceTimer = null;
+let coachLastEventAt = 0;
+let coachStarted = false;
+let coachMeta = null;
+let coachInflight = false;
+
+function renderCoachTip(text) {
+  const host = document.getElementById('coachTips');
+  if (!host) return;
+  const tip = document.createElement('div');
+  tip.className = 'coach-tip';
+  const t = new Date();
+  const hh = t.getHours() % 12 || 12;
+  const mm = String(t.getMinutes()).padStart(2, '0');
+  const ap = t.getHours() >= 12 ? 'PM' : 'AM';
+  tip.innerHTML = `<span class="coach-tip-time">${hh}:${mm} ${ap}</span>${text}`;
+  host.prepend(tip);
+  // Cap to last 12 tips
+  while (host.children.length > 12) host.removeChild(host.lastChild);
+}
+
+function setCoachStatus(s) {
+  const el = document.getElementById('coachStatus');
+  if (el) el.textContent = s;
+}
+
+async function flushCoachBuffer(reason) {
+  if (coachInflight) return;
+  const transcript = coachBuffer.map(e => e.text).join(' ').trim();
+  if (transcript.length < 40) return; // too short — skip
+  coachInflight = true;
+  setCoachStatus('thinking…');
+  const payload = {
+    customer_id: coachMeta.customer_id,
+    contact_email: coachMeta.contact_email || '',
+    meeting_id: coachMeta.meeting_id || null,
+    transcript,
+    reason: reason || 'window'
+  };
+  coachBuffer = [];
+  try {
+    const r = await fetch(COACH_EP, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json().catch(() => ({}));
+    if (j && j.tip) renderCoachTip(j.tip);
+  } catch (err) {
+    console.error('coach flush failed', err);
+  } finally {
+    coachInflight = false;
+    setCoachStatus('listening…');
+  }
+}
+
+function onTranscriptionMessage(ev) {
+  // Daily fires transcription-message with { text, participantId, timestamp, is_final }
+  // Only buffer final fragments to avoid duplicating interim results.
+  const text = ev?.text || ev?.data?.text;
+  const isFinal = ev?.is_final !== false; // default true if undefined
+  if (!text || !isFinal) return;
+  coachBuffer.push({ text, at: Date.now() });
+  coachLastEventAt = Date.now();
+  // Silence-based flush: if 8s elapses without new transcript, flush
+  if (coachSilenceTimer) clearTimeout(coachSilenceTimer);
+  coachSilenceTimer = setTimeout(() => flushCoachBuffer('silence'), 8000);
+}
+
+function startCoach(invite) {
+  if (coachStarted || !callFrame) return;
+  coachStarted = true;
+  coachMeta = {
+    customer_id: invite.customer_id || userEmail,
+    contact_email: '', // unknown here — invitee email lives on a sibling row, coach still works without
+    meeting_id: invite.meeting_id || null
+  };
+  document.getElementById('coachPanel').style.display = 'flex';
+  setCoachStatus('connecting…');
+
+  // Subscribe to Daily transcription events
+  try {
+    callFrame.on('transcription-message', onTranscriptionMessage);
+    callFrame.on('app-message', (ev) => {
+      // Some Daily versions relay transcription via app-message with fromId:'transcription'
+      if (ev && ev.fromId === 'transcription') onTranscriptionMessage(ev.data || ev);
+    });
+  } catch (e) { console.warn('coach transcription subscribe failed', e); }
+
+  // Try to start transcription (host-privileged call; requires admin meeting-token)
+  try {
+    if (typeof callFrame.startTranscription === 'function') {
+      callFrame.startTranscription({ language: 'en' })
+        .then(() => setCoachStatus('listening…'))
+        .catch(err => {
+          const msg = err?.message || String(err);
+          console.warn('startTranscription failed:', msg);
+          setCoachStatus('transcription unavailable');
+          renderCoachTip('⚠️ Live transcription did not start. Re-join from a fresh meeting so the host token loads, or contact support. (' + msg.slice(0, 80) + ')');
+        });
+    }
+  } catch (e) {
+    console.warn('startTranscription threw', e);
+    setCoachStatus('transcription unavailable');
+  }
+
+  // Periodic window flush every 45s regardless
+  coachFlushTimer = setInterval(() => {
+    if (coachBuffer.length) flushCoachBuffer('interval');
+  }, 45000);
+
+  setCoachStatus('listening…');
+}
+
+function stopCoach() {
+  if (!coachStarted) return;
+  try { if (callFrame?.off) callFrame.off('transcription-message', onTranscriptionMessage); } catch (e) {}
+  try { if (callFrame?.stopTranscription) callFrame.stopTranscription().catch(() => {}); } catch (e) {}
+  if (coachFlushTimer) { clearInterval(coachFlushTimer); coachFlushTimer = null; }
+  if (coachSilenceTimer) { clearTimeout(coachSilenceTimer); coachSilenceTimer = null; }
+  coachBuffer = [];
+  coachStarted = false;
+  coachMeta = null;
+  const panel = document.getElementById('coachPanel');
+  if (panel) panel.style.display = 'none';
+  const tips = document.getElementById('coachTips');
+  if (tips) tips.innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('coachToggleBtn');
+  if (btn) btn.addEventListener('click', () => {
+    const panel = document.getElementById('coachPanel');
+    if (panel) panel.style.display = 'none';
+  });
+});
+
+// Toggle mute
+async function toggleMute() {
+  if (!callFrame) return;
+  try {
+    if (isMuted) {
+      await callFrame.setLocalAudio(true);
+      muteBtn.textContent = 'Mute';
+      isMuted = false;
+    } else {
+      await callFrame.setLocalAudio(false);
+      muteBtn.textContent = 'Unmute';
+      isMuted = true;
+    }
+  } catch (error) {
+    console.error('Error toggling mute:', error);
+  }
+}
+
+// Toggle video
+async function toggleVideo() {
+  if (!callFrame) return;
+  try {
+    if (isVideoOff) {
+      await callFrame.setLocalVideo(true);
+      videoBtn.textContent = 'Video';
+      isVideoOff = false;
+    } else {
+      await callFrame.setLocalVideo(false);
+      videoBtn.textContent = 'Start Video';
+      isVideoOff = true;
+    }
+  } catch (error) {
+    console.error('Error toggling video:', error);
+  }
+}
+
+// Leave meeting
+async function leaveMeeting() {
+  if (!callFrame) return;
+  try {
+    await callFrame.leave();
+    callFrame.destroy();
+    callFrame = null;
+    showEmailForm();
+    showSuccess('You have left the meeting.');
+  } catch (error) {
+    console.error('Error leaving meeting:', error);
+    showEmailForm();
+  }
+}
+function showEmailForm() {
+  emailForm.style.display = 'block';
+  meetingsList.style.display = 'none';
+  videoContainer.style.display = 'none';
+  meetingControls.style.display = 'none';
+  loadingState.style.display = 'none';
+  errorMessage.style.display = 'none';
+  successMessage.style.display = 'none';
+
+  stopCoach();
+
+  if (callFrame) {
+    try {
+      callFrame.destroy();
+      callFrame = null;
+    } catch (error) {
+      console.error('Error destroying call frame:', error);
+    }
+  }
+  emailInput.value = '';
+  userEmail = '';
+  currentMeetings = [];
+  isMuted = false;
+  isVideoOff = false;
+}
+window.addEventListener('load', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const emailParam = urlParams.get('email');
+  
+  if (emailParam && isValidEmail(emailParam)) {
+    emailInput.value = emailParam;
+    findMeetings();
+  }
+});
+window.addEventListener('beforeunload', () => {
+  if (callFrame) {
+    try {
+      callFrame.leave();
+      callFrame.destroy();
+    } catch (error) {
+      console.error('Error cleaning up on page unload:', error);
+    }
+  }
+});
+</script>
+</body>
+</html>
