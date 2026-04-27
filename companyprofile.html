@@ -1811,7 +1811,7 @@ async function saveAllData() {
     
     const result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
     
-    if (result.success || result.status === 'success' || result.company || result.goals) {
+ if (result.success || result.ok || result.status === 'success' || result.company || result.goals || result.updated) {
       showStatus('Company profile and goal saved successfully!');
       await loadAllData(); // Refresh the display
     } else {
