@@ -1197,13 +1197,14 @@ jane@business.com,Jane Doe,+1-555-0124,https://linkedin.com/in/janedoe,Business 
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
           <div class="form-group">
-            <label for="customer_journey">
+            <label>
               Customer Journey
               <span class="help-icon">❓
-                <span class="help-tooltip">Summary of all previous conversations, meetings, and interactions with this contact.</span>
+                <span class="help-tooltip">Timeline of every touchpoint with this contact: emails sent, replies, opens, clicks, calls, meetings, and victories.</span>
               </span>
             </label>
-            <textarea id="customer_journey" name="customer_journey" placeholder="Summary of all communication..."></textarea>
+            <div id="customer_journey_timeline" style="border:1px solid #ddd;border-radius:6px;padding:8px 12px;background:#fafafa;max-height:320px;overflow-y:auto;font-size:13px;"></div>
+            <input type="hidden" id="customer_journey" name="customer_journey">
           </div>
           <div class="form-group">
             <label for="personal_summary">
@@ -2287,6 +2288,82 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+  // =============================================================
+// Customer Journey timeline renderer (v2 jsonb-aware)
+// =============================================================
+function renderJourneyTimeline(contact) {
+  const container = document.getElementById('customer_journey_timeline');
+  if (!container) return;
+
+  // Prefer v2 jsonb field; fall back to legacy text if v2 is empty.
+  let events = [];
+  if (Array.isArray(contact.customer_journey_v2)) {
+    events = contact.customer_journey_v2;
+  } else if (typeof contact.customer_journey_v2 === 'string' && contact.customer_journey_v2.trim()) {
+    try { events = JSON.parse(contact.customer_journey_v2); } catch (e) { events = []; }
+  }
+
+  if (events.length === 0) {
+    const legacy = (contact.customer_journey || '').trim();
+    if (legacy) {
+      container.innerHTML = '<div style="color:#6c757d;font-style:italic;padding:8px;white-space:pre-wrap;">' +
+        escapeHtmlForTimeline(legacy) +
+        '<div style="margin-top:6px;font-size:11px;color:#999;">[legacy text — no v2 events yet]</div></div>';
+    } else {
+      container.innerHTML = '<p style="color:#6c757d;font-style:italic;padding:8px 0;margin:0;">No touchpoints yet.</p>';
+    }
+    return;
+  }
+
+  const ICONS = {
+    email_outbound: '✉️➡️', email_inbound: '✉️⬅️',
+    email_opened: '👁️', email_clicked: '🔗',
+    sms_outbound: '💬➡️', sms_inbound: '💬⬅️',
+    call_outbound: '📞➡️', call_inbound: '📞⬅️',
+    page_viewed: '🌐', meeting: '📅',
+    social: '👥', ad_engagement: '📊',
+    victory: '🏆',
+    campaign_enrolled: '🎯', campaign_completed: '✅', campaign_stopped: '⏹️',
+    note: '📝', legacy_journey: '📜'
+  };
+  const ACTOR_COLORS = { platform: '#0a3161', contact: '#bb133e', user: '#6c757d' };
+
+  container.innerHTML = events.map(e => {
+    const icon = ICONS[e.type] || '•';
+    const color = ACTOR_COLORS[e.actor] || '#333';
+    let dateStr = '', timeStr = '';
+    if (e.ts) {
+      const d = new Date(e.ts);
+      if (!isNaN(d.getTime())) {
+        dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      }
+    }
+    const campaign = e.campaign
+      ? '<span style="background:#f0f0f0;padding:2px 6px;border-radius:3px;font-size:11px;color:#666;margin-left:6px;">' + escapeHtmlForTimeline(e.campaign) + '</span>'
+      : '';
+    const typeLabel = String(e.type || '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    return '<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #eee;">' +
+      '<div style="flex:0 0 24px;font-size:16px;line-height:1.2;">' + icon + '</div>' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-size:12px;color:' + color + ';font-weight:600;">' +
+          escapeHtmlForTimeline(typeLabel) + campaign +
+        '</div>' +
+        '<div style="font-size:13px;color:#222;margin-top:2px;word-wrap:break-word;">' +
+          escapeHtmlForTimeline(e.summary || '') +
+        '</div>' +
+        '<div style="font-size:11px;color:#999;margin-top:3px;">' +
+          dateStr + (timeStr ? ' · ' + timeStr : '') + ' · ' + escapeHtmlForTimeline(e.actor || '') +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function escapeHtmlForTimeline(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 // Update template count when email count changes
 function updateTemplateCount() {
   // Changing email count no longer clears rendered templates
@@ -3005,7 +3082,7 @@ function editContact(contactId) {
   : '';
   document.getElementById('last_opened_date').value = contact.last_opened_date || '';
   document.getElementById('last_called').value = contact.last_called || '';
-  document.getElementById('customer_journey').value = contact.customer_journey || '';
+  renderJourneyTimeline(contact);
   document.getElementById('personal_summary').value = contact.personal_summary || '';
   document.getElementById('company_summary').value = contact.company_summary || '';
   // document.getElementById('created').value = contact.created || ''; // ❌ REMOVE THIS LINE  
@@ -4702,12 +4779,25 @@ async function hangupCall() {
     currentCall.hangup();
     
     const notes = document.getElementById('callNotes').value.trim();
-    if (notes && currentCallContact) {
-      await apiCall(ENDPOINTS.updateContact, {
-        contact_id: currentCallContact.contact_id || currentCallContact.id,
-        customer_journey: (currentCallContact.customer_journey || '') + '\n\n' + 
-          `Call ${new Date().toLocaleDateString()}: ${notes}`
-      });
+   if (notes && currentCallContact) {
+      try {
+        await fetch('https://nyyvsdkumxvuwimmucdb.supabase.co/functions/v1/journey-append', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contact_id: currentCallContact.contact_id || currentCallContact.id,
+            event: {
+              type: 'call_outbound',
+              actor: 'user',
+              campaign: null,
+              summary: 'Call: ' + notes.slice(0, 240),
+              data: { notes: notes }
+            }
+          })
+        });
+      } catch (e) {
+        console.warn('Journey append failed', e);
+      }
     }
     
     showStatus('Call ended', false);
