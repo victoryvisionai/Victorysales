@@ -2297,10 +2297,10 @@ function renderJourneyTimeline(contact) {
 
   // Prefer v2 jsonb field; fall back to legacy text if v2 is empty.
   let events = [];
-  if (Array.isArray(contact.customer_journey_v2)) {
-    events = contact.customer_journey_v2;
-  } else if (typeof contact.customer_journey_v2 === 'string' && contact.customer_journey_v2.trim()) {
-    try { events = JSON.parse(contact.customer_journey_v2); } catch (e) { events = []; }
+  if (Array.isArray(contact.customer_journey)) {
+    events = contact.customer_journey;
+  } else if (typeof contact.customer_journey === 'string' && contact.customer_journey.trim()) {
+    try { events = JSON.parse(contact.customer_journey); } catch (e) { events = []; }
   }
 
   if (events.length === 0) {
