@@ -1766,27 +1766,20 @@ async function saveAllData() {
     // Collect goal data based on whether it was edited
     let goalData = null;
     
-    if (goalWasEdited) {
-      // User edited the goal - use new data from form
-      if (goalFormData.get('goal_description') && goalFormData.get('goal_description').trim()) {
-        goalData = {
-          goal_description: sanitizeInput(goalFormData.get('goal_description')),
-          measurement: sanitizeInput(goalFormData.get('measurement')),
-          achievable: sanitizeInput(goalFormData.get('achievable')),
-          relationship: sanitizeInput(goalFormData.get('relationship')),
-          time_limit: goalFormData.get('time_limit') || null
-        };
+ if (goalWasEdited) {
+      // User edited the goal - take just the description as plain text
+      const desc = goalFormData.get('goal_description');
+      if (desc && desc.trim()) {
+        goalData = sanitizeInput(desc);
       }
-      // Reset the flag after processing
       goalManuallyEdited = false;
       document.getElementById('goalModifiedFlag').value = 'false';
     } else {
-      // Goal wasn't edited - preserve existing goal from userData
-      if (userData && userData.goal) {
+      // Goal wasn't edited - preserve existing goal as plain string
+      if (userData && userData.goal && typeof userData.goal === 'string') {
         goalData = userData.goal;
       }
     }
-    
     // FIXED: Combine all data into single payload including new fields
     const allData = {
       company_name: sanitizeInput(formData.get('company_name')),
@@ -1806,7 +1799,7 @@ async function saveAllData() {
       offer: sanitizeInput(document.getElementById('offer').value),
       calendar: sanitizeInput(document.getElementById('calendar').value),
       ...productImageUrls,
-      goal: goalData ? JSON.stringify(goalData) : null
+ goal: goalData
     };
     let result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
     
