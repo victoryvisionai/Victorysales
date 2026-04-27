@@ -1808,10 +1808,12 @@ async function saveAllData() {
       ...productImageUrls,
       goal: goalData ? JSON.stringify(goalData) : null
     };
+    let result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
     
-    const result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
-  console.log('SAVE RESULT:', JSON.stringify(result));  
- if (result.success || result.ok || result.status === 'success' || result.company || result.goals || result.updated) {
+    // Unwrap array responses (n8n "All Incoming Items" mode wraps in [])
+    if (Array.isArray(result)) result = result[0] || {};
+    
+    if (result.success || result.ok || result.status === 'success' || result.company || result.goals || result.updated) {
       showStatus('Company profile and goal saved successfully!');
       await loadAllData(); // Refresh the display
     } else {
