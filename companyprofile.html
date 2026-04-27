@@ -1796,7 +1796,7 @@ async function saveAllData() {
       school: sanitizeInput(formData.get('school')),
       logo_URL: logoUrl,
       company_description: sanitizeInput(formData.get('company_description')),
-      product_description: sanitizeInput(formData.get('product_description')),
+      product_descriptions: sanitizeInput(formData.get('product_description')),
       icp: sanitizeInput(formData.get('icp')),
       brand_colors: sanitizeInput(formData.get('brand_colors_1')) + ',' + 
                    sanitizeInput(formData.get('brand_colors_2')) + ',' + 
@@ -1806,7 +1806,7 @@ async function saveAllData() {
       offer: sanitizeInput(document.getElementById('offer').value),
       calendar: sanitizeInput(document.getElementById('calendar').value),
       ...productImageUrls,
-      goal: goalData
+      goal: goalData ? JSON.stringify(goalData) : null
     };
     
     const result = await apiCall(ENDPOINTS.UPDATE_USER, allData, 'POST');
