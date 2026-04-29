@@ -2062,11 +2062,15 @@ async function loadContacts() {
   }
 }
 
-// Toggle between custom description and template mode
 function toggleCampaignMode() {
   const useTemplates = document.getElementById('useTemplates').checked;
   document.getElementById('customDescriptionMode').style.display = useTemplates ? 'none' : 'block';
   document.getElementById('templateMode').style.display = useTemplates ? 'block' : 'none';
+  
+  // Hide the Create & Send button when templates mode is active —
+  // template mode uses its own per-template send buttons.
+  const submitBtn = document.getElementById('customCampaignSubmitBtn');
+  if (submitBtn) submitBtn.style.display = useTemplates ? 'none' : 'inline-block';
 }
 
 async function aiSuggestCampaign() {
